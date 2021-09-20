@@ -77,13 +77,13 @@ class ControlIo():
         return list of string formatted labels and associated descriptive prose
         """
         items = []
-        # parts that are sections are output separately
-        if part.name not in self._sections:
-            if part.prose is not None:
-                label = self._get_label(part)
-                wrapped_label = self._wrap_label(label)
-                pad = '' if wrapped_label == '' else ' '
-                items.append(f'{wrapped_label}{pad}{part.prose}')
+        if part.name in ['item', 'statement']:
+            label = self._get_label(part)
+            wrapped_label = self._wrap_label(label)
+            pad = '' if wrapped_label == '' or part.prose is None else ' '
+            prose = '' if part.prose is None else part.prose
+            if part.name != 'statement':
+                items.append(f'{wrapped_label}{pad}{prose}')
             if part.parts is not None:
                 sub_list = []
                 for prt in part.parts:
@@ -98,6 +98,9 @@ class ControlIo():
         if control.parts is not None:
             for part in control.parts:
                 if part.name == 'statement':
+                    # If the statement has prose write it as a raw line and not list element
+                    if part.prose:
+                        self._md_file.new_line(part.prose)
                     items.append(self._get_part(control, part))
             # unwrap the list if it is many levels deep
             while not isinstance(items, str) and len(items) == 1:
@@ -130,23 +133,52 @@ class ControlIo():
         return prose
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
-        """
-        Find section text first in the control and then in the profile.
-
-        If found in both they are appended
-        """
         prose = ''
         for part in control.parts:
             prose += self._get_control_section_part(part, section)
         return prose
 
-    def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
-        """Add the control section to the md file."""
-        prose = self._get_control_section(control, section_tuple[0])
-        if prose:
-            self._md_file.new_header(level=1, title=f'{control.id} section: {section_tuple[1]}')
-            self._md_file.new_line(prose)
-            self._md_file.new_paragraph()
+    def _find_section_info(self, part: common.Part, section_list: List[str]):
+        """Find section not in list."""
+        if part.prose and part.name not in section_list:
+            return part.id, part.name
+        if part.parts:
+            for part in part.parts:
+                id_, name = self._find_section_info(part, section_list)
+                if id_:
+                    return id_, name
+        return '', ''
+
+    def _find_section(self, control: cat.Control, section_list: List[str]) -> Tuple[str, str]:
+        """Find next section not in list."""
+        if control.parts:
+            for part in control.parts:
+                id_, name = self._find_section_info(part, section_list)
+                if id_:
+                    return id_, name
+        return '', ''
+
+    def _get_section(self, control: cat.Control, section_list: List[str]) -> Tuple[str, str, str]:
+        """Get sections that are not in the list."""
+        id_, name = self._find_section(control, section_list)
+        if id_:
+            return id_, name, self._get_control_section(control, name)
+        return '', '', ''
+
+    def _add_sections(self, control: cat.Control) -> None:
+        """Add the control sections that are not specified."""
+        section_list = ['statement', 'item']
+        while True:
+            name, id_, prose = self._get_section(control, section_list)
+            if not name:
+                return
+            if prose:
+                section_list.append(id_)
+                if id_ in self._sections:
+                    id_ = self._sections[id_]
+                self._md_file.new_header(level=2, title=f'Control {id_}')
+                self._md_file.new_line(prose)
+                self._md_file.new_paragraph()
 
     def _insert_existing_text(self, part_label: str, existing_text: Dict[str, List[str]]) -> None:
         """Insert text captured in the previous markdown and reinsert to avoid overwrite."""
@@ -159,7 +191,7 @@ class ControlIo():
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
-        self._md_file.new_header(level=2, title=f'{control.id} {const.SSP_MD_IMPLEMENTATION_QUESTION}')
+        self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -170,8 +202,7 @@ class ControlIo():
                 if part.parts:
                     if part.name == 'statement':
                         for prt in part.parts:
-                            # parts that are sections are output separately
-                            if prt.name in self._sections:
+                            if prt.name != 'item':
                                 continue
                             if not did_write_part:
                                 self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
@@ -179,7 +210,7 @@ class ControlIo():
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
                             self._md_file.new_header(level=2, title=f'Part {part_label}')
-                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT} {prt.id}')
+                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             self._insert_existing_text(part_label, existing_text)
                             self._md_file.new_paragraph()
         if not did_write_part:
@@ -270,7 +301,7 @@ class ControlIo():
             return {}
         ii = 0
         lines: List[str] = []
-        with control_file.open('r') as f:
+        with control_file.open('r', encoding=const.FILE_ENCODING) as f:
             raw_lines = f.readlines()
         lines = [line.strip('\r\n') for line in raw_lines]
 
@@ -330,9 +361,7 @@ class ControlIo():
 
         self._add_control_description(control, group_title)
 
-        if self._sections is not None:
-            for section_tuple in self._sections.items():
-                self._add_control_section(control, section_tuple)
+        self._add_sections(control)
 
         self._add_response(control, existing_text)
 
