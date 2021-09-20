@@ -123,3 +123,13 @@ def test_valid_drawio_second_tab(
     draw_io = DrawIOMetadataValidator(template_file, must_be_first_tab)
     status = draw_io.validate(sample_file)
     assert metadata_valid == status
+
+
+def test_restructure_metadata():
+    """Test Restructuring metadata."""
+    drawio_file = pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio')
+    comparison_metadata = {'test': 'value', 'nested': {'test': 'value', 'extra': 'value', 'nested': {'test': 'value'}}}
+    draw_io = DrawIO(drawio_file)
+    metadata_flat = draw_io.get_metadata()[0]
+    metadata_structured = draw_io.restructure_metadata(metadata_flat)
+    assert comparison_metadata == metadata_structured

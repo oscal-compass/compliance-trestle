@@ -361,7 +361,7 @@ class ResultsMgr():
         props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self.ns))
         props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self.ns))
         props.append(Property(name='idref', value=rule_use.idref, ns=self.ns, class_='scc_goal_description'))
-        props.append(Property(name='idref', value=rule_use.idref, ns=self.ns, class_='scc_check_id_name'))
+        props.append(Property(name='idref', value=rule_use.idref, ns=self.ns, class_='scc_check_name_id'))
         props.append(Property(name='version', value=rule_use.version, ns=self.ns, class_='scc_check_version'))
         props.append(Property(name='result', value=rule_use.result, ns=self.ns, class_='scc_result'))
         props.append(Property(name='time', value=rule_use.time, ns=self.ns, class_='scc_timestamp'))

@@ -180,7 +180,7 @@ class ElementPath:
         # Even though awkward use chain of models.
         if element_str not in const.MODEL_TYPE_LIST:
             raise TrestleError(f'{element_str} is not a top level model (e.g. catalog, profile)')
-        model_package = const.MODEL_TYPE_TO_MODEL_MODULE[const.MODEL_TYPE_TO_MODEL_DIR[element_str]]
+        model_package = const.MODEL_TYPE_TO_MODEL_MODULE[element_str]
         object_type, _ = utils.get_root_model(model_package)
         object_type = cast(Type[common_types.TopLevelOscalModel], object_type)
         return object_type

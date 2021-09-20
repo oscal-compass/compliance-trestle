@@ -66,7 +66,7 @@ def is_valid_project_model_path(path: pathlib.Path) -> bool:
         return False
 
     relative_path = path.relative_to(str(root_path))
-    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_TYPE_TO_MODEL_MODULE:
+    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_DIR_LIST:
         return False
     return True
 
@@ -107,13 +107,13 @@ def get_relative_model_type(relative_path: pathlib.Path) -> Tuple[Type[OscalBase
     """
     if len(relative_path.parts) < 2:
         raise TrestleError('Insufficient path length to be a valid relative path w.r.t Trestle project root directory.')
-    project_type = relative_path.parts[0]
+    model_dir = relative_path.parts[0]
     model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
 
-    try:
-        module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
-    except KeyError:
-        raise TrestleError('No valid trestle model type directory (e.g. catalogs) found.')
+    if model_dir in const.MODEL_DIR_LIST:
+        module_name = const.MODEL_DIR_TO_MODEL_MODULE[model_dir]
+    else:
+        raise TrestleError(f'No valid trestle model type directory (e.g. catalogs) found for {model_dir}.')
 
     model_type, model_alias = utils.get_root_model(module_name)
     full_alias = model_alias
@@ -447,3 +447,31 @@ def allowed_task_name(name: str) -> bool:
         logger.error('Task name cannot contain __global__')
         return False
     return True
+
+
+def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path:
+    """Resolve a candidate file path relative to a provided cwd.
+
+    This is to circumvent bad behaviour for resolve on windows platforms where the path must exist.
+
+    If a relative dir is passed it presumes the directory is relative to the PROVIDED cwd.
+    If relative expansions exist (e.g. ../) the final result must still be within the cwd.
+
+    If an absolute path is provided it tests whether the path is within the cwd or not.
+
+    """
+    # Expand user first if applicable.
+    candidate = candidate.expanduser()
+
+    if not cwd.is_absolute():
+        raise TrestleError('Error handling current working directory. CWD is expected to be absolute.')
+
+    if not candidate.is_absolute():
+        new = pathlib.Path(cwd / candidate).resolve()
+    else:
+        new = candidate.resolve()
+    try:
+        new.relative_to(cwd)
+    except ValueError:
+        raise TrestleError(f'Provided dir {candidate} is not relative to {cwd}')
+    return new

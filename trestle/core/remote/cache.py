@@ -27,6 +27,7 @@ import pathlib
 import platform
 import re
 from abc import ABC, abstractmethod
+from enum import Enum
 from io import StringIO
 from typing import Any, Dict, Tuple, Type
 from urllib import parse
@@ -62,7 +63,6 @@ class FetcherBase(ABC):
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
         self._expiration_seconds = const.DAY_SECONDS
-        self._in_trestle = False
 
     @staticmethod
     def _time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
@@ -110,11 +110,15 @@ class FetcherBase(ABC):
         self._update_cache(force_update)
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
         try:
-            return fs.load_file(self._cached_object_path)
-        except Exception as e:
-            logger.error(f'Cannot fs.load_file {self._cached_object_path}')
-            logger.debug(e)
-            raise TrestleError(f'Cache get failure for {self._uri}') from e
+            raw_data = fs.load_file(self._cached_object_path)
+        except Exception:
+            try:
+                raw_data = fs.load_file(self._cached_object_path)
+            except Exception as e:
+                logger.error(f'Cannot fs.load_file {self._cached_object_path}')
+                logger.debug(e)
+                raise TrestleError(f'Cache get failure for {self._uri}') from e
+        return raw_data
 
     def get_oscal_with_model_type(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model.
@@ -136,10 +140,12 @@ class FetcherBase(ABC):
             raise TrestleError(f'get_oscal failure for {self._uri}')
 
     def get_oscal(self, force_update=False) -> Tuple[OscalBaseModel, str]:
-        """Retrieve the cached file without knowing its model type."""
+        """Retrieve the cached file and model name without knowing its model type."""
         model_dict = self.get_raw(force_update)
         root_key = parser.root_key(model_dict)
         model_name = parser.to_full_model_name(root_key)
+        if model_name is None:
+            raise TrestleError(f'Failed cache read of non top level model with root_key {root_key}')
         return parser.parse_dict(model_dict[root_key], model_name), root_key
 
 
@@ -172,26 +178,27 @@ class LocalFetcher(FetcherBase):
             # if it has a drive letter don't add / to front
             uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
         elif uri.startswith(const.TRESTLE_HREF_HEADING):
-            self._in_trestle = True
             uri = str(trestle_root / uri[len(const.TRESTLE_HREF_HEADING):])
             self._abs_path = pathlib.Path(uri).resolve()
             self._cached_object_path = self._abs_path
             return
 
-        # now the URI should be either unix / style or windows C:/ style.  Neither can be relative
+        # now the URI should be either unix / style or windows C:/ style.  It may be relative.
+
+        if ':' in uri and platform.system() != const.WINDOWS_PLATFORM_STR:
+            raise TrestleError(f'Cannot have : in uri on non-Windows system unless ftps, https or trestle: {uri}')
 
         # if it has a drive letter but no / after it, it is not absolute
         if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri):
             if platform.system() != const.WINDOWS_PLATFORM_STR:
                 raise TrestleError(f'Cannot cache Windows paths on non-Windows system. {uri}')
-            if not re.match(const.WINDOWS_DRIVE_URI_REGEX, uri):
-                raise TrestleError(f'Windows URI must include DriveLetter: followed by one slash: {uri}')
 
         # store the abs path to the file for fetching
         # if this is a windows file it will have a drive letter at start after resolve
-        self._abs_path = pathlib.Path(uri).resolve()
-
-        # FIXME confirm that we should not error on loading from within trestle
+        try:
+            self._abs_path = pathlib.Path(uri).resolve()
+        except Exception:
+            raise TrestleError(f'The uri provided is invalid or unresolvable as a file path: {uri}')
 
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path
@@ -306,7 +313,7 @@ class HTTPSFetcher(FetcherBase):
             except Exception as err:
                 raise TrestleError(f'Cache update failure reading response via HTTPS: {self._url} ({err})')
             else:
-                self._cached_object_path.write_text(result)
+                self._cached_object_path.write_text(result, encoding=const.FILE_ENCODING)
         else:
             raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
 
@@ -321,14 +328,22 @@ class SFTPFetcher(FetcherBase):
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
         """
+        logger.debug(f'initialize SFTPFetcher for uri {uri}')
         super().__init__(trestle_root, uri)
         # Is this a valid URI, however? Username and password are optional, of course.
-        u = parse.urlparse(self._uri)
+        try:
+            u = parse.urlparse(self._uri)
+        except Exception as e:
+            logger.warning(f'SFTP fetcher unable to parse uri {self._uri} error {e}')
+            raise TrestleError(f'Unable to parse malformed url {self._uri} error {e}')
+        logger.debug(f'SFTP fetcher with parsed uri {u}')
         if not u.hostname:
-            logger.error(f'Malformed URI, cannot parse hostname in URL {self._uri}')
+            logger.debug('SFTP fetcher uri missing hostname')
+            logger.warning(f'Malformed URI, cannot parse hostname in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing hostname {self._uri}')
         if not u.path:
-            logger.error(f'Malformed URI, cannot parse path in URL {self._uri}')
+            logger.debug('SFTP fetcher uri missing path')
+            logger.warning(f'Malformed URI, cannot parse path in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
 
         sftp_cached_dir = self._trestle_cache_path / u.hostname
@@ -399,9 +414,53 @@ class SFTPFetcher(FetcherBase):
 class FetcherFactory:
     """Factory method for creating a fetcher."""
 
+    class UriType(Enum):
+        """Specify types of URI."""
+
+        LOCAL_FILE = 1
+
+        SFTP = 2
+
+        HTTPS = 3
+
+        TRESTLE = 4
+
+    @staticmethod
+    def _get_uri_type(uri: str) -> UriType:
+        """Determine the type of uri."""
+        if uri.startswith(const.SFTP_URI):
+            return FetcherFactory.UriType.SFTP
+        elif uri.startswith(const.HTTPS_URI):
+            return FetcherFactory.UriType.HTTPS
+        elif uri.startswith(const.TRESTLE_HREF_HEADING):
+            return FetcherFactory.UriType.TRESTLE
+        # if we land here, assume it is a local file and may have relative path
+        # but it at least needs a filename with suffix
+        # the most minimal allowed uri is of the form a.yml
+        uri_clean = uri.strip()
+        uri_len = len(uri_clean)
+        # at least 5 chars and ending with dot followed by at least 3 chars
+        if uri_len > 4 and 0 < uri_clean.rfind('.') < uri_len - 3:
+            return FetcherFactory.UriType.LOCAL_FILE
+        raise TrestleError(f'Invalid uri not recognized as a readable file path with extension: {uri}')
+
+    @staticmethod
+    def in_trestle_directory(trestle_root: pathlib.Path, uri: str) -> bool:
+        """Check if in trestle directory when uri may not be a file path."""
+        uri_type = FetcherFactory._get_uri_type(uri)
+        if uri_type == FetcherFactory.UriType.TRESTLE:
+            return True
+        if uri_type != FetcherFactory.UriType.LOCAL_FILE:
+            return False
+        try:
+            pathlib.Path(uri).resolve().relative_to(str(trestle_root.resolve()))
+        except Exception:
+            return False
+        return True
+
     @classmethod
     def get_fetcher(cls, trestle_root: pathlib.Path, uri: str) -> FetcherBase:
-        """Return an instantiated fetcher object based on the URI.
+        """Return an instantiated fetcher object based on the type of URI.
 
         Args:
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
@@ -410,21 +469,11 @@ class FetcherFactory:
         Returns:
             fetcher object for the given URI.
         """
-        # Basic correctness test
-        if len(uri) <= 9 or ('/' not in uri and re.match(const.WINDOWS_DRIVE_URI_REGEX, uri) is None):
-            raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
-
-        if uri[0] == '/' or uri.startswith(const.FILE_URI):
-            # Note assumption here is that relative paths are not yet supported
-            # so these are not allowed for just yet: uri[0:3] == '../' or uri[0:2] == './'
-            return LocalFetcher(trestle_root, uri)
-        elif uri.startswith(const.SFTP_URI):
-            return SFTPFetcher(trestle_root, uri)
-        elif uri.startswith(const.HTTPS_URI):
-            return HTTPSFetcher(trestle_root, uri)
-        elif uri.startswith(const.TRESTLE_HREF_HEADING):
-            return LocalFetcher(trestle_root, uri)
-        elif re.match(const.WINDOWS_DRIVE_URI_REGEX, uri) is not None:
-            return LocalFetcher(trestle_root, uri)
-        else:
-            raise TrestleError(f'Unable to fetch URI: {uri} as the uri did not match a suppported format.')
+        fetcher_dict = {
+            FetcherFactory.UriType.LOCAL_FILE: LocalFetcher,
+            FetcherFactory.UriType.SFTP: SFTPFetcher,
+            FetcherFactory.UriType.HTTPS: HTTPSFetcher,
+            FetcherFactory.UriType.TRESTLE: LocalFetcher,
+        }
+        uri_type = cls._get_uri_type(uri)
+        return fetcher_dict[uri_type](trestle_root, uri)

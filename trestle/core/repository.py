@@ -31,7 +31,7 @@ from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
-from trestle.core.models.elements import Element
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.utils import classname_to_alias
@@ -147,42 +147,25 @@ class ManagedOSCAL:
     def merge(self, elements: List[str], parent_model_dir: pathlib.Path = None) -> bool:
         """Merge OSCAL elements in repository.
 
-        The parent_model_dir specifies the parent model direcotry in which to merge realtive to main model dir.
+        The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir.
         For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog'
         dir that contains the 'metadata.json' file or the 'metadata' directory
         """
         logger.debug(f'Merging model {self.model_name}, parent dir {parent_model_dir}.')
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = True
-        else:
-            verbose = False
-
-        elems = ''
-        first = True
-        for elem in elements:
-            if first:
-                elems = elem
-                first = False
-            else:
-                elems = elems + ',' + elem
-        args = argparse.Namespace(trestle_root=self.root_dir, element=elems, verbose=verbose)
         if parent_model_dir is None:
-            change_dir = self.model_dir
+            effective_cwd = self.model_dir
         else:
-            change_dir = self.model_dir / parent_model_dir
+            effective_cwd = self.model_dir / parent_model_dir
 
-        success = False
-        cwd = pathlib.Path.cwd()
+        success = True
         try:
-            # change the cwd to parent model dir for merge command
-            os.chdir(change_dir)
-            ret = mergecmd.MergeCmd()._run(args)
-            if ret == 0:
-                success = True
+            for elem in elements:
+                plan = mergecmd.MergeCmd.merge(effective_cwd, ElementPath(elem), self.root_dir)
+                plan.simulate()
+                plan.execute()
+
         except Exception as e:
             raise TrestleError(f'Error in merging model: {e}')
-        finally:
-            os.chdir(cwd)  # revert back the cwd
 
         logger.debug(f'Model {self.model_name} merged successfully.')
         return success

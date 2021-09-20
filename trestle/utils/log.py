@@ -64,6 +64,7 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     # create formatters
     error_formatter = logging.Formatter('%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s')
     console_debug_handler.setFormatter(error_formatter)
+    console_out_handler.setFormatter(error_formatter)
     console_error_handler.setFormatter(error_formatter)
     # add ch to logger
     _logger.addHandler(console_out_handler)

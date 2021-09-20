@@ -14,11 +14,12 @@ The examples shown will work for linux and mac, but Windows will require the fol
 <li>use backslashes `\` for file paths (this is optional in most cases)
 <li>use copy instead of cp (unless you have cp installed)
 <li>use md instead of mkdir (unless you have mkdir installed)
+<li>quotes (') are often not needed unless the text includes spaces, but if quotes are needed they should be double quotes (")
 </ul>
 
 Commands are shown without prompts so they are easy to cut and paste, and responses by trestle are shown with >>> at the start of the line.  In actual usage the >>> would not appear.
 
-Be sure to include the quotes (' ') as shown in the examples, e.g. `merge -e 'catalog.*'`
+Be sure to include the quotes (' ') as shown in the examples, e.g. `merge -e 'catalog.*'` \[On windows you should probably use double quotes (") as needed.\]
 
 In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.
 
@@ -49,22 +50,22 @@ trestle init
 
 ## Step 2: Import a catalog from the trestle sample data directory into your trestle workspace
 
-First download a catalog from the [NIST OSCAL github site](https://github.com/usnistgov/OSCAL).  The specific catalog is [NIST_SP-800-53_rev5_catalog.json](https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
+For this tutorial we will use a catalog file from NIST, but we first must `import` it into the trestle workspace.  This can be done either by first downloading the file locally and then importing it, or you can download it directly using its url address.
 
-Save that file on your disk at a location of your choice outside of the trestle directory, and call it `catalog.json`.  The file is approximately 3 MB in size.
+We will import the file directly from the [NIST OSCAL github site](https://github.com/usnistgov/OSCAL).  The specific catalog is [NIST_SP-800-53_rev5_catalog.json](https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
 
-Files should be pulled into your trestle workspace using the command `import`, which will check the
+Import the file from the url with the following command:
+
+```
+trestle import -f https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json -o mycatalog
+```
+
+As a reminder, you could also have imported the file from a local directory on your file system, or an sftp:// address.  But the file must first be imported to the trestle workspace in order for it to be directly manipulated by trestle as in this tutorial.
+
+The `import` command will also check the
 validity of the file including the presence of any duplicate uuid's.  If the file is manually created
 please be sure it conforms with the current OSCAL schema (OSCAL version 1.0.0) and has no defined uuid's that are duplicates.
 If there are any errors the Import will fail and the file must be corrected.
-
-Import the file from the trestle root directory with
-
-```
-trestle import -f MY_DOWNLOAD_DIRECTORY/catalog.json -o mycatalog
-```
-
-*Here MY_DOWNLOAD_DIRECTORY corresponds to the directory in which you downloaded the catalog.json file.*  On Windows platforms you can use either a forward (/)or backward slash (\\) in the path of the file you are importing.
 
 <br>
 <details>

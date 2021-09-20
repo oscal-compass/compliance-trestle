@@ -150,18 +150,16 @@ class SplitCmd(CommandPlusDocs):
                 current_path = file_path_dict[key]
                 file_path_dict[key] = f'{current_path},{path}'
 
-        split_command = SplitCmd()
-
         for raw_file_name, element_path in file_path_dict.items():
-            file_path = pathlib.Path(effective_cwd / raw_file_name).resolve()
+            file_path = fs.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
+            # this makes assumptions that the path is relative.
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
                 return 1
             content_type = FileContentType.to_content_type(file_path.suffix)
 
             # find the base directory of the file
-            file_absolute_path = pathlib.Path(file_path)
-            base_dir = file_absolute_path.parent
+            base_dir = file_path.parent
             model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
@@ -175,16 +173,16 @@ class SplitCmd(CommandPlusDocs):
             # use contextual mode to parse
 
             element_paths: List[ElementPath] = cmd_utils.parse_element_args(
-                model, element_path.split(','), effective_cwd.relative_to(trestle_root)
+                model, element_path.split(','), base_dir.relative_to(trestle_root)
             )
 
             # analyze the split tree and determine which aliases should be stripped from each file
-            aliases_to_strip = split_command.find_aliases_to_strip(element_paths)
+            aliases_to_strip = cls.find_aliases_to_strip(element_paths)
 
             # need the file name relative to the base directory
             file_name_no_path = str(file_path.name)
 
-            split_plan = split_command.split_model(
+            split_plan = cls.split_model(
                 model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip
             )
 
@@ -475,7 +473,8 @@ class SplitCmd(CommandPlusDocs):
 
         return split_plan
 
-    def find_aliases_to_strip(self, element_paths: List[ElementPath]) -> Dict[str, AliasTracker]:
+    @classmethod
+    def find_aliases_to_strip(cls, element_paths: List[ElementPath]) -> Dict[str, AliasTracker]:
         """Find list of aliases that need to be stripped as each element written out."""
         # A given path may be present in several split actions
         # Need to determine all parts stripped at each node in order to strip them all and
