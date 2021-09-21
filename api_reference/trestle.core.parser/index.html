@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.parser/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -2292,17 +2292,13 @@ has been loaded into memory using json loads or similar and passed as a dict.</p
 <span class="sd">    Args:</span>
 <span class="sd">        root_key: root key such as &#39;system-security-plan&#39; from a top level OSCAL model.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_DIR</span><span class="p">[</span><span class="n">root_key</span><span class="p">]]</span>
-        <span class="c1"># This method has been simplified to rely on the correct behaviour of the dicts above.</span>
-        <span class="n">class_name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">alias_to_classname</span><span class="p">(</span><span class="n">root_key</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">root_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">root_key</span><span class="si">}</span><span class="s1"> is not a top level model name.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Module / Class not found for root_key </span><span class="si">{</span><span class="n">root_key</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s1">. Most likely as not a top level model.&#39;</span><span class="p">)</span>
-        <span class="k">pass</span>
-
-    <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">[</span><span class="n">root_key</span><span class="p">]</span>
+    <span class="n">class_name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">alias_to_classname</span><span class="p">(</span><span class="n">root_key</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">&#39;</span>
 </code></pre></div>
         </details>
     </div>
@@ -2391,10 +2387,10 @@ has been loaded into memory using json loads or similar and passed as a dict.</p
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

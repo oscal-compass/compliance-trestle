@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.load_distributed/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -1986,7 +1986,7 @@
 
 
 <h4 class="doc doc-heading" id="trestle.utils.load_distributed.load_distributed">
-<code class="highlight language-python"><span class="n">load_distributed</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">collection_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">load_distributed</span><span class="p">(</span><span class="n">abs_path</span><span class="p">,</span> <span class="n">abs_trestle_root</span><span class="p">,</span> <span class="n">collection_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.utils.load_distributed.load_distributed" title="Permanent link">¤</a></h4>
@@ -2008,13 +2008,13 @@
   </thead>
   <tbody>
       <tr>
-        <td><code>file_path</code></td>
+        <td><code>abs_path</code></td>
         <td><code>Path</code></td>
         <td><p>The path to the file/directory to be loaded.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
-        <td><code>trestle_root</code></td>
+        <td><code>abs_trestle_root</code></td>
         <td><code>Path</code></td>
         <td><p>The trestle project root directory.</p></td>
         <td><em>required</em></td>
@@ -2049,8 +2049,8 @@ the decomposed models loaded recursively.</p></td>
         <details class="quote">
           <summary>Source code in <code>trestle/utils/load_distributed.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">load_distributed</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">trestle_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">abs_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">abs_trestle_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">collection_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OscalBaseModel</span><span class="p">]]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -2059,8 +2059,8 @@ the decomposed models loaded recursively.</p></td>
 <span class="sd">    If the model is decomposed/split/distributed,the decomposed models are loaded recursively.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        file_path : The path to the file/directory to be loaded.</span>
-<span class="sd">        trestle_root: The trestle project root directory.</span>
+<span class="sd">        abs_path: The path to the file/directory to be loaded.</span>
+<span class="sd">        abs_trestle_root: The trestle project root directory.</span>
 <span class="sd">        collection_type: The type of collection model, if it is a collection model.</span>
 <span class="sd">            typing.List if the model is a list, typing.Dict if the model is additionalProperty.</span>
 <span class="sd">            Defaults to None.</span>
@@ -2071,8 +2071,6 @@ the decomposed models loaded recursively.</p></td>
 <span class="sd">        the decomposed models loaded recursively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># if trying to load file that does not exist, load path instead</span>
-    <span class="n">abs_path</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="n">abs_trestle_root</span> <span class="o">=</span> <span class="n">trestle_root</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">abs_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">abs_path</span> <span class="o">=</span> <span class="n">abs_path</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="n">abs_path</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
 
@@ -2243,10 +2241,10 @@ the decomposed models loaded recursively.</p></td>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

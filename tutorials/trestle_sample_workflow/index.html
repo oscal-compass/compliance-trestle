@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/trestle_sample_workflow/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -727,7 +727,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../../api_reference/trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -2025,10 +2025,11 @@
 <li>use backslashes `\` for file paths (this is optional in most cases)
 <li>use copy instead of cp (unless you have cp installed)
 <li>use md instead of mkdir (unless you have mkdir installed)
+<li>quotes (') are often not needed unless the text includes spaces, but if quotes are needed they should be double quotes (")
 </ul>
 
 <p>Commands are shown without prompts so they are easy to cut and paste, and responses by trestle are shown with &gt;&gt;&gt; at the start of the line.  In actual usage the &gt;&gt;&gt; would not appear.</p>
-<p>Be sure to include the quotes (' ') as shown in the examples, e.g. <code>merge -e 'catalog.*'</code></p>
+<p>Be sure to include the quotes (' ') as shown in the examples, e.g. <code>merge -e 'catalog.*'</code> [On windows you should probably use double quotes (") as needed.]</p>
 <p>In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.</p>
 <p><br></p>
 <details>
@@ -2049,16 +2050,16 @@ trestle init
 &gt;&gt;&gt; Initialized trestle project successfully in [user_path]/my_workspace
 </code></pre></div>
 <h2 id="step-2-import-a-catalog-from-the-trestle-sample-data-directory-into-your-trestle-workspace">Step 2: Import a catalog from the trestle sample data directory into your trestle workspace<a class="headerlink" href="#step-2-import-a-catalog-from-the-trestle-sample-data-directory-into-your-trestle-workspace" title="Permanent link">¤</a></h2>
-<p>First download a catalog from the <a href="https://github.com/usnistgov/OSCAL">NIST OSCAL github site</a>.  The specific catalog is <a href="https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json">NIST_SP-800-53_rev5_catalog.json</a></p>
-<p>Save that file on your disk at a location of your choice outside of the trestle directory, and call it <code>catalog.json</code>.  The file is approximately 3 MB in size.</p>
-<p>Files should be pulled into your trestle workspace using the command <code>import</code>, which will check the
+<p>For this tutorial we will use a catalog file from NIST, but we first must <code>import</code> it into the trestle workspace.  This can be done either by first downloading the file locally and then importing it, or you can download it directly using its url address.</p>
+<p>We will import the file directly from the <a href="https://github.com/usnistgov/OSCAL">NIST OSCAL github site</a>.  The specific catalog is <a href="https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json">NIST_SP-800-53_rev5_catalog.json</a></p>
+<p>Import the file from the url with the following command:</p>
+<div class="highlight"><pre><span></span><code>trestle import -f https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json -o mycatalog
+</code></pre></div>
+<p>As a reminder, you could also have imported the file from a local directory on your file system, or an sftp:// address.  But the file must first be imported to the trestle workspace in order for it to be directly manipulated by trestle as in this tutorial.</p>
+<p>The <code>import</code> command will also check the
 validity of the file including the presence of any duplicate uuid's.  If the file is manually created
 please be sure it conforms with the current OSCAL schema (OSCAL version 1.0.0) and has no defined uuid's that are duplicates.
 If there are any errors the Import will fail and the file must be corrected.</p>
-<p>Import the file from the trestle root directory with</p>
-<div class="highlight"><pre><span></span><code>trestle import -f MY_DOWNLOAD_DIRECTORY/catalog.json -o mycatalog
-</code></pre></div>
-<p><em>Here MY_DOWNLOAD_DIRECTORY corresponds to the directory in which you downloaded the catalog.json file.</em>  On Windows platforms you can use either a forward (/)or backward slash (\) in the path of the file you are importing.</p>
 <p><br></p>
 <details>
 <summary>Your initial workspace will look like this</summary>
@@ -2703,10 +2704,10 @@ trestle merge -e &#39;catalog.*&#39;
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

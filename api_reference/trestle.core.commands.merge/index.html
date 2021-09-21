@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.merge/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -1053,6 +1053,13 @@
           <li class="md-nav__item">
   <a href="#trestle.core.commands.merge.MergeCmd.merge" class="md-nav__link">
     merge()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.merge.MergeCmd.perform_all_merges" class="md-nav__link">
+    perform_all_merges()
   </a>
   
 </li>
@@ -1998,6 +2005,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.merge.MergeCmd.perform_all_merges" class="md-nav__link">
+    perform_all_merges()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2131,7 +2145,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.commands.merge.MergeCmd.merge">
-<code class="highlight language-python"><span class="n">merge</span><span class="p">(</span><span class="n">element_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">merge</span><span class="p">(</span><span class="n">effective_cwd</span><span class="p">,</span> <span class="n">element_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
@@ -2147,7 +2161,7 @@
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/merge.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plan</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">effective_cwd</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Plan</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Merge operations.</span>
 
 <span class="sd">    It returns a plan for the operation</span>
@@ -2166,22 +2180,23 @@
     <span class="c1"># Destination model filetype</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;merge destination model alias: </span><span class="si">{</span><span class="n">destination_model_alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;merge getting contextual file type from cwd&#39;</span><span class="p">)</span>
-        <span class="n">file_type</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_contextual_file_type</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;merge getting contextual file type effective working directory&#39;</span><span class="p">)</span>
+        <span class="n">file_type</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_contextual_file_type</span><span class="p">(</span><span class="n">effective_cwd</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;contextual file type is </span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
     <span class="n">file_ext</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">file_type</span><span class="p">)</span>
     <span class="c1"># Destination model filename</span>
-    <span class="n">destination_model_filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">destination_model_alias</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">)</span><span class="si">}{</span><span class="n">file_ext</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">destination_model_filename</span> <span class="o">=</span> <span class="n">destination_model_filename</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;destination model filename is </span><span class="si">{</span><span class="n">destination_model_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">destination_model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_model_type</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
+    <span class="n">destination_model_path</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">effective_cwd</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">destination_model_alias</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">)</span><span class="si">}{</span><span class="n">file_ext</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;destination model filename is </span><span class="si">{</span><span class="n">destination_model_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">destination_model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_model_type</span><span class="p">(</span><span class="n">destination_model_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
 
     <span class="n">destination_model_object</span><span class="p">:</span> <span class="n">OscalBaseModel</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">destination_model_filename</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">destination_model_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;dest filename exists so read it&#39;</span><span class="p">)</span>
-        <span class="n">destination_model_object</span> <span class="o">=</span> <span class="n">destination_model_type</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="p">)</span>
+        <span class="n">destination_model_object</span> <span class="o">=</span> <span class="n">destination_model_type</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">destination_model_path</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;2. If target is wildcard, load distributed destination model and replace destination model.&quot;&quot;&quot;</span>
     <span class="c1"># Handle WILDCARD &#39;*&#39; match. Return plan to load the destination model, with its distributed attributes</span>
     <span class="k">if</span> <span class="n">target_model_alias</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
@@ -2191,14 +2206,15 @@
             <span class="n">collection_type</span> <span class="o">=</span> <span class="n">destination_model_type</span><span class="o">.</span><span class="n">get_collection_type</span><span class="p">()</span>
 
         <span class="n">merged_model_type</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">merged_model_instance</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span>
-            <span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">collection_type</span><span class="p">)</span>
+            <span class="n">destination_model_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">collection_type</span><span class="p">)</span>
         <span class="n">plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
-        <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_path</span><span class="p">,</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">wrapper_alias</span> <span class="o">=</span> <span class="n">destination_model_alias</span>
         <span class="n">write_destination_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span>
-            <span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">Element</span><span class="p">(</span><span class="n">merged_model_instance</span><span class="p">,</span> <span class="n">wrapper_alias</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="n">file_type</span>
+            <span class="n">destination_model_path</span><span class="p">,</span> <span class="n">Element</span><span class="p">(</span><span class="n">merged_model_instance</span><span class="p">,</span> <span class="n">wrapper_alias</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="n">file_type</span>
         <span class="p">)</span>
-        <span class="n">delete_target_action</span> <span class="o">=</span> <span class="n">RemovePathAction</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">destination_model_alias</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+        <span class="n">remove_path_folder</span> <span class="o">=</span> <span class="n">effective_cwd</span> <span class="o">/</span> <span class="n">destination_model_alias</span>
+        <span class="n">delete_target_action</span> <span class="o">=</span> <span class="n">RemovePathAction</span><span class="p">(</span><span class="n">remove_path_folder</span><span class="p">)</span>
         <span class="n">plan</span><span class="p">:</span> <span class="n">Plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
         <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">reset_destination_action</span><span class="p">)</span>
         <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">write_destination_action</span><span class="p">)</span>
@@ -2207,7 +2223,7 @@
 
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get dest model with fields stripped: </span><span class="si">{</span><span class="n">target_model_alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="c1"># Get destination model without the target field stripped</span>
-    <span class="n">merged_model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_model_type</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span>
+    <span class="n">merged_model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_model_type</span><span class="p">(</span><span class="n">destination_model_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span>
                                                       <span class="n">aliases_not_to_be_stripped</span><span class="o">=</span><span class="p">[</span><span class="n">target_model_alias</span><span class="p">])</span>
     <span class="sd">&quot;&quot;&quot;3. Load Target model. Target model could be stripped&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -2217,7 +2233,7 @@
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Target model not found. Possibly merge of the elements not allowed at this point. </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
-    <span class="n">target_model_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span> <span class="o">/</span> <span class="n">destination_model_alias</span>
+    <span class="n">target_model_path</span> <span class="o">=</span> <span class="n">effective_cwd</span> <span class="o">/</span> <span class="n">destination_model_alias</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="sa">f</span><span class="s1">&#39;look for target model path </span><span class="si">{</span><span class="n">target_model_path</span><span class="si">}</span><span class="s1"> at dest alias </span><span class="si">{</span><span class="n">destination_model_alias</span><span class="si">}</span><span class="s1"> rel to cwd&#39;</span>
     <span class="p">)</span>
@@ -2258,11 +2274,11 @@
     <span class="n">merged_model_object</span> <span class="o">=</span> <span class="n">merged_model_type</span><span class="p">(</span><span class="o">**</span><span class="n">merged_dict</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
     <span class="n">merged_destination_element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">merged_model_object</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;5. Create action  plan&quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create path action clear content: </span><span class="si">{</span><span class="n">destination_model_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;write file action </span><span class="si">{</span><span class="n">destination_model_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create path action clear content: </span><span class="si">{</span><span class="n">destination_model_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_path</span><span class="p">,</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;write file action </span><span class="si">{</span><span class="n">destination_model_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">write_destination_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span>
-        <span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">merged_destination_element</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="n">file_type</span>
+        <span class="n">destination_model_path</span><span class="p">,</span> <span class="n">merged_destination_element</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="n">file_type</span>
     <span class="p">)</span>
     <span class="c1"># FIXME this will delete metadata.json but it will leave metadata/roles/roles.*</span>
     <span class="c1"># need to clean up all lower dirs</span>
@@ -2277,6 +2293,46 @@
     <span class="c1"># TODO: Destination model directory is empty or already merged? Then clean up.</span>
 
     <span class="k">return</span> <span class="n">plan</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.commands.merge.MergeCmd.perform_all_merges">
+<code class="highlight language-python"><span class="n">perform_all_merges</span><span class="p">(</span><span class="n">element_paths</span><span class="p">,</span> <span class="n">effective_cwd</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.commands.merge.MergeCmd.perform_all_merges" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Run all merges over a list of element paths.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/merge.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">perform_all_merges</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">effective_cwd</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Run all merges over a list of element paths.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">element_path</span> <span class="ow">in</span> <span class="n">element_paths</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;merge </span><span class="si">{</span><span class="n">element_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">plan</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">effective_cwd</span><span class="p">,</span> <span class="n">ElementPath</span><span class="p">(</span><span class="n">element_path</span><span class="p">),</span> <span class="n">trestle_root</span><span class="p">)</span>
+            <span class="n">plan</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+            <span class="n">plan</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Merge failed: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">0</span>
 </code></pre></div>
         </details>
     </div>
@@ -2376,10 +2432,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

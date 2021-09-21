@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.fs/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -1666,6 +1666,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.fs.relative_resolve" class="md-nav__link">
+    relative_resolve()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.fs.should_ignore" class="md-nav__link">
     should_ignore()
   </a>
@@ -2200,6 +2207,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.fs.relative_resolve" class="md-nav__link">
+    relative_resolve()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.fs.should_ignore" class="md-nav__link">
     should_ignore()
   </a>
@@ -2662,13 +2676,13 @@ Alias of that oscal model.</p></td>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Insufficient path length to be a valid relative path w.r.t Trestle project root directory.&#39;</span><span class="p">)</span>
-    <span class="n">project_type</span> <span class="o">=</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">model_dir</span> <span class="o">=</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">model_relative_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="o">*</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>  <span class="c1"># catalogs, profiles, etc</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">module_name</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">[</span><span class="n">project_type</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;No valid trestle model type directory (e.g. catalogs) found.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">model_dir</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_DIR_LIST</span><span class="p">:</span>
+        <span class="n">module_name</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_DIR_TO_MODEL_MODULE</span><span class="p">[</span><span class="n">model_dir</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No valid trestle model type directory (e.g. catalogs) found for </span><span class="si">{</span><span class="n">model_dir</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
     <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_root_model</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
     <span class="n">full_alias</span> <span class="o">=</span> <span class="n">model_alias</span>
@@ -3120,7 +3134,7 @@ a parameter.</p>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="n">relative_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root_path</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_DIR_LIST</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span>
 </code></pre></div>
@@ -3259,6 +3273,60 @@ if a OSCAL object type is unknown but the context a user is in.</p>
 
 
 
+<h4 class="doc doc-heading" id="trestle.utils.fs.relative_resolve">
+<code class="highlight language-python"><span class="n">relative_resolve</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="n">cwd</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.utils.fs.relative_resolve" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Resolve a candidate file path relative to a provided cwd.</p>
+<p>This is to circumvent bad behaviour for resolve on windows platforms where the path must exist.</p>
+<p>If a relative dir is passed it presumes the directory is relative to the PROVIDED cwd.
+If relative expansions exist (e.g. ../) the final result must still be within the cwd.</p>
+<p>If an absolute path is provided it tests whether the path is within the cwd or not.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">relative_resolve</span><span class="p">(</span><span class="n">candidate</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">cwd</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Resolve a candidate file path relative to a provided cwd.</span>
+
+<span class="sd">    This is to circumvent bad behaviour for resolve on windows platforms where the path must exist.</span>
+
+<span class="sd">    If a relative dir is passed it presumes the directory is relative to the PROVIDED cwd.</span>
+<span class="sd">    If relative expansions exist (e.g. ../) the final result must still be within the cwd.</span>
+
+<span class="sd">    If an absolute path is provided it tests whether the path is within the cwd or not.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Expand user first if applicable.</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cwd</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Error handling current working directory. CWD is expected to be absolute.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">candidate</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">cwd</span> <span class="o">/</span> <span class="n">candidate</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Provided dir </span><span class="si">{</span><span class="n">candidate</span><span class="si">}</span><span class="s1"> is not relative to </span><span class="si">{</span><span class="n">cwd</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h4 class="doc doc-heading" id="trestle.utils.fs.should_ignore">
 <code class="highlight language-python"><span class="n">should_ignore</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
 
@@ -3362,10 +3430,10 @@ if a OSCAL object type is unknown but the context a user is in.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

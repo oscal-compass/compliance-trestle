@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/cli/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -829,7 +829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../api_reference/trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -2353,7 +2353,7 @@ files become completely unmanageable for users. To combat this, trestle can <cod
 This default or reference decomposition behaviour can be changed by modifying the rules in a <code>.trestle/config file</code>. These rules can be written as a sequence of <code>trestle split</code> commands.</p>
 <p>Passing <code>-iof</code> or <code>--include-optional-fields</code> will make <code>trestle create</code> generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).</p>
 <h2 id="trestle-import"><code>trestle import</code><a class="headerlink" href="#trestle-import" title="Permanent link">¤</a></h2>
-<p>This command allows users to import existing OSCAL files so that they can be managed using trestle. For example <code>trestle import -f existing_catalog.json -o my_existing_catalog</code> will import <code>existing_catalog.json</code> into a new folder under <code>catalogs</code> as shown below:</p>
+<p>This command allows users to import existing OSCAL files so that they can be managed using trestle. For example <code>trestle import -f /local_dir/existing_catalog.json -o my_existing_catalog</code> will import <code>existing_catalog.json</code> into a new folder under <code>catalogs</code> as shown below:</p>
 <div class="highlight"><pre><span></span><code>.
 ├── .trestle
 └── catalogs
@@ -2363,11 +2363,12 @@ This default or reference decomposition behaviour can be changed by modifying th
 </code></pre></div>
 <p>The following options are supported:</p>
 <ul>
-<li><code>-f or --file</code>: specifies the path of an existing OSCAL file.</li>
+<li><code>-f or --file</code>: specifies the path of an existing OSCAL file or URL to a remote file.</li>
 <li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
 </ul>
-<p>The import subcommand can determine the type of the model that is to be imported by the contents of the file.</p>
-<p>Finally, during the import process the file must pass the <code>validate</code> test described below for the command, <code>validate</code>.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.</p>
+<p>The <code>--file</code> option may be an absolute or relative path, and it may be a URL.  For details on allowed formats please see the documentation for the <code>href</code> command.  The file must be imported from outside the current trestle directory or an error will result.</p>
+<p>The import subcommand can determine the type of the model that is to be imported by the contents of the file.  But the file name must end with an allowed json or yaml extension: <code>.json, .yaml, .yml</code></p>
+<p>During the import process the file must pass the <code>validate</code> test described below for the command, <code>validate</code>.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.</p>
 <p>Once a file has been imported it can be split into a rich tree of sub-components as shown at the top of this document.  But the file must be imported first.</p>
 <h2 id="trestle-replicate"><code>trestle replicate</code><a class="headerlink" href="#trestle-replicate" title="Permanent link">¤</a></h2>
 <p>This command allows users to replicate a certain OSCAL model (file and directory structure). For example <code>trestle replicate catalog -i cat1 -o cat11</code> will replicate the Catalog cat1 into <code>cat11</code> directory. It can also regenerate all the UUIDs as required.</p>
@@ -3360,10 +3361,10 @@ th, td {
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

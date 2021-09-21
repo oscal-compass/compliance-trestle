@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.repository/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -2382,7 +2382,7 @@
     <div class="doc doc-contents ">
 
       <p>Merge OSCAL elements in repository.</p>
-<p>The parent_model_dir specifies the parent model direcotry in which to merge realtive to main model dir.
+<p>The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir.
 For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog'
 dir that contains the 'metadata.json' file or the 'metadata' directory</p>
 
@@ -2391,42 +2391,25 @@ dir that contains the 'metadata.json' file or the 'metadata' directory</p>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">parent_model_dir</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Merge OSCAL elements in repository.</span>
 
-<span class="sd">    The parent_model_dir specifies the parent model direcotry in which to merge realtive to main model dir.</span>
+<span class="sd">    The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir.</span>
 <span class="sd">    For example, if we have to merge &#39;metadata.*&#39; into &#39;metadata&#39; then parent_model_dir should be the &#39;catalog&#39;</span>
 <span class="sd">    dir that contains the &#39;metadata.json&#39; file or the &#39;metadata&#39; directory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Merging model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s1">, parent dir </span><span class="si">{</span><span class="n">parent_model_dir</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">logger</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="n">elems</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
-            <span class="n">elems</span> <span class="o">=</span> <span class="n">elem</span>
-            <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">elems</span> <span class="o">=</span> <span class="n">elems</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="n">elem</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">(</span><span class="n">trestle_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="n">elems</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">parent_model_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">change_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span>
+        <span class="n">effective_cwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">change_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span> <span class="o">/</span> <span class="n">parent_model_dir</span>
+        <span class="n">effective_cwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dir</span> <span class="o">/</span> <span class="n">parent_model_dir</span>
 
-    <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">cwd</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># change the cwd to parent model dir for merge command</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">change_dir</span><span class="p">)</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">mergecmd</span><span class="o">.</span><span class="n">MergeCmd</span><span class="p">()</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+            <span class="n">plan</span> <span class="o">=</span> <span class="n">mergecmd</span><span class="o">.</span><span class="n">MergeCmd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">effective_cwd</span><span class="p">,</span> <span class="n">ElementPath</span><span class="p">(</span><span class="n">elem</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span>
+            <span class="n">plan</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+            <span class="n">plan</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error in merging model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">cwd</span><span class="p">)</span>  <span class="c1"># revert back the cwd</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="si">}</span><span class="s1"> merged successfully.&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">success</span>
@@ -3078,10 +3061,10 @@ representing the specific model that can be used to perform operations on the sp
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

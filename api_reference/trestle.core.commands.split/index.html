@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.split/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco.md" class="md-nav__link">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
         profile_to_osco
       </a>
     </li>
@@ -2516,8 +2516,11 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.commands.split.SplitCmd.find_aliases_to_strip">
-<code class="highlight language-python"><span class="n">find_aliases_to_strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_paths</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">find_aliases_to_strip</span><span class="p">(</span><span class="n">element_paths</span><span class="p">)</span></code>
 
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
 
 <a class="headerlink" href="#trestle.core.commands.split.SplitCmd.find_aliases_to_strip" title="Permanent link">¤</a></h6>
 
@@ -2527,7 +2530,8 @@
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/split.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_aliases_to_strip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ElementPath</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AliasTracker</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">find_aliases_to_strip</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ElementPath</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AliasTracker</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Find list of aliases that need to be stripped as each element written out.&quot;&quot;&quot;</span>
     <span class="c1"># A given path may be present in several split actions</span>
     <span class="c1"># Need to determine all parts stripped at each node in order to strip them all and</span>
@@ -2669,18 +2673,16 @@
             <span class="n">current_path</span> <span class="o">=</span> <span class="n">file_path_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="n">file_path_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">current_path</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span>
 
-    <span class="n">split_command</span> <span class="o">=</span> <span class="n">SplitCmd</span><span class="p">()</span>
-
     <span class="k">for</span> <span class="n">raw_file_name</span><span class="p">,</span> <span class="n">element_path</span> <span class="ow">in</span> <span class="n">file_path_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">effective_cwd</span> <span class="o">/</span> <span class="n">raw_file_name</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">relative_resolve</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">raw_file_name</span><span class="p">),</span> <span class="n">effective_cwd</span><span class="p">)</span>
+        <span class="c1"># this makes assumptions that the path is relative.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1"> does not exist.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="n">content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
 
         <span class="c1"># find the base directory of the file</span>
-        <span class="n">file_absolute_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">file_absolute_path</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">parent</span>
         <span class="n">model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_model_type</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
 
         <span class="n">model</span><span class="p">:</span> <span class="n">OscalBaseModel</span> <span class="o">=</span> <span class="n">model_type</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
@@ -2694,16 +2696,16 @@
         <span class="c1"># use contextual mode to parse</span>
 
         <span class="n">element_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ElementPath</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmd_utils</span><span class="o">.</span><span class="n">parse_element_args</span><span class="p">(</span>
-            <span class="n">model</span><span class="p">,</span> <span class="n">element_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">),</span> <span class="n">effective_cwd</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">)</span>
+            <span class="n">model</span><span class="p">,</span> <span class="n">element_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">),</span> <span class="n">base_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="c1"># analyze the split tree and determine which aliases should be stripped from each file</span>
-        <span class="n">aliases_to_strip</span> <span class="o">=</span> <span class="n">split_command</span><span class="o">.</span><span class="n">find_aliases_to_strip</span><span class="p">(</span><span class="n">element_paths</span><span class="p">)</span>
+        <span class="n">aliases_to_strip</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">find_aliases_to_strip</span><span class="p">(</span><span class="n">element_paths</span><span class="p">)</span>
 
         <span class="c1"># need the file name relative to the base directory</span>
         <span class="n">file_name_no_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="n">split_plan</span> <span class="o">=</span> <span class="n">split_command</span><span class="o">.</span><span class="n">split_model</span><span class="p">(</span>
+        <span class="n">split_plan</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">split_model</span><span class="p">(</span>
             <span class="n">model</span><span class="p">,</span> <span class="n">element_paths</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">file_name_no_path</span><span class="p">,</span> <span class="n">aliases_to_strip</span>
         <span class="p">)</span>
 
@@ -3277,10 +3279,10 @@ trestle split -f component.yaml -e component-definition.components.<em>.control-
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>
