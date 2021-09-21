@@ -3,6 +3,15 @@
 
 <!--next-version-placeholder-->
 
+## v0.24.0 (2021-09-21)
+### Feature
+* Allow import to use the caching functionality to access external URLs (https/sftp etc) ([#718](https://github.com/IBM/compliance-trestle/issues/718)) ([`3527259`](https://github.com/IBM/compliance-trestle/commit/352725952687fde4627c97037e68f2238c638a04))
+
+### Fix
+* Update OCP compliance operator transform to use classes expected by IBM SCC.  ([`2068f57`](https://github.com/IBM/compliance-trestle/commit/2068f570ff6d47bb0348e630cd4dc01e2d90e4b5))
+*  Correct split merge pathing inconsistencies. ([#725](https://github.com/IBM/compliance-trestle/issues/725)) ([`1ea7f63`](https://github.com/IBM/compliance-trestle/commit/1ea7f63549ad1f74a47572fb00f04f42bce2e5ab))
+* Correct merge (including repository functionality) and improve merge cwd handling. ([#724](https://github.com/IBM/compliance-trestle/issues/724)) ([`a780e2c`](https://github.com/IBM/compliance-trestle/commit/a780e2ca16f8e5ca99a74e8167b6ccb66c3e91e1))
+
 ## v0.23.0 (2021-09-03)
 ### Feature
 * Update of Oscal profile to osco from initial PoC with stakeholder review. ([`c47092a`](https://github.com/IBM/compliance-trestle/commit/c47092aecf0d4b73eef2147738832748ecb04b1a))
