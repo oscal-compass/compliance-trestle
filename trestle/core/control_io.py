@@ -32,25 +32,6 @@ logger = logging.getLogger(__name__)
 class ControlIo():
     """Class to read and write controls as markdown."""
 
-    header_tokens = ['Control', 'class', 'Param', 'Prop', 'link', 'Part', 'Controls']
-    label_tokens = [
-        'id',
-        'ns',
-        'class',
-        'remarks',
-        'depends_on',
-        'label',
-        'usage',
-        'constraints',
-        'guidelines',
-        'values',
-        'select',
-        'choice',
-        'remarks',
-        'prose',
-        'link'
-    ]
-
     def __init__(self):
         """Initialize the class."""
         self._md_file: Optional[MDWriter] = None
@@ -74,14 +55,18 @@ class ControlIo():
         Find parts in control that require implementations.
 
         For a part in a control find the parts in it that require implementations
-        return list of string formatted labels and associated descriptive prose
+        Return list of string formatted labels and associated descriptive prose
         """
         items = []
         if part.name in ['item', 'statement']:
-            label = self._get_label(part)
+            # the options here are to force the label to be the part.id or the part.label
+            # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
+            # here we choose the latter and extract the final element
+            label = part.id.split('.')[-1]
             wrapped_label = self._wrap_label(label)
             pad = '' if wrapped_label == '' or part.prose is None else ' '
             prose = '' if part.prose is None else part.prose
+            # statement prose has already been written out, if present
             if part.name != 'statement':
                 items.append(f'{wrapped_label}{pad}{prose}')
             if part.parts is not None:
@@ -112,6 +97,15 @@ class ControlIo():
         if yaml_header:
             self._md_file.add_yaml_header(yaml_header)
 
+    @staticmethod
+    def _gap_join(a_str: str, b_str: str) -> str:
+        a_clean = a_str.strip()
+        b_clean = b_str.strip()
+        if not b_clean:
+            return a_clean
+        gap = '  ' if a_clean else ''
+        return a_clean + gap + b_clean
+
     def _add_control_description(self, control: cat.Control, group_title: str) -> None:
         """Add the control description and parts to the md file."""
         self._md_file.new_paragraph()
@@ -123,19 +117,19 @@ class ControlIo():
         self._md_file.set_indent_level(-1)
 
     def _get_control_section_part(self, part: common.Part, section: str) -> str:
-        """Get the prose for a section in the control."""
+        """Get the prose for a named section in the control."""
         prose = ''
         if part.name == section and part.prose is not None:
-            prose += part.prose
+            prose = self._gap_join(prose, part.prose)
         if part.parts is not None and part.parts:
             for sub_part in part.parts:
-                prose += self._get_control_section_part(sub_part, section)
+                prose = self._gap_join(prose, self._get_control_section_part(sub_part, section))
         return prose
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
         prose = ''
         for part in control.parts:
-            prose += self._get_control_section_part(part, section)
+            prose = self._gap_join(prose, self._get_control_section_part(part, section))
         return prose
 
     def _find_section_info(self, part: common.Part, section_list: List[str]):
@@ -166,7 +160,7 @@ class ControlIo():
         return '', '', ''
 
     def _add_sections(self, control: cat.Control) -> None:
-        """Add the control sections that are not specified."""
+        """Add the control sections, e.g. guidance."""
         section_list = ['statement', 'item']
         while True:
             name, id_, prose = self._get_section(control, section_list)
@@ -174,7 +168,7 @@ class ControlIo():
                 return
             if prose:
                 section_list.append(id_)
-                if id_ in self._sections:
+                if self._sections and id_ in self._sections:
                     id_ = self._sections[id_]
                 self._md_file.new_header(level=2, title=f'Control {id_}')
                 self._md_file.new_line(prose)
@@ -217,6 +211,17 @@ class ControlIo():
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
         self._md_file.new_hr()
 
+    def _add_additional_content(self) -> None:
+        self._md_file.new_header(level=1, title='Additional Content')
+        self._md_file.new_line('<!-- Provide additional content here -->')
+        self._md_file.new_line(
+            "<!-- Add content here. Each heading of '##' is intepreted as a part of the control. -->"
+        )
+        self._md_file.new_line(
+            '<!-- For the title to be valid it MUST follow the structure of ## Control [part type] -->'
+        )
+        self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/page.html for suggested types. -->')
+
     @staticmethod
     def _strip_bad_chars(label: str) -> str:
         """
@@ -251,7 +256,7 @@ class ControlIo():
         return lines[ii:(jj + 1)]
 
     @staticmethod
-    def _get_label_prose(ii: int, lines: List[str]) -> Tuple[int, str, List[str]]:
+    def _read_label_prose(ii: int, lines: List[str]) -> Tuple[int, str, List[str]]:
         r"""
         Return the found label and its corresponding list of prose lines.
 
@@ -287,7 +292,22 @@ class ControlIo():
         return -1, item_label, prose_lines
 
     @staticmethod
-    def get_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
+    def _load_control_lines(control_file: pathlib.Path) -> List[str]:
+        lines: List[str] = []
+        with control_file.open('r', encoding=const.FILE_ENCODING) as f:
+            raw_lines = f.readlines()
+        # Any fully blank lines will be retained but as empty strings
+        lines = [line.strip('\r\n').rstrip() for line in raw_lines]
+        clean_lines = []
+        # need to keep indentation and empty lines
+        for line in lines:
+            if line.startswith('<!---'):
+                continue
+            clean_lines.append(line)
+        return clean_lines
+
+    @staticmethod
+    def read_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
         """
         Find all labels and associated prose in this control.
 
@@ -299,28 +319,24 @@ class ControlIo():
         """
         if not control_file.exists():
             return {}
+        lines = ControlIo._load_control_lines(control_file)
         ii = 0
-        lines: List[str] = []
-        with control_file.open('r', encoding=const.FILE_ENCODING) as f:
-            raw_lines = f.readlines()
-        lines = [line.strip('\r\n') for line in raw_lines]
-
         # keep moving down through the file picking up labels and prose
         responses: Dict[str, List[str]] = {}
         while True:
-            ii, part_label, prose_lines = ControlIo._get_label_prose(ii, lines)
+            ii, part_label, prose_lines = ControlIo._read_label_prose(ii, lines)
             if ii < 0:
                 break
             clean_label = ControlIo._strip_bad_chars(part_label)
             responses[clean_label] = prose_lines
         return responses
 
-    def get_implementations(self, control_file: pathlib.Path,
-                            component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+    def read_implementations(self, control_file: pathlib.Path,
+                             component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
         """Get implementation requirements associated with given control and link to the one component we created."""
         control_id = control_file.stem
         imp_reqs: list[ossp.ImplementedRequirement] = []
-        responses = self.get_all_implementation_prose(control_file)
+        responses = self.read_all_implementation_prose(control_file)
 
         for response in responses.items():
             label = response[0]
@@ -340,8 +356,156 @@ class ControlIo():
             imp_req.control_id = control_id
             imp_req.statements = [statement]
             imp_reqs.append(imp_req)
-
         return imp_reqs
+
+    @staticmethod
+    def _read_id_title(ii: int, lines: List[str], control: cat.Control) -> int:
+        while ii < len(lines):
+            line = lines[ii]
+            ii += 1
+            if line.startswith('# '):
+                if line.count('-') < 2:
+                    raise TrestleError(f'Markdown control title format error: {line}')
+                control.id = line.split()[1]
+                first_dash = line.find('-')
+                title_line = line[first_dash + 1:]
+                title_start = title_line.find('-') + 1
+                control.title = title_line[title_start:].strip()
+                return ii
+        raise TrestleError('Unable to find #Control: heading in control markdown file.')
+
+    @staticmethod
+    def _indent(line: str) -> int:
+        """Measure indent of non-empty line."""
+        if not line:
+            raise TrestleError('Empty line queried for indent.')
+        if line[0] not in [' ', '-']:
+            return -1
+        for ii in range(len(line)):
+            if line[ii] == '-':
+                return ii
+            # if line is indented it must start with -
+            if line[ii] != ' ':
+                break
+        raise TrestleError(f'List elements must start with -: {line}')
+
+    @staticmethod
+    def _get_next_line(ii: int, lines: List[str]) -> Tuple[int, str]:
+        while ii < len(lines):
+            line = lines[ii]
+            if line:
+                return ii, line
+            ii += 1
+        return -1, ''
+
+    @staticmethod
+    def _get_next_indent(ii: int, lines: List[str]) -> Tuple[int, int, str]:
+        """Seek to next content line.  ii remains at line read."""
+        while ii < len(lines):
+            line = lines[ii]
+            if line:
+                if line[0] == '#':
+                    return ii, -1, line
+                indent = ControlIo._indent(line)
+                if indent >= 0:
+                    # extract text after -
+                    start = indent + 1
+                    while start < len(line) and line[start] != ' ':
+                        start += 1
+                    if start >= len(line):
+                        raise TrestleError(f'Invalid line {line}')
+                    return ii, indent, line[start:]
+                else:
+                    return ii, indent, line
+            else:
+                ii += 1
+        raise TrestleError('No indented line found in search.')
+
+    @staticmethod
+    def _read_part_id_prose(line: str) -> Tuple[str, str]:
+        """Extract the part id letter or number and prose from line."""
+        start = line.find('\\[')
+        end = line.find('\\]')
+        if start < 0 or end < 0:
+            raise TrestleError(f'Control description items must have label surrounded with \\[ \\]: {line}')
+        prose = line[end + 2:].strip()
+        id_ = ControlIo._strip_bad_chars(line[start + 2:end])
+        id_ = id_.replace('.', '')
+        return id_, prose
+
+    @staticmethod
+    def _read_parts(indent: int, ii: int, lines: List[str], parent_id: str,
+                    parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
+        """If indentation level goes up or down, create new list or close current one."""
+        while True:
+            ii, new_indent, line = ControlIo._get_next_indent(ii, lines)
+            if new_indent < 0:
+                # we are done reading control statement
+                return ii, parts
+            if new_indent == indent:
+                # create new item part and add to current list of parts
+                id_text, prose = ControlIo._read_part_id_prose(line)
+                id_ = parent_id + '.' + id_text
+                part = common.Part(name='item', id=id_, prose=prose)
+                parts.append(part)
+                ii += 1
+            elif new_indent > indent:
+                # add new list of parts to last part and continue
+                if len(parts) == 0:
+                    raise TrestleError(f'Improper indentation structure: {line}')
+                ii, new_parts = ControlIo._read_parts(new_indent, ii, lines, parts[-1].id, [])
+                parts[-1].parts = new_parts
+            else:
+                # return list of sub-parts
+                return ii, parts
+
+    @staticmethod
+    def _read_description(ii: int, lines: List[str], control: cat.Control) -> int:
+        """Search for the Control statement and read until next ## Control."""
+        while ii < len(lines) and not lines[ii].startswith('## Control '):
+            ii += 1
+        if not lines[ii].startswith('## Control'):
+            raise TrestleError(f'Control description not found for {control.id}')
+        ii += 1
+
+        ii, line = ControlIo._get_next_line(ii, lines)
+        if ii < 0:
+            TrestleError(f'Unable to read control description for {control.id}')
+        if line[0] == ' ' and line.lstrip()[0] != '-':
+            # prose that appears indented but isn't
+            # treat it as statement prose
+            line = line.lstrip()
+            indent = -1
+            ii += 1
+        else:
+            ii, indent, line = ControlIo._get_next_indent(ii, lines)
+
+        statement_part = common.Part(name='statement', id=f'{control.id}_smt')
+        # first line is either statement prose or start of statement parts
+        if indent < 0:
+            statement_part.prose = line
+            ii += 1
+        # we have absorbed possible statement prose.
+        # now just read parts recursively
+        # if there was no statement prose, this will re-read the line just read
+        # as the start of the statement's parts
+        ii, statement_part.parts = ControlIo._read_parts(0, ii, lines, statement_part.id, [])
+        control.parts = [statement_part]
+        return ii
+
+    @staticmethod
+    def _read_sections(ii: int, lines: List[str], control: cat.Control) -> None:
+        """Read all sections following the description separated by ## Control."""
+        return ii, lines, control
+
+    def read_control(self, control_path: pathlib.Path) -> cat.Control:
+        """Read the control markdown file."""
+        control = gens.generate_sample_model(cat.Control)
+        lines = ControlIo._load_control_lines(control_path)
+        ii = ControlIo._read_id_title(0, lines, control)
+        ii = ControlIo._read_description(ii, lines, control)
+        ii = ControlIo._read_sections(ii, lines, control)
+        return control
 
     def write_control(
         self,
@@ -349,11 +513,12 @@ class ControlIo():
         control: cat.Control,
         group_title: str,
         yaml_header: Optional[dict],
-        sections: Optional[Dict[str, str]]
+        sections: Optional[Dict[str, str]],
+        additional_content: bool
     ) -> None:
         """Write out the control in markdown format."""
         control_file = dest_path / (control.id + '.md')
-        existing_text = self.get_all_implementation_prose(control_file)
+        existing_text = self.read_all_implementation_prose(control_file)
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
@@ -365,264 +530,7 @@ class ControlIo():
 
         self._add_response(control, existing_text)
 
-        self._md_file.write_out()
-
-    # Below deals with writing out full control details
-
-    def _write_part_full(self, part: common.Part, level: int) -> None:
-        title = f'Part: {part.name}'
-        self._md_file.new_header(level=level, title=title)
-        self._md_file.new_paragraph()
-        if part.id:
-            self._md_file.new_paraline(f'id: {part.id}')
-        if part.ns:
-            self._md_file.new_paraline(f'ns: {part.ns}')
-        if part.class_:
-            self._md_file.new_paraline(f'class: {part.class_}')
-        if part.title:
-            self._md_file.new_paraline(f'title: {part.title}')
-        if part.prose:
-            self._md_file.new_paraline('prose:')
-            self._md_file.new_line(part.prose)
-        if part.props:
-            for prop in part.props:
-                self._write_prop(prop, level + 1)
-        if part.parts:
-            for sub_part in part.parts:
-                self._write_part_full(sub_part, level + 1)
-        if part.links:
-            for link in part.links:
-                self._write_link(link)
-
-    def _write_part_prose(self, part: common.Part, level: int) -> None:
-        if part.prose:
-            heading = '#' * level
-            self._md_file.new_paraline(f'{heading} Prose:')
-            self._md_file.new_paraline(part.prose)
-        if part.parts:
-            for sub_part in part.parts:
-                self._write_part_prose(sub_part, level + 1)
-
-    def _write_parts_prose(self, control: cat.Control) -> None:
-        if control.parts:
-            for part in control.parts:
-                self._write_part_prose(part, 2)
-
-    def _write_parts_full(self, control: cat.Control) -> None:
-        if control.parts:
-            for part in control.parts:
-                self._write_part_full(part, 2)
-
-    def _write_link(self, link: common.Link) -> None:
-        self._md_file.new_line(f'link: {link.href}')
-        if link.rel:
-            self._md_file.new_paraline(f'rel: {link.rel}')
-        if link.media_type:
-            self._md_file.new_paraline(f'media_type: {link.media_type}')
-        if link.text:
-            self._md_file.new_paraline(f'text: {link.text}')
-
-    def _write_constraint(self, constraint: common.ParameterConstraint) -> None:
-        self._md_file.new_paraline('constraint:')
-        if constraint.description:
-            self._md_file.new_paraline(f'description: {constraint.description}')
-        if constraint.tests:
-            for test in constraint.tests:
-                self._md_file.new_paraline(f'test: {test.expression}')
-                if test.remarks:
-                    self._md_file.new_paraline(f'remarks: {test.remarks.__root__}')
-
-    def _write_guideline(self, guideline: common.ParameterGuideline) -> None:
-        self._md_file.new_paraline(f'guideline: {guideline.prose}')
-
-    def _write_param(self, param: common.Parameter, level: int) -> None:
-        self._md_file.new_paragraph()
-        title = f'Param: {param.id}'
-        self._md_file.new_header(level, title)
-        if param.class_:
-            self._md_file.new_paraline(f'class: {param.class_}')
-        if param.depends_on:
-            self._md_file.new_paraline(f'depends_on: {param.depends_on}')
-        if param.props:
-            for prop in param.props:
-                self._write_prop(prop, level + 1)
-        if param.links:
-            for link in param.links:
-                self._write_link(link, level + 1)
-        if param.label:
-            self._md_file.new_line(f'label: {param.label}')
-        if param.usage:
-            self._md_file.new_paraline(f'usage: {param.usage}')
-        if param.constraints:
-            self._md_file.new_paraline('constraints:')
-            for constraint in param.constraints:
-                self._write_constraint(constraint)
-        if param.guidelines:
-            self._md_file.new_line('guidelines:')
-            for guideline in param.guidelines:
-                self._write_guideline(guideline)
-        if param.values:
-            self._md_file.new_paraline('values:')
-            for value in param.values:
-                self._md_file.new_paraline(value.__root__)
-        if param.select:
-            if param.select.how_many:
-                how_many_text = param.select.how_many.name
-                self._md_file.new_paraline(f'select: {how_many_text}')
-            if param.select.choice:
-                self._md_file.new_paraline('choice:')
-                for choice in param.select.choice:
-                    self._md_file.new_paraline(choice)
-        if param.remarks:
-            self._md_file.new_paraline(f'remarks: {param.remarks.__root__}')
-
-    def _write_params_full(self, control: cat.Control) -> None:
-        if control.params:
-            for param in control.params:
-                self._write_param(param, 2)
-
-    def _write_prop(self, prop: common.Property, level: int) -> None:
-        self._md_file.new_paragraph()
-        title = f'Prop: {prop.name} - {prop.value}'
-        self._md_file.new_header(level, title)
-        if prop.uuid:
-            self._md_file.new_header(level + 1, f'uuid: {prop.uuid}')
-        if prop.ns:
-            self._md_file.new_header(level + 1, f'ns: {prop.ns}')
-        if prop.class_:
-            self._md_file.new_header(level + 1, f'class: {prop.class_}')
-        if prop.remarks:
-            self._md_file.new_header(level + 1, f'remarks: {prop.remarks.__root__}')
-
-    def _write_props_full(self, control: cat.Control) -> None:
-        if control.props:
-            for prop in control.props:
-                self._write_prop(prop, 2)
-
-    def _write_links_full(self, control: cat.Control) -> None:
-        if control.links:
-            for link in control.links:
-                self._md_file.new_paragraph()
-                title = f'link: {link.href} {link.rel}'
-                self._md_file.new_header(2, title)
-
-    def _get_control_list(self, control: cat.Control) -> List[str]:
-        control_list: List[str] = [control.id]
-        if control.controls:
-            for sub_control in control.controls:
-                control_list.extend(self._get_control_list(sub_control))
-        return control_list
-
-    def _write_controls_full(self, control: cat.Control) -> None:
-        control_list: List[str] = []
-        if control.controls:
-            for sub_control in control.controls:
-                control_list.extend(self._get_control_list(sub_control))
-            self._md_file.new_header(level=2, title='Controls:')
-            for id_ in control_list:
-                self._md_file.new_line(id_)
-
-    def write_control_full(
-        self, dest_path: pathlib.Path, control: cat.Control, group_title: str, all_details: bool
-    ) -> None:
-        """Write out the full control in markdown format."""
-        self._md_file = MDWriter(dest_path)
-        self._md_file.new_paragraph()
-        title = f'Control: {control.id} - {group_title} {control.title}'
-        self._md_file.new_header(level=1, title=title)
-        self._md_file.set_indent_level(-1)
-        if all_details:
-            if control.class_:
-                self._md_file.new_header(level=2, title=f'class: {control.class_}')
-
-            self._write_params_full(control)
-            self._write_props_full(control)
-            self._write_links_full(control)
-        self._write_parts_prose(control)
-        self._write_controls_full(control)
+        if additional_content:
+            self._add_additional_content()
 
         self._md_file.write_out()
-
-    def _get_id_title(self, ii: int, lines: List[str]) -> Tuple[int, str, str]:
-        while ii < len(lines):
-            line = lines[ii]
-            ii += 1
-            if line.startswith('# Control: '):
-                id_ = line.split()[2]
-                # FIXME this should be regex since - may be in title
-                title = line.split('-')[-1]
-                return (ii, id_, title)
-        raise TrestleError('Unable to find #Control: heading in control markdown file.')
-
-    def _get_header_level(self, line: str) -> int:
-        return -1
-
-    def _read_param(self, ii: int, lines: List[str], name: str, params: List[common.Parameter], level: int) -> int:
-        # if level appears at same depth leave
-        # if one line label thing read it
-        # if multiline read until...
-        return -1
-
-    def _read_prop(
-        self, ii: int, lines: List[str], name: str, value: str, props: List[common.Property], level: int
-    ) -> int:
-        return -1
-
-    def _read_link(self, ii: int, lines: List[str], href: str, links: List[common.Link], level: int) -> int:
-        return -1
-
-    def _read_part(self, ii: int, lines: List[str], name: str, parts: List[common.Part], level: int) -> int:
-        return -1
-
-    def _read_controls(self, ii: int, lines: List[str], control_id_list: List[str]) -> int:
-        """Read list of included control ids at end of file - not actual full control details."""
-        while ii < len(lines):
-            line = lines[ii]
-            if line:
-                control_id_list.append(line)
-            ii += 1
-        return -1
-
-    def _get_attribute(self, ii: int, lines: List[str], control: cat.Control, control_id_list: List[str]) -> int:
-        """Look for a high level entry heading for a control attribute."""
-        while ii < len(lines):
-            line = lines[ii]
-            ii += 1
-            if line:
-                if line.startswith('## class: '):
-                    control.class_ = line.split()[-1]
-                elif line.startswith('## Param: '):
-                    ii = self._read_param(ii, lines, line.split()[-1], control.params, 2)
-                elif line.startswith('## Prop: '):
-                    tokens = line.split()
-                    ii = self._read_prop(ii, lines, tokens[-3], tokens[-1], control.props, 2)
-                elif line.startswith('## link:'):
-                    ii = self._read_link(ii, lines, line.split()[-1], control.links, 2)
-                elif line.startswith('## Part: '):
-                    ii = self._read_part(ii, lines, line.split()[-1], control.parts, 2)
-                elif line.startswith('## Controls: '):
-                    ii = self._read_controls(ii, lines, control_id_list)
-                else:
-                    raise TrestleError(f'Error parsing md for control {control.id} line {line}.')
-                return ii
-        return -1
-
-    def read_control_full(self, control_path: pathlib.Path) -> cat.Control:
-        """Read the control at the given path."""
-        control = gens.generate_sample_model(cat.Control)
-        control.params = []
-        control.props = []
-        control.links = []
-        control.parts = []
-        control_id_list = []
-        with open(control_path, 'r', encoding=const.FILE_ENCODING) as md_file:
-            lines = [line.strip() for line in md_file.readlines()]
-        ii, control.id, control.title = self._get_id_title(0, lines)
-        self._get_header_level('## test')
-        self._read_param(0, lines, 'test', [], 0)
-        self._read_prop(0, lines, 'test', 'value', [], 0)
-        self._read_link(0, lines, control, [], 0)
-        self._read_part(0, lines, 'test', [], 0)
-        while ii > 0:
-            ii = self._get_attribute(ii, lines, control, control_id_list)
-        return control

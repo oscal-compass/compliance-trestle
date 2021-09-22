@@ -17,6 +17,8 @@ import argparse
 import logging
 import pathlib
 
+import trestle.core.generators as gens
+import trestle.oscal.catalog as cat
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
@@ -54,7 +56,7 @@ class CatalogGenerate(AuthorCommonCommand):
         return self.generate_markdown(trestle_root, catalog_path, markdown_path)
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path, all_details: bool
+        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         _, _, catalog = load_distributed(catalog_path, trestle_root)
@@ -65,8 +67,7 @@ class CatalogGenerate(AuthorCommonCommand):
             group_dir = markdown_path if group_id == 'catalog' else markdown_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
-            control_path = group_dir / f'{control.id}.md'
-            control_io.write_control_full(control_path, control, group_title, all_details)
+            control_io.write_control(group_dir, control, group_title, None, None, False)
 
 
 class CatalogAssemble(AuthorCommonCommand):
@@ -84,30 +85,43 @@ class CatalogAssemble(AuthorCommonCommand):
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
+        trestle_root = pathlib.Path(args.trestle_root)
+        self.assemble_catalog(trestle_root, args.markdown, args.output)
         return 0
 
     def assemble_catalog(self, trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
         """
         Assemble the markdown directory into a json catalog model file.
 
-        In normal operation the markdown would have been edited to provide implementation responses.
-        These responses are captured as prose in the ssp json file.
-
         Args:
             trestle_root: The trestle root directory
             md_name: The name of the directory containing the markdown control files for the ssp
-            ssp_name: The output name of the ssp json file to be created from the assembly
+            catalog_name: The output name of the catalog json file to be created from the assembly
 
         Returns:
             0 on success, 1 otherwise
 
         """
-        # find all groups in the markdown dir
+        catalog = gens.generate_sample_model(cat.Catalog)
         group_ids = []
-        # FIXME
-        md_dir = trestle_root / md_name / catalog_name
+        md_dir = trestle_root / md_name
 
         for gdir in md_dir.glob('*/'):
             group_ids.append(str(gdir.stem))
-
+        catalog.groups = []
+        control_io = ControlIo()
+        for group_id in group_ids:
+            new_group = gens.generate_sample_model(cat.Group)
+            group_dir = md_dir / group_id
+            for control_path in group_dir.glob('*.md'):
+                control = control_io.read_control(control_path)
+                if not new_group.controls:
+                    new_group.controls = []
+                new_group.controls.append(control)
+            catalog.groups.append(new_group)
+        for control_path in md_dir.glob('*.md'):
+            control = control_io.read_control(control_path)
+            if not catalog.controls:
+                catalog.controls = []
+            catalog.controls.append(control)
         return 0

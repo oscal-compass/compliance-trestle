@@ -16,16 +16,10 @@
 import pathlib
 import shutil
 
-import pytest
-
 from tests import test_utils
 
-import trestle.core.generators as gens
-from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.commands.author.catalog import CatalogGenerate
+from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
 from trestle.core.control_io import ControlIo
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.ssp import SystemComponent
 
 markdown_name = 'my_md'
 
@@ -43,28 +37,28 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / markdown_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses = ControlIo.get_all_implementation_prose(md_file)
+    responses = ControlIo.read_all_implementation_prose(md_file)
     if part_label not in responses:
         return False
     prose = '\n'.join(responses[part_label])
     return seek_str in prose
 
 
-@pytest.mark.parametrize('all_details', [True, False])
-def test_catalog_generate(all_details: bool, tmp_trestle_dir: pathlib.Path) -> None:
+def test_catalog_generate_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
-    catalog_dir = tmp_trestle_dir / 'catalogs/my_cat'
+    cat_name = 'my_cat'
+    md_name = 'my_md'
+    assembled_cat_name = 'my_assembled_cat'
+    catalog_dir = tmp_trestle_dir / f'catalogs/{cat_name}'
     catalog_dir.mkdir(parents=True, exist_ok=True)
     catalog_path = catalog_dir / 'catalog.json'
     shutil.copy(nist_catalog_path, catalog_path)
-    catalog_data = Catalog.oscal_read(catalog_path)
-    markdown_path = tmp_trestle_dir / 'my_md_prose'
+    markdown_path = tmp_trestle_dir / md_name
     markdown_path.mkdir(parents=True, exist_ok=True)
-    catalog_generator = CatalogGenerate()
-    catalog_generator.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, all_details)
+    catalog_generate = CatalogGenerate()
+    catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
     assert (markdown_path / 'ac/ac-1.md').exists()
-    catalog_interface = CatalogInterface(catalog_data)
-    if all_details:
-        component = gens.generate_sample_model(SystemComponent)
-        catalog_interface.read_catalog_from_markdown(markdown_path, component)
+
+    catalog_assemble = CatalogAssemble()
+    catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)

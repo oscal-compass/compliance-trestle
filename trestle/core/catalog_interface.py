@@ -236,7 +236,7 @@ class CatalogInterface():
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             out_path = md_path / group_id
-            control_io.write_control(out_path, control, group_title, yaml_header, sections)
+            control_io.write_control(out_path, control, group_title, yaml_header, sections, False)
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
@@ -270,5 +270,5 @@ class CatalogInterface():
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(control_io.get_implementations(control_file, component))
+                imp_reqs.extend(control_io.read_implementations(control_file, component))
         return imp_reqs

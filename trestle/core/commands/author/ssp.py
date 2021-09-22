@@ -79,7 +79,7 @@ class SSPGenerate(AuthorCommonCommand):
                     s = section.split(':')
                     section_label = s[0].strip()
                     if section_label == 'statement':
-                        logger.warning('Section label "statment" is not allowed.')
+                        logger.warning('Section label "statement" is not allowed.')
                         return 1
                     sections[s[0].strip()] = s[1].strip()
                 else:
