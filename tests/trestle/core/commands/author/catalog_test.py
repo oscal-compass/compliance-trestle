@@ -15,9 +15,14 @@
 
 import pathlib
 import shutil
+import sys
+from unittest.mock import patch
+
+import pytest
 
 from tests import test_utils
 
+from trestle.cli import Trestle
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.control_io import ControlIo
 from trestle.oscal.catalog import Catalog
@@ -45,7 +50,8 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     return seek_str in prose
 
 
-def test_catalog_generate_assemble(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('use_cli', [True, False])
+def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     cat_name = 'my_cat'
@@ -57,12 +63,21 @@ def test_catalog_generate_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     shutil.copy(nist_catalog_path, catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     markdown_path.mkdir(parents=True, exist_ok=True)
-    catalog_generate = CatalogGenerate()
-    catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
-    assert (markdown_path / 'ac/ac-1.md').exists()
+    if use_cli:
+        test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
+        with patch.object(sys, 'argv', test_args):
+            Trestle().run()
+        assert (markdown_path / 'ac/ac-1.md').exists()
+        test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
+        with patch.object(sys, 'argv', test_args):
+            Trestle().run()
+    else:
+        catalog_generate = CatalogGenerate()
+        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
+        assert (markdown_path / 'ac/ac-1.md').exists()
+        catalog_assemble = CatalogAssemble()
+        catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
 
-    catalog_assemble = CatalogAssemble()
-    catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
     cat_orig = Catalog.oscal_read(catalog_path)
     cat_new = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{assembled_cat_name}/catalog.json')
     interface_orig = CatalogInterface(cat_orig)
