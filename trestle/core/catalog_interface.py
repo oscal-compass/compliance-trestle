@@ -260,7 +260,7 @@ class CatalogInterface():
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                control = control_io.read_control_full(control_file)
+                control = control_io.read_control(control_file)
                 self.replace_control(control)
 
     @staticmethod
@@ -277,3 +277,65 @@ class CatalogInterface():
             for control_file in group_path.glob('*.md'):
                 imp_reqs.extend(control_io.read_implementations(control_file, component))
         return imp_reqs
+
+    @staticmethod
+    def part_equivalent(a: common.Part, b: common.Part) -> bool:
+        """Check if individual parts are equivalent."""
+        # id's may be different because we create the id ourselves on read
+        # FIXME should not need strip
+        if a.name != b.name:
+            return False
+        if (a.prose is None) != (b.prose is None):
+            return False
+        if a.prose:
+            if a.prose.strip() != b.prose.strip():
+                return False
+        if (a.parts is None) != (b.parts is None):
+            return False
+        if a.parts:
+            if not CatalogInterface.parts_equivalent(a.parts, b.parts):
+                return False
+        return True
+
+    @staticmethod
+    def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
+        """Check if lists of parts are equivalent."""
+        if len(a) != len(b):
+            return False
+        for pair in zip(a, b):
+            if not CatalogInterface.part_equivalent(pair[0], pair[1]):
+                return False
+        return True
+
+    @staticmethod
+    def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
+        """Check if the controls are equivalent."""
+        if a.id != b.id:
+            logging.error(f'ids differ: |{a.id}| |{b.id}|')
+            return False
+        if a.title != b.title:
+            return False
+        if (a.parts is None) != (b.parts is None):
+            return False
+        if a.parts:
+            if not CatalogInterface.parts_equivalent(a.parts, b.parts):
+                return False
+        # FIXME cannot check controls until markdown lists sub-controls
+        return True
+
+    def equivalent_to(self, catalog: cat.Catalog) -> bool:
+        """Test equivalence in various ways."""
+        other = CatalogInterface(catalog)
+        recurse = True
+        if other.get_count_of_controls(recurse) != self.get_count_of_controls(recurse):
+            logging.error('count of controls is different')
+            return False
+        for a in self.get_all_controls(recurse):
+            try:
+                b = other.get_control(a.id)
+            except Exception as e:
+                logging.error(f'error finding control {a.id} {e}')
+            if not self.controls_equivalent(a, b):
+                logging.error(f'controls differ: {a.id}')
+                return False
+        return True

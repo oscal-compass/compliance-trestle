@@ -69,7 +69,7 @@ class ControlIo():
             # statement prose has already been written out, if present
             if part.name != 'statement':
                 items.append(f'{wrapped_label}{pad}{prose}')
-            if part.parts is not None:
+            if part.parts:
                 sub_list = []
                 for prt in part.parts:
                     sub_list.extend(self._get_part(control, prt))
@@ -80,7 +80,7 @@ class ControlIo():
     def _add_parts(self, control: cat.Control) -> None:
         """For a given control add its parts to the md file after replacing params."""
         items = []
-        if control.parts is not None:
+        if control.parts:
             for part in control.parts:
                 if part.name == 'statement':
                     # If the statement has prose write it as a raw line and not list element
@@ -107,9 +107,9 @@ class ControlIo():
         return a_clean + gap + b_clean
 
     def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
-        """Add the control statement and itemss to the md file."""
+        """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
-        title = f'{control.id} - {group_title} {control.title}'
+        title = f'{control.id} - [{group_title}] {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
@@ -121,15 +121,16 @@ class ControlIo():
         prose = ''
         if part.name == section and part.prose is not None:
             prose = self._gap_join(prose, part.prose)
-        if part.parts is not None and part.parts:
+        if part.parts:
             for sub_part in part.parts:
                 prose = self._gap_join(prose, self._get_control_section_part(sub_part, section))
         return prose
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
         prose = ''
-        for part in control.parts:
-            prose = self._gap_join(prose, self._get_control_section_part(part, section))
+        if control.parts:
+            for part in control.parts:
+                prose = self._gap_join(prose, self._get_control_section_part(part, section))
         return prose
 
     def _find_section_info(self, part: common.Part, section_list: List[str]):
@@ -359,7 +360,7 @@ class ControlIo():
         return imp_reqs
 
     @staticmethod
-    def _read_id_title(ii: int, lines: List[str], control: cat.Control) -> int:
+    def _read_id_title(ii: int, lines: List[str], control: cat.Control) -> Tuple[int, str]:
         while ii < len(lines):
             line = lines[ii]
             ii += 1
@@ -369,9 +370,13 @@ class ControlIo():
                 control.id = line.split()[1]
                 first_dash = line.find('-')
                 title_line = line[first_dash + 1:]
-                title_start = title_line.find('-') + 1
-                control.title = title_line[title_start:].strip()
-                return ii
+                group_start = title_line.find('[')
+                group_end = title_line.find(']')
+                if group_start < 0 or group_end < 0 or group_start > group_end:
+                    raise TrestleError(f'unable to read group and title for control {control.id}')
+                group_id = title_line[group_start + 1:group_end].strip()
+                control.title = title_line[group_end + 1:].strip()
+                return ii, group_id
         raise TrestleError('Unable to find #Control: heading in control markdown file.')
 
     @staticmethod
@@ -454,7 +459,8 @@ class ControlIo():
                 if len(parts) == 0:
                     raise TrestleError(f'Improper indentation structure: {line}')
                 ii, new_parts = ControlIo._read_parts(new_indent, ii, lines, parts[-1].id, [])
-                parts[-1].parts = new_parts
+                if new_parts:
+                    parts[-1].parts = new_parts
             else:
                 # return list of sub-parts
                 return ii, parts
@@ -489,7 +495,8 @@ class ControlIo():
         # now just read parts recursively
         # if there was no statement prose, this will re-read the line just read
         # as the start of the statement's parts
-        ii, statement_part.parts = ControlIo._read_parts(0, ii, lines, statement_part.id, [])
+        ii, parts = ControlIo._read_parts(0, ii, lines, statement_part.id, [])
+        statement_part.parts = parts if parts else None
         control.parts = [statement_part]
         return ii
 
@@ -520,13 +527,15 @@ class ControlIo():
                 control.parts.extend(new_parts)
             else:
                 control.parts = new_parts
+        if not control.parts:
+            control.parts = None
         return ii, lines, control
 
-    def read_control(self, control_path: pathlib.Path) -> cat.Control:
+    def read_control(self, control_path: pathlib.Path) -> Tuple[cat.Control]:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
         lines = ControlIo._load_control_lines(control_path)
-        ii = ControlIo._read_id_title(0, lines, control)
+        ii, _ = ControlIo._read_id_title(0, lines, control)
         ii = ControlIo._read_control_statement(ii, lines, control)
         ii = ControlIo._read_sections(ii, lines, control)
         return control

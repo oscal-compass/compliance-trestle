@@ -18,8 +18,9 @@ import shutil
 
 from tests import test_utils
 
-from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
+from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.control_io import ControlIo
+from trestle.oscal.catalog import Catalog
 
 markdown_name = 'my_md'
 
@@ -62,3 +63,7 @@ def test_catalog_generate_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     catalog_assemble = CatalogAssemble()
     catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
+    cat_orig = Catalog.oscal_read(catalog_path)
+    cat_new = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{assembled_cat_name}/catalog.json')
+    interface_orig = CatalogInterface(cat_orig)
+    assert interface_orig.equivalent_to(cat_new)
