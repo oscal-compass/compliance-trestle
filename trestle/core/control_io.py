@@ -103,15 +103,15 @@ class ControlIo():
         b_clean = b_str.strip()
         if not b_clean:
             return a_clean
-        gap = '  ' if a_clean else ''
+        gap = '\n' if a_clean else ''
         return a_clean + gap + b_clean
 
-    def _add_control_description(self, control: cat.Control, group_title: str) -> None:
-        """Add the control description and parts to the md file."""
+    def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
+        """Add the control statement and itemss to the md file."""
         self._md_file.new_paragraph()
         title = f'{control.id} - {group_title} {control.title}'
         self._md_file.new_header(level=1, title=title)
-        self._md_file.new_header(level=2, title='Control Description')
+        self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
         self._add_parts(control)
         self._md_file.set_indent_level(-1)
@@ -203,7 +203,7 @@ class ControlIo():
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
-                            self._md_file.new_header(level=2, title=f'Part {part_label}')
+                            self._md_file.new_header(level=2, title=f'Implementation {part_label}')
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             self._insert_existing_text(part_label, existing_text)
                             self._md_file.new_paragraph()
@@ -271,12 +271,12 @@ class ControlIo():
         item_label = ''
         while ii < nlines:
             # start of new part
-            if lines[ii].startswith('## Part'):
+            if lines[ii].startswith('## Implementation'):
                 item_label = lines[ii].strip().split(' ')[-1]
                 ii += 1
                 # collect until next hrule
                 while ii < nlines:
-                    if lines[ii].startswith(const.SSP_MD_HRULE_LINE):
+                    if lines[ii].startswith(const.SSP_MD_HRULE_LINE) or lines[ii].startswith('## Implementation'):
                         return ii, item_label, ControlIo._trim_prose_lines(prose_lines)
                     prose_lines.append(lines[ii].strip())
                     ii += 1
@@ -301,7 +301,7 @@ class ControlIo():
         clean_lines = []
         # need to keep indentation and empty lines
         for line in lines:
-            if line.startswith('<!---'):
+            if line.startswith('<!--') or line.startswith('__________________'):
                 continue
             clean_lines.append(line)
         return clean_lines
@@ -401,7 +401,7 @@ class ControlIo():
     @staticmethod
     def _get_next_indent(ii: int, lines: List[str]) -> Tuple[int, int, str]:
         """Seek to next content line.  ii remains at line read."""
-        while ii < len(lines):
+        while 0 <= ii < len(lines):
             line = lines[ii]
             if line:
                 if line[0] == '#':
@@ -419,7 +419,7 @@ class ControlIo():
                     return ii, indent, line
             else:
                 ii += 1
-        raise TrestleError('No indented line found in search.')
+        return ii, -1, ''
 
     @staticmethod
     def _read_part_id_prose(line: str) -> Tuple[str, str]:
@@ -427,7 +427,7 @@ class ControlIo():
         start = line.find('\\[')
         end = line.find('\\]')
         if start < 0 or end < 0:
-            raise TrestleError(f'Control description items must have label surrounded with \\[ \\]: {line}')
+            raise TrestleError(f'Control items must have label surrounded by \\[ \\]: {line}')
         prose = line[end + 2:].strip()
         id_ = ControlIo._strip_bad_chars(line[start + 2:end])
         id_ = id_.replace('.', '')
@@ -460,20 +460,20 @@ class ControlIo():
                 return ii, parts
 
     @staticmethod
-    def _read_description(ii: int, lines: List[str], control: cat.Control) -> int:
+    def _read_control_statement(ii: int, lines: List[str], control: cat.Control) -> int:
         """Search for the Control statement and read until next ## Control."""
-        while ii < len(lines) and not lines[ii].startswith('## Control '):
+        while 0 <= ii < len(lines) and not lines[ii].startswith('## Control '):
             ii += 1
         if not lines[ii].startswith('## Control'):
-            raise TrestleError(f'Control description not found for {control.id}')
+            raise TrestleError(f'Control statement not found for {control.id}')
         ii += 1
 
         ii, line = ControlIo._get_next_line(ii, lines)
         if ii < 0:
-            TrestleError(f'Unable to read control description for {control.id}')
-        if line[0] == ' ' and line.lstrip()[0] != '-':
-            # prose that appears indented but isn't
-            # treat it as statement prose
+            # This means no statement and control withdrawn (this happens in NIST catalog)
+            return ii
+        if line and line[0] == ' ' and line.lstrip()[0] != '-':
+            # prose that appears indented but has no - : treat it as the normal statement prose
             line = line.lstrip()
             indent = -1
             ii += 1
@@ -495,7 +495,31 @@ class ControlIo():
 
     @staticmethod
     def _read_sections(ii: int, lines: List[str], control: cat.Control) -> None:
-        """Read all sections following the description separated by ## Control."""
+        """Read all sections following the section separated by ## Control."""
+        new_parts = []
+        prefix = '## Control '
+        while 0 <= ii < len(lines):
+            line = lines[ii]
+            if line.startswith('## What is the solution') or line.startswith('# Additional Content'):
+                ii += 1
+                continue
+            if line and not line.startswith(prefix):
+                raise TrestleError(f'Error parsing section for control {control.id}: {line}')
+            label = line[len(prefix):].lstrip()
+            prose = ''
+            ii += 1
+            while 0 <= ii < len(lines) and not lines[ii].startswith(prefix) and not lines[ii].startswith(
+                    '# Additional Content'):
+                prose = '\n'.join([prose, lines[ii]])
+                ii += 1
+            if prose:
+                id_ = control.id + '_smt.' + label
+                new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
+        if new_parts:
+            if control.parts:
+                control.parts.extend(new_parts)
+            else:
+                control.parts = new_parts
         return ii, lines, control
 
     def read_control(self, control_path: pathlib.Path) -> cat.Control:
@@ -503,7 +527,7 @@ class ControlIo():
         control = gens.generate_sample_model(cat.Control)
         lines = ControlIo._load_control_lines(control_path)
         ii = ControlIo._read_id_title(0, lines, control)
-        ii = ControlIo._read_description(ii, lines, control)
+        ii = ControlIo._read_control_statement(ii, lines, control)
         ii = ControlIo._read_sections(ii, lines, control)
         return control
 
@@ -514,7 +538,8 @@ class ControlIo():
         group_title: str,
         yaml_header: Optional[dict],
         sections: Optional[Dict[str, str]],
-        additional_content: bool
+        additional_content: bool,
+        prompt_responses: bool
     ) -> None:
         """Write out the control in markdown format."""
         control_file = dest_path / (control.id + '.md')
@@ -524,11 +549,12 @@ class ControlIo():
 
         self._add_yaml_header(yaml_header)
 
-        self._add_control_description(control, group_title)
+        self._add_control_statement(control, group_title)
 
         self._add_sections(control)
 
-        self._add_response(control, existing_text)
+        if prompt_responses:
+            self._add_response(control, existing_text)
 
         if additional_content:
             self._add_additional_content()

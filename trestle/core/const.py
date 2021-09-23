@@ -165,7 +165,7 @@ SSP_MD_HRULE_LINE = '___________________________________________________________
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
 
-SSP_MD_LEAVE_BLANK_TEXT = '<!--- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
+SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
 
 SSP_ADD_IMPLEMENTATION_PREFIX = 'Add control implementation description here for '
 

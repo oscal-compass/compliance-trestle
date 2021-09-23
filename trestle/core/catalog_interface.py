@@ -224,7 +224,12 @@ class CatalogInterface():
         return hits
 
     def write_catalog_as_markdown(
-        self, md_path: pathlib.Path, yaml_header: dict, sections: Optional[Dict[str, str]], all_details: bool
+        self,
+        md_path: pathlib.Path,
+        yaml_header: dict,
+        sections: Optional[Dict[str, str]],
+        all_details: bool,
+        responses: bool
     ) -> None:
         """Write out the catalog controls as markdown to the given directory."""
         control_io = ControlIo()
@@ -236,7 +241,7 @@ class CatalogInterface():
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             out_path = md_path / group_id
-            control_io.write_control(out_path, control, group_title, yaml_header, sections, False)
+            control_io.write_control(out_path, control, group_title, yaml_header, sections, False, responses)
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:

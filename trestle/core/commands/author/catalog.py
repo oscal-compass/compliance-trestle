@@ -67,7 +67,7 @@ class CatalogGenerate(AuthorCommonCommand):
             group_dir = markdown_path if group_id == 'catalog' else markdown_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
-            control_io.write_control(group_dir, control, group_title, None, None, False)
+            control_io.write_control(group_dir, control, group_title, None, None, False, False)
 
 
 class CatalogAssemble(AuthorCommonCommand):

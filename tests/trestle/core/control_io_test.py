@@ -29,11 +29,12 @@ case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
 
+@pytest.mark.parametrize('sections', [True, False])
 @pytest.mark.parametrize('control_prose', [True, False])
 @pytest.mark.parametrize('case', [case_1, case_2, case_3])
 @pytest.mark.parametrize('additional_content', [True, False])
 def test_read_write_controls(
-    control_prose, case, additional_content, tmp_path: pathlib.Path, keep_cwd: pathlib.Path
+    sections, control_prose, case, additional_content, tmp_path: pathlib.Path, keep_cwd: pathlib.Path
 ) -> None:
     """Test read and write of controls via markdown."""
     dummy_title = 'dummy title'
@@ -46,6 +47,23 @@ def test_read_write_controls(
     part_b2i = common.Part(id='ac-1_smt.b.2.i', name='item', prose='b.2.i prose')
     part_b3 = common.Part(id='ac-1_smt.b.3', name='item', prose='b.3 prose')
     part_c = common.Part(id='ac-1_smt.c', name='item', prose='c prose')
+    sec_1_text = """
+General comment
+on separate lines
+
+### header line
+
+- list 1
+- list 2
+    - sublist 1
+    - sublist 2
+
+end of text
+"""
+
+    sec_2_text = 'Simple line of prose'
+    sec_1 = common.Part(id='ac-1_smt.guidance', name='guidance', prose=sec_1_text.strip('\n'))
+    sec_2 = common.Part(id='ac-1_smt.extra', name='extra', prose=sec_2_text.strip('\n'))
 
     if control_prose:
         statement_part.prose = 'ac-1_smt prose'
@@ -67,14 +85,16 @@ def test_read_write_controls(
 
     statement_part.parts = parts
     control.parts = [statement_part]
+    if sections:
+        control.parts.extend([sec_1, sec_2])
 
     control_io = ControlIo()
-    control_io.write_control(tmp_path, control, '', None, None, additional_content)
+    control_io.write_control(tmp_path, control, '', None, None, additional_content, False)
 
     md_path = tmp_path / f'{control.id}.md'
     new_control = control_io.read_control(md_path)
     new_control.title = dummy_title
-    assert len(new_control.parts) == 1
+    assert len(new_control.parts) == len(control.parts)
     assert control.parts[0].prose == new_control.parts[0].prose
     assert control.parts[0].parts == new_control.parts[0].parts
     assert control == new_control
