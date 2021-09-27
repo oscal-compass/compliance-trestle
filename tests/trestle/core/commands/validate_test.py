@@ -18,7 +18,6 @@ import argparse
 import pathlib
 import shutil
 import sys
-from unittest.mock import patch
 from uuid import uuid4
 
 from _pytest.monkeypatch import MonkeyPatch
@@ -48,7 +47,7 @@ test_data_dir = pathlib.Path('tests/data').resolve()
         ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('my_test_model', '-x', False)
     ]
 )
-def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
+def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test successful validation runs."""
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
@@ -75,11 +74,11 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
     else:
         testcmd = 'trestle validate -a'
 
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
 
 
 @pytest.mark.parametrize(
@@ -90,7 +89,7 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
         ('my_test_model', '-x', False)
     ]
 )
-def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
+def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of validation."""
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
@@ -117,11 +116,11 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
     else:
         testcmd = 'trestle validate -a'
 
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
 
 
 @pytest.mark.parametrize(
@@ -133,7 +132,9 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
         ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1)
     ]
 )
-def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
+def test_role_refs_validator(
+    name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test validation of roles and references to them in responsible-parties."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
     roles = [Role(id='id1', title='title1'), Role(id='id2', title='title2'), Role(id='id3', title='title3')]
@@ -158,15 +159,17 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
     else:
         testcmd = 'trestle validate -a'
 
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == code
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == code
 
 
 @pytest.mark.parametrize('code', [0, 1])
-def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int) -> None:
+def test_oscal_version_validator(
+    tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int, monkeypatch: MonkeyPatch
+) -> None:
     """Test oscal version validator."""
     if code:
         sample_catalog_minimal.metadata.oscal_version.__root__ = '1.0.0-rc1'
@@ -174,11 +177,11 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
     mycat_dir.mkdir()
     sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
     testcmd = 'trestle validate -t catalog'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == code
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == code
 
 
 def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
