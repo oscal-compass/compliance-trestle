@@ -106,6 +106,34 @@ Users can query the contents of files using `trestle describe`, and probe the co
 ...
 ```
 
+## Specifing attributes / elements within trestle commands.
+
+OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
+
+This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestles underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
+
+### Rules for element path
+
+1. Element path is an expression of the attribute names, [in json form](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) , concatenated by a period (`.`).
+   1. E.g. The metadata in a catalog is referred to as `catalog.metadata`
+1. Element paths are relative to the file.
+   1. e.g. For `metadata.json` roles would be referred to as `metadata.roles`, from the catalog file that would be `catalog.metadata.roles`
+1. Arrays can be handled by a wild card `*` or a numerical index for a specific index.
+   1. `catalog.groups.*` to refer to each oscal group
+   1. `catalog.groups.*.controls.*` to refer to 'for each control under a top level group'
+   1. For NIST 800-53 `catalog.groups.0.controls.0.`
+1. On \*nix platforms if using the wildcard the element path argument should be wrapped in quotes to prevent problems with the shell interpreting the wild card before trestle can
+1. When dealing with an array based object, the array syntax may be skipped when passing a model
+   1. e.g. a control could be `catalog.controls.control` or `catalog.groups.controls.control`
+   1. This syntax is required as OSCAL, across the schema, has conflicting element definitions.
+
+### A note for software developers using trestle.
+
+Trestle provides utilities for converting from element path to trestle's python object model. The (slightly simplified) model is:
+
+1. Class attributes are converted from `dash-case` to `dash_case` (aka snake_case)
+1. Class names are converted from `dash-case` to `DashCase` (aka CamelCase)
+
 ## `trestle init`
 
 This command will create a trestle project in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
