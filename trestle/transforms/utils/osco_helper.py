@@ -63,6 +63,7 @@ class RuleUse():
 
     def __init__(
         self,
+        id_: str,
         target: str,
         target_type: str,
         benchmark_href: str,
@@ -77,6 +78,7 @@ class RuleUse():
         weight: str
     ) -> None:
         """Initialize given specified args."""
+        self.id_ = id_
         self.target = target
         self.target_type = target_type
         self.benchmark_href = benchmark_href
@@ -103,6 +105,15 @@ class ComplianceOperatorReport():
         value = None
         for key, val in root.attrib.items():
             if key == 'version':
+                value = val
+                break
+        return value
+
+    def _get_id(self, root: t_element) -> str:
+        """Extract id from the XML."""
+        value = None
+        for key, val in root.attrib.items():
+            if key == 'id':
                 value = val
                 break
         return value
@@ -190,6 +201,7 @@ class ComplianceOperatorReport():
         results = self.osco_xml
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
+        id_ = self._get_id(root)
         target = self._get_target(root)
         target_type = self._get_target_type(root)
         benchmark_href = self._get_benchmark_href(root)
@@ -205,6 +217,7 @@ class ComplianceOperatorReport():
                 weight = lev1.get('weight')
                 result = self._get_result(lev1)
                 rule_use = RuleUse(
+                    id_,
                     target,
                     target_type,
                     benchmark_href,
@@ -360,17 +373,15 @@ class ResultsMgr():
         props = []
         props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self.ns))
         props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self.ns))
-        props.append(Property(name='idref', value=rule_use.idref, ns=self.ns, class_='scc_goal_description'))
         props.append(Property(name='idref', value=rule_use.idref, ns=self.ns, class_='scc_check_name_id'))
         props.append(Property(name='version', value=rule_use.version, ns=self.ns, class_='scc_check_version'))
         props.append(Property(name='result', value=rule_use.result, ns=self.ns, class_='scc_result'))
         props.append(Property(name='time', value=rule_use.time, ns=self.ns, class_='scc_timestamp'))
         props.append(Property(name='severity', value=rule_use.severity, ns=self.ns, class_='scc_check_severity'))
         props.append(Property(name='weight', value=rule_use.weight, ns=self.ns))
+        props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self.ns))
         props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self.ns))
-        props.append(
-            Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self.ns, class_='scc_predefined_profile')
-        )
+        props.append(Property(name='id', value=rule_use.id_, ns=self.ns, class_='scc_predefined_profile'))
         observation.props = props
         self.observation_list.append(observation)
         rule_use.observation = observation
