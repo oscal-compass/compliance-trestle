@@ -17,7 +17,8 @@
 import os
 import pathlib
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 
@@ -26,7 +27,9 @@ from trestle.oscal import profile
 from trestle.utils.fs import FileContentType
 
 
-def test_href_cmd(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile) -> None:
+def test_href_cmd(
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile, monkeypatch: MonkeyPatch
+) -> None:
     """Test basic cmd invocation of href."""
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
@@ -39,18 +42,18 @@ def test_href_cmd(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile
 
     # just list the hrefs
     cmd_string = 'trestle href -n my_test_model'
-    with patch.object(sys, 'argv', cmd_string.split()):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', cmd_string.split())
+    rc = Trestle().run()
+    assert rc == 0
 
     orig_href = sample_profile.imports[0].href
 
     new_href = 'trestle://catalogs/my_catalog/catalog.json'
 
     cmd_string = f'trestle href -n my_test_model -hr {new_href}'
-    with patch.object(sys, 'argv', cmd_string.split()):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', cmd_string.split())
+    rc = Trestle().run()
+    assert rc == 0
 
     # confirm new href is correct
     new_profile: profile.Profile = profile.Profile.oscal_read(profile_path)
@@ -62,7 +65,9 @@ def test_href_cmd(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile
     assert test_utils.models_are_equivalent(new_profile, sample_profile)
 
 
-def test_href_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile) -> None:
+def test_href_failures(
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile, monkeypatch: MonkeyPatch
+) -> None:
     """Test href failure modes."""
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
@@ -74,9 +79,9 @@ def test_href_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_pr
     cmd_string = 'trestle href -n my_test_model -hr foobar'
 
     # not in trestle project so fail
-    with patch.object(sys, 'argv', cmd_string.split()):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', cmd_string.split())
+    rc = Trestle().run()
+    assert rc == 1
 
     os.chdir(models_path)
 
@@ -85,6 +90,6 @@ def test_href_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_pr
     # add extra import to the profile and ask for import number 2
     sample_profile.imports.append(sample_profile.imports[0])
     sample_profile.oscal_write(profile_path)
-    with patch.object(sys, 'argv', cmd_string.split()):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', cmd_string.split())
+    rc = Trestle().run()
+    assert rc == 1
