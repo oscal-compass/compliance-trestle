@@ -106,9 +106,9 @@ Users can query the contents of files using `trestle describe`, and probe the co
 ...
 ```
 
-## Specifing attributes / elemenss within trestle commands.
+## Specifing attributes / elements within trestle commands.
 
-OSCAL models are rich and contain multiple nested data structures. Given this, there a mechanism is required to address _elements_ /_attributes_ within an oscal object.
+OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
 This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestles underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
 
