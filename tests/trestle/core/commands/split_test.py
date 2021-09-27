@@ -18,7 +18,8 @@ import argparse
 import os
 import pathlib
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -323,7 +324,10 @@ def test_split_run(
 
 
 def test_split_run_failures(
-    keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition
+    keep_cwd: pathlib.Path,
+    tmp_path: pathlib.Path,
+    sample_nist_component_def: component.ComponentDefinition,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test split run failure."""
     # prepare trestle project dir with the file
@@ -347,9 +351,9 @@ def test_split_run_failures(
         '-e',
         'component-definition.metadata, component-definition.components.*'
     ]
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as wrapped_error:
+        trestle.cli.run()
         assert wrapped_error.value.code == 1
 
     # create trestle project
@@ -357,9 +361,9 @@ def test_split_run_failures(
 
     # no file specified and garbage element
     testargs = ['trestle', 'split', '-e', 'foo.bar']
-    with patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc > 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc > 0
 
     # check with missing file
     testargs = [
@@ -370,9 +374,9 @@ def test_split_run_failures(
         '-e',
         'component-definition.metadata, component-definition.components.*'
     ]
-    with patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc > 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc > 0
 
     # check with incorrect file type
     testargs = [
@@ -383,9 +387,9 @@ def test_split_run_failures(
         '-e',
         'component-definition.metadata, component-definition.components.*'
     ]
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(TrestleError):
-            Trestle().run()
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(TrestleError):
+        Trestle().run()
 
 
 def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.Catalog) -> None:
