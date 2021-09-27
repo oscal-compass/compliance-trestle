@@ -1,6 +1,6 @@
 # -*- mode:python; coding:utf-8 -*-
 
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-trestle - A python library and command line utility for compliance.
+"""Functional behaviour tests of underlying libraries.
 
-Trestle is a tool to which enables the creation and validation of
-documentation artifacts for compliance requirements. It leverages NIST's
-OSCAL (https://pages.nist.gov/OSCAL/documentation/) as a standard data
-format for interchange between tools & people and provides an
-opinionated approach to OSCAL adoption.
+These test should not ber part of the normal run.
+Each test should be guarded by a pytest mark.
 """
-
-__version__ = '0.24.0'

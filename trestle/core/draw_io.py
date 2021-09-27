@@ -18,7 +18,7 @@ import base64
 import logging
 import pathlib
 import zlib
-from typing import Dict, List
+from typing import Any, Dict, List
 from urllib.parse import unquote
 from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes only
 
@@ -112,6 +112,29 @@ class DrawIO(object):
                 md_dict[key] = val
             md_list.append(md_dict)
         return md_list
+
+    @classmethod
+    def restructure_metadata(cls, input_dict: Dict[str, str]) -> Dict[str, Any]:
+        """Restructure metadata into a hierarchial dict assuming a period separator."""
+        # get the list of duplicate keys
+        # Get a count of keys
+        result = {}
+        key_map = {}
+        for keys in input_dict.keys():
+            stub = keys.split('.')[0]
+            tmp = key_map.get(stub, [])
+            tmp.append(keys)
+            key_map[stub] = tmp
+
+        for key, values in key_map.items():
+            holding = {}
+            if len(values) == 1 and key == values[0]:
+                result[key] = input_dict[key]
+            else:
+                for value in values:
+                    holding[value.split('.', 1)[-1]] = input_dict[value]
+                result[key] = cls.restructure_metadata(holding)
+        return result
 
 
 class DrawIOMetadataValidator():

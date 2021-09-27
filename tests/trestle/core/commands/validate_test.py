@@ -21,6 +21,8 @@ import sys
 from unittest.mock import patch
 from uuid import uuid4
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import pytest
 
 from tests import test_utils
@@ -28,6 +30,7 @@ from tests import test_utils
 import trestle.core.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
+from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
@@ -210,3 +213,30 @@ def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) ->
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
         0].uuid
     assert not validator.model_is_valid(sample_component_definition)
+
+
+def test_validate_distributed(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Check that validate will run correctly when exploiting load distributed."""
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+    # Clean up.
+    test_data_source = testdata_dir / 'split_merge/step0-merged_catalog/catalogs'
+    catalogs_dir = tmp_trestle_dir / 'catalogs'
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    args = argparse.Namespace(
+        name='split',
+        file='catalogs/mycatalog/catalog.json',
+        verbose=1,
+        element='catalog.groups.*.controls.*',
+        trestle_root=tmp_trestle_dir
+    )
+    _ = SplitCmd()._run(args)
+    test_args = 'trestle validate -a'.split(' ')
+    monkeypatch.setattr(sys, 'argv', test_args)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0

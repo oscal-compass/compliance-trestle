@@ -16,8 +16,8 @@
 """Trestle Merge Command."""
 import argparse
 import logging
-import os
 from pathlib import Path
+from typing import List
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
@@ -55,19 +55,26 @@ class MergeCmd(CommandPlusDocs):
 
         element_paths = elements_clean.split(',')
         logger.debug(f'merge _run element paths {element_paths}')
+        cwd = Path.cwd()
+        rc = self.perform_all_merges(element_paths, cwd, args.trestle_root)
+        return rc
+
+    @classmethod
+    def perform_all_merges(cls, element_paths: List[str], effective_cwd: Path, trestle_root: Path) -> int:
+        """Run all merges over a list of element paths."""
         try:
             for element_path in element_paths:
                 logger.debug(f'merge {element_path}')
-                plan = self.merge(ElementPath(element_path), args.trestle_root.resolve())
+                plan = cls.merge(effective_cwd, ElementPath(element_path), trestle_root)
                 plan.simulate()
                 plan.execute()
         except TrestleError as err:
-            logger.warning(f'Merge failed: {err}')
+            logger.error(f'Merge failed: {err}')
             return 1
         return 0
 
     @classmethod
-    def merge(cls, element_path: ElementPath, trestle_root: Path) -> Plan:
+    def merge(cls, effective_cwd: Path, element_path: ElementPath, trestle_root: Path) -> Plan:
         """Merge operations.
 
         It returns a plan for the operation
@@ -86,22 +93,23 @@ class MergeCmd(CommandPlusDocs):
         # Destination model filetype
         try:
             logger.debug(f'merge destination model alias: {destination_model_alias}')
-            logger.debug('merge getting contextual file type from cwd')
-            file_type = fs.get_contextual_file_type(Path(os.getcwd()))
+            logger.debug('merge getting contextual file type effective working directory')
+            file_type = fs.get_contextual_file_type(effective_cwd)
             logger.debug(f'contextual file type is {file_type}')
         except Exception as e:
             raise TrestleError(str(e))
         file_ext = FileContentType.to_file_extension(file_type)
         # Destination model filename
-        destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}')
-        destination_model_filename = destination_model_filename.resolve()
-        logger.debug(f'destination model filename is {destination_model_filename}')
-        destination_model_type, _ = fs.get_stripped_model_type(destination_model_filename, trestle_root)
+        destination_model_path = (
+            effective_cwd / f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}'
+        )
+        logger.debug(f'destination model filename is {destination_model_path}')
+        destination_model_type, _ = fs.get_stripped_model_type(destination_model_path, trestle_root)
 
         destination_model_object: OscalBaseModel = None
-        if destination_model_filename.exists():
+        if destination_model_path.exists():
             logger.debug('dest filename exists so read it')
-            destination_model_object = destination_model_type.oscal_read(destination_model_filename)
+            destination_model_object = destination_model_type.oscal_read(destination_model_path)
         """2. If target is wildcard, load distributed destination model and replace destination model."""
         # Handle WILDCARD '*' match. Return plan to load the destination model, with its distributed attributes
         if target_model_alias == '*':
@@ -111,14 +119,15 @@ class MergeCmd(CommandPlusDocs):
                 collection_type = destination_model_type.get_collection_type()
 
             merged_model_type, _, merged_model_instance = load_distributed.load_distributed(
-                destination_model_filename, trestle_root, collection_type)
+                destination_model_path, trestle_root, collection_type)
             plan = Plan()
-            reset_destination_action = CreatePathAction(destination_model_filename, clear_content=True)
+            reset_destination_action = CreatePathAction(destination_model_path, clear_content=True)
             wrapper_alias = destination_model_alias
             write_destination_action = WriteFileAction(
-                destination_model_filename, Element(merged_model_instance, wrapper_alias), content_type=file_type
+                destination_model_path, Element(merged_model_instance, wrapper_alias), content_type=file_type
             )
-            delete_target_action = RemovePathAction(Path(destination_model_alias).resolve())
+            remove_path_folder = effective_cwd / destination_model_alias
+            delete_target_action = RemovePathAction(remove_path_folder)
             plan: Plan = Plan()
             plan.add_action(reset_destination_action)
             plan.add_action(write_destination_action)
@@ -127,7 +136,7 @@ class MergeCmd(CommandPlusDocs):
 
         logger.debug(f'get dest model with fields stripped: {target_model_alias}')
         # Get destination model without the target field stripped
-        merged_model_type, _ = fs.get_stripped_model_type(destination_model_filename, trestle_root,
+        merged_model_type, _ = fs.get_stripped_model_type(destination_model_path, trestle_root,
                                                           aliases_not_to_be_stripped=[target_model_alias])
         """3. Load Target model. Target model could be stripped"""
         try:
@@ -137,7 +146,7 @@ class MergeCmd(CommandPlusDocs):
             raise TrestleError(
                 f'Target model not found. Possibly merge of the elements not allowed at this point. {str(e)}'
             )
-        target_model_path = Path(os.getcwd()) / destination_model_alias
+        target_model_path = effective_cwd / destination_model_alias
         logger.debug(
             f'look for target model path {target_model_path} at dest alias {destination_model_alias} rel to cwd'
         )
@@ -178,11 +187,11 @@ class MergeCmd(CommandPlusDocs):
         merged_model_object = merged_model_type(**merged_dict)  # type: ignore
         merged_destination_element = Element(merged_model_object)
         """5. Create action  plan"""
-        logger.debug(f'create path action clear content: {destination_model_filename}')
-        reset_destination_action = CreatePathAction(destination_model_filename, clear_content=True)
-        logger.debug(f'write file action {destination_model_filename}')
+        logger.debug(f'create path action clear content: {destination_model_path}')
+        reset_destination_action = CreatePathAction(destination_model_path, clear_content=True)
+        logger.debug(f'write file action {destination_model_path}')
         write_destination_action = WriteFileAction(
-            destination_model_filename, merged_destination_element, content_type=file_type
+            destination_model_path, merged_destination_element, content_type=file_type
         )
         # FIXME this will delete metadata.json but it will leave metadata/roles/roles.*
         # need to clean up all lower dirs
