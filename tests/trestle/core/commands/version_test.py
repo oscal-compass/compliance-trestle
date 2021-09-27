@@ -15,18 +15,19 @@
 # limitations under the License.
 """Test for cli module command version."""
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
 from trestle import cli
 
 
-def test_version() -> None:
+def test_version(monkeypatch: MonkeyPatch) -> None:
     """Test version output."""
     testcmd = 'trestle version'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
