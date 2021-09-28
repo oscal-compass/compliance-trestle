@@ -24,30 +24,10 @@ from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
-from trestle.core.control_io import ControlIo
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import Part, Property
 
 markdown_name = 'my_md'
-
-
-def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> int:
-    """Insert response prose in for a statement of a control."""
-    control_dir = trestle_dir / markdown_name / statement_id.split('-')[0]
-    md_file = control_dir / (statement_id.split('_')[0] + '.md')
-
-    return test_utils.insert_text_in_file(md_file, statement_id, prose)
-
-
-def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
-    """Confirm the text is present in the control markdown in the correct part."""
-    control_dir = trestle_dir / markdown_name / control_id.split('-')[0]
-    md_file = control_dir / f'{control_id}.md'
-
-    responses = ControlIo.read_all_implementation_prose(md_file)
-    if part_label not in responses:
-        return False
-    prose = '\n'.join(responses[part_label])
-    return seek_str in prose
 
 
 @pytest.mark.parametrize('use_cli', [True, False])
@@ -63,11 +43,15 @@ def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path)
     shutil.copy(nist_catalog_path, catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     markdown_path.mkdir(parents=True, exist_ok=True)
+    ac1_path = markdown_path / 'ac/ac-1.md'
+    new_prose = 'My added item'
+    # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
         with patch.object(sys, 'argv', test_args):
             Trestle().run()
-        assert (markdown_path / 'ac/ac-1.md').exists()
+        assert ac1_path.exists()
+        test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         with patch.object(sys, 'argv', test_args):
             Trestle().run()
@@ -75,10 +59,17 @@ def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path)
         catalog_generate = CatalogGenerate()
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
         assert (markdown_path / 'ac/ac-1.md').exists()
+        test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         catalog_assemble = CatalogAssemble()
         catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
 
     cat_orig = Catalog.oscal_read(catalog_path)
     cat_new = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{assembled_cat_name}/catalog.json')
     interface_orig = CatalogInterface(cat_orig)
+    # add the item manually to the original catalog so we can confirm the item was loaded correctly
+    ac1 = interface_orig.get_control('ac-1')
+    prop = Property(name='label', value='d.')
+    new_part = Part(id='ac-1_smt.d', name='item', props=[prop], prose=new_prose)
+    ac1.parts[0].parts.append(new_part)
+    interface_orig.update_catalog_controls()
     assert interface_orig.equivalent_to(cat_new)

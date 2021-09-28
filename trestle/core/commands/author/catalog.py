@@ -17,8 +17,6 @@ import argparse
 import logging
 import pathlib
 
-import trestle.core.generators as gens
-import trestle.oscal.catalog as cat
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
@@ -102,30 +100,9 @@ class CatalogAssemble(AuthorCommonCommand):
             0 on success, 1 otherwise
 
         """
-        catalog = gens.generate_sample_model(cat.Catalog)
-        group_ids = []
         md_dir = trestle_root / md_name
-
-        for gdir in md_dir.glob('*/'):
-            group_ids.append(str(gdir.stem))
-        catalog.groups = []
-        control_io = ControlIo()
-        for group_id in group_ids:
-            new_group = gens.generate_sample_model(cat.Group)
-            new_group.id = group_id
-            new_group.title = ''
-            group_dir = md_dir / group_id
-            for control_path in group_dir.glob('*.md'):
-                control = control_io.read_control(control_path)
-                if not new_group.controls:
-                    new_group.controls = []
-                new_group.controls.append(control)
-            catalog.groups.append(new_group)
-        for control_path in md_dir.glob('*.md'):
-            control = control_io.read_control(control_path)
-            if not catalog.controls:
-                catalog.controls = []
-            catalog.controls.append(control)
+        catalog_interface = CatalogInterface()
+        catalog = catalog_interface.read_catalog_from_markdown(md_dir)
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         new_cat_dir.mkdir()
         catalog.oscal_write(new_cat_dir / 'catalog.json')

@@ -19,6 +19,7 @@ from typing import Dict, Iterator, List, Optional, Tuple
 
 from pydantic import BaseModel
 
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIo
@@ -46,10 +47,10 @@ class CatalogInterface():
         path: List[str]
         control: cat.Control
 
-    def __init__(self, catalog: cat.Catalog) -> None:
+    def __init__(self, catalog: Optional[cat.Catalog] = None) -> None:
         """Initialize the interface with the catalog."""
         self._catalog = catalog
-        self._control_dict = self._create_control_dict()
+        self._control_dict = self._create_control_dict() if catalog else None
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
@@ -188,12 +189,14 @@ class CatalogInterface():
         self._control_dict[control.id].control = control
 
     def _update_all_controls_in_list(self, controls: List[cat.Control]) -> List[cat.Control]:
+        """Given a list of controls, create fresh list pulled from the control dict."""
         new_list: List[cat.Control] = []
         for control in controls:
             new_list.append(self.get_control(control.id))
         return new_list
 
     def _update_all_controls_in_group(self, group: cat.Group) -> None:
+        """Given a group of controls, create fresh version pulled from the control dict."""
         if group.controls:
             group.controls = self._update_all_controls_in_list(group.controls)
         if group.groups:
@@ -203,7 +206,13 @@ class CatalogInterface():
                 new_groups.append(sub_group)
             group.groups = new_groups
 
-    # below are utility functions
+    def update_catalog_controls(self) -> None:
+        """Update the catalog by pulling fresh controls from the dict."""
+        if self._catalog.groups:
+            for group in self._catalog.groups:
+                self._update_all_controls_in_group(group)
+        if self._catalog.controls:
+            self._catalog.controls = self._update_all_controls_in_list(self._catalog.controls)
 
     def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
         hits: List[str] = []
@@ -252,22 +261,43 @@ class CatalogInterface():
             group_ids.append(str(gdir.stem))
         return group_ids
 
-    def read_catalog_from_markdown(self, md_path: pathlib.Path, component: ossp.SystemComponent) -> None:
+    def read_catalog_from_markdown(self, md_path: pathlib.Path) -> cat.Catalog:
         """Read the catalog controls from the given directory."""
-        # create implementation requirements for each control, linked to the dummy component uuid
-        control_io = ControlIo()
+        if not self._catalog:
+            self._catalog = gens.generate_sample_model(cat.Catalog)
+            self._catalog.groups = []
         group_ids = self._get_group_ids(md_path)
+        control_io = ControlIo()
+        # read each group dir
         for group_id in group_ids:
-            group_path = md_path / group_id
-            for control_file in group_path.glob('*.md'):
-                control = control_io.read_control(control_file)
-                self.replace_control(control)
+            new_group = cat.Group(id=group_id, title='')
+            group_dir = md_path / group_id
+            for control_path in group_dir.glob('*.md'):
+                control = control_io.read_control(control_path)
+                if not new_group.controls:
+                    new_group.controls = []
+                new_group.controls.append(control)
+            self._catalog.groups.append(new_group)
+        # now read any controls that aren't in a broup
+        for control_path in md_path.glob('*.md'):
+            control = control_io.read_control(control_path)
+            if not self._catalog.controls:
+                self._catalog.controls = []
+            self._catalog.controls.append(control)
+        return self._catalog
 
     @staticmethod
-    def read_catalog_imp_reqs(md_path: pathlib.Path, component: ossp.SystemComponent) -> None:
-        """Read the full set of control implemented requirements from markdown."""
-        # create implementation requirements for each control, linked to the dummy component uuid
-        # find all groups in the markdown dir
+    def read_catalog_imp_reqs(md_path: pathlib.Path,
+                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+        """Read the full set of control implemented requirements from markdown.
+
+        Args:
+            md_path: Path to the markdown control files, with directories for each group
+            component: The single system component that the implemented requirements will refer to by uuid
+
+        Returns:
+            list of implemented requirements gathered from each control
+        """
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         imp_reqs: List[ossp.ImplementedRequirement] = []
@@ -324,7 +354,7 @@ class CatalogInterface():
         return True
 
     def equivalent_to(self, catalog: cat.Catalog) -> bool:
-        """Test equivalence in various ways."""
+        """Test equivalence of catalog dict contents in various ways."""
         other = CatalogInterface(catalog)
         recurse = True
         if other.get_count_of_controls(recurse) != self.get_count_of_controls(recurse):
