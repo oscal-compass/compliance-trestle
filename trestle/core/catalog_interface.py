@@ -279,12 +279,16 @@ class CatalogInterface():
         return group_ids
 
     def read_catalog_from_markdown(self, md_path: pathlib.Path) -> cat.Catalog:
-        """Read the catalog controls from the given directory."""
+        """
+        Read the groups and catalog controls from the given directory.
+
+        This will overwrite the existing groups and controls in the catalog.
+        """
         if not self._catalog:
             self._catalog = gens.generate_sample_model(cat.Catalog)
-            self._catalog.groups = []
         group_ids = self._get_group_ids(md_path)
         control_io = ControlIO()
+        groups: List[cat.Group] = []
         # read each group dir
         for group_id in group_ids:
             new_group = cat.Group(id=group_id, title='')
@@ -294,13 +298,14 @@ class CatalogInterface():
                 if not new_group.controls:
                     new_group.controls = []
                 new_group.controls.append(control)
-            self._catalog.groups.append(new_group)
-        # now read any controls that aren't in a broup
+            groups.append(new_group)
+        self._catalog.groups = groups if groups else None
+        # now read any controls that aren't in a group
+        controls: List[cat.Control] = []
         for control_path in md_path.glob('*.md'):
             control = control_io.read_control(control_path)
-            if not self._catalog.controls:
-                self._catalog.controls = []
-            self._catalog.controls.append(control)
+            controls.append(control)
+        self._catalog.controls = controls if controls else None
         return self._catalog
 
     @staticmethod
