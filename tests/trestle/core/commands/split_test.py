@@ -430,11 +430,17 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
 
 @pytest.mark.parametrize('mode', ['normal_split.*', 'split_two_steps', 'split_in_lower_dir'])
 def test_split_comp_def(
-    mode, tmp_path, keep_cwd: pathlib.Path, sample_component_definition: component.ComponentDefinition
+    mode,
+    tmp_path,
+    keep_cwd: pathlib.Path,
+    sample_component_definition: component.ComponentDefinition,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test splitting of component definition and its dictionary."""
     compdef_name = 'mycomp'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_component_definition, compdef_name)
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, sample_component_definition, compdef_name, monkeypatch
+    )
 
     compdef_dir = trestle_root / 'component-definitions' / compdef_name
     compdef_file: pathlib.Path = compdef_dir / 'component-definition.json'
@@ -478,12 +484,14 @@ def test_split_comp_def(
     assert test_utils.models_are_equivalent(new_model, original_model)
 
 
-def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+def test_split_stop_at_string(
+    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+) -> None:
     """Test prevention of split at string level."""
     # prepare trestle project dir with the file
 
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
     catalog_dir = trestle_root / 'catalogs' / cat_name
 
     os.chdir(catalog_dir)
@@ -497,11 +505,13 @@ def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: 
     assert SplitCmd()._run(args) == 1
 
 
-def test_split_tutorial_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+def test_split_tutorial_workflow(
+    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+) -> None:
     """Test split operations and final re-merge in workflow tutorial."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
@@ -556,12 +566,16 @@ def test_split_tutorial_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalo
     ]
 )
 def test_split_catalog_star(
-    split_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog
+    split_path: str,
+    tmp_path: pathlib.Path,
+    keep_cwd: pathlib.Path,
+    sample_catalog: oscatalog.Catalog,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test extended depth split operations and split of dicts."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
     orig_model = sample_catalog
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
@@ -577,11 +591,13 @@ def test_split_catalog_star(
     assert test_utils.models_are_equivalent(orig_model, new_model)
 
 
-def test_split_deep(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+def test_split_deep(
+    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+) -> None:
     """Test deep split of model."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
 
     orig_model: oscatalog.Catalog = sample_catalog
 
@@ -601,11 +617,13 @@ def test_split_deep(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.
     assert test_utils.models_are_equivalent(orig_model, new_model)
 
 
-def test_split_relative_path(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+def test_split_relative_path(
+    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+) -> None:
     """Test split with relative path."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
 
     orig_model: oscatalog.Catalog = sample_catalog
 
@@ -628,11 +646,13 @@ def test_split_relative_path(tmp_path, keep_cwd: pathlib.Path, sample_catalog: o
     assert test_utils.models_are_equivalent(orig_model, new_model)
 
 
-def test_no_file_given(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+def test_no_file_given(
+    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+) -> None:
     """Test split with no file specified."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
 
     orig_model: oscatalog.Catalog = sample_catalog
 
