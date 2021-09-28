@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Command to manipulate catalogs and controls."""
+"""Author commands to generate catalog controls as markdown and assemble them back to json."""
 
 import argparse
 import logging
@@ -21,7 +21,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.control_io import ControlIo
+from trestle.core.control_io import ControlIO
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -59,7 +59,10 @@ class CatalogGenerate(AuthorCommonCommand):
         """Generate markdown for the controls in the catalog."""
         _, _, catalog = load_distributed(catalog_path, trestle_root)
         catalog_interface = CatalogInterface(catalog)
-        control_io = ControlIo()
+        catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, False)
+        return 0
+
+        control_io = ControlIO()
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             group_dir = markdown_path if group_id == 'catalog' else markdown_path / group_id

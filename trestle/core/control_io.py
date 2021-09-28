@@ -29,7 +29,7 @@ from trestle.utils.md_writer import MDWriter
 logger = logging.getLogger(__name__)
 
 
-class ControlIo():
+class ControlIO():
     """Class to read and write controls as markdown."""
 
     def __init__(self):
@@ -77,8 +77,8 @@ class ControlIo():
                 items.append(sub_list)
         return items
 
-    def _add_parts(self, control: cat.Control) -> None:
-        """For a given control add its parts to the md file after replacing params."""
+    def _add_statement_and_its_items(self, control: cat.Control) -> None:
+        """For a given control add its one statement and its items to the md file after replacing params."""
         items = []
         if control.parts:
             for part in control.parts:
@@ -113,7 +113,7 @@ class ControlIo():
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
-        self._add_parts(control)
+        self._add_statement_and_its_items(control)
         self._md_file.set_indent_level(-1)
 
     def _get_control_section_part(self, part: common.Part, section: str) -> str:
@@ -278,7 +278,7 @@ class ControlIo():
                 # collect until next hrule
                 while ii < nlines:
                     if lines[ii].startswith(const.SSP_MD_HRULE_LINE) or lines[ii].startswith('## Implementation'):
-                        return ii, item_label, ControlIo._trim_prose_lines(prose_lines)
+                        return ii, item_label, ControlIO._trim_prose_lines(prose_lines)
                     prose_lines.append(lines[ii].strip())
                     ii += 1
             elif lines[ii].startswith('# ') and lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
@@ -286,7 +286,7 @@ class ControlIo():
                 ii += 1
                 while ii < nlines:
                     if lines[ii].startswith(const.SSP_MD_HRULE_LINE):
-                        return ii, item_label, ControlIo._trim_prose_lines(prose_lines)
+                        return ii, item_label, ControlIO._trim_prose_lines(prose_lines)
                     prose_lines.append(lines[ii].strip())
                     ii += 1
             ii += 1
@@ -320,15 +320,15 @@ class ControlIo():
         """
         if not control_file.exists():
             return {}
-        lines = ControlIo._load_control_lines(control_file)
+        lines = ControlIO._load_control_lines(control_file)
         ii = 0
         # keep moving down through the file picking up labels and prose
         responses: Dict[str, List[str]] = {}
         while True:
-            ii, part_label, prose_lines = ControlIo._read_label_prose(ii, lines)
+            ii, part_label, prose_lines = ControlIO._read_label_prose(ii, lines)
             if ii < 0:
                 break
-            clean_label = ControlIo._strip_bad_chars(part_label)
+            clean_label = ControlIO._strip_bad_chars(part_label)
             responses[clean_label] = prose_lines
         return responses
 
@@ -411,7 +411,7 @@ class ControlIo():
             if line:
                 if line[0] == '#':
                     return ii, -1, line
-                indent = ControlIo._indent(line)
+                indent = ControlIO._indent(line)
                 if indent >= 0:
                     # extract text after -
                     start = indent + 1
@@ -434,7 +434,7 @@ class ControlIo():
         if start < 0 or end < 0:
             raise TrestleError(f'Control items must have label surrounded by \\[ \\]: {line}')
         prose = line[end + 2:].strip()
-        id_ = ControlIo._strip_bad_chars(line[start + 2:end])
+        id_ = ControlIO._strip_bad_chars(line[start + 2:end])
         id_ = id_.replace('.', '')
         return id_, prose
 
@@ -443,13 +443,13 @@ class ControlIo():
                     parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
         """If indentation level goes up or down, create new list or close current one."""
         while True:
-            ii, new_indent, line = ControlIo._get_next_indent(ii, lines)
+            ii, new_indent, line = ControlIO._get_next_indent(ii, lines)
             if new_indent < 0:
                 # we are done reading control statement
                 return ii, parts
             if new_indent == indent:
                 # create new item part and add to current list of parts
-                id_text, prose = ControlIo._read_part_id_prose(line)
+                id_text, prose = ControlIO._read_part_id_prose(line)
                 id_ = parent_id + '.' + id_text
                 part = common.Part(name='item', id=id_, prose=prose)
                 parts.append(part)
@@ -458,7 +458,7 @@ class ControlIo():
                 # add new list of parts to last part and continue
                 if len(parts) == 0:
                     raise TrestleError(f'Improper indentation structure: {line}')
-                ii, new_parts = ControlIo._read_parts(new_indent, ii, lines, parts[-1].id, [])
+                ii, new_parts = ControlIO._read_parts(new_indent, ii, lines, parts[-1].id, [])
                 if new_parts:
                     parts[-1].parts = new_parts
             else:
@@ -474,7 +474,7 @@ class ControlIo():
             raise TrestleError(f'Control statement not found for {control.id}')
         ii += 1
 
-        ii, line = ControlIo._get_next_line(ii, lines)
+        ii, line = ControlIO._get_next_line(ii, lines)
         if ii < 0:
             # This means no statement and control withdrawn (this happens in NIST catalog)
             return ii
@@ -484,7 +484,7 @@ class ControlIo():
             indent = -1
             ii += 1
         else:
-            ii, indent, line = ControlIo._get_next_indent(ii, lines)
+            ii, indent, line = ControlIO._get_next_indent(ii, lines)
 
         statement_part = common.Part(name='statement', id=f'{control.id}_smt')
         # first line is either statement prose or start of statement parts
@@ -495,7 +495,7 @@ class ControlIo():
         # now just read parts recursively
         # if there was no statement prose, this will re-read the line just read
         # as the start of the statement's parts
-        ii, parts = ControlIo._read_parts(0, ii, lines, statement_part.id, [])
+        ii, parts = ControlIO._read_parts(0, ii, lines, statement_part.id, [])
         statement_part.parts = parts if parts else None
         control.parts = [statement_part]
         return ii
@@ -534,10 +534,10 @@ class ControlIo():
     def read_control(self, control_path: pathlib.Path) -> Tuple[cat.Control]:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
-        lines = ControlIo._load_control_lines(control_path)
-        ii, _ = ControlIo._read_id_title(0, lines, control)
-        ii = ControlIo._read_control_statement(ii, lines, control)
-        ii = ControlIo._read_sections(ii, lines, control)
+        lines = ControlIO._load_control_lines(control_path)
+        ii, _ = ControlIO._read_id_title(0, lines, control)
+        ii = ControlIO._read_control_statement(ii, lines, control)
+        ii = ControlIO._read_sections(ii, lines, control)
         return control
 
     def write_control(
@@ -550,7 +550,11 @@ class ControlIo():
         additional_content: bool,
         prompt_responses: bool
     ) -> None:
-        """Write out the control in markdown format."""
+        """
+        Write out the control in markdown format into the specified directory.
+
+        The filename is constructed from the control's id.
+        """
         control_file = dest_path / (control.id + '.md')
         existing_text = self.read_all_implementation_prose(control_file)
         self._md_file = MDWriter(control_file)

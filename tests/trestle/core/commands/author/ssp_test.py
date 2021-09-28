@@ -27,7 +27,7 @@ from trestle.core import const
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.control_io import ControlIo
+from trestle.core.control_io import ControlIO
 from trestle.core.markdown_validator import MarkdownValidator
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -94,7 +94,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses = ControlIo.read_all_implementation_prose(md_file)
+    responses = ControlIO.read_all_implementation_prose(md_file)
     if part_label not in responses:
         return False
     prose = '\n'.join(responses[part_label])

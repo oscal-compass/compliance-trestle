@@ -22,14 +22,29 @@ from pydantic import BaseModel
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
-from trestle.core.control_io import ControlIo
+from trestle.core.control_io import ControlIO
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
 
 class CatalogInterface():
-    """Interface to query and modify catalog contents."""
+    """
+    Interface to query and modify catalog contents.
+
+    The catalog is contained in two separate forms:  As an actual OSCAL catalog,
+    and as a separate dict providing direct lookup of a control by id.
+
+    The two representations should be converted as needed using provided routines:
+    dict -> cat: update_catalog_controls
+    cat -> dict: _create_control_dict
+
+    In normal use the dict is created by the CatalogInterface constructor,
+    changes are then made to controls in the dict,
+    then the catalog controls are updated by pulling from the dict back into the catalog.
+
+    This class does no direct file i/o.  i/o is performed via ControlIO.
+    """
 
     class ControlHandle(BaseModel):
         """Convenience class for handling controls as members of a group.
@@ -240,8 +255,8 @@ class CatalogInterface():
         all_details: bool,
         responses: bool
     ) -> None:
-        """Write out the catalog controls as markdown to the given directory."""
-        control_io = ControlIo()
+        """Write out the catalog controls from dict as markdown to the given directory."""
+        control_io = ControlIO()
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
@@ -249,8 +264,10 @@ class CatalogInterface():
         # write out the controls
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            out_path = md_path / group_id
-            control_io.write_control(out_path, control, group_title, yaml_header, sections, False, responses)
+            group_dir = md_path if group_id == 'catalog' else md_path / group_id
+            if not group_dir.exists():
+                group_dir.mkdir(parents=True, exist_ok=True)
+            control_io.write_control(group_dir, control, group_title, yaml_header, sections, False, responses)
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
@@ -267,7 +284,7 @@ class CatalogInterface():
             self._catalog = gens.generate_sample_model(cat.Catalog)
             self._catalog.groups = []
         group_ids = self._get_group_ids(md_path)
-        control_io = ControlIo()
+        control_io = ControlIO()
         # read each group dir
         for group_id in group_ids:
             new_group = cat.Group(id=group_id, title='')
@@ -301,7 +318,7 @@ class CatalogInterface():
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         imp_reqs: List[ossp.ImplementedRequirement] = []
-        control_io = ControlIo()
+        control_io = ControlIO()
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):

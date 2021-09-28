@@ -20,7 +20,7 @@ import pathlib
 import pytest
 
 import trestle.oscal.catalog as cat
-from trestle.core.control_io import ControlIo
+from trestle.core.control_io import ControlIO
 from trestle.oscal import common
 
 case_1 = 'indent_normal'
@@ -88,7 +88,7 @@ end of text
     if sections:
         control.parts.extend([sec_1, sec_2])
 
-    control_io = ControlIo()
+    control_io = ControlIO()
     control_io.write_control(tmp_path, control, '', None, None, additional_content, False)
 
     md_path = tmp_path / f'{control.id}.md'
