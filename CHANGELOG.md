@@ -3,6 +3,15 @@
 
 <!--next-version-placeholder-->
 
+## v0.25.0 (2021-09-29)
+### Feature
+* Osco results remove scc_goal_description ([#736](https://github.com/IBM/compliance-trestle/issues/736)) ([`f687a3d`](https://github.com/IBM/compliance-trestle/commit/f687a3dcc44590a60f777d38eafe4013d54909e6))
+
+### Fix
+* Ensure a minimimal code base is delivered via pypi ([#741](https://github.com/IBM/compliance-trestle/issues/741)) ([`03557bd`](https://github.com/IBM/compliance-trestle/commit/03557bdd44980899342665bac2d1905489981a75))
+* Adding extra documentation for element path. ([#735](https://github.com/IBM/compliance-trestle/issues/735)) ([`bc32371`](https://github.com/IBM/compliance-trestle/commit/bc32371e3f81adab5cd4621055421f2acb05c566))
+* Test files to confirm and close issues ([#732](https://github.com/IBM/compliance-trestle/issues/732)) ([`e87eb84`](https://github.com/IBM/compliance-trestle/commit/e87eb84aabffd842275a673e63e42c75bd418203))
+
 ## v0.24.0 (2021-09-21)
 ### Feature
 * Allow import to use the caching functionality to access external URLs (https/sftp etc) ([#718](https://github.com/IBM/compliance-trestle/issues/718)) ([`3527259`](https://github.com/IBM/compliance-trestle/commit/352725952687fde4627c97037e68f2238c638a04))
