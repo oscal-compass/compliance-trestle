@@ -16,18 +16,19 @@
 """Tests for cli module."""
 
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
 from trestle import cli
 
 
-def test_run() -> None:
+def test_run(monkeypatch: MonkeyPatch) -> None:
     """Test cli call."""
     testargs = ['trestle']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code > 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code > 0

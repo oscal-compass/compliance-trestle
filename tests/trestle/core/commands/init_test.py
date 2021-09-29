@@ -20,7 +20,8 @@ import pathlib
 import platform
 import stat
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -28,24 +29,24 @@ import trestle.core.const as const
 from trestle import cli
 
 
-def test_init(tmp_path, keep_cwd):
+def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     """Test init happy path."""
     os.chdir(tmp_path)
     testargs = ['trestle', 'init']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
-        for directory in const.MODEL_DIR_LIST:
-            assert os.path.isdir(directory)
-            assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
-            assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
-        assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
-        assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+    for directory in const.MODEL_DIR_LIST:
+        assert os.path.isdir(directory)
+        assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+        assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_directory_creation_error(tmp_path, keep_cwd):
+def test_directory_creation_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
     if platform.system() == const.WINDOWS_PLATFORM_STR:
@@ -56,27 +57,27 @@ def test_directory_creation_error(tmp_path, keep_cwd):
     config_dir.chmod(stat.S_IREAD)
     config_file = config_dir / const.TRESTLE_CONFIG_FILE
     testargs = ['trestle', 'init']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
-        for directory in const.MODEL_DIR_LIST:
-            dir_path = pathlib.Path(directory)
-            assert not dir_path.exists()
-            dist_dir_path = pathlib.Path(const.TRESTLE_DIST_DIR) / directory
-            assert not dist_dir_path.exists()
-        assert config_dir.exists()
-        assert config_dir.is_dir()
-        config_exists = False
-        try:
-            config_exists = config_file.exists()
-        except Exception:
-            pass
-        assert not config_exists
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+    for directory in const.MODEL_DIR_LIST:
+        dir_path = pathlib.Path(directory)
+        assert not dir_path.exists()
+        dist_dir_path = pathlib.Path(const.TRESTLE_DIST_DIR) / directory
+        assert not dist_dir_path.exists()
+    assert config_dir.exists()
+    assert config_dir.is_dir()
+    config_exists = False
+    try:
+        config_exists = config_file.exists()
+    except Exception:
+        pass
+    assert not config_exists
 
 
-def test_config_copy_error(tmp_path, keep_cwd):
+def test_config_copy_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     """Test error during init when a contents of .trestle cannot be created."""
     os.chdir(tmp_path)
     config_dir = pathlib.Path(const.TRESTLE_CONFIG_DIR)
@@ -85,14 +86,14 @@ def test_config_copy_error(tmp_path, keep_cwd):
     config_file.touch()
     config_file.chmod(stat.S_IREAD)
     testargs = ['trestle', 'init']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
-        for directory in const.MODEL_DIR_LIST:
-            assert os.path.isdir(directory)
-            assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
-        assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
-        assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
-        assert os.stat(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)).st_size == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        cli.run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+    for directory in const.MODEL_DIR_LIST:
+        assert os.path.isdir(directory)
+        assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+    assert os.stat(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)).st_size == 0

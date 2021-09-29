@@ -15,13 +15,18 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import getpass
 import pathlib
 import platform
 import random
 import string
 import time
 from typing import Tuple
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
+
+from paramiko import SFTPClient
+from paramiko import SSHClient
 
 import pytest
 
@@ -73,15 +78,18 @@ def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     assert models_are_equivalent(fetched_data, catalog_data)
 
 
-def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path) -> None:
+def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failed read from cache."""
+    logged_error = 'oscal_fail'
+
+    def oscal_read_mock(*args, **kwargs):
+        raise err.TrestleError(logged_error)
+
     fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
     # mock bad read of oscal model
-    with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
-        oscal_read_mock.side_effect = err.TrestleError
-        with pytest.raises(err.TrestleError):
-            fetcher.get_oscal_with_model_type(Catalog)
-        oscal_read_mock.assert_called_once()
+    monkeypatch.setattr(Catalog, 'oscal_read', oscal_read_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher.get_oscal_with_model_type(Catalog)
 
 
 def test_github_fetcher():
@@ -96,7 +104,7 @@ def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:
     assert models_are_equivalent(fetched_data, catalog_data)
 
 
-def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the HTTPS fetcher failing."""
     monkeypatch.setenv('myusername', 'user123')
     monkeypatch.setenv('mypassword', 'somep4ss')
@@ -107,7 +115,7 @@ def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.
         fetcher._update_cache()
 
 
-def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the HTTPS fetcher update, including failures."""
     # This valid uri should work:
     uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
@@ -130,34 +138,47 @@ def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.Monkey
         fetcher._update_cache()
 
 
-def test_sftp_fetcher(tmp_trestle_dir: pathlib.Path) -> None:
+def test_sftp_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher."""
+
+    def ssh_load_host_keys_mock(*args, **kwargs):
+        return
+
+    def ssh_connect_mock(*args, **kwargs):
+        return
+
+    def open_sftp_mock(*args, **kwargs):
+        return
+
+    def sftp_get_mock(*args, **kwargs):
+        return
+
     uri = 'sftp://some.host//path/to/test.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-    with patch('paramiko.SSHClient.load_system_host_keys') as ssh_load_keys_mock:
-        with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
-            with patch('paramiko.SSHClient.open_sftp') as sftp_open_mock:
-                with patch('paramiko.SFTPClient.get'):
-                    try:
-                        fetcher._update_cache()
-                    except Exception:
-                        AssertionError()
-                    ssh_load_keys_mock.assert_called_once()
-                    ssh_connect_mock.assert_called_once()
-                    sftp_open_mock.assert_called_once()
+    monkeypatch.setattr(SSHClient, 'load_system_host_keys', ssh_load_host_keys_mock)
+    monkeypatch.setattr(SSHClient, 'connect', ssh_connect_mock)
+    monkeypatch.setattr(SSHClient, 'open_sftp', open_sftp_mock)
+    monkeypatch.setattr(SFTPClient, 'get', sftp_get_mock)
+    try:
+        fetcher._update_cache()
+    except Exception:
+        AssertionError()
 
 
-def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir: pathlib.Path) -> None:
+def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher when SSHClient loading of system host keys fails."""
+
+    def ssh_load_system_host_keys_mock(*args, **kwargs):
+        raise OSError('stuff')
+
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-    with patch('paramiko.SSHClient.load_system_host_keys') as ssh_load_system_host_keys_mock:
-        ssh_load_system_host_keys_mock.side_effect = OSError('stuff')
-        with pytest.raises(err.TrestleError):
-            fetcher._update_cache()
+    monkeypatch.setattr(SSHClient, 'load_system_host_keys', ssh_load_system_host_keys_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
 
 
-def test_sftp_fetcher_bad_ssh_key(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_sftp_fetcher_bad_ssh_key(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher when the loaded SSH_KEY env var contains a bad SSH key."""
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
@@ -166,67 +187,91 @@ def test_sftp_fetcher_bad_ssh_key(tmp_trestle_dir: pathlib.Path, monkeypatch: py
         fetcher._update_cache()
 
 
-def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path) -> None:
+def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test sftp during SSHClient connect failure."""
+
+    def ssh_connect_mock(*args, **kwargs):
+        err.TrestleError('stuff')
+
     # Password given:
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-    with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
-        ssh_connect_mock.side_effect = err.TrestleError('stuff')
-        with pytest.raises(err.TrestleError):
-            fetcher._update_cache()
+    monkeypatch.setattr(SSHClient, 'connect', ssh_connect_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
     # Password not given (assumes attempt to use ssh-agent):
     uri = 'sftp://username@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
-    with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
-        ssh_connect_mock.side_effect = err.TrestleError('stuff')
-        with pytest.raises(err.TrestleError):
-            fetcher._update_cache()
+    monkeypatch.setattr(SSHClient, 'connect', ssh_connect_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
 
 
-def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the exception response during open_sftp failure."""
+
+    def ssh_load_host_keys_mock(*args, **kwargs):
+        return
+
+    def ssh_connect_mock(*args, **kwargs):
+        return
+
+    def open_sftp_mock(*args, **kwargs):
+        raise err.TrestleError('stuff')
+
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     monkeypatch.setenv('SSH_KEY', 'some_key_file')
-    with patch('paramiko.SSHClient.load_host_keys') as load_host_keys_mock:
-        with patch('paramiko.SSHClient.connect') as connect_mock:
-            with patch('paramiko.SSHClient.open_sftp') as open_sftp_mock:
-                open_sftp_mock.side_effect = err.TrestleError('stuff')
-                with pytest.raises(err.TrestleError):
-                    fetcher._update_cache()
-                    load_host_keys_mock.assert_called_once()
-                    connect_mock.assert_called_once()
-                    open_sftp_mock.assert_called_once()
+    monkeypatch.setattr(SSHClient, 'load_host_keys', ssh_load_host_keys_mock)
+    monkeypatch.setattr(SSHClient, 'connect', ssh_connect_mock)
+    monkeypatch.setattr(SSHClient, 'open_sftp', open_sftp_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
+        ssh_load_host_keys_mock.assert_called_once()
+        ssh_connect_mock.assert_called_once()
+        open_sftp_mock.assert_called_once()
 
 
-def test_sftp_fetcher_getuser_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_sftp_fetcher_getuser_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp call to getpass.getuser."""
+
+    def getuser_mock(*args, **kwargs):
+        return
+
     uri = 'sftp://some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     # Force call to paramiko.SSHClient.load_host_keys
     monkeypatch.setenv('SSH_KEY', 'some_key_file')
-    with patch('getpass.getuser') as getuser_mock:
-        with pytest.raises(err.TrestleError):
-            fetcher._update_cache()
-            getuser_mock.assert_called_once()
+    monkeypatch.setattr(getpass, 'getuser', getuser_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
+        getuser_mock.assert_called_once()
 
 
-def test_sftp_fetcher_get_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_sftp_fetcher_get_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher SFTPClient.get() failing."""
+
+    def load_host_keys_mock(*args, **kwargs):
+        return
+
+    def connect_mock(*args, **kwargs):
+        return
+
+    def get_mock(*args, **kwargs):
+        raise err.TrestleError('get fails')
+
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
     # Force call to paramiko.SSHClient.load_host_keys
     monkeypatch.setenv('SSH_KEY', 'some_key_file')
-    with patch('paramiko.SSHClient.load_host_keys') as load_host_keys_mock:
-        with patch('paramiko.SSHClient.connect') as connect_mock:
-            with patch('paramiko.SFTPClient.get') as get_mock:
-                get_mock.side_effect = err.TrestleError('get fails')
-                with pytest.raises(TrestleError):
-                    fetcher._update_cache()
-                    load_host_keys_mock.assert_called_once()
-                    connect_mock.assert_called_once()
-                    get_mock.assert_called_once()
+    monkeypatch.setattr(SSHClient, 'load_host_keys', load_host_keys_mock)
+    monkeypatch.setattr(SSHClient, 'connect', connect_mock)
+    monkeypatch.setattr(SFTPClient, 'get', get_mock)
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+        load_host_keys_mock.assert_called_once()
+        connect_mock.assert_called_once()
+        get_mock.assert_called_once()
 
 
 @pytest.mark.parametrize(
@@ -263,7 +308,7 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
         'https://:{{mypassword}}@github.com/IBM/test/file'
     ]
 )
-def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: MonkeyPatch) -> None:
     """Test fetcher factory with bad URI."""
     if 'https' in uri:
         monkeypatch.setenv('myusername', 'user123')
@@ -272,7 +317,7 @@ def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: p
         cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
 
-def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that the fetcher factory correctly resolves functionality."""
     # basic absolute and relative file paths
     for uri in [as_file_uri('/home/user/oscal_file.json'),

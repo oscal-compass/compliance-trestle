@@ -15,16 +15,16 @@
 # limitations under the License.
 """Test calling as main."""
 
-from unittest.mock import patch
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
 
-def test_init():
+def test_init(monkeypatch: MonkeyPatch):
     """Test initialisation function for main."""
     import trestle.__main__ as main_mod
-    with patch.object(main_mod, '__name__', '__main__'):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            main_mod.init()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code > 0
+    monkeypatch.setattr(main_mod, '__name__', '__main__')
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        main_mod.init()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code > 0
