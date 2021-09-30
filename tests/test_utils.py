@@ -20,7 +20,8 @@ import os
 import pathlib
 import sys
 from typing import Any, List
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 from trestle.cli import Trestle
 from trestle.core import const, generators, utils
@@ -94,7 +95,7 @@ def prepare_trestle_project_dir(
 
 
 def create_trestle_project_with_model(
-    top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str
+    top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str, monkeypatch: MonkeyPatch
 ) -> pathlib.Path:
     """Create initialized trestle project and import the model into it."""
     cur_dir = pathlib.Path.cwd()
@@ -106,8 +107,8 @@ def create_trestle_project_with_model(
 
     try:
         testargs = ['trestle', 'init']
-        with patch.object(sys, 'argv', testargs):
-            assert Trestle().run() == 0
+        monkeypatch.setattr(sys, 'argv', testargs)
+        assert Trestle().run() == 0
 
         # place model object in top directory outside trestle project
         # so it can be imported

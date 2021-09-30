@@ -19,8 +19,9 @@ import random
 import string
 import sys
 from typing import Iterator
-from unittest.mock import patch
 from uuid import uuid4
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -139,7 +140,7 @@ def sample_component_definition():
 
 
 @pytest.fixture(scope='function')
-def tmp_trestle_dir(tmp_path: pathlib.Path) -> Iterator[pathlib.Path]:
+def tmp_trestle_dir(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> Iterator[pathlib.Path]:
     """Create and return a new trestle project directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
@@ -148,9 +149,9 @@ def tmp_trestle_dir(tmp_path: pathlib.Path) -> Iterator[pathlib.Path]:
     pytest_cwd = pathlib.Path.cwd()
     os.chdir(tmp_path)
     testargs = ['trestle', 'init']
-    with patch.object(sys, 'argv', testargs):
-        # FIXME: Correctly capture return codes
-        Trestle().run()
+    monkeypatch.setattr(sys, 'argv', testargs)
+    # FIXME: Correctly capture return codes
+    Trestle().run()
     yield tmp_path
 
     os.chdir(pytest_cwd)
