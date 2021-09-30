@@ -134,7 +134,7 @@ class MDWriter():
                     yaml.indent(mapping=2, sequence=4, offset=2)
                     yaml.dump(self._yaml_header, f)
                     f.write('\n')
-                    f.write('---\n')
+                    f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))
         except IOError as e:
