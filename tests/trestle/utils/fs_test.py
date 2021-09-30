@@ -446,10 +446,21 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
     (mycatalog_dir / 'file2.json').unlink()
 
-    pathlib.Path(mycatalog_dir / '.DS_Store').touch()
+    if os.name == 'nt':
+        hidden_file = mycatalog_dir / 'hidden.txt'
+        hidden_file.touch()
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+    else:
+        pathlib.Path(mycatalog_dir / '.DS_Store').touch()
+
     pathlib.Path(mycatalog_dir / 'file2.json').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
-    (mycatalog_dir / '.DS_Store').unlink()
+
+    if os.name == 'nt':
+        hidden_file.unlink()
+    else:
+        (mycatalog_dir / '.DS_Store').unlink()
     (mycatalog_dir / 'file2.json').unlink()
 
     pathlib.Path(mycatalog_dir / 'file3.yml').touch()
