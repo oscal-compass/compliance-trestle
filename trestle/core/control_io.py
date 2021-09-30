@@ -111,7 +111,7 @@ class ControlIO():
     def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
-        title = f'{control.id} - [{group_title}] {control.title}'
+        title = f'{control.id} - \[{group_title}\] {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
@@ -396,12 +396,12 @@ class ControlIO():
                 control_id = line.split()[1]
                 first_dash = line.find('-')
                 title_line = line[first_dash + 1:]
-                group_start = title_line.find('[')
-                group_end = title_line.find(']')
+                group_start = title_line.find('\[')
+                group_end = title_line.find('\]')
                 if group_start < 0 or group_end < 0 or group_start > group_end:
                     raise TrestleError(f'unable to read group and title for control {control_id}')
-                group_id = title_line[group_start + 1:group_end].strip()
-                control_title = title_line[group_end + 1:].strip()
+                group_id = title_line[group_start + 2:group_end].strip()
+                control_title = title_line[group_end + 2:].strip()
                 return ii, control_id, group_id, control_title
         raise TrestleError('Unable to find #Control: heading in control markdown file.')
 
