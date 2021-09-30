@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.25.1 (2021-09-30)
+### Fix
+* Emergency fix for trestle packaging. ([#751](https://github.com/IBM/compliance-trestle/issues/751)) ([`8fedeaa`](https://github.com/IBM/compliance-trestle/commit/8fedeaa641e7817fb4092224a315e1a38166078e))
+
 ## v0.25.0 (2021-09-29)
 ### Feature
 * Osco results remove scc_goal_description ([#736](https://github.com/IBM/compliance-trestle/issues/736)) ([`f687a3d`](https://github.com/IBM/compliance-trestle/commit/f687a3dcc44590a60f777d38eafe4013d54909e6))
