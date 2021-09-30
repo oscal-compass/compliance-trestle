@@ -20,6 +20,7 @@ Umbrella command for all markdown related transformations
 """
 import logging
 
+from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
 from trestle.core.commands.author.docs import Docs
 from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
@@ -34,4 +35,4 @@ class AuthorCmd(CommandPlusDocs):
 
     name = 'author'
 
-    subcommands = [Docs, Folders, Headers, SSPGenerate, SSPAssemble]
+    subcommands = [CatalogAssemble, CatalogGenerate, Docs, Folders, Headers, SSPGenerate, SSPAssemble]

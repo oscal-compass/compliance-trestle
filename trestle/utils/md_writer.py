@@ -74,6 +74,11 @@ class MDWriter():
             return
         self._add_line_raw(out_line)
 
+    def new_paraline(self, line: str) -> None:
+        """Add a paragraph and a line to output."""
+        self.new_paragraph()
+        self.new_line(line)
+
     def new_paragraph(self):
         """Start a new paragraph."""
         self.new_line('')
@@ -110,8 +115,13 @@ class MDWriter():
                 self.new_list(item)
             self._add_indent_level(-1)
 
+    def _check_header(self) -> None:
+        while len(self._lines) > 0 and self._lines[0] == '':
+            self._lines = self._lines[1:]
+
     def write_out(self) -> None:
         """Write out the markdown file."""
+        self._check_header()
         try:
             self._file_path.parent.mkdir(exist_ok=True, parents=True)
             with open(self._file_path, 'w', encoding=const.FILE_ENCODING) as f:
@@ -124,7 +134,7 @@ class MDWriter():
                     yaml.indent(mapping=2, sequence=4, offset=2)
                     yaml.dump(self._yaml_header, f)
                     f.write('\n')
-                    f.write('---\n')
+                    f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))
         except IOError as e:

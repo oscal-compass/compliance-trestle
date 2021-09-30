@@ -24,9 +24,10 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.core import const
-from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManager
+from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
+from trestle.core.control_io import ControlIO
 from trestle.core.markdown_validator import MarkdownValidator
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -85,7 +86,7 @@ def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> in
     control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
     md_file = control_dir / (statement_id.split('_')[0] + '.md')
 
-    return test_utils.insert_text_in_file(md_file, statement_id, prose)
+    return test_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
 
 
 def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
@@ -93,7 +94,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses = SSPManager.get_all_implementation_prose(md_file)
+    responses = ControlIO.read_all_implementation_prose(md_file)
     if part_label not in responses:
         return False
     prose = '\n'.join(responses[part_label])
@@ -101,7 +102,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 
 @pytest.mark.parametrize('import_cat', [False, True])
-def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
     args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, import_cat)
     ssp_cmd = SSPGenerate()
@@ -138,7 +139,7 @@ def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
     args, sections, yaml_path = setup_for_ssp(False, False, tmp_trestle_dir)
     ssp_cmd = SSPGenerate()
@@ -187,7 +188,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
 
 
-def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     """Test bad output name."""
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, profile='my_prof', output='catalogs', verbose=True, yaml_header='dummy.yaml'
@@ -196,7 +197,7 @@ def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -> None:
+def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
