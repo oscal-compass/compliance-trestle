@@ -27,13 +27,6 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal import assessment_plan
-from trestle.oscal import assessment_results
-from trestle.oscal import catalog
-from trestle.oscal import component
-from trestle.oscal import poam
-from trestle.oscal import profile
-from trestle.oscal import ssp
 from trestle.utils import fs
 from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
@@ -59,7 +52,7 @@ class ReplicateCmd(CommandPlusDocs):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Execute and process the args"""
+        """Execute and process the args."""
         object_type = ElementPath(args.model).get_type()
         return self.replicate_object(args.model, object_type, args)
 
