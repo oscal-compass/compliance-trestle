@@ -16,12 +16,13 @@
 import argparse
 import logging
 import pathlib
+import shutil
 
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.control_io import ControlIO
+from trestle.core.err import TrestleError
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -57,18 +58,13 @@ class CatalogGenerate(AuthorCommonCommand):
         self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path
     ) -> int:
         """Generate markdown for the controls in the catalog."""
-        _, _, catalog = load_distributed(catalog_path, trestle_root)
-        catalog_interface = CatalogInterface(catalog)
-        catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, False)
+        try:
+            _, _, catalog = load_distributed(catalog_path, trestle_root)
+            catalog_interface = CatalogInterface(catalog)
+            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, False)
+        except Exception as e:
+            raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
         return 0
-
-        control_io = ControlIO()
-        for control in catalog_interface.get_all_controls(True):
-            group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            group_dir = markdown_path if group_id == 'catalog' else markdown_path / group_id
-            if not group_dir.exists():
-                group_dir.mkdir(parents=True, exist_ok=True)
-            control_io.write_control(group_dir, control, group_title, None, None, False, False)
 
 
 class CatalogAssemble(AuthorCommonCommand):
@@ -105,8 +101,25 @@ class CatalogAssemble(AuthorCommonCommand):
         """
         md_dir = trestle_root / md_name
         catalog_interface = CatalogInterface()
-        catalog = catalog_interface.read_catalog_from_markdown(md_dir)
+        try:
+            catalog = catalog_interface.read_catalog_from_markdown(md_dir)
+        except Exception as e:
+            raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
+        if catalog_interface.get_count_of_controls(True) == 0:
+            logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
+            return 1
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
-        new_cat_dir.mkdir()
-        catalog.oscal_write(new_cat_dir / 'catalog.json')
+        if new_cat_dir.exists():
+            logger.info('Creating catalog from markdown and destination catalog directory exists, so deleting.')
+            try:
+                shutil.rmtree(str(new_cat_dir))
+            except Exception as e:
+                raise TrestleError(f'Error deleting existing catalog directory {new_cat_dir}: {e}')
+                return 1
+        try:
+            new_cat_dir.mkdir()
+            catalog.oscal_write(new_cat_dir / 'catalog.json')
+        except Exception as e:
+            raise TrestleError(f'Error writing catalog from markdown to {new_cat_dir}: {e}')
+            return 1
         return 0

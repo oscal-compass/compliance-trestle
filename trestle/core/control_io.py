@@ -15,8 +15,10 @@
 
 import logging
 import pathlib
-import string
+import re
 from typing import Dict, List, Optional, Tuple, Union
+
+import frontmatter
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
@@ -50,7 +52,7 @@ class ControlIO():
                     return prop.value.strip()
         return ''
 
-    def _get_part(self, control: cat.Control, part: common.Part) -> List[Union[str, List[str]]]:
+    def _get_part(self, part: common.Part) -> List[Union[str, List[str]]]:
         """
         Find parts in control that require implementations.
 
@@ -72,7 +74,7 @@ class ControlIO():
             if part.parts:
                 sub_list = []
                 for prt in part.parts:
-                    sub_list.extend(self._get_part(control, prt))
+                    sub_list.extend(self._get_part(prt))
                 sub_list.append('')
                 items.append(sub_list)
         return items
@@ -86,7 +88,7 @@ class ControlIO():
                     # If the statement has prose write it as a raw line and not list element
                     if part.prose:
                         self._md_file.new_line(part.prose)
-                    items.append(self._get_part(control, part))
+                    items.append(self._get_part(part))
             # unwrap the list if it is many levels deep
             while not isinstance(items, str) and len(items) == 1:
                 items = items[0]
@@ -186,7 +188,7 @@ class ControlIO():
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
-        self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
+        self._md_file.new_header(level=1, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -224,17 +226,22 @@ class ControlIO():
         self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/page.html for suggested types. -->')
 
     @staticmethod
-    def _strip_bad_chars(label: str) -> str:
-        """
-        Remove chars that would cause statement_id regex to fail.
-
-        Actual value can't start with digit, ., or -
-        """
-        allowed_chars = string.ascii_letters + string.digits + '-._'
-        new_label = ''
-        for c in label:
-            if c in allowed_chars:
-                new_label += c
+    def _strip_to_make_ncname(label: str) -> str:
+        """Strip chars to conform with NCNAME regex."""
+        orig_label = label
+        # make sure first char is allowed
+        while label and label[0] not in const.NCNAME_UTF8_FIRST_CHAR_OPTIONS:
+            label = label[1:]
+        new_label = label[:1]
+        # now check remaining chars
+        if len(label) > 1:
+            for ii in range(1, len(label)):
+                if label[ii] in const.NCNAME_UTF8_OTHER_CHAR_OPTIONS:
+                    new_label += label[ii]
+        # do final check to confirm it is NCNAME
+        match = re.search(const.NCNAME_REGEX, new_label)
+        if not match:
+            raise TrestleError(f'Unable to convert label {orig_label} to NCNAME format.')
         return new_label
 
     @staticmethod
@@ -270,33 +277,53 @@ class ControlIO():
         nlines = len(lines)
         prose_lines: List[str] = []
         item_label = ''
-        while ii < nlines:
+        if ii == 0:
+            # read the entire control to validate contents
+            ii, _ = ControlIO._read_control_statement(0, lines, 'dummy_id')
+            ii, _ = ControlIO._read_sections(ii, lines, 'xx', [])
+            # go back to beginning and seek the implementation question
+            ii = 0
+            while ii < nlines and not lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
+                ii += 1
+            # skip over the question
+            ii += 1
+        while -1 < ii < nlines:
             # start of new part
             if lines[ii].startswith('## Implementation'):
                 item_label = lines[ii].strip().split(' ')[-1]
                 ii += 1
+                if ii < nlines and lines[ii] and ControlIO._indent(lines[ii]) == 0:
+                    msg = f'Implementation line for control appears broken by newline: {lines[ii]}'
+                    raise TrestleError(msg)
                 # collect until next hrule
                 while ii < nlines:
                     if lines[ii].startswith(const.SSP_MD_HRULE_LINE) or lines[ii].startswith('## Implementation'):
                         return ii, item_label, ControlIO._trim_prose_lines(prose_lines)
                     prose_lines.append(lines[ii].strip())
                     ii += 1
-            elif lines[ii].startswith('# ') and lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
-                item_label = lines[ii].strip().split(' ')[1]
-                ii += 1
-                while ii < nlines:
-                    if lines[ii].startswith(const.SSP_MD_HRULE_LINE):
-                        return ii, item_label, ControlIO._trim_prose_lines(prose_lines)
-                    prose_lines.append(lines[ii].strip())
-                    ii += 1
+            elif lines[ii].startswith('# ') or lines[ii].startswith('## '):
+                raise TrestleError(f'Improper heading level in control statement: {lines[ii]}')
             ii += 1
         return -1, item_label, prose_lines
 
     @staticmethod
     def _load_control_lines(control_file: pathlib.Path) -> List[str]:
         lines: List[str] = []
-        with control_file.open('r', encoding=const.FILE_ENCODING) as f:
-            raw_lines = f.readlines()
+        try:
+            content = control_file.open('r', encoding=const.FILE_ENCODING).read()
+        except UnicodeDecodeError as e:
+            logger.error('utf-8 decoding failed.')
+            logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
+            logger.debug(f'Underlying exception {e}')
+            raise TrestleError('Unable to load file due to utf-8 encoding issues.')
+        try:
+            fm = frontmatter.loads(content)
+        except Exception as e:
+            logger.error(f'Error parsing yaml header from file {control_file}')
+            logger.error('This is most likely due to an incorrect yaml structure.')
+            logger.debug(f'Underlying error: {str(e)}')
+            raise TrestleError(f'Failure parsing yaml header on file {control_file}')
+        raw_lines = fm.content.split('\n')
         # Any fully blank lines will be retained but as empty strings
         lines = [line.strip('\r\n').rstrip() for line in raw_lines]
         clean_lines = []
@@ -328,8 +355,7 @@ class ControlIO():
             ii, part_label, prose_lines = ControlIO._read_label_prose(ii, lines)
             if ii < 0:
                 break
-            clean_label = ControlIO._strip_bad_chars(part_label)
-            responses[clean_label] = prose_lines
+            responses[part_label] = prose_lines
         return responses
 
     def read_implementations(self, control_file: pathlib.Path,
@@ -350,7 +376,7 @@ class ControlIO():
             by_comp.description = '\n'.join(prose_lines)
             # create a statement to hold the by-component and assign the statement id
             statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-            statement.statement_id = f'{control_id}_smt.{label}'
+            statement.statement_id = ControlIO._strip_to_make_ncname(f'{control_id}_smt.{label}')
             statement.by_components = [by_comp]
             # create a new implemented requirement linked to the control id to hold the statement
             imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
@@ -360,23 +386,23 @@ class ControlIO():
         return imp_reqs
 
     @staticmethod
-    def _read_id_title(ii: int, lines: List[str], control: cat.Control) -> Tuple[int, str]:
+    def _read_id_group_id_title(ii: int, lines: List[str]) -> Tuple[int, str, str, str]:
         while ii < len(lines):
             line = lines[ii]
             ii += 1
             if line.startswith('# '):
                 if line.count('-') < 2:
                     raise TrestleError(f'Markdown control title format error: {line}')
-                control.id = line.split()[1]
+                control_id = line.split()[1]
                 first_dash = line.find('-')
                 title_line = line[first_dash + 1:]
                 group_start = title_line.find('[')
                 group_end = title_line.find(']')
                 if group_start < 0 or group_end < 0 or group_start > group_end:
-                    raise TrestleError(f'unable to read group and title for control {control.id}')
+                    raise TrestleError(f'unable to read group and title for control {control_id}')
                 group_id = title_line[group_start + 1:group_end].strip()
-                control.title = title_line[group_end + 1:].strip()
-                return ii, group_id
+                control_title = title_line[group_end + 1:].strip()
+                return ii, control_id, group_id, control_title
         raise TrestleError('Unable to find #Control: heading in control markdown file.')
 
     @staticmethod
@@ -434,8 +460,7 @@ class ControlIO():
         if start < 0 or end < 0:
             raise TrestleError(f'Control items must have label surrounded by \\[ \\]: {line}')
         prose = line[end + 2:].strip()
-        id_ = ControlIO._strip_bad_chars(line[start + 2:end])
-        id_ = id_.replace('.', '')
+        id_ = line[start + 2:end]
         return id_, prose
 
     @staticmethod
@@ -450,7 +475,7 @@ class ControlIO():
             if new_indent == indent:
                 # create new item part and add to current list of parts
                 id_text, prose = ControlIO._read_part_id_prose(line)
-                id_ = parent_id + '.' + id_text
+                id_ = ControlIO._strip_to_make_ncname(parent_id + '.' + id_text)
                 part = common.Part(name='item', id=id_, prose=prose)
                 parts.append(part)
                 ii += 1
@@ -466,18 +491,18 @@ class ControlIO():
                 return ii, parts
 
     @staticmethod
-    def _read_control_statement(ii: int, lines: List[str], control: cat.Control) -> int:
+    def _read_control_statement(ii: int, lines: List[str], control_id: str) -> Tuple[int, common.Part]:
         """Search for the Control statement and read until next ## Control."""
         while 0 <= ii < len(lines) and not lines[ii].startswith('## Control '):
             ii += 1
-        if not lines[ii].startswith('## Control'):
-            raise TrestleError(f'Control statement not found for {control.id}')
+        if ii >= len(lines):
+            raise TrestleError(f'Control statement not found for control {control_id}')
         ii += 1
 
         ii, line = ControlIO._get_next_line(ii, lines)
         if ii < 0:
             # This means no statement and control withdrawn (this happens in NIST catalog)
-            return ii
+            return ii, None
         if line and line[0] == ' ' and line.lstrip()[0] != '-':
             # prose that appears indented but has no - : treat it as the normal statement prose
             line = line.lstrip()
@@ -486,7 +511,7 @@ class ControlIO():
         else:
             ii, indent, line = ControlIO._get_next_indent(ii, lines)
 
-        statement_part = common.Part(name='statement', id=f'{control.id}_smt')
+        statement_part = common.Part(name='statement', id=f'{control_id}_smt')
         # first line is either statement prose or start of statement parts
         if indent < 0:
             statement_part.prose = line
@@ -497,11 +522,11 @@ class ControlIO():
         # as the start of the statement's parts
         ii, parts = ControlIO._read_parts(0, ii, lines, statement_part.id, [])
         statement_part.parts = parts if parts else None
-        control.parts = [statement_part]
-        return ii
+        return ii, statement_part
 
     @staticmethod
-    def _read_sections(ii: int, lines: List[str], control: cat.Control) -> None:
+    def _read_sections(ii: int, lines: List[str], control_id: str,
+                       control_parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
         """Read all sections following the section separated by ## Control."""
         new_parts = []
         prefix = '## Control '
@@ -511,7 +536,7 @@ class ControlIO():
                 ii += 1
                 continue
             if line and not line.startswith(prefix):
-                raise TrestleError(f'Error parsing section for control {control.id}: {line}')
+                raise TrestleError(f'Error parsing section for control {control_id}: {line}')
             label = line[len(prefix):].lstrip()
             prose = ''
             ii += 1
@@ -520,24 +545,25 @@ class ControlIO():
                 prose = '\n'.join([prose, lines[ii]])
                 ii += 1
             if prose:
-                id_ = control.id + '_smt.' + label
+                id_ = ControlIO._strip_to_make_ncname(control_id + '_smt.' + label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
-            if control.parts:
-                control.parts.extend(new_parts)
+            if control_parts:
+                control_parts.extend(new_parts)
             else:
-                control.parts = new_parts
-        if not control.parts:
-            control.parts = None
-        return ii, lines, control
+                control_parts = new_parts
+        if not control_parts:
+            control_parts = None
+        return ii, control_parts
 
     def read_control(self, control_path: pathlib.Path) -> Tuple[cat.Control]:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
         lines = ControlIO._load_control_lines(control_path)
-        ii, _ = ControlIO._read_id_title(0, lines, control)
-        ii = ControlIO._read_control_statement(ii, lines, control)
-        ii = ControlIO._read_sections(ii, lines, control)
+        ii, control.id, _, control.title = ControlIO._read_id_group_id_title(0, lines)
+        ii, statement_part = ControlIO._read_control_statement(ii, lines, control.id)
+        control.parts = [statement_part] if statement_part else None
+        ii, control.parts = ControlIO._read_sections(ii, lines, control.id, control.parts)
         return control
 
     def write_control(

@@ -31,7 +31,8 @@ markdown_name = 'my_md'
 
 
 @pytest.mark.parametrize('use_cli', [True, False])
-def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('dir_exists', [True, False])
+def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     cat_name = 'my_cat'
@@ -45,6 +46,7 @@ def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path)
     markdown_path.mkdir(parents=True, exist_ok=True)
     ac1_path = markdown_path / 'ac/ac-1.md'
     new_prose = 'My added item'
+    assembled_cat_dir = tmp_trestle_dir / f'catalogs/{assembled_cat_name}'
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
@@ -53,6 +55,8 @@ def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path)
         assert ac1_path.exists()
         test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
+        if dir_exists:
+            assembled_cat_dir.mkdir()
         with patch.object(sys, 'argv', test_args):
             Trestle().run()
     else:
@@ -60,11 +64,13 @@ def test_catalog_generate_assemble(use_cli: bool, tmp_trestle_dir: pathlib.Path)
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
         assert (markdown_path / 'ac/ac-1.md').exists()
         test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        if dir_exists:
+            assembled_cat_dir.mkdir()
         catalog_assemble = CatalogAssemble()
         catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
 
     cat_orig = Catalog.oscal_read(catalog_path)
-    cat_new = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{assembled_cat_name}/catalog.json')
+    cat_new = Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
     interface_orig = CatalogInterface(cat_orig)
     # add the item manually to the original catalog so we can confirm the item was loaded correctly
     ac1 = interface_orig.get_control('ac-1')
