@@ -446,6 +446,12 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
     (mycatalog_dir / 'file2.json').unlink()
 
+    pathlib.Path(mycatalog_dir / '.DS_Store').touch()
+    pathlib.Path(mycatalog_dir / 'file2.json').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+    (mycatalog_dir / '.DS_Store').unlink()
+    (mycatalog_dir / 'file2.json').unlink()
+
     pathlib.Path(mycatalog_dir / 'file3.yml').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
     (mycatalog_dir / 'file3.yml').unlink()

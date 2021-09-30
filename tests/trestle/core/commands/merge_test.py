@@ -226,6 +226,59 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
+def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir, tmp_trestle_dir):
+    """Test trestle merge -e 'catalog.*' when metadata and catalog are split and hidden files are present."""
+    # Assume we are running a command like below
+    # trestle merge -e catalog.*
+    content_type = FileContentType.JSON
+    fext = FileContentType.to_file_extension(content_type)
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    # Change directory to mycatalog_dir
+    os.chdir(mycatalog_dir)
+    catalog_file = Path(f'catalog{fext}').resolve()
+
+    assert catalog_file.exists()
+
+    # Read files
+
+    # Create hand-crafter merge plan
+    expected_plan: Plan = Plan()
+
+    reset_destination_action = CreatePathAction(catalog_file, clear_content=True)
+    expected_plan.add_action(reset_destination_action)
+
+    _, _, merged_catalog_instance = load_distributed(catalog_file, tmp_trestle_dir)
+
+    element = Element(merged_catalog_instance)
+    write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
+    expected_plan.add_action(write_destination_action)
+    delete_element_action = RemovePathAction(Path('catalog').resolve())
+    expected_plan.add_action(delete_element_action)
+
+    # Add some hidden files to emitate user iteraction on MacOS
+    Path(tmp_trestle_dir / 'catalogs/mycatalog/.DS_Store').touch()
+    Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/.DS_Store').touch()
+    Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata/.DS_Store').touch()
+    Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/groups/.DS_Store').touch()
+
+    # Call merge()
+    generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.*'), tmp_trestle_dir)
+
+    # Assert the generated plan matches the expected plan'
+    assert generated_plan == expected_plan
+
+
 def test_bad_merge(testdata_dir, tmp_trestle_dir):
     """Test a bad merge element path."""
     # prepare trestle project dir with the file
