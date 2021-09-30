@@ -22,6 +22,7 @@ venv
 *.egg-info
 .vscode/settings.json
 .vscode
+pytest.ini
 
 # jupyter notebooks for local tests and prototypes
 *.ipynb
