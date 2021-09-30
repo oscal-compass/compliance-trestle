@@ -599,3 +599,36 @@ def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect
             _ = fs.relative_resolve(input_path, tmp_path)
     else:
         _ = fs.relative_resolve(input_path, tmp_path)
+
+
+def test_iterdir_without_hidden_files(tmp_path) -> None:
+    """Test that hidden files are filtered from the path."""
+    pathlib.Path(tmp_path / 'visible.txt').touch()
+    pathlib.Path(tmp_path / 'visibleDir/').mkdir()
+
+    if os.name == 'nt':
+        """Windows"""
+        hidden_file = tmp_path / 'hidden.txt'
+        hidden_dir = tmp_path / 'hiddenDir/'
+        hidden_file.touch()
+        hidden_dir.mkdir()
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        atts = win32api.GetFileAttributes(str(hidden_dir))
+        win32api.SetFileAttributes(str(hidden_dir), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+        assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
+    else:
+
+        pathlib.Path(tmp_path / '.DS_Store').touch()
+        pathlib.Path(tmp_path / '.hidden.txt').touch()
+        pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
+
+        assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
+
+        pathlib.Path(tmp_path / '.DS_Store').unlink()
+        pathlib.Path(tmp_path / '.hidden.txt').unlink()
+        pathlib.Path(tmp_path / '.hiddenDir/').rmdir()
+
+    pathlib.Path(tmp_path / 'visibleDir/').rmdir()
+    pathlib.Path(tmp_path / 'visible.txt').unlink()

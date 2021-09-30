@@ -396,7 +396,7 @@ def iterdir_without_hidden_files(directory_path: pathlib.Path) -> Iterable[pathl
     Returns:
         Iterator over the files in the directory excluding hidden files.
     """
-    filtered_paths = list(filter(lambda p: not is_hidden(p), pathlib.Path.iterdir(directory_path)))
+    filtered_paths = list(filter(lambda p: not is_hidden(p) or p.is_dir(), pathlib.Path.iterdir(directory_path)))
 
     return filtered_paths.__iter__()
 
