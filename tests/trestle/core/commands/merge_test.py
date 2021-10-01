@@ -292,15 +292,6 @@ def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
 
-    if os.name == 'nt':
-        hidden_file.unlink()
-        hidden_file2.unlink()
-    else:
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/.DS_Store').unlink()
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/.DS_Store').unlink()
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata/.DS_Store').unlink()
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/groups/.DS_Store').unlink()
-
 
 def test_bad_merge(testdata_dir, tmp_trestle_dir):
     """Test a bad merge element path."""

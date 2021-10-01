@@ -636,10 +636,3 @@ def test_iterdir_without_hidden_files(tmp_path) -> None:
         pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
 
         assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
-
-        pathlib.Path(tmp_path / '.DS_Store').unlink()
-        pathlib.Path(tmp_path / '.hidden.txt').unlink()
-        pathlib.Path(tmp_path / '.hiddenDir/').rmdir()
-
-    pathlib.Path(tmp_path / 'visibleDir/').rmdir()
-    pathlib.Path(tmp_path / 'visible.txt').unlink()
