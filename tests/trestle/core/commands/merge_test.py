@@ -34,6 +34,10 @@ from trestle.core.models.plans import Plan
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
+
 
 def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     """Test to make sure each element in -e contains 2 parts at least, and no chained element paths."""
@@ -218,6 +222,69 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     expected_plan.add_action(write_destination_action)
     delete_element_action = RemovePathAction(Path('catalog').resolve())
     expected_plan.add_action(delete_element_action)
+
+    # Call merge()
+    generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.*'), tmp_trestle_dir)
+
+    # Assert the generated plan matches the expected plan'
+    assert generated_plan == expected_plan
+
+
+def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir, tmp_trestle_dir):
+    """Test trestle merge -e 'catalog.*' when metadata and catalog are split and hidden files are present."""
+    # Assume we are running a command like below
+    # trestle merge -e catalog.*
+    content_type = FileContentType.JSON
+    fext = FileContentType.to_file_extension(content_type)
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    # Change directory to mycatalog_dir
+    os.chdir(mycatalog_dir)
+    catalog_file = Path(f'catalog{fext}').resolve()
+
+    assert catalog_file.exists()
+
+    # Read files
+
+    # Create hand-crafter merge plan
+    expected_plan: Plan = Plan()
+
+    reset_destination_action = CreatePathAction(catalog_file, clear_content=True)
+    expected_plan.add_action(reset_destination_action)
+
+    _, _, merged_catalog_instance = load_distributed(catalog_file, tmp_trestle_dir)
+
+    element = Element(merged_catalog_instance)
+    write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
+    expected_plan.add_action(write_destination_action)
+    delete_element_action = RemovePathAction(Path('catalog').resolve())
+    expected_plan.add_action(delete_element_action)
+
+    # Add some hidden files
+    if os.name == 'nt':
+        hidden_file = tmp_trestle_dir / 'catalogs/mycatalog/hidden.txt'
+        hidden_file.touch()
+        hidden_file2 = tmp_trestle_dir / 'catalogs/mycatalog/catalog/hidden.txt'
+        hidden_file2.touch()
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        atts = win32api.GetFileAttributes(str(hidden_file2))
+        win32api.SetFileAttributes(str(hidden_file2), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+    else:
+        Path(tmp_trestle_dir / 'catalogs/mycatalog/.DS_Store').touch()
+        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/.DS_Store').touch()
+        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata/.DS_Store').touch()
+        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/groups/.DS_Store').touch()
 
     # Call merge()
     generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.*'), tmp_trestle_dir)
