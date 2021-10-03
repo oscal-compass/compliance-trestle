@@ -28,7 +28,7 @@ jobs:
         path: ~/.cache/pip
         key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-        ubuntu-latest-3.9-pip-
+          ubuntu-latest-3.9-pip-
     - name: Install build tools
       run: |
         make develop
@@ -77,7 +77,7 @@ jobs:
         path: ~/.cache/pip
         key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
         restore-keys: |
-        ubuntu-latest-3.9-pip-
+          ubuntu-latest-3.9-pip-
     - name: Install build tools
       run: |
         make develop
