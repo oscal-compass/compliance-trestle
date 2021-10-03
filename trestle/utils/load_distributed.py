@@ -29,7 +29,7 @@ def _load_list(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseMo
     aliases_not_to_be_stripped = []
     instances_to_be_merged: List[OscalBaseModel] = []
     collection_model_type, collection_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root)
-    for path in sorted(Path.iterdir(abs_path)):
+    for path in sorted(fs.iterdir_without_hidden_files(abs_path)):
 
         # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
         if path.is_dir():
@@ -46,7 +46,7 @@ def _load_dict(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseMo
     """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
     model_dict: Dict[str, OscalBaseModel] = {}
     collection_model_type, collection_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root)
-    for path in sorted(Path.iterdir(abs_path)):
+    for path in sorted(fs.iterdir_without_hidden_files(abs_path)):
         model_type, model_alias, model_instance = load_distributed(path, abs_trestle_root)
         field_name = path.parts[-1].split('__')[0].split('.')[0]
         model_dict[field_name] = model_instance
@@ -107,7 +107,7 @@ def load_distributed(
         aliases_not_to_be_stripped = []
         instances_to_be_merged: List[OscalBaseModel] = []
 
-        for local_path in sorted(Path.iterdir(decomposed_dir)):
+        for local_path in sorted(fs.iterdir_without_hidden_files(decomposed_dir)):
             if local_path.is_file():
                 model_type, model_alias, model_instance = load_distributed(local_path, abs_trestle_root)
                 aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
