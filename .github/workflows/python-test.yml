@@ -56,7 +56,7 @@ jobs:
         make docs-validate
 
 # This test simulates what it is like for a user to install trestle today.
-  test_bdist:
+  bdist:
     runs-on: ubuntu-latest
     steps:
     - name: Don't mess with line endings
