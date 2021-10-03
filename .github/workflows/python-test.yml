@@ -1,15 +1,91 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-name: Trestle PR Pipeline
-
-
+name: Trestle PR platforms pipeline
 on:
   pull_request:
     branches:
       - develop
       - main
 jobs:
-  build:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+        ubuntu-latest-3.9-pip-
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Setup pre-commit
+      run: |
+        make pre-commit
+    - name: Install dependencies
+      run: |
+        make install
+    - name: Run md document formatting (mdformat)
+      run: |
+        make mdformat
+    - name: Run code formatting (yapf)
+      run: |
+        make code-format
+    - name: Run code linting (flake8)
+      run: |
+        make code-lint
+    - name: Run code typing check (mypy)
+      continue-on-error: true
+      run: |
+        make code-typing
+    - name: Validate website content (mkdocs)
+      run: |
+        make docs-validate
+
+# This test simulates what it is like for a user to install trestle today.
+  test_bdist:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+        ubuntu-latest-3.9-pip-
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Run binary tests
+      run: |
+        make test-bdist
+
+  test:
     # concurrency: 
     #   group: ${{ github.head_ref }}-${{ github.workflow }}
     #   cancel-in-progress: true
@@ -26,9 +102,8 @@ jobs:
         - os: windows-latest
           path: ~\AppData\Local\pip\Cache
         python-version: [3.7, 3.8, 3.9]
-
     steps:
-    - name: Don't mess with  line endings
+    - name: Don't mess with line endings
       run: |
         git config --global core.autocrlf false
     - uses: actions/checkout@v2
@@ -47,34 +122,6 @@ jobs:
     - name: Install build tools
       run: |
         make develop
-    - name: Setup pre-commit
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
-      run: |
-        make pre-commit
-    - name: Install dependencies
-      run: |
-        make install
-    - name: Run md document formatting (mdformat)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
-      run: |
-        make mdformat
-    - name: Run code formatting (yapf)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
-      run: |
-        make code-format
-    - name: Run code linting (flake8)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
-      run: |
-        make code-lint
-    - name: Run code typing check (mypy)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
-      continue-on-error: true
-      run: |
-        make code-typing
-    - name: Validate website content (mkdocs)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
-      run: |
-        make docs-validate
     - name: Pytest Fast
       if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
@@ -83,7 +130,6 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       run: |
         make test-cov
-
     - name: Push code-cov
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       uses: codecov/codecov-action@v1
