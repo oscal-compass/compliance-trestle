@@ -96,10 +96,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
         if suffix[-1] == '_':
             suffix = suffix[:-1]
         return camel_to_dash(suffix).rstrip('1234567890')
-    elif mode == 'field':
+    if mode == 'field':
         return camel_to_snake(suffix).rstrip('1234567890')
-    else:
-        raise err.TrestleError('Bad option')
+    raise err.TrestleError('Bad option')
 
 
 def alias_to_classname(alias: str, mode: str) -> str:
@@ -110,10 +109,9 @@ def alias_to_classname(alias: str, mode: str) -> str:
     """
     if mode == 'json':
         return snake_to_upper_camel(alias.replace('-', '_'))
-    elif mode == 'field':
+    if mode == 'field':
         return snake_to_upper_camel(alias)
-    else:
-        raise err.TrestleError('Bad option')
+    raise err.TrestleError('Bad option')
 
 
 def camel_to_dash(name: str) -> str:
@@ -143,8 +141,7 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
     if hasattr(module, 'Model'):
         model_metadata = next(iter(module.Model.__fields__.values()))
         return (model_metadata.type_, model_metadata.alias)
-    else:
-        raise err.TrestleError('Invalid module')
+    raise err.TrestleError('Invalid module')
 
 
 def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:

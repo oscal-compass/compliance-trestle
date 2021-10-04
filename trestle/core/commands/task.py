@@ -59,7 +59,7 @@ class TaskCmd(CommandPlusDocs):
             logger.error('Incorrect use of trestle tasks')
             logger.error('task name or -l can be provided not both.')
             return 1
-        elif not args.task and not args.list:
+        if not args.task and not args.list:
             logger.error('Insufficient arguments passed to trestle task')
             logger.error('Either a trestle task or "-l/--list" shoudl be passed as input arguments.')
             return 1

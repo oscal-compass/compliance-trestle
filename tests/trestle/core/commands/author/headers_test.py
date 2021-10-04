@@ -216,7 +216,7 @@ def test_e2e(
         assert wrapped_error.value.code == validate_rc
 
 
-def test_abort_safely_on_missing_directory(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_abort_safely_on_missing_directory(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that validation fails cleanly on a missing directory."""
     task_name = 'tester'
     command_string_setup = f'trestle author headers setup -tn {task_name}'
@@ -236,7 +236,7 @@ def test_abort_safely_on_missing_directory(testdata_dir: pathlib.Path, tmp_trest
         assert wrapped_error.value.code == 1
 
 
-def test_taskpath_is_a_file(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_taskpath_is_a_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that validation fails cleanly on a missing directory."""
     task_name = 'tester'
     command_string_setup = f'trestle author headers setup -tn {task_name}'
@@ -258,7 +258,7 @@ def test_taskpath_is_a_file(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib
         assert wrapped_error.value.code == 1
 
 
-def test_taskpath_is_a_file_setup(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_taskpath_is_a_file_setup(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that setup fails cleanly when taskpath is a file."""
     task_name = 'tester'
     command_string_setup = f'trestle author headers setup -tn {task_name}'

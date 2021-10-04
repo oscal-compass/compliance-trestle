@@ -17,13 +17,11 @@
 
 import argparse
 import logging
-from typing import Type
 
 from trestle.core import const
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
@@ -47,11 +45,10 @@ class AssembleCmd(CommandPlusDocs):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        object_type = ElementPath(args.model).get_type()
-        return self.assemble_model(args.model, object_type, args)
+        return self.assemble_model(args.model, args)
 
     @classmethod
-    def assemble_model(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
+    def assemble_model(cls, model_alias: str, args: argparse.Namespace) -> int:
         """Assemble a top level OSCAL model within the trestle dist directory."""
         log.set_log_level_from_args(args)
         logger.info(f'Assembling models of type {model_alias}.')

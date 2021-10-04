@@ -332,11 +332,8 @@ class SplitCmd(CommandPlusDocs):
 
             # process list sub model items
             count = 0
-            for key in sub_model_items:
+            for key, sub_model_item in sub_model_items.items():
                 count += 1
-                prefix = key
-                sub_model_item = sub_model_items[key]
-
                 # recursively split the sub-model if there are more element paths to traverse
                 # e.g. split component.control-implementations.*
                 require_recursive_split = cur_path_index + 1 < len(element_paths) and element_paths[
@@ -344,7 +341,7 @@ class SplitCmd(CommandPlusDocs):
 
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
-                    sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, prefix, content_type)
+                    sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, key, content_type)
                     sub_model_plan = Plan()
 
                     last_one: bool = count == len(sub_model_items)
@@ -363,7 +360,7 @@ class SplitCmd(CommandPlusDocs):
                     sub_model_actions = sub_model_plan.get_actions()
                 else:
                     sub_model_actions = cls.prepare_sub_model_split_actions(
-                        sub_model_item, sub_models_dir, prefix, content_type
+                        sub_model_item, sub_models_dir, key, content_type
                     )
 
                 split_plan.add_actions(sub_model_actions)

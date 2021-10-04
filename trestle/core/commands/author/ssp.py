@@ -90,8 +90,7 @@ class SSPGenerate(AuthorCommonCommand):
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
         catalog_interface = CatalogInterface(resolved_catalog)
-        all_details = False
-        catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, all_details, True)
+        catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
 
         return 0
 

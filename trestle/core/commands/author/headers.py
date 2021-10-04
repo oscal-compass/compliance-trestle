@@ -38,9 +38,9 @@ class Headers(AuthorCommonCommand):
 
     def _init_arguments(self) -> None:
         self.add_argument(
-            author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
+            author_const.RECURSE_SHORT, author_const.RECURSE_LONG, help=author_const.RECURSE_HELP, action='store_true'
         )
-        self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
+        self.add_argument(author_const.MODE_ARG_NAME, choices=author_const.MODE_CHOICES)
         tn_help_str = '\n'.join(
             [
                 'The name of the the task to be governed.',
@@ -54,17 +54,17 @@ class Headers(AuthorCommonCommand):
             ]
         )
         self.add_argument(
-            author_const.task_name_short, author_const.task_name_long, help=tn_help_str, type=str, default=None
+            author_const.TASK_NAME_SHORT, author_const.TASK_NAME_LONG, help=tn_help_str, type=str, default=None
         )
         self.add_argument(
-            author_const.short_readme_validate,
-            author_const.long_readme_validate,
-            help=author_const.readme_validate_help,
+            author_const.SHORT_README_VALIDATE,
+            author_const.LONG_README_VALIDATE,
+            help=author_const.README_VALIDATE_HELP,
             action='store_true'
         )
 
         self.add_argument(
-            author_const.global_short, author_const.global_long, help=author_const.global_help, action='store_true'
+            author_const.GLOBAL_SHORT, author_const.GLOBAL_LONG, help=author_const.GLOBAL_HELP, action='store_true'
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -110,7 +110,7 @@ class Headers(AuthorCommonCommand):
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         logger.info(f'Populating template files to {self.rel_dir(self.template_dir)}')
-        for template in author_const.reference_templates.values():
+        for template in author_const.REFERENCE_TEMPLATES.values():
             template_path = pathlib.Path(resource_filename('trestle.resources', template)).resolve()
             destination_path = self.template_dir / template
             shutil.copy(template_path, destination_path)
@@ -121,7 +121,7 @@ class Headers(AuthorCommonCommand):
         """Validate the integrity of the template files."""
         logger.info('Checking template file integrity')
         for template_file in self.template_dir.iterdir():
-            if (template_file.name not in author_const.reference_templates.values()
+            if (template_file.name not in author_const.REFERENCE_TEMPLATES.values()
                     and template_file.name.lower() != 'readme.md'):
                 logger.error(f'Unexpected template file {self.rel_dir(template_file)}')
                 logger.error('Exiting')
@@ -145,8 +145,8 @@ class Headers(AuthorCommonCommand):
         """Based on an initial known set of templates."""
         # Hardcoded list of supported types
         new_templates: Dict[str, pathlib.Path] = {}
-        for template_name in author_const.reference_templates.keys():
-            template_path = self.template_dir / author_const.reference_templates[template_name]
+        for template_name, template_fname in author_const.REFERENCE_TEMPLATES.items():
+            template_path = self.template_dir / template_fname
             if template_path.exists() and template_path.is_file():
                 new_templates[template_name] = template_path
         return new_templates

@@ -45,6 +45,5 @@ class CommandPlusDocs(Command):
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
             return 1
-        else:
-            args.trestle_root = root
-            return 0
+        args.trestle_root = root
+        return 0

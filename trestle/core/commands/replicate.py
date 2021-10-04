@@ -16,15 +16,13 @@
 """Trestle Replicate Command."""
 import argparse
 import logging
-from typing import Type
 
 from trestle.core import const
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
@@ -53,24 +51,20 @@ class ReplicateCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Execute and process the args."""
-        object_type = ElementPath(args.model).get_type()
-        return self.replicate_object(args.model, object_type, args)
+        log.set_log_level_from_args(args)
+        return self.replicate_object(args.model, args)
 
     @classmethod
-    def replicate_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
+    def replicate_object(cls, model_alias: str, args: argparse.Namespace) -> int:
         """
         Core replicate routine invoked by subcommands.
 
         Args:
             model_alias: Name of the top level model in the trestle directory.
-            object_type: Type of object as trestle model
-
+            args: CLI arguments
         Returns:
             A return code that can be used as standard posix codes. 0 is success.
-
         """
-        log.set_log_level_from_args(args)
-
         logger.debug('Entering replicate_object.')
 
         # 1 Bad working directory if not running from current working directory
@@ -94,7 +88,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 3 Distributed load from file
 
         try:
-            model_type, model_alias, model_instance = load_distributed(input_file, trestle_root)
+            _, model_alias, model_instance = load_distributed(input_file, trestle_root)
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, error loading file: {err}')

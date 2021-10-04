@@ -30,7 +30,7 @@ import trestle.core.markdown_validator as markdown_validator
 logger = logging.getLogger(__name__)
 
 
-class DrawIO(object):
+class DrawIO():
     """Access and process drawio data / metadata."""
 
     def __init__(self, file_path: pathlib.Path) -> None:
@@ -174,9 +174,8 @@ class DrawIOMetadataValidator():
 
         if self.must_be_first_tab:
             return markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, drawio_metadata[0])
-        else:
-            for md_tab in drawio_metadata:
-                status = markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, md_tab)
-                if status:
-                    return status
+        for md_tab in drawio_metadata:
+            status = markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, md_tab)
+            if status:
+                return status
         return False
