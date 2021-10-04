@@ -71,7 +71,7 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     _logger.addHandler(console_debug_handler)
 
 
-def exception_handler(exception_type, exception, traceback):
+def exception_handler(exception_type, exception, traceback) -> None:  # pylint: disable=W0613
     """Empty exception handler to prevent stack traceback in quiet mode."""
     logging.warning(exception)
 

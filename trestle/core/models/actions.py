@@ -133,7 +133,7 @@ class WriteAction(Action):
         """Encode the element to appropriate content type."""
         if self._content_type == FileContentType.YAML:
             return self._element.to_yaml()
-        elif self._content_type == FileContentType.JSON:
+        if self._content_type == FileContentType.JSON:
             return self._element.to_json()
 
         raise TrestleError(f'Invalid content type {self._content_type}')

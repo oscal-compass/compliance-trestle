@@ -248,12 +248,7 @@ class CatalogInterface():
         return hits
 
     def write_catalog_as_markdown(
-        self,
-        md_path: pathlib.Path,
-        yaml_header: dict,
-        sections: Optional[Dict[str, str]],
-        all_details: bool,
-        responses: bool
+        self, md_path: pathlib.Path, yaml_header: dict, sections: Optional[Dict[str, str]], responses: bool
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()

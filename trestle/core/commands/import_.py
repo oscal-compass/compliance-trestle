@@ -143,7 +143,6 @@ class ImportCmd(CommandPlusDocs):
                 logger.debug(f'Failed rollback attempt with error: {err}')
                 logger.error(f'Import failed in plan rollback: {err}. Manually remove {desired_model_path} to recover.')
             return 1
-        else:
-            logger.debug(f'Successful rollback of import to {desired_model_path}')
+        logger.debug(f'Successful rollback of import to {desired_model_path}')
 
         return 0

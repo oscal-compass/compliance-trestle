@@ -430,9 +430,9 @@ class FetcherFactory:
         """Determine the type of uri."""
         if uri.startswith(const.SFTP_URI):
             return FetcherFactory.UriType.SFTP
-        elif uri.startswith(const.HTTPS_URI):
+        if uri.startswith(const.HTTPS_URI):
             return FetcherFactory.UriType.HTTPS
-        elif uri.startswith(const.TRESTLE_HREF_HEADING):
+        if uri.startswith(const.TRESTLE_HREF_HEADING):
             return FetcherFactory.UriType.TRESTLE
         # if we land here, assume it is a local file and may have relative path
         # but it at least needs a filename with suffix

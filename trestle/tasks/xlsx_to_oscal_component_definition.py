@@ -365,7 +365,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         goal_remarks = self._get_goal_remarks(work_sheet, row)
         parameter_value_default = self._get_parameter_value_default(work_sheet, row)
         for control in controls.keys():
-            control_uuid = self._get_control_uuid(control)
+            control_uuid = str(uuid.uuid4())
             prop1 = Property(
                 name='goal_name_id',
                 class_=self._get_class_for_property_name('goal_name_id'),
@@ -618,10 +618,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
     def _get_goal_version(self) -> t_goal_version:
         """Fix goal_version at 1.0."""
         return '1.0'
-
-    def _get_control_uuid(self, control) -> t_uuid_str:
-        value = str(uuid.uuid4())
-        return value
 
     def _get_goal_id(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_id:
         """Get goal_id from work_sheet."""
