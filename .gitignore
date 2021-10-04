@@ -43,3 +43,7 @@ cov_html
 
 site
 /.pytest_cache/
+
+tmp_bin_test
+.mypy_cache
+

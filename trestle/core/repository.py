@@ -112,7 +112,7 @@ class ManagedOSCAL:
     def split(self, model_file: pathlib.Path, elements: List[str]) -> bool:
         """Split the given OSCAL model file in repository.
 
-        Model file path should be relative to the main model directory, e.g., model dir is <trestle-root>/catalogs/NIST
+        Model file path should be relative to the main model directory, e.g., model dir is $TRESTLE_ROOT/catalogs/NIST
         then model file path can be 'catalog/metadata.json' if metadata is to be split.
 
         Elements should be specified relative to model file, e.g., 'metadata.props.*'

@@ -50,6 +50,7 @@ nav:
       - common_types: api_reference/trestle.core.common_types.md
       - profile_resolver: api_reference/trestle.core.profile_resolver.md
       - validator_helper: api_reference/trestle.core.validator_helper.md
+      - control_io: api_reference/trestle.core.control_io.md
       - models:
         - interfaces: api_reference/trestle.core.models.interfaces.md
         - elements: api_reference/trestle.core.models.elements.md
@@ -57,6 +58,7 @@ nav:
         - plans: api_reference/trestle.core.models.plans.md
         - file_content_type: api_reference/trestle.core.models.file_content_type.md
       - base_model: api_reference/trestle.core.base_model.md
+      - catalog_interface: api_reference/trestle.core.catalog_interface.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
       - parser: api_reference/trestle.core.parser.md
@@ -72,6 +74,7 @@ nav:
         - add: api_reference/trestle.core.commands.add.md
         - create: api_reference/trestle.core.commands.create.md
         - author:
+          - catalog: api_reference/trestle.core.commands.author.catalog.md
           - command: api_reference/trestle.core.commands.author.command.md
           - docs: api_reference/trestle.core.commands.author.docs.md
           - consts: api_reference/trestle.core.commands.author.consts.md

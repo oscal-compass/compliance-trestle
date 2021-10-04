@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Test for issue 630
+# This script is designed to test whether the bdist is behaving correctly.
+# Note that it encodes the stanndard testing protocol and should be updated.
 
+mkdir tmp_bin_test
+python -m venv tmp_bin_test/venv
+python setup.py bdist_wheel
+source tmp_bin_test/venv/bin/activate
+python -m pip install dist/*.whl
+python -m pip install pytest-xdist
+# this is required to get away from the damn base directory
+cd tmp_bin_test
+ln -s ../tests
+# Ensure nist content is accessible (requires submodules to be checked out.)
+ln -s ../nist-content
+python -m pytest --exitfirst -n auto
 
-rm -rf test_trestle
-mkdir test_trestle
-cd test_trestle
-trestle init
-#UPDATE HERE!!!!!!
-trestle import -f path_to/NIST_SP-800-53_rev4_catalog.json -o mycatalog
-#UPDATE HERE!!!!!!
-cd catalogs
-cd mycatalog
-trestle split -f catalog.json -e 'catalog.metadata'
-
-trestle split -f 'catalog/metadata.json' -e 'metadata.props'

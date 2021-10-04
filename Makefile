@@ -15,7 +15,7 @@
 # limitations under the License.
 
 develop:
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
+	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager --
 
 pre-commit: 
 	pre-commit install
@@ -37,19 +37,25 @@ code-typing:
 	mypy --pretty trestle
 
 test::
-	python -m pytest trestle tests  --exitfirst -n auto
+	python -m pytest --exitfirst -n auto
 
 test-cov::
-	python -m pytest --cov trestle tests  --exitfirst --cov-report=xml -n auto 
+	python -m pytest --cov=trestle  --exitfirst --cov-report=xml -n auto -vv
 
 test-all-random::
-	python -m pytest --cov trestle tests --cov-report=xml --random-order
+	python -m pytest --cov=trestle --cov-report=xml --random-order
 
 test-verbose:
-	python -m pytest  trestle tests -vv -n auto
+	python -m pytest  -vv -n auto
 
 test-speed-measure:
-	python -m pytest trestle tests -n auto --durations=30 
+	python -m pytest -n auto --durations=30 
+
+
+test-bdist:: clean
+	. tests/manual_tests/test_binary.sh
+
+
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"
@@ -71,7 +77,16 @@ docs-serve: docs-automation
 
 mdformat: pre-commit-update
 	pre-commit run mdformat --all-files
-# Something funky about these tests.
-# clean::
-# 	find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
+
+# POSIX ONLY
+clean::
+	rm -rf build
+	rm -rf dist
+	rm -rf .pytest_cache
+	rm -rf tmp_bin_test
+	rm -rf cov_html
+	rm -rf coverage.xml
+	rm -rf .coverage
+	rm -rf .mypy_cache
+	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs rm -rf
 
