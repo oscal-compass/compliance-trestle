@@ -4,6 +4,7 @@ repos:
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
+        exclude: "tests/data/yaml/bad_simple.yaml"
       - id: no-commit-to-branch
         args: [--branch, develop, --branch, main]
   - repo: https://github.com/pre-commit/mirrors-yapf
