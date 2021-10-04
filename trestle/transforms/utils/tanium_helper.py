@@ -205,8 +205,7 @@ class ResultsMgr():
         component_type = rule_use.component_type
         component_title = rule_use.component
         component_description = rule_use.component
-        for component_ref in self.component_map.keys():
-            component = self.component_map[component_ref]
+        for component in self.component_map.values():
             if component.type == component_type:
                 if component.title == component_title:
                     if component.description == component_description:
@@ -228,8 +227,7 @@ class ResultsMgr():
         component_type = rule_use.component_type
         component_title = rule_use.component
         component_description = rule_use.component
-        for component_ref in self.component_map.keys():
-            component = self.component_map[component_ref]
+        for component_ref, component in self.component_map.items():
             if component.type == component_type:
                 if component.title == component_title:
                     if component.description == component_description:
@@ -239,7 +237,7 @@ class ResultsMgr():
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from Tanium row."""
-        if rule_use.tanium_client_ip_address in self.inventory_map.keys():
+        if rule_use.tanium_client_ip_address in self.inventory_map:
             pass
         else:
             inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')

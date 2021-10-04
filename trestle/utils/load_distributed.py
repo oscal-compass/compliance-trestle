@@ -156,6 +156,4 @@ def load_distributed(
 
         merged_model_instance = merged_model_type(**primary_model_dict)  # type: ignore
         return merged_model_type, merged_model_alias, merged_model_instance
-
-    else:
-        return primary_model_type, primary_model_alias, primary_model_instance
+    return primary_model_type, primary_model_alias, primary_model_instance

@@ -326,7 +326,7 @@ class Repository:
         )
 
         try:
-            ret = assemblecmd.AssembleCmd().assemble_model(model_alias, model_type, args)
+            ret = assemblecmd.AssembleCmd().assemble_model(model_alias, args)
             if ret == 0:
                 success = True
         except Exception as e:

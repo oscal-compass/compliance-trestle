@@ -61,7 +61,7 @@ class CatalogGenerate(AuthorCommonCommand):
         try:
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, False)
+            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False)
         except Exception as e:
             raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
         return 0

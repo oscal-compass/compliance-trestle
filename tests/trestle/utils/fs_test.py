@@ -374,8 +374,8 @@ def test_get_singular_alias() -> None:
     with pytest.raises(TrestleError):
         fs.get_singular_alias(alias_path='')
 
-    assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties')
-    assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.props')
+    assert fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties') == 'responsible-party'
+    assert fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.props') == 'property'
     assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
 
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')

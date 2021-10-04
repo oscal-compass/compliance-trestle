@@ -52,7 +52,7 @@ def test_remove(tmp_path: pathlib.Path):
 
     # Call remove() method
     actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(
-        element_path, Catalog, catalog_with_responsible_parties
+        element_path, catalog_with_responsible_parties
     )
 
     # 1.1 Assertion about action
@@ -80,7 +80,7 @@ def test_remove(tmp_path: pathlib.Path):
     expected_remove_action = RemoveAction(catalog_with_roles, element_path)
 
     # Call remove() method
-    actual_remove_action, actual_catalog_removed_roles = RemoveCmd.remove(element_path, Catalog, catalog_with_roles)
+    actual_remove_action, actual_catalog_removed_roles = RemoveCmd.remove(element_path, catalog_with_roles)
 
     # 2.1 Assertion about action
     assert expected_remove_action == actual_remove_action
@@ -104,7 +104,7 @@ def test_remove_failure(tmp_path: pathlib.Path):
     element_path = ElementPath('catalog.metadata.roles')
     try:
         actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(
-            element_path, Catalog, catalog_with_responsible_parties
+            element_path, catalog_with_responsible_parties
         )
     except Exception:
         assert True
@@ -115,7 +115,7 @@ def test_remove_failure(tmp_path: pathlib.Path):
     element_path = ElementPath('catalog.*')
     try:
         actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(
-            element_path, Catalog, catalog_with_responsible_parties
+            element_path, catalog_with_responsible_parties
         )
     except Exception:
         assert True

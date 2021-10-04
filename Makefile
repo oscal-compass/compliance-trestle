@@ -56,7 +56,6 @@ test-bdist:: clean
 	. tests/manual_tests/test_binary.sh
 
 
-
 release::
 	git config --global user.name "semantic-release (via Github actions)"
 	git config --global user.email "semantic-release@github-actions"
@@ -89,4 +88,12 @@ clean::
 	rm -rf .coverage
 	rm -rf .mypy_cache
 	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs rm -rf
+
+pylint:
+	pylint trestle
+
+pylint-test:
+	pylint tests --rcfile=.pylintrc_tests
+
+
 

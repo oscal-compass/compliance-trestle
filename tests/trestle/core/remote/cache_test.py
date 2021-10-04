@@ -141,16 +141,16 @@ def test_https_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) 
 def test_sftp_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher."""
 
-    def ssh_load_host_keys_mock(*args, **kwargs):
+    def ssh_load_host_keys_mock():
         return
 
-    def ssh_connect_mock(*args, **kwargs):
+    def ssh_connect_mock():
         return
 
-    def open_sftp_mock(*args, **kwargs):
+    def open_sftp_mock():
         return
 
-    def sftp_get_mock(*args, **kwargs):
+    def sftp_get_mock():
         return
 
     uri = 'sftp://some.host//path/to/test.json'
@@ -168,7 +168,7 @@ def test_sftp_fetcher(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -
 def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher when SSHClient loading of system host keys fails."""
 
-    def ssh_load_system_host_keys_mock(*args, **kwargs):
+    def ssh_load_system_host_keys_mock():
         raise OSError('stuff')
 
     uri = 'sftp://username:password@some.host/path/to/file.json'
@@ -190,7 +190,7 @@ def test_sftp_fetcher_bad_ssh_key(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test sftp during SSHClient connect failure."""
 
-    def ssh_connect_mock(*args, **kwargs):
+    def ssh_connect_mock():
         err.TrestleError('stuff')
 
     # Password given:
@@ -210,13 +210,13 @@ def test_sftp_fetcher_connect_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: 
 def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the exception response during open_sftp failure."""
 
-    def ssh_load_host_keys_mock(*args, **kwargs):
+    def ssh_load_host_keys_mock():
         return
 
-    def ssh_connect_mock(*args, **kwargs):
+    def ssh_connect_mock():
         return
 
-    def open_sftp_mock(*args, **kwargs):
+    def open_sftp_mock():
         raise err.TrestleError('stuff')
 
     uri = 'sftp://username:password@some.host/path/to/file.json'
@@ -251,13 +251,13 @@ def test_sftp_fetcher_getuser_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: 
 def test_sftp_fetcher_get_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the sftp fetcher SFTPClient.get() failing."""
 
-    def load_host_keys_mock(*args, **kwargs):
+    def load_host_keys_mock():
         return
 
-    def connect_mock(*args, **kwargs):
+    def connect_mock():
         return
 
-    def get_mock(*args, **kwargs):
+    def get_mock():
         raise err.TrestleError('get fails')
 
     uri = 'sftp://username:password@some.host/path/to/file.json'

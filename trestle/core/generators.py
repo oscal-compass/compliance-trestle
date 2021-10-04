@@ -52,33 +52,32 @@ def generate_sample_value_by_type(
     # FIXME: Should be in separate generator module as it inherits EVERYTHING
     if type_ is datetime:
         return datetime.now().astimezone()
-    elif type_ is bool:
+    if type_ is bool:
         return False
-    elif type_ is int:
+    if type_ is int:
         return 0
-    elif type_ is str:
+    if type_ is str:
         if field_name == 'oscal_version':
             return OSCAL_VERSION
         return 'REPLACE_ME'
-    elif type_ is float:
+    if type_ is float:
         return 0.00
-    elif safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
+    if safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
         # This code here is messy. we need to meet a set of constraints. If we do
         # TODO: handle regex directly
         if 'uuid' == field_name:
             return str(uuid.uuid4())
-        elif field_name == 'date_authorized':
+        if field_name == 'date_authorized':
             return str(date.today().isoformat())
-        elif field_name == 'oscal_version':
+        if field_name == 'oscal_version':
             return OSCAL_VERSION
-        elif 'uuid' in field_name:
+        if 'uuid' in field_name:
             return const.SAMPLE_UUID_STR
         # Only case where are UUID is required but not in name.
-        elif field_name.rstrip('s') == 'member_of_organization':
+        if field_name.rstrip('s') == 'member_of_organization':
             return const.SAMPLE_UUID_STR
-        else:
-            return 'REPLACE_ME'
-    elif hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
+        return 'REPLACE_ME'
+    if hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
         # this command is a bit of a problem
@@ -86,21 +85,19 @@ def generate_sample_value_by_type(
         floor = type_.gt + 1 if type_.gt else floor
         if math.remainder(floor, multiple) == 0:
             return floor
-        else:
-            return (floor + 1) * multiple
-    elif safe_is_sub(type_, Enum):
+        return (floor + 1) * multiple
+    if safe_is_sub(type_, Enum):
         # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])
-    elif type_ is pydantic.networks.EmailStr:
+    if type_ is pydantic.networks.EmailStr:
         return pydantic.networks.EmailStr('dummy@sample.com')
-    elif type_ is pydantic.networks.AnyUrl:
+    if type_ is pydantic.networks.AnyUrl:
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
         return pydantic.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
-    elif type_ == Any:
+    if type_ == Any:
         # Return empty dict - aka users can put whatever they want here.
         return {}
-    else:
-        raise err.TrestleError(f'Fatal: Bad type in model {type_}')
+    raise err.TrestleError(f'Fatal: Bad type in model {type_}')
 
 
 def generate_sample_model(
@@ -168,11 +165,11 @@ def generate_sample_model(
         # There is set of circumstances where a m
         if model_type is list:
             return [generate_sample_value_by_type(model, '')]
-        elif model_type is dict:
+        if model_type is dict:
             return {'REPLACE_ME': generate_sample_value_by_type(model, '')}
         err.TrestleError('Unhandled collection type.')
     if model_type is list:
         return [model(**model_dict)]
-    elif model_type is dict:
+    if model_type is dict:
         return {'REPLACE_ME': model(**model_dict)}
     return model(**model_dict)

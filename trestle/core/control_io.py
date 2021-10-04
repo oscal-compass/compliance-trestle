@@ -446,10 +446,8 @@ class ControlIO():
                     if start >= len(line):
                         raise TrestleError(f'Invalid line {line}')
                     return ii, indent, line[start:]
-                else:
-                    return ii, indent, line
-            else:
-                ii += 1
+                return ii, indent, line
+            ii += 1
         return ii, -1, ''
 
     @staticmethod

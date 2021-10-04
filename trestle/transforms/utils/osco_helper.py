@@ -319,8 +319,7 @@ class ResultsMgr():
         component_type = 'Service'
         component_title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
         component_description = component_title
-        for component_ref in self.component_map.keys():
-            component = self.component_map[component_ref]
+        for component in self.component_map.values():
             if component.type == component_type:
                 if component.title == component_title:
                     if component.description == component_description:
@@ -339,8 +338,7 @@ class ResultsMgr():
     def _get_component_ref(self, rule_use: RuleUse) -> t_component_ref:
         """Get component reference for specified RuleUse."""
         uuid = None
-        for component_ref in self.component_map.keys():
-            component = self.component_map[component_ref]
+        for component_ref, component in self.component_map.items():
             if component.title.endswith(rule_use.target_type):
                 uuid = component_ref
         return uuid
@@ -348,7 +346,7 @@ class ResultsMgr():
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from RuleUse."""
         key = rule_use.target + ':' + rule_use.target_type
-        if key in self.inventory_map.keys():
+        if key in self.inventory_map:
             return
         inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
         props = []
