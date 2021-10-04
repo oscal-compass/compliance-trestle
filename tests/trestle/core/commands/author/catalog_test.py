@@ -77,5 +77,6 @@ def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
     prop = Property(name='label', value='d.')
     new_part = Part(id='ac-1_smt.d', name='item', props=[prop], prose=new_prose)
     ac1.parts[0].parts.append(new_part)
+    interface_orig.replace_control(ac1)
     interface_orig.update_catalog_controls()
     assert interface_orig.equivalent_to(cat_new)

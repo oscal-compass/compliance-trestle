@@ -20,7 +20,7 @@ import pathlib
 import pytest
 
 import trestle.oscal.catalog as cat
-from trestle.core.control_io import ControlIO
+from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.oscal import common
 
 case_1 = 'indent_normal'
@@ -88,11 +88,12 @@ end of text
     if sections:
         control.parts.extend([sec_1, sec_2])
 
-    control_io = ControlIO()
-    control_io.write_control(tmp_path, control, '', None, None, additional_content, False)
+    writer = ControlIOWriter()
+    writer.write_control(tmp_path, control, '', None, None, additional_content, False)
 
     md_path = tmp_path / f'{control.id}.md'
-    new_control = control_io.read_control(md_path)
+    reader = ControlIOReader()
+    new_control = reader.read_control(md_path)
     new_control.title = dummy_title
     assert len(new_control.parts) == len(control.parts)
     assert control.parts[0].prose == new_control.parts[0].prose

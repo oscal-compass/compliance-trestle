@@ -31,12 +31,14 @@ from trestle.utils.md_writer import MDWriter
 logger = logging.getLogger(__name__)
 
 
-class ControlIO():
-    """Class to read and write controls as markdown."""
+class ControlIOWriter():
+    """Class write controls as markdown."""
 
     def __init__(self):
         """Initialize the class."""
         self._md_file: Optional[MDWriter] = None
+
+    # Start of section to write controls to markdown
 
     def _wrap_label(self, label: str):
         l_side = '\['
@@ -52,15 +54,15 @@ class ControlIO():
                     return prop.value.strip()
         return ''
 
-    def _get_part(self, part: common.Part) -> List[Union[str, List[str]]]:
+    def _get_part(self, part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
         """
-        Find parts in control that require implementations.
+        Find parts with the specified item type, within the given part.
 
-        For a part in a control find the parts in it that require implementations
+        For a part in a control find the parts in it that match the item_type
         Return list of string formatted labels and associated descriptive prose
         """
         items = []
-        if part.name in ['item', 'statement']:
+        if part.name in ['statement', item_type]:
             # the options here are to force the label to be the part.id or the part.label
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
             # here we choose the latter and extract the final element
@@ -68,27 +70,29 @@ class ControlIO():
             wrapped_label = self._wrap_label(label)
             pad = '' if wrapped_label == '' or part.prose is None else ' '
             prose = '' if part.prose is None else part.prose
-            # statement prose has already been written out, if present
-            if part.name != 'statement':
+            # top level prose has already been written out, if present
+            # use presence of . in id to tell if this is top level prose
+            if part.id != skip_id:
                 items.append(f'{wrapped_label}{pad}{prose}')
             if part.parts:
                 sub_list = []
                 for prt in part.parts:
-                    sub_list.extend(self._get_part(prt))
+                    sub_list.extend(self._get_part(prt, item_type, skip_id))
                 sub_list.append('')
                 items.append(sub_list)
         return items
 
-    def _add_statement_and_its_items(self, control: cat.Control) -> None:
+    def _add_part_and_its_items(self, control: cat.Control, name: str, item_type: str) -> None:
         """For a given control add its one statement and its items to the md file after replacing params."""
         items = []
         if control.parts:
             for part in control.parts:
-                if part.name == 'statement':
-                    # If the statement has prose write it as a raw line and not list element
+                if part.name == name:
+                    # If the part has prose write it as a raw line and not list element
+                    skip_id = part.id
                     if part.prose:
                         self._md_file.new_line(part.prose)
-                    items.append(self._get_part(part))
+                    items.append(self._get_part(part, item_type, skip_id))
             # unwrap the list if it is many levels deep
             while not isinstance(items, str) and len(items) == 1:
                 items = items[0]
@@ -115,8 +119,19 @@ class ControlIO():
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
-        self._add_statement_and_its_items(control)
+        self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
+
+    def _add_control_objective(self, control: cat.Control) -> None:
+        if control.parts:
+            for part in control.parts:
+                if part.name == 'objective':
+                    self._md_file.new_paragraph()
+                    self._md_file.new_header(level=2, title='Control Objective')
+                    self._md_file.set_indent_level(-1)
+                    self._add_part_and_its_items(control, 'objective', 'objective')
+                    self._md_file.set_indent_level(-1)
+                    return
 
     def _get_control_section_part(self, part: common.Part, section: str) -> str:
         """Get the prose for a named section in the control."""
@@ -164,7 +179,7 @@ class ControlIO():
 
     def _add_sections(self, control: cat.Control) -> None:
         """Add the control sections, e.g. guidance."""
-        section_list = ['statement', 'item']
+        section_list = ['statement', 'item', 'objective']
         while True:
             name, id_, prose = self._get_section(control, section_list)
             if not name:
@@ -225,6 +240,49 @@ class ControlIO():
         )
         self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/page.html for suggested types. -->')
 
+    def write_control(
+        self,
+        dest_path: pathlib.Path,
+        control: cat.Control,
+        group_title: str,
+        yaml_header: Optional[dict],
+        sections: Optional[Dict[str, str]],
+        additional_content: bool,
+        prompt_responses: bool
+    ) -> None:
+        """
+        Write out the control in markdown format into the specified directory.
+
+        The filename is constructed from the control's id.
+        """
+        control_file = dest_path / (control.id + '.md')
+        existing_text = ControlIOReader.read_all_implementation_prose(control_file)
+        self._md_file = MDWriter(control_file)
+        self._sections = sections
+
+        self._add_yaml_header(yaml_header)
+
+        self._add_control_statement(control, group_title)
+
+        self._add_control_objective(control)
+
+        self._add_sections(control)
+
+        if prompt_responses:
+            self._add_response(control, existing_text)
+
+        if additional_content:
+            self._add_additional_content()
+
+        self._md_file.write_out()
+
+
+# Start of section to read controls from markdown
+
+
+class ControlIOReader():
+    """Class to read controls from markdown."""
+
     @staticmethod
     def _strip_to_make_ncname(label: str) -> str:
         """Strip chars to conform with NCNAME regex."""
@@ -279,8 +337,8 @@ class ControlIO():
         item_label = ''
         if ii == 0:
             # read the entire control to validate contents
-            ii, _ = ControlIO._read_control_statement(0, lines, 'dummy_id')
-            ii, _ = ControlIO._read_sections(ii, lines, 'xx', [])
+            ii, _ = ControlIOReader._read_control_statement(0, lines, 'dummy_id')
+            ii, _ = ControlIOReader._read_sections(ii, lines, 'xx', [])
             # go back to beginning and seek the implementation question
             ii = 0
             while ii < nlines and not lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
@@ -292,13 +350,13 @@ class ControlIO():
             if lines[ii].startswith('## Implementation'):
                 item_label = lines[ii].strip().split(' ')[-1]
                 ii += 1
-                if ii < nlines and lines[ii] and ControlIO._indent(lines[ii]) == 0:
+                if ii < nlines and lines[ii] and ControlIOReader._indent(lines[ii]) == 0:
                     msg = f'Implementation line for control appears broken by newline: {lines[ii]}'
                     raise TrestleError(msg)
                 # collect until next hrule
                 while ii < nlines:
                     if lines[ii].startswith(const.SSP_MD_HRULE_LINE) or lines[ii].startswith('## Implementation'):
-                        return ii, item_label, ControlIO._trim_prose_lines(prose_lines)
+                        return ii, item_label, ControlIOReader._trim_prose_lines(prose_lines)
                     prose_lines.append(lines[ii].strip())
                     ii += 1
             elif lines[ii].startswith('# ') or lines[ii].startswith('## '):
@@ -333,57 +391,6 @@ class ControlIO():
                 continue
             clean_lines.append(line)
         return clean_lines
-
-    @staticmethod
-    def read_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
-        """
-        Find all labels and associated prose in this control.
-
-        Args:
-            control_file: path to the control markdown file
-
-        Returns:
-            Dictionary of part labels and corresponding prose read from the markdown file.
-        """
-        if not control_file.exists():
-            return {}
-        lines = ControlIO._load_control_lines(control_file)
-        ii = 0
-        # keep moving down through the file picking up labels and prose
-        responses: Dict[str, List[str]] = {}
-        while True:
-            ii, part_label, prose_lines = ControlIO._read_label_prose(ii, lines)
-            if ii < 0:
-                break
-            responses[part_label] = prose_lines
-        return responses
-
-    def read_implementations(self, control_file: pathlib.Path,
-                             component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
-        """Get implementation requirements associated with given control and link to the one component we created."""
-        control_id = control_file.stem
-        imp_reqs: list[ossp.ImplementedRequirement] = []
-        responses = self.read_all_implementation_prose(control_file)
-
-        for response in responses.items():
-            label = response[0]
-            prose_lines = response[1]
-            # create a new by-component to hold this statement
-            by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
-            # link it to the one dummy component uuid
-            by_comp.component_uuid = component.uuid
-            # add the response prose to the description
-            by_comp.description = '\n'.join(prose_lines)
-            # create a statement to hold the by-component and assign the statement id
-            statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-            statement.statement_id = ControlIO._strip_to_make_ncname(f'{control_id}_smt.{label}')
-            statement.by_components = [by_comp]
-            # create a new implemented requirement linked to the control id to hold the statement
-            imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
-            imp_req.control_id = control_id
-            imp_req.statements = [statement]
-            imp_reqs.append(imp_req)
-        return imp_reqs
 
     @staticmethod
     def _read_id_group_id_title(ii: int, lines: List[str]) -> Tuple[int, str, str, str]:
@@ -437,7 +444,7 @@ class ControlIO():
             if line:
                 if line[0] == '#':
                     return ii, -1, line
-                indent = ControlIO._indent(line)
+                indent = ControlIOReader._indent(line)
                 if indent >= 0:
                     # extract text after -
                     start = indent + 1
@@ -457,10 +464,8 @@ class ControlIO():
         """Extract the part id letter or number and prose from line."""
         start = line.find('\\[')
         end = line.find('\\]')
-        if start < 0 or end < 0:
-            raise TrestleError(f'Control items must have label surrounded by \\[ \\]: {line}')
-        prose = line[end + 2:].strip()
-        id_ = line[start + 2:end]
+        prose = line.strip() if start < 0 else line[end + 2:].strip()
+        id_ = '' if start < 0 or end < 0 else line[start + 2:end]
         return id_, prose
 
     @staticmethod
@@ -468,14 +473,14 @@ class ControlIO():
                     parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
         """If indentation level goes up or down, create new list or close current one."""
         while True:
-            ii, new_indent, line = ControlIO._get_next_indent(ii, lines)
+            ii, new_indent, line = ControlIOReader._get_next_indent(ii, lines)
             if new_indent < 0:
                 # we are done reading control statement
                 return ii, parts
             if new_indent == indent:
                 # create new item part and add to current list of parts
-                id_text, prose = ControlIO._read_part_id_prose(line)
-                id_ = ControlIO._strip_to_make_ncname(parent_id + '.' + id_text)
+                id_text, prose = ControlIOReader._read_part_id_prose(line)
+                id_ = ControlIOReader._strip_to_make_ncname(parent_id + '.' + id_text)
                 part = common.Part(name='item', id=id_, prose=prose)
                 parts.append(part)
                 ii += 1
@@ -483,7 +488,7 @@ class ControlIO():
                 # add new list of parts to last part and continue
                 if len(parts) == 0:
                     raise TrestleError(f'Improper indentation structure: {line}')
-                ii, new_parts = ControlIO._read_parts(new_indent, ii, lines, parts[-1].id, [])
+                ii, new_parts = ControlIOReader._read_parts(new_indent, ii, lines, parts[-1].id, [])
                 if new_parts:
                     parts[-1].parts = new_parts
             else:
@@ -499,7 +504,7 @@ class ControlIO():
             raise TrestleError(f'Control statement not found for control {control_id}')
         ii += 1
 
-        ii, line = ControlIO._get_next_line(ii, lines)
+        ii, line = ControlIOReader._get_next_line(ii, lines)
         if ii < 0:
             # This means no statement and control withdrawn (this happens in NIST catalog)
             return ii, None
@@ -509,7 +514,7 @@ class ControlIO():
             indent = -1
             ii += 1
         else:
-            ii, indent, line = ControlIO._get_next_indent(ii, lines)
+            ii, indent, line = ControlIOReader._get_next_indent(ii, lines)
 
         statement_part = common.Part(name='statement', id=f'{control_id}_smt')
         # first line is either statement prose or start of statement parts
@@ -520,9 +525,42 @@ class ControlIO():
         # now just read parts recursively
         # if there was no statement prose, this will re-read the line just read
         # as the start of the statement's parts
-        ii, parts = ControlIO._read_parts(0, ii, lines, statement_part.id, [])
+        ii, parts = ControlIOReader._read_parts(0, ii, lines, statement_part.id, [])
         statement_part.parts = parts if parts else None
         return ii, statement_part
+
+    @staticmethod
+    def _read_control_objective(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
+        ii_orig = ii
+        while 0 <= ii < len(lines) and not lines[ii].startswith('## Control Objective'):
+            ii += 1
+        if ii >= len(lines):
+            return ii_orig, None
+        ii += 1
+
+        ii, line = ControlIOReader._get_next_line(ii, lines)
+        if ii < 0:
+            raise TrestleError(f'Unable to parse objective from control markdown {control_id}')
+        if line and line[0] == ' ' and line.lstrip()[0] != '-':
+            # prose that appears indented but has no - : treat it as the normal objective prose
+            line = line.lstrip()
+            indent = -1
+            ii += 1
+        else:
+            ii, indent, line = ControlIOReader._get_next_indent(ii, lines)
+
+        objective_part = common.Part(name='objective', id=f'{control_id}_obj')
+        # first line is either objective prose or start of objective parts
+        if indent < 0:
+            objective_part.prose = line
+            ii += 1
+        # we have absorbed possible objective prose.
+        # now just read parts recursively
+        # if there was no objective prose, this will re-read the line just read
+        # as the start of the objective's parts
+        ii, parts = ControlIOReader._read_parts(0, ii, lines, objective_part.id, [])
+        objective_part.parts = parts if parts else None
+        return ii, objective_part
 
     @staticmethod
     def _read_sections(ii: int, lines: List[str], control_id: str,
@@ -545,7 +583,7 @@ class ControlIO():
                 prose = '\n'.join([prose, lines[ii]])
                 ii += 1
             if prose:
-                id_ = ControlIO._strip_to_make_ncname(control_id + '_smt.' + label)
+                id_ = ControlIOReader._strip_to_make_ncname(control_id + '_smt.' + label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
             if control_parts:
@@ -556,46 +594,73 @@ class ControlIO():
             control_parts = None
         return ii, control_parts
 
-    def read_control(self, control_path: pathlib.Path) -> Tuple[cat.Control]:
+    @staticmethod
+    def read_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
+        """
+        Find all labels and associated prose in this control.
+
+        Args:
+            control_file: path to the control markdown file
+
+        Returns:
+            Dictionary of part labels and corresponding prose read from the markdown file.
+        """
+        if not control_file.exists():
+            return {}
+        lines = ControlIOReader._load_control_lines(control_file)
+        ii = 0
+        # keep moving down through the file picking up labels and prose
+        responses: Dict[str, List[str]] = {}
+        while True:
+            ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
+            if ii < 0:
+                break
+            responses[part_label] = prose_lines
+        return responses
+
+    @staticmethod
+    def read_implementations(control_file: pathlib.Path,
+                             component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+        """Get implementation requirements associated with given control and link to the one component we created."""
+        control_id = control_file.stem
+        imp_reqs: list[ossp.ImplementedRequirement] = []
+        responses = ControlIOReader.read_all_implementation_prose(control_file)
+
+        for response in responses.items():
+            label = response[0]
+            prose_lines = response[1]
+            # create a new by-component to hold this statement
+            by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+            # link it to the one dummy component uuid
+            by_comp.component_uuid = component.uuid
+            # add the response prose to the description
+            by_comp.description = '\n'.join(prose_lines)
+            # create a statement to hold the by-component and assign the statement id
+            statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
+            statement.statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
+            statement.by_components = [by_comp]
+            # create a new implemented requirement linked to the control id to hold the statement
+            imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+            imp_req.control_id = control_id
+            imp_req.statements = [statement]
+            imp_reqs.append(imp_req)
+        return imp_reqs
+
+    @staticmethod
+    def read_control(control_path: pathlib.Path) -> Tuple[cat.Control]:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
-        lines = ControlIO._load_control_lines(control_path)
-        ii, control.id, _, control.title = ControlIO._read_id_group_id_title(0, lines)
-        ii, statement_part = ControlIO._read_control_statement(ii, lines, control.id)
+        lines = ControlIOReader._load_control_lines(control_path)
+        ii, control.id, _, control.title = ControlIOReader._read_id_group_id_title(0, lines)
+        ii, statement_part = ControlIOReader._read_control_statement(ii, lines, control.id)
+        if ii < 0:
+            return control
         control.parts = [statement_part] if statement_part else None
-        ii, control.parts = ControlIO._read_sections(ii, lines, control.id, control.parts)
+        ii, objective_part = ControlIOReader._read_control_objective(ii, lines, control.id)
+        if objective_part:
+            if control.parts:
+                control.parts.append(objective_part)
+            else:
+                control.parts = [objective_part]
+        ii, control.parts = ControlIOReader._read_sections(ii, lines, control.id, control.parts)
         return control
-
-    def write_control(
-        self,
-        dest_path: pathlib.Path,
-        control: cat.Control,
-        group_title: str,
-        yaml_header: Optional[dict],
-        sections: Optional[Dict[str, str]],
-        additional_content: bool,
-        prompt_responses: bool
-    ) -> None:
-        """
-        Write out the control in markdown format into the specified directory.
-
-        The filename is constructed from the control's id.
-        """
-        control_file = dest_path / (control.id + '.md')
-        existing_text = self.read_all_implementation_prose(control_file)
-        self._md_file = MDWriter(control_file)
-        self._sections = sections
-
-        self._add_yaml_header(yaml_header)
-
-        self._add_control_statement(control, group_title)
-
-        self._add_sections(control)
-
-        if prompt_responses:
-            self._add_response(control, existing_text)
-
-        if additional_content:
-            self._add_additional_content()
-
-        self._md_file.write_out()

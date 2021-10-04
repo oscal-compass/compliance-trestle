@@ -22,7 +22,7 @@ from pydantic import BaseModel
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
-from trestle.core.control_io import ControlIO
+from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -256,7 +256,7 @@ class CatalogInterface():
         responses: bool
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
-        control_io = ControlIO()
+        writer = ControlIOWriter()
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
@@ -267,7 +267,7 @@ class CatalogInterface():
             group_dir = md_path if group_id == 'catalog' else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
-            control_io.write_control(group_dir, control, group_title, yaml_header, sections, False, responses)
+            writer.write_control(group_dir, control, group_title, yaml_header, sections, False, responses)
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
@@ -287,14 +287,13 @@ class CatalogInterface():
         if not self._catalog:
             self._catalog = gens.generate_sample_model(cat.Catalog)
         group_ids = self._get_group_ids(md_path)
-        control_io = ControlIO()
         groups: List[cat.Group] = []
         # read each group dir
         for group_id in group_ids:
             new_group = cat.Group(id=group_id, title='')
             group_dir = md_path / group_id
             for control_path in group_dir.glob('*.md'):
-                control = control_io.read_control(control_path)
+                control = ControlIOReader.read_control(control_path)
                 if not new_group.controls:
                     new_group.controls = []
                 new_group.controls.append(control)
@@ -303,7 +302,7 @@ class CatalogInterface():
         # now read any controls that aren't in a group
         controls: List[cat.Control] = []
         for control_path in md_path.glob('*.md'):
-            control = control_io.read_control(control_path)
+            control = ControlIOReader.read_control(control_path)
             controls.append(control)
         self._catalog.controls = controls if controls else None
         return self._catalog
@@ -323,11 +322,10 @@ class CatalogInterface():
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         imp_reqs: List[ossp.ImplementedRequirement] = []
-        control_io = ControlIO()
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(control_io.read_implementations(control_file, component))
+                imp_reqs.extend(ControlIOReader.read_implementations(control_file, component))
         return imp_reqs
 
     @staticmethod
