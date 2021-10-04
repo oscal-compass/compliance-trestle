@@ -1,4 +1,11 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1  # Use the ref you want to point at
+    hooks:
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: no-commit-to-branch
+        args: [--branch, develop, --branch, main]
   - repo: https://github.com/pre-commit/mirrors-yapf
     rev: v0.31.0
     hooks:
