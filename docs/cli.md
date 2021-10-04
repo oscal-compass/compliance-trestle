@@ -666,12 +666,12 @@ The *oscal_metadata.yaml* file comprises one or more mappings. Below is shown th
 format of a single mapping. The items in angle brackets are to be replaced with
 desired values for augmenting the produced OSCAL.
 
-The mapping whose *<name>* matches the *\[metadata\]\[name\]* in the evidence for the
+The mapping whose *name* matches the `[metadata][name]` in the evidence for the
 corresponding embedded XML, if any, will be used for augmenting the produced
 OSCAL.
 
 ```
-<name>:
+name:
    locker: <locker>
    namespace: <namespace>
    benchmark: <benchmark>
