@@ -68,7 +68,7 @@ class ControlIOWriter():
             # here we choose the latter and extract the final element
             label = part.id.split('.')[-1]
             wrapped_label = self._wrap_label(label)
-            pad = '' if wrapped_label == '' or part.prose is None else ' '
+            pad = '' if wrapped_label == '' or not part.prose else ' '
             prose = '' if part.prose is None else part.prose
             # top level prose has already been written out, if present
             # use presence of . in id to tell if this is top level prose
@@ -479,7 +479,8 @@ class ControlIOReader():
                 # create new item part and add to current list of parts
                 id_text, prose = ControlIOReader._read_part_id_prose(line)
                 id_ = ControlIOReader._strip_to_make_ncname(parent_id + '.' + id_text)
-                part = common.Part(name='item', id=id_, prose=prose)
+                name = 'objective' if id_.find('_obj') > 0 else 'item'
+                part = common.Part(name=name, id=id_, prose=prose)
                 parts.append(part)
                 ii += 1
             elif new_indent > indent:
@@ -645,7 +646,7 @@ class ControlIOReader():
         return imp_reqs
 
     @staticmethod
-    def read_control(control_path: pathlib.Path) -> Tuple[cat.Control]:
+    def read_control(control_path: pathlib.Path) -> cat.Control:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
         lines = ControlIOReader._load_control_lines(control_path)

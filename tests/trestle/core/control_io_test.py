@@ -19,6 +19,8 @@ import pathlib
 
 import pytest
 
+import tests.test_utils as test_utils
+
 import trestle.oscal.catalog as cat
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.oscal import common
@@ -99,3 +101,70 @@ end of text
     assert control.parts[0].prose == new_control.parts[0].prose
     assert control.parts[0].parts == new_control.parts[0].parts
     assert control == new_control
+
+
+def test_control_objective(tmp_path: pathlib.Path) -> None:
+    """Test read and write of control with objective."""
+    control_text = """# xy-9 - \[XY\] Fancy Control
+
+## Control Statement
+
+The org:
+
+- \[a\] Creates:
+
+  - \[1\] Good stuff; and
+  - \[2\] Other good stuff; and
+
+- \[b\] Checks for:
+
+  - \[1\] Quality of the stuff; and
+  - \[2\] Confirms all is good.
+
+## Control Objective
+
+Confirm the org:
+
+- \[a_obj\]
+
+  - \[1_obj\]
+
+    - \[1\] stays focused on:
+
+      - \[a\] weather;
+      - \[b\] comfort;
+      - \[c\] heart rate;
+
+    - \[2\] makes sure all are well-behaved;
+    - \[3\] keeps them up to date;
+
+  - \[2_obj\]
+
+    - \[1\] facilitates ease of consumption;
+    - \[2\] establishes dietary requirements;
+
+- \[b_obj\]
+
+  - \[1_obj\]
+
+    - \[1\] sets times for meals;
+    - \[2\] confirms adequate calorie intake;
+
+  - \[2_obj\]
+
+    - \[1\] serves dessert; and
+    - \[2\] keeps the wine list up to date.
+
+## Control guidance
+
+This is a fancy control and should be used with care.
+"""
+    md_path = tmp_path / 'xy-9.md'
+    with open(md_path, 'w') as f:
+        f.write(control_text)
+    control = ControlIOReader.read_control(md_path)
+    sub_dir = tmp_path / 'sub_dir'
+    sub_dir.mkdir(exist_ok=True)
+    control_writer = ControlIOWriter()
+    control_writer.write_control(sub_dir, control, 'XY', None, None, False, False)
+    assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
