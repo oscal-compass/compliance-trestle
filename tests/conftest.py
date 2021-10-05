@@ -145,7 +145,7 @@ def tmp_trestle_dir(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> Iterato
     """Create and return a new trestle project directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
-    misbehave if there are errors in trestle init.
+    misbehave if there are errors in trestle init, perhaps in spite of the try block.
     """
     pytest_cwd = pathlib.Path.cwd()
     os.chdir(tmp_path)
