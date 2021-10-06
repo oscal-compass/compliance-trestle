@@ -16,6 +16,7 @@
 import pathlib
 import shutil
 import sys
+from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -31,17 +32,44 @@ markdown_name = 'my_md'
 
 ref_text = 'for suggested types. -->'
 
-add_text = """
+my_guidance_text = """
 
 ## Part my_guidance
 
-This is new my_guidance.
+This is my_guidance.
 """
 
+my_guidance_dict = {'names': ['my_guidance'], 'text': my_guidance_text}
 
+added_guidance_text = """
+
+## Part guidance
+
+This is guidance.
+"""
+
+new_guidance_dict = {'names': ['guidance'], 'text': added_guidance_text}
+
+multi_guidance_text = my_guidance_text = """
+
+## Part guidance
+
+This is guidance.
+
+## Part my_guidance
+
+This is my_guidance.
+"""
+
+multi_guidance_dict = {'names': ['guidance', 'my_guidance'], 'text': multi_guidance_text}
+
+
+@pytest.mark.parametrize('guid_dict', [my_guidance_dict, new_guidance_dict, multi_guidance_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
-def test_profile_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path) -> None:
+def test_profile_generate_assemble(
+    guid_dict: Dict, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path
+) -> None:
     """Test the profile markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     trestle_cat_dir = tmp_trestle_dir / 'catalogs/nist_cat'
@@ -65,7 +93,7 @@ def test_profile_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
         with patch.object(sys, 'argv', test_args):
             Trestle().run()
         assert ac1_path.exists()
-        test_utils.insert_text_in_file(ac1_path, ref_text, add_text)
+        test_utils.insert_text_in_file(ac1_path, ref_text, guid_dict['text'])
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if dir_exists:
             assembled_prof_dir.mkdir()
@@ -75,7 +103,7 @@ def test_profile_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
         profile_generate = ProfileGenerate()
         profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)
         assert ac1_path.exists()
-        test_utils.insert_text_in_file(ac1_path, ref_text, add_text)
+        test_utils.insert_text_in_file(ac1_path, ref_text, guid_dict['text'])
         if dir_exists:
             assembled_prof_dir.mkdir()
         ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name)
@@ -84,5 +112,6 @@ def test_profile_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
     catalog_interface = CatalogInterface(catalog)
-    prose = catalog_interface.get_control_part_prose('ac-1', 'my_guidance')
-    assert prose == 'This is new my_guidance.'
+    for name in guid_dict['names']:
+        prose = catalog_interface.get_control_part_prose('ac-1', name)
+        assert prose.find(f'This is {name}.') >= 0
