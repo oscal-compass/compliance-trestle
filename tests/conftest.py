@@ -30,6 +30,7 @@ from tests import test_utils
 import trestle.core.generators as gens
 import trestle.oscal.common as common
 from trestle.cli import Trestle
+from trestle.core.err import TrestleError
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile
@@ -144,17 +145,20 @@ def tmp_trestle_dir(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> Iterato
     """Create and return a new trestle project directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
-    misbehave if there are errors in trestle init.
+    misbehave if there are errors in trestle init, perhaps in spite of the try block.
     """
     pytest_cwd = pathlib.Path.cwd()
     os.chdir(tmp_path)
     testargs = ['trestle', 'init']
     monkeypatch.setattr(sys, 'argv', testargs)
-    # FIXME: Correctly capture return codes
-    Trestle().run()
-    yield tmp_path
-
-    os.chdir(pytest_cwd)
+    try:
+        Trestle().run()
+    except BaseException as e:
+        raise TrestleError(f'Initialization failed for temporary trestle directory: {e}.')
+    else:
+        yield tmp_path
+    finally:
+        os.chdir(pytest_cwd)
 
 
 @pytest.fixture(scope='function')
