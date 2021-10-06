@@ -83,10 +83,11 @@ class CatalogAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
-        self.assemble_catalog(trestle_root, args.markdown, args.output)
+        CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
         return 0
 
-    def assemble_catalog(self, trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
+    @staticmethod
+    def assemble_catalog(trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
         """
         Assemble the markdown directory into a json catalog model file.
 
@@ -115,11 +116,9 @@ class CatalogAssemble(AuthorCommonCommand):
                 shutil.rmtree(str(new_cat_dir))
             except Exception as e:
                 raise TrestleError(f'Error deleting existing catalog directory {new_cat_dir}: {e}')
-                return 1
         try:
             new_cat_dir.mkdir()
             catalog.oscal_write(new_cat_dir / 'catalog.json')
         except Exception as e:
             raise TrestleError(f'Error writing catalog from markdown to {new_cat_dir}: {e}')
-            return 1
         return 0

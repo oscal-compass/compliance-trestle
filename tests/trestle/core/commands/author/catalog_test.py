@@ -66,8 +66,7 @@ def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
         test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
-        catalog_assemble = CatalogAssemble()
-        catalog_assemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
+        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
 
     cat_orig = Catalog.oscal_read(catalog_path)
     cat_new = Catalog.oscal_read(assembled_cat_dir / 'catalog.json')

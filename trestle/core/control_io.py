@@ -25,6 +25,7 @@ import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.err import TrestleError
+from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.utils.md_writer import MDWriter
 
@@ -133,14 +134,15 @@ class ControlIOWriter():
                     self._md_file.set_indent_level(-1)
                     return
 
-    def _get_control_section_part(self, part: common.Part, section: str) -> str:
+    @staticmethod
+    def _get_control_section_part(part: common.Part, section: str) -> str:
         """Get the prose for a named section in the control."""
         prose = ''
         if part.name == section and part.prose is not None:
-            prose = self._gap_join(prose, part.prose)
+            prose = ControlIOWriter._gap_join(prose, part.prose)
         if part.parts:
             for sub_part in part.parts:
-                prose = self._gap_join(prose, self._get_control_section_part(sub_part, section))
+                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(sub_part, section))
         return prose
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
@@ -239,6 +241,15 @@ class ControlIOWriter():
             '<!-- For the title to be valid it MUST follow the structure of ## Control [part type] -->'
         )
         self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/page.html for suggested types. -->')
+
+    @staticmethod
+    def get_part_prose(control: cat.Control, part_name: str) -> str:
+        """Get the prose for a named part."""
+        prose = ''
+        if control.parts:
+            for part in control.parts:
+                prose += ControlIOWriter._get_control_section_part(part, part_name)
+        return prose
 
     def write_control(
         self,
@@ -622,7 +633,7 @@ class ControlIOReader():
                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
         """Get implementation requirements associated with given control and link to the one component we created."""
         control_id = control_file.stem
-        imp_reqs: list[ossp.ImplementedRequirement] = []
+        imp_reqs: List[ossp.ImplementedRequirement] = []
         responses = ControlIOReader.read_all_implementation_prose(control_file)
 
         for response in responses.items():
@@ -644,6 +655,58 @@ class ControlIOReader():
             imp_req.statements = [statement]
             imp_reqs.append(imp_req)
         return imp_reqs
+
+    @staticmethod
+    def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
+        """Read a single part indicated by ## Part foo."""
+        while 0 <= ii < len(lines):
+            # look for ## Part foo - then read prose
+            line = lines[ii]
+            prefix = '## Part '
+            if line:
+                if not line.startswith(prefix):
+                    raise TrestleError(f'Unexpected line in additional content for control {control_id}: {line}')
+                part_name_raw = line[len(prefix):]
+                part_name = spaces_and_caps_to_snake(part_name_raw)
+                prose_lines = []
+                ii += 1
+                have_content = False
+                while 0 <= ii < len(lines):
+                    line = lines[ii]
+                    if not line.startswith(prefix):
+                        if line:
+                            have_content = True
+                        prose_lines.append(line)
+                        ii += 1
+                        continue
+                    break
+                if have_content:
+                    prose = '\n'.join(prose_lines)
+                    id_ = f'{control_id}_{part_name}'
+                    part = common.Part(id=id_, name=part_name, prose=prose)
+                    return ii, part
+            ii += 1
+        return -1, None
+
+    @staticmethod
+    def read_added_parts(control_path: pathlib.Path) -> List[common.Part]:
+        """Get parts for the markdown control corresponding to additional content - if any."""
+        control_id = control_path.stem
+        added_parts: List[common.Part] = []
+        lines = ControlIOReader._load_control_lines(control_path)
+        ii = 0
+        while 0 <= ii < len(lines):
+            line = lines[ii]
+            if line.startswith('# Additional Content'):
+                ii += 1
+                while 0 <= ii < len(lines):
+                    ii, part = ControlIOReader._read_added_part(ii, lines, control_id)
+                    if ii < 0:
+                        break
+                    added_parts.append(part)
+            else:
+                ii += 1
+        return added_parts
 
     @staticmethod
     def read_control(control_path: pathlib.Path) -> cat.Control:

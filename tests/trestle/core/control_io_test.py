@@ -159,12 +159,16 @@ Confirm the org:
 
 This is a fancy control and should be used with care.
 """
+    # write the control directly as raw markdown text
     md_path = tmp_path / 'xy-9.md'
     with open(md_path, 'w') as f:
         f.write(control_text)
+    # read it in as markdown to an OSCAL control in memory
     control = ControlIOReader.read_control(md_path)
     sub_dir = tmp_path / 'sub_dir'
     sub_dir.mkdir(exist_ok=True)
+    # write it out as markdown in a separate directory to avoid name clash
     control_writer = ControlIOWriter()
     control_writer.write_control(sub_dir, control, 'XY', None, None, False, False)
+    # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')

@@ -171,6 +171,11 @@ class CatalogInterface():
         """Get control from catalog with this id using the dict."""
         return self._control_dict[control_id].control
 
+    def get_control_part_prose(self, control_id: str, part_name: str) -> str:
+        """Get the prose for a named part in the control."""
+        control = self.get_control(control_id)
+        return ControlIOWriter.get_part_prose(control, part_name)
+
     def get_all_controls(self, recurse: bool) -> Iterator[cat.Control]:
         """Yield all deep and individual controls from the catalog by group."""
         if self._catalog.groups:
@@ -248,7 +253,12 @@ class CatalogInterface():
         return hits
 
     def write_catalog_as_markdown(
-        self, md_path: pathlib.Path, yaml_header: dict, sections: Optional[Dict[str, str]], responses: bool
+        self,
+        md_path: pathlib.Path,
+        yaml_header: dict,
+        sections: Optional[Dict[str, str]],
+        responses: bool,
+        additional_content: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -262,7 +272,7 @@ class CatalogInterface():
             group_dir = md_path if group_id == 'catalog' else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
-            writer.write_control(group_dir, control, group_title, yaml_header, sections, False, responses)
+            writer.write_control(group_dir, control, group_title, yaml_header, sections, additional_content, responses)
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
@@ -322,6 +332,18 @@ class CatalogInterface():
             for control_file in group_path.glob('*.md'):
                 imp_reqs.extend(ControlIOReader.read_implementations(control_file, component))
         return imp_reqs
+
+    @staticmethod
+    def read_additional_content(md_path: pathlib.Path) -> List[common.Part]:
+        """Read all markdown controls and return list of added parts."""
+        group_ids = CatalogInterface._get_group_ids(md_path)
+
+        added_parts: List[common.Part] = []
+        for group_id in group_ids:
+            group_path = md_path / group_id
+            for control_file in group_path.glob('*.md'):
+                added_parts.extend(ControlIOReader.read_added_parts(control_file))
+        return added_parts
 
     @staticmethod
     def part_equivalent(a: common.Part, b: common.Part) -> bool:
