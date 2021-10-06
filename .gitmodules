@@ -4,3 +4,6 @@
 [submodule "nist-content"]
 	path = nist-content
 	url = https://github.com/usnistgov/oscal-content.git
+[submodule "fedramp-source"]
+	path = fedramp-source
+	url = https://github.com/GSA/fedramp-automation
