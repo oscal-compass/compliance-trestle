@@ -64,6 +64,12 @@ release::
 gen-oscal::
 	python ./scripts/gen_oscal.py
 
+fedramp-copy:
+	cp -R fedramp-source/dist/content trestle/resources/fedramp-source/
+	cp -R fedramp-source/vendor trestle/resources/fedramp-source/
+	cp -R nist-source/xml trestle/resources/nist-source/
+	cp -R nist-source/json trestle/resources/nist-source/
+
 docs-automation::
 	python ./scripts/website_automation.py
 
