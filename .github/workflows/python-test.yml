@@ -135,6 +135,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
       run: |
+          pip uninstall python-coveralls
+          pip install coveralls
           coveralls --service=github
     
  
