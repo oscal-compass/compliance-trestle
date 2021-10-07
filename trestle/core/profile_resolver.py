@@ -294,7 +294,7 @@ class ProfileResolver():
         def _add_to_parts_given_position(
             self, control_parts: List[common.Part], id_: str, new_parts: List[common.Part], position: str
         ) -> bool:
-            """Add beside and after the given id."""
+            """Add new elements at the given position."""
             if position not in {'after', 'before', 'starting', 'ending'}:
                 raise TrestleError(f'Unsupported position {position} is given for the add alter.')
             for idx, child_part in enumerate(control_parts):
