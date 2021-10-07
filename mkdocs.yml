@@ -31,6 +31,7 @@ nav:
   - Contributors: https://github.com/IBM/compliance-trestle/graphs/contributors
   - Maintainers: maintainers.md
   - Documentation website: contributing/website.md
+  - Trestle's object model: contributing/trestle_oscal_object_model.md
   - Developer Certificate of Originality: contributing/DCO.md
 - Known limitations: errors.md
 - Demos: demonstrations-content.md
