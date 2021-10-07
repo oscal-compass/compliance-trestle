@@ -137,6 +137,6 @@ jobs:
       run: |
           pip uninstall python-coveralls
           pip install coveralls
-          coveralls --service=github
+          coveralls --service=github-actions
     
  
