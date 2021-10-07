@@ -133,10 +133,10 @@ jobs:
     - name: Run coveralls
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
           pip uninstall python-coveralls
           pip install coveralls
-          coveralls --service=github-actions
+          coveralls --service=github
     
  
