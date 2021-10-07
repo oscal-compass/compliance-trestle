@@ -19,7 +19,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import Extra, Field, constr, ValidationError
+from pydantic.class_validators import root_validator
 
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
@@ -227,6 +228,15 @@ class Add(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
+
+    @root_validator
+    def validate_ref_id_and_position(cls, values):
+        """Ensure that reference ID is given when position is set to before or after."""
+        if values['position'] is not None:
+            if values['by_id'] is None and values['position'].name in {'before', 'after'}:
+                raise ValidationError('Reference ID (by_id) must be given when position is set to before or after.')
+
+        return values
 
 
 class Alter(OscalBaseModel):
