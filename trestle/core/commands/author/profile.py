@@ -97,8 +97,9 @@ class ProfileAssemble(AuthorCommonCommand):
 
         Args:
             trestle_root: The trestle root directory
+            orig_profile_name: The output name of the profile json file to be created from the assembly
             md_name: The name of the directory containing the markdown control files for the ssp
-            profile_name: The output name of the profile json file to be created from the assembly
+            new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
 
         Returns:
             0 on success, 1 otherwise
