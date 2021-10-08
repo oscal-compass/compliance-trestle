@@ -115,7 +115,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.info('')
         logger.info('Configuration flags sit under [task.xlsx-to-oscal-component-definition]:')
         text1 = '  catalog-file      = '
-        text2 = '(required) the path of the OSCAL catalog file, for example ' + self._get_catalog_title() + '.'
+        text2 = '(required) the path of the OSCAL catalog file.'
         logger.info(text1 + text2)
         text1 = '  spread-sheet-file = '
         text2 = '(required) the path of the spread sheet file.'
@@ -666,7 +666,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                               'l',
                               'm',
                               'n',
-                              'o'
+                              'o',
                               'p',
                               'q',
                               'r',
