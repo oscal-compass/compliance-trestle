@@ -131,9 +131,6 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       run: |
         make test-cov
-    - name: Coveralls Python
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
-      uses: AndreMiras/coveralls-python-action@v20201129
     - name: SonarCloud Scan
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       uses: SonarSource/sonarcloud-github-action@master
