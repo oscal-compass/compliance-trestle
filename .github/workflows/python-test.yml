@@ -142,4 +142,6 @@ jobs:
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
           -Dsonar.verbose=true
+          -Dsonar.projectKey=compliance-trestle
+          -Dsonar.organization=compliance-trestle
           -Dsonar.test.exclusions=tests/**
