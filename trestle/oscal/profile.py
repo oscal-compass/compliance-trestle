@@ -229,15 +229,6 @@ class Add(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
 
-    @root_validator
-    def validate_ref_id_and_position(cls, values):
-        """Ensure that reference ID is given when position is set to before or after."""
-        if values['position'] is not None:
-            if values['by_id'] is None and values['position'].name in {'before', 'after'}:
-                raise ValidationError('Reference ID (by_id) must be given when position is set to before or after.')
-
-        return values
-
 
 class Alter(OscalBaseModel):
 

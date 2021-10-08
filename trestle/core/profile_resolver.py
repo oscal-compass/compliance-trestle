@@ -297,6 +297,8 @@ class ProfileResolver():
             """Add new elements at the given position."""
             if position not in {'after', 'before', 'starting', 'ending'}:
                 raise TrestleError(f'Unsupported position {position} is given for the add alter.')
+            if position in {'after', 'before'} and id_ is None:
+                raise TrestleError('Reference ID (by_id) must be given when position is set to before or after.')
             for idx, child_part in enumerate(control_parts):
                 if child_part.id == id_:
                     if not child_part.parts:

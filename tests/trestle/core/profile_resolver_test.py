@@ -20,14 +20,13 @@ import logging
 import pathlib
 from typing import List, Tuple
 
-from pydantic import ValidationError
-
 import pytest
 
 from tests import test_utils
 
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
+from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.utils import log
 
@@ -134,14 +133,15 @@ def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pa
     i = ImportCmd()
     assert i._run(args) == 0
 
-    prof_a_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
+    prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(prof_a_path), output='incorrect_profile', verbose=False, regenerate=True
+        trestle_root=tmp_trestle_dir, file=str(prof_path), output='incorrect_profile', verbose=False, regenerate=True
     )
     i = ImportCmd()
+    assert i._run(args) == 0
 
-    with pytest.raises(ValidationError):
-        i._run(args)
+    with pytest.raises(TrestleError):
+        ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
 
 
 def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) -> None:
