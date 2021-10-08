@@ -102,7 +102,7 @@ Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contribu
 ```
 
 [coverage]: https://codecov.io/gh/IBM/compliance-trestle
-[coverage-badge]: https://codecov.io/gh/IBM/compliance-trestle/branch/develop/graph/badge.svg?token=1AUXDAF3OB
+[coverage-badge]: https://img.shields.io/coveralls/github/IBM/compliance-trestle
 [platform-badge]: https://img.shields.io/badge/platform-osx%20%7C%20linux-orange.svg
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
