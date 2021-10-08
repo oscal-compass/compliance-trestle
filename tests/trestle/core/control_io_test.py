@@ -23,6 +23,7 @@ import tests.test_utils as test_utils
 
 import trestle.oscal.catalog as cat
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.err import TrestleError
 from trestle.oscal import common
 
 case_1 = 'indent_normal'
@@ -172,3 +173,50 @@ This is a fancy control and should be used with care.
     control_writer.write_control(sub_dir, control, 'XY', None, None, False, False)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
+
+
+def test_control_failures(tmp_path: pathlib.Path) -> None:
+    """Test various failure modes."""
+    part = common.Part(name='foo')
+    assert ControlIOWriter._get_label(part) == ''
+
+    assert ControlIOReader._strip_to_make_ncname('1a@foo') == 'afoo'
+    with pytest.raises(TrestleError):
+        ControlIOReader._strip_to_make_ncname('1@')
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._indent('')
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._indent('  foo')
+
+
+def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
+    """Test error on read of bad unicode in control markdown."""
+    bad_file = tmp_path / 'bad_unicode.md'
+    with open(bad_file, 'wb') as f:
+        f.write(b'\x81')
+    with pytest.raises(TrestleError):
+        ControlIOReader._load_control_lines(bad_file)
+
+
+def test_broken_yaml_header(testdata_dir: pathlib.Path):
+    """Test for a bad markdown header."""
+    bad_file = testdata_dir / 'author' / 'bad_md_header.md'
+    with pytest.raises(TrestleError):
+        ControlIOReader._load_control_lines(bad_file)
+
+
+def test_read_label_prose(tmp_path: pathlib.Path) -> None:
+    """Test read_label_prose failures."""
+    lines = ['', '## Implementation my_label', 'bad line']
+    with pytest.raises(TrestleError):
+        ControlIOReader._read_label_prose(1, lines)
+
+    bad_header = ['', '# bad header']
+    with pytest.raises(TrestleError):
+        ControlIOReader._read_label_prose(1, bad_header)
+
+    no_label = ['', '## Implementation']
+    with pytest.raises(TrestleError):
+        ControlIOReader._read_label_prose(1, no_label)

@@ -41,13 +41,15 @@ class ControlIOWriter():
 
     # Start of section to write controls to markdown
 
-    def _wrap_label(self, label: str):
+    @staticmethod
+    def _wrap_label(label: str):
         l_side = '\['
         r_side = '\]'
         wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
         return wrapped
 
-    def _get_label(self, part: common.Part) -> str:
+    @staticmethod
+    def _get_label(part: common.Part) -> str:
         # get the label from the props of a part
         if part.props is not None:
             for prop in part.props:
@@ -145,49 +147,53 @@ class ControlIOWriter():
                 prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(sub_part, section))
         return prose
 
-    def _get_control_section(self, control: cat.Control, section: str) -> str:
+    @staticmethod
+    def _get_control_section(control: cat.Control, section: str) -> str:
         prose = ''
         if control.parts:
             for part in control.parts:
-                prose = self._gap_join(prose, self._get_control_section_part(part, section))
+                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(part, section))
         return prose
 
-    def _find_section_info(self, part: common.Part, section_list: List[str]):
+    @staticmethod
+    def _find_section_info(part: common.Part, section_list: List[str]):
         """Find section not in list."""
         if part.prose and part.name not in section_list:
             return part.id, part.name
         if part.parts:
             for part in part.parts:
-                id_, name = self._find_section_info(part, section_list)
+                id_, name = ControlIOWriter._find_section_info(part, section_list)
                 if id_:
                     return id_, name
         return '', ''
 
-    def _find_section(self, control: cat.Control, section_list: List[str]) -> Tuple[str, str]:
+    @staticmethod
+    def _find_section(control: cat.Control, section_list: List[str]) -> Tuple[str, str]:
         """Find next section not in list."""
         if control.parts:
             for part in control.parts:
-                id_, name = self._find_section_info(part, section_list)
+                id_, name = ControlIOWriter._find_section_info(part, section_list)
                 if id_:
                     return id_, name
         return '', ''
 
-    def _get_section(self, control: cat.Control, section_list: List[str]) -> Tuple[str, str, str]:
+    @staticmethod
+    def _get_section(control: cat.Control, section_list: List[str]) -> Tuple[str, str, str]:
         """Get sections that are not in the list."""
-        id_, name = self._find_section(control, section_list)
+        id_, name = ControlIOWriter._find_section(control, section_list)
         if id_:
-            return id_, name, self._get_control_section(control, name)
+            return id_, name, ControlIOWriter._get_control_section(control, name)
         return '', '', ''
 
     def _add_sections(self, control: cat.Control) -> None:
-        """Add the control sections, e.g. guidance."""
-        section_list = ['statement', 'item', 'objective']
+        """Add the extra control sections after the main ones."""
+        skip_section_list = ['statement', 'item', 'objective']
         while True:
-            name, id_, prose = self._get_section(control, section_list)
+            name, id_, prose = self._get_section(control, skip_section_list)
             if not name:
                 return
             if prose:
-                section_list.append(id_)
+                skip_section_list.append(id_)
                 if self._sections and id_ in self._sections:
                     id_ = self._sections[id_]
                 self._md_file.new_header(level=2, title=f'Control {id_}')
@@ -231,16 +237,41 @@ class ControlIOWriter():
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
         self._md_file.new_hr()
 
-    def _add_additional_content(self) -> None:
-        self._md_file.new_header(level=1, title='Additional Content')
-        self._md_file.new_line('<!-- Provide additional content here -->')
+    def _add_additional_content(self, control: cat.Control) -> None:
+        skip_sections = ['statement', 'item', 'objective', 'guidance']
+        _, name, prose = self._get_section(control, skip_sections)
+
+        # FIXME
+        name = ''
+        prose = ''
+
+        has_content = name and prose
+        self._md_file.new_header(level=1, title='Editable Content')
+        self._md_file.new_line('<!-- Make additions and edits here -->')
         self._md_file.new_line(
-            "<!-- Add content here. Each heading of '##' is intepreted as a part of the control. -->"
+            '<!-- The above represents the control statement, guidance, and objective prior to additions by the profile. -->'  # noqa E501
         )
         self._md_file.new_line(
-            '<!-- For the title to be valid it MUST follow the structure of ## Control [part type] -->'
+            '<!-- The above may not be edited but you may add or edit any additions made by the profile here. -->'
         )
-        self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/page.html for suggested types. -->')
+        self._md_file.new_line(
+            '<!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->'  # noqa E501
+        )
+        if has_content:
+            self._md_file.new_line(
+                '<!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. -->'  # noqa E501
+            )
+        else:
+            self._md_file.new_line(
+                '<!-- The current profile has no added parts for this control, but you may add new ones here. -->'
+            )
+        self._md_file.new_line('<!-- Each part must have a heading of the form ## Control <name> -->')
+        self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/FIXME.html for suggested names. -->')
+        while name and prose:
+            self._md_file.new_header(level=2, title=f'Control {name}')
+            self._md_file.new_paraline(prose)
+            skip_sections.append(name)
+            _, name, prose = self._get_section(control, skip_sections)
 
     @staticmethod
     def get_part_prose(control: cat.Control, part_name: str) -> str:
@@ -283,7 +314,7 @@ class ControlIOWriter():
             self._add_response(control, existing_text)
 
         if additional_content:
-            self._add_additional_content()
+            self._add_additional_content(control)
 
         self._md_file.write_out()
 
@@ -339,7 +370,7 @@ class ControlIOReader():
 
         ii should point to start of file or directly at a new Part or control
         This looks for two types of reference lines:
-        _______\n## Part label
+        _______\n## Control label
         _______\n# label
         If a section is meant to be left blank it goes ahead and reads the comment text
         """
@@ -359,9 +390,12 @@ class ControlIOReader():
         while -1 < ii < nlines:
             # start of new part
             if lines[ii].startswith('## Implementation'):
-                item_label = lines[ii].strip().split(' ')[-1]
+                split = lines[ii].strip().split()
+                if len(split) < 3:
+                    raise TrestleError('Implementation line must include label')
+                item_label = split[-1]
                 ii += 1
-                if ii < nlines and lines[ii] and ControlIOReader._indent(lines[ii]) == 0:
+                if ii < nlines and lines[ii] and ControlIOReader._indent(lines[ii]) <= 0:
                     msg = f'Implementation line for control appears broken by newline: {lines[ii]}'
                     raise TrestleError(msg)
                 # collect until next hrule
@@ -580,7 +614,10 @@ class ControlIOReader():
         prefix = '## Control '
         while 0 <= ii < len(lines):
             line = lines[ii]
-            if line.startswith('## What is the solution') or line.startswith('# Additional Content'):
+            if line.startswith('## What is the solution') or line.startswith('# Editable Content'):
+                ii += 1
+                continue
+            if not line:
                 ii += 1
                 continue
             if line and not line.startswith(prefix):
@@ -589,7 +626,7 @@ class ControlIOReader():
             prose = ''
             ii += 1
             while 0 <= ii < len(lines) and not lines[ii].startswith(prefix) and not lines[ii].startswith(
-                    '# Additional Content'):
+                    '# Editable Content'):
                 prose = '\n'.join([prose, lines[ii]])
                 ii += 1
             if prose:
@@ -658,11 +695,11 @@ class ControlIOReader():
 
     @staticmethod
     def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
-        """Read a single part indicated by ## Part foo."""
+        """Read a single part indicated by ## Control foo."""
         while 0 <= ii < len(lines):
-            # look for ## Part foo - then read prose
+            # look for ## Control foo - then read prose
             line = lines[ii]
-            prefix = '## Part '
+            prefix = '## Control '
             if line:
                 if not line.startswith(prefix):
                     raise TrestleError(f'Unexpected line in additional content for control {control_id}: {line}')

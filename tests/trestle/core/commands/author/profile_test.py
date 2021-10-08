@@ -34,7 +34,7 @@ ref_text = 'for suggested types. -->'
 
 my_guidance_text = """
 
-## Part my_guidance
+## Control my_guidance
 
 This is my_guidance.
 """
@@ -43,7 +43,7 @@ my_guidance_dict = {'names': ['my_guidance'], 'text': my_guidance_text}
 
 added_guidance_text = """
 
-## Part guidance
+## Control guidance
 
 This is guidance.
 """
@@ -52,11 +52,11 @@ new_guidance_dict = {'names': ['guidance'], 'text': added_guidance_text}
 
 multi_guidance_text = my_guidance_text = """
 
-## Part guidance
+## Control guidance
 
 This is guidance.
 
-## Part my_guidance
+## Control my_guidance
 
 This is my_guidance.
 """

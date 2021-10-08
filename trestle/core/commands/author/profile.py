@@ -92,6 +92,7 @@ class ProfileAssemble(AuthorCommonCommand):
     @staticmethod
     def _insert_part(my_part: com.Part, profile: prof.Profile) -> None:
         """Insert the part as an add in the profile for the specified control."""
+        # FIXME this can be simplified
         control_id = my_part.id.split('_')[0]
         by_id = f'{control_id}_smt'
         my_add = prof.Add(position='after', by_id=by_id, parts=[my_part])
