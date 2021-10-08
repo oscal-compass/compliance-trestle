@@ -19,8 +19,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import Extra, Field, constr, ValidationError
-from pydantic.class_validators import root_validator
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
