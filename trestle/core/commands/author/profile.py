@@ -18,7 +18,6 @@ import logging
 import pathlib
 import shutil
 
-import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.utils.fs as fs
 import trestle.utils.log as log
@@ -88,41 +87,6 @@ class ProfileAssemble(AuthorCommonCommand):
         trestle_root = pathlib.Path(args.trestle_root)
         self.assemble_profile(trestle_root, args.name, args.markdown, args.output)
         return 0
-
-    @staticmethod
-    def _insert_part(my_part: com.Part, profile: prof.Profile) -> None:
-        """Insert the part as an add in the profile for the specified control."""
-        # FIXME this can be simplified
-        control_id = my_part.id.split('_')[0]
-        by_id = f'{control_id}_smt'
-        my_add = prof.Add(position='after', by_id=by_id, parts=[my_part])
-        my_alter = prof.Alter(control_id=control_id, adds=[my_add])
-        if not profile.modify:
-            profile.modify = prof.Modify(alters=[my_alter])
-        elif not profile.modify.alters:
-            profile.modify.alters = [my_alter]
-        else:
-            added = False
-            new_alters = []
-            for alter in profile.modify.alters:
-                if alter.adds:
-                    new_adds = []
-                    for add in alter.adds:
-                        if add.by_id == by_id:
-                            added = True
-                            if add.parts:
-                                add.parts.append(my_part)
-                            else:
-                                add.parts = [my_part]
-                        new_adds.append(add)
-                    if not added:
-                        added = True
-                        new_adds.append(my_add)
-                    alter.adds = new_adds
-                new_alters.append(alter)
-            profile.modify.alters = new_alters
-            if not added:
-                profile.modify.alters.append(my_alter)
 
     @staticmethod
     def assemble_profile(
