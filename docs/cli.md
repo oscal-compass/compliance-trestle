@@ -550,7 +550,7 @@ data:
   exit-code: "2"
   results: |
     <?xml version="1.0" encoding="UTF-8"?>
-    <TestResult xmlns="http://checklists.nist.gov/xccdf/1.2" 
+    <TestResult xmlns="https://checklists.nist.gov/xccdf/1.2" 
                 id="xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis"
                 start-time="2020-08-03T02:26:26+00:00" end-time="2020-08-03T02:26:26+00:00"
                 version="0.1.52"
@@ -564,7 +564,7 @@ data:
                 <fact name="urn:xccdf:fact:scanner:name" type="string">OpenSCAP</fact>
                 <fact name="urn:xccdf:fact:scanner:version" type="string">1.3.3</fact>
               </target-facts>
-              <target-id-ref system="http://scap.nist.gov/schema/asset-identification/1.1" name="asset0" href=""/>
+              <target-id-ref system="https://scap.nist.gov/schema/asset-identification/1.1" name="asset0" href=""/>
               <platform idref="cpe:/a:redhat:openshift_container_platform:4.1"/>
               <platform idref="cpe:/a:machine"/>
               <set-value idref="xccdf_org.ssgproject.content_value_ocp_data_root">/kubernetes-api-resources</set-value>
@@ -1182,7 +1182,7 @@ output-overwrite = true
 
 org-name = International Business Machines
 org-remarks = IBM
-namespace = http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
+namespace = https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
 property-name-to-class = goal_name_id:scc_goal_name_id, goal_version:scc_goal_version
 catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
 catalog-title = NIST Special Publication 800-53 Revision 4
