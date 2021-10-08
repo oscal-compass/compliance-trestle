@@ -143,7 +143,3 @@ jobs:
           -Dsonar.tests=tests/
           -Dsonar.verbose=true
           -Dsonar.test.exclusions=tests/**
-
-
-
- 
