@@ -6,10 +6,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    # Run once per day to ensure we have no build failures due to dependency updates.
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '0 22 * * *'
 
 jobs:
   build:
