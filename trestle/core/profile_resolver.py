@@ -234,10 +234,11 @@ class ProfileResolver():
     class Modify(Pipeline.Filter):
         """Modify the controls based on the profile."""
 
-        def __init__(self, profile: prof.Profile) -> None:
+        def __init__(self, profile: prof.Profile, block_adds: bool = False) -> None:
             """Initialize the filter."""
             self._profile = profile
             self._catalog_interface: Optional[CatalogInterface] = None
+            self._block_adds = block_adds
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
         def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
@@ -381,12 +382,13 @@ class ProfileResolver():
                         raise TrestleError('Alters not supported for removes.')
                     if alter.adds is None:
                         raise TrestleError('Alter has no adds to perform.')
-                    for add in alter.adds:
-                        if add.position is None or add.position.name is None:
-                            raise TrestleError('Alter position must be not None.')
-                        control = self._catalog_interface.get_control(alter.control_id)
-                        self._add_to_control(add, control)
-                        self._catalog_interface.replace_control(control)
+                    if not self._block_adds:
+                        for add in alter.adds:
+                            if add.position is None or add.position.name is None:
+                                raise TrestleError('Alter/Add position must be specified.')
+                            control = self._catalog_interface.get_control(alter.control_id)
+                            self._add_to_control(add, control)
+                            self._catalog_interface.replace_control(control)
             # use the param_dict to apply all modifys
             control_ids = self._catalog_interface.get_control_ids()
             for control_id in control_ids:
@@ -429,10 +431,11 @@ class ProfileResolver():
     class Import(Pipeline.Filter):
         """Import filter class."""
 
-        def __init__(self, trestle_root: pathlib.Path, import_: prof.Import) -> None:
+        def __init__(self, trestle_root: pathlib.Path, import_: prof.Import, block_adds: bool = False) -> None:
             """Initialize and store trestle root for cache access."""
             self._trestle_root = trestle_root
             self._import = import_
+            self._block_adds = block_adds
 
         def process(self, input_=None) -> Iterator[cat.Catalog]:
             """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
@@ -463,16 +466,18 @@ class ProfileResolver():
                         f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}'
                     )
                 merge_filter = ProfileResolver.Merge(profile)
-                modify_filter = ProfileResolver.Modify(profile)
+                modify_filter = ProfileResolver.Modify(profile, self._block_adds)
                 final_pipeline = Pipeline([merge_filter, modify_filter])
                 yield next(final_pipeline.process(pipelines))
 
     @staticmethod
-    def get_resolved_profile_catalog(trestle_root: pathlib.Path, profile_path: pathlib.Path) -> cat.Catalog:
+    def get_resolved_profile_catalog(
+        trestle_root: pathlib.Path, profile_path: pathlib.Path, block_adds: bool = False
+    ) -> cat.Catalog:
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
-        import_filter = ProfileResolver.Import(trestle_root, import_)
+        import_filter = ProfileResolver.Import(trestle_root, import_, block_adds)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result

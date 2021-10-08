@@ -62,9 +62,9 @@ class ProfileGenerate(AuthorCommonCommand):
     ) -> int:
         """Generate markdown for the controls in the profile."""
         _, _, profile = load_distributed(profile_path, trestle_root)
-        catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path)
+        catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
         catalog_interface = CatalogInterface(catalog)
-        catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True)
+        catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
         return 0
 
 
@@ -143,9 +143,32 @@ class ProfileAssemble(AuthorCommonCommand):
         md_dir = trestle_root / md_name
         profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'
         _, _, orig_profile = load_distributed(profile_path, trestle_root, prof.Profile)
-        added_parts = CatalogInterface.read_additional_content(md_dir)
-        for part in added_parts:
-            ProfileAssemble._insert_part(part, orig_profile)
+        # load the editable sections of the markdown and create Adds for them
+        # then overwrite the Adds in the existing profile with the new ones
+        found_alters = CatalogInterface.read_additional_content(md_dir)
+        if found_alters:
+            if not orig_profile.modify:
+                orig_profile.modify = prof.Modify(alters=found_alters)
+            elif not orig_profile.modify.alters:
+                orig_profile.modify.alters = found_alters
+            else:
+                alter_dict = {}
+                for alter in orig_profile.modify.alters:
+                    alter.adds = None
+                    alter_dict[alter.control_id] = alter
+                for found_alter in found_alters:
+                    alter = alter_dict.get(found_alter.control_id, None)
+                    if alter is None:
+                        alter_dict[found_alter.control_id] = found_alter
+                    else:
+                        if alter.adds:
+                            alter.adds.extend(found_alter.adds)
+                        else:
+                            alter.adds = found_alter.adds
+                        alter_dict[found_alter.control_id] = alter
+                new_alters = list(alter_dict.values())
+                orig_profile.modify.alters = new_alters
+
         new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
 
         if new_prof_dir.exists():

@@ -92,7 +92,7 @@ end of text
         control.parts.extend([sec_1, sec_2])
 
     writer = ControlIOWriter()
-    writer.write_control(tmp_path, control, '', None, None, additional_content, False)
+    writer.write_control(tmp_path, control, '', None, None, additional_content, False, None)
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlIOReader()
@@ -170,7 +170,7 @@ This is a fancy control and should be used with care.
     sub_dir.mkdir(exist_ok=True)
     # write it out as markdown in a separate directory to avoid name clash
     control_writer = ControlIOWriter()
-    control_writer.write_control(sub_dir, control, 'XY', None, None, False, False)
+    control_writer.write_control(sub_dir, control, 'XY', None, None, False, False, None)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 

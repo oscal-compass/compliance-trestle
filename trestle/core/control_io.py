@@ -27,6 +27,7 @@ from trestle.core import generators as gens
 from trestle.core.err import TrestleError
 from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
+from trestle.oscal import profile as prof
 from trestle.utils.md_writer import MDWriter
 
 logger = logging.getLogger(__name__)
@@ -237,22 +238,33 @@ class ControlIOWriter():
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
         self._md_file.new_hr()
 
-    def _add_additional_content(self, control: cat.Control) -> None:
-        skip_sections = ['statement', 'item', 'objective', 'guidance']
-        _, name, prose = self._get_section(control, skip_sections)
+    @staticmethod
+    def _get_adds(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
+        adds = []
+        if profile and profile.modify and profile.modify.alters:
+            for alter in profile.modify.alters:
+                if alter.control_id == control_id and alter.adds:
+                    for add in alter.adds:
+                        if add.parts:
+                            for part in add.parts:
+                                if part.prose:
+                                    adds.append((part.name, part.prose))
+        return adds
 
-        # FIXME
-        name = ''
-        prose = ''
+    def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> None:
+        adds = ControlIOWriter._get_adds(control.id, profile)
+        has_content = len(adds) > 0
 
-        has_content = name and prose
         self._md_file.new_header(level=1, title='Editable Content')
-        self._md_file.new_line('<!-- Make additions and edits here -->')
+        self._md_file.new_line('<!-- Make additions and edits below -->')
         self._md_file.new_line(
-            '<!-- The above represents the control statement, guidance, and objective prior to additions by the profile. -->'  # noqa E501
+            '<!-- The above represents the contents of the control as received by the profile, prior to additions. -->'  # noqa E501
         )
         self._md_file.new_line(
-            '<!-- The above may not be edited but you may add or edit any additions made by the profile here. -->'
+            '<!-- If the profile makes additions to the control, they will appear below. -->'  # noqa E501
+        )
+        self._md_file.new_line(
+            '<!-- The above may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'  # noqa E501
         )
         self._md_file.new_line(
             '<!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->'  # noqa E501
@@ -265,13 +277,12 @@ class ControlIOWriter():
             self._md_file.new_line(
                 '<!-- The current profile has no added parts for this control, but you may add new ones here. -->'
             )
-        self._md_file.new_line('<!-- Each part must have a heading of the form ## Control <name> -->')
+        self._md_file.new_line('<!-- Each addition must have a heading of the form ## Control my_addition_name -->')
         self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/FIXME.html for suggested names. -->')
-        while name and prose:
+        for add in adds:
+            name, prose = add
             self._md_file.new_header(level=2, title=f'Control {name}')
             self._md_file.new_paraline(prose)
-            skip_sections.append(name)
-            _, name, prose = self._get_section(control, skip_sections)
 
     @staticmethod
     def get_part_prose(control: cat.Control, part_name: str) -> str:
@@ -290,7 +301,8 @@ class ControlIOWriter():
         yaml_header: Optional[dict],
         sections: Optional[Dict[str, str]],
         additional_content: bool,
-        prompt_responses: bool
+        prompt_responses: bool,
+        profile: Optional[prof.Profile]
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -314,7 +326,7 @@ class ControlIOWriter():
             self._add_response(control, existing_text)
 
         if additional_content:
-            self._add_additional_content(control)
+            self._add_additional_content(control, profile)
 
         self._md_file.write_out()
 
@@ -702,7 +714,7 @@ class ControlIOReader():
             prefix = '## Control '
             if line:
                 if not line.startswith(prefix):
-                    raise TrestleError(f'Unexpected line in additional content for control {control_id}: {line}')
+                    raise TrestleError(f'Unexpected line in Editable Content for control {control_id}: {line}')
                 part_name_raw = line[len(prefix):]
                 part_name = spaces_and_caps_to_snake(part_name_raw)
                 prose_lines = []
@@ -726,24 +738,28 @@ class ControlIOReader():
         return -1, None
 
     @staticmethod
-    def read_added_parts(control_path: pathlib.Path) -> List[common.Part]:
-        """Get parts for the markdown control corresponding to additional content - if any."""
+    def read_new_alters(control_path: pathlib.Path) -> List[prof.Alter]:
+        """Get parts for the markdown control corresponding to Editable Content - if any."""
         control_id = control_path.stem
-        added_parts: List[common.Part] = []
+        new_alters: List[prof.Alter] = []
         lines = ControlIOReader._load_control_lines(control_path)
         ii = 0
         while 0 <= ii < len(lines):
             line = lines[ii]
-            if line.startswith('# Additional Content'):
+            if line.startswith('# Editable Content'):
                 ii += 1
                 while 0 <= ii < len(lines):
                     ii, part = ControlIOReader._read_added_part(ii, lines, control_id)
                     if ii < 0:
                         break
-                    added_parts.append(part)
+                    alter = prof.Alter(
+                        control_id=control_id,
+                        adds=[prof.Add(parts=[part], position='after', by_id=f'{control_id}_smt')]
+                    )
+                    new_alters.append(alter)
             else:
                 ii += 1
-        return added_parts
+        return new_alters
 
     @staticmethod
     def read_control(control_path: pathlib.Path) -> cat.Control:

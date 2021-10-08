@@ -28,9 +28,11 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
 from trestle.core.profile_resolver import ProfileResolver
 
-markdown_name = 'my_md'
+# test dicts are of form {'name_exp': [(name, exp_str)...], 'ref': ref_str, 'text': prose}
+# the text is inserted on the line after ref appears
+# then the assembled control is searched for exp_str in the prose of the named parts
 
-ref_text = 'for suggested types. -->'
+markdown_name = 'my_md'
 
 my_guidance_text = """
 
@@ -39,32 +41,30 @@ my_guidance_text = """
 This is my_guidance.
 """
 
-my_guidance_dict = {'names': ['my_guidance'], 'text': my_guidance_text}
-
-added_guidance_text = """
-
-## Control guidance
-
-This is guidance.
-"""
-
-new_guidance_dict = {'names': ['guidance'], 'text': added_guidance_text}
+# just add a new addition
+my_guidance_dict = {
+    'name_exp': [('my_guidance', 'This is my_guidance.')], 'ref': 'carefully.', 'text': my_guidance_text
+}
 
 multi_guidance_text = my_guidance_text = """
 
-## Control guidance
+## Control a_guidance
 
-This is guidance.
+This is a_guidance.
 
-## Control my_guidance
+## Control b_guidance
 
-This is my_guidance.
+This is b_guidance.
 """
+# add two additions
+multi_guidance_dict = {
+    'name_exp': [('a_guidance', 'This is a_guidance.'), ('b_guidance', 'This is b_guidance.')],
+    'ref': 'logs.',
+    'text': multi_guidance_text
+}
 
-multi_guidance_dict = {'names': ['guidance', 'my_guidance'], 'text': multi_guidance_text}
 
-
-@pytest.mark.parametrize('guid_dict', [my_guidance_dict, new_guidance_dict, multi_guidance_dict])
+@pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_profile_generate_assemble(
@@ -93,7 +93,8 @@ def test_profile_generate_assemble(
         with patch.object(sys, 'argv', test_args):
             Trestle().run()
         assert ac1_path.exists()
-        test_utils.insert_text_in_file(ac1_path, ref_text, guid_dict['text'])
+        # insert text in the control after the found ref text in the control
+        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if dir_exists:
             assembled_prof_dir.mkdir()
@@ -103,7 +104,7 @@ def test_profile_generate_assemble(
         profile_generate = ProfileGenerate()
         profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)
         assert ac1_path.exists()
-        test_utils.insert_text_in_file(ac1_path, ref_text, guid_dict['text'])
+        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
         if dir_exists:
             assembled_prof_dir.mkdir()
         ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name)
@@ -112,6 +113,7 @@ def test_profile_generate_assemble(
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
     catalog_interface = CatalogInterface(catalog)
-    for name in guid_dict['names']:
+    # confirm presence of all expected strings in the control named parts
+    for name, exp_str in guid_dict['name_exp']:
         prose = catalog_interface.get_control_part_prose('ac-1', name)
-        assert prose.find(f'This is {name}.') >= 0
+        assert prose.find(exp_str) >= 0

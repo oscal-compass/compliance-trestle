@@ -24,6 +24,7 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.oscal import common
+from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
 
@@ -258,7 +259,8 @@ class CatalogInterface():
         yaml_header: dict,
         sections: Optional[Dict[str, str]],
         responses: bool,
-        additional_content: bool = False
+        additional_content: bool = False,
+        profile: Optional[prof.Profile] = None
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -272,7 +274,9 @@ class CatalogInterface():
             group_dir = md_path if group_id == 'catalog' else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
-            writer.write_control(group_dir, control, group_title, yaml_header, sections, additional_content, responses)
+            writer.write_control(
+                group_dir, control, group_title, yaml_header, sections, additional_content, responses, profile
+            )
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
@@ -334,16 +338,16 @@ class CatalogInterface():
         return imp_reqs
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path) -> List[common.Part]:
-        """Read all markdown controls and return list of added parts."""
+    def read_additional_content(md_path: pathlib.Path) -> List[prof.Alter]:
+        """Read all markdown controls and return list of alters."""
         group_ids = CatalogInterface._get_group_ids(md_path)
 
-        added_parts: List[common.Part] = []
+        new_alters: List[prof.Alter] = []
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                added_parts.extend(ControlIOReader.read_added_parts(control_file))
-        return added_parts
+                new_alters.extend(ControlIOReader.read_new_alters(control_file))
+        return new_alters
 
     @staticmethod
     def part_equivalent(a: common.Part, b: common.Part) -> bool:
