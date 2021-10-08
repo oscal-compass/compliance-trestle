@@ -27,7 +27,7 @@
           "control_id": "a-1",
           "adds": [
             {
-              "position": "after",
+              "position": "starting",
               "by_id": "a-1_smt",
               "parts": [
                 {
