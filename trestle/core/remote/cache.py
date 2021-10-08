@@ -387,16 +387,16 @@ class SFTPFetcher(FetcherBase):
                 port=22 if not u.port else u.port,
             )
         except Exception as e:
-            logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+            logger.error(f'Error connecting SSH for {u.hostname}')
             logger.debug(e)
-            raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+            raise TrestleError(f'Cache update failure to connect via SSH: {u.hostname}')
 
         try:
             sftp_client = client.open_sftp()
         except Exception as e:
-            logger.error(f'Error opening sftp session for {username}@{u.hostname}')
+            logger.error(f'Error opening sftp session for {u.hostname}')
             logger.debug(e)
-            raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
+            raise TrestleError(f'Cache update failure to open sftp for {u.hostname}')
 
         localpath = self._cached_object_path
         try:
