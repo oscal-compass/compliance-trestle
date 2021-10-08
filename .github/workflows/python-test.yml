@@ -144,7 +144,8 @@ jobs:
         args: >
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.tests=tests/
+          -Dsonar.sources=trestle/**
           -Dsonar.verbose=true
+          -Dsonar.python.version=3.7, 3.8, 3.9
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
-          -Dsonar.test.exclusions=tests/**
