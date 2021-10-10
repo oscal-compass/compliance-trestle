@@ -149,3 +149,4 @@ jobs:
           -Dsonar.python.version=3.7
           -Dsonar.projectKey=compliance-trestle
           -Dsonar.organization=compliance-trestle
+          -Dsonar.cpd.exclusions=trestle/oscal/*.py
