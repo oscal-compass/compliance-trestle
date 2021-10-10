@@ -9,13 +9,13 @@
       "props": [
         {
           "name": "profile_mnemonic",
-          "ns": "http://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
+          "ns": "https://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
           "value": "roks-cis-node",
           "class": "scc_profile_mnemonic"
         },              
         {
           "name": "base_profile_mnemonic",
-          "ns": "http://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
+          "ns": "https://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
           "value": "ocp4-cis-node",
           "class": "scc_base_profile_mnemonic"
         }        
