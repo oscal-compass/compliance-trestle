@@ -76,23 +76,23 @@ The inventory should be included in *local-definitions* if observations are bein
                "props": [
                    {
                        "name": "Computer Name",
-                       "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                        "value": "cmp-wn-2106.demo.tanium.local"
                    },
                    {
                        "name": "Tanium Client IP Address",
-                       "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                        "value": "192.168.0.120",
                        "class": "scc_inventory_item_id"
                    },
                    {
                        "name": "IP Address",
-                       "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                        "value": "['fe80::cd44:4154:61e8:53ae', '192.168.0.120']"
                    },
                    {
                        "name": "Count",
-                       "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                        "value": "1"
                    }
                ],
@@ -132,53 +132,53 @@ The inventory should be included in *local-definitions* if observations are bein
        "props": [
            {
                "name": "Check ID",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"
            },
            {
                "name": "Check ID Benchmark",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
                "class": "scc_predefined_profile"
            },
            {
                "name": "Check ID Version",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "1.0.0-1",
                "class": "scc_check_version"
            },
            {
                "name": "Check ID Version",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "1.0.0-1",
                "class": "scc_predefined_profile_version"
            },
            {
                "name": "Check ID Level",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "Level 1 - Server"
            },
            {
                "name": "Rule ID",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
                "class": "scc_goal_description"
            },
            {
                "name": "Rule ID",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
                "class": "scc_check_name_id"
            },
            {
                "name": "State",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "fail",
                "class": "scc_result"
            },
            {
                "name": "Timestamp",
-               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                "value": "2021-05-11T22:34:03+00:00",
                "class": "scc_timestamp"
            }
@@ -221,19 +221,19 @@ The inventory should be included in *local-definitions* if observations are bein
            "props": [
                {
                    "name": "Profile",
-                   "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                   "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                    "value": "Windows 10 - NIST 800-53",
                    "class": "scc_predefined_profile"
                },
                {
                    "name": "Version",
-                   "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                   "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                    "value": "version: 1",
                    "class": "scc_predefined_profile_version"
                },
                {
                    "name": "Custom ID",
-                   "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                   "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                    "value": "800-53: IA-5",
                }
            ],
