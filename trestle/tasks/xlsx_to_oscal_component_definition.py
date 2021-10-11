@@ -18,6 +18,7 @@ import configparser
 import datetime
 import logging
 import pathlib
+import string
 import traceback
 import uuid
 from typing import Any, Dict, Iterator, List, Optional
@@ -652,32 +653,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                         control = control.split(':')[0]
                     # remove alphabet parts of control & accumulate in statements
                     statements = []
-                    for i in ['a',
-                              'b',
-                              'c',
-                              'd',
-                              'e',
-                              'f',
-                              'g',
-                              'h',
-                              'i',
-                              'j',
-                              'k',
-                              'l',
-                              'm',
-                              'n',
-                              'o',
-                              'p',
-                              'q',
-                              'r',
-                              's',
-                              't',
-                              'u',
-                              'v',
-                              'w',
-                              'x',
-                              'y',
-                              'z']:
+                    for i in string.ascii_lowercase:
                         needle = '(' + i + ')'
                         if needle in control:
                             statements.append(needle)
