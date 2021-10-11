@@ -150,6 +150,7 @@ jobs:
           -Dsonar.organization=compliance-trestle
           -Dsonar.cpd.exclusions=trestle/oscal/*.py
     - name: SonarQube Quality Gate check
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       uses: sonarsource/sonarqube-quality-gate-action@master
       # Force to fail step after specific time
       timeout-minutes: 5
