@@ -24,10 +24,13 @@ import pytest
 
 from tests import test_utils
 
+from trestle.core import generators as gens
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
+from trestle.oscal import catalog as cat
+from trestle.oscal import profile as prof
 from trestle.utils import log
 
 
@@ -179,3 +182,43 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
     assert control_a1.parts[1].parts[0].parts[3].parts[0].id == 'ac-1_smt_inside1_at_the_end_a.2_lev4'
     assert control_a1.parts[1].parts[0].parts[3].parts[1].id == 'ac-1_smt_inside2_at_the_end_a.2_lev4'
     assert control_a2.parts[0].id == 'ac-2_implgdn_lev1'
+
+
+def test_profile_resolver_merge(sample_catalog_rich_controls) -> None:
+    """Test profile resolver merge."""
+    profile = gens.generate_sample_model(prof.Profile)
+    merge = ProfileResolver.Merge(profile)
+    merged = gens.generate_sample_model(cat.Catalog)
+    new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
+    catalog_interface = CatalogInterface(new_merged)
+    assert catalog_interface.get_count_of_controls(True) == 5
+
+    merged = gens.generate_sample_model(cat.Catalog)
+    merged.controls = []
+    new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
+    catalog_interface = CatalogInterface(new_merged)
+    assert catalog_interface.get_count_of_controls(True) == 5
+
+
+def test_profile_resolver_failures() -> None:
+    """Test failure modes of profile resolver."""
+    profile = gens.generate_sample_model(prof.Profile)
+    modify = ProfileResolver.Modify(profile)
+    with pytest.raises(TrestleError):
+        modify._add_to_parts_given_position([], 'foo', [], 'bar')
+    with pytest.raises(TrestleError):
+        modify._add_to_parts_given_position([], None, [], 'before')
+    control = gens.generate_sample_model(cat.Control)
+    # this should not cause error
+    modify._add_to_parts(control, 'foo', [], 'before')
+    with pytest.raises(TrestleError):
+        modify._add_to_parts(control, 'foo', ['x'], 'before')
+    add = prof.Add()
+    with pytest.raises(TrestleError):
+        modify._add_to_control(add, control)
+    add.parts = []
+    with pytest.raises(TrestleError):
+        modify._add_to_control(add, control)
+    add.position = prof.Position.before
+    with pytest.raises(TrestleError):
+        modify._add_to_control(add, control)

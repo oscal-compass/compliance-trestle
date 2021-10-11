@@ -208,14 +208,22 @@ class ProfileResolver():
             self._profile = profile
 
         def _merge_catalog(self, merged: cat.Catalog, catalog: cat.Catalog) -> cat.Catalog:
+            """Merge the controls in the catalog into merged catalog."""
             if merged is None:
                 return catalog
             if catalog.groups is not None:
+                if merged.groups is None:
+                    merged.groups = []
                 for group in catalog.groups:
                     if group.id not in [g.id for g in merged.groups]:
                         merged.groups.append(cat.Group(id=group.id, title=group.title, controls=[]))
                     index = [g.id for g in merged.groups].index(group.id)
                     merged.groups[index].controls.extend(group.controls)
+            if catalog.controls:
+                if not merged.controls:
+                    merged.controls = catalog.controls
+                else:
+                    merged.controls.extend(catalog.controls)
             return merged
 
         def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
@@ -223,6 +231,7 @@ class ProfileResolver():
             Merge the incoming catalogs.
 
             This pulls from import and iterates over the incoming catalogs.
+            Currently this does not use the profile but it may in the future.
             """
             merged: Optional[cat.Catalog] = None
             logger.debug(f'merge entering process with {len(pipelines)} pipelines')
@@ -292,8 +301,9 @@ class ProfileResolver():
                         for prt in sub_control.parts:
                             self._replace_part_prose(sub_control, prt, param_dict)
 
+        @staticmethod
         def _add_to_parts_given_position(
-            self, control_parts: List[common.Part], id_: str, new_parts: List[common.Part], position: str
+            control_parts: List[common.Part], id_: str, new_parts: List[common.Part], position: str
         ) -> bool:
             """Add new elements at the given position."""
             if position not in {'after', 'before', 'starting', 'ending'}:
@@ -320,11 +330,15 @@ class ProfileResolver():
                     return True
                 else:
                     if child_part.parts is not None:
-                        if self._add_to_parts_given_position(child_part.parts, id_, new_parts, position):
+                        if ProfileResolver.Modify._add_to_parts_given_position(child_part.parts,
+                                                                               id_,
+                                                                               new_parts,
+                                                                               position):
                             return True
             return False
 
-        def _add_to_parts(self, control: cat.Control, id_: str, new_parts: List[common.Part], position: str) -> None:
+        @staticmethod
+        def _add_to_parts(control: cat.Control, id_: str, new_parts: List[common.Part], position: str) -> None:
             """Find part in control and add to the specified position.
 
             Update the control with the new parts - otherwise error.
@@ -336,20 +350,30 @@ class ProfileResolver():
                     control.parts.insert(offset, new_part)
             elif position == 'ending' and id_ is None:
                 # add inside the control at the end
-                control.parts.extend(new_parts)
+                if control.parts is None:
+                    control.parts = new_parts
+                else:
+                    control.parts.extend(new_parts)
             else:
                 # id is given, add by reference
-                if not self._add_to_parts_given_position(control.parts, id_, new_parts, position):
+                if control.parts is None:
+                    if not new_parts:
+                        return
+                    control.parts = []
+                if not ProfileResolver.Modify._add_to_parts_given_position(control.parts, id_, new_parts, position):
                     raise TrestleError(f'Unable to add parts for control {control.id} and part {id_} is not found.')
 
-        def _add_to_control(self, add: prof.Add, control: cat.Control) -> None:
+        @staticmethod
+        def _add_to_control(add: prof.Add, control: cat.Control) -> None:
             """Add altered parts and properties to the control."""
             if add.parts is None and add.props is None:
                 raise TrestleError('Alter must add parts or props, however none were given.')
 
             # Add parts
             if add.parts is not None:
-                self._add_to_parts(control, add.by_id, add.parts, add.position.name)
+                if add.position is None:
+                    raise TrestleError(f'Unable to add parts for control {control.id} with position unknown.')
+                ProfileResolver.Modify._add_to_parts(control, add.by_id, add.parts, add.position.name)
 
             # Add properties
             if add.props is not None:

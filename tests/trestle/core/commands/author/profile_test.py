@@ -91,7 +91,7 @@ def test_profile_generate_assemble(
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
         with patch.object(sys, 'argv', test_args):
-            Trestle().run()
+            assert Trestle().run() == 0
         assert ac1_path.exists()
         # insert text in the control after the found ref text in the control
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
@@ -99,7 +99,7 @@ def test_profile_generate_assemble(
         if dir_exists:
             assembled_prof_dir.mkdir()
         with patch.object(sys, 'argv', test_args):
-            Trestle().run()
+            assert Trestle().run() == 0
     else:
         profile_generate = ProfileGenerate()
         profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)
@@ -107,7 +107,7 @@ def test_profile_generate_assemble(
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
         if dir_exists:
             assembled_prof_dir.mkdir()
-        ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name)
+        assert ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name) == 0
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 

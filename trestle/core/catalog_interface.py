@@ -213,6 +213,11 @@ class CatalogInterface():
         """Given a list of controls, create fresh list pulled from the control dict."""
         new_list: List[cat.Control] = []
         for control in controls:
+            # first update the control itself
+            control = self.get_control(control.id)
+            # then update any controls it contains
+            if control.controls:
+                control.controls = self._update_all_controls_in_list(control.controls)
             new_list.append(self.get_control(control.id))
         return new_list
 

@@ -103,7 +103,7 @@ class ControlIOWriter():
             self._md_file.new_paragraph()
             self._md_file.new_list(items)
 
-    def _add_yaml_header(self, yaml_header: Optional[dict]) -> None:
+    def _add_yaml_header(self, yaml_header: Optional[Dict]) -> None:
         if yaml_header:
             self._md_file.add_yaml_header(yaml_header)
 
@@ -298,7 +298,7 @@ class ControlIOWriter():
         dest_path: pathlib.Path,
         control: cat.Control,
         group_title: str,
-        yaml_header: Optional[dict],
+        yaml_header: Optional[Dict],
         sections: Optional[Dict[str, str]],
         additional_content: bool,
         prompt_responses: bool,
@@ -307,7 +307,21 @@ class ControlIOWriter():
         """
         Write out the control in markdown format into the specified directory.
 
-        The filename is constructed from the control's id.
+        Args:
+            dest_path: Path to the directory where the control will be written
+            control: The control to write as markdown
+            group_title: Title of the group containing the control
+            yaml_header: Optional dict to be written as markdown yaml header
+            sections: Optional string lookup dict mapping section abbrev. to pretty version for display
+            additional_content: Should the additional content be printed corresponding to profile adds
+            prompt_responses: Should the markdown include prompts for implementation detail responses
+            profile: Profile containing the adds making up additional content
+
+        Returns:
+            None
+
+        Notes:
+            The filename is constructed from the control's id, so only the markdown directory is required
         """
         control_file = dest_path / (control.id + '.md')
         existing_text = ControlIOReader.read_all_implementation_prose(control_file)

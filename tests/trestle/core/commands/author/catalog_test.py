@@ -24,7 +24,8 @@ from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
-from trestle.oscal.catalog import Catalog
+from trestle.core.err import TrestleError
+from trestle.oscal import catalog as cat
 from trestle.oscal.common import Part, Property
 
 markdown_name = 'my_md'
@@ -51,14 +52,14 @@ def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
         with patch.object(sys, 'argv', test_args):
-            Trestle().run()
+            assert Trestle().run() == 0
         assert ac1_path.exists()
         test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         if dir_exists:
             assembled_cat_dir.mkdir()
         with patch.object(sys, 'argv', test_args):
-            Trestle().run()
+            assert Trestle().run() == 0
     else:
         catalog_generate = CatalogGenerate()
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
@@ -68,8 +69,8 @@ def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
             assembled_cat_dir.mkdir()
         CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
 
-    cat_orig = Catalog.oscal_read(catalog_path)
-    cat_new = Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
+    cat_orig = cat.Catalog.oscal_read(catalog_path)
+    cat_new = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
     interface_orig = CatalogInterface(cat_orig)
     # add the item manually to the original catalog so we can confirm the item was loaded correctly
     ac1 = interface_orig.get_control('ac-1')
@@ -79,3 +80,29 @@ def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
     interface_orig.replace_control(ac1)
     interface_orig.update_catalog_controls()
     assert interface_orig.equivalent_to(cat_new)
+
+
+def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test the catalog interface with complex controls."""
+    interface = CatalogInterface(sample_catalog_rich_controls)
+    n_controls = interface.get_count_of_controls(True)
+    assert n_controls == 5
+
+    control = interface.get_control('control_d1')
+    new_title = 'updated d1'
+    control.title = new_title
+    interface.replace_control(control)
+    interface.update_catalog_controls()
+    assert interface._catalog.controls[1].controls[0].title == new_title
+
+
+def test_catalog_failures(tmp_trestle_dir) -> None:
+    """Test failures of author catalog."""
+    test_args = 'trestle author catalog-generate -n foo -o profiles'.split()
+    with patch.object(sys, 'argv', test_args):
+        assert Trestle().run() == 1
+
+    test_args = 'trestle author catalog-generate -n foo -o my_md'.split()
+    with pytest.raises(TrestleError):
+        with patch.object(sys, 'argv', test_args):
+            Trestle().run()

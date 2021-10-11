@@ -114,11 +114,15 @@ class CatalogAssemble(AuthorCommonCommand):
             logger.info('Creating catalog from markdown and destination catalog directory exists, so deleting.')
             try:
                 shutil.rmtree(str(new_cat_dir))
+            except OSError as e:
+                raise TrestleError(f'OSError deleting existing catalog directory with rmtree {new_cat_dir}: {e}')
             except Exception as e:
                 raise TrestleError(f'Error deleting existing catalog directory {new_cat_dir}: {e}')
         try:
             new_cat_dir.mkdir()
             catalog.oscal_write(new_cat_dir / 'catalog.json')
+        except OSError as e:
+            raise TrestleError(f'OSError writing catalog from markdown to {new_cat_dir}: {e}')
         except Exception as e:
             raise TrestleError(f'Error writing catalog from markdown to {new_cat_dir}: {e}')
         return 0
