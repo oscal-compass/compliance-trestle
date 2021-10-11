@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -250,7 +250,7 @@ class ResultsMgr():
         self.component_map: t_component_map = {}
         self.inventory_map: t_inventory_map = {}
         self.results_map: t_results_map = {}
-        self.ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
+        self.ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
 
     @property
     def components(self) -> t_component_map:

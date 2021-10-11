@@ -166,23 +166,23 @@ Task: tanium-to-oscal executed successfully.
             "props": [
               {
                 "name": "Computer Name",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                 "value": "RHEL8"
               },
               {
                 "name": "Tanium Client IP Address",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                 "value": "192.168.0.125",
                 "class": "scc_inventory_item_id"
               },
               {
                 "name": "IP Address",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                 "value": "['192.168.0.125', '192.168.122.1', 'fe80::3c47:1aff:fe33:601']"
               },
               {
                 "name": "Count",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                 "value": "1"
               }
             ],
@@ -206,53 +206,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -274,53 +274,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -342,53 +342,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -410,53 +410,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -478,53 +478,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -546,53 +546,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -614,53 +614,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -682,53 +682,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
@@ -750,53 +750,53 @@ Task: tanium-to-oscal executed successfully.
           "props": [
             {
               "name": "Check ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"
             },
             {
               "name": "Check ID Benchmark",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
               "class": "scc_predefined_profile"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_check_version"
             },
             {
               "name": "Check ID Version",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "1.0.0-1",
               "class": "scc_predefined_profile_version"
             },
             {
               "name": "Check ID Level",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "Level 1 - Server"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions",
               "class": "scc_goal_description"
             },
             {
               "name": "Rule ID",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions",
               "class": "scc_check_name_id"
             },
             {
               "name": "State",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "notchecked",
               "class": "scc_result"
             },
             {
               "name": "Timestamp",
-              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "2021-05-12T13:46:46+00:00",
               "class": "scc_timestamp"
             }
