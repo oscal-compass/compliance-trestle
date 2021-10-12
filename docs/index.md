@@ -1,10 +1,12 @@
 # Compliance-trestle (also known as `trestle`)
 
-[![OS Compatibility][platform-badge]](#prerequisites)
-[![Python Compatibility][python-badge]][python]
-[![pre-commit][pre-commit-badge]][pre-commit]
-[![code-coverage][coverage-badge]][coverage]
-[![pypi-downloads][pypi-downloads-badge]][pypi]
+![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux-orange.svg)
+![[Python](https://www.python.org/downloads/)](https://img.shields.io/badge/python-v3.7+-blue.svg)
+![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
+![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
+![[Quality gate](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=alert_status)
+![[Pypi](https://pypi.org/project/compliance-trestle/)](https://img.shields.io/pypi/dm/compliance-trestle)
+![GitHub Actions status](https://img.shields.io/github/workflow/status/IBM/compliance-trestle/Trestle%20PR%20pipeline?event=push)
 
 Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
@@ -92,13 +94,3 @@ Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contribu
 # limitations under the License.
 
 ```
-
-[coverage]: https://codecov.io/gh/IBM/compliance-trestle
-[coverage-badge]: https://codecov.io/gh/IBM/compliance-trestle/branch/develop/graph/badge.svg?token=1AUXDAF3OB
-[platform-badge]: https://img.shields.io/badge/platform-osx%20%7C%20linux-orange.svg
-[pre-commit]: https://github.com/pre-commit/pre-commit
-[pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-[pypi]: https://pypi.org/project/compliance-trestle/
-[pypi-downloads-badge]: https://img.shields.io/pypi/dm/compliance-trestle
-[python]: https://www.python.org/downloads/
-[python-badge]: https://img.shields.io/badge/python-v3.7+-blue.svg
