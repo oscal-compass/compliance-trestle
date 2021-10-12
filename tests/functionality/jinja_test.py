@@ -16,7 +16,7 @@
 """Functional tests of Jinja to understand role in trestle project."""
 import pathlib
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import DictLoader, Environment, FileSystemLoader
 
 import pytest
 
@@ -65,3 +65,19 @@ def test_nested_import(testdata_dir: pathlib.Path, tmp_empty_cwd: pathlib.Path) 
     jinja_env = Environment(loader=FileSystemLoader(str(jinja_test_dir)))
     template = jinja_env.get_template('template_nest_outer.md')
     _ = template.render()
+
+
+def test_jinja_oscal_template() -> None:
+    """Demonstrate whether or not jinja can deal with templates."""
+    template_simple_str = 'This string has a {{ simple_param }}'
+    sample_value = 'replacement value'
+    expected_simple_output = 'This string has a replacement value'
+
+    oscal_template_str = 'This string has a oscal template {{ insert: param, oscal_param }}'
+
+    template_loader = DictLoader({'simple': template_simple_str, 'oscal': oscal_template_str})
+    jinja_env = Environment(loader=template_loader)
+
+    simple_template = jinja_env.get_template('simple')
+    output = simple_template.render(simple_param=sample_value)
+    assert output == expected_simple_output
