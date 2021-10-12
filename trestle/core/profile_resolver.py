@@ -353,7 +353,7 @@ class ProfileResolver():
             # Add properties
             if add.props is not None:
                 if add.by_id is not None:
-                    TrestleError('Alter cannot add props by id.')
+                    raise TrestleError('Alter cannot add props by id.')
                 if not control.props:
                     control.props = []
                 control.props.extend(add.props)
