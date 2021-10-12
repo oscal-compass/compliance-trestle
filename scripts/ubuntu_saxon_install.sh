@@ -18,6 +18,7 @@ echo 'Printing env'
 
 env
 
+
 echo 'Done'
 # wget -O /tmp/saxon.zip https://www.saxonica.com/saxon-c/libsaxon-HEC-setup64-v1.2.1.zip \
 #   && unzip /tmp/saxon.zip -d /tmp \
