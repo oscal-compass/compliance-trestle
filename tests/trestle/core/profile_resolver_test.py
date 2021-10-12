@@ -30,6 +30,7 @@ from trestle.core.commands.import_ import ImportCmd
 from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.oscal import catalog as cat
+from trestle.oscal import common as com
 from trestle.oscal import profile as prof
 from trestle.utils import log
 
@@ -222,3 +223,22 @@ def test_profile_resolver_failures() -> None:
     add.position = prof.Position.before
     with pytest.raises(TrestleError):
         modify._add_to_control(add, control)
+
+
+def test_profile_resolver_param_sub() -> None:
+    """Test profile resolver param sub via regex."""
+    control = gens.generate_sample_model(cat.Control)
+    id_1 = 'ac-2_smt.1'
+    id_10 = 'ac-2_smt.10'
+    param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.'
+    param_raw_dict = {id_1: 'the cat', id_10: 'well fed'}
+    param_value_1 = com.ParameterValue(__root__=param_raw_dict[id_1])
+    param_value_10 = com.ParameterValue(__root__=param_raw_dict[id_10])
+    set_param_1 = prof.SetParameter(param_id=id_1, values=[param_value_1])
+    set_param_10 = prof.SetParameter(param_id=id_10, values=[param_value_10])
+    param_dict = {id_1: set_param_1, id_10: set_param_10}
+    param_1 = com.Parameter(id=id_1, values=[param_value_1])
+    param_10 = com.Parameter(id=id_10, values=[param_value_10])
+    control.params = [param_1, param_10]
+    new_text = ProfileResolver.Modify._replace_params(param_text, control, param_dict)
+    assert new_text == 'Make sure that the cat is very well fed today.'

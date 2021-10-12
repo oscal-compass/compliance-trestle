@@ -250,10 +250,24 @@ class ProfileResolver():
             self._block_adds = block_adds
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
-        def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
+        @staticmethod
+        def _replace_params(text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
             """Replace params in control prose with assignments for this control from profile or description info."""
+            # first check if there are any moustache patterns in the text
+            staches = re.findall(r'{{.*?}}', text)
+            if not staches:
+                return text
+            # now have list of all staches including braces, e.g. ['{{foo}}', '{{bar}}']
+            new_staches = []
+            # clean the staches so they just have the param text
+            for stache in staches:
+                # remove braces
+                stache = stache[2:(-2)]
+                stache = stache.replace('insert: param, ', '').strip()
+                new_staches.append(stache)
             if control.params is not None:
                 for param in control.params:
+                    # need to find the param_text that requires substitution.  It can be in a few places.
                     # set default if no information available for text
                     param_text = f'[{param.id} = no description available]'
                     set_param = param_dict.get(param.id, None)
@@ -274,32 +288,42 @@ class ProfileResolver():
                         if param.label is not None:
                             param_text = f'[{param.label}]'
                     # this needs to be a regex match to distinguish param_1 from param_10
-                    pattern = re.compile(f'{param.id}(?:[^0-9a-zA-Z._\-#@])')
-                    text = pattern.sub(param_text, text)
+                    # capture left and right sides of the param.id - or nothing if not present
+                    pattern = re.compile(rf'(.*)(?:{param.id})([^0-9a-zA-Z._\-#@].*|$)')
+                    # replace this pattern in all the staches with the new param_text
+                    fixed_staches = []
+                    for stache in new_staches:
+                        fixed = stache
+                        while True:
+                            match = pattern.search(fixed)
+                            if not match:
+                                break
+                            fixed = match[1] + param_text + match[2]
+                        fixed_staches.append(fixed)
+                    new_staches = fixed_staches
 
-            # strip {{ }}
-            pattern = re.compile('( *{{| *}})')
-            text = pattern.sub('', text)
-            text = text.replace('insert: param, ', '').strip()
-
+            # now replace original stache text with new versions
+            for i, _ in enumerate(staches):
+                text = text.replace(staches[i], new_staches[i])
             return text
 
+        @staticmethod
         def _replace_part_prose(
-            self, control: cat.Control, part: common.Part, param_dict: Dict[str, prof.SetParameter]
+            control: cat.Control, part: common.Part, param_dict: Dict[str, prof.SetParameter]
         ) -> None:
             """Replace the params using the _param_dict."""
             if part.prose is not None:
-                fixed_prose = self._replace_params(part.prose, control, param_dict)
+                fixed_prose = ProfileResolver.Modify._replace_params(part.prose, control, param_dict)
                 # change the prose in the control itself
                 part.prose = fixed_prose
             if part.parts is not None:
                 for prt in part.parts:
-                    self._replace_part_prose(control, prt, param_dict)
+                    ProfileResolver.Modify._replace_part_prose(control, prt, param_dict)
             if control.controls:
                 for sub_control in control.controls:
                     if sub_control.parts:
                         for prt in sub_control.parts:
-                            self._replace_part_prose(sub_control, prt, param_dict)
+                            ProfileResolver.Modify._replace_part_prose(sub_control, prt, param_dict)
 
         @staticmethod
         def _add_to_parts_given_position(
