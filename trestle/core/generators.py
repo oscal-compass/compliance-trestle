@@ -167,7 +167,7 @@ def generate_sample_model(
             return [generate_sample_value_by_type(model, '')]
         if model_type is dict:
             return {'REPLACE_ME': generate_sample_value_by_type(model, '')}
-        err.TrestleError('Unhandled collection type.')
+        raise err.TrestleError('Unhandled collection type.')
     if model_type is list:
         return [model(**model_dict)]
     if model_type is dict:
