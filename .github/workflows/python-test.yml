@@ -6,6 +6,9 @@ on:
     branches:
       - develop
       - main
+  push:
+    branches:
+      - develop
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -108,6 +111,7 @@ jobs:
         git config --global core.autocrlf false
     - uses: actions/checkout@v2
       with:
+        fetch-depth: 0
         submodules: true
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -130,10 +134,25 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       run: |
         make test-cov
-    - name: Push code-cov
+    - name: SonarCloud Scan
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
-      uses: codecov/codecov-action@v1
-      with: 
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
- 
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.python.coverage.reportPaths=coverage.xml
+          -Dsonar.tests=tests/
+          -Dsonar.sources=trestle/ 
+          -Dsonar.python.version=3.7
+          -Dsonar.projectKey=compliance-trestle
+          -Dsonar.organization=compliance-trestle
+          -Dsonar.cpd.exclusions=trestle/oscal/*.py
+    - name: SonarQube Quality Gate check
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      # Force to fail step after specific time
+      timeout-minutes: 5
+      env:
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

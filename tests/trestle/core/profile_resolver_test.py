@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,10 +20,13 @@ import logging
 import pathlib
 from typing import List, Tuple
 
+import pytest
+
 from tests import test_utils
 
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
+from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.utils import log
 
@@ -115,3 +118,64 @@ def test_deep_catalog() -> None:
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls(False) == 10
     assert interface.get_count_of_controls(True) == 15
+
+
+def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test when by_id is not given and position is set to after or before it fails."""
+    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        file=str(cat_path),
+        output='NIST_SP-800-53_rev5_catalog',
+        verbose=False,
+        regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_path), output='incorrect_profile', verbose=False, regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    with pytest.raises(TrestleError):
+        ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+
+
+def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that all alter adds positions can be resolved."""
+    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        file=str(cat_path),
+        output='NIST_SP-800-53_rev5_catalog',
+        verbose=False,
+        regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    prof_a_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_d.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_a_path), output='test_profile_d', verbose=False, regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+
+    interface = CatalogInterface(cat)
+    control_a1 = interface.get_control('ac-1')
+    control_a2 = interface.get_control('ac-2')
+
+    assert control_a1.parts[0].id == 'ac-1_first_lev1'
+    assert control_a1.parts[1].parts[3].id == 'ac-1_last_lev2'
+    assert control_a1.parts[2].id == 'ac-1_after1_ac-1_smt_lev1'
+    assert control_a1.parts[3].id == 'ac-1_after2_ac-1_smt_lev1'
+    assert control_a1.parts[1].parts[0].parts[1].id == 'ac-1_smt_before1_a.2_lev3'
+    assert control_a1.parts[1].parts[0].parts[2].id == 'ac-1_smt_before2_a.2_lev3'
+    assert control_a1.parts[1].parts[0].parts[3].parts[0].id == 'ac-1_smt_inside1_at_the_end_a.2_lev4'
+    assert control_a1.parts[1].parts[0].parts[3].parts[1].id == 'ac-1_smt_inside2_at_the_end_a.2_lev4'
+    assert control_a2.parts[0].id == 'ac-2_implgdn_lev1'

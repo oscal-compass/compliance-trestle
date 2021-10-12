@@ -81,14 +81,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "3000036",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure the EU supported setting is enabled in account settings"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "3000036"
@@ -138,14 +138,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_user_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # users with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_user_maxcount"
@@ -188,14 +188,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_user_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # users with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_user_maxcount"
@@ -238,14 +238,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_user_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # users with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_user_maxcount"
@@ -288,14 +288,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_user_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # users with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_user_maxcount"
@@ -345,14 +345,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_serviceid_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # service IDs with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_serviceid_maxcount"
@@ -395,14 +395,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_serviceid_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # service IDs with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_serviceid_maxcount"
@@ -445,14 +445,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_serviceid_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # service IDs with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_serviceid_maxcount"
@@ -495,14 +495,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cloudant_admin_role_serviceid_maxcount",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloudant has no more than # service IDs with the IAM administrator role"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cloudant_admin_role_serviceid_maxcount"
@@ -560,14 +560,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cis_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloud Internet Services (CIS) has TLS v1.2 set for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cis_tls_configured"
@@ -602,14 +602,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cis_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloud Internet Services (CIS) has TLS v1.2 set for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cis_tls_configured"
@@ -644,14 +644,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cis_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloud Internet Services (CIS) has TLS v1.2 set for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cis_tls_configured"
@@ -686,14 +686,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cis_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloud Internet Services (CIS) has TLS v1.2 set for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cis_tls_configured"
@@ -728,14 +728,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "cis_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Cloud Internet Services (CIS) has TLS v1.2 set for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cis_tls_configured"
@@ -785,14 +785,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_ingress_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_ingress_tls_configured"
@@ -835,14 +835,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_ingress_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_ingress_tls_configured"
@@ -885,14 +885,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_ingress_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_ingress_tls_configured"
@@ -935,14 +935,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_ingress_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_ingress_tls_configured"
@@ -985,14 +985,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_ingress_tls_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_ingress_tls_configured"
@@ -1050,14 +1050,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "vpc_no_inbound_ports_public",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "vpc_no_inbound_ports_public"
@@ -1092,14 +1092,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "vpc_no_inbound_ports_public",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "vpc_no_inbound_ports_public"
@@ -1134,14 +1134,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "vpc_no_inbound_ports_public",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "vpc_no_inbound_ports_public"
@@ -1176,14 +1176,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "vpc_no_inbound_ports_public",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "vpc_no_inbound_ports_public"
@@ -1233,14 +1233,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_latest_version",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service version is up-to-date"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_latest_version"
@@ -1275,14 +1275,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_latest_version",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service version is up-to-date"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_latest_version"
@@ -1324,14 +1324,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_latest_version",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service version is up-to-date"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_latest_version"
@@ -1366,14 +1366,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_latest_version",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service version is up-to-date"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_latest_version"
@@ -1415,14 +1415,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "kubernetes_service_latest_version",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Kubernetes Service version is up-to-date"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "kubernetes_service_latest_version"
@@ -1479,14 +1479,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Continuous Delivery toolchain continuously scans source code to identify vulnerabilities above the # threshold."
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "continuous_delivery_toolchain_sourcecode_scan_severity_configured"
@@ -1536,14 +1536,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Continuous Delivery toolchain continuously scans source code to identify vulnerabilities above the # threshold."
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "continuous_delivery_toolchain_sourcecode_scan_severity_configured"
@@ -1593,14 +1593,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Continuous Delivery toolchain continuously scans source code to identify vulnerabilities above the # threshold."
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "continuous_delivery_toolchain_sourcecode_scan_severity_configured"
@@ -1643,14 +1643,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Continuous Delivery toolchain continuously scans source code to identify vulnerabilities above the # threshold."
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "continuous_delivery_toolchain_sourcecode_scan_severity_configured"
@@ -1700,14 +1700,14 @@
                 "props": [
                   {
                     "name": "goal_name_id",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
                     "class": "scc_goal_name_id",
                     "remarks": "Nonsense"
                   },
                   {
                     "name": "goal_version",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "continuous_delivery_toolchain_sourcecode_scan_severity_configured"

@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -291,28 +291,72 @@ class ProfileResolver():
                         for prt in sub_control.parts:
                             self._replace_part_prose(sub_control, prt, param_dict)
 
-        def _add_to_part(self, part: common.Part, id_: str, new_parts: List[common.Part]) -> bool:
-            if part.id == id_:
-                if not part.parts:
-                    part.parts = []
-                part.parts.extend(new_parts)
-                return True
-            if part.parts is not None:
-                for part in part.parts:
-                    if self._add_to_part(part, id_, new_parts):
-                        return True
+        def _add_to_parts_given_position(
+            self, control_parts: List[common.Part], id_: str, new_parts: List[common.Part], position: str
+        ) -> bool:
+            """Add new elements at the given position."""
+            if position not in {'after', 'before', 'starting', 'ending'}:
+                raise TrestleError(f'Unsupported position {position} is given for the add alter.')
+            if position in {'after', 'before'} and id_ is None:
+                raise TrestleError('Reference ID (by_id) must be given when position is set to before or after.')
+            for idx, child_part in enumerate(control_parts):
+                if child_part.id == id_:
+                    if not child_part.parts:
+                        child_part.parts = []
+
+                    if position == 'after':
+                        for offset, new_part in enumerate(new_parts):
+                            control_parts.insert(idx + 1 + offset, new_part)
+                    elif position == 'before':
+                        for offset, new_part in enumerate(new_parts):
+                            control_parts.insert(idx + offset, new_part)
+                    elif position == 'starting':
+                        for offset, new_part in enumerate(new_parts):
+                            child_part.parts.insert(offset, new_part)
+                    elif position == 'ending':
+                        child_part.parts.extend(new_parts)
+
+                    return True
+                else:
+                    if child_part.parts is not None:
+                        if self._add_to_parts_given_position(child_part.parts, id_, new_parts, position):
+                            return True
             return False
 
-        def _add_to_parts(self, control: cat.Control, id_: str, new_parts: List[common.Part]) -> None:
-            """
-            Find part in control and add to end of its list of parts.
+        def _add_to_parts(self, control: cat.Control, id_: str, new_parts: List[common.Part], position: str) -> None:
+            """Find part in control and add to the specified position.
 
             Update the control with the new parts - otherwise error.
             """
-            for part in control.parts:
-                if self._add_to_part(part, id_, new_parts):
-                    return True
-            raise TrestleError(f'Unable to add parts for control {control.id} and part {id_}')
+            # handle simplest case first
+            if position == 'starting' and id_ is None:
+                # add inside the control at the start
+                for offset, new_part in enumerate(new_parts):
+                    control.parts.insert(offset, new_part)
+            elif position == 'ending' and id_ is None:
+                # add inside the control at the end
+                control.parts.extend(new_parts)
+            else:
+                # id is given, add by reference
+                if not self._add_to_parts_given_position(control.parts, id_, new_parts, position):
+                    raise TrestleError(f'Unable to add parts for control {control.id} and part {id_} is not found.')
+
+        def _add_to_control(self, add: prof.Add, control: cat.Control) -> None:
+            """Add altered parts and properties to the control."""
+            if add.parts is None and add.props is None:
+                raise TrestleError('Alter must add parts or props, however none were given.')
+
+            # Add parts
+            if add.parts is not None:
+                self._add_to_parts(control, add.by_id, add.parts, add.position.name)
+
+            # Add properties
+            if add.props is not None:
+                if add.by_id is not None:
+                    raise TrestleError('Alter cannot add props by id.')
+                if not control.props:
+                    control.props = []
+                control.props.extend(add.props)
 
         def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
             """Modify the controls based on the profile."""
@@ -338,22 +382,11 @@ class ProfileResolver():
                     if alter.adds is None:
                         raise TrestleError('Alter has no adds to perform.')
                     for add in alter.adds:
-                        if add.position is not None and add.position.name is not None and add.position.name != 'after':
-                            raise TrestleError('Alter position must be "after" or None.')
+                        if add.position is None or add.position.name is None:
+                            raise TrestleError('Alter position must be not None.')
                         control = self._catalog_interface.get_control(alter.control_id)
-                        if add.by_id is not None:
-                            self._add_to_parts(control, add.by_id, add.parts)
-                            self._catalog_interface.replace_control(control)
-                            continue
-                        if add.props is not None:
-                            if add.by_id is not None:
-                                TrestleError('Alter cannot add props by id.')
-                            if not control.props:
-                                control.props = []
-                            control.props.extend(add.props)
-                            continue
-                        TrestleError('Alter must either add parts or props')
-
+                        self._add_to_control(add, control)
+                        self._catalog_interface.replace_control(control)
             # use the param_dict to apply all modifys
             control_ids = self._catalog_interface.get_control_ids()
             for control_id in control_ids:
