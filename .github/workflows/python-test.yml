@@ -139,10 +139,6 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         scripts/ubuntu_saxon_install.sh
-    - name: Install Saxon (ubuntu)
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: |
-        scripts/ubuntu_saxon_install.sh
     - name: Pytest Fast
       if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |

@@ -18,17 +18,16 @@ echo 'Printing env'
 
 env
 
+echo 'Installing saxon-C'
+wget -O /tmp/saxon.zip https://www.saxonica.com/saxon-c/libsaxon-HEC-setup64-v1.2.1.zip \
+  && unzip /tmp/saxon.zip -d /tmp \
+  && (echo "/opt/saxonica" && cat) | ./tmp/libsaxon-HEC-setup64-v1.2.1 \
+  && ln -s /opt/saxonica/libsaxonhec.so /usr/lib/libsaxonhec.so \
+  && ln -s /opt/saxonica/rt /usr/lib/rt
+
+echo 'Building saxon python bindings'
+cd /opt/saxonica/Saxon.C.API/python-saxon \
+  && pip install cython \
+  && python3 saxon-setup.py build_ext -if
 
 echo 'Done'
-# wget -O /tmp/saxon.zip https://www.saxonica.com/saxon-c/libsaxon-HEC-setup64-v1.2.1.zip \
-#   && unzip /tmp/saxon.zip -d /tmp \
-#   && (echo "/opt/saxonica" && cat) | ./tmp/libsaxon-HEC-setup64-v1.2.1 \
-#   && ln -s /opt/saxonica/libsaxonhec.so /usr/lib/libsaxonhec.so \
-#   && ln -s /opt/saxonica/rt /usr/lib/rt
-
-# LD_LIBRARY_PATH=/usr/lib/rt/lib/amd64:$LD_LIBRARY_PATH
-
-# cd /opt/saxonica/Saxon.C.API/python-saxon \
-#   && pip install cython \
-#   && python3 saxon-setup.py build_ext -if
-#   PYTHONPATH=/opt/saxonica/Saxon.C.API/python-saxon:$PYTHONPATH
