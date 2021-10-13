@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,8 @@ import pathlib
 import shutil
 import sys
 from typing import Dict
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -68,7 +69,7 @@ multi_guidance_dict = {
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_profile_generate_assemble(
-    guid_dict: Dict, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path
+    guid_dict: Dict, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test the profile markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
@@ -90,16 +91,16 @@ def test_profile_generate_assemble(
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
-        with patch.object(sys, 'argv', test_args):
-            assert Trestle().run() == 0
+        monkeypatch.setattr(sys, 'argv', test_args)
+        assert Trestle().run() == 0
         assert ac1_path.exists()
         # insert text in the control after the found ref text in the control
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if dir_exists:
             assembled_prof_dir.mkdir()
-        with patch.object(sys, 'argv', test_args):
-            assert Trestle().run() == 0
+        monkeypatch.setattr(sys, 'argv', test_args)
+        assert Trestle().run() == 0
     else:
         profile_generate = ProfileGenerate()
         profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)

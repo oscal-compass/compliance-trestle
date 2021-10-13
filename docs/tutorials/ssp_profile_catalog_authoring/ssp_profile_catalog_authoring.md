@@ -14,9 +14,9 @@ In summary, the `catalog` tools allow conversion of a Catalog to markdown for ed
 
 In order to understand the specific operations handled by these commands, it is helpful to clarify some of the underlying OSCAL structures and how they can be edited in markdown form.  This tutorial should be viewed in the context of the extensive documentation provided by [OSCAL](https://pages.nist.gov/OSCAL).
 
-First, a *Catalog* is a list of *Controls*, and a *Profile* imports controls and allows modification and additions to the controls, but it does not create new controls.  A Profile has one or more *Imports* that refer either to an actual Catalog, or another Profile that itself is importing from a Catalog or Profile.  The profiles can import controls selectively from each source and make additions or modifications to properties of the controls.  The final list of selected and modified controls represents the profile's *resolved profile catalog*.
+First, a *Catalog* is a collection of *Controls*, and a *Profile* imports controls and allows modification and additions to the controls, but it does not create new controls.  A Profile has one or more *Imports* that refer either to an actual Catalog, or another Profile that itself is importing from a Catalog or Profile.  The profiles can import controls selectively from each source and make additions or modifications to properties of the controls.  The final collection of selected and modified controls represents the profile's *resolved profile catalog*.
 
-For clarity, here is a simple depicton of a catalog as a list of controls:
+For clarity, here is a simple depicton of a catalog as a collection of controls:
 
 ![Simple catalog](simple_catalog.png)
 
@@ -38,7 +38,7 @@ It's important to note that each profile is importing a selection of controls fr
 
 A Control may contain many parts, but only one of them is a Statement, which describes the function of the control.  The statement itself is broken down into separate items, each of which may contain parameter id's in "moustache" (`{{}}`) brackets.  Below is an example of a control statement as generated in markdown form by the `catalog-generate` command.
 
-```
+```markdown
 # ac-1 - \[Access Control\] Policy and Procedures
 
 ## Control Statement
@@ -73,7 +73,7 @@ A user then may edit the control statement for the control and add or change the
 
 The background text above conveys how a profile pulls controls from catalogs and makes modifications to them, and the `trestle profile` tools let you change the way those modifications are made.  In addition to selecting controls and setting parameters, a profile may add new parts to a control that provide additional guidance specific to a certain use case.  `profile-generate` is run with the command, `trestle author profile-generate --name profile_name --output markdown_dir`.  It will load the specified profile name from the trestle workspace (it must have been imported prior) and create its corresponding resolved profile catalog - but *without* applying any of its `Adds` of additonal guidance content.  It will make all other modifications, such as parameter settings, but the `Adds` are kept separate, as shown below:
 
-```
+```markdown
 # ac-1 - \[Access Control\] Policy and Procedures
 
 ## Control Statement
@@ -147,7 +147,7 @@ The optional yaml header file can be anywhere in the file system.
 <details>
 <summary>The resulting files look like this</summary>
 
-```
+```markdown
 ---
 control-origination:
 - Service Provider Corporate

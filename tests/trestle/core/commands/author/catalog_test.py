@@ -16,7 +16,8 @@
 import pathlib
 import shutil
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -33,7 +34,9 @@ markdown_name = 'my_md'
 
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
-def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path) -> None:
+def test_catalog_generate_assemble(
+    use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     cat_name = 'my_cat'
@@ -51,15 +54,15 @@ def test_catalog_generate_assemble(use_cli: bool, dir_exists: bool, tmp_trestle_
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
-        with patch.object(sys, 'argv', test_args):
-            assert Trestle().run() == 0
+        monkeypatch.setattr(sys, 'argv', test_args)
+        assert Trestle().run() == 0
         assert ac1_path.exists()
         test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         if dir_exists:
             assembled_cat_dir.mkdir()
-        with patch.object(sys, 'argv', test_args):
-            assert Trestle().run() == 0
+        monkeypatch.setattr(sys, 'argv', test_args)
+        assert Trestle().run() == 0
     else:
         catalog_generate = CatalogGenerate()
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
@@ -96,13 +99,13 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     assert interface._catalog.controls[1].controls[0].title == new_title
 
 
-def test_catalog_failures(tmp_trestle_dir) -> None:
+def test_catalog_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
     test_args = 'trestle author catalog-generate -n foo -o profiles'.split()
-    with patch.object(sys, 'argv', test_args):
-        assert Trestle().run() == 1
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
 
     test_args = 'trestle author catalog-generate -n foo -o my_md'.split()
     with pytest.raises(TrestleError):
-        with patch.object(sys, 'argv', test_args):
-            Trestle().run()
+        monkeypatch.setattr(sys, 'argv', test_args)
+        Trestle().run()
