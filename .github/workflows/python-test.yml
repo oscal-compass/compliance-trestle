@@ -12,6 +12,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      LD_LIBRARY_PATH: "/usr/lib/rt/lib/amd64:{{ env.LD_LIBRARY_PATH }}"
+      PYTHONPATH: "/opt/saxonica/Saxon.C.API/python-saxon"
     steps:
     - name: Don't mess with line endings
       run: |
