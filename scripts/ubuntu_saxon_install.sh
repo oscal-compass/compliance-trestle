@@ -21,7 +21,7 @@ env
 echo 'Installing saxon-C'
 wget -O /tmp/saxon.zip https://www.saxonica.com/saxon-c/libsaxon-HEC-setup64-v1.2.1.zip \
   && unzip /tmp/saxon.zip -d /tmp \
-  && (echo "/opt/saxonica" && cat) | ./tmp/libsaxon-HEC-setup64-v1.2.1 \
+  && (echo "/opt/saxonica" && cat) | /tmp/libsaxon-HEC-setup64-v1.2.1 \
   && ln -s /opt/saxonica/libsaxonhec.so /usr/lib/libsaxonhec.so \
   && ln -s /opt/saxonica/rt /usr/lib/rt
 
