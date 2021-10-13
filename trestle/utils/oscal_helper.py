@@ -88,23 +88,25 @@ class ProfileHelper():
 
     def get_metadata_properties(self) -> list:
         """Get metadata properties."""
-        retval = []
-        if self._profile.metadata is not None:
-            if self._profile.metadata.props is not None:
-                retval = self._profile.metadata.props
-        return retval
+        if self._profile.metadata is None:
+            return []
+        if self._profile.metadata.props is None:
+            return []
+        return self._profile.metadata.props
 
     def is_filtered(self, rule) -> bool:
         """Determine if rule is to be filtered out."""
         retval = False
-        if self._profile is not None:
-            if self._profile.imports is not None:
-                for entry in self._profile.imports:
-                    if entry.include_controls is not None:
-                        retval = True
-                        if self._is_included(rule, entry.include_controls):
-                            retval = False
-                            break
+        if self._profile is None:
+            return retval
+        if self._profile.imports is None:
+            return retval
+        for entry in self._profile.imports:
+            if entry.include_controls is not None:
+                retval = True
+                if self._is_included(rule, entry.include_controls):
+                    retval = False
+                    break
         return retval
 
     def _is_included(self, rule, include_controls) -> bool:
