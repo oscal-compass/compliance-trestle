@@ -123,6 +123,15 @@ with a signed off commit before being accepted.
 
 ## Setup - Developing `trestle`
 
+### Does `trestle` run correctly on my platform
+
+- (Optional) setup a venv for python
+- Run `make develop`
+  - This will install all python dependencies
+  - It will also checkout the submodules required for testing.
+- Run `make test`
+  - This *should* run on all platforms
+
 ### Setting up `vscode` for python.
 
 - Use the following commands to setup python:
@@ -142,7 +151,7 @@ pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
 
 ### Testing python in `vscode`
 
-Tests should be in the test subdirectory.  Each file should be named test\_\*.py and each test function should be named \*\_test().
+Tests should be in the test subdirectory. Each file should be named test\_\*.py and each test function should be named \*\_test().
 
 Note that with Python3 there should be no need for __init__.py in directories.
 
@@ -155,6 +164,15 @@ Test disovery will fail or stop if any of the tests have errors in them - so be 
 Note that there are many panels available in Output - so be sure to check `Python Test Log` for errors and output from the tests.
 
 pytest fixtures are available to allow provision of common functionality.  See conftest.py and tmp_dir for an example.
+
+#### NIST reference data for testing.
+
+Trestle relies on reference data from two NIST repositories for testing:
+
+- https://github.com/usnistgov/OSCAL
+- https://github.com/usnistgov/oscal-content
+
+Both of these repositories are submodules in the trestle project. In order to develop / test trestle the submodules must be checked out with `git submodule update --init` or `make submodules`.
 
 ### Code style and formating
 
