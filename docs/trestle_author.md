@@ -229,127 +229,16 @@ By default `author headers` only indexes a flat directory. The recursive option 
 Allows a single set of templates defined in `.trestle/author/__global__` to be applied to mulitple directories in trestle.
 If `--task-name` is not provided all folders in the repository will be measured.
 
-## `trestle author ssp-generate`
+## `trestle author catalog-generate` and `trestle author catalog-assemble`
 
-The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` (described below) can later assemble the markdown files into a single json SSP file.  The profile contains a list of imports that are either a direct reference to a catalog, or an indirect reference via a profile.
-There may be multiple imports of either type, and referenced profiles may themselves import either catalogs or profiles.  Each profile involved may specify
-the controls that should be imported, along with any modifications to those controls.  This command internally creates a resolved profile catalog and generates a
-directory containing a set of markdown files, one for each control in the resolved catalog.  Each markdown file has the optional yaml header embedded
-at the start of the file.
+The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
-Example usage for creation of the markdown:
+## `treatle author profile-generate` and `trestle author profile-assemble`
 
-`trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence' -o my_ssp`
+The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
-In this example the profile has previously been imported into the trestle project directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
+## `trestle author ssp-generate` and `trestle author ssp-assemble`
 
-The `-s --section` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  Each colon-separated pair refers to the actual part name first, followed by the form that should be used in the heading for that section.  This is done because the name itself may be abbreviated and lack needed spaces between words.
+The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` can then assemble the markdown files into a single json SSP file.
 
-(Note that the single quotes are required on Unix-like systems, but on Windows they are only needed if the contained string includes spaces, in which case *double* quotes should be used.)
-
-In the example above, the two sections loaded are `ImplGuidance` and `ExpectedEvidence` - and their aliases are provided with full spacing and
-spelling so the section headers will have proper titles.  The output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
-for each control group.
-
-If the imported catalogs or profiles are not at the URI pointed to by the Import href of the profile then the href should be changed using the `trestle href` command.
-
-The optional yaml header file can be anywhere in the file system.
-
-<br>
-<details>
-<summary>The resulting files look like this</summary>
-
-```
----
-control-origination:
-- Service Provider Corporate
-- Service Provider System Specific
-responsible-roles:
-- Customer
----
-
-# ac-1 - Access Control Policy and Procedures
-
-## Control Description
-
-- \[a.\] Develop, document, and disseminate to all personell:
-
-  - \[1.\] A thorough access control policy that:
-
-    - \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    - \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
-
-  - \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
-
-- \[b.\] Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and
-- \[c.\] Review and update the current access control:
-
-  - \[1.\] Policy weekly and following all meetings; and
-  - \[2.\] Procedures monthly and following conferences.
-
-_______________________________________________________________________________
-
-## ac-1 Section Implementation Guidance
-
-Do it carefully.
-
-_______________________________________________________________________________
-
-## ac-1 Section Expected Evidence
-
-Detailed logs.
-   
-_______________________________________________________________________________
-
-## ac-1 What is the solution and how is it implemented?
-
-_______________________________________________________________________________
-
-
-### Part a.
-
-Add control implementation description here.
-
-_______________________________________________________________________________
-
-
-### Part b.
-
-Add control implementation description here.
-
-_______________________________________________________________________________
-
-
-### Part c.
-
-Add control implementation description here.
-
-_______________________________________________________________________________
-
-
-
-```
-
-</details>
-<br>
-
-Each label in the ssp is wrapped in \\\[ \\\] to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the \\\[ \\\] removed.
-
-Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.
-
-Also note that the optional final sections are provided, and labeled using the alias given at the command line.
-
-After generating the markdown for the resolved profile catalog you may then edit the files and provide text in the sections with `Add control implementation...` in them.  But do not remove the horizontal rule
-lines or modify/remove the lines with `### Part` in them.  They are used to match the added prose to the corresponding control part description.
-
-If you edit the control markdown files you may run `ssp-generate` again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the control in the update then any corresponding prose will be lost.
-
-## `trestle author ssp-assemble`
-
-After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
-
-`trestle author ssp-assemble -m my_ssp -o my_json_ssp`
-
-This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.
-
-As indicated for `ssp-generate`, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. `### Part a.`.  You may run `ssp-generate` and `ssp-assemble` repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.
+For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).

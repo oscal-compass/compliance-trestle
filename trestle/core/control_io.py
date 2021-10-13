@@ -278,7 +278,9 @@ class ControlIOWriter():
                 '<!-- The current profile has no added parts for this control, but you may add new ones here. -->'
             )
         self._md_file.new_line('<!-- Each addition must have a heading of the form ## Control my_addition_name -->')
-        self._md_file.new_line('<!-- See https://ibm.github.io/compliance-trestle/FIXME.html for suggested names. -->')
+        self._md_file.new_line(
+            '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
+        )
         for add in adds:
             name, prose = add
             self._md_file.new_header(level=2, title=f'Control {name}')
