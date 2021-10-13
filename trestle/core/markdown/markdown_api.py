@@ -38,7 +38,8 @@ class MarkdownAPI:
         md_template_path: pathlib.Path,
         validate_yaml_header: bool,
         validate_md_body: bool,
-        md_header_to_validate: Optional[str] = None
+        md_header_to_validate: Optional[str] = None,
+        template_version: Optional[bool] = False
     ) -> None:
         """Load and initialize markdown validator."""
         try:
@@ -54,7 +55,8 @@ class MarkdownAPI:
                 template_tree,
                 validate_yaml_header,
                 validate_md_body,
-                md_header_to_validate
+                md_header_to_validate,
+                template_version
             )
         except TrestleError as e:
             logger.error(f'Error while loading markdown template {md_template_path}.')

@@ -31,6 +31,10 @@ MODE_CHOICES = ['validate', 'template-validate', 'setup', 'create-sample']
 TASK_NAME_SHORT = '-tn'
 TASK_NAME_LONG = '--task-name'
 
+SHORT_TEMPLATE_VERSION = '-tv'
+LONG_TEMPLATE_VERSION = '--template-version'
+TEMPLATE_VERSION_HELP = 'Use the x-trestle-template-version header to implement semantic template versioning.'
+
 # Readme validate
 SHORT_README_VALIDATE = '-rv'
 LONG_README_VALIDATE = '--readme-validate'

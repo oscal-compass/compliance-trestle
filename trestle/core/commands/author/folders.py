@@ -49,6 +49,12 @@ class Folders(AuthorCommonCommand):
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
         )
+        self.add_argument(
+            author_const.SHORT_TEMPLATE_VERSION,
+            author_const.LONG_TEMPLATE_VERSION,
+            help=author_const.TEMPLATE_VERSION_HELP,
+            action='store_true'
+        )
         self.add_argument(author_const.MODE_ARG_NAME, choices=author_const.MODE_CHOICES)
         tn_help_str = '\n'.join(
             [
@@ -80,14 +86,22 @@ class Folders(AuthorCommonCommand):
 
             elif args.mode == 'template-validate':
                 status = self.template_validate(
-                    args.header_validate, args.header_only_validate, args.governed_heading, args.readme_validate
+                    args.header_validate,
+                    args.header_only_validate,
+                    args.governed_heading,
+                    args.readme_validate,
+                    args.template_version
                 )
             elif args.mode == 'setup':
                 status = self.setup_template()
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
-                    args.header_validate, args.header_only_validate, args.governed_heading, args.readme_validate
+                    args.header_validate,
+                    args.header_only_validate,
+                    args.governed_heading,
+                    args.readme_validate,
+                    args.template_version
                 )
         except Exception as e:
             logger.error(f'Exception "{e}" running trestle md governed folders.')
@@ -117,7 +131,12 @@ class Folders(AuthorCommonCommand):
         return 0
 
     def template_validate(
-        self, validate_header: bool, validate_only_header: bool, heading: str, readme_validate: bool
+        self,
+        validate_header: bool,
+        validate_only_header: bool,
+        heading: str,
+        readme_validate: bool,
+        template_version: bool
     ) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
@@ -140,7 +159,7 @@ class Folders(AuthorCommonCommand):
                 try:
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(
-                        template_file, validate_header, not validate_only_header, heading
+                        template_file, validate_header, not validate_only_header, heading, template_version
                     )
                 except Exception as ex:
                     logger.error(
@@ -172,7 +191,8 @@ class Folders(AuthorCommonCommand):
         validate_header: bool,
         validate_only_header: bool,
         governed_heading: str,
-        readme_validate: bool
+        readme_validate: bool,
+        template_version: bool
     ) -> bool:
 
         r_instance_files: List[pathlib.Path] = []
@@ -207,7 +227,7 @@ class Folders(AuthorCommonCommand):
                     # Measure
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(
-                        template_file, validate_header, not validate_only_header, governed_heading
+                        template_file, validate_header, not validate_only_header, governed_heading, template_version
                     )
                     status = md_api.validate_instance(full_path)
                     if not status:
@@ -244,7 +264,12 @@ class Folders(AuthorCommonCommand):
             return 0
 
     def validate(
-        self, validate_header: bool, validate_only_header: bool, governed_heading: str, readme_validate: bool
+        self,
+        validate_header: bool,
+        validate_only_header: bool,
+        governed_heading: str,
+        readme_validate: bool,
+        template_version: bool
     ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
@@ -261,7 +286,8 @@ class Folders(AuthorCommonCommand):
                     validate_header,
                     validate_only_header,
                     governed_heading,
-                    readme_validate
+                    readme_validate,
+                    template_version
                 )
                 if not result:
                     logger.error(
