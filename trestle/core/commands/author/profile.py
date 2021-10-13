@@ -17,6 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
+import traceback
 from typing import List
 
 import trestle.oscal.profile as prof
@@ -45,17 +46,22 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = args.trestle_root
-        if not fs.allowed_task_name(args.output):
-            logger.warning(f'{args.output} is not an allowed directory name')
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root = args.trestle_root
+            if not fs.allowed_task_name(args.output):
+                logger.warning(f'{args.output} is not an allowed directory name')
+                return 1
+
+            profile_path = trestle_root / f'profiles/{args.name}/profile.json'
+
+            markdown_path = trestle_root / args.output
+
+            return self.generate_markdown(trestle_root, profile_path, markdown_path)
+        except Exception as e:
+            logger.error(f'Generation of the profile markdown failed with error: {e}')
+            logger.debug(traceback.format_exc())
             return 1
-
-        profile_path = trestle_root / f'profiles/{args.name}/profile.json'
-
-        markdown_path = trestle_root / args.output
-
-        return self.generate_markdown(trestle_root, profile_path, markdown_path)
 
     def generate_markdown(
         self, trestle_root: pathlib.Path, profile_path: pathlib.Path, markdown_path: pathlib.Path
@@ -71,12 +77,9 @@ class ProfileGenerate(AuthorCommonCommand):
             0 on success, 1 on error
         """
         _, _, profile = load_distributed(profile_path, trestle_root)
-        try:
-            catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
-            catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
-        except Exception as e:
-            raise TrestleError(f'Error generating markdown for controls in {profile_path}: {e}')
+        catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
+        catalog_interface = CatalogInterface(catalog)
+        catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
         return 0
 
 
@@ -96,13 +99,14 @@ class ProfileAssemble(AuthorCommonCommand):
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = pathlib.Path(args.trestle_root)
         try:
-            self.assemble_profile(trestle_root, args.name, args.markdown, args.output)
+            log.set_log_level_from_args(args)
+            trestle_root = pathlib.Path(args.trestle_root)
+            return self.assemble_profile(trestle_root, args.name, args.markdown, args.output)
         except Exception as e:
-            raise TrestleError(f'Error assembling profile {args.name} from markdown dir {args.markdown} {e}')
-        return 0
+            logger.error(f'Assembly of markdown to profile failed with error: {e}')
+            logger.debug(traceback.format_exc())
+            return 1
 
     @staticmethod
     def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> prof.Profile:
@@ -169,13 +173,9 @@ class ProfileAssemble(AuthorCommonCommand):
                 shutil.rmtree(str(new_prof_dir))
             except OSError as e:
                 raise TrestleError(f'OSError deleting existing catalog directory with rmtree {new_prof_dir}: {e}')
-            except Exception as e:
-                raise TrestleError(f'Error deleting existing catalog directory with rmtree {new_prof_dir}: {e}')
         try:
             new_prof_dir.mkdir()
             orig_profile.oscal_write(new_prof_dir / 'profile.json')
         except OSError as e:
             raise TrestleError(f'OSError writing profile from markdown to {new_prof_dir}: {e}')
-        except Exception as e:
-            raise TrestleError(f'Error writing profile from markdown to {new_prof_dir}: {e}')
         return 0

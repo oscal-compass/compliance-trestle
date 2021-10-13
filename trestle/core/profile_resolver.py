@@ -16,6 +16,7 @@
 import logging
 import pathlib
 import re
+import string
 from typing import Dict, Iterator, List, Optional, Set, Union
 from uuid import uuid4
 
@@ -251,8 +252,39 @@ class ProfileResolver():
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
         @staticmethod
+        def _replace_id_with_text(prose, param_id, param_text):
+            """Find all instances of param_id in prose and replace with param_text.
+
+            Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
+            """
+            bad_chars = string.ascii_letters + string.digits
+            new_prose = prose
+            id_len = len(param_id)
+            loc = 0
+            # handle simple case directly
+            if prose == param_id:
+                return param_text
+            # it's there, but may be param_10 instead of param_1
+            while True:
+                if loc >= len(new_prose):
+                    return new_prose
+                next_loc = new_prose[loc:].find(param_id)
+                if next_loc < 0:
+                    return new_prose
+                loc += next_loc
+                if loc > 0 and new_prose[loc - 1] in bad_chars:
+                    loc += id_len
+                    continue
+                end_loc = loc + id_len
+                if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
+                    new_prose = new_prose[:loc] + param_text + new_prose[end_loc:]
+                    loc += len(param_text)
+                    continue
+                loc += id_len
+
+        @staticmethod
         def _replace_params(text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-            """Replace params in control prose with assignments for this control from profile or description info."""
+            """Replace params found in moustaches with assignments for this control from profile or description info."""
             # first check if there are any moustache patterns in the text
             staches = re.findall(r'{{.*?}}', text)
             if not staches:
@@ -263,7 +295,7 @@ class ProfileResolver():
             for stache in staches:
                 # remove braces
                 stache = stache[2:(-2)]
-                stache = stache.replace('insert: param, ', '').strip()
+                stache = stache.replace('insert: param,', '').strip()
                 new_staches.append(stache)
             if control.params is not None:
                 for param in control.params:
@@ -287,24 +319,16 @@ class ProfileResolver():
                         # else use the label
                         if param.label is not None:
                             param_text = f'[{param.label}]'
-                    # this needs to be a regex match to distinguish param_1 from param_10
-                    # capture left and right sides of the param.id - or nothing if not present
-                    pattern = re.compile(rf'(.*)(?:{param.id})([^0-9a-zA-Z._\-#@].*|$)')
                     # replace this pattern in all the staches with the new param_text
                     fixed_staches = []
                     for stache in new_staches:
-                        fixed = stache
-                        while True:
-                            match = pattern.search(fixed)
-                            if not match:
-                                break
-                            fixed = match[1] + param_text + match[2]
+                        fixed = ProfileResolver.Modify._replace_id_with_text(stache, param.id, param_text)
                         fixed_staches.append(fixed)
                     new_staches = fixed_staches
 
             # now replace original stache text with new versions
             for i, _ in enumerate(staches):
-                text = text.replace(staches[i], new_staches[i])
+                text = text.replace(staches[i], new_staches[i], 1)
             return text
 
         @staticmethod

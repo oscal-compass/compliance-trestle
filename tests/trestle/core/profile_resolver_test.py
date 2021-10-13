@@ -225,6 +225,21 @@ def test_profile_resolver_failures() -> None:
         modify._add_to_control(add, control)
 
 
+@pytest.mark.parametrize(
+    'param_id, param_text, prose, result',
+    [
+        ('ac-2_smt.1', 'hello', 'ac-2_smt.1', 'hello'), ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there', 'hello there'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there', ' hello there'),
+        ('ac-2_smt.1', 'hello', ' xac-2_smt.1 there', ' xac-2_smt.1 there'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.1', ' hello there hello'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10', ' hello there ac-2_smt.10')
+    ]
+)
+def test_replace_params(param_id, param_text, prose, result) -> None:
+    """Test cases of replacing param in string."""
+    assert ProfileResolver.Modify._replace_id_with_text(prose, param_id, param_text) == result
+
+
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
     control = gens.generate_sample_model(cat.Control)
@@ -234,6 +249,7 @@ def test_profile_resolver_param_sub() -> None:
     param_raw_dict = {id_1: 'the cat', id_10: 'well fed'}
     param_value_1 = com.ParameterValue(__root__=param_raw_dict[id_1])
     param_value_10 = com.ParameterValue(__root__=param_raw_dict[id_10])
+    # the SetParameters would come from the profile and modify control contents via moustaches
     set_param_1 = prof.SetParameter(param_id=id_1, values=[param_value_1])
     set_param_10 = prof.SetParameter(param_id=id_10, values=[param_value_10])
     param_dict = {id_1: set_param_1, id_10: set_param_10}
