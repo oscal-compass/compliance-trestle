@@ -59,6 +59,7 @@ jobs:
         make docs-validate
 
 # This test simulates what it is like for a user to install trestle today.
+# Coverage cannot be calculated as part of
   bdist:
     runs-on: ubuntu-latest
     steps:
@@ -89,10 +90,7 @@ jobs:
         make test-bdist
 
   test:
-    # concurrency: 
-    #   group: ${{ github.head_ref }}-${{ github.workflow }}
-    #   cancel-in-progress: true
-
+    # This test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -134,6 +132,43 @@ jobs:
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       run: |
         make test-cov
+
+    - name: Upload artifact
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage.xml
+
+  sonar:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - name: Don't mess with line endings
+      run: |
+        git config --global core.autocrlf false
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ubuntu-latest-3.9-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+          ubuntu-latest-3.9-pip-
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Get coverage
+      uses: actions/download-artifact@v2
+      with: coverage
     - name: SonarCloud Scan
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       uses: SonarSource/sonarcloud-github-action@master
