@@ -9,6 +9,9 @@ on:
 
 jobs:
   build:
+    env:
+      LD_LIBRARY_PATH: "/usr/lib/rt/lib/amd64"
+      PYTHONPATH: "/opt/saxonica/Saxon.C.API/python-saxon"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -43,6 +46,10 @@ jobs:
     - name: Install build tools
       run: |
         make develop
+    - name: Install Saxon (ubuntu)
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: |
+        scripts/ubuntu_saxon_install.sh
     - name: Setup pre-commit
       if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
@@ -71,6 +78,7 @@ jobs:
       if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
         make docs-validate
+    
     - name: Pytest Fast
       if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
@@ -132,6 +140,10 @@ jobs:
     - name: Install build tools
       run: |
         make develop
+    # Required for automatic module documentation to work correctly
+    - name: Install Saxon (ubuntu)
+      run: |
+        scripts/ubuntu_saxon_install.sh
     - name: Create release
       shell: bash
       run: |

@@ -12,8 +12,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    # Note - No need to manage appending paths. Github actions does this for us automatically
     env:
-      LD_LIBRARY_PATH: "/usr/lib/rt/lib/amd64:{{ env.LD_LIBRARY_PATH }}"
+      LD_LIBRARY_PATH: "/usr/lib/rt/lib/amd64"
       PYTHONPATH: "/opt/saxonica/Saxon.C.API/python-saxon"
     steps:
     - name: Don't mess with line endings
@@ -67,6 +68,9 @@ jobs:
 # This test simulates what it is like for a user to install trestle today.
   bdist:
     runs-on: ubuntu-latest
+    env:
+      LD_LIBRARY_PATH: "/usr/lib/rt/lib/amd64"
+      PYTHONPATH: "/opt/saxonica/Saxon.C.API/python-saxon"
     steps:
     - name: Don't mess with line endings
       run: |
@@ -90,15 +94,14 @@ jobs:
     - name: Install build tools
       run: |
         make develop
+    - name: Install Saxon (ubuntu)
+      run: |
+        scripts/ubuntu_saxon_install.sh
     - name: Run binary tests
       run: |
         make test-bdist
 
   test:
-    # concurrency: 
-    #   group: ${{ github.head_ref }}-${{ github.workflow }}
-    #   cancel-in-progress: true
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -132,6 +135,10 @@ jobs:
     - name: Install build tools
       run: |
         make develop
+    - name: Install Saxon (ubuntu)
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: |
+        scripts/ubuntu_saxon_install.sh
     - name: Install Saxon (ubuntu)
       if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
