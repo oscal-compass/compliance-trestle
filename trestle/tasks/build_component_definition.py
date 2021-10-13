@@ -35,7 +35,6 @@ from trestle.oscal.component import ControlImplementation
 from trestle.oscal.component import DefinedComponent
 from trestle.oscal.component import ImplementedRequirement
 from trestle.oscal.component import SetParameter
-from trestle.oscal.profile import Profile
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.utils.oscal_helper import ProfileHelper
@@ -115,7 +114,7 @@ class BuildComponentDefinition(TaskBase):
         text2 = 'profile containing include/exclude statements, e.g. '
         text3 = '/home/degenaro/git/shared-trestle-workspace.master/profiles/roks-ocp4-tailored-profile/profile.json.'
         logger.info(text1 + text2 + text3)
-        
+
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
         return TaskOutcome('simulated-success')
@@ -305,21 +304,21 @@ class BuildComponentDefinition(TaskBase):
         value = self._config.get('profile-name')
         logger.debug(f'profile-name: {value}')
         return value
-    
+
     @property
     def _get_profile_version(self):
         """Get profile version from config."""
         value = self._config.get('profile-version')
         logger.debug(f'profile-version: {value}')
         return value
-        
+
     @property
     def _get_profile_ns(self):
         """Get profile ns from config."""
         value = self._config.get('profile-ns')
         logger.debug(f'profile-ns: {value}')
         return value
-    
+
     @property
     def _get_profile_type(self):
         """Get profile type from config."""
@@ -422,7 +421,7 @@ class BuildComponentDefinition(TaskBase):
         rule_prefix = 'xccdf_org.ssgproject.content_rule_'
         for rule in rules:
             logger.debug(f'{rule}: {rules[rule]}')
-            rule_id = 'CIS-'+rules[rule][1]
+            rule_id = 'CIS-' + rules[rule][1]
             if self.tailored_profile_helper.is_filtered(rule_id):
                 logger.debug(f'{rule_id} exclude')
                 continue
