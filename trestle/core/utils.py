@@ -60,6 +60,12 @@ def snake_to_upper_camel(snake: str) -> str:
     return camel
 
 
+def spaces_and_caps_to_snake(spaced_str: str) -> str:
+    """Convert caps and spaces to snake."""
+    underscored = spaced_str.strip().replace(' ', '_')
+    return underscored.lower()
+
+
 def get_elements_of_model_type(object_of_interest, type_of_interest):
     """
     Return a flat list of a given type of pydantic object based on a presumed encompasing root object.
