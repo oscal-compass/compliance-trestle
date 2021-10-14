@@ -22,7 +22,6 @@ PACKAGE_OSCAL = 'trestle.oscal'
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
-FEDRAMP_NIST_CONFIG_FILE = 'fedramp_nist_config.ini'
 TRESTLE_KEEP_FILE = '.keep'
 """Map of plural form of a model type to the oscal module that contains the classes related to it."""
 MODEL_DIR_TO_MODEL_MODULE = {
@@ -185,3 +184,14 @@ NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
 
 NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'
+
+# FedRAMP related files and directories
+FEDRAM_BASELINE = 'fedramp-source/content/baselines/rev4/xml'
+FEDRAMP_REGISTRY = 'fedramp-source/content/resources/xml'
+FEDRAM__SVRL_XSL = 'fedramp-source/vendor/svrl2html.xsl'
+FEDRAMP_SSP_XSL = 'fedramp-source/ssp.xsl'
+
+# NIST related files for format conversion
+NIST_SSP_JSON_XML_XSL = 'nist-source/xml/convert/oscal_ssp_json-to-xml-converter-new.xsl'
+NIST_INITIAL_TEMPLATE = 'from-json'
+NIST_FILE_PARAM_NAME = 'file'

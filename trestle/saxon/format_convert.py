@@ -13,7 +13,7 @@
 # limitations under the License.
 """JSON to XML conversion."""
 
-import configparser
+import base64
 import logging
 import pathlib
 import sys
@@ -23,6 +23,7 @@ from pkg_resources import resource_filename
 import saxonc
 
 import trestle.core.const as const
+from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -30,90 +31,49 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 class JsonXmlConverter:
-    """Converter for converting OSCAL JSON to XML format and vice-versa."""
+    """Converter for converting OSCAL JSON to XML format."""
 
-    def __init__(self, config_file: str = None):
+    def __init__(self):
         """Initialize JSON to XML converter."""
-        config_path = pathlib.Path(resource_filename('trestle.resources', const.FEDRAMP_NIST_CONFIG_FILE)).resolve()
-        if config_file is not None:
-            config_path = pathlib.Path(config_file).resolve()
-        if not config_path.exists():
-            logger.error(f'Config file {config_path} does not exist.')
-            raise Exception(f'Config file {config_path} does not exist.')
-
-        config = configparser.ConfigParser()
-        config.read_file(config_path.open('r'))
-        if not config.has_section('NIST'):
-            raise Exception('No NIST section in config file')
-        nist = config['NIST']
-
-        ssp_j_x_xsl = nist.get('ssp_json_xml_xsl')
-        if ssp_j_x_xsl is None:
-            self.ssp_j_x_xsl_path = None
-        else:
-            self.ssp_j_x_xsl_path = pathlib.Path(resource_filename('trestle.resources', ssp_j_x_xsl)).resolve()
-
+        self.ssp_j_x_xsl_path = pathlib.Path(resource_filename('trestle.resources',
+                                                               const.NIST_SSP_JSON_XML_XSL)).resolve()
         logger.info(f'SSP converter from JSON to XML: {self.ssp_j_x_xsl_path}')
 
-        initial_template = nist.get('initial_template')
-        if initial_template is None:
-            raise Exception('No XSL initial template in config file')
-        else:
-            self.initial_template = initial_template
+        self.initial_template = const.NIST_INITIAL_TEMPLATE
+        self.file_param_name = const.NIST_FILE_PARAM_NAME
 
-        file_param_name = nist.get('file_param_name')
-        if file_param_name is None:
-            raise Exception('No XSL file param name in config file')
-        else:
-            self.file_param_name = file_param_name
-
-    def json2xml(self, model: str, file: str) -> pathlib.Path:
-        """Convert given model file from JSON to XML."""
+    def json2xml(self, model: str, json_content: str) -> str:
+        """Convert given model (as string) from JSON to XML (as string)."""
         logger.info(f'Converting {model} from JSON to XML')
 
-        xsl_path = None
         if model == 'ssp':
             xsl_path = self.ssp_j_x_xsl_path
         else:
-            raise Exception(f'Invalid model name: {model}')
+            raise TrestleError(f'Invalid model name: {model}')
 
-        if xsl_path is None:
-            raise Exception(f'No xslt convertor confgured for {model} convsersion from JSON to XML')
-
-        file_path = pathlib.Path(file).resolve()
-        logger.info(f'Input file: {file_path}')
+        if not xsl_path.exists():
+            raise TrestleError(f'xslt converter {xsl_path} does not exist')
 
         saxon_proc = saxonc.PySaxonProcessor(license=False)
         xslt_proc = saxon_proc.new_xslt30_processor()
 
         # set initial template name in XSL file
-        logger.info(f'Setting initial template: {self.initial_template}')
-        xslt_proc.set_property('it', 'from-json')
+        xslt_proc.set_property('it', self.initial_template)
+
+        # Create data URI from JSON SSP content
+        content_base64_encoded = base64.b64encode(json_content.encode('utf-8')).decode('utf-8')
+        data_uri = f'data:application/json;base64,{content_base64_encoded}'
 
         # Set the input json file parameter for conversion
         xslt_proc.set_parameter(
-            'file',
-            saxon_proc.make_string_value(str(file_path)),
+            # Pass data URI to process in-memory json content
+            self.file_param_name,
+            saxon_proc.make_string_value(data_uri)
+
+            # To use file instead of content - self.file_param_name, saxon_proc.make_string_value(str(file_path))
         )
 
-        # Convert the model to XML, as a string
+        # Convert the model to XML as a string
         xml_str = xslt_proc.transform_to_string(source_file=str(xsl_path), stylesheet_file=str(xsl_path))
 
-        output = file_path.stem + '.xml'
-        file_written = False
-        with open(output, 'w') as f:
-            f.write(str(xml_str))
-            file_written = True
-            logger.info(f'Output written into file: {output}')
-
-        if file_written:
-            return pathlib.Path(output).resolve()
-        return None
-
-
-if __name__ == '__main__':
-    converter = JsonXmlConverter()
-
-    # sample SSP OSCAL JSON file
-    ssp = 'fedramp-source/dist/content/templates/ssp/json/FedRAMP-SSP-OSCAL-Template.json'
-    converter.json2xml('ssp', ssp)
+        return xml_str

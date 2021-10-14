@@ -65,10 +65,14 @@ gen-oscal::
 	python ./scripts/gen_oscal.py
 
 fedramp-copy:
-	cp -R fedramp-source/dist/content trestle/resources/fedramp-source/
-	cp -R fedramp-source/vendor trestle/resources/fedramp-source/
-	cp -R nist-source/xml trestle/resources/nist-source/
-	cp -R nist-source/json trestle/resources/nist-source/
+	mkdir -p trestle/resources/fedramp-source/content/baselines/rev4
+	cp -R fedramp-source/dist/content/baselines/rev4/xml trestle/resources/fedramp-source/content/baselines/rev4/
+	mkdir -p trestle/resources/fedramp-source/content/resources
+	cp -R fedramp-source/dist/content/resources/xml trestle/resources/fedramp-source/content/resources/
+	mkdir -p trestle/resources/fedramp-source/vendor
+	cp fedramp-source/vendor/svrl2html.xsl trestle/resources/fedramp-source/vendor/
+	mkdir -p trestle/resources/nist-source/xml
+	cp -R nist-source/xml/convert trestle/resources/nist-source/xml/
 
 docs-automation::
 	python ./scripts/website_automation.py

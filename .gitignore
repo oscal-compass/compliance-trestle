@@ -23,6 +23,7 @@ venv
 .vscode/settings.json
 .vscode
 pytest.ini
+.env
 
 # jupyter notebooks for local tests and prototypes
 *.ipynb
