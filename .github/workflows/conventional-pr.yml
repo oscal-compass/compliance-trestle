@@ -1,13 +1,6 @@
 name: "Lint PR"
 
 on:
-  pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-    branch:
-      - 'develop'
   pull_request_target:
     types:
       - opened
