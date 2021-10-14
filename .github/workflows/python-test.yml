@@ -168,7 +168,8 @@ jobs:
         make develop
     - name: Get coverage
       uses: actions/download-artifact@v2
-      with: coverage
+      with:
+        name: coverage
     - name: SonarCloud Scan
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       uses: SonarSource/sonarcloud-github-action@master

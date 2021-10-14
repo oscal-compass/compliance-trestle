@@ -17,7 +17,7 @@ on:
       - 'develop'
 jobs:
   lint:
-    if: ${{ github.head_ref != 'develop' }
+    if: ${{ github.head_ref != 'develop' }}
     concurrency: 
       group: ${{ github.head_ref }}-${{ github.workflow }}
       cancel-in-progress: true
