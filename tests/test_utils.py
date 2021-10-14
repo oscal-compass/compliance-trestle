@@ -40,6 +40,10 @@ ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+JSON_FEDRAMP_SSP_PATH = pathlib.Path('fedramp-source/dist/content/templates/ssp/json/').resolve()
+JSON_FEDRAMP_SSP_NAME = 'FedRAMP-SSP-OSCAL-Template.json'
+XML_FEDRAMP_SSP_PATH = pathlib.Path('fedramp-source/dist/content/templates/ssp/xml/').resolve()
+XML_FEDRAMP_SSP_NAME = 'FedRAMP-SSP-OSCAL-Template.xml'
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'
