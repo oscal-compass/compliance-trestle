@@ -1,14 +1,13 @@
 name: "Lint PR"
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - edited
       - synchronize
     branch:
-      - develop
-
+      - 'develop'
 jobs:
   lint:
     if: ${{ github.head_ref != 'develop' }}
@@ -19,7 +18,7 @@ jobs:
     steps:
       # Please look up the latest version from
       # https://github.com/amannn/action-semantic-pull-request/releases
-      - uses: amannn/action-semantic-pull-request@v3.4.0
+      - uses: amannn/action-semantic-pull-request@v3.4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
