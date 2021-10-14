@@ -24,10 +24,14 @@ import pytest
 
 from tests import test_utils
 
+from trestle.core import generators as gens
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
+from trestle.oscal import catalog as cat
+from trestle.oscal import common as com
+from trestle.oscal import profile as prof
 from trestle.utils import log
 
 
@@ -179,3 +183,78 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
     assert control_a1.parts[1].parts[0].parts[3].parts[0].id == 'ac-1_smt_inside1_at_the_end_a.2_lev4'
     assert control_a1.parts[1].parts[0].parts[3].parts[1].id == 'ac-1_smt_inside2_at_the_end_a.2_lev4'
     assert control_a2.parts[0].id == 'ac-2_implgdn_lev1'
+
+
+def test_profile_resolver_merge(sample_catalog_rich_controls) -> None:
+    """Test profile resolver merge."""
+    profile = gens.generate_sample_model(prof.Profile)
+    merge = ProfileResolver.Merge(profile)
+    merged = gens.generate_sample_model(cat.Catalog)
+    new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
+    catalog_interface = CatalogInterface(new_merged)
+    assert catalog_interface.get_count_of_controls(True) == 5
+
+    merged = gens.generate_sample_model(cat.Catalog)
+    merged.controls = []
+    new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
+    catalog_interface = CatalogInterface(new_merged)
+    assert catalog_interface.get_count_of_controls(True) == 5
+
+
+def test_profile_resolver_failures() -> None:
+    """Test failure modes of profile resolver."""
+    profile = gens.generate_sample_model(prof.Profile)
+    modify = ProfileResolver.Modify(profile)
+    with pytest.raises(TrestleError):
+        modify._add_to_parts_given_position([], 'foo', [], 'bar')
+    with pytest.raises(TrestleError):
+        modify._add_to_parts_given_position([], None, [], 'before')
+    control = gens.generate_sample_model(cat.Control)
+    # this should not cause error
+    modify._add_to_parts(control, 'foo', [], 'before')
+    with pytest.raises(TrestleError):
+        modify._add_to_parts(control, 'foo', ['x'], 'before')
+    add = prof.Add()
+    with pytest.raises(TrestleError):
+        modify._add_to_control(add, control)
+    add.parts = []
+    with pytest.raises(TrestleError):
+        modify._add_to_control(add, control)
+    add.position = prof.Position.before
+    with pytest.raises(TrestleError):
+        modify._add_to_control(add, control)
+
+
+@pytest.mark.parametrize(
+    'param_id, param_text, prose, result',
+    [
+        ('ac-2_smt.1', 'hello', 'ac-2_smt.1', 'hello'), ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there', 'hello there'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there', ' hello there'),
+        ('ac-2_smt.1', 'hello', ' xac-2_smt.1 there', ' xac-2_smt.1 there'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.1', ' hello there hello'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10', ' hello there ac-2_smt.10')
+    ]
+)
+def test_replace_params(param_id, param_text, prose, result) -> None:
+    """Test cases of replacing param in string."""
+    assert ProfileResolver.Modify._replace_id_with_text(prose, param_id, param_text) == result
+
+
+def test_profile_resolver_param_sub() -> None:
+    """Test profile resolver param sub via regex."""
+    control = gens.generate_sample_model(cat.Control)
+    id_1 = 'ac-2_smt.1'
+    id_10 = 'ac-2_smt.10'
+    param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.'
+    param_raw_dict = {id_1: 'the cat', id_10: 'well fed'}
+    param_value_1 = com.ParameterValue(__root__=param_raw_dict[id_1])
+    param_value_10 = com.ParameterValue(__root__=param_raw_dict[id_10])
+    # the SetParameters would come from the profile and modify control contents via moustaches
+    set_param_1 = prof.SetParameter(param_id=id_1, values=[param_value_1])
+    set_param_10 = prof.SetParameter(param_id=id_10, values=[param_value_10])
+    param_dict = {id_1: set_param_1, id_10: set_param_10}
+    param_1 = com.Parameter(id=id_1, values=[param_value_1])
+    param_10 = com.Parameter(id=id_10, values=[param_value_10])
+    control.params = [param_1, param_10]
+    new_text = ProfileResolver.Modify._replace_params(param_text, control, param_dict)
+    assert new_text == 'Make sure that the cat is very well fed today.'
