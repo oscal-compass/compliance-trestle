@@ -19,8 +19,11 @@ import pathlib
 
 import pytest
 
+import tests.test_utils as test_utils
+
 import trestle.oscal.catalog as cat
-from trestle.core.control_io import ControlIO
+from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.err import TrestleError
 from trestle.oscal import common
 
 case_1 = 'indent_normal'
@@ -88,13 +91,132 @@ end of text
     if sections:
         control.parts.extend([sec_1, sec_2])
 
-    control_io = ControlIO()
-    control_io.write_control(tmp_path, control, '', None, None, additional_content, False)
+    writer = ControlIOWriter()
+    writer.write_control(tmp_path, control, '', None, None, additional_content, False, None)
 
     md_path = tmp_path / f'{control.id}.md'
-    new_control = control_io.read_control(md_path)
+    reader = ControlIOReader()
+    new_control = reader.read_control(md_path)
     new_control.title = dummy_title
     assert len(new_control.parts) == len(control.parts)
     assert control.parts[0].prose == new_control.parts[0].prose
     assert control.parts[0].parts == new_control.parts[0].parts
     assert control == new_control
+
+
+def test_control_objective(tmp_path: pathlib.Path) -> None:
+    """Test read and write of control with objective."""
+    control_text = """# xy-9 - \[XY\] Fancy Control
+
+## Control Statement
+
+The org:
+
+- \[a\] Creates:
+
+  - \[1\] Good stuff; and
+  - \[2\] Other good stuff; and
+
+- \[b\] Checks for:
+
+  - \[1\] Quality of the stuff; and
+  - \[2\] Confirms all is good.
+
+## Control Objective
+
+Confirm the org:
+
+- \[a_obj\]
+
+  - \[1_obj\]
+
+    - \[1\] stays focused on:
+
+      - \[a\] weather;
+      - \[b\] comfort;
+      - \[c\] heart rate;
+
+    - \[2\] makes sure all are well-behaved;
+    - \[3\] keeps them up to date;
+
+  - \[2_obj\]
+
+    - \[1\] facilitates ease of consumption;
+    - \[2\] establishes dietary requirements;
+
+- \[b_obj\]
+
+  - \[1_obj\]
+
+    - \[1\] sets times for meals;
+    - \[2\] confirms adequate calorie intake;
+
+  - \[2_obj\]
+
+    - \[1\] serves dessert; and
+    - \[2\] keeps the wine list up to date.
+
+## Control guidance
+
+This is a fancy control and should be used with care.
+"""
+    # write the control directly as raw markdown text
+    md_path = tmp_path / 'xy-9.md'
+    with open(md_path, 'w') as f:
+        f.write(control_text)
+    # read it in as markdown to an OSCAL control in memory
+    control = ControlIOReader.read_control(md_path)
+    sub_dir = tmp_path / 'sub_dir'
+    sub_dir.mkdir(exist_ok=True)
+    # write it out as markdown in a separate directory to avoid name clash
+    control_writer = ControlIOWriter()
+    control_writer.write_control(sub_dir, control, 'XY', None, None, False, False, None)
+    # confirm the newly written markdown text is identical to what was read originally
+    assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
+
+
+def test_control_failures(tmp_path: pathlib.Path) -> None:
+    """Test various failure modes."""
+    part = common.Part(name='foo')
+    assert ControlIOWriter._get_label(part) == ''
+
+    assert ControlIOReader._strip_to_make_ncname('1a@foo') == 'afoo'
+    with pytest.raises(TrestleError):
+        ControlIOReader._strip_to_make_ncname('1@')
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._indent('')
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._indent('  foo')
+
+
+def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
+    """Test error on read of bad unicode in control markdown."""
+    bad_file = tmp_path / 'bad_unicode.md'
+    with open(bad_file, 'wb') as f:
+        f.write(b'\x81')
+    with pytest.raises(TrestleError):
+        ControlIOReader._load_control_lines(bad_file)
+
+
+def test_broken_yaml_header(testdata_dir: pathlib.Path):
+    """Test for a bad markdown header."""
+    bad_file = testdata_dir / 'author' / 'bad_md_header.md'
+    with pytest.raises(TrestleError):
+        ControlIOReader._load_control_lines(bad_file)
+
+
+def test_read_label_prose(tmp_path: pathlib.Path) -> None:
+    """Test read_label_prose failures."""
+    lines = ['', '## Implementation my_label', 'bad line']
+    with pytest.raises(TrestleError):
+        ControlIOReader._read_label_prose(1, lines)
+
+    bad_header = ['', '# bad header']
+    with pytest.raises(TrestleError):
+        ControlIOReader._read_label_prose(1, bad_header)
+
+    no_label = ['', '## Implementation']
+    with pytest.raises(TrestleError):
+        ControlIOReader._read_label_prose(1, no_label)

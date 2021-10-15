@@ -22,8 +22,9 @@ from pydantic import BaseModel
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
-from trestle.core.control_io import ControlIO
+from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.oscal import common
+from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
 
@@ -171,6 +172,11 @@ class CatalogInterface():
         """Get control from catalog with this id using the dict."""
         return self._control_dict[control_id].control
 
+    def get_control_part_prose(self, control_id: str, part_name: str) -> str:
+        """Get the prose for a named part in the control."""
+        control = self.get_control(control_id)
+        return ControlIOWriter.get_part_prose(control, part_name)
+
     def get_all_controls(self, recurse: bool) -> Iterator[cat.Control]:
         """Yield all deep and individual controls from the catalog by group."""
         if self._catalog.groups:
@@ -207,6 +213,11 @@ class CatalogInterface():
         """Given a list of controls, create fresh list pulled from the control dict."""
         new_list: List[cat.Control] = []
         for control in controls:
+            # first update the control itself
+            control = self.get_control(control.id)
+            # then update any controls it contains
+            if control.controls:
+                control.controls = self._update_all_controls_in_list(control.controls)
             new_list.append(self.get_control(control.id))
         return new_list
 
@@ -248,10 +259,16 @@ class CatalogInterface():
         return hits
 
     def write_catalog_as_markdown(
-        self, md_path: pathlib.Path, yaml_header: dict, sections: Optional[Dict[str, str]], responses: bool
+        self,
+        md_path: pathlib.Path,
+        yaml_header: dict,
+        sections: Optional[Dict[str, str]],
+        responses: bool,
+        additional_content: bool = False,
+        profile: Optional[prof.Profile] = None
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
-        control_io = ControlIO()
+        writer = ControlIOWriter()
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
@@ -262,7 +279,9 @@ class CatalogInterface():
             group_dir = md_path if group_id == 'catalog' else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
-            control_io.write_control(group_dir, control, group_title, yaml_header, sections, False, responses)
+            writer.write_control(
+                group_dir, control, group_title, yaml_header, sections, additional_content, responses, profile
+            )
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
@@ -282,14 +301,13 @@ class CatalogInterface():
         if not self._catalog:
             self._catalog = gens.generate_sample_model(cat.Catalog)
         group_ids = self._get_group_ids(md_path)
-        control_io = ControlIO()
         groups: List[cat.Group] = []
         # read each group dir
         for group_id in group_ids:
             new_group = cat.Group(id=group_id, title='')
             group_dir = md_path / group_id
             for control_path in group_dir.glob('*.md'):
-                control = control_io.read_control(control_path)
+                control = ControlIOReader.read_control(control_path)
                 if not new_group.controls:
                     new_group.controls = []
                 new_group.controls.append(control)
@@ -298,7 +316,7 @@ class CatalogInterface():
         # now read any controls that aren't in a group
         controls: List[cat.Control] = []
         for control_path in md_path.glob('*.md'):
-            control = control_io.read_control(control_path)
+            control = ControlIOReader.read_control(control_path)
             controls.append(control)
         self._catalog.controls = controls if controls else None
         return self._catalog
@@ -318,12 +336,23 @@ class CatalogInterface():
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         imp_reqs: List[ossp.ImplementedRequirement] = []
-        control_io = ControlIO()
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(control_io.read_implementations(control_file, component))
+                imp_reqs.extend(ControlIOReader.read_implementations(control_file, component))
         return imp_reqs
+
+    @staticmethod
+    def read_additional_content(md_path: pathlib.Path) -> List[prof.Alter]:
+        """Read all markdown controls and return list of alters."""
+        group_ids = CatalogInterface._get_group_ids(md_path)
+
+        new_alters: List[prof.Alter] = []
+        for group_id in group_ids:
+            group_path = md_path / group_id
+            for control_file in group_path.glob('*.md'):
+                new_alters.extend(ControlIOReader.read_new_alters(control_file))
+        return new_alters
 
     @staticmethod
     def part_equivalent(a: common.Part, b: common.Part) -> bool:
