@@ -269,7 +269,7 @@ def test_taskpath_is_a_file_setup(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
         (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested', True)
     ]
 )
-def test_all_simple(
+def test_exclude_global(
     sample_project: pathlib.Path,
     exclusions: str,
     acceptable: bool,
