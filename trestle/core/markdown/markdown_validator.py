@@ -55,6 +55,13 @@ class MarkdownValidator:
             )
         if 'Version' in self.template_header.keys() and self.template_header['Version'] != self.template_version:
             raise TrestleError(f'Version does not match template-version in template: {self.template_path}.')
+        self._ignore_headers = []
+        for key in self.template_header.keys():
+            if key.lower().startswith('x-trestle-'):
+                self._ignore_headers.append(key.lower())
+                if key.lower() == 'x-trestle-ignore':
+                    for key2 in template_header['x-trestle-ignore']:
+                        self._ignore_headers.append(key2.lower())
 
     def is_valid_against_template(
         self, instance: pathlib.Path, instance_header: Dict, instance_tree: MarkdownNode
@@ -83,7 +90,7 @@ class MarkdownValidator:
             Whether or not the the candidate is valid against the template.
         """
         if self._validate_yaml_header:
-            headers_match = self.compare_keys(self.template_header, instance_header)
+            headers_match = self.compare_keys(self.template_header, instance_header, self._ignore_headers)
 
             if not headers_match:
                 logger.info(f'YAML header mismatch between template {self.template_path} and instance {instance}')
@@ -124,7 +131,12 @@ class MarkdownValidator:
         return True
 
     @classmethod
-    def compare_keys(cls, template: Dict[str, Any], candidate: Dict[str, Any]) -> bool:
+    def compare_keys(
+        cls,
+        template: Dict[str, Any],
+        candidate: Dict[str, Any],
+        ignore_fields: Optional[Dict[str, Any]] = None
+    ) -> bool:
         """
         Compare a template dictionary against a candidate as to whether key structure is maintained.
 
@@ -134,6 +146,14 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate matches the template keys.
         """
+        if ignore_fields is None:
+            ignore_fields = []
+        for key in list(candidate.keys()):
+            if key.lower() in ignore_fields:
+                candidate.pop(key)
+        for key in list(template.keys()):
+            if key.lower() in ignore_fields:
+                template.pop(key)
         template_version = cls.extract_template_version(template)
         candidate_version = cls.extract_template_version(candidate)
         if template_version != candidate_version:
@@ -146,7 +166,7 @@ class MarkdownValidator:
             if key in candidate.keys():
                 if type(template[key]) == dict:
                     if type(candidate[key]) == dict:
-                        status = cls.compare_keys(template[key], candidate[key])
+                        status = cls.compare_keys(template[key], candidate[key], ignore_fields)
                         if not status:
                             return status
                     else:
