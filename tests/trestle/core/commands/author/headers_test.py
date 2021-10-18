@@ -263,7 +263,10 @@ def test_taskpath_is_a_file_setup(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
         (pathlib.Path('author/headers/global/good'), '', True),
         (pathlib.Path('author/headers/global/pass_with_exceptions'), '', False),
         (pathlib.Path('author/headers/global/pass_with_exceptions'), 'bad_sample', True),
-        (pathlib.Path('author/headers/global/pass_with_exceptions'), 'sample_indexable_1', False)
+        (pathlib.Path('author/headers/global/pass_with_exceptions'), 'sample_indexable_1', False),
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested/bad', True),
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested/good', False),
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested', True)
     ]
 )
 def test_all_simple(
@@ -275,7 +278,7 @@ def test_all_simple(
     monkeypatch: MonkeyPatch
 ) -> None:
     """Test behaviour of --all flag for trestle author headers."""
-    command_string = f'trestle author headers --global --all --trestle-root={tmp_path}'
+    command_string = f'trestle author headers validate -r --global --trestle-root={tmp_path}'
     if not exclusions == '':
         exclusions_arr = exclusions.split(',')
         for exclusion in exclusions_arr:
@@ -289,5 +292,5 @@ def test_all_simple(
     shutil.copytree(str(template_path_original), str(template_path_target), dirs_exist_ok=True)
 
     monkeypatch.setattr(sys, 'argv', command_string.split())
-    # rc = Trestle().run() # noqa: E800
-    # assert (rc == 0) == acceptable # noqa: E800
+    rc = Trestle().run()  # noqa: E800
+    assert (rc == 0) == acceptable  # noqa: E800
