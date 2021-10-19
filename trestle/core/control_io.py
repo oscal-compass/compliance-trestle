@@ -235,7 +235,9 @@ class ControlIOWriter():
                             if not part_label:
                                 part_label = prt.id.split('.')[-1]
                             self._md_file.new_header(level=2, title=f'Implementation {part_label}')
-                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
+                            # don't write out the prompt for text if there is some already there
+                            if part_label not in existing_text:
+                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             self._insert_existing_text(part_label, existing_text)
                             self._md_file.new_paragraph()
         if not did_write_part:
@@ -441,7 +443,7 @@ class ControlIOReader():
                 raise TrestleError(f'Improper heading level in control statement: {lines[ii]}')
             else:
                 tld_prose = lines[ii].strip()
-                if tld_prose and not tld_prose.startswith('Add control implementation description'):
+                if tld_prose and not tld_prose.startswith(const.SSP_ADD_IMPLEMENTATION_PREFIX):
                     tld_prose_lines.append(tld_prose)
             ii += 1
         # if we did not find normal labelled prose regard any found prose as top_level_description
