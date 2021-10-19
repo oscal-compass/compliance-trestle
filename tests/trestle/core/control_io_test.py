@@ -31,6 +31,61 @@ case_2 = 'indent jump back 2'
 case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
+control_text = """# xy-9 - \[XY\] Fancy Control
+
+## Control Statement
+
+The org:
+
+- \[a\] Creates:
+
+  - \[1\] Good stuff; and
+  - \[2\] Other good stuff; and
+
+- \[b\] Checks for:
+
+  - \[1\] Quality of the stuff; and
+  - \[2\] Confirms all is good.
+
+## Control Objective
+
+Confirm the org:
+
+- \[a_obj\]
+
+  - \[1_obj\]
+
+    - \[1\] stays focused on:
+
+      - \[a\] weather;
+      - \[b\] comfort;
+      - \[c\] heart rate;
+
+    - \[2\] makes sure all are well-behaved;
+    - \[3\] keeps them up to date;
+
+  - \[2_obj\]
+
+    - \[1\] facilitates ease of consumption;
+    - \[2\] establishes dietary requirements;
+
+- \[b_obj\]
+
+  - \[1_obj\]
+
+    - \[1\] sets times for meals;
+    - \[2\] confirms adequate calorie intake;
+
+  - \[2_obj\]
+
+    - \[1\] serves dessert; and
+    - \[2\] keeps the wine list up to date.
+
+## Control guidance
+
+This is a fancy control and should be used with care.
+"""
+
 
 @pytest.mark.parametrize('sections', [True, False])
 @pytest.mark.parametrize('control_prose', [True, False])
@@ -106,60 +161,6 @@ end of text
 
 def test_control_objective(tmp_path: pathlib.Path) -> None:
     """Test read and write of control with objective."""
-    control_text = """# xy-9 - \[XY\] Fancy Control
-
-## Control Statement
-
-The org:
-
-- \[a\] Creates:
-
-  - \[1\] Good stuff; and
-  - \[2\] Other good stuff; and
-
-- \[b\] Checks for:
-
-  - \[1\] Quality of the stuff; and
-  - \[2\] Confirms all is good.
-
-## Control Objective
-
-Confirm the org:
-
-- \[a_obj\]
-
-  - \[1_obj\]
-
-    - \[1\] stays focused on:
-
-      - \[a\] weather;
-      - \[b\] comfort;
-      - \[c\] heart rate;
-
-    - \[2\] makes sure all are well-behaved;
-    - \[3\] keeps them up to date;
-
-  - \[2_obj\]
-
-    - \[1\] facilitates ease of consumption;
-    - \[2\] establishes dietary requirements;
-
-- \[b_obj\]
-
-  - \[1_obj\]
-
-    - \[1\] sets times for meals;
-    - \[2\] confirms adequate calorie intake;
-
-  - \[2_obj\]
-
-    - \[1\] serves dessert; and
-    - \[2\] keeps the wine list up to date.
-
-## Control guidance
-
-This is a fancy control and should be used with care.
-"""
     # write the control directly as raw markdown text
     md_path = tmp_path / 'xy-9.md'
     with open(md_path, 'w') as f:
@@ -207,7 +208,7 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path):
         ControlIOReader._load_control_lines(bad_file)
 
 
-def test_read_label_prose(tmp_path: pathlib.Path) -> None:
+def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:
     """Test read_label_prose failures."""
     lines = ['', '## Implementation my_label', 'bad line']
     with pytest.raises(TrestleError):
@@ -220,3 +221,18 @@ def test_read_label_prose(tmp_path: pathlib.Path) -> None:
     no_label = ['', '## Implementation']
     with pytest.raises(TrestleError):
         ControlIOReader._read_label_prose(1, no_label)
+
+
+def test_read_label_prose_special_cases(tmp_path: pathlib.Path) -> None:
+    """Test special cases for read label prose."""
+    added_text = """
+# What is the solution and how is it implemented?
+
+Top level description text
+
+"""
+    full_control_text = control_text + added_text
+    lines = full_control_text.split('\n')
+    _, label, prose_lines = ControlIOReader._read_label_prose(0, lines)
+    assert label == 'top_level_description'
+    assert prose_lines[0] == 'Top level description text'
