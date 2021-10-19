@@ -703,6 +703,10 @@ class ControlIOReader():
         responses: Dict[str, List[str]] = {}
         while True:
             ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
+            while prose_lines and not prose_lines[0].strip(' \r\n'):
+                del prose_lines[0]
+            while prose_lines and not prose_lines[-1].strip(' \r\n'):
+                del prose_lines[-1]
             if part_label and prose_lines:
                 responses[part_label] = prose_lines
             if ii < 0:
