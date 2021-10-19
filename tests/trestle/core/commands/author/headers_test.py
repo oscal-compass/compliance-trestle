@@ -284,12 +284,15 @@ def test_exclude_global(
         for exclusion in exclusions_arr:
             command_string += f' --exclude={exclusion.strip()}'
     # delete temp dir before copy
-    shutil.copytree(str(testdata_dir / sample_project), str(tmp_path), dirs_exist_ok=True)
+    # Required to be
+    shutil.rmtree(tmp_path)
+    shutil.copytree(str(testdata_dir / sample_project), str(tmp_path))
 
     template_path_original = testdata_dir / 'author' / 'headers' / 'good_templates'
-    template_path_target = tmp_path / '.trestle' / 'author' / '__global__'
-    template_path_target.mkdir(parents=True)
-    shutil.copytree(str(template_path_original), str(template_path_target), dirs_exist_ok=True)
+    template_path_parent = tmp_path / '.trestle' / 'author'
+    template_path_parent.mkdir(parents=True)
+    template_path_target = template_path_parent / '__global__'
+    shutil.copytree(str(template_path_original), str(template_path_target))
 
     monkeypatch.setattr(sys, 'argv', command_string.split())
     rc = Trestle().run()  # noqa: E800
