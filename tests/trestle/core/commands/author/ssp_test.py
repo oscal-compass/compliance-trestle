@@ -176,6 +176,10 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a) == 0
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b) == 0
 
+    # generate markdown again on top of previous markdown to make sure it is not removed
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
