@@ -103,7 +103,6 @@ class MarkdownValidator:
         if self._validate_md_body:
             instance_keys = instance_tree.content.subnodes_keys
             template_keys = self.template_tree.content.subnodes_keys
-            # condition 1 make sure template headers are strict subset of instance headers and not shuffled
             if len(template_keys) > len(instance_keys):
                 logger.info(f'Headings in the instance: {instance} were removed.')
                 return False
