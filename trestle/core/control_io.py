@@ -95,7 +95,7 @@ class ControlIOWriter():
                     # If the part has prose write it as a raw line and not list element
                     skip_id = part.id
                     if part.prose:
-                        self._md_file.new_line(part.prose)
+                        self._md_file.new_line(part.prose.replace('\n', '  '))
                     items.append(self._get_part(part, item_type, skip_id))
             # unwrap the list if it is many levels deep
             while not isinstance(items, str) and len(items) == 1:
@@ -212,7 +212,7 @@ class ControlIOWriter():
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
-        self._md_file.new_header(level=1, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
+        self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -230,6 +230,9 @@ class ControlIOWriter():
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
+                            # if no label guess the label from the sub-part id
+                            if not part_label:
+                                part_label = prt.id.split('.')[-1]
                             self._md_file.new_header(level=2, title=f'Implementation {part_label}')
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             self._insert_existing_text(part_label, existing_text)
@@ -405,6 +408,7 @@ class ControlIOReader():
         nlines = len(lines)
         prose_lines: List[str] = []
         item_label = ''
+        tld_prose_lines = []
         if ii == 0:
             # read the entire control to validate contents
             ii, _ = ControlIOReader._read_control_statement(0, lines, 'dummy_id')
@@ -434,7 +438,14 @@ class ControlIOReader():
                     ii += 1
             elif lines[ii].startswith('# ') or lines[ii].startswith('## '):
                 raise TrestleError(f'Improper heading level in control statement: {lines[ii]}')
+            else:
+                tld_prose = lines[ii].strip()
+                if tld_prose and not tld_prose.startswith('Add control implementation description'):
+                    tld_prose_lines.append(tld_prose)
             ii += 1
+        # if we did not find normal labelled prose regard any found prose as top_level_description
+        if not item_label and tld_prose_lines:
+            return nlines, 'top_level_description', tld_prose_lines
         return -1, item_label, prose_lines
 
     @staticmethod
@@ -649,7 +660,8 @@ class ControlIOReader():
                 ii += 1
                 continue
             if line and not line.startswith(prefix):
-                raise TrestleError(f'Error parsing section for control {control_id}: {line}')
+                # the control has no sections to read, so exit the loop
+                break
             label = line[len(prefix):].lstrip()
             prose = ''
             ii += 1
@@ -688,9 +700,10 @@ class ControlIOReader():
         responses: Dict[str, List[str]] = {}
         while True:
             ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
+            if part_label and prose_lines:
+                responses[part_label] = prose_lines
             if ii < 0:
                 break
-            responses[part_label] = prose_lines
         return responses
 
     @staticmethod
