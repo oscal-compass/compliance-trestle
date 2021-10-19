@@ -21,7 +21,7 @@ from typing import Iterable, List, Optional, Tuple
 
 from trestle.core.err import TrestleError
 
-HEADER_REGEX = r'^[#]+'  # matches any number of # at the beginning
+HEADER_REGEX = r'^[#]+'
 BLOCKQUOTE_CHAR = '>'
 INLINE_CODE_CHAR = r'^`'
 LIST_CHAR = '-'
@@ -46,6 +46,15 @@ class SectionContent:
         self.raw_text = []
         self.subnodes_keys = []
         self.governed_document = []
+
+    def union(self, node: MarkdownNode) -> None:
+        """Unites contents together."""
+        self.subnodes_keys.append(node.key)
+        self.subnodes_keys.extend(node.content.subnodes_keys)
+        self.code_blocks.extend(node.content.code_blocks)
+        self.html_blocks.extend(node.content.html_blocks)
+        self.tables.extend(node.content.tables)
+        self.blockquotes.extend(node.content.blockquotes)
 
 
 class MarkdownNode:
@@ -111,12 +120,7 @@ class MarkdownNode:
                     # build subtree
                     subtree, i = self._build_tree(lines, line, i + 1, level + 1, governed_header)
                     node_children.append(subtree)
-                    content.subnodes_keys.append(subtree.key)
-                    content.subnodes_keys.extend(subtree.content.subnodes_keys)
-                    content.code_blocks.extend(subtree.content.code_blocks)
-                    content.html_blocks.extend(subtree.content.html_blocks)
-                    content.tables.extend(subtree.content.tables)
-                    content.blockquotes.extend(subtree.content.blockquotes)
+                    content.union(subtree)
                 else:
                     break  # level of the header is above or equal to the current level, subtree is over
             elif (self._does_start_with(line, CODEBLOCK_DEF)):
@@ -149,7 +153,7 @@ class MarkdownNode:
         md_node.subnodes = node_children
         return (md_node, i)
 
-    def _get_header_level_if_valid(self, line: str) -> int:
+    def _get_header_level_if_valid(self, line: str) -> Optional[int]:
         """
         Return a level of the header if the given line is indeed a header.
 
@@ -229,12 +233,8 @@ class MarkdownNode:
         """
         if key == node.key or (not strict_matching and key in node.key):
             return node
-        if not strict_matching and any([key in el for el in node.content.subnodes_keys]):
-            for subnode in node.subnodes:
-                matched_node = self._rec_traverse(subnode, key, strict_matching)
-                if matched_node is not None:
-                    return matched_node
-        elif key in node.content.subnodes_keys:
+        if (not strict_matching and any([key in el
+                                         for el in node.content.subnodes_keys])) or (key in node.content.subnodes_keys):
             for subnode in node.subnodes:
                 matched_node = self._rec_traverse(subnode, key, strict_matching)
                 if matched_node is not None:

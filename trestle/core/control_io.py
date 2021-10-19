@@ -781,11 +781,17 @@ class ControlIOReader():
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
         _, control_tree = md_api.processor.process_markdown(control_path)
-        control_headers = list(control_tree.get_all_headers_for_level(1))
+        control_titles = list(control_tree.get_all_headers_for_level(1))
+        if len(control_titles) == 0:
+            raise TrestleError(f'Control markdown: {control_path} contains no control title.')
 
-        control.id, _, control.title = ControlIOReader._read_id_group_id_title(control_headers[0])
+        control.id, _, control.title = ControlIOReader._read_id_group_id_title(control_titles[0])
 
-        control_statement = control_tree.get_node_for_key('## Control Statement')
+        control_headers = list(control_tree.get_all_headers_for_level(2))
+        if len(control_headers) == 0:
+            raise TrestleError(f'Control markdown: {control_path} contains no control statements.')
+
+        control_statement = control_tree.get_node_for_key(control_headers[0])
         ii, statement_part = ControlIOReader._read_control_statement(
             0, control_statement.content.raw_text.split('\n'), control.id
         )
@@ -803,7 +809,7 @@ class ControlIOReader():
                 else:
                     control.parts = [objective_part]
         for header_key in control_tree.get_all_headers_for_key('## Control', False):
-            if header_key not in {'## Control Statement', '## Control Objective', control_headers[0]}:
+            if header_key not in {control_headers[0], '## Control Objective', control_titles[0]}:
                 section_node = control_tree.get_node_for_key(header_key)
                 _, control.parts = ControlIOReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
