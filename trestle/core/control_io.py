@@ -95,6 +95,7 @@ class ControlIOWriter():
                     # If the part has prose write it as a raw line and not list element
                     skip_id = part.id
                     if part.prose:
+                        # need to avoid split lines in statement items
                         self._md_file.new_line(part.prose.replace('\n', '  '))
                     items.append(self._get_part(part, item_type, skip_id))
             # unwrap the list if it is many levels deep
