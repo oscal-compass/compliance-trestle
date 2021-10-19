@@ -28,7 +28,7 @@ from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_io import ControlIOReader
-from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.profile_resolver import ProfileResolver
 
 prof_name = 'my_prof'
@@ -119,10 +119,11 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML(typ='safe')
         expected_header = yaml.load(f)
-    header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
+    processor = MarkdownProcessor()
+    header, tree = processor.process_markdown(ac_1)
     assert tree is not None
     assert expected_header == header
-    header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
+    header, tree = processor.process_markdown(ac_1)
     assert tree is not None
     assert expected_header == header
 
@@ -153,10 +154,11 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
 
-    header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
+    processor = MarkdownProcessor()
+    header, tree = processor.process_markdown(ac_1)
     assert tree is not None
     assert not header
-    header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
+    header, tree = processor.process_markdown(ac_1)
     assert tree is not None
     assert not header
 

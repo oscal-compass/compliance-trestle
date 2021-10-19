@@ -1,2 +1,2 @@
-::: trestle.core.markdown_validator
+::: trestle.core.markdown.markdown_validator
 handler: python

@@ -25,6 +25,7 @@ import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.err import TrestleError
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -466,24 +467,20 @@ class ControlIOReader():
         return clean_lines
 
     @staticmethod
-    def _read_id_group_id_title(ii: int, lines: List[str]) -> Tuple[int, str, str, str]:
-        while ii < len(lines):
-            line = lines[ii]
-            ii += 1
-            if line.startswith('# '):
-                if line.count('-') < 2:
-                    raise TrestleError(f'Markdown control title format error: {line}')
-                control_id = line.split()[1]
-                first_dash = line.find('-')
-                title_line = line[first_dash + 1:]
-                group_start = title_line.find('\[')
-                group_end = title_line.find('\]')
-                if group_start < 0 or group_end < 0 or group_start > group_end:
-                    raise TrestleError(f'unable to read group and title for control {control_id}')
-                group_id = title_line[group_start + 2:group_end].strip()
-                control_title = title_line[group_end + 2:].strip()
-                return ii, control_id, group_id, control_title
-        raise TrestleError('Unable to find #Control: heading in control markdown file.')
+    def _read_id_group_id_title(line: str) -> Tuple[int, str, str]:
+        """Process the line and find the control id, group id and control title."""
+        if line.count('-') < 2:
+            raise TrestleError(f'Markdown control title format error: {line}')
+        control_id = line.split()[1]
+        first_dash = line.find('-')
+        title_line = line[first_dash + 1:]
+        group_start = title_line.find('\[')
+        group_end = title_line.find('\]')
+        if group_start < 0 or group_end < 0 or group_start > group_end:
+            raise TrestleError(f'unable to read group and title for control {control_id}')
+        group_id = title_line[group_start + 2:group_end].strip()
+        control_title = title_line[group_end + 2:].strip()
+        return control_id, group_id, control_title
 
     @staticmethod
     def _indent(line: str) -> int:
@@ -606,6 +603,7 @@ class ControlIOReader():
         ii_orig = ii
         while 0 <= ii < len(lines) and not lines[ii].startswith('## Control Objective'):
             ii += 1
+
         if ii >= len(lines):
             return ii_orig, None
         ii += 1
@@ -781,17 +779,33 @@ class ControlIOReader():
     def read_control(control_path: pathlib.Path) -> cat.Control:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
-        lines = ControlIOReader._load_control_lines(control_path)
-        ii, control.id, _, control.title = ControlIOReader._read_id_group_id_title(0, lines)
-        ii, statement_part = ControlIOReader._read_control_statement(ii, lines, control.id)
+        md_api = MarkdownAPI()
+        _, control_tree = md_api.processor.process_markdown(control_path)
+        control_headers = list(control_tree.get_all_headers_for_level(1))
+
+        control.id, _, control.title = ControlIOReader._read_id_group_id_title(control_headers[0])
+
+        control_statement = control_tree.get_node_for_key('## Control Statement')
+        ii, statement_part = ControlIOReader._read_control_statement(
+            0, control_statement.content.raw_text.split('\n'), control.id
+        )
         if ii < 0:
             return control
         control.parts = [statement_part] if statement_part else None
-        ii, objective_part = ControlIOReader._read_control_objective(ii, lines, control.id)
-        if objective_part:
-            if control.parts:
-                control.parts.append(objective_part)
-            else:
-                control.parts = [objective_part]
-        ii, control.parts = ControlIOReader._read_sections(ii, lines, control.id, control.parts)
+        control_objective = control_tree.get_node_for_key('## Control Objective')
+        if control_objective is not None:
+            _, objective_part = ControlIOReader._read_control_objective(
+                0, control_objective.content.raw_text.split('\n'), control.id
+            )
+            if objective_part:
+                if control.parts:
+                    control.parts.append(objective_part)
+                else:
+                    control.parts = [objective_part]
+        for header_key in control_tree.get_all_headers_for_key('## Control', False):
+            if header_key not in {'## Control Statement', '## Control Objective', control_headers[0]}:
+                section_node = control_tree.get_node_for_key(header_key)
+                _, control.parts = ControlIOReader._read_sections(
+                    0, section_node.content.raw_text.split('\n'), control.id, control.parts
+                )
         return control

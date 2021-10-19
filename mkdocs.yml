@@ -78,7 +78,7 @@ nav:
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - err: api_reference/trestle.core.err.md
       - generators: api_reference/trestle.core.generators.md
-      - markdown_validator: api_reference/trestle.core.markdown_validator.md
+      - markdown_validator: api_reference/trestle.core.markdown.markdown_validator.md
       - models:
         - actions: api_reference/trestle.core.models.actions.md
         - elements: api_reference/trestle.core.models.elements.md
