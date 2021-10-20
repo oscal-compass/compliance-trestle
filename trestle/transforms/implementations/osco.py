@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -161,7 +161,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
             name = set_parameter.param_id
             parameter_value = set_parameter.values[0]
             value = parameter_value.__root__
-            rationale = self._get_rationale_for_set_value(profile, name)
+            rationale = self._get_rationale_for_set_value()
             set_value = {'name': name, 'value': value, 'rationale': rationale}
             set_values.append(set_value)
         return set_values
@@ -185,15 +185,15 @@ class ProfileToOscoTransformer(FromOscalTransformer):
                         if control.with_ids is not None:
                             for with_id in control.with_ids:
                                 name = with_id.__root__
-                                rationale = self._get_rationale_for_disable_rule(profile, name)
+                                rationale = self._get_rationale_for_disable_rule()
                                 entry = {'name': name, 'rationale': rationale}
                                 value.append(entry)
         return value
 
-    def _get_rationale_for_set_value(self, profile, name) -> str:
+    def _get_rationale_for_set_value(self) -> str:
         """Rationale for set value."""
         return 'not determinable from specification'
 
-    def _get_rationale_for_disable_rule(self, profile, name) -> str:
+    def _get_rationale_for_disable_rule(self) -> str:
         """Rationale for disable rule."""
         return 'not determinable from specification'

@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,23 +16,15 @@
 """Trestle Replicate Command."""
 import argparse
 import logging
-from typing import Type
 
+from trestle.core import const
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal import assessment_plan
-from trestle.oscal import assessment_results
-from trestle.oscal import catalog
-from trestle.oscal import component
-from trestle.oscal import poam
-from trestle.oscal import profile
-from trestle.oscal import ssp
 from trestle.utils import fs
 from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
@@ -40,90 +32,15 @@ from trestle.utils.load_distributed import load_distributed
 logger = logging.getLogger(__name__)
 
 
-class CatalogCmd(CommandPlusDocs):
-    """Replicate a catalog within the trestle directory structure."""
-
-    name = 'catalog'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        """Replicate a sample catalog in the trestle directory structure, given an OSCAL schema."""
-        logger.info(f'Replicating catalog {args.name} to: {args.output}')
-        return ReplicateCmd.replicate_object(self.name, catalog.Catalog, args)
-
-
-class ProfileCmd(CommandPlusDocs):
-    """Replicate a profile within the trestle directory structure."""
-
-    name = 'profile'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Replicating profile {args.name} to: {args.output}')
-        return ReplicateCmd.replicate_object(self.name, profile.Profile, args)
-
-
-class ComponentDefinitionCmd(CommandPlusDocs):
-    """Replicate a component definition within the trestle directory structure."""
-
-    name = 'component-definition'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return ReplicateCmd.replicate_object(self.name, component.ComponentDefinition, args)
-
-
-class SystemSecurityPlanCmd(CommandPlusDocs):
-    """Replicate a system security plan within the trestle directory structure."""
-
-    name = 'system-security-plan'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return ReplicateCmd.replicate_object(self.name, ssp.SystemSecurityPlan, args)
-
-
-class AssessmentPlanCmd(CommandPlusDocs):
-    """Replicate an assessment plan within the trestle directory structure."""
-
-    name = 'assessment-plan'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return ReplicateCmd.replicate_object(self.name, assessment_plan.AssessmentPlan, args)
-
-
-class AssessmentResultCmd(CommandPlusDocs):
-    """Replicate an assessment result within the trestle directory structure."""
-
-    name = 'assessment-results'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return ReplicateCmd.replicate_object(self.name, assessment_results.AssessmentResults, args)
-
-
-class PlanOfActionAndMilestonesCmd(CommandPlusDocs):
-    """Replicate a plan of action and milestones within the trestle directory structure."""
-
-    name = 'plan-of-action-and-milestones'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return ReplicateCmd.replicate_object(self.name, poam.PlanOfActionAndMilestones, args)
-
-
 class ReplicateCmd(CommandPlusDocs):
     """Replicate a top level model within the trestle directory structure."""
 
     name = 'replicate'
 
-    subcommands = [
-        CatalogCmd,
-        ProfileCmd,
-        ComponentDefinitionCmd,
-        SystemSecurityPlanCmd,
-        AssessmentPlanCmd,
-        AssessmentResultCmd,
-        PlanOfActionAndMilestonesCmd
-    ]
-
     def _init_arguments(self) -> None:
         logger.debug('Init arguments')
 
+        self.add_argument('model', help='Choose OSCAL model', choices=const.MODEL_TYPE_LIST)
         self.add_argument('-n', '--name', help='Name of model to replicate.', type=str, required=True)
 
         self.add_argument('-o', '--output', help='Name of replicated model.', type=str, required=True)
@@ -132,21 +49,22 @@ class ReplicateCmd(CommandPlusDocs):
             '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
         )
 
+    def _run(self, args: argparse.Namespace) -> int:
+        """Execute and process the args."""
+        log.set_log_level_from_args(args)
+        return self.replicate_object(args.model, args)
+
     @classmethod
-    def replicate_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
+    def replicate_object(cls, model_alias: str, args: argparse.Namespace) -> int:
         """
         Core replicate routine invoked by subcommands.
 
         Args:
             model_alias: Name of the top level model in the trestle directory.
-            object_type: Type of object as trestle model
-
+            args: CLI arguments
         Returns:
             A return code that can be used as standard posix codes. 0 is success.
-
         """
-        log.set_log_level_from_args(args)
-
         logger.debug('Entering replicate_object.')
 
         # 1 Bad working directory if not running from current working directory
@@ -170,7 +88,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 3 Distributed load from file
 
         try:
-            model_type, model_alias, model_instance = load_distributed(input_file, trestle_root)
+            _, model_alias, model_instance = load_distributed(input_file, trestle_root)
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, error loading file: {err}')

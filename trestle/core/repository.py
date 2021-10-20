@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -112,7 +112,7 @@ class ManagedOSCAL:
     def split(self, model_file: pathlib.Path, elements: List[str]) -> bool:
         """Split the given OSCAL model file in repository.
 
-        Model file path should be relative to the main model directory, e.g., model dir is <trestle-root>/catalogs/NIST
+        Model file path should be relative to the main model directory, e.g., model dir is $TRESTLE_ROOT/catalogs/NIST
         then model file path can be 'catalog/metadata.json' if metadata is to be split.
 
         Elements should be specified relative to model file, e.g., 'metadata.props.*'
@@ -326,7 +326,7 @@ class Repository:
         )
 
         try:
-            ret = assemblecmd.AssembleCmd().assemble_model(model_alias, model_type, args)
+            ret = assemblecmd.AssembleCmd().assemble_model(model_alias, args)
             if ret == 0:
                 success = True
         except Exception as e:

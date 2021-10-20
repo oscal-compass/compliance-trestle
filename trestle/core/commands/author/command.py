@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,9 +20,11 @@ Umbrella command for all markdown related transformations
 """
 import logging
 
+from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
 from trestle.core.commands.author.docs import Docs
 from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.command_docs import CommandPlusDocs
 
@@ -34,4 +36,14 @@ class AuthorCmd(CommandPlusDocs):
 
     name = 'author'
 
-    subcommands = [Docs, Folders, Headers, SSPGenerate, SSPAssemble]
+    subcommands = [
+        CatalogAssemble,
+        CatalogGenerate,
+        Docs,
+        Folders,
+        Headers,
+        ProfileAssemble,
+        ProfileGenerate,
+        SSPGenerate,
+        SSPAssemble
+    ]

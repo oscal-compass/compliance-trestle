@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -387,16 +387,16 @@ class SFTPFetcher(FetcherBase):
                 port=22 if not u.port else u.port,
             )
         except Exception as e:
-            logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+            logger.error(f'Error connecting SSH for {u.hostname}')
             logger.debug(e)
-            raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+            raise TrestleError(f'Cache update failure to connect via SSH: {u.hostname}')
 
         try:
             sftp_client = client.open_sftp()
         except Exception as e:
-            logger.error(f'Error opening sftp session for {username}@{u.hostname}')
+            logger.error(f'Error opening sftp session for {u.hostname}')
             logger.debug(e)
-            raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
+            raise TrestleError(f'Cache update failure to open sftp for {u.hostname}')
 
         localpath = self._cached_object_path
         try:
@@ -430,9 +430,9 @@ class FetcherFactory:
         """Determine the type of uri."""
         if uri.startswith(const.SFTP_URI):
             return FetcherFactory.UriType.SFTP
-        elif uri.startswith(const.HTTPS_URI):
+        if uri.startswith(const.HTTPS_URI):
             return FetcherFactory.UriType.HTTPS
-        elif uri.startswith(const.TRESTLE_HREF_HEADING):
+        if uri.startswith(const.TRESTLE_HREF_HEADING):
             return FetcherFactory.UriType.TRESTLE
         # if we land here, assume it is a local file and may have relative path
         # but it at least needs a filename with suffix

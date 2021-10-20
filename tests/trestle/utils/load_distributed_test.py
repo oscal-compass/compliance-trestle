@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -69,7 +69,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_groups = _load_list(catalog_dir / 'groups', tmp_trestle_dir)
+    actual_model_type, _, actual_groups = _load_list(catalog_dir / 'groups', tmp_trestle_dir)
 
     # load_list is expected to return a list of array, instead of an instance of Groups class
     expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')).__root__

@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,8 +56,7 @@ def to_trash_path(path: pathlib.Path) -> pathlib.Path:
     """Convert the dir or file path to apporpriate trash file or dir path."""
     if path.suffix != '':
         return to_trash_file_path(path)
-    else:
-        return to_trash_dir_path(path)
+    return to_trash_dir_path(path)
 
 
 def get_trash_root(path: pathlib.Path) -> Optional[pathlib.Path]:
@@ -119,8 +118,7 @@ def to_origin_path(trash_content_path: pathlib.Path) -> pathlib.Path:
     """Convert the trash path to origin path."""
     if trash_content_path.suffix == TRESTLE_TRASH_FILE_EXT:
         return to_origin_file_path(trash_content_path)
-    else:
-        return to_origin_dir_path(trash_content_path)
+    return to_origin_dir_path(trash_content_path)
 
 
 def store_file(file_path: pathlib.Path, delete_source: bool = False) -> None:
@@ -165,7 +163,7 @@ def store(content_path: pathlib.Path, delete_content: bool = False) -> None:
     """
     if content_path.is_file():
         return store_file(content_path, delete_content)
-    elif content_path.is_dir():
+    if content_path.is_dir():
         return store_dir(content_path, delete_content)
 
 
@@ -215,5 +213,4 @@ def recover(dest_content_path: pathlib.Path, delete_trash: bool = False) -> None
     """
     if dest_content_path.suffix != '':
         return recover_file(dest_content_path, delete_trash)
-    else:
-        return recover_dir(dest_content_path, delete_trash)
+    return recover_dir(dest_content_path, delete_trash)

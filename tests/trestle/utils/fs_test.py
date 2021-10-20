@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -374,8 +374,8 @@ def test_get_singular_alias() -> None:
     with pytest.raises(TrestleError):
         fs.get_singular_alias(alias_path='')
 
-    assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties')
-    assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.props')
+    assert fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties') == 'responsible-party'
+    assert fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.props') == 'property'
     assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
 
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')
@@ -444,6 +444,23 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
 
     pathlib.Path(mycatalog_dir / 'file2.json').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+    (mycatalog_dir / 'file2.json').unlink()
+
+    if os.name == 'nt':
+        hidden_file = mycatalog_dir / 'hidden.txt'
+        hidden_file.touch()
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+    else:
+        pathlib.Path(mycatalog_dir / '.DS_Store').touch()
+
+    pathlib.Path(mycatalog_dir / 'file2.json').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+
+    if os.name == 'nt':
+        hidden_file.unlink()
+    else:
+        (mycatalog_dir / '.DS_Store').unlink()
     (mycatalog_dir / 'file2.json').unlink()
 
     pathlib.Path(mycatalog_dir / 'file3.yml').touch()
@@ -593,3 +610,29 @@ def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect
             _ = fs.relative_resolve(input_path, tmp_path)
     else:
         _ = fs.relative_resolve(input_path, tmp_path)
+
+
+def test_iterdir_without_hidden_files(tmp_path) -> None:
+    """Test that hidden files are filtered from the path."""
+    pathlib.Path(tmp_path / 'visible.txt').touch()
+    pathlib.Path(tmp_path / 'visibleDir/').mkdir()
+
+    if os.name == 'nt':
+        """Windows"""
+        hidden_file = tmp_path / 'hidden.txt'
+        hidden_dir = tmp_path / 'hiddenDir/'
+        hidden_file.touch()
+        hidden_dir.mkdir()
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        atts = win32api.GetFileAttributes(str(hidden_dir))
+        win32api.SetFileAttributes(str(hidden_dir), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+        assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
+    else:
+
+        pathlib.Path(tmp_path / '.DS_Store').touch()
+        pathlib.Path(tmp_path / '.hidden.txt').touch()
+        pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
+
+        assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3

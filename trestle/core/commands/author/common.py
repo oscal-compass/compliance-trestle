@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,11 +36,7 @@ class AuthorCommonCommand(CommandPlusDocs):
     def _initialize(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         # Externalize
-        self.trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-        if not self.trestle_root:
-            logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
-            return 1
-
+        self.trestle_root = args.trestle_root
         self.task_name = args.task_name
         if self.task_name:
             self.task_path = self.trestle_root / self.task_name

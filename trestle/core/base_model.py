@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -118,7 +118,7 @@ class OscalBaseModel(BaseModel):
         """
         if stripped_fields is not None and stripped_fields_aliases is not None:
             raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
-        elif stripped_fields is None and stripped_fields_aliases is None:
+        if stripped_fields is None and stripped_fields_aliases is None:
             raise err.TrestleError('Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided')
 
         # create alias to field_name mapping
@@ -375,7 +375,7 @@ class OscalBaseModel(BaseModel):
 
         """
         recast_object = existing_oscal_object.copy_to(self.__class__)
-        for raw_field in self.__dict__.keys():
+        for raw_field in self.__dict__:
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
 
     @classmethod
@@ -408,7 +408,7 @@ class OscalBaseModel(BaseModel):
         When these cases exist we need special handling of the type information.
         """
         # Additional sanity check on field length
-        if len(cls.__fields__) == 1 and '__root__' in cls.__fields__.keys():
+        if len(cls.__fields__) == 1 and '__root__' in cls.__fields__:
             # This is now a __root__ key only model
             if is_collection_field_type(cls.__fields__['__root__'].outer_type_):
                 return True

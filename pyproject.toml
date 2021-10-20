@@ -1,0 +1,13 @@
+# Added to aide with eventual transition away from setup.py
+[build-system]
+requires = [
+    "setuptools >= 35.0.2",
+    "setuptools_scm >= 2.0.0, <3"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+minversion = "6.2"
+testpaths = [
+    "tests",
+]

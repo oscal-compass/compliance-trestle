@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -120,13 +120,13 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
     # Force PermissionError:
     with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:
         load_distributed_mock.side_effect = PermissionError
-        rc = ReplicateCmd.replicate_object('catalog', Catalog, args)
+        rc = ReplicateCmd.replicate_object('catalog', args)
         assert rc == 1
 
     # Force TrestleError:
     with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:
         load_distributed_mock.side_effect = err.TrestleError('load_distributed_error')
-        rc = ReplicateCmd.replicate_object('catalog', Catalog, args)
+        rc = ReplicateCmd.replicate_object('catalog', args)
         assert rc == 1
 
     with mock.patch('trestle.core.commands.replicate.Plan.execute') as execute_mock:
@@ -135,13 +135,13 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
                 simulate_mock.side_effect = None
                 rollback_mock.side_effect = None
                 execute_mock.side_effect = err.TrestleError('execute_trestle_error')
-                rc = ReplicateCmd.replicate_object('catalog', Catalog, args)
+                rc = ReplicateCmd.replicate_object('catalog', args)
                 assert rc == 1
 
     # Force TrestleError in simulate:
     with mock.patch('trestle.core.commands.replicate.Plan.simulate') as simulate_mock:
         simulate_mock.side_effect = err.TrestleError('simulate_trestle_error')
-        rc = ReplicateCmd.replicate_object('catalog', Catalog, args)
+        rc = ReplicateCmd.replicate_object('catalog', args)
         assert rc == 1
 
 
@@ -171,5 +171,5 @@ def test_replicate_file_system(tmp_trestle_dir: Path) -> None:
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=False)
     with mock.patch('trestle.core.commands.replicate.fs.get_trestle_project_root') as get_root_mock:
         get_root_mock.side_effect = [None]
-        rc = ReplicateCmd.replicate_object('catalog', Catalog, args)
+        rc = ReplicateCmd.replicate_object('catalog', args)
         assert rc == 1

@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Core constants module containing all constants."""
+
+import string
 
 PACKAGE_OSCAL = 'trestle.oscal'
 
@@ -165,12 +167,20 @@ SSP_MD_HRULE_LINE = '___________________________________________________________
 
 SSP_MD_IMPLEMENTATION_QUESTION = 'What is the solution and how is it implemented?'
 
-SSP_MD_LEAVE_BLANK_TEXT = '<!--- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
+SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implementation details in the parts below. -->'  # noqa E501
 
 SSP_ADD_IMPLEMENTATION_PREFIX = 'Add control implementation description here for '
 
 SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'statement'
 
+SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
+
 SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'control'
 
 SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for the system.'
+
+NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
+
+NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
+
+NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'

@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,7 @@ import trestle.core.markdown_validator as markdown_validator
 logger = logging.getLogger(__name__)
 
 
-class DrawIO(object):
+class DrawIO():
     """Access and process drawio data / metadata."""
 
     def __init__(self, file_path: pathlib.Path) -> None:
@@ -174,9 +174,8 @@ class DrawIOMetadataValidator():
 
         if self.must_be_first_tab:
             return markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, drawio_metadata[0])
-        else:
-            for md_tab in drawio_metadata:
-                status = markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, md_tab)
-                if status:
-                    return status
+        for md_tab in drawio_metadata:
+            status = markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, md_tab)
+            if status:
+                return status
         return False

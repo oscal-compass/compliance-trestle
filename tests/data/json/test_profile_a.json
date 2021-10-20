@@ -139,7 +139,7 @@
           "control_id": "b-2-1",
           "adds": [
             {
-              "position": "after",
+              "position": "ending",
               "props": [
                 {
                   "name": "state",

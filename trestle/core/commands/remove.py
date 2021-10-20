@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,10 @@
 import argparse
 import logging
 import pathlib
-from typing import List, Tuple, Type
+from typing import List, Tuple
 
 import trestle.core.const as const
 import trestle.core.err as err
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
@@ -91,7 +90,7 @@ class RemoveCmd(CommandPlusDocs):
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
             try:
-                remove_action, parent_element = self.remove(element_path, parent_model, parent_element)
+                remove_action, parent_element = self.remove(element_path, parent_element)
             except TrestleError as err:
                 logger.debug(f'self.remove() failed: {err}')
                 logger.error(f'Remove failed (self.remove()): {err}')
@@ -121,8 +120,7 @@ class RemoveCmd(CommandPlusDocs):
         return 0
 
     @classmethod
-    def remove(cls, element_path: ElementPath, parent_model: Type[OscalBaseModel],
-               parent_element: Element) -> Tuple[RemoveAction, Element]:
+    def remove(cls, element_path: ElementPath, parent_element: Element) -> Tuple[RemoveAction, Element]:
         """For the element_path, remove a model from the parent_element of a given parent_model.
 
         First we check if there is an existing element at that path

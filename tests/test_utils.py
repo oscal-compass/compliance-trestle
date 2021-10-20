@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 """Test utils module."""
 
 import argparse
+import logging
 import os
 import pathlib
 import sys
@@ -32,6 +33,8 @@ from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+
+logger = logging.getLogger(__name__)
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()
@@ -154,9 +157,13 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
                 lines_b = file_b.readlines()
                 nlines = len(lines_a)
                 if nlines != len(lines_b):
+                    logger.info(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
                     return False
                 for ii in range(nlines):
                     if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                        logger.info('lines differ:')
+                        logger.info(lines_a[ii])
+                        logger.info(lines_b[ii])
                         return False
     except Exception:
         return False

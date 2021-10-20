@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,6 +18,7 @@ import configparser
 import datetime
 import logging
 import pathlib
+import string
 import traceback
 import uuid
 from typing import Any, Dict, Iterator, List, Optional
@@ -115,7 +116,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.info('')
         logger.info('Configuration flags sit under [task.xlsx-to-oscal-component-definition]:')
         text1 = '  catalog-file      = '
-        text2 = '(required) the path of the OSCAL catalog file, for example ' + self._get_catalog_title() + '.'
+        text2 = '(required) the path of the OSCAL catalog file.'
         logger.info(text1 + text2)
         text1 = '  spread-sheet-file = '
         text2 = '(required) the path of the spread sheet file.'
@@ -365,7 +366,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         goal_remarks = self._get_goal_remarks(work_sheet, row)
         parameter_value_default = self._get_parameter_value_default(work_sheet, row)
         for control in controls.keys():
-            control_uuid = self._get_control_uuid(control)
+            control_uuid = str(uuid.uuid4())
             prop1 = Property(
                 name='goal_name_id',
                 class_=self._get_class_for_property_name('goal_name_id'),
@@ -619,10 +620,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """Fix goal_version at 1.0."""
         return '1.0'
 
-    def _get_control_uuid(self, control) -> t_uuid_str:
-        value = str(uuid.uuid4())
-        return value
-
     def _get_goal_id(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_id:
         """Get goal_id from work_sheet."""
         col = self._get_column_letter('ControlId')
@@ -656,32 +653,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                         control = control.split(':')[0]
                     # remove alphabet parts of control & accumulate in statements
                     statements = []
-                    for i in ['a',
-                              'b',
-                              'c',
-                              'd',
-                              'e',
-                              'f',
-                              'g',
-                              'h',
-                              'i',
-                              'j',
-                              'k',
-                              'l',
-                              'm',
-                              'n',
-                              'o'
-                              'p',
-                              'q',
-                              'r',
-                              's',
-                              't',
-                              'u',
-                              'v',
-                              'w',
-                              'x',
-                              'y',
-                              'z']:
+                    for i in string.ascii_lowercase:
                         needle = '(' + i + ')'
                         if needle in control:
                             statements.append(needle)

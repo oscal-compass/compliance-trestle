@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,21 +38,21 @@ class Docs(AuthorCommonCommand):
 
     def _init_arguments(self) -> None:
         self.add_argument(
-            author_const.gh_short, author_const.gh_long, help=author_const.gh_help, default=None, type=str
+            author_const.GH_SHORT, author_const.GH_LONG, help=author_const.GH_HELP, default=None, type=str
         )
         self.add_argument(
-            author_const.short_header_validate,
-            author_const.long_header_validate,
-            help=author_const.header_validate_help,
+            author_const.SHORT_HEADER_VALIDATE,
+            author_const.LONG_HEADER_VALIDATE,
+            help=author_const.HEADER_VALIDATE_HELP,
             action='store_true'
         )
         self.add_argument(
-            author_const.hov_short, author_const.hov_long, help=author_const.hov_help, action='store_true'
+            author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
         )
         self.add_argument(
-            author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
+            author_const.RECURSE_SHORT, author_const.RECURSE_LONG, help=author_const.RECURSE_HELP, action='store_true'
         )
-        self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
+        self.add_argument(author_const.MODE_ARG_NAME, choices=author_const.MODE_CHOICES)
         tn_help_str = '\n'.join(
             [
                 'The name of the the task to be governed.',
@@ -63,12 +63,12 @@ class Docs(AuthorCommonCommand):
         )
 
         self.add_argument(
-            author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
+            author_const.TASK_NAME_SHORT, author_const.TASK_NAME_LONG, help=tn_help_str, required=True, type=str
         )
         self.add_argument(
-            author_const.short_readme_validate,
-            author_const.long_readme_validate,
-            help=author_const.readme_validate_help,
+            author_const.SHORT_README_VALIDATE,
+            author_const.LONG_README_VALIDATE,
+            help=author_const.README_VALIDATE_HELP,
             action='store_true'
         )
 

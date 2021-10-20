@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,12 +18,13 @@
 import pathlib
 import shutil
 import sys
-from unittest import mock
 from uuid import uuid4
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
-import trestle.cli
+from trestle.cli import Trestle
 
 
 @pytest.mark.parametrize(
@@ -158,7 +159,8 @@ def test_e2e(
     template_validate_rc: int,
     validate_rc: int,
     testdata_dir: pathlib.Path,
-    tmp_trestle_dir: pathlib.Path
+    tmp_trestle_dir: pathlib.Path,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Run an E2E workflow with a number of test criteria."""
     command_string_setup = 'trestle author headers setup'
@@ -183,89 +185,115 @@ def test_e2e(
         command_string_validate_content += global_str
         template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / '__global__'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
-    with mock.patch.object(sys, 'argv', command_string_setup.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == setup_rc
+    monkeypatch.setattr(sys, 'argv', command_string_setup.split())
+    rc = Trestle().run()
+    assert rc == setup_rc
     if setup_rc > 0:
         return
     shutil.rmtree(str(template_target_loc))
     shutil.copytree(str(testdata_dir / template_path), str(template_target_loc))
 
-    with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == template_validate_rc
+    monkeypatch.setattr(sys, 'argv', command_string_validate_template.split())
+    rc = Trestle().run()
+    assert rc == template_validate_rc
     if template_validate_rc > 0:
         return
 
     # Create sample - should always work if we are here.
-    with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 0
+    monkeypatch.setattr(sys, 'argv', command_string_create_sample.split())
+    rc = Trestle().run()
+    assert rc == 0
 
     shutil.copytree(str(testdata_dir / content_path), str(test_content_loc))
-    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == validate_rc
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == validate_rc
 
 
-def test_abort_safely_on_missing_directory(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_abort_safely_on_missing_directory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that validation fails cleanly on a missing directory."""
     task_name = 'tester'
     command_string_setup = f'trestle author headers setup -tn {task_name}'
     command_string_validate_content = f'trestle author headers validate -tn {task_name} -r'
     task_dir = tmp_trestle_dir / task_name
-    with mock.patch.object(sys, 'argv', command_string_setup.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 0
+
+    monkeypatch.setattr(sys, 'argv', command_string_setup.split())
+    rc = Trestle().run()
+    assert rc == 0
     shutil.rmtree(str(task_dir))
 
-    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 1
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc > 0
 
 
-def test_taskpath_is_a_file(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_taskpath_is_a_file(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that validation fails cleanly on a missing directory."""
     task_name = 'tester'
     command_string_setup = f'trestle author headers setup -tn {task_name}'
     command_string_validate_content = f'trestle author headers validate -tn {task_name} -r'
     task_dir = tmp_trestle_dir / task_name
-    with mock.patch.object(sys, 'argv', command_string_setup.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 0
+
+    monkeypatch.setattr(sys, 'argv', command_string_setup.split())
+    rc = Trestle().run()
+    assert rc == 0
+
     shutil.rmtree(str(task_dir))
 
     task_dir.touch()
-
-    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 1
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc > 0
 
 
-def test_taskpath_is_a_file_setup(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_taskpath_is_a_file_setup(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that setup fails cleanly when taskpath is a file."""
     task_name = 'tester'
     command_string_setup = f'trestle author headers setup -tn {task_name}'
     task_dir = tmp_trestle_dir / task_name
     task_dir.open('w').write('hello')
-    with mock.patch.object(sys, 'argv', command_string_setup.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 1
+    monkeypatch.setattr(sys, 'argv', command_string_setup.split())
+    rc = Trestle().run()
+    assert rc > 0
+
+
+@pytest.mark.parametrize(
+    'sample_project, exclusions, acceptable',
+    [
+        (pathlib.Path('author/headers/global/good'), '', True),
+        (pathlib.Path('author/headers/global/pass_with_exceptions'), '', False),
+        (pathlib.Path('author/headers/global/pass_with_exceptions'), 'bad_sample', True),
+        (pathlib.Path('author/headers/global/pass_with_exceptions'), 'sample_indexable_1', False),
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested/bad', True),
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested/good', False),
+        (pathlib.Path('author/headers/global/pass_with_nested_exceptions'), 'nested', True)
+    ]
+)
+def test_exclude_global(
+    sample_project: pathlib.Path,
+    exclusions: str,
+    acceptable: bool,
+    testdata_dir: pathlib.Path,
+    tmp_path: pathlib.Path,
+    monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour of --all flag for trestle author headers."""
+    command_string = f'trestle author headers validate -r --global --trestle-root={tmp_path}'
+    if not exclusions == '':
+        exclusions_arr = exclusions.split(',')
+        for exclusion in exclusions_arr:
+            command_string += f' --exclude={exclusion.strip()}'
+    # delete temp dir before copy
+    # Required to be
+    shutil.rmtree(tmp_path)
+    shutil.copytree(str(testdata_dir / sample_project), str(tmp_path))
+
+    template_path_original = testdata_dir / 'author' / 'headers' / 'good_templates'
+    template_path_parent = tmp_path / '.trestle' / 'author'
+    template_path_parent.mkdir(parents=True)
+    template_path_target = template_path_parent / '__global__'
+    shutil.copytree(str(template_path_original), str(template_path_target))
+
+    monkeypatch.setattr(sys, 'argv', command_string.split())
+    rc = Trestle().run()  # noqa: E800
+    assert (rc == 0) == acceptable  # noqa: E800

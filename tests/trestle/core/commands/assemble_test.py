@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -91,9 +91,7 @@ def test_assemble_execution_failure(testdata_dir: pathlib.Path, tmp_trestle_dir:
     with mock.patch('trestle.core.models.plans.Plan.simulate') as simulate_mock:
         simulate_mock.side_effect = err.TrestleError('simulation error')
         rc = AssembleCmd().assemble_model(
-            'catalog',
-            Catalog,
-            argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
+            'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
         )
         assert rc == 1
 

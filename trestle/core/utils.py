@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,6 +60,12 @@ def snake_to_upper_camel(snake: str) -> str:
     return camel
 
 
+def spaces_and_caps_to_snake(spaced_str: str) -> str:
+    """Convert caps and spaces to snake."""
+    underscored = spaced_str.strip().replace(' ', '_')
+    return underscored.lower()
+
+
 def get_elements_of_model_type(object_of_interest, type_of_interest):
     """
     Return a flat list of a given type of pydantic object based on a presumed encompasing root object.
@@ -96,10 +102,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
         if suffix[-1] == '_':
             suffix = suffix[:-1]
         return camel_to_dash(suffix).rstrip('1234567890')
-    elif mode == 'field':
+    if mode == 'field':
         return camel_to_snake(suffix).rstrip('1234567890')
-    else:
-        raise err.TrestleError('Bad option')
+    raise err.TrestleError('Bad option')
 
 
 def alias_to_classname(alias: str, mode: str) -> str:
@@ -110,10 +115,9 @@ def alias_to_classname(alias: str, mode: str) -> str:
     """
     if mode == 'json':
         return snake_to_upper_camel(alias.replace('-', '_'))
-    elif mode == 'field':
+    if mode == 'field':
         return snake_to_upper_camel(alias)
-    else:
-        raise err.TrestleError('Bad option')
+    raise err.TrestleError('Bad option')
 
 
 def camel_to_dash(name: str) -> str:
@@ -143,8 +147,7 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
     if hasattr(module, 'Model'):
         model_metadata = next(iter(module.Model.__fields__.values()))
         return (model_metadata.type_, model_metadata.alias)
-    else:
-        raise err.TrestleError('Invalid module')
+    raise err.TrestleError('Invalid module')
 
 
 def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:

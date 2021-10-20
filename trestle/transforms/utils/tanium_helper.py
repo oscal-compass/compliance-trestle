@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -125,7 +125,7 @@ class ResultsMgr():
         self.observation_list: t_observation_list = []
         self.component_map: t_component_map = {}
         self.inventory_map: t_inventory_map = {}
-        self.ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
+        self.ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
         # track ip-address to computer-name
         self.map_ip_address_to_computer_name = {}
         # list of controls
@@ -205,8 +205,7 @@ class ResultsMgr():
         component_type = rule_use.component_type
         component_title = rule_use.component
         component_description = rule_use.component
-        for component_ref in self.component_map.keys():
-            component = self.component_map[component_ref]
+        for component in self.component_map.values():
             if component.type == component_type:
                 if component.title == component_title:
                     if component.description == component_description:
@@ -228,8 +227,7 @@ class ResultsMgr():
         component_type = rule_use.component_type
         component_title = rule_use.component
         component_description = rule_use.component
-        for component_ref in self.component_map.keys():
-            component = self.component_map[component_ref]
+        for component_ref, component in self.component_map.items():
             if component.type == component_type:
                 if component.title == component_title:
                     if component.description == component_description:
@@ -239,7 +237,7 @@ class ResultsMgr():
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from Tanium row."""
-        if rule_use.tanium_client_ip_address in self.inventory_map.keys():
+        if rule_use.tanium_client_ip_address in self.inventory_map:
             pass
         else:
             inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')

@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@ class FileContentType(Enum):
         """Get file extension for the type, including the dot."""
         if content_type == FileContentType.YAML:
             return '.yaml'
-        elif content_type == FileContentType.JSON:
+        if content_type == FileContentType.JSON:
             return '.json'
         raise TrestleError(f'Invalid file content type {content_type}')
 
@@ -47,9 +47,9 @@ class FileContentType(Enum):
         """Get content type form file extension, including the dot."""
         if file_extension == '.json':
             return FileContentType.JSON
-        elif file_extension == '.yaml' or file_extension == '.yml':
+        if file_extension == '.yaml' or file_extension == '.yml':
             return FileContentType.YAML
-        elif not file_extension:
+        if not file_extension:
             return FileContentType.DIRLIKE
 
         raise TrestleError(f'Unsupported file extension {file_extension}')

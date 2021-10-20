@@ -5,7 +5,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +30,8 @@ from tests import test_utils
 import trestle.core.generators as gens
 import trestle.oscal.common as common
 from trestle.cli import Trestle
-from trestle.oscal.catalog import Catalog
+from trestle.core.err import TrestleError
+from trestle.oscal import catalog as cat
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile
 
@@ -46,43 +47,43 @@ def rand_str():
 
 @pytest.fixture(scope='function')
 def tmp_file(tmp_path):
-    """Return a path for a tmp yaml file."""
+    """Return the path for a tmp file."""
     return pathlib.Path(tmp_path) / f'{uuid4()}'
 
 
 @pytest.fixture(scope='session')
 def tmp_fixed_file(tmp_path):
-    """Return a path for a tmp yaml file."""
+    """Return the path for a tmp file with fixed name."""
     return pathlib.Path(tmp_path) / 'fixed_file'
 
 
 @pytest.fixture(scope='function')
 def tmp_yaml_file(tmp_path):
-    """Return a path for a tmp yaml file."""
+    """Return the path for a tmp yaml file."""
     return pathlib.Path(tmp_path) / f'{uuid4()}.yaml'
 
 
 @pytest.fixture(scope='function')
 def tmp_json_file(tmp_path):
-    """Return a path for a tmp yaml file."""
+    """Return the path for a tmp json file."""
     return pathlib.Path(tmp_path) / f'{uuid4()}.json'
 
 
 @pytest.fixture(scope='function')
 def tmp_xml_file(tmp_path):
-    """Return a path for a tmp yaml file."""
+    """Return the path for a tmp xml file."""
     return pathlib.Path(tmp_path) / f'{uuid4()}.xml'
 
 
 @pytest.fixture(scope='module')
 def yaml_testdata_path() -> pathlib.Path:
-    """Return a path for a tmp directory."""
+    """Return the path for the yaml test data directory."""
     return pathlib.Path(test_utils.YAML_TEST_DATA_PATH)
 
 
 @pytest.fixture(scope='module')
 def json_testdata_path() -> pathlib.Path:
-    """Return a path for a tmp directory."""
+    """Return the path for json test data directory."""
     return pathlib.Path(test_utils.JSON_TEST_DATA_PATH)
 
 
@@ -95,15 +96,15 @@ def sample_nist_component_def() -> ComponentDefinition:
 
 @pytest.fixture(scope='function')
 def sample_catalog():
-    """Return a valid catalog object."""
+    """Return a large nist catalog."""
     file_path = pathlib.Path(test_utils.JSON_NIST_DATA_PATH) / test_utils.JSON_NIST_CATALOG_NAME
-    catalog_obj = Catalog.oscal_read(file_path)
+    catalog_obj = cat.Catalog.oscal_read(file_path)
     return catalog_obj
 
 
 @pytest.fixture(scope='function')
 def sample_profile():
-    """Return a valid profile object."""
+    """Return a large nist profile."""
     file_path = pathlib.Path(test_utils.JSON_NIST_DATA_PATH) / test_utils.JSON_NIST_PROFILE_NAME
     profile_obj = Profile.oscal_read(file_path)
     return profile_obj
@@ -113,7 +114,7 @@ def sample_profile():
 def sample_catalog_minimal():
     """Return a valid catalog object with minimum fields necessary."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog.json'
-    catalog_obj = Catalog.oscal_read(file_path)
+    catalog_obj = cat.Catalog.oscal_read(file_path)
     return catalog_obj
 
 
@@ -121,7 +122,24 @@ def sample_catalog_minimal():
 def sample_catalog_missing_roles():
     """Return a catalog object missing roles."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog_missing_roles.json'
-    catalog_obj = Catalog.oscal_read(file_path)
+    catalog_obj = cat.Catalog.oscal_read(file_path)
+    return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def sample_catalog_rich_controls():
+    """Return a catalog with controls in groups and in the catalog itself."""
+    catalog_obj = gens.generate_sample_model(cat.Catalog)
+    control_a = cat.Control(id='control_a', title='this is control a')
+    control_b = cat.Control(id='control_b', title='this is control b')
+    control_c = cat.Control(id='control_c', title='this is control c')
+    control_d = cat.Control(id='control_d', title='this is control d')
+    control_d1 = cat.Control(id='control_d1', title='this is control d1')
+    control_d.controls = [control_d1]
+
+    group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
+    catalog_obj.groups = [group]
+    catalog_obj.controls = [control_c, control_d]
     return catalog_obj
 
 
@@ -144,17 +162,20 @@ def tmp_trestle_dir(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> Iterato
     """Create and return a new trestle project directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
-    misbehave if there are errors in trestle init.
+    misbehave if there are errors in trestle init, perhaps in spite of the try block.
     """
     pytest_cwd = pathlib.Path.cwd()
     os.chdir(tmp_path)
     testargs = ['trestle', 'init']
     monkeypatch.setattr(sys, 'argv', testargs)
-    # FIXME: Correctly capture return codes
-    Trestle().run()
-    yield tmp_path
-
-    os.chdir(pytest_cwd)
+    try:
+        Trestle().run()
+    except Exception as e:
+        raise TrestleError(f'Initialization failed for temporary trestle directory: {e}.')
+    else:
+        yield tmp_path
+    finally:
+        os.chdir(pytest_cwd)
 
 
 @pytest.fixture(scope='function')

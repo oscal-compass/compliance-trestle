@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,7 @@ import json
 import logging
 import os
 import pathlib
-from typing import Any, Dict, List, Optional, Tuple, Type, cast
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
@@ -169,8 +169,7 @@ def get_stripped_model_type(
 
     aliases_to_be_stripped = set()
     if split_subdir.exists():
-        for f in split_subdir.iterdir():
-            # TODO ignore hidden files
+        for f in iterdir_without_hidden_files(split_subdir):
             alias = extract_alias(f.name)
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)
@@ -182,8 +181,7 @@ def get_stripped_model_type(
         )
         logger.debug(f'model_type: {model_type}')
         return model_type, model_alias
-    else:
-        return singular_model_type, model_alias
+    return singular_model_type, model_alias
 
 
 def extract_alias(string_dir: str) -> str:
@@ -233,7 +231,7 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
         if content_type == FileContentType.YAML:
             yaml = YAML(typ='safe')
             return yaml.load(f)
-        elif content_type == FileContentType.JSON:
+        if content_type == FileContentType.JSON:
             return json.load(f)
 
 
@@ -339,7 +337,7 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     if not is_valid_project_model_path(path):
         raise err.TrestleError(f'Trestle project not found at path {path}')
 
-    for file_or_directory in path.iterdir():
+    for file_or_directory in iterdir_without_hidden_files(path):
         if file_or_directory.is_file():
             return FileContentType.to_content_type(file_or_directory.suffix)
 
@@ -368,7 +366,7 @@ def get_models_of_type(model_type: str, root: pathlib.Path) -> List[str]:
         # only look for proper json and yaml files
         if not should_ignore(f.stem):
             if not f.is_dir():
-                logger.warn(
+                logger.warning(
                     f'Ignoring validation of misplaced file {f.name} '
                     + f'found in the model directory, {model_dir_name}.'
                 )
@@ -385,6 +383,21 @@ def get_all_models(root: pathlib.Path) -> List[Tuple[str, str]]:
         for m in models:
             full_list.append((model_type, m))
     return full_list
+
+
+def iterdir_without_hidden_files(directory_path: pathlib.Path) -> Iterable[pathlib.Path]:
+    """
+    Get iterator over all paths in the given directory_path excluding hidden files.
+
+    Args:
+        directory_path: The directory to iterate through.
+
+    Returns:
+        Iterator over the files in the directory excluding hidden files.
+    """
+    filtered_paths = list(filter(lambda p: not is_hidden(p) or p.is_dir(), pathlib.Path.iterdir(directory_path)))
+
+    return filtered_paths.__iter__()
 
 
 def is_hidden(file_path: pathlib.Path) -> bool:
@@ -436,14 +449,14 @@ def allowed_task_name(name: str) -> bool:
     if root_path in const.MODEL_TYPE_TO_MODEL_DIR.values():
         logger.error('Task name is the same as an OSCAL schema name.')
         return False
-    elif root_path[0] == '.':
+    if root_path[0] == '.':
         logger.error('Task name must not start with "."')
         return False
-    elif pathed_name.suffix != '':
+    if pathed_name.suffix != '':
         # Does it look like a file
         logger.error('tasks name must not look like a file path (e.g. contain a suffix')
         return False
-    elif '__global__' in pathed_name.parts:
+    if '__global__' in pathed_name.parts:
         logger.error('Task name cannot contain __global__')
         return False
     return True

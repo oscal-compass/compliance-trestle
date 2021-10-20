@@ -22,6 +22,7 @@ venv
 *.egg-info
 .vscode/settings.json
 .vscode
+pytest.ini
 
 # jupyter notebooks for local tests and prototypes
 *.ipynb
@@ -42,3 +43,7 @@ cov_html
 
 site
 /.pytest_cache/
+
+tmp_bin_test
+.mypy_cache
+
