@@ -39,7 +39,7 @@ class MarkdownProcessor:
         """Initialize markdown processor."""
         self.governed_header = None
 
-    def render_gfm_to_html(self, markdown_text: str):
+    def render_gfm_to_html(self, markdown_text: str) -> str:
         """Render given Github Flavored Markdown to HTML."""
         try:
             html = cmarkgfm.github_flavored_markdown_to_html(markdown_text)
@@ -56,7 +56,6 @@ class MarkdownProcessor:
 
             _ = self.render_gfm_to_html(markdown_wo_header)
 
-            # Build tree. Root node is node with key 'root'. Heirarchally it lies higher h1 (# Header)
             lines = markdown_wo_header.split('\n')
             tree = MarkdownNode.build_tree_from_markdown(lines, self.governed_header)
             return header, tree

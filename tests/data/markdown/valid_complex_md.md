@@ -43,9 +43,73 @@ system.exit()
 
 and some text again
 
-## 1.3 MD Subheader 1.3
+## 1.3 MD Subheader 1.3 HTML
 
 some text 3
+
+### 1.3.1 Valid header <!-- ### some comment here -->
+
+<details open>
+  <summary>## This is the sample summary</summary>
+  <p>And here are the details:</p>
+  <ol>
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li># Not a header</li>
+  </ol>
+</details>
+
+<kbd> # some command # </kbd>
+
+some text <kbd><kbd># Nested</kbd>#nested text<kbd>nested</kbd></kbd>
+
+### 1.3.2 Header with <kbd>some text</kbd>
+
+<samp>Some text that should be ignored here
+this too
+</samp>
+
+X<sub>i</sub> + Y <sup>i</sup> = Z<sup>i</sup><sub>i</sub>
+
+<ins> # not supported header </ins> <del># deleted text</del>
+<del> # not supported header </del>
+
+<ins> #ignore
+
+## ignore
+
+### ignore
+
+</ins>
+
+some text <var> # some variable </var>
+
+<q> some quote # with fake header </q>
+
+<dl> # Ignore list
+# ignore
+  <dt># item</dt>
+  <dd>## subitem</dd>
+  <dt>#item</dt>
+  <dd>##subitem</dd>
+</dl>
+
+<div itemscope itemtype ="">
+  <h3 itemprop="name"># Ignore this</h3>
+  <span>A: <span itemprop="a">the text</span> (c)</span>
+  <span itemprop="aa">text</span>
+  <a href="https://www.ibm.com" itemprop="bb">BB</a>
+</div>
+
+\<ctag # not a header> s </ctag>
+
+\< this however will not
+
+### 1.3.3 Valid header
+
+> blockquote here
+
+### 1.3.4 Valid header <this is okay>
 
 ## 1.4 MD subheader 1.4 Empty
 

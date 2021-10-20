@@ -27,10 +27,13 @@ INLINE_CODE_CHAR = r'^`'
 LIST_CHAR = '-'
 TABLE_SYMBOL = '|'
 CODEBLOCK_DEF = '```'
-HTML_BLOCK_START = '<!--'
-HTML_BLOCK_END_REGEX = r'.*-->'
+HTML_COMMENT_START = '<!--'
+HTML_COMMENT_END = r'.*-->'
 TABLE_REGEX = r'|'
 GOVERNED_DOC_REGEX = r'.*:'
+
+HTML_TAG_REGEX_START = r'^[ \t]*<.*>'
+HTML_TAG_REGEX_END = r'<\/.*>'
 
 
 class SectionContent:
@@ -40,8 +43,8 @@ class SectionContent:
         """Initialize section content."""
         self.tables = []
         self.text = []
-        self.code_blocks = []
-        self.html_blocks = []
+        self.code_lines = []
+        self.html_lines = []
         self.blockquotes = []
         self.raw_text = []
         self.subnodes_keys = []
@@ -51,8 +54,8 @@ class SectionContent:
         """Unites contents together."""
         self.subnodes_keys.append(node.key)
         self.subnodes_keys.extend(node.content.subnodes_keys)
-        self.code_blocks.extend(node.content.code_blocks)
-        self.html_blocks.extend(node.content.html_blocks)
+        self.code_lines.extend(node.content.code_lines)
+        self.html_lines.extend(node.content.html_lines)
         self.tables.extend(node.content.tables)
         self.blockquotes.extend(node.content.blockquotes)
 
@@ -104,7 +107,19 @@ class MarkdownNode:
         level: int,
         governed_header: Optional[str] = None
     ) -> Tuple[MarkdownNode, int]:
-        """Build a tree from the markdown recursively."""
+        """
+        Build a tree from the markdown recursively.
+
+        The tree is contructed with valid headers as node's keys
+        and node's content contains everything that is under that header.
+        The subsections are placed into node's children with the same structure.
+
+        A header is valid iff the line starts with # and it is not:
+          1. Inside of the html blocks
+          2. Inside single lined in the <> tags
+          3. Inside the html comment
+          4. Inside any table, code block or blockquotes
+        """
         content = SectionContent()
         node_children = []
         i = starting_line
@@ -115,24 +130,27 @@ class MarkdownNode:
             line = lines[i]
             header_lvl = self._get_header_level_if_valid(line)
 
-            if (header_lvl is not None):
-                if (header_lvl == level + 1):
+            if header_lvl is not None:
+                if header_lvl >= level + 1:
                     # build subtree
                     subtree, i = self._build_tree(lines, line, i + 1, level + 1, governed_header)
                     node_children.append(subtree)
                     content.union(subtree)
                 else:
                     break  # level of the header is above or equal to the current level, subtree is over
-            elif (self._does_start_with(line, CODEBLOCK_DEF)):
-                code_block, i = self._read_code_block(lines, line, i + 1)
-                content.code_blocks.extend(code_block)
-            elif (self._does_start_with(line, HTML_BLOCK_START)):
-                html_block, i = self._read_html_block(lines, line, i + 1)
-                content.html_blocks.extend(html_block)
-            elif (self._does_start_with(line, TABLE_SYMBOL)):
+            elif self._does_start_with(line, CODEBLOCK_DEF):
+                code_lines, i = self._read_code_lines(lines, line, i + 1)
+                content.code_lines.extend(code_lines)
+            elif self._does_start_with(line, HTML_COMMENT_START):
+                html_lines, i = self._read_html_block(lines, line, i + 1, HTML_COMMENT_END)
+                content.html_lines.extend(html_lines)
+            elif self._does_contain(line, HTML_TAG_REGEX_START):
+                html_lines, i = self._read_html_block(lines, line, i + 1, HTML_TAG_REGEX_END)
+                content.html_lines.extend(html_lines)
+            elif self._does_start_with(line, TABLE_SYMBOL):
                 table_block, i = self._read_table_block(lines, line, i + 1)
                 content.tables.extend(table_block)
-            elif (self._does_start_with(line, BLOCKQUOTE_CHAR)):
+            elif self._does_start_with(line.strip(' '), BLOCKQUOTE_CHAR):
                 content.blockquotes.append(line)
                 i += 1
             elif governed_header is not None and self._does_contain(
@@ -176,24 +194,24 @@ class MarkdownNode:
         regexp = re.compile(reg)
         return regexp.search(line) is not None
 
-    def _read_code_block(self, lines: List[str], line: str, i: int) -> Tuple[str, int]:
+    def _read_code_lines(self, lines: List[str], line: str, i: int) -> Tuple[str, int]:
         """Read code block."""
-        code_block = [line]
+        code_lines = [line]
         while True:
             if i >= len(lines):
-                raise TrestleError(f'Code block is not closed: {code_block}')
+                raise TrestleError(f'Code block is not closed: {code_lines}')
 
             line = lines[i]
-            code_block.append(line)
+            code_lines.append(line)
             i += 1
             if self._does_contain(line, CODEBLOCK_DEF):
                 break
-        return code_block, i
+        return code_lines, i
 
-    def _read_html_block(self, lines: List[str], line: str, i: int) -> Tuple[str, int]:
+    def _read_html_block(self, lines: List[str], line: str, i: int, ending_regex: str) -> Tuple[str, int]:
         """Read html block."""
         html_block = [line]
-        if self._does_contain(line, HTML_BLOCK_END_REGEX):
+        if self._does_contain(line, ending_regex):
             return html_block, i
         while True:
             if i >= len(lines):
@@ -202,7 +220,7 @@ class MarkdownNode:
             line = lines[i]
             html_block.append(line)
             i += 1
-            if self._does_contain(line, HTML_BLOCK_END_REGEX):
+            if self._does_contain(line, ending_regex):
                 break
         return html_block, i
 
