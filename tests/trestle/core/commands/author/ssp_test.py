@@ -28,7 +28,7 @@ from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_io import ControlIOReader
-from trestle.core.markdown.markdown_processor import MarkdownProcessor
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.profile_resolver import ProfileResolver
 
 prof_name = 'my_prof'
@@ -119,11 +119,11 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML(typ='safe')
         expected_header = yaml.load(f)
-    processor = MarkdownProcessor()
-    header, tree = processor.process_markdown(ac_1)
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert expected_header == header
-    header, tree = processor.process_markdown(ac_1)
+    header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert expected_header == header
 
@@ -154,11 +154,11 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
 
-    processor = MarkdownProcessor()
-    header, tree = processor.process_markdown(ac_1)
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert not header
-    header, tree = processor.process_markdown(ac_1)
+    header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert not header
 
@@ -177,6 +177,10 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # edit it a bit
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a) == 0
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b) == 0
+
+    # generate markdown again on top of previous markdown to make sure it is not removed
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
 
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()

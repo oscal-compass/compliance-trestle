@@ -184,12 +184,10 @@ class MarkdownNode:
                 raise TrestleError(f'Code block is not closed: {code_block}')
 
             line = lines[i]
-            if self._does_contain(line, CODEBLOCK_DEF):
-                code_block.append(line)
-                i += 1
-                break
             code_block.append(line)
             i += 1
+            if self._does_contain(line, CODEBLOCK_DEF):
+                break
         return code_block, i
 
     def _read_html_block(self, lines: List[str], line: str, i: int) -> Tuple[str, int]:
@@ -202,12 +200,10 @@ class MarkdownNode:
                 raise TrestleError(f'HTML block is not closed: {html_block}')
 
             line = lines[i]
-            if self._does_contain(line, HTML_BLOCK_END_REGEX):
-                html_block.append(line)
-                i += 1
-                break
             html_block.append(line)
             i += 1
+            if self._does_contain(line, HTML_BLOCK_END_REGEX):
+                break
         return html_block, i
 
     def _read_table_block(self, lines: List[str], line: str, i: int) -> Tuple[str, int]:

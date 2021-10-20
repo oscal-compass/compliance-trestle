@@ -229,6 +229,10 @@ By default `author headers` only indexes a flat directory. The recursive option 
 Allows a single set of templates defined in `.trestle/author/__global__` to be applied to mulitple directories in trestle.
 If `--task-name` is not provided all folders in the repository will be measured.
 
+#### Exclude (`-ex`, `--exclude`)
+
+Primarily intended for use with global (`-g`), exclude will remove any _directory_ from the search scope of trestle author headers. Must be a relative path to the root of a trestle project, however, can be multiple levels deep (e.g. `--exclude=architecture/drafts`) would allow content in `architecture/diagrams` to still be indexed to find the header.
+
 ## `trestle author catalog-generate` and `trestle author catalog-assemble`
 
 The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
