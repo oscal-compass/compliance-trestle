@@ -210,17 +210,22 @@ class Headers(AuthorCommonCommand):
         if self.task_name:
             if not self.task_path.is_dir():
                 logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+                return 1
             paths = [self.task_path]
         else:
             for path in self.trestle_root.iterdir():
                 relative_path = path.relative_to(self.trestle_root)
+                # Files in the root directory must be exclused
+                if path.is_file():
+                    continue
                 if not fs.allowed_task_name(path):
                     continue
                 if str(relative_path).rstrip('/') in const.MODEL_DIR_LIST:
                     continue
-                if relative_path in relative_excludes:
+                if (relative_path in relative_excludes):
                     continue
-                paths.append(path)
+                if not fs.is_hidden(path):
+                    paths.append(path)
 
         for path in paths:
             try:
