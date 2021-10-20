@@ -3,6 +3,28 @@
 
 <!--next-version-placeholder-->
 
+## v0.26.0 (2021-10-20)
+### Feature
+* Add exclusion flags to trestle author header validate to allow practical use without a task name. ([#793](https://github.com/IBM/compliance-trestle/issues/793)) ([`d77408f`](https://github.com/IBM/compliance-trestle/commit/d77408f39e914bff3dfc20ecf91e3a982a49bf4e))
+* Allow author edits and update of profile ([#771](https://github.com/IBM/compliance-trestle/issues/771)) ([`650b6c9`](https://github.com/IBM/compliance-trestle/commit/650b6c95eadfc68c5f0646761f57ac4b2542bb6c))
+* Improve profile resolver to cover "adds" scenarios in fedramp & NIST 800-53 ([#766](https://github.com/IBM/compliance-trestle/issues/766)) ([`75911f3`](https://github.com/IBM/compliance-trestle/commit/75911f3f88c6b4d9a4adaea03a77db7f9a83faf9))
+* Author catalog to support reading and writing controls and catalogs ([#734](https://github.com/IBM/compliance-trestle/issues/734)) ([`0a2bcea`](https://github.com/IBM/compliance-trestle/commit/0a2bcea49841c774a667aeb9368e776402db23cf))
+
+### Fix
+* Ssp issues ([#795](https://github.com/IBM/compliance-trestle/issues/795)) ([`3532e4e`](https://github.com/IBM/compliance-trestle/commit/3532e4ef7c7db33e6875a27123a4b6a4fa2655cc))
+* Further refinements to CI pipeline ([#796](https://github.com/IBM/compliance-trestle/issues/796)) ([`b46c63b`](https://github.com/IBM/compliance-trestle/commit/b46c63be8a192993126b49c289e99ea5c10dc3a1))
+* Correct broken guards of sonarqube actions. ([`9e10c1e`](https://github.com/IBM/compliance-trestle/commit/9e10c1e3fedc96c5f6e0b02651b77ce20d1421c5))
+* Add missing __init__.py, which can cause issues with pytest. ([#792](https://github.com/IBM/compliance-trestle/issues/792)) ([`bc6fbf3`](https://github.com/IBM/compliance-trestle/commit/bc6fbf34843f3101edd4236f5dab904fa6a3606f))
+* Document submodule requirement for testing. ([#782](https://github.com/IBM/compliance-trestle/issues/782)) ([`3e711a3`](https://github.com/IBM/compliance-trestle/commit/3e711a3416e8155a0e082b65e89060ac3e9d3227))
+* Resolve bugs in xlsx to component definition ([#772](https://github.com/IBM/compliance-trestle/issues/772)) ([`ebff124`](https://github.com/IBM/compliance-trestle/commit/ebff1247b5bc9abf615f10ae943b0fdff3644507))
+* Remove two bugs generated from unraised exceptions. ([#777](https://github.com/IBM/compliance-trestle/issues/777)) ([`5f698a6`](https://github.com/IBM/compliance-trestle/commit/5f698a6c28c84a9eb9595ddd1248ce29f149895a))
+* Remove use of http aligning with zero trust principles. ([#770](https://github.com/IBM/compliance-trestle/issues/770)) ([`5b0240c`](https://github.com/IBM/compliance-trestle/commit/5b0240cfa83f89d5182e04efa91feb4eb06ad8fd))
+* **security:** Remove user name from logs ([#767](https://github.com/IBM/compliance-trestle/issues/767)) ([`4d075b8`](https://github.com/IBM/compliance-trestle/commit/4d075b89776552a1f58751674e2056ac7afac3cc))
+* **cli:** Correctly capture return codes ([#760](https://github.com/IBM/compliance-trestle/issues/760)) ([`170d911`](https://github.com/IBM/compliance-trestle/commit/170d9117dc318e39fa43249e424dcf244614ff1a))
+* Added more checks for pylint. ([#758](https://github.com/IBM/compliance-trestle/issues/758)) ([`2443ced`](https://github.com/IBM/compliance-trestle/commit/2443cedf0ad7f7357aa4a1606fe7ddc8f6f3830b))
+* Adding automated tests of binary distribution validate release. ([#756](https://github.com/IBM/compliance-trestle/issues/756)) ([`c0b6748`](https://github.com/IBM/compliance-trestle/commit/c0b67485cd6e5619bbe4654d651931ce378315ca))
+* Ignore hidden files throughout the project ([#755](https://github.com/IBM/compliance-trestle/issues/755)) ([`aec1df4`](https://github.com/IBM/compliance-trestle/commit/aec1df4e80168998a368d951861e62b502ca7fae))
+
 ## v0.25.1 (2021-09-30)
 ### Fix
 * Emergency fix for trestle packaging. ([#751](https://github.com/IBM/compliance-trestle/issues/751)) ([`8fedeaa`](https://github.com/IBM/compliance-trestle/commit/8fedeaa641e7817fb4092224a315e1a38166078e))
