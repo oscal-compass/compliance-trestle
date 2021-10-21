@@ -36,11 +36,7 @@ class AuthorCommonCommand(CommandPlusDocs):
     def _initialize(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         # Externalize
-        self.trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-        if not self.trestle_root:
-            logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
-            return 1
-
+        self.trestle_root = args.trestle_root
         self.task_name = args.task_name
         if self.task_name:
             self.task_path = self.trestle_root / self.task_name

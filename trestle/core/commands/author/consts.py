@@ -52,3 +52,10 @@ GLOBAL_HELP = (
     'Use a consistent template defined in .trestle/author/__global__,'
     + 'if used without a task name applies to all files within the repository.' + '\n\n'
 )
+
+EXCLUDE_SHORT = '-ex'
+EXCLUDE_LONG = '--exclude'
+EXCLUDE_HELP = (
+    'The name of a folder, relative to the root of the trestle project,'
+    + 'e.g. architecture or architecture/infrastructure.'
+)

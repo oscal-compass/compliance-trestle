@@ -18,15 +18,16 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Dict
+from typing import Dict, List
 
 from pkg_resources import resource_filename
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
+from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.draw_io import DrawIOMetadataValidator
-from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,14 @@ class Headers(AuthorCommonCommand):
         self.add_argument(
             author_const.GLOBAL_SHORT, author_const.GLOBAL_LONG, help=author_const.GLOBAL_HELP, action='store_true'
         )
+        self.add_argument(
+            author_const.EXCLUDE_SHORT,
+            author_const.EXCLUDE_LONG,
+            help=author_const.EXCLUDE_HELP,
+            type=pathlib.Path,
+            nargs='*',
+            default=None
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         if self._initialize(args):
@@ -74,8 +83,9 @@ class Headers(AuthorCommonCommand):
         # Handle conditional requirement of args.task_name
         # global is special so we need to use get attribute.
         if not self.global_ and not self.task_name:
-            logger.error('Task name (-tn) argument is required when global is not specified')
+            logger.warning('Task name (-tn) argument is required when global is not specified')
             return status
+
         try:
             if args.mode == 'create-sample':
                 status = self.create_sample()
@@ -85,8 +95,11 @@ class Headers(AuthorCommonCommand):
             elif args.mode == 'setup':
                 status = self.setup()
             elif args.mode == 'validate':
+                exclusions = []
+                if args.exclude:
+                    exclusions = args.exclude
                 # mode is validate
-                status = self.validate(args.recurse, args.readme_validate)
+                status = self.validate(args.recurse, args.readme_validate, exclusions)
         except Exception as e:
             logger.error(f'Error "{e}"" occurred when running trestle author docs.')
             logger.error('Exiting')
@@ -128,7 +141,8 @@ class Headers(AuthorCommonCommand):
                 return 1
             if template_file.suffix == '.md':
                 try:
-                    _ = MarkdownValidator(template_file, True, True)
+                    md_api = MarkdownAPI()
+                    md_api.load_validator_with_template(template_file, True, False)
                 except Exception as ex:
                     logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
                     return 1
@@ -152,16 +166,23 @@ class Headers(AuthorCommonCommand):
         return new_templates
 
     def _validate_dir(
-        self, template_lut: Dict[str, pathlib.Path], candidate_dir: pathlib.Path, recurse: bool, readme_validate: bool
+        self,
+        template_lut: Dict[str, pathlib.Path],
+        candidate_dir: pathlib.Path,
+        recurse: bool,
+        readme_validate: bool,
+        relative_excludes: List[pathlib.Path]
     ) -> bool:
+        """Validate a directory within the trestle project."""
         for candidate_path in candidate_dir.iterdir():
             if fs.local_and_visible(candidate_path):
                 if candidate_path.is_file():
                     clean_suffix = candidate_path.suffix.lstrip('.')
                     if clean_suffix == 'md':
                         logger.info(f'Validating: {self.rel_dir(candidate_path)}')
-                        md_validator = MarkdownValidator(template_lut['md'], True, True)
-                        validate_status = md_validator.validate(candidate_path)
+                        md_api = MarkdownAPI()
+                        md_api.load_validator_with_template(template_lut['md'], True, False)
+                        validate_status = md_api.validate_instance(candidate_path)
                         if not validate_status:
                             logger.info(f'Invalid: {self.rel_dir(candidate_path)}')
                             return False
@@ -177,26 +198,40 @@ class Headers(AuthorCommonCommand):
                     else:
                         logger.info(f'Unsupported file {self.rel_dir(candidate_path)} ignored.')
                 elif recurse:
-                    if not self._validate_dir(template_lut, candidate_path, recurse, readme_validate):
+                    if candidate_path.relative_to(self.trestle_root) in relative_excludes:
+                        continue
+                    if not self._validate_dir(template_lut, candidate_path, recurse, readme_validate,
+                                              relative_excludes):
                         return False
         return True
 
-    def validate(self, recurse: bool, readme_validate: bool) -> int:
+    def validate(self, recurse: bool, readme_validate: bool, relative_excludes: List[pathlib.Path]) -> int:
         """Run validation based on available templates."""
         template_lut = self._discover_templates()
         paths = []
         if self.task_name:
             if not self.task_path.is_dir():
                 logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+                return 1
             paths = [self.task_path]
         else:
             for path in self.trestle_root.iterdir():
+                relative_path = path.relative_to(self.trestle_root)
+                # Files in the root directory must be exclused
+                if path.is_file():
+                    continue
+                if not fs.allowed_task_name(path):
+                    continue
+                if str(relative_path).rstrip('/') in const.MODEL_DIR_LIST:
+                    continue
+                if (relative_path in relative_excludes):
+                    continue
                 if not fs.is_hidden(path):
                     paths.append(path)
 
         for path in paths:
             try:
-                valid = self._validate_dir(template_lut, path, recurse, readme_validate)
+                valid = self._validate_dir(template_lut, path, recurse, readme_validate, relative_excludes)
                 if not valid:
                     logger.info(f'validation failed on {path}')
                     return 1
