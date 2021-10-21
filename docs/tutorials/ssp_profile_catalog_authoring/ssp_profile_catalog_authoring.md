@@ -113,9 +113,49 @@ This is my_guidance.
 Detailed logs.
 ```
 
-In the above markdown example, the fixed, uneditable parts of the control are output first, follwed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content.  Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
+In the above markdown example, the fixed, uneditable parts of the control are output first, follwed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
 
 It's important to note that these operations only apply to the `Adds` in the profile itself - and nothing upstream of the profile is affected.  Nor is anything else in the original profile lost or altered.  In the example above, the section, `## Control my_guidance` was added by editing the generated control - and after `profile-assemble` it ended up as new guidance in the assembled profile.
+
+## Markdown Specifications for Editable Content.
+
+For the ease of editing markdown in Github, Trestle's markdown parser follows [Github Flavoured Markdown (GFM) specifications](https://github.github.com/gfm/) and therefore only certain Control headers will be parsed and added to the control.
+
+A valid control header in Trestle is the header that is correctly displayed as such when reading or previewing the edited markdown on Github website.
+
+In GFM, headers are considered to be any line of text that has any number of `#` symbols at the beginning. For example those are all valid headers and will be treated as such by Github:
+
+```
+# Valid header
+## Valid header 
+##### Valid header
+# Valid <ins> header </ins> 
+# Valid header <!-- some comment here -->
+```
+
+The headers above are valid Control headers and will be added to the control. However, there are multiple exceptions where the header will not be displayed. The header will not be displayed correctly if it is:
+
+1. Written in the HTML comments `<!-- # not a header -->` or tags `<ins> # not a header </ins>` as well as multi-line comments:
+   ```
+   <!--
+   # not a header
+   -->
+   ```
+   or multi-line HTML blocks:
+   ```
+   <dl> # not a header
+   # not a header
+     <dt># not a header</dt>
+   </dl>
+   ```
+1. Written in the single-line `# not a header` and multi-line code blocks:
+   ```
+   # not a header 
+   ```
+1. Written in the links `[# not a header](url)`
+1. Trestle will also not support headers inside the blockquotes `> # not a header`
+
+In all cases above Trestle markdown parser will skip such headers and it will be not added to the control.
 
 ## `trestle author ssp-generate` and `trestle author ssp-assemble`
 
