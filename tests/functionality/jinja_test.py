@@ -103,3 +103,14 @@ def test_jinja_oscal_template_extension() -> None:
     oscal_template = jinja_env.get_template('oscal')
     output = oscal_template.render(oscal_param=sample_value)
     assert output == 'This string has a oscal template replacement value'
+
+
+def test_jinja_substitution_block_template_extension() -> None:
+    """Demonstrate whether or not jinja can deal with templates."""
+    template_simple_str = 'This string has an {% if fedramp %}Fedramp{% endif %} block'  # noqa: FS003
+    expected_simple_output = 'This string has an Fedramp block'
+    template_loader = DictLoader({'simple': template_simple_str})
+    jinja_env = Environment(loader=template_loader)
+    simple_template = jinja_env.get_template('simple')
+    output = simple_template.render(fedramp=True)
+    assert output == expected_simple_output
