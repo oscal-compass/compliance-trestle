@@ -27,7 +27,7 @@ import trestle.utils.fs as fs
 from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.draw_io import DrawIOMetadataValidator
-from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +141,8 @@ class Headers(AuthorCommonCommand):
                 return 1
             if template_file.suffix == '.md':
                 try:
-                    _ = MarkdownValidator(template_file, True, True)
+                    md_api = MarkdownAPI()
+                    md_api.load_validator_with_template(template_file, True, False)
                 except Exception as ex:
                     logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
                     return 1
@@ -179,8 +180,9 @@ class Headers(AuthorCommonCommand):
                     clean_suffix = candidate_path.suffix.lstrip('.')
                     if clean_suffix == 'md':
                         logger.info(f'Validating: {self.rel_dir(candidate_path)}')
-                        md_validator = MarkdownValidator(template_lut['md'], True, True)
-                        validate_status = md_validator.validate(candidate_path)
+                        md_api = MarkdownAPI()
+                        md_api.load_validator_with_template(template_lut['md'], True, False)
+                        validate_status = md_api.validate_instance(candidate_path)
                         if not validate_status:
                             logger.info(f'Invalid: {self.rel_dir(candidate_path)}')
                             return False

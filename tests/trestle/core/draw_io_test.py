@@ -22,7 +22,7 @@ import pytest
 
 from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
 from trestle.core.err import TrestleError
-from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 
 def test_directory_instead_file(tmp_path) -> None:
