@@ -587,7 +587,6 @@ class CisToComponentDefinition(TaskBase):
             )
             set_parameter = self._get_set_parameter(rule)
             if set_parameter is not None:
-                assert implemented_requirement.set_parameters is None
                 implemented_requirement.set_parameters = [set_parameter]
             implemented_requirements.append(implemented_requirement)
         return implemented_requirements
