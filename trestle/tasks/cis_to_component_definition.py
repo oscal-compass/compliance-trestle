@@ -303,12 +303,11 @@ class CisToComponentDefinition(TaskBase):
         props = [prop1, prop2, prop3, prop4]
         for profile in profile_list:
             control_implementation = self._build_control_implementation(profile, profile_ns, responsible_roles, props)
-            if control_implementation is None:
-                pass
-            elif defined_component.control_implementations is None:
-                defined_component.control_implementations = [control_implementation]
-            else:
-                defined_component.control_implementations.append(control_implementation)
+            if control_implementation is not None:
+                if defined_component.control_implementations is None:
+                    defined_component.control_implementations = [control_implementation]
+                else:
+                    defined_component.control_implementations.append(control_implementation)
         # defined components
         defined_components = [defined_component]
         # component definition
