@@ -16,11 +16,12 @@
 
 import configparser
 import datetime
+import json
 import logging
 import pathlib
 import traceback
 import uuid
-from typing import Optional
+from typing import Dict, List, Optional
 
 from trestle import __version__
 from trestle.oscal import OSCAL_VERSION
@@ -37,24 +38,39 @@ from trestle.oscal.component import ImplementedRequirement
 from trestle.oscal.component import SetParameter
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.utils.oscal_helper import ProfileHelper
 
 logger = logging.getLogger(__name__)
 
+t_control_implementation = ControlImplementation
+t_list_implemented_requirements = List[ImplementedRequirement]
+t_list_parties = List[Party]
+t_list_responsible_parties = List[ResponsibleParty]
+t_list_responsible_roles = List[ResponsibleRole]
+t_list_roles = List[Role]
+t_list_rules = List[str]
+t_map_controls = Dict[str, List[str]]
+t_map_rules = Dict[str, List[str]]
+t_set_parameter = SetParameter
 
-class BuildComponentDefinition(TaskBase):
+
+def get_trestle_version() -> str:
+    """Get trestle version wrapper."""
+    return __version__
+
+
+class CisToComponentDefinition(TaskBase):
     """
-    Task to build component definition from standard (e.g. CIS benchmark).
+    Task to CIS to component definition from standard (e.g. CIS benchmark).
 
     Attributes:
         name: Name of the task.
     """
 
-    name = 'build-component-definition'
+    name = 'cis-to-component-definition'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task build-component-definition.
+        Initialize trestle task cis-to-component-definition.
 
         Args:
             config_object: Config section associated with the task.
@@ -63,13 +79,18 @@ class BuildComponentDefinition(TaskBase):
         self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
                                                                                     ).isoformat()
 
+    def set_timestamp(self, timestamp) -> None:
+        """Set the timestamp."""
+        self._timestamp = timestamp
+
     def print_info(self) -> None:
         """Print the help string."""
+        root_trestle = '/home/degenaro/git/shared-trestle-workspace.oscal-for-osco'
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Build component definition from from standard (e.g. CIS benchmark).')
+        logger.info('Purpose: Create component definition from from standard (e.g. CIS benchmark).')
         logger.info('')
-        logger.info('Configuration flags sit under [task.build-component-definition]:')
+        logger.info('Configuration flags sit under [task.cis-to-component-definition]:')
         text1 = '  component-name         = '
         text2 = 'component name, e.g. OSCO.'
         logger.info(text1 + text2)
@@ -82,11 +103,25 @@ class BuildComponentDefinition(TaskBase):
         text1 = '  output-dir             = '
         text2 = 'location to write the generated component-definition.json file.'
         logger.info(text1 + text2)
-        text1 = '  profile-type           = '
-        text2 = 'profile type, e.g. OCP4.'
+        #
+        text1 = '  profile-name           = '
+        text2 = 'profile name, e.g. OCP4 CIS-benchmark v4.'
+        logger.info(text1 + text2)
+        text1 = '  profile-mnemonic       = '
+        text2 = 'profile mnemonic, e.g. ocp4-cis-node.'
         logger.info(text1 + text2)
         text1 = '  profile-ns             = '
         text2 = 'profile ns, e.g. https://github.com/ComplianceAsCode/content/tree/master/ocp4.'
+        logger.info(text1 + text2)
+        text1 = '  profile-version        = '
+        text2 = 'profile version, e.g. 1.1.'
+        logger.info(text1 + text2)
+        text1 = '  profile-check-version  = '
+        text2 = 'profile check version, e.g. 0.1.58.'
+        logger.info(text1 + text2)
+        #
+        text1 = '  profile-type           = '
+        text2 = 'profile type, e.g. OCP4.'
         logger.info(text1 + text2)
         text1 = '  profile-list           = '
         text2 = 'profile list is blank separated list of "<suffix>" for config entries: '
@@ -108,11 +143,15 @@ class BuildComponentDefinition(TaskBase):
         logger.info(text1 + text2 + text3)
         text1 = '  rule-to-parameters-map = '
         text2 = 'map file for set-parameters, e.g. '
-        text3 = '/home/degenaro/git/shared-trestle-workspace.oscal-for-osco/component-definitions/osco/rule2var.json.'
+        text3 = root_trestle + '/component-definitions/osco/rule2var.json.'
         logger.info(text1 + text2 + text3)
-        text1 = '  tailored-profile-file  = '
-        text2 = 'profile containing include/exclude statements, e.g. '
-        text3 = '/home/degenaro/git/shared-trestle-workspace.master/profiles/roks-ocp4-tailored-profile/profile.json.'
+        text1 = '  selected-rules         = '
+        text2 = 'file with list of selected rules, e.g. '
+        text3 = root_trestle + '/component-definitions/osco/selected_rules.json.'
+        logger.info(text1 + text2 + text3)
+        text1 = '  enabled-rules          = '
+        text2 = 'file with list of enabled rules, e.g. '
+        text3 = root_trestle + '/component-definitions/osco/enabled_rules.json.'
         logger.info(text1 + text2 + text3)
 
     def simulate(self) -> TaskOutcome:
@@ -167,16 +206,26 @@ class BuildComponentDefinition(TaskBase):
             if profile_title is None:
                 logger.error(f'config missing "{key}"')
                 return TaskOutcome('failure')
-        # tailored-profile
-        tailored_profile = self._config.get('tailored-profile-file')
-        if tailored_profile is None:
-            logger.debug('config missing "tailored-profile-file"')
-            self.tailored_profile_helper = None
-        else:
-            self.tailored_profile_helper = ProfileHelper(tailored_profile)
-            if not self.tailored_profile_helper.exists():
-                logger.error('"tailored-profile-file" not found')
-                return TaskOutcome('failure')
+        # selected rules
+        self._selected_rules = []
+        filepath = self._config.get('selected-rules')
+        if filepath is not None:
+            with open(filepath) as f:
+                jdata = json.load(f)
+                try:
+                    self._selected_rules = jdata['selected']
+                except Exception:
+                    self._selected_rules = jdata
+        # enabled rules
+        self._enabled_rules = []
+        filepath = self._config.get('enabled-rules')
+        if filepath is not None:
+            with open(filepath) as f:
+                jdata = json.load(f)
+                try:
+                    self._enabled_rules = jdata['enabled']
+                except Exception:
+                    self._enabled_rules = jdata
         # verbosity
         quiet = self._config.get('quiet', False)
         verbose = not quiet
@@ -195,15 +244,12 @@ class BuildComponentDefinition(TaskBase):
         if not overwrite and pathlib.Path(ofile).exists():
             logger.error(f'output: {ofile} already exists')
             return TaskOutcome('failure')
-
         # fetch rule to parameters map
         self._rule_to_parm_map = {}
         filepath = self._config.get('rule-to-parameters-map')
         if filepath is not None:
-            import json
             with open(filepath) as f:
                 self._rule_to_parm_map = json.load(f)
-
         # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
@@ -217,7 +263,7 @@ class BuildComponentDefinition(TaskBase):
             title=f'Component definition for {self._get_profile_type} profiles',
             last_modified=self._get_timestamp,
             oscal_version=self._get_oscal_version,
-            version=self._get_trestle_version,
+            version=get_trestle_version(),
             roles=roles,
             parties=parties,
             responsible_parties=responsible_parties
@@ -239,15 +285,27 @@ class BuildComponentDefinition(TaskBase):
             ns=self._get_profile_ns,
         )
         prop2 = Property(
+            name='profile_mnemonic',
+            value=self._get_profile_mnemonic,
+            class_='scc_profile_mnemonic',
+            ns=self._get_profile_ns,
+        )
+        prop3 = Property(
             name='profile_version',
             value=self._get_profile_version,
             class_='scc_profile_version',
             ns=self._get_profile_ns,
         )
-        props = [prop1, prop2] + self.tailored_profile_helper.get_metadata_properties()
+        prop4 = Property(
+            name='profile_check_version',
+            value=self._get_check_version,
+        )
+        props = [prop1, prop2, prop3, prop4]
         for profile in profile_list:
             control_implementation = self._build_control_implementation(profile, profile_ns, responsible_roles, props)
-            if defined_component.control_implementations is None:
+            if control_implementation is None:
+                pass
+            elif defined_component.control_implementations is None:
                 defined_component.control_implementations = [control_implementation]
             else:
                 defined_component.control_implementations.append(control_implementation)
@@ -266,61 +324,73 @@ class BuildComponentDefinition(TaskBase):
         return TaskOutcome('success')
 
     @property
-    def _get_timestamp(self):
+    def _get_timestamp(self) -> str:
+        """Get timestamp."""
         return self._timestamp
 
     @property
-    def _get_trestle_version(self):
-        return __version__
-
-    @property
-    def _get_oscal_version(self):
+    def _get_oscal_version(self) -> str:
+        """Get OSCAL version."""
         return OSCAL_VERSION
 
     @property
+    def _get_check_version(self) -> str:
+        """Get check version from config."""
+        value = self._config.get('profile-check-version')
+        logger.debug(f'profile-check-version: {value}')
+        return value
+
+    @property
     def _get_org_name(self) -> str:
-        """Get org-name from config."""
+        """Get org name from config."""
         value = self._config.get('org-name')
         logger.debug(f'org-name: {value}')
         return value
 
     @property
     def _get_org_remarks(self) -> str:
-        """Get org-remarks from config."""
+        """Get org remarks from config."""
         value = self._config.get('org-remarks')
         logger.debug(f'org-remarks: {value}')
         return value
 
     @property
     def _get_component_name(self) -> str:
-        """Get component-name from config."""
+        """Get component name from config."""
         value = self._config.get('component-name')
         logger.debug(f'component-name: {value}')
         return value
 
     @property
-    def _get_profile_name(self):
+    def _get_profile_name(self) -> str:
         """Get profile name from config."""
         value = self._config.get('profile-name')
         logger.debug(f'profile-name: {value}')
         return value
 
     @property
-    def _get_profile_version(self):
+    def _get_profile_mnemonic(self) -> str:
+        """Get profile mnemonic from config."""
+        value = self._config.get('profile-mnemonic')
+        logger.debug(f'profile-mnemonic: {value}')
+        return value
+
+    @property
+    def _get_profile_version(self) -> str:
         """Get profile version from config."""
         value = self._config.get('profile-version')
         logger.debug(f'profile-version: {value}')
         return value
 
     @property
-    def _get_profile_ns(self):
+    def _get_profile_ns(self) -> str:
         """Get profile ns from config."""
         value = self._config.get('profile-ns')
         logger.debug(f'profile-ns: {value}')
         return value
 
     @property
-    def _get_profile_type(self):
+    def _get_profile_type(self) -> str:
         """Get profile type from config."""
         value = self._config.get('profile-type')
         logger.debug(f'profile-type: {value}')
@@ -344,9 +414,11 @@ class BuildComponentDefinition(TaskBase):
         logger.debug(f'profile-file: {value}')
         return value
 
-    def _get_set_parameter(self, rule):
+    def _get_set_parameter(self, rule) -> t_set_parameter:
+        """Get set parameter."""
         set_parameter = None
         for key in self._rule_to_parm_map.keys():
+            logger.debug(f'{key} {rule}')
             if key == rule:
                 value = self._rule_to_parm_map[key]
                 remarks = value['description']
@@ -360,7 +432,52 @@ class BuildComponentDefinition(TaskBase):
                 )
         return set_parameter
 
-    def _get_rules(self, filename):
+    def _get_controls(self, rules) -> t_map_controls:
+        """Get controls."""
+        controls = {}
+        for rule in rules.keys():
+            control = rules[rule][1]
+            if control not in controls.keys():
+                controls[control] = [rule]
+            else:
+                controls[control] = controls[control] + [rule]
+        # trim rules associated with control with respect to enabled rules
+        for control in controls:
+            controls[control] = self._get_trimmed_rules(control, controls[control])
+            logger.debug(f'{control} {controls[control]}')
+        return controls
+
+    # determine if trim is needed for the control, and if so then
+    # for the associated set of rules drop those that are not enabled
+    def _get_trimmed_rules(self, control, rules_for_control) -> t_list_rules:
+        """Trim rules if any rule for control appears in enabled rules list."""
+        retval = rules_for_control
+        if self._is_trim_needed(rules_for_control):
+            retval = []
+            for rule in rules_for_control:
+                if rule in self._enabled_rules:
+                    retval = retval + [rule]
+                    logger.debug(f'keep {control} {rule}')
+                else:
+                    logger.debug(f'drop {control} {rule}')
+        return retval
+
+    # if any rule in the set of rules for the control appears in the enabled list,
+    # then trim is needed
+    def _is_trim_needed(self, rules_for_control) -> bool:
+        """Check if trim is needed."""
+        retval = False
+        for rule in rules_for_control:
+            if rule in self._enabled_rules:
+                retval = True
+                break
+        return retval
+
+    # create map from file:
+    # key is rule
+    # value is list comprising [ category, control, description ]
+    def _get_rules(self, filename) -> t_map_rules:
+        """Get rules."""
         rules = {}
         with open(filename) as f:
             content = f.readlines()
@@ -382,7 +499,9 @@ class BuildComponentDefinition(TaskBase):
             elif line.startswith('    - '):
                 rule = line.split('    - ')[1]
                 logger.debug(f'{lineno} rule: {rule}')
-                if rule in rules.keys():
+                if not self._is_selected(rule):
+                    logger.debug(f'not selected rule: {rule}')
+                elif rule in rules.keys():
                     logger.info(f'duplicate rule: {rule}')
                 else:
                     rules[rule] = [category, control, desc]
@@ -390,7 +509,28 @@ class BuildComponentDefinition(TaskBase):
                 logger.debug(f'{lineno} skip: {line}')
         return rules
 
-    def _build_roles(self):
+    # rule is selected if:
+    # a) the selected rules file is not specified or is empty or
+    # b) the rule appears in the list of selected rules from the file
+    def _is_selected(self, rule) -> bool:
+        """Check if rule is selected."""
+        retval = True
+        if len(self._selected_rules) > 0 and rule not in self._selected_rules:
+            retval = False
+        logger.debug(f'{retval} {rule}')
+        return retval
+
+    # rule is excluded if it does not appear in the list of trimmed rules
+    # for the control
+    def _is_excluded(self, rule, control, controls) -> bool:
+        """Check if rule is excluded."""
+        retval = False
+        if rule not in controls[control]:
+            logger.debug(f'exclude {rule} {control}')
+            retval = True
+        return retval
+
+    def _build_roles(self) -> t_list_roles:
         """Build roles."""
         value = [
             Role(id='prepared-by', title='Indicates the organization that created this content.'),
@@ -402,30 +542,34 @@ class BuildComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_control_implementation(self, profile, profile_ns, responsible_roles, props):
+    def _build_control_implementation(self, profile, profile_ns, responsible_roles, props) -> t_control_implementation:
+        """Build control implementation."""
         implemented_requirements = self._build_implemented_requirements(profile, profile_ns, responsible_roles)
-        control_implementation = ControlImplementation(
-            uuid=str(uuid.uuid4()),
-            source=self._get_profile_url(profile),
-            description=f'{self._get_component_name} implemented controls for {self._get_profile_title(profile)}.',
-            implemented_requirements=implemented_requirements,
-            props=props,
-        )
+        if len(implemented_requirements) == 0:
+            control_implementation = None
+        else:
+            control_implementation = ControlImplementation(
+                uuid=str(uuid.uuid4()),
+                source=self._get_profile_url(profile),
+                description=f'{self._get_component_name} implemented controls for {self._get_profile_title(profile)}.',
+                implemented_requirements=implemented_requirements,
+                props=props,
+            )
         return control_implementation
 
-    def _build_implemented_requirements(self, profile, profile_ns, responsible_roles):
+    def _build_implemented_requirements(
+        self, profile, profile_ns, responsible_roles
+    ) -> t_list_implemented_requirements:
+        """Build implemented requirements."""
         implemented_requirements = []
-        logger.info(f'{profile}')
+        logger.debug(f'{profile}')
         profile_file = self._get_profile_file(profile)
         rules = self._get_rules(profile_file)
+        controls = self._get_controls(rules)
         rule_prefix = 'xccdf_org.ssgproject.content_rule_'
         for rule in rules:
-            logger.debug(f'{rule}: {rules[rule]}')
-            rule_id = 'CIS-' + rules[rule][1]
-            if self.tailored_profile_helper.is_filtered(rule_id):
-                logger.debug(f'{rule_id} exclude')
+            if self._is_excluded(rule, rules[rule][1], controls):
                 continue
-            logger.debug(f'{rule_id} include')
             prop = Property(
                 class_='scc_goal_name_id',
                 ns=profile_ns,
@@ -443,14 +587,12 @@ class BuildComponentDefinition(TaskBase):
             )
             set_parameter = self._get_set_parameter(rule)
             if set_parameter is not None:
-                if implemented_requirement.set_parameters is None:
-                    implemented_requirement.set_parameters = [set_parameter]
-                else:
-                    implemented_requirement.set_parameters.append(set_parameter)
+                assert implemented_requirement.set_parameters is None
+                implemented_requirement.set_parameters = [set_parameter]
             implemented_requirements.append(implemented_requirement)
         return implemented_requirements
 
-    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03):
+    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03) -> t_list_responsible_roles:
         """Build responsible roles."""
         role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
         role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
@@ -462,7 +604,7 @@ class BuildComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03):
+    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> t_list_parties:
         """Build parties."""
         value = [
             Party(uuid=party_uuid_01, type='organization', name=self._get_org_name, remarks=self._get_org_remarks),
@@ -481,7 +623,7 @@ class BuildComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03):
+    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> t_list_responsible_parties:
         """Build responsible parties."""
         prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
         prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
