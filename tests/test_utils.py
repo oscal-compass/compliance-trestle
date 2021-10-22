@@ -194,6 +194,7 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
     for ii in range(count):
         control = generators.generate_sample_model(cat.Control, True)
         control.id = f'{label}-{ii + 1}'
+        control.params[0].id = f'{control.id}.param'
         controls.append(control)
     return controls
 

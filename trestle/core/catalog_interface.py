@@ -23,6 +23,7 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.err import TrestleError
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -66,7 +67,16 @@ class CatalogInterface():
     def __init__(self, catalog: Optional[cat.Catalog] = None) -> None:
         """Initialize the interface with the catalog."""
         self._catalog = catalog
+        self._param_dict: Dict[str, str] = {}
         self._control_dict = self._create_control_dict() if catalog else None
+
+    def _add_params_to_dict(self, control: cat.Control) -> None:
+        # this does not need to recurse because it is called for each control in the catalog
+        if control.params is not None:
+            for param in control.params:
+                if param.id in self._param_dict:
+                    raise TrestleError(f'Duplicate param id {param.id} in control {control.id} found.')
+                self._param_dict[param.id] = control.id
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
@@ -91,6 +101,7 @@ class CatalogInterface():
                     control=sub_control
                 )
                 control_dict[sub_control.id] = control_handle
+                self._add_params_to_dict(sub_control)
                 self._add_sub_controls(control_handle, control_dict, new_path)
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
@@ -133,6 +144,7 @@ class CatalogInterface():
                     group_id='catalog', group_title='catalog', group_class='catalog', control=control, path=new_path
                 )
                 control_dict[control.id] = control_handle
+                self._add_params_to_dict(control)
                 self._add_sub_controls(control_handle, control_dict, new_path)
         return control_dict
 
@@ -168,9 +180,15 @@ class CatalogInterface():
         """Get all control ids in catalog using the dict."""
         return self._control_dict.keys()
 
-    def get_control(self, control_id: str) -> cat.Control:
+    def get_control(self, control_id: str) -> Optional[cat.Control]:
         """Get control from catalog with this id using the dict."""
-        return self._control_dict[control_id].control
+        return None if control_id not in self._control_dict else self._control_dict[control_id].control
+
+    def get_control_by_param_id(self, param_id: str) -> cat.Control:
+        """Get control from catalog that has this param id."""
+        if param_id in self._param_dict:
+            return self.get_control(self._param_dict[param_id])
+        return None
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """Get the prose for a named part in the control."""

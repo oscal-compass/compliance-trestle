@@ -29,8 +29,10 @@ from trestle.core import const
 from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
+from trestle.utils.load_distributed import load_distributed
 
 if os.name == 'nt':  # pragma: no cover
     import win32api
@@ -219,15 +221,15 @@ def clean_project_sub_path(sub_path: pathlib.Path) -> None:
             sub_path.unlink()
 
 
-def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
+def load_file(file_path: pathlib.Path) -> Dict[str, Any]:
     """
     Load JSON or YAML file content into a dict.
 
     This is not intended to be the default load mechanism. It should only be used
     if a OSCAL object type is unknown but the context a user is in.
     """
-    content_type = FileContentType.to_content_type(file_name.suffix)
-    with file_name.open('r', encoding=const.FILE_ENCODING) as f:
+    content_type = FileContentType.to_content_type(file_path.suffix)
+    with file_path.open('r', encoding=const.FILE_ENCODING) as f:
         if content_type == FileContentType.YAML:
             yaml = YAML(typ='safe')
             return yaml.load(f)
@@ -488,3 +490,43 @@ def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path
     except ValueError:
         raise TrestleError(f'Provided dir {candidate} is not relative to {cwd}')
     return new
+
+
+def path_for_model_type(
+    trestle_root: pathlib.Path,
+    model_name: str,
+    model_type: const.ModelTypeEnum,
+    file_content_type: FileContentType,
+    create_dir: bool = False
+) -> pathlib.Path:
+    """Find the path for a model given its name and type with option to create its dir."""
+    model_dir = trestle_root / f'{const.MODEL_DIR_LIST[model_type.value]}/{model_name}'
+    if not model_dir.exists() and create_dir:
+        model_dir.mkdir()
+    file_name = f'{const.MODEL_TYPE_LIST[model_type.value]}{FileContentType.to_file_extension(file_content_type)}'
+    return model_dir / file_name
+
+
+def load_model_type(
+    trestle_root: pathlib.Path,
+    model_name: str,
+    model_type: const.ModelTypeEnum,
+    file_content_type: FileContentType,
+) -> TopLevelOscalModel:
+    """Load a model by name and type."""
+    model_path = path_for_model_type(trestle_root, model_name, model_type, file_content_type)
+    _, _, model = load_distributed(model_path, trestle_root)
+    return model
+
+
+def save_model_type(
+    model: TopLevelOscalModel,
+    trestle_root: pathlib.Path,
+    model_name: str,
+    file_content_type: FileContentType,
+) -> None:
+    """Save a model by name and infer type."""
+    model_alias = utils.classname_to_alias(model.__class__.__name__, 'json')
+    model_type_enum = const.MODEL_TYPE_TO_ENUM[model_alias]
+    model_path = path_for_model_type(trestle_root, model_name, model_type_enum, file_content_type, True)
+    model.oscal_write(model_path)

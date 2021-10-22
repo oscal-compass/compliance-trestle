@@ -16,6 +16,7 @@
 """Core constants module containing all constants."""
 
 import string
+from enum import Enum
 
 PACKAGE_OSCAL = 'trestle.oscal'
 
@@ -73,6 +74,29 @@ MODEL_DIR_LIST = [
     'assessment-results',
     'plan-of-action-and-milestones',
 ]
+
+
+class ModelTypeEnum(Enum):
+    """Enums for the model types matching above lists."""
+
+    CATALOG = 0
+    PROFILE = 1
+    COMPDEF = 2
+    SSP = 3
+    APLAN = 4
+    ARESULT = 5
+    POAM = 6
+
+
+MODEL_TYPE_TO_ENUM = {
+    'catalog': ModelTypeEnum.CATALOG,
+    'profile': ModelTypeEnum.PROFILE,
+    'component-definition': ModelTypeEnum.COMPDEF,
+    'system-security-plan': ModelTypeEnum.SSP,
+    'assessment-plan': ModelTypeEnum.APLAN,
+    'assessment-result': ModelTypeEnum.ARESULT,
+    'plan-of-action-and-milestons': ModelTypeEnum.POAM
+}
 
 # argument names
 ARG_FILE = 'file'

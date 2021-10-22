@@ -47,11 +47,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        file=str(cat_path),
-        output='NIST_SP-800-53_rev5_catalog',
-        verbose=False,
-        regenerate=True
+        trestle_root=tmp_trestle_dir, file=str(cat_path), output='imported_nist_cat', verbose=False, regenerate=True
     )
     i = ImportCmd()
     assert i._run(args) == 0
@@ -128,11 +124,7 @@ def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pa
     """Test when by_id is not given and position is set to after or before it fails."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        file=str(cat_path),
-        output='NIST_SP-800-53_rev5_catalog',
-        verbose=False,
-        regenerate=True
+        trestle_root=tmp_trestle_dir, file=str(cat_path), output='imported_nist_cat', verbose=False, regenerate=True
     )
     i = ImportCmd()
     assert i._run(args) == 0
@@ -152,11 +144,7 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
     """Test that all alter adds positions can be resolved."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        file=str(cat_path),
-        output='NIST_SP-800-53_rev5_catalog',
-        verbose=False,
-        regenerate=True
+        trestle_root=tmp_trestle_dir, file=str(cat_path), output='imported_nist_cat', verbose=False, regenerate=True
     )
     i = ImportCmd()
     assert i._run(args) == 0

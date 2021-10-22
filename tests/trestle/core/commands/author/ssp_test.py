@@ -24,7 +24,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.core import const
-from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
+from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_io import ControlIOReader
@@ -51,6 +51,40 @@ def setup_for_ssp(include_header: bool,
     )
     i = ImportCmd()
     assert i._run(args) == 0
+
+    prof_a_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_a.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_a_path), output='test_profile_a', verbose=True, regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    prof_b_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_b.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_b_path), output='test_profile_b', verbose=True, regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    prof_c_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_c.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_c_path), output='test_profile_c', verbose=True, regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    prof_d_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_d.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_d_path), output='test_profile_d', verbose=True, regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    complex_cat_dir = tmp_trestle_dir / 'catalogs/complex_cat'
+
+    complex_cat_dir.mkdir(exist_ok=True, parents=True)
+    complex_cat = test_utils.generate_complex_catalog()
+    complex_cat.oscal_write(complex_cat_dir / 'catalog.json')
 
     # need to change href in profile to either imported location or cached external
     if import_cat:
@@ -217,3 +251,25 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(resolved_catalog.groups) == 18
 
     resolved_catalog.oscal_write(new_catalog_path)
+
+
+def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp filter."""
+    # install the catalog and profiles
+    gen_args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, True)
+    # create markdown with profile a
+    gen_args.profile = 'test_profile_a'
+    ssp_gen = SSPGenerate()
+    assert ssp_gen._run(gen_args) == 0
+
+    # create ssp from the markdown
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
+    assert ssp_assemble._run(args) == 0
+
+    # now filter the ssp through test_profile_d
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name=ssp_name, profile='test_profile_d', output='filtered_ssp', verbose=True
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
