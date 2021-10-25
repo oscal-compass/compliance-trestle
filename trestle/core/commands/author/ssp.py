@@ -43,7 +43,7 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated ssp markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
+        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
         yaml_help_str = 'Path to the optional yaml header file'
         self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
@@ -106,7 +106,7 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
+        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -161,8 +161,17 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
+        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
+
+    def _confirm_all_controls_present(
+        self, catalog_interface: CatalogInterface, ssp_control_ids: List[str], ssp_name: str
+    ) -> None:
+        for control_id in catalog_interface.get_control_ids():
+            if control_id not in ssp_control_ids:
+                raise TrestleError(
+                    f'Error in ssp-filter: the profile includes control {control_id} but it is not in ssp {ssp_name}.'
+                )
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -205,12 +214,8 @@ class SSPFilter(AuthorCommonCommand):
                     ssp_control_ids.add(control.id)
         control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
 
-        # now make sure all controls in the profile have implemented reqs in the final ssp
-        for control_id in catalog_interface.get_control_ids():
-            if control_id not in ssp_control_ids:
-                raise TrestleError(
-                    f'Error in ssp-filter: the profile includes control {control_id} but it is not in ssp {args.name}.'
-                )
+        # make sure all controls in the profile have implemented reqs in the final ssp
+        self._confirm_all_controls_present(catalog_interface, ssp_control_ids, args.name)
 
         ssp.control_implementation = control_imp
         fs.save_model_type(ssp, trestle_root, args.output, fs.FileContentType.JSON)

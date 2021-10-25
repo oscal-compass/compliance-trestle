@@ -20,6 +20,7 @@ import shutil
 
 import trestle.utils.fs as fs
 import trestle.utils.log as log
+from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.err import TrestleError
@@ -38,7 +39,7 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated catalog markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
+        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -77,7 +78,7 @@ class CatalogAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Catalog'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
+        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:

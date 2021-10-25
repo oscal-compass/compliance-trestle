@@ -208,3 +208,5 @@ NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
 
 NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'
+
+DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
