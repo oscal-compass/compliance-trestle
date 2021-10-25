@@ -11,6 +11,10 @@ header4: header content 4
 
 <!-- sample link (https://www.somelink.com) -->
 
+new line <br/>
+new line <br />
+<br>
+
 | Col1        | Col2        | Col3        | Col4 | Col5 |
 | ----------- | ----------- | ----------- | ---- | ---- |
 | content 2.1 | content 2.2 | content 2.3 |      |      |
@@ -194,3 +198,7 @@ some text here
 ## 5.3 A section 3
 
 # 6. Next section empty
+
+| Col1        | Col2        | Col3        |
+| ----------- | ----------- | ----------- |
+| content 6.1 | content 6.2 | content 6.3 |
