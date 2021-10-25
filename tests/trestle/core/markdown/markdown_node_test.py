@@ -76,7 +76,7 @@ def test_md_content_is_correct(md_path: pathlib.Path) -> None:
     assert tree.content.raw_text == markdown_wo_header
     assert tree.key == 'root'
     assert len(tree.content.blockquotes) == 5
-    assert len(tree.content.tables) == 4
+    assert len(tree.content.tables) == 7
     assert len(tree.content.code_lines) == 12
     deep_node = tree.get_node_for_key('5.1.1.1.1', strict_matching=False)
     assert deep_node.content.text[1] == 'some very deep text'
