@@ -88,7 +88,7 @@ clean::
 	rm -rf tmp_bin_test
 	rm -rf cov_html
 	rm -rf coverage.xml
-	rm -rf .coverage
+	rm -rf .coverage*
 	rm -rf .mypy_cache
 	find . | grep -E "__pycache__|\.pyc|\.pyo" | xargs rm -rf
 

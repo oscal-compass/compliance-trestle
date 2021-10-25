@@ -25,7 +25,7 @@ from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes on
 import defusedxml.ElementTree
 
 import trestle.core.err as err
-import trestle.core.markdown_validator as markdown_validator
+from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 logger = logging.getLogger(__name__)
 
@@ -173,9 +173,9 @@ class DrawIOMetadataValidator():
         drawio_metadata = candidate_drawio.get_metadata()
 
         if self.must_be_first_tab:
-            return markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, drawio_metadata[0])
+            return MarkdownValidator.compare_keys(self.template_metadata, drawio_metadata[0])
         for md_tab in drawio_metadata:
-            status = markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, md_tab)
+            status = MarkdownValidator.compare_keys(self.template_metadata, md_tab)
             if status:
                 return status
         return False

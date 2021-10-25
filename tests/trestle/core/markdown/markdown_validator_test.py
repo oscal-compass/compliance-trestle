@@ -19,23 +19,9 @@ from typing import Any, Dict
 
 import pytest
 
-import trestle.core.const as const
 import trestle.core.err as err
-import trestle.core.markdown_validator as markdown_validator
-
-
-def test_partition_ast() -> None:
-    """Test whether partition_ast can execute correctly."""
-    import mistune
-    import pathlib
-    import frontmatter
-    test_data = pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_000.md')
-    fm = frontmatter.loads(test_data.open('r', encoding=const.FILE_ENCODING).read())
-    content = fm.content
-    mistune_ast_parser = mistune.create_markdown(renderer=mistune.AstRenderer())
-    parse = mistune_ast_parser(content)
-    tree, index = markdown_validator.partition_ast(parse)
-    tree
+from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 
 @pytest.mark.parametrize(
@@ -121,8 +107,9 @@ def test_md_validator_pass(
     header_only_validate: bool
 ) -> None:
     """Run markdown validator to expected outcome."""
-    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, header_only_validate)
-    result = md_validator.validate(instance_path)
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, header_validate, not header_only_validate)
+    result = md_api.validate_instance(instance_path)
     assert result == status
 
 
@@ -132,8 +119,9 @@ def test_md_by_hand() -> None:
     instance_path = pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_000.md')
     header_validate = False
     status = True
-    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, False, 'Governed Document')
-    result = md_validator.validate(instance_path)
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, header_validate, False, 'Governed Document')
+    result = md_api.validate_instance(instance_path)
     assert result == status
 
 
@@ -170,8 +158,9 @@ def test_md_validator_with_md_header(
     template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, yaml_header_validate: bool
 ) -> None:
     """Test with validation of heading."""
-    md_validator = markdown_validator.MarkdownValidator(template_path, yaml_header_validate, False, 'Governed Document')
-    result = md_validator.validate(instance_path)
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, yaml_header_validate, False, 'Governed Document')
+    result = md_api.validate_instance(instance_path)
     assert result == status
 
 
@@ -179,7 +168,8 @@ def test_bad_file_path(tmp_path: pathlib.Path):
     """Check errors are thrown with bad files."""
     no_file = tmp_path / 'non_existent.md'
     with pytest.raises(err.TrestleError):
-        _ = markdown_validator.MarkdownValidator(no_file, False, False)
+        md_api = MarkdownAPI()
+        md_api.load_validator_with_template(no_file, False, False)
 
 
 @pytest.mark.parametrize(
@@ -252,7 +242,7 @@ def test_bad_file_path(tmp_path: pathlib.Path):
 )
 def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expected_status):
     """Test key_compare behaves as expected."""
-    status = markdown_validator.MarkdownValidator.compare_keys(template, candidate)
+    status = MarkdownValidator.compare_keys(template, candidate)
     assert status == expected_status
 
 
@@ -301,18 +291,10 @@ def test_validate_for_governed_header(
     template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, governed_header: str
 ) -> None:
     """Test scenarios for validate w.r.t the governed header."""
-    md_validator = markdown_validator.MarkdownValidator(template_path, False, False, governed_header)
-    result = md_validator.validate(instance_path)
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, False, False, governed_header)
+    result = md_api.validate_instance(instance_path)
     assert result == status
-
-
-def test_compare_tree_force_failure():
-    """Test unhappy path of compare_tree by manipulating content."""
-    template_path = pathlib.Path('tests/data/author/test_1_md_format/template.md')
-    header_validate = True
-    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, False)
-    ast_parse = markdown_validator.partition_ast(md_validator._template_parse)
-    _ = md_validator.wrap_content(ast_parse)
 
 
 def test_bad_unicode_in_parsetree(tmp_path: pathlib.Path):
@@ -321,11 +303,13 @@ def test_bad_unicode_in_parsetree(tmp_path: pathlib.Path):
     with open(bad_file, 'wb') as f:
         f.write(b'\x81')
     with pytest.raises(err.TrestleError):
-        _ = markdown_validator.MarkdownValidator.load_markdown_parsetree(bad_file)
+        md_api = MarkdownAPI()
+        md_api.load_validator_with_template(bad_file, False, False)
 
 
 def test_broken_yaml_header(testdata_dir: pathlib.Path):
     """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
     with pytest.raises(err.TrestleError):
-        _ = markdown_validator.MarkdownValidator.load_markdown_parsetree(bad_file)
+        md_api = MarkdownAPI()
+        md_api.load_validator_with_template(bad_file, True, False)
