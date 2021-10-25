@@ -127,7 +127,7 @@ class MarkdownNode:
         while True:
             if i >= len(lines):
                 break
-            line = lines[i]
+            line = lines[i].strip(' ')
             header_lvl = self._get_header_level_if_valid(line)
 
             if header_lvl is not None:
@@ -150,7 +150,7 @@ class MarkdownNode:
             elif self._does_start_with(line, TABLE_SYMBOL):
                 table_block, i = self._read_table_block(lines, line, i + 1)
                 content.tables.extend(table_block)
-            elif self._does_start_with(line.strip(' '), BLOCKQUOTE_CHAR):
+            elif self._does_start_with(line, BLOCKQUOTE_CHAR):
                 content.blockquotes.append(line)
                 i += 1
             elif governed_header is not None and self._does_contain(
@@ -211,6 +211,8 @@ class MarkdownNode:
     def _read_html_block(self, lines: List[str], line: str, i: int, ending_regex: str) -> Tuple[str, int]:
         """Read html block."""
         html_block = [line]
+        if self._does_contain(line, r'<br[ /]*>'):
+            return html_block, i
         if self._does_contain(line, ending_regex):
             return html_block, i
         while True:
@@ -229,7 +231,7 @@ class MarkdownNode:
         table_block = [line]
         while True:
             if i >= len(lines):
-                raise TrestleError(f'Table block is not closed: {table_block}.')
+                return table_block, i
 
             line = lines[i]
             if not self._does_contain(line, TABLE_REGEX):
