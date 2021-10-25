@@ -22,9 +22,9 @@ import shutil
 from pkg_resources import resource_filename
 
 import trestle.core.commands.author.consts as author_const
-import trestle.core.markdown_validator as markdown_validator
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +162,8 @@ class Docs(AuthorCommonCommand):
             logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
             return 1
         try:
-            _ = markdown_validator.MarkdownValidator(template_file, validate_header, validate_only_header, heading)
+            md_api = MarkdownAPI()
+            md_api.load_validator_with_template(template_file, validate_header, validate_only_header, heading)
         except Exception as ex:
             logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
             return 1
@@ -202,10 +203,11 @@ class Docs(AuthorCommonCommand):
                     if not readme_validate:
                         if item_path.name.lower() == 'readme.md':
                             continue
-                    md_validator = markdown_validator.MarkdownValidator(
-                        template_file, validate_header, validate_only_header, governed_heading
+                    md_api = MarkdownAPI()
+                    md_api.load_validator_with_template(
+                        template_file, validate_header, not validate_only_header, governed_heading
                     )
-                    if not md_validator.validate(item_path):
+                    if not md_api.validate_instance(item_path):
                         logger.info(f'INVALID: {self.rel_dir(item_path)}')
                         status = 1
                     else:

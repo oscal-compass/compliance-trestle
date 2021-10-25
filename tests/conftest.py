@@ -170,7 +170,7 @@ def tmp_trestle_dir(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> Iterato
     monkeypatch.setattr(sys, 'argv', testargs)
     try:
         Trestle().run()
-    except BaseException as e:
+    except Exception as e:
         raise TrestleError(f'Initialization failed for temporary trestle directory: {e}.')
     else:
         yield tmp_path
