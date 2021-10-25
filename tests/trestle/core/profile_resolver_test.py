@@ -16,7 +16,6 @@
 """Tests profile_resolver module."""
 
 import argparse
-import logging
 import pathlib
 from typing import List, Tuple
 
@@ -24,15 +23,16 @@ import pytest
 
 from tests import test_utils
 
+from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.commands.author.ssp import SSPGenerate
-from trestle.core.commands.import_ import ImportCmd
 from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
+from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common as com
 from trestle.oscal import profile as prof
-from trestle.utils import log
+from trestle.utils import fs
 
 
 def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:
@@ -45,42 +45,11 @@ def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str
 
 def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
-    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(cat_path), output='imported_nist_cat', verbose=False, regenerate=True
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_a_path = fs.path_for_model_type(
+        tmp_trestle_dir, 'test_profile_a', const.ModelTypeEnum.PROFILE, fs.FileContentType.JSON
     )
-    i = ImportCmd()
-    assert i._run(args) == 0
-
-    complex_cat_dir = tmp_trestle_dir / 'catalogs/complex_cat'
-
-    complex_cat_dir.mkdir(exist_ok=True, parents=True)
-    complex_cat = test_utils.generate_complex_catalog()
-    complex_cat.oscal_write(complex_cat_dir / 'catalog.json')
-
-    prof_a_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_a.json'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(prof_a_path), output='test_profile_a', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
-
-    prof_b_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_b.json'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(prof_b_path), output='test_profile_b', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
-
-    prof_c_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_c.json'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(prof_c_path), output='test_profile_c', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
-
-    log.set_global_logging_levels(logging.DEBUG)
-
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
     list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')
@@ -89,9 +58,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(list1) == 1
     assert len(list2) == 1
 
-    cat_dir = tmp_trestle_dir / 'catalogs/my_cat'
-    cat_dir.mkdir(exist_ok=True, parents=True)
-    cat.oscal_write(cat_dir / 'catalog.json')
+    fs.save_model_type(cat, tmp_trestle_dir, 'my_cat', fs.FileContentType.JSON)
 
     ssp_cmd = SSPGenerate()
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
@@ -123,18 +90,10 @@ def test_deep_catalog() -> None:
 def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
     """Test when by_id is not given and position is set to after or before it fails."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(cat_path), output='imported_nist_cat', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
-
+    repo = Repository(tmp_trestle_dir)
+    repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(prof_path), output='incorrect_profile', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
+    repo.load_and_import_model(prof_path, 'incorrect_profile')
 
     with pytest.raises(TrestleError):
         ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
@@ -143,20 +102,13 @@ def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pa
 def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that all alter adds positions can be resolved."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(cat_path), output='imported_nist_cat', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
+    repo = Repository(tmp_trestle_dir)
+    repo.load_and_import_model(cat_path, 'nist_cat')
 
-    prof_a_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_d.json'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(prof_a_path), output='test_profile_d', verbose=False, regenerate=True
-    )
-    i = ImportCmd()
-    assert i._run(args) == 0
+    prof_d_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_d.json'
+    repo.load_and_import_model(prof_d_path, 'test_profile_d')
 
-    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_d_path)
 
     interface = CatalogInterface(cat)
     control_a1 = interface.get_control('ac-1')

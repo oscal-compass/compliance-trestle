@@ -145,7 +145,6 @@ def get_stripped_model_type(
     existing files and folder, which fields should be stripped from the model type represented by the path passed in as
     a parameter.
     """
-    # Set default value of path to Path.cwd()
     if aliases_not_to_be_stripped is None:
         aliases_not_to_be_stripped = []
     singular_model_type, model_alias = get_relative_model_type(absolute_path.relative_to(absolute_trestle_root))

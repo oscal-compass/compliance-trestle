@@ -83,8 +83,7 @@ class CatalogAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
-        CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
-        return 0
+        return CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
 
     @staticmethod
     def assemble_catalog(trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
@@ -101,6 +100,9 @@ class CatalogAssemble(AuthorCommonCommand):
 
         """
         md_dir = trestle_root / md_name
+        if not md_dir.exists():
+            logger.warning(f'Markdown directory {md_name} does not exist.')
+            return 1
         catalog_interface = CatalogInterface()
         try:
             catalog = catalog_interface.read_catalog_from_markdown(md_dir)
