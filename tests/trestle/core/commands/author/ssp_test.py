@@ -27,7 +27,6 @@ import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_io import ControlIOReader
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.utils import fs
@@ -215,10 +214,10 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # load the ssp so we can add a setparameter to it for more test coverage
-    ssp = fs.load_model_type(tmp_trestle_dir, ssp_name, const.ModelTypeEnum.SSP, fs.FileContentType.JSON)
+    ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, const.MODEL_TYPE_SSP, fs.FileContentType.JSON)
     new_setparam = ossp.SetParameter(param_id='ac-1_prm_1', values=['new_value'])
     ssp.control_implementation.set_parameters = [new_setparam]
-    fs.save_model_type(ssp, tmp_trestle_dir, ssp_name, fs.FileContentType.JSON)
+    fs.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, fs.FileContentType.JSON)
 
     # now filter the ssp through test_profile_d
     args = argparse.Namespace(
@@ -232,5 +231,4 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir, name=ssp_name, profile='test_profile_b', output='filtered_ssp', verbose=True
     )
     ssp_filter = SSPFilter()
-    with pytest.raises(TrestleError):
-        ssp_filter._run(args)
+    assert ssp_filter._run(args) == 1

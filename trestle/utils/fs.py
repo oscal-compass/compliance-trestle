@@ -491,41 +491,44 @@ def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path
     return new
 
 
-def path_for_model_type(
-    trestle_root: pathlib.Path,
-    model_name: str,
-    model_type: const.ModelTypeEnum,
-    file_content_type: FileContentType,
-    create_dir: bool = False
+def root_path_for_top_level_model(trestle_root: pathlib.Path, model_name: str, model_alias: str) -> pathlib.Path:
+    """Find the root path to a model given its name and type - with no suffix."""
+    if model_alias not in const.MODEL_TYPE_LIST:
+        raise TrestleError(f'Model type {model_alias} not recognized for model {model_name}')
+    model_dir = trestle_root / f'{const.MODEL_TYPE_TO_MODEL_DIR[model_alias]}/{model_name}'
+    return model_dir / model_alias
+
+
+def path_for_top_level_model(
+    trestle_root: pathlib.Path, model_name: str, model_alias: str, file_content_type: FileContentType
 ) -> pathlib.Path:
-    """Find the path for a model given its name and type with option to create its dir."""
-    model_dir = trestle_root / f'{const.MODEL_DIR_LIST[model_type.value]}/{model_name}'
-    if not model_dir.exists() and create_dir:
-        model_dir.mkdir()
-    file_name = f'{const.MODEL_TYPE_LIST[model_type.value]}{FileContentType.to_file_extension(file_content_type)}'
-    return model_dir / file_name
+    """Find the full path of a model given its name, model type and file content type."""
+    root_path = root_path_for_top_level_model(trestle_root, model_name, model_alias)
+    return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
 
-def load_model_type(
+def load_top_level_model(
     trestle_root: pathlib.Path,
     model_name: str,
-    model_type: const.ModelTypeEnum,
-    file_content_type: FileContentType,
-) -> TopLevelOscalModel:
-    """Load a model by name and type."""
-    model_path = path_for_model_type(trestle_root, model_name, model_type, file_content_type)
-    _, _, model = load_distributed(model_path, trestle_root)
-    return model
+    model_alias: str,
+    file_content_type: FileContentType = None
+) -> Tuple[TopLevelOscalModel, pathlib.Path]:
+    """Load a model by name and model type and infer file type if not specified."""
+    root_model_path = root_path_for_top_level_model(trestle_root, model_name, model_alias)
+    if file_content_type is None:
+        file_content_type = FileContentType.path_to_content_type(root_model_path)
+    full_model_path = root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
+    _, _, model = load_distributed(full_model_path, trestle_root)
+    return model, full_model_path
 
 
-def save_model_type(
-    model: TopLevelOscalModel,
-    trestle_root: pathlib.Path,
-    model_name: str,
-    file_content_type: FileContentType,
+def save_top_level_model(
+    model: TopLevelOscalModel, trestle_root: pathlib.Path, model_name: str, file_content_type: FileContentType
 ) -> None:
-    """Save a model by name and infer type."""
+    """Save a model by name and infer model type by inspection."""
     model_alias = utils.classname_to_alias(model.__class__.__name__, 'json')
-    model_type_enum = const.MODEL_TYPE_TO_ENUM[model_alias]
-    model_path = path_for_model_type(trestle_root, model_name, model_type_enum, file_content_type, True)
-    model.oscal_write(model_path)
+    root_model_path = root_path_for_top_level_model(trestle_root, model_name, model_alias)
+    full_model_path = root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
+    if not full_model_path.parent.exists():
+        full_model_path.parent.mkdir(parents=True, exist_ok=True)
+    model.oscal_write(full_model_path)

@@ -26,7 +26,6 @@ import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.utils import fs, log
 
@@ -142,10 +141,7 @@ class SSPAssemble(AuthorCommonCommand):
         ssp.import_profile = import_profile
 
         # write out the ssp as json
-        ssp_dir = trestle_root / ('system-security-plans/' + args.output)
-        ssp_dir.mkdir(exist_ok=True, parents=True)
-        ssp.oscal_write(ssp_dir / 'system-security-plan.json')
-
+        fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
         return 0
 
 
@@ -164,24 +160,15 @@ class SSPFilter(AuthorCommonCommand):
         verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
-    def _confirm_all_controls_present(
-        self, catalog_interface: CatalogInterface, ssp_control_ids: List[str], ssp_name: str
-    ) -> None:
-        for control_id in catalog_interface.get_control_ids():
-            if control_id not in ssp_control_ids:
-                raise TrestleError(
-                    f'Error in ssp-filter: the profile includes control {control_id} but it is not in ssp {ssp_name}.'
-                )
-
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
-        ssp: ossp.SystemSecurityPlan = fs.load_model_type(
-            trestle_root, args.name, const.ModelTypeEnum.SSP, fs.FileContentType.JSON
-        )
-        profile_path = fs.path_for_model_type(
-            trestle_root, args.profile, const.ModelTypeEnum.PROFILE, fs.FileContentType.JSON
+        ssp: ossp.SystemSecurityPlan
+
+        ssp, _ = fs.load_top_level_model(trestle_root, args.name, const.MODEL_TYPE_SSP, fs.FileContentType.JSON)
+        profile_path = fs.path_for_top_level_model(
+            trestle_root, args.profile, const.MODEL_TYPE_PROFILE, fs.FileContentType.JSON
         )
 
         prof_resolver = ProfileResolver()
@@ -215,9 +202,11 @@ class SSPFilter(AuthorCommonCommand):
         control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
 
         # make sure all controls in the profile have implemented reqs in the final ssp
-        self._confirm_all_controls_present(catalog_interface, ssp_control_ids, args.name)
+        if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+            logger.warning('Unable to filter the ssp because the profile references controls not in it.')
+            return 1
 
         ssp.control_implementation = control_imp
-        fs.save_model_type(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+        fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
 
         return 0

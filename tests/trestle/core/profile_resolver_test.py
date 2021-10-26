@@ -47,8 +47,8 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = fs.path_for_model_type(
-        tmp_trestle_dir, 'test_profile_a', const.ModelTypeEnum.PROFILE, fs.FileContentType.JSON
+    prof_a_path = fs.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', const.MODEL_TYPE_PROFILE, fs.FileContentType.JSON
     )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
@@ -58,7 +58,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(list1) == 1
     assert len(list2) == 1
 
-    fs.save_model_type(cat, tmp_trestle_dir, 'my_cat', fs.FileContentType.JSON)
+    fs.save_top_level_model(cat, tmp_trestle_dir, 'my_cat', fs.FileContentType.JSON)
 
     ssp_cmd = SSPGenerate()
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'

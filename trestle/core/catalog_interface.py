@@ -19,6 +19,7 @@ from typing import Dict, Iterator, List, Optional, Tuple
 
 from pydantic import BaseModel
 
+import trestle.core.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
@@ -136,12 +137,16 @@ class CatalogInterface():
                 self._add_group_controls(group, control_dict, [])
         # now add controls not in a group, if any
         if self._catalog.controls is not None:
-            group_path = ['catalog']
+            group_path = [const.MODEL_TYPE_CATALOG]
             for control in self._catalog.controls:
                 new_path = group_path[:]
                 new_path.append(control.id)
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id='catalog', group_title='catalog', group_class='catalog', control=control, path=new_path
+                    group_id=const.MODEL_TYPE_CATALOG,
+                    group_title=const.MODEL_TYPE_CATALOG,
+                    group_class=const.MODEL_TYPE_CATALOG,
+                    control=control,
+                    path=new_path
                 )
                 control_dict[control.id] = control_handle
                 self._add_params_to_dict(control)
@@ -294,7 +299,7 @@ class CatalogInterface():
         # write out the controls
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            group_dir = md_path if group_id == 'catalog' else md_path / group_id
+            group_dir = md_path if group_id == const.MODEL_TYPE_CATALOG else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             writer.write_control(
