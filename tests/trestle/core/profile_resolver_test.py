@@ -23,7 +23,6 @@ import pytest
 
 from tests import test_utils
 
-from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.err import TrestleError
@@ -47,9 +46,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = fs.path_for_top_level_model(
-        tmp_trestle_dir, 'test_profile_a', const.MODEL_TYPE_PROFILE, fs.FileContentType.JSON
-    )
+    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
     list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')

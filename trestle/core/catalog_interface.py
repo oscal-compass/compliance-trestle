@@ -189,7 +189,7 @@ class CatalogInterface():
         """Get control from catalog with this id using the dict."""
         return None if control_id not in self._control_dict else self._control_dict[control_id].control
 
-    def get_control_by_param_id(self, param_id: str) -> cat.Control:
+    def get_control_by_param_id(self, param_id: str) -> Optional[cat.Control]:
         """Get control from catalog that has this param id."""
         if param_id in self._param_dict:
             return self.get_control(self._param_dict[param_id])

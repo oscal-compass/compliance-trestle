@@ -22,6 +22,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
+import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
@@ -42,8 +43,6 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated ssp markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
         yaml_help_str = 'Path to the optional yaml header file'
         self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
@@ -105,8 +104,6 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -157,8 +154,6 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = const.DISPLAY_VERBOSE_OUTPUT
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -166,10 +161,8 @@ class SSPFilter(AuthorCommonCommand):
 
         ssp: ossp.SystemSecurityPlan
 
-        ssp, _ = fs.load_top_level_model(trestle_root, args.name, const.MODEL_TYPE_SSP, fs.FileContentType.JSON)
-        profile_path = fs.path_for_top_level_model(
-            trestle_root, args.profile, const.MODEL_TYPE_PROFILE, fs.FileContentType.JSON
-        )
+        ssp, _ = fs.load_top_level_model(trestle_root, args.name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+        profile_path = fs.path_for_top_level_model(trestle_root, args.profile, prof.Profile, fs.FileContentType.JSON)
 
         prof_resolver = ProfileResolver()
         catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)

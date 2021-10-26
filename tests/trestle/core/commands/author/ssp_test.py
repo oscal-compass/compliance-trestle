@@ -214,7 +214,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # load the ssp so we can add a setparameter to it for more test coverage
-    ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, const.MODEL_TYPE_SSP, fs.FileContentType.JSON)
+    ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
     new_setparam = ossp.SetParameter(param_id='ac-1_prm_1', values=['new_value'])
     ssp.control_implementation.set_parameters = [new_setparam]
     fs.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, fs.FileContentType.JSON)

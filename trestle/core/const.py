@@ -24,7 +24,7 @@ TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 TRESTLE_KEEP_FILE = '.keep'
 
-# these hyphenated - no underscore - and mixed singular and plural
+# these are hyphenated - no underscore - and mixed singular and plural
 MODEL_TYPE_A_PLAN = 'assessment-plan'
 MODEL_TYPE_A_RESULT = 'assessment-results'
 MODEL_TYPE_CATALOG = 'catalog'
@@ -71,6 +71,16 @@ MODEL_DIR_LIST = [
     MODEL_DIR_PROFILE,
     MODEL_DIR_SSP
 ]
+
+MODEL_MODULE_LIST = [
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_A_PLAN}',
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_A_RESULT}',
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_CATALOG}',
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_COMPDEF}',
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_POAM}',
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_PROFILE}',
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_SSP}'
+]
 """Map of plural form of a model type to the oscal module that contains the classes related to it."""
 MODEL_DIR_TO_MODEL_MODULE = {
     MODEL_DIR_A_PLAN: f'{PACKAGE_OSCAL}.{MODULE_NAME_A_PLAN}',
@@ -90,6 +100,16 @@ MODEL_TYPE_TO_MODEL_MODULE = {
     MODEL_TYPE_POAM: f'{PACKAGE_OSCAL}.{MODULE_NAME_POAM}',
     MODEL_TYPE_PROFILE: f'{PACKAGE_OSCAL}.{MODULE_NAME_PROFILE}',
     MODEL_TYPE_SSP: f'{PACKAGE_OSCAL}.{MODULE_NAME_SSP}'
+}
+"""Map of model module to model type."""
+MODEL_MODULE_TO_MODEL_TYPE = {
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_A_PLAN}': MODEL_TYPE_A_PLAN,
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_A_RESULT}': MODEL_TYPE_A_RESULT,
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_CATALOG}': MODEL_TYPE_CATALOG,
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_COMPDEF}': MODEL_TYPE_COMPDEF,
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_POAM}': MODEL_TYPE_POAM,
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_PROFILE}': MODEL_TYPE_PROFILE,
+    f'{PACKAGE_OSCAL}.{MODULE_NAME_SSP}': MODEL_TYPE_SSP
 }
 """Map of model type to model directory."""
 MODEL_TYPE_TO_MODEL_DIR = {
