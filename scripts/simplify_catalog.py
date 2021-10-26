@@ -57,7 +57,7 @@ class Simplify_Catalog(ilcli.Command):
             return 1
 
         if not catalog:
-            logger.error(f'No data in input or input read failed.\n')
+            logger.error('No data in input or input read failed.\n')
             return 1
 
         list_cap = args.cap if args.cap else 2
