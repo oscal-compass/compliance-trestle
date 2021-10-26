@@ -41,17 +41,6 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
-t_control_implementation = ControlImplementation
-t_list_implemented_requirements = List[ImplementedRequirement]
-t_list_parties = List[Party]
-t_list_responsible_parties = List[ResponsibleParty]
-t_list_responsible_roles = List[ResponsibleRole]
-t_list_roles = List[Role]
-t_list_rules = List[str]
-t_map_controls = Dict[str, List[str]]
-t_map_rules = Dict[str, List[str]]
-t_set_parameter = SetParameter
-
 
 def get_trestle_version() -> str:
     """Get trestle version wrapper."""
@@ -413,7 +402,7 @@ class CisToComponentDefinition(TaskBase):
         logger.debug(f'profile-file: {value}')
         return value
 
-    def _get_set_parameter(self, rule) -> t_set_parameter:
+    def _get_set_parameter(self, rule) -> SetParameter:
         """Get set parameter."""
         set_parameter = None
         for key in self._rule_to_parm_map.keys():
@@ -431,7 +420,7 @@ class CisToComponentDefinition(TaskBase):
                 )
         return set_parameter
 
-    def _get_controls(self, rules) -> t_map_controls:
+    def _get_controls(self, rules) -> Dict[str, List[str]]:
         """Get controls."""
         controls = {}
         for rule in rules.keys():
@@ -448,7 +437,7 @@ class CisToComponentDefinition(TaskBase):
 
     # determine if trim is needed for the control, and if so then
     # for the associated set of rules drop those that are not enabled
-    def _get_trimmed_rules(self, control, rules_for_control) -> t_list_rules:
+    def _get_trimmed_rules(self, control, rules_for_control) -> List[str]:
         """Trim rules if any rule for control appears in enabled rules list."""
         retval = rules_for_control
         if self._is_trim_needed(rules_for_control):
@@ -475,7 +464,7 @@ class CisToComponentDefinition(TaskBase):
     # create map from file:
     # key is rule
     # value is list comprising [ category, control, description ]
-    def _get_rules(self, filename) -> t_map_rules:
+    def _get_rules(self, filename) -> Dict[str, List[str]]:
         """Get rules."""
         rules = {}
         with open(filename) as f:
@@ -529,7 +518,7 @@ class CisToComponentDefinition(TaskBase):
             retval = True
         return retval
 
-    def _build_roles(self) -> t_list_roles:
+    def _build_roles(self) -> List[Role]:
         """Build roles."""
         value = [
             Role(id='prepared-by', title='Indicates the organization that created this content.'),
@@ -541,7 +530,7 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_control_implementation(self, profile, profile_ns, responsible_roles, props) -> t_control_implementation:
+    def _build_control_implementation(self, profile, profile_ns, responsible_roles, props) -> ControlImplementation:
         """Build control implementation."""
         implemented_requirements = self._build_implemented_requirements(profile, profile_ns, responsible_roles)
         if len(implemented_requirements) == 0:
@@ -556,9 +545,7 @@ class CisToComponentDefinition(TaskBase):
             )
         return control_implementation
 
-    def _build_implemented_requirements(
-        self, profile, profile_ns, responsible_roles
-    ) -> t_list_implemented_requirements:
+    def _build_implemented_requirements(self, profile, profile_ns, responsible_roles) -> List[ImplementedRequirement]:
         """Build implemented requirements."""
         implemented_requirements = []
         logger.debug(f'{profile}')
@@ -590,7 +577,7 @@ class CisToComponentDefinition(TaskBase):
             implemented_requirements.append(implemented_requirement)
         return implemented_requirements
 
-    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03) -> t_list_responsible_roles:
+    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03) -> List[ResponsibleRole]:
         """Build responsible roles."""
         role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
         role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
@@ -602,7 +589,7 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> t_list_parties:
+    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> List[Party]:
         """Build parties."""
         value = [
             Party(uuid=party_uuid_01, type='organization', name=self._get_org_name, remarks=self._get_org_remarks),
@@ -621,7 +608,7 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> t_list_responsible_parties:
+    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> List[ResponsibleParty]:
         """Build responsible parties."""
         prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
         prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
