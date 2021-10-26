@@ -23,6 +23,7 @@ from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import text_files_equal
 
+import trestle
 import trestle.tasks.cis_to_component_definition as cis_to_component_definition
 from trestle.tasks.base_task import TaskOutcome
 
@@ -32,14 +33,14 @@ def monkey_uuid_1():
     return uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821')
 
 
-def monkey_get_trestle_version_1():
-    """Monkey get trestle version."""
-    return '0.21.0'
-
-
-def monkey_get_trestle_version_e():
-    """Monkey get trestle version."""
+def monkey_exception():
+    """Monkey exception."""
     raise Exception('foobar')
+
+
+def monkey_trestle_version():
+    """Monkey trestle version."""
+    return '0.21.0'
 
 
 def test_cis_to_component_definition_print_info(tmp_path: pathlib.Path):
@@ -70,7 +71,7 @@ def test_cis_to_component_definition_simulate(tmp_path: pathlib.Path):
 def test_cis_to_component_definition_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
-    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
+    monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -95,7 +96,7 @@ def test_cis_to_component_definition_execute(tmp_path: pathlib.Path, monkeypatch
 def test_cis_to_component_definition_execute_selected_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute selected rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
-    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
+    monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -121,7 +122,7 @@ def test_cis_to_component_definition_execute_selected_rules2(tmp_path: pathlib.P
 def test_cis_to_component_definition_execute_enabled_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute enabled rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
-    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
+    monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -147,7 +148,7 @@ def test_cis_to_component_definition_execute_enabled_rules2(tmp_path: pathlib.Pa
 def test_cis_to_component_definition_execute_enabled_rules3(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute enabled rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
-    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
+    monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -306,8 +307,8 @@ def test_cis_to_component_definition_duplicate_rule(tmp_path: pathlib.Path):
 
 
 def test_cis_to_component_definition_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
-    """Test execute exception."""
-    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_e)
+    """Test _get_rules exception."""
+    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
     config.read(config_path)

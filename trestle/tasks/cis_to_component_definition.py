@@ -23,7 +23,7 @@ import traceback
 import uuid
 from typing import Dict, List, Optional
 
-from trestle import __version__
+import trestle
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Party
@@ -40,11 +40,6 @@ from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
-
-
-def get_trestle_version() -> str:
-    """Get trestle version wrapper."""
-    return __version__
 
 
 class CisToComponentDefinition(TaskBase):
@@ -252,7 +247,7 @@ class CisToComponentDefinition(TaskBase):
             title=f'Component definition for {self._get_profile_type} profiles',
             last_modified=self._get_timestamp,
             oscal_version=self._get_oscal_version,
-            version=get_trestle_version(),
+            version=trestle.__version__,
             roles=roles,
             parties=parties,
             responsible_parties=responsible_parties
