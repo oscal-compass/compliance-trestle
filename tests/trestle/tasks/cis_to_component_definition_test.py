@@ -18,18 +18,31 @@ import configparser
 import os
 import pathlib
 import uuid
-from unittest.mock import Mock, patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import text_files_equal
 
 import trestle.tasks.cis_to_component_definition as cis_to_component_definition
 from trestle.tasks.base_task import TaskOutcome
 
-uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
-get_trestle_version_mock1 = Mock(return_value='0.21.0')
+
+def monkey_uuid_1():
+    """Monkey create UUID."""
+    return uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821')
 
 
-def test_cis_to_component_definition_print_info(tmp_path):
+def monkey_get_trestle_version_1():
+    """Monkey get trestle version."""
+    return '0.21.0'
+
+
+def monkey_get_trestle_version_e():
+    """Monkey get trestle version."""
+    raise Exception('foobar')
+
+
+def test_cis_to_component_definition_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -41,7 +54,7 @@ def test_cis_to_component_definition_print_info(tmp_path):
     assert retval is None
 
 
-def test_cis_to_component_definition_simulate(tmp_path):
+def test_cis_to_component_definition_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -54,10 +67,10 @@ def test_cis_to_component_definition_simulate(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-@patch(target='uuid.uuid4', new=uuid_mock1)
-@patch(target='trestle.tasks.cis_to_component_definition.get_trestle_version', new=get_trestle_version_mock1)
-def test_cis_to_component_definition_execute(tmp_path):
+def test_cis_to_component_definition_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute call."""
+    monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
+    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -79,10 +92,10 @@ def test_cis_to_component_definition_execute(tmp_path):
         assert (result)
 
 
-@patch(target='uuid.uuid4', new=uuid_mock1)
-@patch(target='trestle.tasks.cis_to_component_definition.get_trestle_version', new=get_trestle_version_mock1)
-def test_cis_to_component_definition_execute_selected_rules2(tmp_path):
-    """Test execute call."""
+def test_cis_to_component_definition_execute_selected_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test execute selected rules call."""
+    monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
+    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -105,10 +118,10 @@ def test_cis_to_component_definition_execute_selected_rules2(tmp_path):
         assert (result)
 
 
-@patch(target='uuid.uuid4', new=uuid_mock1)
-@patch(target='trestle.tasks.cis_to_component_definition.get_trestle_version', new=get_trestle_version_mock1)
-def test_cis_to_component_definition_execute_enabled_rules2(tmp_path):
-    """Test execute call."""
+def test_cis_to_component_definition_execute_enabled_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test execute enabled rules call."""
+    monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
+    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -131,10 +144,10 @@ def test_cis_to_component_definition_execute_enabled_rules2(tmp_path):
         assert (result)
 
 
-@patch(target='uuid.uuid4', new=uuid_mock1)
-@patch(target='trestle.tasks.cis_to_component_definition.get_trestle_version', new=get_trestle_version_mock1)
-def test_cis_to_component_definition_execute_enabled_rules3(tmp_path):
-    """Test execute call."""
+def test_cis_to_component_definition_execute_enabled_rules3(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test execute enabled rules call."""
+    monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
+    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_1)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
@@ -152,7 +165,7 @@ def test_cis_to_component_definition_execute_enabled_rules3(tmp_path):
     assert d_expected != d_produced
 
 
-def test_cis_to_component_definition_bogus_config(tmp_path):
+def test_cis_to_component_definition_bogus_config(tmp_path: pathlib.Path):
     """Test execute call bogus config."""
     section = None
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
@@ -160,7 +173,7 @@ def test_cis_to_component_definition_bogus_config(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_list(tmp_path):
+def test_cis_to_component_definition_missing_profile_list(tmp_path: pathlib.Path):
     """Test execute call missing profile-list."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -172,7 +185,7 @@ def test_cis_to_component_definition_missing_profile_list(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_component_name(tmp_path):
+def test_cis_to_component_definition_missing_component_name(tmp_path: pathlib.Path):
     """Test execute call missing component-name."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -184,7 +197,7 @@ def test_cis_to_component_definition_missing_component_name(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_type(tmp_path):
+def test_cis_to_component_definition_missing_profile_type(tmp_path: pathlib.Path):
     """Test execute call missing profile-type."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -196,7 +209,7 @@ def test_cis_to_component_definition_missing_profile_type(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_ns(tmp_path):
+def test_cis_to_component_definition_missing_profile_ns(tmp_path: pathlib.Path):
     """Test execute call missing profile-ns."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -208,7 +221,7 @@ def test_cis_to_component_definition_missing_profile_ns(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_file(tmp_path):
+def test_cis_to_component_definition_missing_profile_file(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -222,7 +235,7 @@ def test_cis_to_component_definition_missing_profile_file(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_url(tmp_path):
+def test_cis_to_component_definition_missing_profile_url(tmp_path: pathlib.Path):
     """Test execute missinf profile-url."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -236,7 +249,7 @@ def test_cis_to_component_definition_missing_profile_url(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_title(tmp_path):
+def test_cis_to_component_definition_missing_profile_title(tmp_path: pathlib.Path):
     """Test execute call missing profile-title."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -250,7 +263,7 @@ def test_cis_to_component_definition_missing_profile_title(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_output_dir(tmp_path):
+def test_cis_to_component_definition_missing_output_dir(tmp_path: pathlib.Path):
     """Test execute call missing output-dir."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -262,7 +275,7 @@ def test_cis_to_component_definition_missing_output_dir(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_no_overwrite(tmp_path):
+def test_cis_to_component_definition_no_overwrite(tmp_path: pathlib.Path):
     """Test execute no overwrite."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
@@ -277,7 +290,7 @@ def test_cis_to_component_definition_no_overwrite(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_duplicate_rule(tmp_path):
+def test_cis_to_component_definition_duplicate_rule(tmp_path: pathlib.Path):
     """Test execute duplicate rule exists."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
@@ -292,9 +305,9 @@ def test_cis_to_component_definition_duplicate_rule(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-@patch('trestle.tasks.cis_to_component_definition.get_trestle_version', new=Mock(side_effect=Exception('foobar')))
-def test_cis_to_component_definition_exception(tmp_path):
+def test_cis_to_component_definition_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute exception."""
+    monkeypatch.setattr(cis_to_component_definition, 'get_trestle_version', monkey_get_trestle_version_e)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
     config.read(config_path)
