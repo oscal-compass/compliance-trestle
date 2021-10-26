@@ -65,7 +65,7 @@ class Simplify_Catalog(ilcli.Command):
             prune_lists(input_model=catalog, list_cap=list_cap)
         except Exception as e:
             logger.error(f'Problem with prune_lists(): {e}\n')
-            return 2
+            return 1
 
         simplified_catalog_file = pathlib.Path(args.output[0])
 
@@ -73,7 +73,7 @@ class Simplify_Catalog(ilcli.Command):
             catalog.oscal_write(simplified_catalog_file)
         except Exception as e:
             logger.error(f'Problem with oscal_write: {e}\n')
-            return 3
+            return 1
 
         return 0
 
