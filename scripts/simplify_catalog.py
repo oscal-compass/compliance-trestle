@@ -13,6 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Script reduces lists in the NIST 800-53 catalog to at most two elements."""
+
 import argparse
 import logging
 import pathlib
@@ -26,8 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 def prune_lists(input_model: trestle.core.base_model.OscalBaseModel, list_cap: int) -> None:
-    # Recurse down into dictionaries and up to the Nth element of lists,
-    # where N is the given list_cap
+    """Recurse down into dictionaries and up to the Nth element of lists, where N is the given list_cap."""
     for _, v in input_model:
         if isinstance(v, trestle.core.base_model.OscalBaseModel):
             prune_lists(v, list_cap)
@@ -39,13 +40,13 @@ def prune_lists(input_model: trestle.core.base_model.OscalBaseModel, list_cap: i
                     prune_lists(v[x], list_cap)
 
 
-class Simplify_Catalog(ilcli.Command):
+class SimplifyCatalog(ilcli.Command):
     """Reduces lists in the NIST 800-53 catalog to at most two elements."""
 
     def _init_arguments(self) -> None:
-        self.add_argument('input', nargs=1, help="input json to read from")
-        self.add_argument('output', nargs=1, help="output json to write to")
-        self.add_argument('cap', nargs="?", type=int, default=None, help="max length of lists, default=2")
+        self.add_argument('input', nargs=1, help='input json to read from')
+        self.add_argument('output', nargs=1, help='output json to write to')
+        self.add_argument('cap', nargs='?', type=int, default=None, help='max length of lists, default=2')
 
     def _run(self, args: argparse.Namespace) -> int:
         catalog_file = pathlib.Path(args.input[0])
@@ -79,4 +80,4 @@ class Simplify_Catalog(ilcli.Command):
 
 
 if __name__ == '__main__':
-    exit(Simplify_Catalog().run())
+    exit(SimplifyCatalog().run())
