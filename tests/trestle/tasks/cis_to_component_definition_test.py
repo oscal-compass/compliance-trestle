@@ -307,8 +307,8 @@ def test_cis_to_component_definition_duplicate_rule(tmp_path: pathlib.Path):
 
 
 def test_cis_to_component_definition_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
-    """Test _get_rules exception."""
-    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_rules', monkey_exception)
+    """Test _get_cis_rules exception."""
+    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
     config.read(config_path)

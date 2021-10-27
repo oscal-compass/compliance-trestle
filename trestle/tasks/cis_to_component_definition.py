@@ -177,25 +177,9 @@ class CisToComponentDefinition(TaskBase):
             self._config_error = f'key {e.args[0]} missing'
             return TaskOutcome('failure')
         # selected rules
-        self._selected_rules = []
-        filepath = self._config.get('selected-rules')
-        if filepath is not None:
-            with open(filepath) as f:
-                jdata = json.load(f)
-                try:
-                    self._selected_rules = jdata['selected']
-                except Exception:
-                    self._selected_rules = jdata
+        self._selected_rules = self._get_filter_rules('selected-rules', 'selected')
         # enabled rules
-        self._enabled_rules = []
-        filepath = self._config.get('enabled-rules')
-        if filepath is not None:
-            with open(filepath) as f:
-                jdata = json.load(f)
-                try:
-                    self._enabled_rules = jdata['enabled']
-                except Exception:
-                    self._enabled_rules = jdata
+        self._enabled_rules = self._get_filter_rules('enabled-rules', 'enabled')
         # verbosity
         quiet = self._config.get('quiet', False)
         verbose = not quiet
@@ -352,11 +336,25 @@ class CisToComponentDefinition(TaskBase):
                 break
         return retval
 
+    def _get_filter_rules(self, config_key, file_key):
+        """Get filter rules."""
+        try:
+            filepath = self._config[config_key]
+            with open(filepath) as f:
+                jdata = json.load(f)
+                try:
+                    filter_rules = jdata[file_key]
+                except Exception:
+                    filter_rules = jdata
+        except Exception:
+            filter_rules = []
+        return filter_rules
+
     # create map from file:
     # key is rule
     # value is list comprising [ category, control, description ]
-    def _get_rules(self, filename) -> Dict[str, List[str]]:
-        """Get rules."""
+    def _get_cis_rules(self, filename) -> Dict[str, List[str]]:
+        """Get CIS rules."""
         rules = {}
         with open(filename) as f:
             content = f.readlines()
@@ -440,7 +438,7 @@ class CisToComponentDefinition(TaskBase):
         """Build implemented requirements."""
         implemented_requirements = []
         profile_file = profile_set['profile-file']
-        rules = self._get_rules(profile_file)
+        rules = self._get_cis_rules(profile_file)
         controls = self._get_controls(rules)
         rule_prefix = 'xccdf_org.ssgproject.content_rule_'
         for rule in rules:
