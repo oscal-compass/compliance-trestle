@@ -5,9 +5,9 @@ some_key: modified
 
 # Title
 
-## Required Substituded Text
+## Required Substituted Text
 
-### Substituded header
+### Substituted header
 
 #### Complex required header {sub} with substitutions
 

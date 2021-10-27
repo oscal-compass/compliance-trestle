@@ -3,13 +3,13 @@ yaml: header
 some_key: some value
 ---
 
-# {Substitude me}
+# {Substitute me}
 
-## Required {substitude}
+## Required {substitute}
 
-### {substitude me} header
+### {substitute me} header
 
-#### Complex {substitude} header {sub} with substitutions
+#### Complex {substitute} header {sub} with substitutions
 
 ##### Required header 5
 

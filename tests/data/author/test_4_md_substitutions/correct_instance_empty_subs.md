@@ -22,7 +22,9 @@ some_key: some value
 ## Required sub-header 2
 
 # Required header 3
+
 ## added
+
 ### added
 
 #### added

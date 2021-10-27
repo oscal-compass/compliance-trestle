@@ -5,7 +5,7 @@ some_key: modified
 
 # Title
 
-# {extra subsitution not allowed}
+# {extra substitution not allowed}
 
 ## Required header
 

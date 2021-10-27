@@ -15,16 +15,16 @@
 # limitations under the License.
 """Markdown specific constants."""
 
-HEADER_REGEX = r'^[#]+'
 BLOCKQUOTE_CHAR = '>'
+CODEBLOCK_DEF = '```'
+HEADER_REGEX = r'^[#]+'
 INLINE_CODE_CHAR = r'^`'
 LIST_CHAR = '-'
 TABLE_SYMBOL = '|'
-CODEBLOCK_DEF = '```'
 HTML_COMMENT_START = '<!--'
-HTML_COMMENT_END = r'.*-->'
-TABLE_REGEX = r'|'
-GOVERNED_DOC_REGEX = r'.*:'
+HTML_COMMENT_END_REGEX = r'.*-->'
 HTML_TAG_REGEX_START = r'^[ \t]*<.*>'
 HTML_TAG_REGEX_END = r'<\/.*>'
+TABLE_REGEX = r'|'
+GOVERNED_DOC_REGEX = r'.*:'
 SUBSTITUTION_REGEX = r'{(.*?)}'  # noqa: FS003

@@ -129,7 +129,7 @@ class MarkdownNode:
                 code_lines, i = self._read_code_lines(lines, line, i + 1)
                 content.code_lines.extend(code_lines)
             elif self._does_start_with(line, md_const.HTML_COMMENT_START):
-                html_lines, i = self._read_html_block(lines, line, i + 1, md_const.HTML_COMMENT_END)
+                html_lines, i = self._read_html_block(lines, line, i + 1, md_const.HTML_COMMENT_END_REGEX)
                 content.html_lines.extend(html_lines)
             elif self._does_contain(line, md_const.HTML_TAG_REGEX_START):
                 html_lines, i = self._read_html_block(lines, line, i + 1, md_const.HTML_TAG_REGEX_END)
