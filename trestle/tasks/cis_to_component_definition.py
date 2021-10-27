@@ -174,6 +174,7 @@ class CisToComponentDefinition(TaskBase):
                 profile_sets[profile]['profile-title'] = self._config[f'profile-title.{profile}']
                 profile_sets[profile]['profile-ns'] = profile_ns
                 profile_sets[profile]['component-name'] = component_name
+            odir = self._config['output-dir']
         except KeyError as e:
             logger.debug(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
@@ -186,10 +187,6 @@ class CisToComponentDefinition(TaskBase):
         verbose = not quiet
         # output
         overwrite = self._config.getboolean('output-overwrite', True)
-        odir = self._config.get('output-dir')
-        if odir is None:
-            logger.error('config missing "output-dir"')
-            return TaskOutcome('failure')
         opth = pathlib.Path(odir)
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
@@ -200,11 +197,7 @@ class CisToComponentDefinition(TaskBase):
             logger.error(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # fetch rule to parameters map
-        self._rule_to_parm_map = {}
-        filepath = self._config.get('rule-to-parameters-map')
-        if filepath is not None:
-            with open(filepath) as f:
-                self._rule_to_parm_map = json.load(f)
+        self._rule_to_parm_map = self._get_parameters_map('rule-to-parameters-map')
         # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
@@ -336,6 +329,23 @@ class CisToComponentDefinition(TaskBase):
                 retval = True
                 break
         return retval
+
+    # fetch the set of rules that will be included/excluded from the CIS rules
+    def _get_parameters_map(self, config_key) -> List[str]:
+        """Get parameters map."""
+        try:
+            fp = pathlib.Path(self._config[config_key])
+            f = fp.open('r', encoding=const.FILE_ENCODING)
+            jdata = json.load(f)
+            parameters_map = jdata
+            f.close()
+        except KeyError as e:
+            logger.debug(f'key {e.args[0]} missing')
+            parameters_map = []
+        except Exception:
+            logger.error(f'unable to process {self._config[config_key]}')
+            parameters_map = []
+        return parameters_map
 
     # fetch the set of rules that will be included/excluded from the CIS rules
     def _get_filter_rules(self, config_key, file_key) -> List[str]:
