@@ -24,6 +24,7 @@ from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes on
 
 import defusedxml.ElementTree
 
+import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
@@ -82,7 +83,7 @@ class DrawIO():
         """
         # Assume b64 encode
         decoded = base64.b64decode(compressed_text)
-        clean_text = unquote(zlib.decompress(decoded, -15).decode('utf8'))
+        clean_text = unquote(zlib.decompress(decoded, -15).decode(const.FILE_ENCODING))
         element = defusedxml.ElementTree.fromstring(clean_text, forbid_dtd=True)
         if not element.tag == 'mxGraphModel':
             raise err.TrestleError('Unknown data structure within a compressed drawio file.')
@@ -154,8 +155,11 @@ class DrawIO():
         if len(parent_diagram.findall('mxGraphModel')) == 0:
             parent_diagram.insert(0, diagram)
 
-        string_xml = defusedxml.ElementTree.tostring(self.mx_file, encoding='utf-8').decode('utf-8')
-        with open(path, 'w', encoding='utf-8') as drawio:
+        string_xml = defusedxml.ElementTree.tostring(
+            self.mx_file, encoding=const.FILE_ENCODING
+        ).decode(const.FILE_ENCODING)
+
+        with open(path, 'w', encoding=const.FILE_ENCODING) as drawio:
             drawio.write(string_xml)
 
     def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.'):
