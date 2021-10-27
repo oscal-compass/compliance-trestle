@@ -64,7 +64,7 @@ class CisToComponentDefinition(TaskBase):
         self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
                                                                                     ).isoformat()
 
-    def set_timestamp(self, timestamp) -> None:
+    def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""
         self._timestamp = timestamp
 
@@ -271,7 +271,7 @@ class CisToComponentDefinition(TaskBase):
         component_definition.oscal_write(pathlib.Path(ofile))
         return TaskOutcome('success')
 
-    def _get_set_parameter(self, rule) -> SetParameter:
+    def _get_set_parameter(self, rule: str) -> SetParameter:
         """Get set parameter."""
         set_parameter = None
         for key in self._rule_to_parm_map.keys():
@@ -289,7 +289,7 @@ class CisToComponentDefinition(TaskBase):
                 )
         return set_parameter
 
-    def _get_controls(self, rules) -> Dict[str, List[str]]:
+    def _get_controls(self, rules: Dict[str, Tuple[str, str, str]]) -> Dict[str, List[str]]:
         """Get controls."""
         controls = {}
         for rule in rules.keys():
@@ -306,7 +306,7 @@ class CisToComponentDefinition(TaskBase):
 
     # determine if trim is needed for the control, and if so then
     # for the associated set of rules drop those that are not enabled
-    def _get_trimmed_rules(self, control, rules_for_control) -> List[str]:
+    def _get_trimmed_rules(self, control: str, rules_for_control: List[str]) -> List[str]:
         """Trim rules if any rule for control appears in enabled rules list."""
         retval = rules_for_control
         if self._is_trim_needed(rules_for_control):
@@ -321,7 +321,7 @@ class CisToComponentDefinition(TaskBase):
 
     # if any rule in the set of rules for the control appears in the enabled list,
     # then trim is needed
-    def _is_trim_needed(self, rules_for_control) -> bool:
+    def _is_trim_needed(self, rules_for_control: List[str]) -> bool:
         """Check if trim is needed."""
         retval = False
         for rule in rules_for_control:
@@ -331,7 +331,7 @@ class CisToComponentDefinition(TaskBase):
         return retval
 
     # fetch the set of rules that will be included/excluded from the CIS rules
-    def _get_parameters_map(self, config_key) -> List[str]:
+    def _get_parameters_map(self, config_key: str) -> List[str]:
         """Get parameters map."""
         try:
             fp = pathlib.Path(self._config[config_key])
@@ -348,7 +348,7 @@ class CisToComponentDefinition(TaskBase):
         return parameters_map
 
     # fetch the set of rules that will be included/excluded from the CIS rules
-    def _get_filter_rules(self, config_key, file_key) -> List[str]:
+    def _get_filter_rules(self, config_key: str, file_key: str) -> List[str]:
         """Get filter rules."""
         try:
             fp = pathlib.Path(self._config[config_key])
@@ -370,7 +370,7 @@ class CisToComponentDefinition(TaskBase):
     # create map from file:
     # key is rule
     # value is tuple comprising [ category, control, description ]
-    def _get_cis_rules(self, filename) -> Dict[str, Tuple[str, str, str]]:
+    def _get_cis_rules(self, filename: str) -> Dict[str, Tuple[str, str, str]]:
         """Get CIS rules."""
         try:
             fp = pathlib.Path(filename)
@@ -383,7 +383,7 @@ class CisToComponentDefinition(TaskBase):
             rules = {}
         return rules
 
-    def _parse_cis_rules(self, content) -> Dict[str, Tuple[str, str, str]]:
+    def _parse_cis_rules(self, content: List[str]) -> Dict[str, Tuple[str, str, str]]:
         """Parse CIS rules."""
         rules = {}
         lineno = 0
@@ -417,7 +417,7 @@ class CisToComponentDefinition(TaskBase):
     # rule is selected if:
     # a) the selected rules file is not specified or is empty or
     # b) the rule appears in the list of selected rules from the file
-    def _is_selected(self, rule) -> bool:
+    def _is_selected(self, rule: str) -> bool:
         """Check if rule is selected."""
         retval = True
         if len(self._selected_rules) > 0 and rule not in self._selected_rules:
@@ -427,7 +427,7 @@ class CisToComponentDefinition(TaskBase):
 
     # rule is excluded if it does not appear in the list of trimmed rules
     # for the control
-    def _is_excluded(self, rule, control, controls) -> bool:
+    def _is_excluded(self, rule: str, control: str, controls: Dict[str, List[str]]) -> bool:
         """Check if rule is excluded."""
         retval = False
         if rule not in controls[control]:
@@ -447,7 +447,9 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_control_implementation(self, profile_set, responsible_roles, props) -> ControlImplementation:
+    def _build_control_implementation(
+        self, profile_set: Dict[str, str], responsible_roles: List[ResponsibleRole], props: List[Property]
+    ) -> ControlImplementation:
         """Build control implementation."""
         implemented_requirements = self._build_implemented_requirements(profile_set, responsible_roles)
         if len(implemented_requirements) == 0:
@@ -462,7 +464,8 @@ class CisToComponentDefinition(TaskBase):
             )
         return control_implementation
 
-    def _build_implemented_requirements(self, profile_set, responsible_roles) -> List[ImplementedRequirement]:
+    def _build_implemented_requirements(self, profile_set: Dict[str, str],
+                                        responsible_roles: List[ResponsibleRole]) -> List[ImplementedRequirement]:
         """Build implemented requirements."""
         implemented_requirements = []
         profile_file = profile_set['profile-file']
@@ -493,7 +496,8 @@ class CisToComponentDefinition(TaskBase):
             implemented_requirements.append(implemented_requirement)
         return implemented_requirements
 
-    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03) -> List[ResponsibleRole]:
+    def _build_responsible_roles(self, party_uuid_01: str, party_uuid_02: str,
+                                 party_uuid_03: str) -> List[ResponsibleRole]:
         """Build responsible roles."""
         role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
         role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
@@ -505,7 +509,9 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_parties(self, org_name, org_remarks, party_uuid_01, party_uuid_02, party_uuid_03) -> List[Party]:
+    def _build_parties(
+        self, org_name: str, org_remarks: str, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str
+    ) -> List[Party]:
         """Build parties."""
         value = [
             Party(uuid=party_uuid_01, type='organization', name=org_name, remarks=org_remarks),
@@ -524,7 +530,8 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> List[ResponsibleParty]:
+    def _build_responsible_parties(self, party_uuid_01: str, party_uuid_02: str,
+                                   party_uuid_03: str) -> List[ResponsibleParty]:
         """Build responsible parties."""
         prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
         prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
