@@ -180,6 +180,7 @@ def test_cis_to_component_definition_missing_profile_list(tmp_path: pathlib.Path
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     section.pop('profile-list')
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
@@ -192,6 +193,7 @@ def test_cis_to_component_definition_missing_component_name(tmp_path: pathlib.Pa
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     section.pop('component-name')
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
@@ -204,6 +206,7 @@ def test_cis_to_component_definition_missing_profile_type(tmp_path: pathlib.Path
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     section.pop('profile-type')
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
@@ -216,7 +219,23 @@ def test_cis_to_component_definition_missing_profile_ns(tmp_path: pathlib.Path):
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     section.pop('profile-ns')
+    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_to_component_definition_missing_profile_key(tmp_path: pathlib.Path):
+    """Test execute missing profile-file."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config.read(config_path)
+    section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
+    profile_list = section['profile-list'].split()
+    for profile in profile_list:
+        section.pop(f'profile-file.{profile}')
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -228,12 +247,13 @@ def test_cis_to_component_definition_missing_profile_file(tmp_path: pathlib.Path
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
-        section.pop(f'profile-file.{profile}')
+        section[f'profile-file.{profile}'] = '/foobar'
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
-    assert retval == TaskOutcome.FAILURE
+    assert retval == TaskOutcome.SUCCESS
 
 
 def test_cis_to_component_definition_missing_profile_url(tmp_path: pathlib.Path):
@@ -242,6 +262,7 @@ def test_cis_to_component_definition_missing_profile_url(tmp_path: pathlib.Path)
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
         section.pop(f'profile-url.{profile}')
@@ -256,6 +277,7 @@ def test_cis_to_component_definition_missing_profile_title(tmp_path: pathlib.Pat
     config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
     config.read(config_path)
     section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
         section.pop(f'profile-title.{profile}')
@@ -342,6 +364,34 @@ def test_cis_to_component_definition_missing_rules_file(tmp_path: pathlib.Path, 
     section = config['task.cis-to-component-definition']
     section['output-dir'] = str(tmp_path)
     section['enabled-rules'] = '/foobar'
+    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_to_component_definition_missing_parameters_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test missing file enabled-rules."""
+    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config.read(config_path)
+    section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
+    section.pop('rule-to-parameters-map')
+    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_to_component_definition_missing_parameters_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test missing file enabled-rules."""
+    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config.read(config_path)
+    section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
+    section['rule-to-parameters-map'] = '/foobar'
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
