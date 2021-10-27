@@ -34,6 +34,7 @@ from trestle.core.models.actions import CreatePathAction, RemovePathAction, Writ
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.core.remote import cache
 from trestle.core.utils import classname_to_alias
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
@@ -255,6 +256,13 @@ class Repository:
         # all well; model was imported and validated successfully
         logger.debug(f'Model {name} of type {model.__class__.__name__} imported successfully.')
         return ManagedOSCAL(self.root_dir, model.__class__, name)
+
+    def load_and_import_model(self, model_path: pathlib.Path, name: str, content_type='json') -> ManagedOSCAL:
+        """Load the model at the specified path into trestle with the specified name."""
+        fetcher = cache.FetcherFactory.get_fetcher(self.root_dir, str(model_path))
+        model, _ = fetcher.get_oscal(True)
+
+        return self.import_model(model, name, content_type)
 
     def list_models(self, model_type: Type[OscalBaseModel]) -> List[str]:
         """List models of a given type in trestle repository."""

@@ -18,6 +18,7 @@ import pathlib
 
 import pytest
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
@@ -127,13 +128,13 @@ def test_get_root_model() -> None:
         mutils.get_root_model('pydantic')
 
     malias_to_mtype = {
-        'catalog': catalog.Catalog,
-        'profile': profile.Profile,
-        'component-definition': component.ComponentDefinition,
-        'system-security-plan': ssp.SystemSecurityPlan,
-        'assessment-plan': assessment_plan.AssessmentPlan,
-        'assessment-results': assessment_results.AssessmentResults,
-        'plan-of-action-and-milestones': poam.PlanOfActionAndMilestones
+        const.MODEL_TYPE_CATALOG: catalog.Catalog,
+        const.MODEL_TYPE_PROFILE: profile.Profile,
+        const.MODEL_TYPE_COMPDEF: component.ComponentDefinition,
+        const.MODEL_TYPE_SSP: ssp.SystemSecurityPlan,
+        const.MODEL_TYPE_A_PLAN: assessment_plan.AssessmentPlan,
+        const.MODEL_TYPE_A_RESULT: assessment_results.AssessmentResults,
+        const.MODEL_TYPE_POAM: poam.PlanOfActionAndMilestones
     }
     for key in malias_to_mtype:
         module_name = malias_to_mtype[key].__module__

@@ -9,7 +9,7 @@
     },
     "imports": [
       {
-        "href": "trestle://catalogs/NIST_SP-800-53_rev5_catalog/catalog.json",
+        "href": "trestle://catalogs/nist_cat/catalog.json",
         "include-controls": [
           {
             "with-ids": [

@@ -25,7 +25,7 @@ from trestle.core.commands.author.docs import Docs
 from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
-from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
+from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.commands.command_docs import CommandPlusDocs
 
 logger = logging.getLogger(__name__)
@@ -44,6 +44,7 @@ class AuthorCmd(CommandPlusDocs):
         Headers,
         ProfileAssemble,
         ProfileGenerate,
-        SSPGenerate,
-        SSPAssemble
+        SSPAssemble,
+        SSPFilter,
+        SSPGenerate
     ]

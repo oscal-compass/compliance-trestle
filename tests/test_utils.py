@@ -27,10 +27,12 @@ from _pytest.monkeypatch import MonkeyPatch
 from trestle.cli import Trestle
 from trestle.core import const, generators, utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
 
@@ -194,6 +196,7 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
     for ii in range(count):
         control = generators.generate_sample_model(cat.Control, True)
         control.id = f'{label}-{ii + 1}'
+        control.params[0].id = f'{control.id}.param'
         controls.append(control)
     return controls
 
@@ -227,3 +230,32 @@ def generate_complex_catalog() -> cat.Catalog:
 def patch_raise_exception() -> None:
     """Raise TrestleError exception, to be used for testing."""
     raise TrestleError('Forced raising of an errors')
+
+
+def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, import_nist_cat: bool) -> None:
+    """Initiallize trestle directory with catalogs and profiles."""
+    repo = Repository(trestle_root)
+    main_profile_name = 'main_profile'
+
+    if big_profile:
+        prof_path = JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+    else:
+        prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
+    repo.load_and_import_model(prof_path, main_profile_name)
+
+    for letter in 'abcd':
+        prof_name = f'test_profile_{letter}'
+        prof_path = JSON_TEST_DATA_PATH / f'{prof_name}.json'
+        repo.load_and_import_model(prof_path, prof_name)
+
+    complex_cat = generate_complex_catalog()
+    repo.import_model(complex_cat, 'complex_cat')
+
+    cat_name = 'nist_cat'
+    cat_path = JSON_NIST_DATA_PATH / JSON_NIST_CATALOG_NAME
+    if import_nist_cat:
+        repo.load_and_import_model(cat_path, cat_name)
+        new_href = f'trestle://catalogs/{cat_name}/catalog.json'
+    else:
+        new_href = str(cat_path.resolve())
+    assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0

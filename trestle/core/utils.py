@@ -15,6 +15,7 @@
 """Utilities for dealing with models."""
 import importlib
 import logging
+import string
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, no_type_check
 
 from pydantic import BaseModel
@@ -101,9 +102,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
         # things like class_ should just be class
         if suffix[-1] == '_':
             suffix = suffix[:-1]
-        return camel_to_dash(suffix).rstrip('1234567890')
+        return camel_to_dash(suffix).rstrip(string.digits)
     if mode == 'field':
-        return camel_to_snake(suffix).rstrip('1234567890')
+        return camel_to_snake(suffix).rstrip(string.digits)
     raise err.TrestleError('Bad option')
 
 
