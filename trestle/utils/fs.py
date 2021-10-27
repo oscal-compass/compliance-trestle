@@ -517,7 +517,7 @@ def load_top_level_model(
     trestle_root: pathlib.Path,
     model_name: str,
     model_class: Type[TopLevelOscalModel],
-    file_content_type: FileContentType = None
+    file_content_type: Optional[FileContentType] = None
 ) -> Tuple[TopLevelOscalModel, pathlib.Path]:
     """Load a model by name and model class and infer file content type if not specified."""
     root_model_path = _root_path_for_top_level_model(trestle_root, model_name, model_class)
