@@ -154,42 +154,28 @@ class CisToComponentDefinition(TaskBase):
         if not self._config:
             logger.error('config missing')
             return TaskOutcome('failure')
-        # process config
-        profile_list = self._config.get('profile-list')
-        if profile_list is None:
-            logger.error('config missing "profile-list" list')
+        try:
+            component_name = self._config['component-name']
+            org_name = self._config['org-name']
+            org_remarks = self._config['org-remarks']
+            profile_check_version = self._config['profile-check-version']
+            profile_type = self._config['profile-type']
+            profile_mnemonic = self._config['profile-mnemonic']
+            profile_name = self._config['profile-name']
+            profile_ns = self._config['profile-ns']
+            profile_version = self._config['profile-version']
+            profile_sets = {}
+            profile_list = self._config['profile-list'].split()
+            for profile in profile_list:
+                profile_sets[profile] = {}
+                profile_sets[profile]['profile-file'] = self._config[f'profile-file.{profile}']
+                profile_sets[profile]['profile-url'] = self._config[f'profile-url.{profile}']
+                profile_sets[profile]['profile-title'] = self._config[f'profile-title.{profile}']
+                profile_sets[profile]['profile-ns'] = profile_ns
+                profile_sets[profile]['component-name'] = component_name
+        except KeyError as e:
+            self._config_error = f'key {e.args[0]} missing'
             return TaskOutcome('failure')
-        profile_list = profile_list.split()
-        # component name
-        component_name = self._config.get('component-name')
-        if component_name is None:
-            logger.error('config missing "component_name" ')
-            return TaskOutcome('failure')
-        # profiles
-        profile_type = self._config.get('profile-type')
-        if profile_type is None:
-            logger.error('config missing "profile-type" ')
-            return TaskOutcome('failure')
-        profile_ns = self._config.get('profile-ns')
-        if profile_ns is None:
-            logger.error('config missing "profile-ns" ')
-            return TaskOutcome('failure')
-        for profile in profile_list:
-            key = f'profile-file.{profile}'
-            profile_file = self._config.get(key)
-            if profile_file is None:
-                logger.error(f'config missing "{key}"')
-                return TaskOutcome('failure')
-            key = f'profile-url.{profile}'
-            profile_url = self._config.get(key)
-            if profile_url is None:
-                logger.error(f'config missing "{key}"')
-                return TaskOutcome('failure')
-            key = f'profile-title.{profile}'
-            profile_title = self._config.get(key)
-            if profile_title is None:
-                logger.error(f'config missing "{key}"')
-                return TaskOutcome('failure')
         # selected rules
         self._selected_rules = []
         filepath = self._config.get('selected-rules')
@@ -240,13 +226,13 @@ class CisToComponentDefinition(TaskBase):
         party_uuid_03 = str(uuid.uuid4())
         roles = self._build_roles()
         responsible_roles = self._build_responsible_roles(party_uuid_01, party_uuid_02, party_uuid_03)
-        parties = self._build_parties(party_uuid_01, party_uuid_02, party_uuid_03)
+        parties = self._build_parties(org_name, org_remarks, party_uuid_01, party_uuid_02, party_uuid_03)
         responsible_parties = self._build_responsible_parties(party_uuid_01, party_uuid_02, party_uuid_03)
         # metadata
         metadata = Metadata(
-            title=f'Component definition for {self._get_profile_type} profiles',
-            last_modified=self._get_timestamp,
-            oscal_version=self._get_oscal_version,
+            title=f'Component definition for {profile_type} profiles',
+            last_modified=self._timestamp,
+            oscal_version=OSCAL_VERSION,
             version=trestle.__version__,
             roles=roles,
             parties=parties,
@@ -264,29 +250,30 @@ class CisToComponentDefinition(TaskBase):
         # add control implementation per profile
         prop1 = Property(
             name='profile_name',
-            value=self._get_profile_name,
+            value=profile_name,
             class_='scc_profile_name',
-            ns=self._get_profile_ns,
+            ns=profile_ns,
         )
         prop2 = Property(
             name='profile_mnemonic',
-            value=self._get_profile_mnemonic,
+            value=profile_mnemonic,
             class_='scc_profile_mnemonic',
-            ns=self._get_profile_ns,
+            ns=profile_ns,
         )
         prop3 = Property(
             name='profile_version',
-            value=self._get_profile_version,
+            value=profile_version,
             class_='scc_profile_version',
-            ns=self._get_profile_ns,
+            ns=profile_ns,
         )
         prop4 = Property(
             name='profile_check_version',
-            value=self._get_check_version,
+            value=profile_check_version,
         )
         props = [prop1, prop2, prop3, prop4]
         for profile in profile_list:
-            control_implementation = self._build_control_implementation(profile, profile_ns, responsible_roles, props)
+            profile_set = profile_sets[profile]
+            control_implementation = self._build_control_implementation(profile_set, responsible_roles, props)
             if control_implementation is not None:
                 if defined_component.control_implementations is None:
                     defined_component.control_implementations = [control_implementation]
@@ -305,97 +292,6 @@ class CisToComponentDefinition(TaskBase):
             logger.info(f'output: {ofile}')
         component_definition.oscal_write(pathlib.Path(ofile))
         return TaskOutcome('success')
-
-    @property
-    def _get_timestamp(self) -> str:
-        """Get timestamp."""
-        return self._timestamp
-
-    @property
-    def _get_oscal_version(self) -> str:
-        """Get OSCAL version."""
-        return OSCAL_VERSION
-
-    @property
-    def _get_check_version(self) -> str:
-        """Get check version from config."""
-        value = self._config.get('profile-check-version')
-        logger.debug(f'profile-check-version: {value}')
-        return value
-
-    @property
-    def _get_org_name(self) -> str:
-        """Get org name from config."""
-        value = self._config.get('org-name')
-        logger.debug(f'org-name: {value}')
-        return value
-
-    @property
-    def _get_org_remarks(self) -> str:
-        """Get org remarks from config."""
-        value = self._config.get('org-remarks')
-        logger.debug(f'org-remarks: {value}')
-        return value
-
-    @property
-    def _get_component_name(self) -> str:
-        """Get component name from config."""
-        value = self._config.get('component-name')
-        logger.debug(f'component-name: {value}')
-        return value
-
-    @property
-    def _get_profile_name(self) -> str:
-        """Get profile name from config."""
-        value = self._config.get('profile-name')
-        logger.debug(f'profile-name: {value}')
-        return value
-
-    @property
-    def _get_profile_mnemonic(self) -> str:
-        """Get profile mnemonic from config."""
-        value = self._config.get('profile-mnemonic')
-        logger.debug(f'profile-mnemonic: {value}')
-        return value
-
-    @property
-    def _get_profile_version(self) -> str:
-        """Get profile version from config."""
-        value = self._config.get('profile-version')
-        logger.debug(f'profile-version: {value}')
-        return value
-
-    @property
-    def _get_profile_ns(self) -> str:
-        """Get profile ns from config."""
-        value = self._config.get('profile-ns')
-        logger.debug(f'profile-ns: {value}')
-        return value
-
-    @property
-    def _get_profile_type(self) -> str:
-        """Get profile type from config."""
-        value = self._config.get('profile-type')
-        logger.debug(f'profile-type: {value}')
-        return value
-
-    def _get_profile_url(self, profile) -> str:
-        """Get profile url from config."""
-        value = self._config.get(f'profile-url.{profile}')
-        logger.debug(f'profile-url: {value}')
-        return value
-
-    def _get_profile_title(self, profile) -> str:
-        """Get profile title from config."""
-        value = self._config.get(f'profile-title.{profile}')
-        logger.debug(f'profile-title: {value}')
-        return value
-
-    def _get_profile_file(self, profile) -> str:
-        """Get profile file from config."""
-        value = self._config.get(f'profile-file.{profile}')
-        logger.debug(f'profile-file: {value}')
-        return value
 
     def _get_set_parameter(self, rule) -> SetParameter:
         """Get set parameter."""
@@ -525,26 +421,25 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_control_implementation(self, profile, profile_ns, responsible_roles, props) -> ControlImplementation:
+    def _build_control_implementation(self, profile_set, responsible_roles, props) -> ControlImplementation:
         """Build control implementation."""
-        implemented_requirements = self._build_implemented_requirements(profile, profile_ns, responsible_roles)
+        implemented_requirements = self._build_implemented_requirements(profile_set, responsible_roles)
         if len(implemented_requirements) == 0:
             control_implementation = None
         else:
             control_implementation = ControlImplementation(
                 uuid=str(uuid.uuid4()),
-                source=self._get_profile_url(profile),
-                description=f'{self._get_component_name} implemented controls for {self._get_profile_title(profile)}.',
+                source=profile_set['profile-url'],
+                description=f'{profile_set["component-name"]} implemented controls for {profile_set["profile-title"]}.',
                 implemented_requirements=implemented_requirements,
                 props=props,
             )
         return control_implementation
 
-    def _build_implemented_requirements(self, profile, profile_ns, responsible_roles) -> List[ImplementedRequirement]:
+    def _build_implemented_requirements(self, profile_set, responsible_roles) -> List[ImplementedRequirement]:
         """Build implemented requirements."""
         implemented_requirements = []
-        logger.debug(f'{profile}')
-        profile_file = self._get_profile_file(profile)
+        profile_file = profile_set['profile-file']
         rules = self._get_rules(profile_file)
         controls = self._get_controls(rules)
         rule_prefix = 'xccdf_org.ssgproject.content_rule_'
@@ -553,7 +448,7 @@ class CisToComponentDefinition(TaskBase):
                 continue
             prop = Property(
                 class_='scc_goal_name_id',
-                ns=profile_ns,
+                ns=profile_set['profile-ns'],
                 name='XCCDF_rule',
                 value=f'{rule_prefix}{rule}',
                 remarks=f'{rules[rule][2]}'
@@ -584,10 +479,10 @@ class CisToComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03) -> List[Party]:
+    def _build_parties(self, org_name, org_remarks, party_uuid_01, party_uuid_02, party_uuid_03) -> List[Party]:
         """Build parties."""
         value = [
-            Party(uuid=party_uuid_01, type='organization', name=self._get_org_name, remarks=self._get_org_remarks),
+            Party(uuid=party_uuid_01, type='organization', name=org_name, remarks=org_remarks),
             Party(
                 uuid=party_uuid_02,
                 type='organization',
