@@ -16,8 +16,10 @@
 """Markdown Validator."""
 import logging
 import pathlib
+import re
 from typing import Any, Dict, Optional
 
+import trestle.core.markdown.markdown_const as md_const
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)
@@ -113,11 +115,15 @@ class MarkdownValidator:
                 return False
             template_header_pointer = 0
             for key in instance_keys:
+                if template_header_pointer >= len(template_keys):
+                    break
                 if key in template_keys and key != template_keys[template_header_pointer]:
                     logger.info(f'Headers in the instance: {instance} were shuffled or modified.')
                     return False
                 elif key in template_keys and key == template_keys[template_header_pointer]:
                     template_header_pointer += 1
+                elif re.search(md_const.SUBSTITUTION_REGEX, template_keys[template_header_pointer]) is not None:
+                    template_header_pointer += 1  # skip headers with substitutions
             if template_header_pointer != len(template_keys):
                 logger.info(f'Headings in the instance {instance} were removed.')
                 return False
