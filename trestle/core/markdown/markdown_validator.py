@@ -17,7 +17,7 @@
 import logging
 import pathlib
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import trestle.core.markdown.markdown_const as md_const
 from trestle.core.markdown.markdown_node import MarkdownNode
@@ -88,44 +88,21 @@ class MarkdownValidator:
             instance_keys = instance_gov_node.content.governed_document
             template_keys = template_gov_node.content.governed_document
 
-            if len(template_keys) > len(instance_keys):
-                logger.info(f'Headings in the instance: {instance} were removed.')
-                return False
-            template_header_pointer = 0
-            for key in instance_keys:
-                if key in template_keys and key != template_keys[template_header_pointer]:
-                    logger.info(f'Headers in the instance: {instance} were shuffled or modified.')
-                    return False
-                elif key in template_keys and key == template_keys[template_header_pointer]:
-                    template_header_pointer += 1
-            if template_header_pointer != len(template_keys):
-                logger.info(f'Headings in the instance: {instance} were removed.')
+            is_valid = self._validate_headers(instance, template_keys, instance_keys)
+            if not is_valid:
                 return False
 
         if self._validate_md_body:
-            instance_keys = instance_tree.content.subnodes_keys
-            template_keys = self.template_tree.content.subnodes_keys
-            if len(template_keys) > len(instance_keys):
-                logger.info(f'Headings in the instance: {instance} were removed.')
-                return False
             instance_lvl1_keys = list(instance_tree.get_all_headers_for_level(1))
             template_lvl1_keys = list(self.template_tree.get_all_headers_for_level(1))
             if len(template_lvl1_keys) < len(instance_lvl1_keys):
                 logger.info(f'New headers of level 1 were added to the markdown instance: {instance}. ')
                 return False
-            template_header_pointer = 0
-            for key in instance_keys:
-                if template_header_pointer >= len(template_keys):
-                    break
-                if key in template_keys and key != template_keys[template_header_pointer]:
-                    logger.info(f'Headers in the instance: {instance} were shuffled or modified.')
-                    return False
-                elif key in template_keys and key == template_keys[template_header_pointer]:
-                    template_header_pointer += 1
-                elif re.search(md_const.SUBSTITUTION_REGEX, template_keys[template_header_pointer]) is not None:
-                    template_header_pointer += 1  # skip headers with substitutions
-            if template_header_pointer != len(template_keys):
-                logger.info(f'Headings in the instance {instance} were removed.')
+
+            instance_keys = instance_tree.content.subnodes_keys
+            template_keys = self.template_tree.content.subnodes_keys
+            is_valid = self._validate_headers(instance, template_keys, instance_keys)
+            if not is_valid:
                 return False
 
         return True
@@ -154,4 +131,26 @@ class MarkdownValidator:
                         return False
             else:
                 return False
+        return True
+
+    def _validate_headers(self, instance: pathlib.Path, template_keys: List[str], instance_keys: List[str]) -> bool:
+        """Validate instance headers against template."""
+        if len(template_keys) > len(instance_keys):
+            logger.info(f'Headings in the instance: {instance} were removed.')
+            return False
+        template_header_pointer = 0
+        for key in instance_keys:
+            if template_header_pointer >= len(template_keys):
+                break
+            if key in template_keys and key != template_keys[template_header_pointer]:
+                logger.info(f'Headers in the instance: {instance} were shuffled or modified.')
+                return False
+            elif key in template_keys and key == template_keys[template_header_pointer]:
+                template_header_pointer += 1
+            elif re.search(md_const.SUBSTITUTION_REGEX, template_keys[template_header_pointer]) is not None:
+                template_header_pointer += 1  # skip headers with substitutions
+        if template_header_pointer != len(template_keys):
+            logger.info(f'Headings in the instance: {instance} were removed.')
+            return False
+
         return True
