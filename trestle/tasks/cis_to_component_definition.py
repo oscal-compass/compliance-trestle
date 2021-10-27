@@ -21,9 +21,10 @@ import logging
 import pathlib
 import traceback
 import uuid
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import trestle
+from trestle.core import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Party
@@ -174,7 +175,7 @@ class CisToComponentDefinition(TaskBase):
                 profile_sets[profile]['profile-ns'] = profile_ns
                 profile_sets[profile]['component-name'] = component_name
         except KeyError as e:
-            self._config_error = f'key {e.args[0]} missing'
+            logger.debug(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
         # selected rules
         self._selected_rules = self._get_filter_rules('selected-rules', 'selected')
@@ -336,28 +337,45 @@ class CisToComponentDefinition(TaskBase):
                 break
         return retval
 
-    def _get_filter_rules(self, config_key, file_key):
+    # fetch the set of rules that will be included/excluded from the CIS rules
+    def _get_filter_rules(self, config_key, file_key) -> List[str]:
         """Get filter rules."""
         try:
-            filepath = self._config[config_key]
-            with open(filepath) as f:
-                jdata = json.load(f)
-                try:
-                    filter_rules = jdata[file_key]
-                except Exception:
-                    filter_rules = jdata
+            fp = pathlib.Path(self._config[config_key])
+            f = fp.open('r', encoding=const.FILE_ENCODING)
+            jdata = json.load(f)
+            try:
+                filter_rules = jdata[file_key]
+            except Exception:
+                filter_rules = jdata
+            f.close()
+        except KeyError as e:
+            logger.debug(f'key {e.args[0]} missing')
+            filter_rules = []
         except Exception:
+            logger.error(f'unable to process {self._config[config_key]}')
             filter_rules = []
         return filter_rules
 
     # create map from file:
     # key is rule
-    # value is list comprising [ category, control, description ]
-    def _get_cis_rules(self, filename) -> Dict[str, List[str]]:
+    # value is tuple comprising [ category, control, description ]
+    def _get_cis_rules(self, filename) -> Dict[str, Tuple[str, str, str]]:
         """Get CIS rules."""
-        rules = {}
-        with open(filename) as f:
+        try:
+            fp = pathlib.Path(filename)
+            f = fp.open('r', encoding=const.FILE_ENCODING)
             content = f.readlines()
+            rules = self._parse_cis_rules(content)
+            f.close()
+        except Exception:
+            logger.error(f'unable to process {filename}')
+            rules = {}
+        return rules
+
+    def _parse_cis_rules(self, content) -> Dict[str, Tuple[str, str, str]]:
+        """Parse CIS rules."""
+        rules = {}
         lineno = 0
         for line in content:
             lineno += 1
