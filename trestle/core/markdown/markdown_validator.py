@@ -72,17 +72,18 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate is valid against the template.
         """
-        if self._validate_yaml_header:
-            if self.template_version:
-                if 'x-trestle-template-version' in self.template_header.keys():
-                    if self.template_header['x-trestle-template-version'] not in str(instance):
-                        return False
+        if self.template_version:
+            if 'x-trestle-template-version' in self.template_header.keys():
+                if self.template_header['x-trestle-template-version'] not in str(instance):
+                    return False
+                if self._validate_yaml_header:
                     if 'Version' in self.template_header.keys():
                         return self.template_header['Version'] == self.template_header['x-trestle-template-version']
                     else:
                         return False
-                else:
-                    return False
+            else:
+                return False
+        if self._validate_yaml_header:
             headers_match = self.compare_keys(self.template_header, instance_header)
 
             if not headers_match:
@@ -107,12 +108,6 @@ class MarkdownValidator:
         if self._validate_md_body:
             instance_keys = instance_tree.content.subnodes_keys
             template_keys = self.template_tree.content.subnodes_keys
-            if self.template_version:
-                if 'x-trestle-template-version' in self.template_header.keys():
-                    if self.template_header['x-trestle-template-version'] not in str(instance):
-                        return False
-                else:
-                    return False
             if len(template_keys) > len(instance_keys):
                 logger.info(f'Headings in the instance: {instance} were removed.')
                 return False
