@@ -159,10 +159,15 @@ class SSPFilter(AuthorCommonCommand):
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
+        return self.filter_ssp(trestle_root, args.name, args.profile, args.output)
+
+    def filter_ssp(self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str):
+        """Filter the ssp based on the profile and output new ssp."""
         ssp: ossp.SystemSecurityPlan
 
-        ssp, _ = fs.load_top_level_model(trestle_root, args.name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
-        profile_path = fs.path_for_top_level_model(trestle_root, args.profile, prof.Profile, fs.FileContentType.JSON)
+        ssp, ssp_path = fs.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan)
+        ssp_file_content_type = fs.FileContentType.path_to_content_type(ssp_path)
+        profile_path = fs.full_path_for_top_level_model(trestle_root, profile_name, prof.Profile)
 
         prof_resolver = ProfileResolver()
         catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
@@ -200,6 +205,7 @@ class SSPFilter(AuthorCommonCommand):
             return 1
 
         ssp.control_implementation = control_imp
-        fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+        # save with same content type as orig. ssp
+        fs.save_top_level_model(ssp, trestle_root, out_name, ssp_file_content_type)
 
         return 0

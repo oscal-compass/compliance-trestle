@@ -513,6 +513,19 @@ def path_for_top_level_model(
     return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
 
+def full_path_for_top_level_model(
+    trestle_root: pathlib.Path,
+    model_name: str,
+    model_class: Type[TopLevelOscalModel],
+) -> pathlib.Path:
+    """Find the full path of an existing model given its name, model type but no file content type."""
+    root_model_path = _root_path_for_top_level_model(trestle_root, model_name, model_class)
+    file_content_type = FileContentType.path_to_content_type(root_model_path)
+    if not FileContentType.is_readable_file(file_content_type):
+        raise TrestleError(f'Unable to load model {model_name} as json or yaml.')
+    return root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
+
+
 def load_top_level_model(
     trestle_root: pathlib.Path,
     model_name: str,
