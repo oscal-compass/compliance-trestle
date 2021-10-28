@@ -314,6 +314,7 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path):
         md_api = MarkdownAPI()
         md_api.load_validator_with_template(bad_file, True, False)
 
+
 @pytest.mark.parametrize(
     'template_path, instance_path, status, header_validate, validate_md_body',
     [
@@ -359,6 +360,7 @@ def test_md_validator_substitutions(
     md_api.load_validator_with_template(template_path, header_validate, validate_md_body)
     result = md_api.validate_instance(instance_path)
     assert result == status
+
 
 @pytest.mark.parametrize(
     'template_path, status',
