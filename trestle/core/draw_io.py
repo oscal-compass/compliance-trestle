@@ -137,8 +137,19 @@ class DrawIO():
                 result[key] = cls.restructure_metadata(holding)
         return result
 
-    def write_drawio_with_metadata(self, path: pathlib.Path, metadata: Dict, diagram_metadata_idx: int):
-        """Write modified metadata to drawio file."""
+    def write_drawio_with_metadata(self, path: pathlib.Path, metadata: Dict, diagram_metadata_idx: int) -> None:
+        """
+        Write modified metadata to drawio file.
+
+        Writes given metadata to 'object' element attributes inside of the selected drawio diagram element.
+        Currently supports writing only uncompressed elements.
+
+        Args:
+            path: path to write modified drawio file to
+            metadata: dictionary of modified metadata to insert to drawio
+            diagram_metadata_idx: index of diagram which metadata was modified
+
+        """
         flattened_dict = self._flatten_dictionary(metadata)
         if diagram_metadata_idx >= len(list(self.diagrams)):
             raise err.TrestleError(f'Drawio file {path} does not contain a diagram for index {diagram_metadata_idx}')
@@ -164,7 +175,7 @@ class DrawIO():
 
         self.raw_xml.write(path)
 
-    def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.'):
+    def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.') -> Dict[str, str]:
         """Flatten hierarchial dict back to xml attributes."""
         items = []
         for key, value in metadata.items():
