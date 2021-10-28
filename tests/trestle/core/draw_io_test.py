@@ -16,6 +16,7 @@
 """Tests for the drawio model."""
 
 import pathlib
+import shutil
 from uuid import uuid4
 
 import pytest
@@ -133,3 +134,49 @@ def test_restructure_metadata():
     metadata_flat = draw_io.get_metadata()[0]
     metadata_structured = draw_io.restructure_metadata(metadata_flat)
     assert comparison_metadata == metadata_structured
+
+
+def test_write_metadata_compressed(tmp_path):
+    """Test writing modified metadata to drawio file."""
+    tmp_drawio_file = tmp_path / 'test.drawio'
+    shutil.copyfile(pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'), tmp_drawio_file)
+    draw_io = DrawIO(tmp_drawio_file)
+
+    diagram_idx = 0
+    metadata_flat = draw_io.get_metadata()[diagram_idx]
+    metadata_structured = draw_io.restructure_metadata(metadata_flat)
+
+    metadata_structured['test'] = 'modified value'
+    metadata_structured['nested']['nested']['test'] = 'deep modification'
+
+    draw_io.write_drawio_with_metadata(tmp_drawio_file, metadata_structured, diagram_idx)
+
+    draw_io_mod = DrawIO(tmp_drawio_file)
+    mod_metadata = draw_io_mod.get_metadata()[diagram_idx]
+    mod_metadata = draw_io.restructure_metadata(mod_metadata)
+
+    assert mod_metadata['test'] == 'modified value'
+    assert mod_metadata['nested']['nested']['test'] == 'deep modification'
+
+
+def test_write_metadata_uncompressed(tmp_path):
+    """Test writing modified metadata to drawio file."""
+    tmp_drawio_file = tmp_path / 'test.drawio'
+    shutil.copyfile(pathlib.Path('tests/data/drawio/single_tab_metadata_uncompressed.drawio'), tmp_drawio_file)
+    draw_io = DrawIO(tmp_drawio_file)
+
+    diagram_idx = 0
+    metadata_flat = draw_io.get_metadata()[diagram_idx]
+    metadata_structured = draw_io.restructure_metadata(metadata_flat)
+
+    metadata_structured['status'] = 'modified status'
+    metadata_structured['abc']['bcd']['name'] = 'modified name'
+
+    draw_io.write_drawio_with_metadata(tmp_drawio_file, metadata_structured, diagram_idx)
+
+    draw_io_mod = DrawIO(tmp_drawio_file)
+    mod_metadata = draw_io_mod.get_metadata()[diagram_idx]
+    mod_metadata = draw_io.restructure_metadata(mod_metadata)
+
+    assert mod_metadata['status'] == 'modified status'
+    assert mod_metadata['abc']['bcd']['name'] == 'modified name'
