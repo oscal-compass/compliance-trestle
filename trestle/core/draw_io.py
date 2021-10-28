@@ -43,6 +43,7 @@ class DrawIO():
         """
         self.file_path: pathlib.Path = file_path
         self._load()
+        self.banned_keys = ['id', 'label']
 
     def _load(self) -> None:
         """Load the file."""
@@ -50,11 +51,11 @@ class DrawIO():
             logger.error(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
             raise err.TrestleError(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
         try:
-            raw_xml = defusedxml.ElementTree.parse(self.file_path, forbid_dtd=True)
+            self.raw_xml = defusedxml.ElementTree.parse(self.file_path, forbid_dtd=True)
         except Exception as e:
             logger.error(f'Exception loading Element tree from file: {e}')
             raise err.TrestleError(f'Exception loading Element tree from file: {e}')
-        self.mx_file = raw_xml.getroot()
+        self.mx_file = self.raw_xml.getroot()
         if not self.mx_file.tag == 'mxfile':
             logger.error('DrawIO file is not a draw io file (mxfile)')
             raise err.TrestleError('DrawIO file is not a draw io file (mxfile)')
@@ -92,7 +93,6 @@ class DrawIO():
     def get_metadata(self) -> List[Dict[str, str]]:
         """Get metadata from each tab if it exists or provide an empty dict."""
         # Note that id and label are special for drawio.
-        banned_keys = ['id', 'label']
         md_list: List[Dict[str, str]] = []
         for diagram in self.diagrams:
             md_dict: Dict[str, str] = {}
@@ -108,7 +108,7 @@ class DrawIO():
             for item in items:
                 key = item[0]
                 val = item[1]
-                if key in banned_keys:
+                if key in self.banned_keys:
                     continue
                 md_dict[key] = val
             md_list.append(md_dict)
@@ -150,17 +150,19 @@ class DrawIO():
         if len(md_objects) == 0:
             raise err.TrestleError(f'Unable to write metadata, diagram in drawio file {path} does not have objects.')
 
-        md_objects[0].attrib = flattened_dict
+        for key in md_objects[0].attrib.copy():
+            if key not in flattened_dict.keys() and key not in self.banned_keys:
+                # outdated key delete
+                del md_objects[0].attrib[key]
+                continue
+            if key in self.banned_keys:
+                continue
+            md_objects[0].attrib[key] = flattened_dict[key]
         parent_diagram = self.mx_file.findall('diagram')[diagram_metadata_idx]
         if len(parent_diagram.findall('mxGraphModel')) == 0:
             parent_diagram.insert(0, diagram)
 
-        string_xml = defusedxml.ElementTree.tostring(
-            self.mx_file, encoding=const.FILE_ENCODING
-        ).decode(const.FILE_ENCODING)
-
-        with open(path, 'w', encoding=const.FILE_ENCODING) as drawio:
-            drawio.write(string_xml)
+        self.raw_xml.write(path)
 
     def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.'):
         """Flatten hierarchial dict back to xml attributes."""
