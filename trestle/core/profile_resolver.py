@@ -20,6 +20,7 @@ import string
 from typing import Dict, Iterator, List, Optional, Set, Union
 from uuid import uuid4
 
+import trestle.core.const as const
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.core.catalog_interface import CatalogInterface
@@ -483,9 +484,9 @@ class ProfileResolver():
             # move catalog controls from dummy group 'catalog' into the catalog
             if catalog.groups:
                 for group in catalog.groups:
-                    if group.id == 'catalog':
+                    if group.id == const.MODEL_TYPE_CATALOG:
                         catalog.controls = group.controls
-                        catalog.groups = [group for group in catalog.groups if group.id != 'catalog']
+                        catalog.groups = [group for group in catalog.groups if group.id != const.MODEL_TYPE_CATALOG]
                         break
 
             catalog.metadata = new_metadata
@@ -517,11 +518,11 @@ class ProfileResolver():
             model: Union[cat.Catalog, prof.Profile]
             model, model_type = fetcher.get_oscal()
 
-            if model_type == 'catalog':
+            if model_type == const.MODEL_TYPE_CATALOG:
                 logger.debug(f'DIRECT YIELD in import of catalog {model.metadata.title}')
                 yield model
             else:
-                if model_type != 'profile':
+                if model_type != const.MODEL_TYPE_PROFILE:
                     raise TrestleError(f'Improper model type {model_type} as profile import.')
                 profile: prof.Profile = model
 

@@ -38,8 +38,6 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated catalog markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -77,14 +75,11 @@ class CatalogAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Catalog'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
-        CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
-        return 0
+        return CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
 
     @staticmethod
     def assemble_catalog(trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
@@ -101,6 +96,9 @@ class CatalogAssemble(AuthorCommonCommand):
 
         """
         md_dir = trestle_root / md_name
+        if not md_dir.exists():
+            logger.warning(f'Markdown directory {md_name} does not exist.')
+            return 1
         catalog_interface = CatalogInterface()
         try:
             catalog = catalog_interface.read_catalog_from_markdown(md_dir)

@@ -23,56 +23,114 @@ TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 TRESTLE_KEEP_FILE = '.keep'
-"""Map of plural form of a model type to the oscal module that contains the classes related to it."""
-MODEL_DIR_TO_MODEL_MODULE = {
-    'catalogs': f'{PACKAGE_OSCAL}.catalog',
-    'profiles': f'{PACKAGE_OSCAL}.profile',
-    'component-definitions': f'{PACKAGE_OSCAL}.component',
-    'system-security-plans': f'{PACKAGE_OSCAL}.ssp',
-    'assessment-plans': f'{PACKAGE_OSCAL}.assessment_plan',
-    'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
-    'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
-}
-MODEL_TYPE_TO_MODEL_MODULE = {
-    'catalog': f'{PACKAGE_OSCAL}.catalog',
-    'profile': f'{PACKAGE_OSCAL}.profile',
-    'component-definition': f'{PACKAGE_OSCAL}.component',
-    'system-security-plan': f'{PACKAGE_OSCAL}.ssp',
-    'assessment-plan': f'{PACKAGE_OSCAL}.assessment_plan',
-    'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
-    'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
-}
-MODEL_TYPE_TO_MODEL_DIR = {
-    'catalog': 'catalogs',
-    'profile': 'profiles',
-    'component-definition': 'component-definitions',
-    'system-security-plan': 'system-security-plans',
-    'assessment-plan': 'assessment-plans',
-    'assessment-results': 'assessment-results',
-    'plan-of-action-and-milestones': 'plan-of-action-and-milestones'
-}
-"""Element path separator"""
-ALIAS_PATH_SEPARATOR: str = '.'
+
+# these are hyphenated - no underscore - and mixed singular and plural
+MODEL_TYPE_A_PLAN = 'assessment-plan'
+MODEL_TYPE_A_RESULT = 'assessment-results'
+MODEL_TYPE_CATALOG = 'catalog'
+MODEL_TYPE_COMPDEF = 'component-definition'
+MODEL_TYPE_POAM = 'plan-of-action-and-milestones'
+MODEL_TYPE_PROFILE = 'profile'
+MODEL_TYPE_SSP = 'system-security-plan'
+
+# these are all plural and hyphenated - no underscore
+MODEL_DIR_A_PLAN = 'assessment-plans'
+MODEL_DIR_A_RESULT = 'assessment-results'
+MODEL_DIR_CATALOG = 'catalogs'
+MODEL_DIR_COMPDEF = 'component-definitions'
+MODEL_DIR_POAM = 'plan-of-action-and-milestones'
+MODEL_DIR_PROFILE = 'profiles'
+MODEL_DIR_SSP = 'system-security-plans'
+
+# these are singular except for assessment_results - and component, poam, and ssp are all abbreviated
+# underscores here instead of hyphens
+MODULE_NAME_A_PLAN = 'assessment_plan'
+MODULE_NAME_A_RESULT = 'assessment_results'
+MODULE_NAME_CATALOG = 'catalog'
+MODULE_NAME_COMPDEF = 'component'
+MODULE_NAME_POAM = 'poam'
+MODULE_NAME_PROFILE = 'profile'
+MODULE_NAME_SSP = 'ssp'
+
+MODEL_MODULE_A_PLAN = f'{PACKAGE_OSCAL}.{MODULE_NAME_A_PLAN}'
+MODEL_MODULE_A_RESULT = f'{PACKAGE_OSCAL}.{MODULE_NAME_A_RESULT}'
+MODEL_MODULE_CATALOG = f'{PACKAGE_OSCAL}.{MODULE_NAME_CATALOG}'
+MODEL_MODULE_COMPDEF = f'{PACKAGE_OSCAL}.{MODULE_NAME_COMPDEF}'
+MODEL_MODULE_POAM = f'{PACKAGE_OSCAL}.{MODULE_NAME_POAM}'
+MODEL_MODULE_PROFILE = f'{PACKAGE_OSCAL}.{MODULE_NAME_PROFILE}'
+MODEL_MODULE_SSP = f'{PACKAGE_OSCAL}.{MODULE_NAME_SSP}'
 
 MODEL_TYPE_LIST = [
-    'catalog',
-    'profile',
-    'component-definition',
-    'system-security-plan',
-    'assessment-plan',
-    'assessment-results',
-    'plan-of-action-and-milestones'
+    MODEL_TYPE_A_PLAN,
+    MODEL_TYPE_A_RESULT,
+    MODEL_TYPE_CATALOG,
+    MODEL_TYPE_COMPDEF,
+    MODEL_TYPE_POAM,
+    MODEL_TYPE_PROFILE,
+    MODEL_TYPE_SSP
 ]
 
 MODEL_DIR_LIST = [
-    'catalogs',
-    'profiles',
-    'component-definitions',
-    'system-security-plans',
-    'assessment-plans',
-    'assessment-results',
-    'plan-of-action-and-milestones',
+    MODEL_DIR_A_PLAN,
+    MODEL_DIR_A_RESULT,
+    MODEL_DIR_CATALOG,
+    MODEL_DIR_COMPDEF,
+    MODEL_DIR_POAM,
+    MODEL_DIR_PROFILE,
+    MODEL_DIR_SSP
 ]
+
+MODEL_MODULE_LIST = [
+    MODEL_MODULE_A_PLAN,
+    MODEL_MODULE_A_RESULT,
+    MODEL_MODULE_CATALOG,
+    MODEL_MODULE_COMPDEF,
+    MODEL_MODULE_POAM,
+    MODEL_MODULE_PROFILE,
+    MODEL_MODULE_SSP
+]
+"""Map of plural form of a model type to the oscal module that contains the classes related to it."""
+MODEL_DIR_TO_MODEL_MODULE = {
+    MODEL_DIR_A_PLAN: MODEL_MODULE_A_PLAN,
+    MODEL_DIR_A_RESULT: MODEL_MODULE_A_RESULT,
+    MODEL_DIR_CATALOG: MODEL_MODULE_CATALOG,
+    MODEL_DIR_COMPDEF: MODEL_MODULE_COMPDEF,
+    MODEL_DIR_POAM: MODEL_MODULE_POAM,
+    MODEL_DIR_PROFILE: MODEL_MODULE_PROFILE,
+    MODEL_DIR_SSP: MODEL_MODULE_SSP
+}
+"""Map of model type to oscal module."""
+MODEL_TYPE_TO_MODEL_MODULE = {
+    MODEL_TYPE_A_PLAN: MODEL_MODULE_A_PLAN,
+    MODEL_TYPE_A_RESULT: MODEL_MODULE_A_RESULT,
+    MODEL_TYPE_CATALOG: MODEL_MODULE_CATALOG,
+    MODEL_TYPE_COMPDEF: MODEL_MODULE_COMPDEF,
+    MODEL_TYPE_POAM: MODEL_MODULE_POAM,
+    MODEL_TYPE_PROFILE: MODEL_MODULE_PROFILE,
+    MODEL_TYPE_SSP: MODEL_MODULE_SSP
+}
+"""Map of model module to model type."""
+MODEL_MODULE_TO_MODEL_TYPE = {
+    MODEL_MODULE_A_PLAN: MODEL_TYPE_A_PLAN,
+    MODEL_MODULE_A_RESULT: MODEL_TYPE_A_RESULT,
+    MODEL_MODULE_CATALOG: MODEL_TYPE_CATALOG,
+    MODEL_MODULE_COMPDEF: MODEL_TYPE_COMPDEF,
+    MODEL_MODULE_POAM: MODEL_TYPE_POAM,
+    MODEL_MODULE_PROFILE: MODEL_TYPE_PROFILE,
+    MODEL_MODULE_SSP: MODEL_TYPE_SSP
+}
+"""Map of model type to model directory."""
+MODEL_TYPE_TO_MODEL_DIR = {
+    MODEL_TYPE_A_PLAN: MODEL_DIR_A_PLAN,
+    MODEL_TYPE_A_RESULT: MODEL_DIR_A_RESULT,
+    MODEL_TYPE_CATALOG: MODEL_DIR_CATALOG,
+    MODEL_TYPE_COMPDEF: MODEL_DIR_COMPDEF,
+    MODEL_TYPE_POAM: MODEL_DIR_POAM,
+    MODEL_TYPE_PROFILE: MODEL_DIR_PROFILE,
+    MODEL_TYPE_SSP: MODEL_DIR_SSP
+}
+"""Element path separator"""
+ALIAS_PATH_SEPARATOR: str = '.'
 
 # argument names
 ARG_FILE = 'file'
@@ -180,3 +238,5 @@ NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
 
 NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'
+
+DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
