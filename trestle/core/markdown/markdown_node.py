@@ -19,21 +19,8 @@ from __future__ import annotations
 import re
 from typing import Iterable, List, Optional, Tuple
 
+import trestle.core.markdown.markdown_const as md_const
 from trestle.core.err import TrestleError
-
-HEADER_REGEX = r'^[#]+'
-BLOCKQUOTE_CHAR = '>'
-INLINE_CODE_CHAR = r'^`'
-LIST_CHAR = '-'
-TABLE_SYMBOL = '|'
-CODEBLOCK_DEF = '```'
-HTML_COMMENT_START = '<!--'
-HTML_COMMENT_END = r'.*-->'
-TABLE_REGEX = r'|'
-GOVERNED_DOC_REGEX = r'.*:'
-
-HTML_TAG_REGEX_START = r'^[ \t]*<.*>'
-HTML_TAG_REGEX_END = r'<\/.*>'
 
 
 class SectionContent:
@@ -138,24 +125,24 @@ class MarkdownNode:
                     content.union(subtree)
                 else:
                     break  # level of the header is above or equal to the current level, subtree is over
-            elif self._does_start_with(line, CODEBLOCK_DEF):
+            elif self._does_start_with(line, md_const.CODEBLOCK_DEF):
                 code_lines, i = self._read_code_lines(lines, line, i + 1)
                 content.code_lines.extend(code_lines)
-            elif self._does_start_with(line, HTML_COMMENT_START):
-                html_lines, i = self._read_html_block(lines, line, i + 1, HTML_COMMENT_END)
+            elif self._does_start_with(line, md_const.HTML_COMMENT_START):
+                html_lines, i = self._read_html_block(lines, line, i + 1, md_const.HTML_COMMENT_END_REGEX)
                 content.html_lines.extend(html_lines)
-            elif self._does_contain(line, HTML_TAG_REGEX_START):
-                html_lines, i = self._read_html_block(lines, line, i + 1, HTML_TAG_REGEX_END)
+            elif self._does_contain(line, md_const.HTML_TAG_REGEX_START):
+                html_lines, i = self._read_html_block(lines, line, i + 1, md_const.HTML_TAG_REGEX_END)
                 content.html_lines.extend(html_lines)
-            elif self._does_start_with(line, TABLE_SYMBOL):
+            elif self._does_start_with(line, md_const.TABLE_SYMBOL):
                 table_block, i = self._read_table_block(lines, line, i + 1)
                 content.tables.extend(table_block)
-            elif self._does_start_with(line, BLOCKQUOTE_CHAR):
+            elif self._does_start_with(line, md_const.BLOCKQUOTE_CHAR):
                 content.blockquotes.append(line)
                 i += 1
             elif governed_header is not None and self._does_contain(
-                    root_key, fr'^[#]+ {governed_header}$') and self._does_contain(line, GOVERNED_DOC_REGEX):
-                regexp = re.compile(GOVERNED_DOC_REGEX)
+                    root_key, fr'^[#]+ {governed_header}$') and self._does_contain(line, md_const.GOVERNED_DOC_REGEX):
+                regexp = re.compile(md_const.GOVERNED_DOC_REGEX)
                 match = regexp.search(line)
                 header = match.group(0).strip('*').strip(':')
                 content.governed_document.append(header)
@@ -177,7 +164,7 @@ class MarkdownNode:
 
         Level of the header is determined by the number of # symbols.
         """
-        header_symbols = re.match(HEADER_REGEX, line)
+        header_symbols = re.match(md_const.HEADER_REGEX, line)
         # Header is valid only if it line starts with header
         if (header_symbols is not None and header_symbols.regs[0][0] == 0):
             return header_symbols.regs[0][1]
@@ -204,7 +191,7 @@ class MarkdownNode:
             line = lines[i]
             code_lines.append(line)
             i += 1
-            if self._does_contain(line, CODEBLOCK_DEF):
+            if self._does_contain(line, md_const.CODEBLOCK_DEF):
                 break
         return code_lines, i
 
@@ -234,7 +221,7 @@ class MarkdownNode:
                 return table_block, i
 
             line = lines[i]
-            if not self._does_contain(line, TABLE_REGEX):
+            if not self._does_contain(line, md_const.TABLE_REGEX):
                 table_block.append(line)
                 break
             table_block.append(line)

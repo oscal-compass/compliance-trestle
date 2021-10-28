@@ -672,6 +672,7 @@ class ControlIOReader():
                 ii += 1
             if prose:
                 id_ = ControlIOReader._strip_to_make_ncname(control_id + '_smt.' + label)
+                label = ControlIOReader._strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
             if control_parts:
