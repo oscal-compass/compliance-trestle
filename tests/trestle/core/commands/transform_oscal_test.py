@@ -88,7 +88,7 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
     assert ssp_assemble._run(args) == 0
 
-    # now transform it
+    # now transform it with: trestle transform -t system-security-plan -i my_ssp -p test_profile_d -o xformed_ssp
     transform_oscal = TransformCmd()
     assert transform_oscal.transform(
         tmp_trestle_dir, const.MODEL_TYPE_SSP, ssp_name, 'xformed_ssp', 'test_profile_d'

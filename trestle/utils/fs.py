@@ -494,7 +494,11 @@ def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path
 def _root_path_for_top_level_model(
     trestle_root: pathlib.Path, model_name: str, model_class: Union[TopLevelOscalModel, Type[TopLevelOscalModel]]
 ) -> pathlib.Path:
-    """Find the root path to a model given its name and class - with no suffix."""
+    """Find the root path to a model given its name and class - with no suffix.
+
+    This is a private method used only to construct the root filepath based on model name and type.
+    It does not check for existence or content type and it does not create the directory if it does not exist.
+    """
     if not hasattr(model_class, '__module__') or model_class.__module__ not in const.MODEL_MODULE_LIST:
         raise TrestleError(f'Unable to determine model type for model {model_name} with class {model_class}')
     model_alias = const.MODEL_MODULE_TO_MODEL_TYPE[model_class.__module__]
@@ -508,7 +512,10 @@ def path_for_top_level_model(
     model_class: Type[TopLevelOscalModel],
     file_content_type: FileContentType
 ) -> pathlib.Path:
-    """Find the full path of a model given its name, model type and file content type."""
+    """Find the full path of a model given its name, model type and file content type.
+
+    This does not inspect the file system or confirm the needed path and file exists.
+    """
     root_path = _root_path_for_top_level_model(trestle_root, model_name, model_class)
     return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
@@ -518,7 +525,12 @@ def full_path_for_top_level_model(
     model_name: str,
     model_class: Type[TopLevelOscalModel],
 ) -> pathlib.Path:
-    """Find the full path of an existing model given its name, model type but no file content type."""
+    """Find the full path of an existing model given its name and model type but no file content type.
+
+    Use this method when you need the path of a model but you don't know the file content type.
+    This method should only be called if the model needs to exist already in the trestle directory.
+    If you do know the file content type, use path_for_top_level_model instead.
+    """
     root_model_path = _root_path_for_top_level_model(trestle_root, model_name, model_class)
     file_content_type = FileContentType.path_to_content_type(root_model_path)
     if not FileContentType.is_readable_file(file_content_type):
@@ -532,7 +544,11 @@ def load_top_level_model(
     model_class: Type[TopLevelOscalModel],
     file_content_type: Optional[FileContentType] = None
 ) -> Tuple[TopLevelOscalModel, pathlib.Path]:
-    """Load a model by name and model class and infer file content type if not specified."""
+    """Load a model by name and model class and infer file content type if not specified.
+
+    If you need to load an existing model but its content type may not be known, use this method.
+    But the file content type should be specified if it is somehow known.
+    """
     root_model_path = _root_path_for_top_level_model(trestle_root, model_name, model_class)
     if file_content_type is None:
         file_content_type = FileContentType.path_to_content_type(root_model_path)
@@ -546,7 +562,11 @@ def load_top_level_model(
 def save_top_level_model(
     model: TopLevelOscalModel, trestle_root: pathlib.Path, model_name: str, file_content_type: FileContentType
 ) -> None:
-    """Save a model by name and infer model type by inspection."""
+    """Save a model by name and infer model type by inspection.
+
+    You don't need to specify the model type (catalog, profile, etc.) but you must specify the file content type.
+    If the model directory does not exist, it is created.
+    """
     root_model_path = _root_path_for_top_level_model(trestle_root, model_name, model)
     full_model_path = root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
     if not full_model_path.parent.exists():
