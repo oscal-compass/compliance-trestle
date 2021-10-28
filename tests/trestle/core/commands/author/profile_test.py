@@ -118,3 +118,18 @@ def test_profile_generate_assemble(
     for name, exp_str in guid_dict['name_exp']:
         prose = catalog_interface.get_control_part_prose('ac-1', name)
         assert prose.find(exp_str) >= 0
+
+
+def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test failure modes of profile generate and assemble."""
+    test_args = 'trestle author profile-generate -n my_prof -o profiles'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
+
+    # no trestle root specified
+    test_args = 'trestle author profile-generate -n my_prof -o new_prof'.split()
+    profile_generate = ProfileGenerate()
+    assert profile_generate._run(test_args) == 1
+
+    profile_assemble = ProfileAssemble()
+    assert profile_assemble._run(test_args) == 1

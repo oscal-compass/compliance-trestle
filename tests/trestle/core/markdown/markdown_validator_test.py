@@ -313,3 +313,50 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path):
     with pytest.raises(err.TrestleError):
         md_api = MarkdownAPI()
         md_api.load_validator_with_template(bad_file, True, False)
+
+
+@pytest.mark.parametrize(
+    'template_path, instance_path, status, header_validate, validate_md_body',
+    [
+        (
+            pathlib.Path('tests/data/author/test_4_md_substitutions/template.md'),
+            pathlib.Path('tests/data/author/test_4_md_substitutions/correct_instance.md'),
+            True,
+            True,
+            True
+        ),
+        (
+            pathlib.Path('tests/data/author/test_4_md_substitutions/template.md'),
+            pathlib.Path('tests/data/author/test_4_md_substitutions/correct_instance_empty_subs.md'),
+            True,
+            True,
+            True
+        ),
+        (
+            pathlib.Path('tests/data/author/test_4_md_substitutions/template.md'),
+            pathlib.Path('tests/data/author/test_4_md_substitutions/bad_added_header.md'),
+            False,
+            True,
+            True
+        ),
+        (
+            pathlib.Path('tests/data/author/test_4_md_substitutions/template.md'),
+            pathlib.Path('tests/data/author/test_4_md_substitutions/bad_modified_header_deep.md'),
+            False,
+            True,
+            True
+        )
+    ]
+)
+def test_md_validator_substitutions(
+    template_path: pathlib.Path,
+    instance_path: pathlib.Path,
+    status: bool,
+    header_validate: bool,
+    validate_md_body: bool
+) -> None:
+    """Run markdown validator to expected outcome."""
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, header_validate, validate_md_body)
+    result = md_api.validate_instance(instance_path)
+    assert result == status

@@ -37,7 +37,7 @@ class CatalogHelper():
     def __init__(self, catalog_file) -> None:
         """Initialize."""
         self._catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
-        logger.info(f'catalog: {catalog_file}')
+        logger.debug(f'catalog: {catalog_file}')
 
     def exists(self) -> bool:
         """Catalog exists determination."""

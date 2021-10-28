@@ -19,9 +19,9 @@ import argparse
 import logging
 import pathlib
 
-import trestle.oscal.profile as profile
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.oscal.profile import Profile
 from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
@@ -114,10 +114,7 @@ class HrefCmd(CommandPlusDocs):
             Allow full chaining of linked catalogs and profiles.
 
         """
-        profile_dir = trestle_root / f'profiles/{profile_name}'
-        content_type = fs.get_contextual_file_type(profile_dir)
-        profile_path = (profile_dir / 'profile').with_suffix(fs.FileContentType.to_file_extension(content_type))
-        profile_data: profile.Profile = profile.Profile.oscal_read(profile_path)
+        profile_data, profile_path = fs.load_top_level_model(trestle_root, profile_name, Profile)
         n_imports = len(profile_data.imports)
         if not new_href:
             logger.info(f'List of imports for profile {profile_name}:')

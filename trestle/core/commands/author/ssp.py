@@ -16,18 +16,19 @@
 import argparse
 import logging
 import pathlib
+from typing import List, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
+import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-import trestle.utils.fs as fs
-import trestle.utils.log as log
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.utils import fs, log
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,6 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated ssp markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
         yaml_help_str = 'Path to the optional yaml header file'
         self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
@@ -105,8 +104,6 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -141,8 +138,68 @@ class SSPAssemble(AuthorCommonCommand):
         ssp.import_profile = import_profile
 
         # write out the ssp as json
-        ssp_dir = trestle_root / ('system-security-plans/' + args.output)
-        ssp_dir.mkdir(exist_ok=True, parents=True)
-        ssp.oscal_write(ssp_dir / 'system-security-plan.json')
+        fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+        return 0
+
+
+class SSPFilter(AuthorCommonCommand):
+    """Filter the controls in an ssp based on files included by profile."""
+
+    name = 'ssp-filter'
+
+    def _init_arguments(self) -> None:
+        file_help_str = 'Name of the input ssp'
+        self.add_argument('-n', '--name', help=file_help_str, required=True, type=str)
+        file_help_str = 'Name of the input profile that defines set of controls in output ssp'
+        self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
+        output_help_str = 'Name of the output generated SSP'
+        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+
+    def _run(self, args: argparse.Namespace) -> int:
+        log.set_log_level_from_args(args)
+        trestle_root = pathlib.Path(args.trestle_root)
+
+        ssp: ossp.SystemSecurityPlan
+
+        ssp, _ = fs.load_top_level_model(trestle_root, args.name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+        profile_path = fs.path_for_top_level_model(trestle_root, args.profile, prof.Profile, fs.FileContentType.JSON)
+
+        prof_resolver = ProfileResolver()
+        catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+        catalog_interface = CatalogInterface(catalog)
+
+        # The input ssp should reference a superset of the controls referenced by the profile
+        # Need to cull references in the ssp to controls not in the profile
+        # Also make sure the output ssp contains imp reqs for all controls in the profile
+        control_imp = ssp.control_implementation
+        ssp_control_ids: Set[str] = set()
+
+        set_params = control_imp.set_parameters
+        new_set_params: List[ossp.SetParameter] = []
+        if set_params is not None:
+            for set_param in set_params:
+                control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                if control is not None:
+                    new_set_params.append(set_param)
+                    ssp_control_ids.add(control.id)
+        control_imp.set_parameters = new_set_params if new_set_params else None
+
+        imp_requirements = control_imp.implemented_requirements
+        new_imp_requirements: List[ossp.ImplementedRequirement] = []
+        if imp_requirements is not None:
+            for imp_requirement in imp_requirements:
+                control = catalog_interface.get_control(imp_requirement.control_id)
+                if control is not None:
+                    new_imp_requirements.append(imp_requirement)
+                    ssp_control_ids.add(control.id)
+        control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
+
+        # make sure all controls in the profile have implemented reqs in the final ssp
+        if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+            logger.warning('Unable to filter the ssp because the profile references controls not in it.')
+            return 1
+
+        ssp.control_implementation = control_imp
+        fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
 
         return 0
