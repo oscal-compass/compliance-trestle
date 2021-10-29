@@ -74,10 +74,14 @@ class ProfileGenerate(AuthorCommonCommand):
         Returns:
             0 on success, 1 on error
         """
-        _, _, profile = load_distributed(profile_path, trestle_root)
-        catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
-        catalog_interface = CatalogInterface(catalog)
-        catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
+        try:
+            _, _, profile = load_distributed(profile_path, trestle_root)
+            catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
+            catalog_interface = CatalogInterface(catalog)
+            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
+        except TrestleError as e:
+            logger.warning(f'Error generating the catalog as markdown: {e}')
+            return 1
         return 0
 
 

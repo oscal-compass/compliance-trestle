@@ -16,6 +16,7 @@
 import argparse
 import logging
 import pathlib
+import traceback
 from typing import List, Set
 
 from ruamel.yaml import YAML
@@ -87,9 +88,19 @@ class SSPGenerate(AuthorCommonCommand):
         logger.debug(f'ssp sections: {sections}')
 
         profile_resolver = ProfileResolver()
-        resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-        catalog_interface = CatalogInterface(resolved_catalog)
-        catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
+        try:
+            resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+            catalog_interface = CatalogInterface(resolved_catalog)
+        except Exception as e:
+            logger.warning(f'Error creating the resolved profile catalog: {e}')
+            logger.debug(traceback.print_exc())
+            return 1
+        try:
+            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
+        except Exception as e:
+            logger.warning(f'Error writing the catalog as markdown: {e}')
+            logger.debug(traceback.print_exc())
+            return 1
 
         return 0
 
@@ -108,37 +119,48 @@ class SSPAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
 
-        # generate the one dummy component that implementations will refer to in by_components
-        component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-        component.description = 'Dummy component created by trestle'
+        try:
+            # generate the one dummy component that implementations will refer to in by_components
+            component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
+            component.description = 'Dummy component created by trestle'
 
-        # create system implementation to hold the dummy component
-        system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
-        system_imp.components = [component]
+            # create system implementation to hold the dummy component
+            system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
+            system_imp.components = [component]
 
-        trestle_root = pathlib.Path(args.trestle_root)
+            trestle_root = pathlib.Path(args.trestle_root)
 
-        md_path = trestle_root / args.markdown
+            md_path = trestle_root / args.markdown
 
-        imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+            imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+        except Exception as e:
+            logger.warning(f'Error reading the catalog markdown: {e}')
+            logger.debug(traceback.print_exc())
+            return 1
 
-        # create a control implementation to hold the implementation requirements
-        control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
-        control_imp.implemented_requirements = imp_reqs
-        control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
+        try:
+            # create a control implementation to hold the implementation requirements
+            control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
+            control_imp.implemented_requirements = imp_reqs
+            control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
 
-        # create a sample ssp to hold all the parts
-        ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+            # create a sample ssp to hold all the parts
+            ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
 
-        # insert the parts into the ssp
-        ssp.control_implementation = control_imp
-        ssp.system_implementation = system_imp
-        import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
-        import_profile.href = 'REPLACE_ME'
-        ssp.import_profile = import_profile
+            # insert the parts into the ssp
+            ssp.control_implementation = control_imp
+            ssp.system_implementation = system_imp
+            import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
+            import_profile.href = 'REPLACE_ME'
+            ssp.import_profile = import_profile
 
-        # write out the ssp as json
-        fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+            # write out the ssp as json
+            fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+        except Exception as e:
+            logger.warning(f'Error saving the generated ssp: {e}')
+            logger.debug(traceback.print_exc())
+            return 1
+
         return 0
 
 
@@ -165,47 +187,53 @@ class SSPFilter(AuthorCommonCommand):
         """Filter the ssp based on the profile and output new ssp."""
         ssp: ossp.SystemSecurityPlan
 
-        ssp, ssp_path = fs.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan)
-        ssp_file_content_type = fs.FileContentType.path_to_content_type(ssp_path)
-        profile_path = fs.full_path_for_top_level_model(trestle_root, profile_name, prof.Profile)
+        try:
+            ssp, _ = fs.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+            profile_path = fs.path_for_top_level_model(
+                trestle_root, profile_name, prof.Profile, fs.FileContentType.JSON
+            )
 
-        prof_resolver = ProfileResolver()
-        catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-        catalog_interface = CatalogInterface(catalog)
+            prof_resolver = ProfileResolver()
+            catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+            catalog_interface = CatalogInterface(catalog)
 
-        # The input ssp should reference a superset of the controls referenced by the profile
-        # Need to cull references in the ssp to controls not in the profile
-        # Also make sure the output ssp contains imp reqs for all controls in the profile
-        control_imp = ssp.control_implementation
-        ssp_control_ids: Set[str] = set()
+            # The input ssp should reference a superset of the controls referenced by the profile
+            # Need to cull references in the ssp to controls not in the profile
+            # Also make sure the output ssp contains imp reqs for all controls in the profile
+            control_imp = ssp.control_implementation
+            ssp_control_ids: Set[str] = set()
 
-        set_params = control_imp.set_parameters
-        new_set_params: List[ossp.SetParameter] = []
-        if set_params is not None:
-            for set_param in set_params:
-                control = catalog_interface.get_control_by_param_id(set_param.param_id)
-                if control is not None:
-                    new_set_params.append(set_param)
-                    ssp_control_ids.add(control.id)
-        control_imp.set_parameters = new_set_params if new_set_params else None
+            set_params = control_imp.set_parameters
+            new_set_params: List[ossp.SetParameter] = []
+            if set_params is not None:
+                for set_param in set_params:
+                    control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                    if control is not None:
+                        new_set_params.append(set_param)
+                        ssp_control_ids.add(control.id)
+            control_imp.set_parameters = new_set_params if new_set_params else None
 
-        imp_requirements = control_imp.implemented_requirements
-        new_imp_requirements: List[ossp.ImplementedRequirement] = []
-        if imp_requirements is not None:
-            for imp_requirement in imp_requirements:
-                control = catalog_interface.get_control(imp_requirement.control_id)
-                if control is not None:
-                    new_imp_requirements.append(imp_requirement)
-                    ssp_control_ids.add(control.id)
-        control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
+            imp_requirements = control_imp.implemented_requirements
+            new_imp_requirements: List[ossp.ImplementedRequirement] = []
+            if imp_requirements is not None:
+                for imp_requirement in imp_requirements:
+                    control = catalog_interface.get_control(imp_requirement.control_id)
+                    if control is not None:
+                        new_imp_requirements.append(imp_requirement)
+                        ssp_control_ids.add(control.id)
+            control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
 
-        # make sure all controls in the profile have implemented reqs in the final ssp
-        if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
-            logger.warning('Unable to filter the ssp because the profile references controls not in it.')
+            # make sure all controls in the profile have implemented reqs in the final ssp
+            if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+                logger.warning('Unable to filter the ssp because the profile references controls not in it.')
+                logger.debug(traceback.print_exc())
+                return 1
+
+            ssp.control_implementation = control_imp
+            fs.save_top_level_model(ssp, trestle_root, out_name, fs.FileContentType.JSON)
+        except Exception as e:
+            logger.warning(f'Error generating the filtered ssp: {e}')
+            logger.debug(traceback.print_exc())
             return 1
-
-        ssp.control_implementation = control_imp
-        # save with same content type as orig. ssp
-        fs.save_top_level_model(ssp, trestle_root, out_name, ssp_file_content_type)
 
         return 0

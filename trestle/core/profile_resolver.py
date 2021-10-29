@@ -453,12 +453,15 @@ class ProfileResolver():
                         raise TrestleError('Alters must have control id specified.')
                     if alter.removes is not None:
                         raise TrestleError('Alters not supported for removes.')
-                    if alter.adds is None:
+                    if alter.adds is None and not self._block_adds:
                         raise TrestleError('Alter has no adds to perform.')
                     if not self._block_adds:
                         for add in alter.adds:
-                            if add.position is None or add.position.name is None:
-                                raise TrestleError('Alter/Add position must be specified.')
+                            if (add.position is None or add.position.name is None) and add.parts is not None:
+                                msg = f'Alter/Add position is not specified in control {alter.control_id}'
+                                msg += ' when adding part, so defaulting to after.'
+                                logger.warning(msg)
+                                add.position = 'after'
                             control = self._catalog_interface.get_control(alter.control_id)
                             self._add_to_control(add, control)
                             self._catalog_interface.replace_control(control)
