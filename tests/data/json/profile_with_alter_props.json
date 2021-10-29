@@ -44,36 +44,30 @@
           "control_id": "ac-1",
           "adds": [
             {
-              "position": "after",
-              "by_id": "ac-1",
-              "parts": [
+              "props": [
                 {
-                  "id": "ac-1_implgdn",
-                  "name": "ImplGuidance",
-                  "prose": "Do it carefully."
-                },
-                {
-                  "id": "ac-1_expevid",
-                  "name": "ExpectedEvidence",
-                  "prose": "Detailed logs."
+                  "name": "foo",
+                  "value": "bar",
+                  "remarks": "good stuff"
                 }
               ]
             }
           ]
         },
         {
-          "control_id": "ac-2",
+          "control_id": "ac-1",
           "adds": [
             {
-              "position": "before",
+              "position": "after",
+              "by_id" : "ac-1_smt",
               "parts": [
                 {
-                  "id": "ac-2_implgdn",
+                  "id": "ac-1_implgdn",
                   "name": "ImplGuidance",
                   "prose": "Maintain compliance"
                 },
                 {
-                  "id": "ac-2_expevid",
+                  "id": "ac-1_expevid",
                   "name": "ExpectedEvidence",
                   "prose": "Daily logs."
                 }
