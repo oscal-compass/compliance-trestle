@@ -19,7 +19,6 @@ from typing import Tuple
 
 from tests import test_utils
 
-from trestle.core import const
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.transform_oscal import TransformCmd
 
@@ -68,7 +67,16 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # now transform it with: trestle transform -t system-security-plan -i my_ssp -p test_profile_d -o xformed_ssp
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        type='system-security-plan',
+        input='my_ssp',
+        profile='test_profile_d',
+        output='xformed_ssp',
+        verbose=True
+    )
     transform_oscal = TransformCmd()
-    assert transform_oscal.transform(
-        tmp_trestle_dir, const.MODEL_TYPE_SSP, ssp_name, 'xformed_ssp', 'test_profile_d'
-    ) == 0
+    rc = transform_oscal._run(args)
+    assert rc == 0
+
+    assert transform_oscal.transform(tmp_trestle_dir, 'foo', 'bar', 'myout', 'myprof') == 1
