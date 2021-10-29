@@ -22,7 +22,6 @@ from tests import test_utils
 from trestle.core import const
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.transform_oscal import TransformCmd
-from trestle.core.control_io import ControlIOReader
 
 prof_name = 'main_profile'
 ssp_name = 'my_ssp'
@@ -52,26 +51,6 @@ def setup_for_ssp(include_header: bool,
             trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
         )
     return args, sections, yaml_path
-
-
-def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> int:
-    """Insert response prose in for a statement of a control."""
-    control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
-    md_file = control_dir / (statement_id.split('_')[0] + '.md')
-
-    return test_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
-
-
-def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
-    """Confirm the text is present in the control markdown in the correct part."""
-    control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
-    md_file = control_dir / f'{control_id}.md'
-
-    responses = ControlIOReader.read_all_implementation_prose(md_file)
-    if part_label not in responses:
-        return False
-    prose = '\n'.join(responses[part_label])
-    return seek_str in prose
 
 
 def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
