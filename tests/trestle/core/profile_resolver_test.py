@@ -108,6 +108,18 @@ def test_fail_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
     assert catalog
 
 
+def test_profile_missing_position(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test when alter adds parts is missing position."""
+    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    repo = Repository(tmp_trestle_dir)
+    repo.load_and_import_model(cat_path, 'nist_cat')
+    prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_missing_position.json'
+    repo.load_and_import_model(prof_path, 'profile_missing_position')
+
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    assert catalog
+
+
 def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that all alter adds positions can be resolved."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME

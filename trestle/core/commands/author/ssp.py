@@ -188,20 +188,11 @@ class SSPFilter(AuthorCommonCommand):
             profile_path = fs.path_for_top_level_model(
                 trestle_root, args.profile, prof.Profile, fs.FileContentType.JSON
             )
-        except Exception as e:
-            logger.warning(f'Error loading the ssp and profile: {e}')
-            return 1
 
-        try:
             prof_resolver = ProfileResolver()
             catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
             catalog_interface = CatalogInterface(catalog)
-        except Exception as e:
-            logger.warning(f'Error generating the resolved profile catalog: {e}')
-            logger.debug(traceback.print_exc())
-            return 1
 
-        try:
             # The input ssp should reference a superset of the controls referenced by the profile
             # Need to cull references in the ssp to controls not in the profile
             # Also make sure the output ssp contains imp reqs for all controls in the profile
@@ -233,15 +224,11 @@ class SSPFilter(AuthorCommonCommand):
                 logger.warning('Unable to filter the ssp because the profile references controls not in it.')
                 logger.debug(traceback.print_exc())
                 return 1
-        except Exception as e:
-            logger.warning(f'Error filtering the ssp based on profile: {e}')
-            return 1
 
-        try:
             ssp.control_implementation = control_imp
             fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
         except Exception as e:
-            logger.warning(f'Error saving the filtered ssp: {e}')
+            logger.warning(f'Error generating the filtered ssp: {e}')
             logger.debug(traceback.print_exc())
             return 1
 

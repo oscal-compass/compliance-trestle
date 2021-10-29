@@ -76,19 +76,11 @@ class ProfileGenerate(AuthorCommonCommand):
         """
         try:
             _, _, profile = load_distributed(profile_path, trestle_root)
-        except TrestleError as e:
-            logger.warning(f'Error loading profile {profile_path}: {e}')
-            return 1
-        try:
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
-        except TrestleError as e:
-            logger.warning(f'Error creating the resolved profile catalog: {e}')
-            return 1
-        try:
             catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
         except TrestleError as e:
-            logger.warning(f'Error writing the catalog as markdown: {e}')
+            logger.warning(f'Error generating the catalog as markdown: {e}')
             return 1
         return 0
 
