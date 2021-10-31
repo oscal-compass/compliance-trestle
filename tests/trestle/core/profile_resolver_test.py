@@ -96,8 +96,8 @@ def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pa
         ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
 
 
-def test_fail_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test when by_id is not given and position is set to after or before it fails."""
+def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test when by_id is not given and position is set to after or before it defaults to after."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
     repo.load_and_import_model(cat_path, 'nist_cat')
@@ -109,7 +109,7 @@ def test_fail_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_profile_missing_position(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test when alter adds parts is missing position."""
+    """Test when alter adds parts is missing position it defaults to after."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
     repo.load_and_import_model(cat_path, 'nist_cat')
@@ -166,15 +166,8 @@ def test_profile_resolver_failures() -> None:
     """Test failure modes of profile resolver."""
     profile = gens.generate_sample_model(prof.Profile)
     modify = ProfileResolver.Modify(profile)
-    with pytest.raises(TrestleError):
-        modify._add_to_parts_given_position([], 'foo', [], 'bar')
-    with pytest.raises(TrestleError):
-        modify._add_to_parts_given_position([], None, [], 'before')
     control = gens.generate_sample_model(cat.Control)
     # this should not cause error
-    modify._add_to_parts(control, 'foo', [], 'before')
-    with pytest.raises(TrestleError):
-        modify._add_to_parts(control, 'foo', ['x'], 'before')
     add = prof.Add()
     with pytest.raises(TrestleError):
         modify._add_to_control(add, control)
