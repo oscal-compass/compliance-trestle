@@ -51,6 +51,16 @@
                   "remarks": "good stuff"
                 }
               ]
+            },
+            {
+              "by_id": "ac-1_prm_2",
+              "props": [
+                {
+                  "name": "foo",
+                  "value": "bar",
+                  "remarks": "good stuff"
+                }
+              ]
             }
           ]
         },
