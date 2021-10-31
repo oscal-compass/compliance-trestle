@@ -434,7 +434,7 @@ class ProfileResolver():
                 raise TrestleError(f'Did not find param for add props: control {control.id} param {add.by_id}')
 
         @staticmethod
-        def _add_to_control(add: prof.Add, control: cat.Control, catalog_interface: CatalogInterface) -> None:
+        def _add_to_control(add: prof.Add, control: cat.Control) -> None:
             """Add altered parts and properties to the control."""
             if not add.parts and not add.props:
                 raise TrestleError('Alter must add parts or props, however none were given.')
@@ -453,8 +453,6 @@ class ProfileResolver():
                 elif not control.props:
                     control.props = []
                     control.props.extend(add.props)
-
-            catalog_interface.replace_control(control)
 
         def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
             """Modify the controls based on the profile."""
@@ -487,7 +485,7 @@ class ProfileResolver():
                                 logger.warning(msg)
                                 add.position = prof.Position.after
                             control = self._catalog_interface.get_control(alter.control_id)
-                            self._add_to_control(add, control, self._catalog_interface)
+                            self._add_to_control(add, control)
                             self._catalog_interface.replace_control(control)
             # use the param_dict to apply all modifys
             control_ids = self._catalog_interface.get_control_ids()

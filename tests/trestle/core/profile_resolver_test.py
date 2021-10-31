@@ -169,17 +169,14 @@ def test_profile_resolver_failures() -> None:
     control = gens.generate_sample_model(cat.Control)
     # this should not cause error
     add = prof.Add()
-    catalog_interface = CatalogInterface()
-    handle = CatalogInterface.ControlHandle(group_id='foo', path=['bar'], control=control)
-    catalog_interface._control_dict = {control.id: handle}
     with pytest.raises(TrestleError):
-        modify._add_to_control(add, control, catalog_interface)
+        modify._add_to_control(add, control)
     add.parts = []
     with pytest.raises(TrestleError):
-        modify._add_to_control(add, control, catalog_interface)
+        modify._add_to_control(add, control)
     add.position = prof.Position.before
     with pytest.raises(TrestleError):
-        modify._add_to_control(add, control, catalog_interface)
+        modify._add_to_control(add, control)
 
 
 @pytest.mark.parametrize(
