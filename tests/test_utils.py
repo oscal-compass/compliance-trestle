@@ -243,7 +243,7 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
 
-    for letter in 'abcd':
+    for letter in 'abcde':
         prof_name = f'test_profile_{letter}'
         prof_path = JSON_TEST_DATA_PATH / f'{prof_name}.json'
         repo.load_and_import_model(prof_path, prof_name)

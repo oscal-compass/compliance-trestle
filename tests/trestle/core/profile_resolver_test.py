@@ -15,7 +15,6 @@
 # limitations under the License.
 """Tests profile_resolver module."""
 
-import argparse
 import pathlib
 from typing import List, Tuple
 
@@ -24,7 +23,6 @@ import pytest
 from tests import test_utils
 
 from trestle.core import generators as gens
-from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.core.repository import Repository
@@ -54,15 +52,6 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     assert len(list1) == 1
     assert len(list2) == 1
-
-    fs.save_top_level_model(cat, tmp_trestle_dir, 'my_cat', fs.FileContentType.JSON)
-
-    ssp_cmd = SSPGenerate()
-    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile='test_profile_a', output='my_ssp', verbose=True, sections=sections
-    )
-    assert ssp_cmd._run(args) == 0
 
     assert interface.get_count_of_controls(False) == 6
 
@@ -212,3 +201,26 @@ def test_profile_resolver_param_sub() -> None:
     control.params = [param_1, param_10]
     new_text = ProfileResolver.Modify._replace_params(param_text, control, param_dict)
     assert new_text == 'Make sure that the cat is very well fed today.'
+
+
+def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test whether expected order of operations is preserved for parameter substution."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_e_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_e', prof.Profile, fs.FileContentType.JSON)
+    profile_e_parameter_string = '## Override value ##'
+    profile_a_value = 'all alert personell'
+
+    # based on 800-53 rev 5
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_e_path)
+    interface = CatalogInterface(cat)
+    control = interface.get_control('ac-1')
+    locations = interface.find_string_in_control(control, profile_e_parameter_string)
+    locations_a = interface.find_string_in_control(control, profile_a_value)
+    # TODO: This behaviour will need to be corrected, see issue #
+    # Correct behaviour
+    # assert len(locations) == 1  # noqa: E800
+    # assert len(locations_a) == 0  # noqa: E800
+    # Incorrect behaviour
+    assert len(locations) == 0
+    assert len(locations_a) == 1

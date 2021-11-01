@@ -308,6 +308,7 @@ class ProfileResolver():
                     if set_param is not None:
                         values = [value.__root__ for value in set_param.values]
                         param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
+
                     else:
                         # if select present, use it
                         if param.select is not None:
