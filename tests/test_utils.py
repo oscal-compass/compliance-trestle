@@ -222,6 +222,14 @@ def generate_complex_catalog() -> cat.Catalog:
 
     catalog = generators.generate_sample_model(cat.Catalog, True)
     catalog.controls = generate_control_list('cat', 3)
+
+    test_control = generators.generate_sample_model(cat.Control, False)
+    test_control.id = 'test-1'
+    test_control.params = [common.Parameter(id='test-1_prm_1', values=['Default', 'Values'])]
+    test_control.parts = [
+        common.Part(id='test-1-stmt', prose='The prose with {{ insert: param, test-1_prm_1 }}', name='statement')
+    ]
+    catalog.controls.append(test_control)
     catalog.groups = [group_a, group_b]
 
     return catalog

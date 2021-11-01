@@ -20,6 +20,12 @@
             "values": [
               "## Override value ##"
             ]
+        },
+        {
+          "param_id": "test-1_prm_1",
+          "constraints": [{
+            "description": "This is a constraint"
+          }]
         }
       ]
     }

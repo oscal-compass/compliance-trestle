@@ -311,7 +311,9 @@ class ProfileResolver():
                         values = [value.__root__ for value in set_param.values]
                         param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
                     else:
-
+                        if param.values is not None:
+                            values = [value.__root__ for value in param.values]
+                            param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
                         # if select present, use it
                         if param.select is not None:
                             param_text = '['
@@ -320,11 +322,6 @@ class ProfileResolver():
                             if param.select.choice is not None:
                                 param_text += ', '.join(param.select.choice)
                             param_text = f'{param_text}]'
-                        elif param.values is not None:
-                            param_text = ''
-                            for value in param.values:
-                                param_text += f'{value}, '
-                            param_text = param_text.rstrip(', ')
                         # else use the label
                         elif param.label is not None:
                             param_text = f'[{param.label}]'

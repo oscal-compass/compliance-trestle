@@ -69,8 +69,8 @@ def test_deep_catalog() -> None:
     """Test ssp generation with deep catalog."""
     catalog = test_utils.generate_complex_catalog()
     interface = CatalogInterface(catalog)
-    assert interface.get_count_of_controls(False) == 10
-    assert interface.get_count_of_controls(True) == 15
+    assert interface.get_count_of_controls(False) == 11
+    assert interface.get_count_of_controls(True) == 16
 
 
 def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
