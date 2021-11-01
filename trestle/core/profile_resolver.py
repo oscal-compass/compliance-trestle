@@ -305,11 +305,13 @@ class ProfileResolver():
                     param_text = f'[{param.id} = no description available]'
                     set_param = param_dict.get(param.id, None)
                     # param value provided so just replace it
-                    if set_param is not None:
+                    if set_param is not None and set_param.values is not None:
+                        # TODO: Fix with issue #824
+                        # If there is no value set - continue using default parameter info for now.
                         values = [value.__root__ for value in set_param.values]
                         param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
-
                     else:
+
                         # if select present, use it
                         if param.select is not None:
                             param_text = '['
@@ -318,10 +320,15 @@ class ProfileResolver():
                             if param.select.choice is not None:
                                 param_text += ', '.join(param.select.choice)
                             param_text = f'{param_text}]'
+                        elif param.values is not None:
+                            param_text = ''
+                            for value in param.values:
+                                param_text += f'{value}, '
+                            param_text = param_text.rstrip(', ')
                         # else use the label
-                        if param.label is not None:
+                        elif param.label is not None:
                             param_text = f'[{param.label}]'
-                    # replace this pattern in all the staches with the new param_text
+                        # replace this pattern in all the staches with the new param_text
                     fixed_staches = []
                     for stache in new_staches:
                         fixed = ProfileResolver.Modify._replace_id_with_text(stache, param.id, param_text)

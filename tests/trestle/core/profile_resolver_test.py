@@ -217,7 +217,7 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     control = interface.get_control('ac-1')
     locations = interface.find_string_in_control(control, profile_e_parameter_string)
     locations_a = interface.find_string_in_control(control, profile_a_value)
-    # TODO: This behaviour will need to be corrected, see issue #
+    # TODO: This behaviour will need to be corrected, see issue #824
     # Correct behaviour
     # assert len(locations) == 1  # noqa: E800
     # assert len(locations_a) == 0  # noqa: E800
