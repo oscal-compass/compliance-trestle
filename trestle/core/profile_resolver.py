@@ -24,6 +24,7 @@ import trestle.core.const as const
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.common_types import OBT
 from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
 from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
@@ -420,23 +421,80 @@ class ProfileResolver():
                     raise TrestleError(f'Unable to add parts for control {control.id} and part {id_} is not found.')
 
         @staticmethod
+        def _add_to_list(
+            input_list: Optional[List[OBT]],
+            new: List[OBT],
+            position: prof.Position,
+            by_id: Optional[str] = None
+        ) -> bool:
+            """Add to a list based on a position, for the list or its direct sublist."""
+            if input_list is None:
+                input_list: List[OBT] = []
+            if not by_id:
+                if position == prof.Position.starting:
+                    for offset, new_part in enumerate(new):
+                        input_list.insert(offset, new_part)
+                    return True
+                elif position == prof.Position.ending:
+                    input_list.extend(new)
+                    return True
+                raise TrestleError('Position argument expected.')
+            for index in range(input_list):
+                if input_list[index].id == by_id:
+                    if position == prof.Position.after:
+                        for offset, new_item in enumerate(new):
+                            input_list.insert(index + 1 + offset, new_item)
+                        return True
+                    elif position == prof.Position.before:
+                        for offset, new_item in enumerate(new):
+                            input_list.insert(index + offset, new_item)
+                        return True
+                    # this type introspection assumes if by-id is passed that we need to check down one list.
+                    # it is not a generic recursion technique.
+                    for field_name in input_list[index].__field_set__:
+                        attr = getattr(input_list[index], field_name)
+                        #
+                        if type(attr) == list and type(attr[0]) == type(input_list[index]):  # noqa: E721 - Exact match.
+                            if position == prof.Position.starting:
+                                for offset, new_item in enumerate(new):
+                                    attr.insert(offset, new_item)
+                            else:
+                                attr.extend(new)
+                            setattr(input_list[index], field_name, attr)
+                            return True
+            # Here we have set
+            return False
+
+        @staticmethod
         def _add_props_to_control(control: cat.Control, add: prof.Add) -> None:
             """Add the props to the control param by_id in the Add."""
-            replaced_param = False
-            if control.params:
-                new_params = []
-                for param in control.params:
-                    if param.id == add.by_id:
-                        replaced_param = True
-                        if param.props:
-                            param.props.extend(add.props)
-                        else:
-                            param.props = add.props
-                    new_params.append(param)
-                if replaced_param:
-                    control.params = new_params
-            if not replaced_param:
-                raise TrestleError(f'Did not find param for add props: control {control.id} param {add.by_id}')
+            updated = False
+            # Always default to ending.
+            if add.position is None:
+                add.position = prof.Position.ending
+            if add.by_id == control.id:
+                updated = ProfileResolver.Modify._add_to_list(control.props, add.props, add.position)
+            elif not updated:
+                # Try props in params
+                if control.params:
+                    for idx, param in enumerate(control.params):
+                        if param.id == add.by_id:
+                            updated = ProfileResolver.Modify._add_to_list(param.props, add.props, add.position)
+                            if updated:
+                                control.params[idx] = param
+                                continue
+                if control.parts and not updated:
+                    for idx, part in enumerate(control.parts):
+                        if part.id == add.by_id:
+                            updated = ProfileResolver.Modify._add_to_list(part.props, add.props, add.position)
+                            if updated:
+                                control.parts[idx] = part
+                                continue
+
+            if not updated:
+                raise TrestleError(
+                    f'Did not find the correct Id to add props for control {control.id} and id {add.by_id}'
+                )
 
         @staticmethod
         def _add_to_control(add: prof.Add, control: cat.Control) -> None:
