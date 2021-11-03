@@ -74,7 +74,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses = ControlIOReader.read_all_implementation_prose(md_file)
+    responses, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
     if part_label not in responses:
         return False
     prose = '\n'.join(responses[part_label])
@@ -103,7 +103,7 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert expected_header == header
-    header, tree = md_api.processor.process_markdown(ac_1)
+    header, tree = md_api.processor.process_markdown(ac_2)
     assert tree is not None
     assert expected_header == header
 
@@ -122,7 +122,7 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
-    args, sections, yaml_path = setup_for_ssp(False, False, tmp_trestle_dir)
+    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir)
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
@@ -138,9 +138,36 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     assert not header
-    header, tree = md_api.processor.process_markdown(ac_1)
+    header, tree = md_api.processor.process_markdown(ac_2)
     assert tree is not None
     assert not header
+
+
+def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp generate does not overwrite header edits."""
+    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir)
+    ssp_cmd = SSPGenerate()
+    # run the command for happy path
+    assert ssp_cmd._run(args) == 0
+    ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
+    ac_1 = ac_dir / 'ac-1.md'
+
+    with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
+        yaml = YAML(typ='safe')
+        expected_header = yaml.load(f)
+
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert tree is not None
+    assert expected_header == header
+
+    test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n')
+    assert ssp_cmd._run(args) == 0
+    header, tree = md_api.processor.process_markdown(ac_1)
+    assert tree is not None
+    new_expected_header = expected_header
+    new_expected_header['control-origination'].append('My new edits')
+    assert new_expected_header == header
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
