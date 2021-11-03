@@ -61,7 +61,7 @@ def setup_for_ssp(include_header: bool,
     return args, sections, yaml_path
 
 
-def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> int:
+def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> bool:
     """Insert response prose in for a statement of a control."""
     control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
     md_file = control_dir / (statement_id.split('_')[0] + '.md')
@@ -163,8 +163,8 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     assert tree is not None
     assert expected_header == header
 
-    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n') == 0
-    assert test_utils.delete_line_in_file(ac_1, 'Corporate') == 0
+    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n')
+    assert test_utils.delete_line_in_file(ac_1, 'Corporate')
 
     # if the yaml header is not written out, the new header should be the one currently in the control
     # if the yaml header is written out, it is merged with the current header giving priority to current header
@@ -198,8 +198,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     prose_b = 'This is fun\nline with *bold* text'
 
     # edit it a bit
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a) == 0
-    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b) == 0
+    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
+    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
 
     # generate markdown again on top of previous markdown to make sure it is not removed
     ssp_gen = SSPGenerate()
