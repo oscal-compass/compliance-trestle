@@ -26,6 +26,9 @@ import trestle.oscal.common as common
 
 
 class Control(OscalBaseModel):
+    """
+    A structured information object representing a security or privacy control. Each security or privacy control within the Catalog is defined by a distinct control instance.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -61,6 +64,9 @@ class Control(OscalBaseModel):
 
 
 class Group(OscalBaseModel):
+    """
+    A group of controls, or of groups of controls.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -97,6 +103,9 @@ class Group(OscalBaseModel):
 
 
 class Catalog(OscalBaseModel):
+    """
+    A collection of controls.
+    """
 
     class Config:
         extra = Extra.forbid
