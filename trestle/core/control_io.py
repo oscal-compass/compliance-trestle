@@ -331,7 +331,9 @@ class ControlIOWriter():
             None
 
         Notes:
-            The filename is constructed from the control's id, so only the markdown directory is required
+            The filename is constructed from the control's id, so only the markdown directory is required.
+            If a yaml header is present in the file it is merged with the optional provided header.
+            The header in the file takes precedence over the provided one.
         """
         control_file = dest_path / (control.id + '.md')
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
