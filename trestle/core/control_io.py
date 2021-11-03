@@ -314,7 +314,7 @@ class ControlIOWriter():
         for key in src.keys():
             if key in dest:
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlIOWriter.merge_dicts_deep(dest[key], src)
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key])
                 elif isinstance(dest[key], list):
                     if isinstance(src[key], list):
                         missing = set(src[key]) - set(dest[key])
@@ -323,8 +323,10 @@ class ControlIOWriter():
                         if src[key] not in dest[key]:
                             dest[key].append(src[key])
                 elif isinstance(src[key], list):
-                    dest[key] = [dest[key]].extend(src[key])
+                    dest[key] = [dest[key]]
+                    dest[key].extend(src[key])
             else:
+
                 dest[key] = src[key]
 
     def write_control(
