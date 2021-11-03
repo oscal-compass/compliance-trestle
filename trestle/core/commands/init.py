@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import shutil
 from shutil import copyfile
 
 from pkg_resources import resource_filename
@@ -59,25 +60,30 @@ class InitCmd(CommandPlusDocs):
     def _create_directories(self, root: pathlib.Path) -> None:
         """Create the directory tree if it does not exist."""
         # Prepare directory list to be created
-        directory_list = [root / pathlib.Path(const.TRESTLE_CONFIG_DIR)]
-        for model_dir in const.MODEL_DIR_LIST:
-            directory_list.append(root / pathlib.Path(model_dir))
-            directory_list.append(root / pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
+        try:
+            directory_list = [root / pathlib.Path(const.TRESTLE_CONFIG_DIR)]
+            for model_dir in const.MODEL_DIR_LIST:
+                directory_list.append(root / pathlib.Path(model_dir))
+                directory_list.append(root / pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
 
-        # Create directories
-        for directory in directory_list:
-            directory.mkdir(parents=True, exist_ok=True)
-            file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
-            try:
+            # Create directories
+            for directory in directory_list:
+                directory.mkdir(parents=True, exist_ok=True)
+                file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
                 file_path.touch()
-            except BaseException as err:
-                raise TrestleError(f'Error creating directories: {err}')
+        except OSError as e:
+            raise TrestleError(f'Error while creating directories: {e}')
+        except Exception as e:
+            raise TrestleError(f'Unexpected error while creating directories: {e}')
 
     def _copy_config_file(self, root: pathlib.Path) -> None:
         """Copy the initial config.ini file to .trestle directory."""
-        source_path = pathlib.Path(resource_filename('trestle.resources', const.TRESTLE_CONFIG_FILE)).resolve()
-        destination_path = (root / pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE).resolve()
         try:
+            source_path = pathlib.Path(resource_filename('trestle.resources', const.TRESTLE_CONFIG_FILE)).resolve()
+            destination_path = (root / pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE).resolve()
             copyfile(source_path, destination_path)
-        except BaseException as err:
-            raise TrestleError(f'Error copying config file {err}')
+
+        except (shutil.SameFileError, OSError) as e:
+            raise TrestleError(f'Error while copying config file: {e}')
+        except Exception as e:
+            raise TrestleError(f'Unexpected error while copying config file: {e}')
