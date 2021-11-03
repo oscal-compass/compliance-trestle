@@ -211,9 +211,10 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
 def test_merge_dicts_deep() -> None:
     """Test deep merge of dicts."""
     dest = {'a': {'b': 1}}
-    src = {'a': {'b': [2, 3]}}
+    src = {'a': {'b': [2, 3]}, 'x': 7}
     ControlIOWriter.merge_dicts_deep(dest, src)
     assert dest['a'] == {'b': [1, 2, 3]}
+    assert dest['x'] == 7
 
 
 def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:
