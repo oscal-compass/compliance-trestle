@@ -26,6 +26,9 @@ import trestle.oscal.common as common
 
 
 class Statement(OscalBaseModel):
+    """
+    Identifies which statements within a control are addressed.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -59,6 +62,10 @@ class Statement(OscalBaseModel):
 
 
 class State(Enum):
+    """
+    The operational status.
+    """
+
     under_development = 'under-development'
     operational = 'operational'
     disposition = 'disposition'
@@ -66,6 +73,9 @@ class State(Enum):
 
 
 class SetParameter(OscalBaseModel):
+    """
+    Identifies the parameter that will be set by the enclosed value.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -85,6 +95,9 @@ class SetParameter(OscalBaseModel):
 
 
 class IncorporatesComponent(OscalBaseModel):
+    """
+    TBD
+    """
 
     class Config:
         extra = Extra.forbid
@@ -105,6 +118,9 @@ class IncorporatesComponent(OscalBaseModel):
 
 
 class ImportComponentDefinition(OscalBaseModel):
+    """
+    Loads a component definition from another resource.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -118,6 +134,9 @@ class ImportComponentDefinition(OscalBaseModel):
 
 
 class ImplementedRequirement(OscalBaseModel):
+    """
+    Describes how the containing component or capability implements an individual control.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -152,6 +171,9 @@ class ImplementedRequirement(OscalBaseModel):
 
 
 class ControlImplementation(OscalBaseModel):
+    """
+    Defines how the component or capability supports a set of controls.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -181,6 +203,9 @@ class ControlImplementation(OscalBaseModel):
 
 
 class Capability(OscalBaseModel):
+    """
+    A grouping of other components and/or capabilities.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -205,6 +230,9 @@ class Capability(OscalBaseModel):
 
 
 class Status(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -214,6 +242,9 @@ class Status(OscalBaseModel):
 
 
 class SystemComponent(OscalBaseModel):
+    """
+    A defined component that can be part of an implemented system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -257,6 +288,9 @@ class SystemComponent(OscalBaseModel):
 
 
 class DefinedComponent(OscalBaseModel):
+    """
+    A defined component that can be part of an implemented system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -296,6 +330,9 @@ class DefinedComponent(OscalBaseModel):
 
 
 class ComponentDefinition(OscalBaseModel):
+    """
+    A collection of component descriptions, which may optionally be grouped by capability.
+    """
 
     class Config:
         extra = Extra.forbid
