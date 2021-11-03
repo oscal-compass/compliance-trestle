@@ -125,7 +125,7 @@ def create_trestle_project_with_model(
             trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
         )
         assert i._run(args) == 0
-    except BaseException as e:
+    except Exception as e:
         raise TrestleError(f'Error creating trestle project with model: {e}')
     finally:
         os.chdir(cur_dir)
