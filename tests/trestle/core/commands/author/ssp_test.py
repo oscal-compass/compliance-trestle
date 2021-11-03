@@ -143,12 +143,14 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert not header
 
 
-def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('yaml_header', [False, True])
+def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
+    # always start by creating the markdown with the yaml header
     args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir)
     ssp_cmd = SSPGenerate()
-    # run the command for happy path
     assert ssp_cmd._run(args) == 0
+
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
     ac_1 = ac_dir / 'ac-1.md'
 
@@ -161,12 +163,26 @@ def test_ssp_generate_header_edit(tmp_trestle_dir: pathlib.Path) -> None:
     assert tree is not None
     assert expected_header == header
 
-    test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n')
+    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n') == 0
+    assert test_utils.delete_line_in_file(ac_1, 'Corporate') == 0
+
+    # if the yaml header is not written out, the new header should be the one currently in the control
+    # if the yaml header is written out, it is merged with the current header giving priority to current header
+    # so if not written out, the header should have one item added and another deleted
+    # if written out, it should just have the one added item because the deleted one will be put back in
+
+    # tell it not to add the yaml header
+    if not yaml_header:
+        args.yaml_header = None
+
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
     new_expected_header = expected_header
     new_expected_header['control-origination'].append('My new edits')
+
+    if not yaml_header:
+        new_expected_header['control-origination'] = new_expected_header['control-origination'][1:]
     assert new_expected_header == header
 
 

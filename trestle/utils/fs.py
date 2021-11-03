@@ -15,7 +15,6 @@
 # limitations under the License.
 """Common file system utilities."""
 
-import collections
 import json
 import logging
 import os
@@ -540,21 +539,3 @@ def save_top_level_model(
     if not full_model_path.parent.exists():
         full_model_path.parent.mkdir(parents=True, exist_ok=True)
     model.oscal_write(full_model_path)
-
-
-def merge_dicts_deep(a: Dict[Any, Any], b: Dict[Any, Any]) -> None:
-    """Merge dict b into a in a deep manner and handle lists."""
-    for key in b.keys():
-        if (key in a and isinstance(a[key], dict)) and isinstance(b[key], collections.Mapping):
-            merge_dicts_deep(a[key], b)
-        elif isinstance(a[key], list):
-            if isinstance(b[key], list):
-                missing = set(b[key]) - set(a[key])
-                a[key].extend(missing)
-            else:
-                if b[key] not in a[key]:
-                    a[key].append(b[key])
-        elif isinstance(b[key], list):
-            a[key] = [a[key]].extend(b[key])
-        else:
-            a[key] = b[key]

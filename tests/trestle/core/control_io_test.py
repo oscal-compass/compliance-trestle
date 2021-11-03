@@ -201,11 +201,19 @@ def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
         ControlIOReader._load_control_lines(bad_file)
 
 
-def test_broken_yaml_header(testdata_dir: pathlib.Path):
+def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
     """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
     with pytest.raises(TrestleError):
         ControlIOReader._load_control_lines(bad_file)
+
+
+def test_merge_dicts_deep() -> None:
+    """Test deep merge of dicts."""
+    dest = {'a': {'b': 1}}
+    src = {'a': {'b': [2, 3]}}
+    ControlIOWriter.merge_dicts_deep(dest, src)
+    assert dest['a'] == {'b': [1, 2, 3]}
 
 
 def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:

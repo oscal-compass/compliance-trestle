@@ -16,7 +16,7 @@
 import logging
 import pathlib
 import re
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
 
@@ -29,7 +29,6 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
-from trestle.utils import fs
 from trestle.utils.md_writer import MDWriter
 
 logger = logging.getLogger(__name__)
@@ -303,6 +302,31 @@ class ControlIOWriter():
                 prose += ControlIOWriter._get_control_section_part(part, part_name)
         return prose
 
+    @staticmethod
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
+        """
+        Merge dict src into dest in a deep manner and handle lists.
+
+        All contents of dest are retained unless overwritten by new values in src.
+        Any new content in src is added to dest.
+        This changes dest in place
+        """
+        for key in src.keys():
+            if key in dest:
+                if isinstance(dest[key], dict) and isinstance(src[key], dict):
+                    ControlIOWriter.merge_dicts_deep(dest[key], src)
+                elif isinstance(dest[key], list):
+                    if isinstance(src[key], list):
+                        missing = set(src[key]) - set(dest[key])
+                        dest[key].extend(missing)
+                    else:
+                        if src[key] not in dest[key]:
+                            dest[key].append(src[key])
+                elif isinstance(src[key], list):
+                    dest[key] = [dest[key]].extend(src[key])
+            else:
+                dest[key] = src[key]
+
     def write_control(
         self,
         dest_path: pathlib.Path,
@@ -343,7 +367,7 @@ class ControlIOWriter():
         # Need to merge any existing header info with the new one.  Either could be empty.
         merged_header = yaml_header if yaml_header else {}
         if header:
-            fs.merge_dicts_deep(merged_header, header)
+            ControlIOWriter.merge_dicts_deep(merged_header, header)
         self._add_yaml_header(merged_header)
 
         self._add_control_statement(control, group_title)

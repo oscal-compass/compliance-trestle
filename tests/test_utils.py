@@ -190,6 +190,20 @@ def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
     return 1
 
 
+def delete_line_in_file(file_path: pathlib.Path, tag: str) -> int:
+    """Delete a line in a file containing tag."""
+    lines: List[str] = []
+    with file_path.open('r') as f:
+        lines = f.readlines()
+    for ii, line in enumerate(lines):
+        if line.find(tag) >= 0:
+            del lines[ii]
+            with file_path.open('w') as f:
+                f.writelines(lines)
+            return 0
+    return 1
+
+
 def generate_control_list(label: str, count: int) -> List[cat.Control]:
     """Generate a list of controls with indexed names."""
     controls: List[cat.Control] = []

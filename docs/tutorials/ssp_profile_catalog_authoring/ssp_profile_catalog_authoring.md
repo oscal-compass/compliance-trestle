@@ -10,6 +10,8 @@ Trestle has authoring tools that allow conversion of OSCAL documents to markdown
 
 In summary, the `catalog` tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The `profile` tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  Finally, the `ssp` tools allow the addition of implementation prose to a resolved profile catalog, then combine that prose with the Catalog into an OSCAL System Security Plan.
 
+If a yaml header has been added to any of the controls, it will be retained if catalog-generate is run with currently existing markdown for controls.
+
 ## Background on underlying concepts
 
 In order to understand the specific operations handled by these commands, it is helpful to clarify some of the underlying OSCAL structures and how they can be edited in markdown form.  This tutorial should be viewed in the context of the extensive documentation provided by [OSCAL](https://pages.nist.gov/OSCAL).
@@ -271,6 +273,8 @@ After generating the markdown for the resolved profile catalog you may then edit
 lines or modify/remove the lines with `### Part` in them.  They are used to match the added prose to the corresponding control part description.
 
 If you edit the control markdown files you may run `ssp-generate` again and your edits will not be overwritten.  When writing out the markdown for a control, any existing markdown for that control will be read and the response text for each part will be re-inserted into the new markdown file.  If the new markdown has added parts the original responses will be placed correctly in the new file, but if any part is removed from the control in the update then any corresponding prose will be lost.
+
+There is special handling for the yaml header if 'ssp-generate' is run and markdown files for the controls already exist.  If a yaml header is not specified, then any header found in the controls will be retained in the newly generated control.  But if a yaml header is specified, then the contents of that header will be merged with any existing header in a control.  The merge is done in a way to override any values in the original markdown with new values from the provided header, and at the same time any content present in the original header that is not in the new header will be retained.
 
 ## `trestle author ssp-assemble`
 
