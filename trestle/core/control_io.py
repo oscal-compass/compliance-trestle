@@ -325,8 +325,9 @@ class ControlIOWriter():
                 elif isinstance(src[key], list):
                     dest[key] = [dest[key]]
                     dest[key].extend(src[key])
+                else:
+                    dest[key] = src[key]
             else:
-
                 dest[key] = src[key]
 
     def write_control(
