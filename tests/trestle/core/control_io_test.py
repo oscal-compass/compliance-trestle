@@ -216,7 +216,7 @@ def test_merge_dicts_deep() -> None:
     assert dest['a'] == {'b': [1, 2, 3]}
     assert dest['x'] == [5, 6, 7]
     assert dest['z'] == 'foo'
-    assert dest['q'] == 88
+    assert dest['q'] == 99
 
 
 def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:

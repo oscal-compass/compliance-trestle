@@ -325,8 +325,7 @@ class ControlIOWriter():
                 elif isinstance(src[key], list):
                     dest[key] = [dest[key]]
                     dest[key].extend(src[key])
-                else:
-                    dest[key] = src[key]
+                # if the item is in both, leave dest as-is
             else:
                 dest[key] = src[key]
 
