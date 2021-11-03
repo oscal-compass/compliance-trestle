@@ -307,15 +307,16 @@ class ControlIOWriter():
         """
         Merge dict src into dest in a deep manner and handle lists.
 
-        All contents of dest are retained unless overwritten by new values in src.
-        Any new content in src is added to dest.
-        This changes dest in place
+        All contents of dest are retained and new values from src do not change dest.
+        But any new items in src are added to dest.
+        This changes dest in place.
         """
         for key in src.keys():
             if key in dest:
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
                     ControlIOWriter.merge_dicts_deep(dest[key], src[key])
                 elif isinstance(dest[key], list):
+                    # grow dest list for the key by adding new items from src
                     if isinstance(src[key], list):
                         missing = set(src[key]) - set(dest[key])
                         dest[key].extend(missing)
@@ -325,8 +326,9 @@ class ControlIOWriter():
                 elif isinstance(src[key], list):
                     dest[key] = [dest[key]]
                     dest[key].extend(src[key])
-                # if the item is in both, leave dest as-is
+                # if the item is in both, leave dest as-is and ignore the src value
             else:
+                # if the item was not already in dest, add it from src
                 dest[key] = src[key]
 
     def write_control(
