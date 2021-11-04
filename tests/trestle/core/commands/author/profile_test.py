@@ -95,7 +95,7 @@ def test_profile_generate_assemble(
         assert Trestle().run() == 0
         assert ac1_path.exists()
         # insert text in the control after the found ref text in the control
-        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
+        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if dir_exists:
             assembled_prof_dir.mkdir()
@@ -105,7 +105,7 @@ def test_profile_generate_assemble(
         profile_generate = ProfileGenerate()
         profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)
         assert ac1_path.exists()
-        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
+        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name) == 0
