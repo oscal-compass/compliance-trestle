@@ -35,6 +35,10 @@ class AdjustmentJustification(OscalBaseModel):
 
 
 class State1(Enum):
+    """
+    The operational status.
+    """
+
     under_development = 'under-development'
     operational = 'operational'
     disposition = 'disposition'
@@ -42,6 +46,10 @@ class State1(Enum):
 
 
 class State(Enum):
+    """
+    The current operating status.
+    """
+
     operational = 'operational'
     under_development = 'under-development'
     under_major_modification = 'under-major-modification'
@@ -50,6 +58,9 @@ class State(Enum):
 
 
 class SetParameter(OscalBaseModel):
+    """
+    Identifies the parameter that will be set by the enclosed value.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -77,6 +88,9 @@ class Selected(OscalBaseModel):
 
 
 class SecurityImpactLevel(OscalBaseModel):
+    """
+    The overall level of expected impact resulting from unauthorized disclosure, modification, or loss of access to information.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -105,6 +119,9 @@ class SecurityImpactLevel(OscalBaseModel):
 
 
 class Satisfied(OscalBaseModel):
+    """
+    Describes how this system satisfies a responsibility imposed by a leveraged system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -138,6 +155,9 @@ class Satisfied(OscalBaseModel):
 
 
 class Responsibility(OscalBaseModel):
+    """
+    Describes a control implementation responsibility imposed on a leveraging system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -171,6 +191,9 @@ class Responsibility(OscalBaseModel):
 
 
 class Provided(OscalBaseModel):
+    """
+    Describes a capability which may be inherited by a leveraging system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -196,6 +219,9 @@ class Provided(OscalBaseModel):
 
 
 class Inherited(OscalBaseModel):
+    """
+    Describes a control implementation inherited by a leveraging system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -236,6 +262,9 @@ class InformationTypeId(OscalBaseModel):
 
 
 class ImportProfile(OscalBaseModel):
+    """
+    Used to import the OSCAL profile representing the system's control baseline.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -249,6 +278,9 @@ class ImportProfile(OscalBaseModel):
 
 
 class Export(OscalBaseModel):
+    """
+    Identifies content intended for external consumption, such as with leveraged organizations.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -267,6 +299,9 @@ class Export(OscalBaseModel):
 
 
 class Diagram(OscalBaseModel):
+    """
+    A graphic that provides a visual representation the system, or some aspect of it.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -296,6 +331,9 @@ class DateAuthorized(OscalBaseModel):
 
 
 class DataFlow(OscalBaseModel):
+    """
+    A description of the logical flow of information within the system and across its boundaries, optionally supplemented by diagrams that illustrate these flows.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -312,6 +350,9 @@ class DataFlow(OscalBaseModel):
 
 
 class Categorization(OscalBaseModel):
+    """
+    A set of information type identifiers qualified by the given identification system used, such as NIST SP 800-60.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -325,6 +366,9 @@ class Categorization(OscalBaseModel):
 
 
 class ByComponent(OscalBaseModel):
+    """
+    Defines how the referenced component implements a set of controls.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -375,6 +419,9 @@ class Base(OscalBaseModel):
 
 
 class AvailabilityImpact(OscalBaseModel):
+    """
+    The expected level of impact resulting from the disruption of access to or use of the described information or the information system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -387,6 +434,9 @@ class AvailabilityImpact(OscalBaseModel):
 
 
 class AuthorizationBoundary(OscalBaseModel):
+    """
+    A description of this system's authorization boundary, optionally supplemented by diagrams that illustrate the authorization boundary.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -407,6 +457,9 @@ class AuthorizationBoundary(OscalBaseModel):
 
 
 class Status1(OscalBaseModel):
+    """
+    Describes the operational status of the system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -416,6 +469,9 @@ class Status1(OscalBaseModel):
 
 
 class Status(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -425,6 +481,9 @@ class Status(OscalBaseModel):
 
 
 class SystemComponent(OscalBaseModel):
+    """
+    A defined component that can be part of an implemented system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -468,6 +527,9 @@ class SystemComponent(OscalBaseModel):
 
 
 class Statement(OscalBaseModel):
+    """
+    Identifies which statements within a control are addressed.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -497,6 +559,9 @@ class Statement(OscalBaseModel):
 
 
 class ImplementedRequirement(OscalBaseModel):
+    """
+    Describes how the system satisfies an individual control.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -528,6 +593,9 @@ class ImplementedRequirement(OscalBaseModel):
 
 
 class ControlImplementation(OscalBaseModel):
+    """
+    Describes how the system satisfies a set of controls.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -543,6 +611,9 @@ class ControlImplementation(OscalBaseModel):
 
 
 class NetworkArchitecture(OscalBaseModel):
+    """
+    A description of the system's network architecture, optionally supplemented by diagrams that illustrate the network architecture.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -559,6 +630,9 @@ class NetworkArchitecture(OscalBaseModel):
 
 
 class LeveragedAuthorization(OscalBaseModel):
+    """
+    A description of another authorized system from which this system inherits capabilities that satisfy security requirements. Another term for this concept is a common control provider.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -590,6 +664,9 @@ class LeveragedAuthorization(OscalBaseModel):
 
 
 class SystemImplementation(OscalBaseModel):
+    """
+    Provides information as to how the system is implemented.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -604,6 +681,9 @@ class SystemImplementation(OscalBaseModel):
 
 
 class IntegrityImpact(OscalBaseModel):
+    """
+    The expected level of impact resulting from the unauthorized modification of the described information.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -616,6 +696,9 @@ class IntegrityImpact(OscalBaseModel):
 
 
 class ConfidentialityImpact(OscalBaseModel):
+    """
+    The expected level of impact resulting from the unauthorized disclosure of the described information.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -628,6 +711,9 @@ class ConfidentialityImpact(OscalBaseModel):
 
 
 class InformationType(OscalBaseModel):
+    """
+    Contains details about one information type that is stored, processed, or transmitted by the system, such as privacy information, and those defined in NIST SP 800-60.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -678,6 +764,9 @@ class InformationType(OscalBaseModel):
 
 
 class SystemInformation(OscalBaseModel):
+    """
+    Contains details about all information types that are stored, processed, or transmitted by the system, such as privacy information, and those defined in NIST SP 800-60.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -688,6 +777,9 @@ class SystemInformation(OscalBaseModel):
 
 
 class SystemCharacteristics(OscalBaseModel):
+    """
+    Contains the characteristics of the system, such as its name, purpose, and security impact level.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -727,6 +819,9 @@ class SystemCharacteristics(OscalBaseModel):
 
 
 class SystemSecurityPlan(OscalBaseModel):
+    """
+    A system security plan, such as those described in NIST SP 800-18
+    """
 
     class Config:
         extra = Extra.forbid

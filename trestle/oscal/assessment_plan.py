@@ -26,6 +26,9 @@ import trestle.oscal.common as common
 
 
 class TermsAndConditions(OscalBaseModel):
+    """
+    Used to define various terms and conditions under which an assessment, described by the plan, can be performed. Each child part defines a different type of term or condition.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -34,6 +37,10 @@ class TermsAndConditions(OscalBaseModel):
 
 
 class State1(Enum):
+    """
+    The operational status.
+    """
+
     under_development = 'under-development'
     operational = 'operational'
     disposition = 'disposition'
@@ -41,11 +48,18 @@ class State1(Enum):
 
 
 class State(Enum):
+    """
+    An indication as to whether the objective is satisfied or not.
+    """
+
     satisfied = 'satisfied'
     not_satisfied = 'not-satisfied'
 
 
 class SetParameter(OscalBaseModel):
+    """
+    Identifies the parameter that will be set by the enclosed value.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -65,6 +79,9 @@ class SetParameter(OscalBaseModel):
 
 
 class SelectControlById(OscalBaseModel):
+    """
+    Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -81,7 +98,28 @@ class SelectControlById(OscalBaseModel):
     statement_ids: Optional[List[common.StatementId]] = Field(None, alias='statement-ids')
 
 
+class RelatedObservation(OscalBaseModel):
+    """
+    Relates the finding to a set of referenced observations that were used to determine the finding.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    observation_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='observation-uuid',
+        description='References an observation defined in the list of observations.',
+        title='Observation Universally Unique Identifier Reference',
+    )
+
+
 class Origin(OscalBaseModel):
+    """
+    Identifies the source of the finding, such as a tool, interviewed person, or activity.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -99,6 +137,9 @@ class Method(OscalBaseModel):
 
 
 class Observation(OscalBaseModel):
+    """
+    Describes an individual observation.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -139,6 +180,9 @@ class Observation(OscalBaseModel):
 
 
 class Entry(OscalBaseModel):
+    """
+    Identifies an individual risk response that occurred as part of managing an identified risk.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -177,6 +221,9 @@ class Entry(OscalBaseModel):
 
 
 class ControlSelection(OscalBaseModel):
+    """
+    Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -200,6 +247,9 @@ class ControlSelection(OscalBaseModel):
 
 
 class Characterization(OscalBaseModel):
+    """
+    A collection of descriptive data about the containing object from a specific origin.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -211,6 +261,9 @@ class Characterization(OscalBaseModel):
 
 
 class Status1(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -220,6 +273,9 @@ class Status1(OscalBaseModel):
 
 
 class SystemComponent(OscalBaseModel):
+    """
+    A defined component that can be part of an implemented system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -263,6 +319,9 @@ class SystemComponent(OscalBaseModel):
 
 
 class Status(OscalBaseModel):
+    """
+    A determination of if the objective is satisfied or not within a given system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -284,6 +343,9 @@ class Status(OscalBaseModel):
 
 
 class FindingTarget(OscalBaseModel):
+    """
+    Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -325,6 +387,9 @@ class FindingTarget(OscalBaseModel):
 
 
 class RiskLog(OscalBaseModel):
+    """
+    A log of all risk-related tasks taken.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -333,6 +398,9 @@ class RiskLog(OscalBaseModel):
 
 
 class ReviewedControls(OscalBaseModel):
+    """
+    Identifies the controls being assessed and their control objectives.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -352,6 +420,9 @@ class ReviewedControls(OscalBaseModel):
 
 
 class Response(OscalBaseModel):
+    """
+    Describes either recommended or an actual plan for addressing the risk.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -388,6 +459,9 @@ class Response(OscalBaseModel):
 
 
 class Risk(OscalBaseModel):
+    """
+    An identified risk.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -434,10 +508,13 @@ class Risk(OscalBaseModel):
         description='A log of all risk-related tasks taken.',
         title='Risk Log',
     )
-    related_observations: Optional[List[common.RelatedObservation]] = Field(None, alias='related-observations')
+    related_observations: Optional[List[RelatedObservation]] = Field(None, alias='related-observations')
 
 
 class AssessmentAssets(OscalBaseModel):
+    """
+    Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -447,6 +524,9 @@ class AssessmentAssets(OscalBaseModel):
 
 
 class Step(OscalBaseModel):
+    """
+    Identifies an individual step in a series of steps related to an activity, such as an assessment test or examination procedure.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -473,6 +553,9 @@ class Step(OscalBaseModel):
 
 
 class Activity(OscalBaseModel):
+    """
+    Identifies an assessment or related process that can be performed. In the assessment plan, this is an intended activity which may be associated with an assessment task. In the assessment results, this an activity that was actually performed as part of an assessment.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -504,6 +587,9 @@ class Activity(OscalBaseModel):
 
 
 class LocalDefinitions(OscalBaseModel):
+    """
+    Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -517,6 +603,9 @@ class LocalDefinitions(OscalBaseModel):
 
 
 class AssessmentPlan(OscalBaseModel):
+    """
+    An assessment plan, such as those provided by a FedRAMP assessor.
+    """
 
     class Config:
         extra = Extra.forbid
