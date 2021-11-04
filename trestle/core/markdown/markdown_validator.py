@@ -35,7 +35,8 @@ class MarkdownValidator:
         template_tree: MarkdownNode,
         validate_yaml_header: bool,
         validate_md_body: bool,
-        md_header_to_validate: Optional[str] = None
+        md_header_to_validate: Optional[str] = None,
+        template_version: Optional[bool] = False,
     ):
         """Initialize markdown validator."""
         self._validate_yaml_header = validate_yaml_header
@@ -44,6 +45,7 @@ class MarkdownValidator:
         self.template_header = template_header
         self.template_tree = template_tree
         self.template_path = tmp_path
+        self.template_version = template_version
 
     def is_valid_against_template(
         self, instance: pathlib.Path, instance_header: Dict, instance_tree: MarkdownNode
@@ -70,6 +72,17 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate is valid against the template.
         """
+        if self.template_version:
+            if 'x-trestle-template-version' in self.template_header.keys():
+                if self.template_header['x-trestle-template-version'] not in str(instance):
+                    return False
+                if self._validate_yaml_header:
+                    if 'Version' in self.template_header.keys():
+                        return self.template_header['Version'] == self.template_header['x-trestle-template-version']
+                    else:
+                        return False
+            else:
+                return False
         if self._validate_yaml_header:
             headers_match = self.compare_keys(self.template_header, instance_header)
 
@@ -93,14 +106,18 @@ class MarkdownValidator:
                 return False
 
         if self._validate_md_body:
+            instance_keys = instance_tree.content.subnodes_keys
+            template_keys = self.template_tree.content.subnodes_keys
+            if len(template_keys) > len(instance_keys):
+                logger.info(f'Headings in the instance: {instance} were removed.')
+                return False
+
             instance_lvl1_keys = list(instance_tree.get_all_headers_for_level(1))
             template_lvl1_keys = list(self.template_tree.get_all_headers_for_level(1))
             if len(template_lvl1_keys) < len(instance_lvl1_keys):
                 logger.info(f'New headers of level 1 were added to the markdown instance: {instance}. ')
                 return False
 
-            instance_keys = instance_tree.content.subnodes_keys
-            template_keys = self.template_tree.content.subnodes_keys
             is_valid = self._validate_headers(instance, template_keys, instance_keys)
             if not is_valid:
                 return False

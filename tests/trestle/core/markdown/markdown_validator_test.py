@@ -360,3 +360,65 @@ def test_md_validator_substitutions(
     md_api.load_validator_with_template(template_path, header_validate, validate_md_body)
     result = md_api.validate_instance(instance_path)
     assert result == status
+
+
+@pytest.mark.parametrize(
+    'template_path, status',
+    [
+        (
+            pathlib.Path('tests/data/author/versions/bad_template_with_version_outside_structure.md'),
+            False,
+        ), (
+            pathlib.Path('tests/data/author/versions/1.0.0/bad_template_wrong_folder.md'),
+            False,
+        ), (
+            pathlib.Path('tests/data/author/versions/1.1.0/bad_template_mismatched_versions.md'),
+            False,
+        ), (
+            pathlib.Path('tests/data/author/versions/1.0.0/good_template.md'),
+            True,
+        ), (
+            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
+            True,
+        )
+    ]
+)
+def test_template_version(template_path: pathlib.Path, status: bool) -> None:
+    """Test for x-trestle-template-version header in templates."""
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, True, True, template_version=True)
+    result = md_api.validate_instance(template_path)
+    assert result == status
+
+
+@pytest.mark.parametrize(
+    'template_path, instance_path, status',
+    [
+        (
+            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('tests/data/author/versions/bad_instance_with_version_outside_structure.md'),
+            False,
+        ),
+        (
+            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('tests/data/author/versions/1.0.0/bad_instance_wrong_folder.md'),
+            False,
+        ),
+        (
+            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('tests/data/author/versions/1.1.0/good_instance.md'),
+            True,
+        ),
+        (
+            pathlib.Path('tests/data/author/versions/1.1.0/good_template.md'),
+            pathlib.Path('tests/data/author/versions/1.1.0/bad_instance_mismatched_versions.md'),
+            False,
+        )
+    ]
+)
+def test_instance_template_version(template_path: pathlib.Path, instance_path: pathlib.Path, status: bool) -> None:
+    """Test for x-trestle-template-version header in instances."""
+    md_api = MarkdownAPI()
+    md_api.load_validator_with_template(template_path, False, True, template_version=True)
+    result = md_api.validate_instance(instance_path)
+    assert result == status

@@ -197,6 +197,18 @@ Validate the headers in markdown and metadata in drawio files.
 
 Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author headers`
 
 Trestle author headers supports a different usecase that of `docs` and `folders` above: Some content is governed, however, it the content is non-standardized.
