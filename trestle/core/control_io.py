@@ -230,7 +230,7 @@ class ControlIOWriter():
                             if not did_write_part:
                                 self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
                                 # insert extra line to make mdformat happy
-                                self._md_file._add_line_raw()
+                                self._md_file._add_line_raw('')
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
@@ -291,7 +291,7 @@ class ControlIOWriter():
             '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
         )
         # next is to make mdformat happy
-        self._md_file._add_line_raw()
+        self._md_file._add_line_raw('')
 
         for add in adds:
             name, prose = add
