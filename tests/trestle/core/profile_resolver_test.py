@@ -135,10 +135,14 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
     assert control_a2.parts[0].id == 'ac-2_implgdn_lev1'
 
 
-def test_profile_resolver_merge(sample_catalog_rich_controls) -> None:
+def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test profile resolver merge."""
     profile = gens.generate_sample_model(prof.Profile)
+    method = prof.Method.merge
+    combine = prof.Combine(method=method)
+    profile.merge = prof.Merge(combine=combine)
     merge = ProfileResolver.Merge(profile)
+
     merged = gens.generate_sample_model(cat.Catalog)
     new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
     catalog_interface = CatalogInterface(new_merged)
@@ -149,6 +153,20 @@ def test_profile_resolver_merge(sample_catalog_rich_controls) -> None:
     new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
     catalog_interface = CatalogInterface(new_merged)
     assert catalog_interface.get_count_of_controls(True) == 5
+
+    part = com.Part(name='foo', title='added part')
+    control_id = sample_catalog_rich_controls.controls[0].id
+    sample_catalog_rich_controls.controls[0].parts.append(part)
+    final_merged = merge._merge_catalog(new_merged, sample_catalog_rich_controls)
+    catalog_interface = CatalogInterface(final_merged)
+    assert catalog_interface.get_count_of_controls(True) == 5
+    assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
+
+    # now force a merge with keep
+    profile.merge = None
+    merge_keep = ProfileResolver.Merge(profile)
+    merged_keep = merge_keep._merge_catalog(new_merged, sample_catalog_rich_controls)
+    assert CatalogInterface(merged_keep).get_count_of_controls(True) == 10
 
 
 def test_profile_resolver_failures() -> None:

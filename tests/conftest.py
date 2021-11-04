@@ -132,7 +132,8 @@ def sample_catalog_rich_controls():
     catalog_obj = gens.generate_sample_model(cat.Catalog)
     control_a = cat.Control(id='control_a', title='this is control a')
     control_b = cat.Control(id='control_b', title='this is control b')
-    control_c = cat.Control(id='control_c', title='this is control c')
+    part = common.Part(id='cpart', name='name.c.part')
+    control_c = cat.Control(id='control_c', title='this is control c', parts=[part])
     control_d = cat.Control(id='control_d', title='this is control d')
     control_d1 = cat.Control(id='control_d1', title='this is control d1')
     control_d.controls = [control_d1]
