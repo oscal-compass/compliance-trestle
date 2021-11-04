@@ -210,23 +210,69 @@ class ProfileResolver():
             logger.debug('merge filter initialize')
             self._profile = profile
 
+        def _merge_controls(self, dest: cat.Control, src: cat.Control) -> None:
+            """Use when the merge method is merge."""
+            dest_parts = []
+            if dest.parts:
+                dest_parts = [part.name for part in dest.parts]
+            if src.parts:
+                for part in src.parts:
+                    if part.name not in dest_parts:
+                        dest.parts.append(part)
+            if src.controls:
+                if not dest.controls:
+                    dest.controls = src.controls
+                else:
+                    self._merge_lists(dest.controls, src.controls, prof.Method.merge)
+
+        def _merge_lists(
+            self, merged_list: List[cat.Control], src_list: List[cat.Control], method: prof.Method
+        ) -> None:
+            merged_ids = [control.id for control in merged_list]
+            for src in src_list:
+                if src.id not in merged_ids:
+                    # this applies to all methods: keep, use-first and merge
+                    merged_list.append(src)
+                else:
+                    if method == prof.Method.merge:
+                        index = merged_ids.index(src.id)
+                        self._merge_controls(merged_list[index], src)
+                    elif method == prof.Method.keep:
+                        merged_list.append(src)
+                    # if anything else regard as use-first and only keep first one, ignoring new one
+
         def _merge_catalog(self, merged: cat.Catalog, catalog: cat.Catalog) -> cat.Catalog:
             """Merge the controls in the catalog into merged catalog."""
+            merge_method = prof.Method.keep
+            if self._profile.merge is not None:
+                if self._profile.merge.combine is None:
+                    logger.warning('Profile has merge but no combine so defaulting to combine/merge.')
+                    merge_method = prof.Method.merge
+                else:
+                    merge_combine = self._profile.merge.combine
+                    if merge_combine.method is None:
+                        logger.warning('Profile has merge combine but no method.  Defaulting to merge.')
+                        merge_method = prof.Method.merge
+                    else:
+                        # use-first, merge, or keep
+                        merge_method = merge_combine.method
+
             if merged is None:
                 return catalog
             if catalog.groups is not None:
                 if merged.groups is None:
                     merged.groups = []
                 for group in catalog.groups:
+                    # FIXME this should recurse for groups containing groups
                     if group.id not in [g.id for g in merged.groups]:
                         merged.groups.append(cat.Group(id=group.id, title=group.title, controls=[]))
                     index = [g.id for g in merged.groups].index(group.id)
-                    merged.groups[index].controls.extend(group.controls)
+                    self._merge_lists(merged.groups[index].controls, group.controls, merge_method)
             if catalog.controls:
                 if not merged.controls:
                     merged.controls = catalog.controls
                 else:
-                    merged.controls.extend(catalog.controls)
+                    self._merge_lists(merged.controls, catalog.controls, merge_method)
             return merged
 
         def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
