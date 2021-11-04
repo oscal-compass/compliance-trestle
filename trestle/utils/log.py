@@ -38,7 +38,7 @@ class SpecificLevelFilter(logging.Filter):
 
     def filter(self, log_record: logging.LogRecord) -> bool:  # noqa: A003
         """Filter log messages."""
-        return log_record.levelno <= self._level
+        return log_record.levelno == self._level
 
 
 def set_global_logging_levels(level: int = logging.INFO) -> None:
@@ -46,8 +46,11 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
 
     Should only be invoked by the CLI classes or similar.
     """
+    # This line stops default root loggers setup for a python context from logging extra messages.
+    # DO NOT USE THIS COMMAND directly from an SDK. Handle logs levels based on your own application.
+    _logger.propagate = False
     # Remove handlers
-    _logger.handlers = []
+    _logger.handlers.clear()
     # set global level
     _logger.setLevel(level)
     # Create standard out
@@ -62,8 +65,9 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     console_error_handler = logging.StreamHandler(sys.stderr)
     console_error_handler.setLevel(logging.WARNING)
     # create formatters
-    error_formatter = logging.Formatter('%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s')
-    console_debug_handler.setFormatter(error_formatter)
+    error_formatter = logging.Formatter('%(name)s:%(lineno)d %(levelname)s: %(message)s')
+    debug_formatter = logging.Formatter('DEBUG %(name)s:%(lineno)d %(levelname)s: %(message)s')
+    console_debug_handler.setFormatter(debug_formatter)
     console_error_handler.setFormatter(error_formatter)
     # add ch to logger
     _logger.addHandler(console_out_handler)

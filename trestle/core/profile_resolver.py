@@ -438,8 +438,8 @@ class ProfileResolver():
                 elif position == prof.Position.ending:
                     input_list.extend(new)
                     return True
-                raise TrestleError('Position argument expected.')
-            for index in range(input_list):
+                raise TrestleError('Position argument must be starting or ending if ID is not provided')
+            for index in range(len(input_list)):
                 if input_list[index].id == by_id:
                     if position == prof.Position.after:
                         for offset, new_item in enumerate(new):
@@ -449,21 +449,31 @@ class ProfileResolver():
                         for offset, new_item in enumerate(new):
                             input_list.insert(index + offset, new_item)
                         return True
-                    # this type introspection assumes if by-id is passed that we need to check down one list.
-                    # it is not a generic recursion technique.
-                    for field_name in input_list[index].__field_set__:
-                        attr = getattr(input_list[index], field_name)
-                        #
-                        if type(attr) == list and type(attr[0]) == type(input_list[index]):  # noqa: E721 - Exact match.
-                            if position == prof.Position.starting:
-                                for offset, new_item in enumerate(new):
-                                    attr.insert(offset, new_item)
-                            else:
-                                attr.extend(new)
-                            setattr(input_list[index], field_name, attr)
-                            return True
-            # Here we have set
             return False
+
+        @staticmethod
+        def _add_props_to_parts(parts: List[common.Part], add: prof.Add) -> bool:
+            """
+            Recursively add props to parts as required. In place operation.
+
+            Assume the ID can either be of the part of a prop in the part.
+            """
+            # try on parts first
+            updated = False
+            for idx, part in enumerate(parts):
+                if add.by_id == part.id:
+                    updated = ProfileResolver.Modify._add_to_list(part.props, add.props, add.position)
+                    if updated:
+                        parts[idx] = part
+                        return updated
+                # Need to check here on empty lists being returned.
+                if part.parts is not None:
+                    updated = ProfileResolver.Modify._add_props_to_parts(part.parts, add)
+                    # Add here as well
+                    if updated:
+                        parts[idx] = part
+                        return updated
+            return updated
 
         @staticmethod
         def _add_props_to_control(control: cat.Control, add: prof.Add) -> None:
@@ -474,7 +484,7 @@ class ProfileResolver():
                 add.position = prof.Position.ending
             if add.by_id == control.id:
                 updated = ProfileResolver.Modify._add_to_list(control.props, add.props, add.position)
-            elif not updated:
+            else:
                 # Try props in params
                 if control.params:
                     for idx, param in enumerate(control.params):
@@ -484,17 +494,10 @@ class ProfileResolver():
                                 control.params[idx] = param
                                 continue
                 if control.parts and not updated:
-                    for idx, part in enumerate(control.parts):
-                        if part.id == add.by_id:
-                            updated = ProfileResolver.Modify._add_to_list(part.props, add.props, add.position)
-                            if updated:
-                                control.parts[idx] = part
-                                continue
-
+                    updated = ProfileResolver.Modify._add_props_to_parts(control.parts, add)
             if not updated:
-                raise TrestleError(
-                    f'Did not find the correct Id to add props for control {control.id} and id {add.by_id}'
-                )
+                # FIXME:
+                logger.warning(f'Did not find the correct ID to add props for control {control.id} and id {add.by_id}')
 
         @staticmethod
         def _add_to_control(add: prof.Add, control: cat.Control) -> None:
@@ -505,7 +508,7 @@ class ProfileResolver():
             # Add parts
             if add.parts is not None:
                 if add.position is None:
-                    logger.warning(f'Add for parts has no position.  Defaulting to after for control {control.id}')
+                    logger.error(f'Add for parts has no position.  Defaulting to after for control {control.id}')
                     add.position = prof.Position.after
                 ProfileResolver.Modify._add_to_parts(control, add.by_id, add.parts, add.position)
 
