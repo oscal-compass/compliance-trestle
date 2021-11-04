@@ -57,7 +57,7 @@ def test_catalog_generate_assemble(
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
-        test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         if dir_exists:
             assembled_cat_dir.mkdir()
@@ -67,7 +67,7 @@ def test_catalog_generate_assemble(
         catalog_generate = CatalogGenerate()
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
         assert (markdown_path / 'ac/ac-1.md').exists()
-        test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
         CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)

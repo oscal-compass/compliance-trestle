@@ -125,7 +125,7 @@ def create_trestle_project_with_model(
             trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
         )
         assert i._run(args) == 0
-    except BaseException as e:
+    except Exception as e:
         raise TrestleError(f'Error creating trestle project with model: {e}')
     finally:
         os.chdir(cur_dir)
@@ -172,10 +172,10 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
+def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     r"""Insert text lines after line containing tag.
 
-    Return 0 on success, 1 tag not found.
+    Return True on success, False tag not found.
     Text is a string with appropriate \n line endings.
     """
     lines: List[str] = []
@@ -186,8 +186,22 @@ def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
             lines.insert(ii + 1, text)
             with file_path.open('w') as f:
                 f.writelines(lines)
-            return 0
-    return 1
+            return True
+    return False
+
+
+def delete_line_in_file(file_path: pathlib.Path, tag: str) -> bool:
+    """Delete a line in a file containing tag."""
+    lines: List[str] = []
+    with file_path.open('r') as f:
+        lines = f.readlines()
+    for ii, line in enumerate(lines):
+        if line.find(tag) >= 0:
+            del lines[ii]
+            with file_path.open('w') as f:
+                f.writelines(lines)
+            return True
+    return False
 
 
 def generate_control_list(label: str, count: int) -> List[cat.Control]:
