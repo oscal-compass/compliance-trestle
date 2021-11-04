@@ -92,13 +92,13 @@ class SSPGenerate(AuthorCommonCommand):
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
             catalog_interface = CatalogInterface(resolved_catalog)
         except Exception as e:
-            logger.warning(f'Error creating the resolved profile catalog: {e}')
+            logger.error(f'Error creating the resolved profile catalog: {e}')
             logger.debug(traceback.print_exc())
             return 1
         try:
             catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
         except Exception as e:
-            logger.warning(f'Error writing the catalog as markdown: {e}')
+            logger.error(f'Error writing the catalog as markdown: {e}')
             logger.debug(traceback.print_exc())
             return 1
 

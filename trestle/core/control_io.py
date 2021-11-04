@@ -323,8 +323,15 @@ class ControlIOWriter():
                 elif isinstance(dest[key], list):
                     # grow dest list for the key by adding new items from src
                     if isinstance(src[key], list):
-                        missing = set(src[key]) - set(dest[key])
-                        dest[key].extend(missing)
+                        try:
+                            # Simple types (e.g. lists of strings) will get merged neatly
+                            missing = set(src[key]) - set(dest[key])
+                            dest[key].extend(missing)
+                        except TypeError:
+                            # This is a complex type - use simplistic safe behaviour
+                            logger.debug('Ignoring complex types within lists when merging dictionaries.')
+                            pass
+
                     else:
                         if src[key] not in dest[key]:
                             dest[key].append(src[key])
