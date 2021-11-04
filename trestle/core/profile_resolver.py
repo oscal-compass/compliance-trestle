@@ -231,7 +231,7 @@ class ProfileResolver():
             merged_ids = [control.id for control in merged_list]
             for src in src_list:
                 if src.id not in merged_ids:
-                    # this applies to keep and use-first
+                    # this applies to all methods: keep, use-first and merge
                     merged_list.append(src)
                 else:
                     if method == prof.Method.merge:
