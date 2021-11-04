@@ -58,6 +58,7 @@ def generate_model(full_name, out_full_name):
         'datamodel-codegen',
         '--disable-timestamp',
         '--disable-appending-item-suffix',
+        '--use-schema-description',
         '--input-file-type',
         'jsonschema',
         '--input',
