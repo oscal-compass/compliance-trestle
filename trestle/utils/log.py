@@ -47,7 +47,7 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     Should only be invoked by the CLI classes or similar.
     """
     # This line stops default root loggers setup for a python context from logging extra messages.
-    # DO NOT USE THIS COMMAND directly from an SDK. Handle logs levels based on your own application.
+    # DO NOT USE THIS COMMAND directly from an SDK. Handle logs levels based on your own application
     _logger.propagate = False
     # Remove handlers
     _logger.handlers.clear()
@@ -66,7 +66,7 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     console_error_handler.setLevel(logging.WARNING)
     # create formatters
     error_formatter = logging.Formatter('%(name)s:%(lineno)d %(levelname)s: %(message)s')
-    debug_formatter = logging.Formatter('DEBUG %(name)s:%(lineno)d %(levelname)s: %(message)s')
+    debug_formatter = logging.Formatter('%(name)s:%(lineno)d %(levelname)s: %(message)s')
     console_debug_handler.setFormatter(debug_formatter)
     console_error_handler.setFormatter(error_formatter)
     # add ch to logger
