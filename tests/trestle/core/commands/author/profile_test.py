@@ -22,6 +22,8 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from ruamel.yaml import YAML
+
 from tests import test_utils
 
 from trestle.cli import Trestle
@@ -65,11 +67,17 @@ multi_guidance_dict = {
 }
 
 
+@pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_profile_generate_assemble(
-    guid_dict: Dict, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    add_header: bool,
+    guid_dict: Dict,
+    use_cli: bool,
+    dir_exists: bool,
+    tmp_trestle_dir: pathlib.Path,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test the profile markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
@@ -87,10 +95,13 @@ def test_profile_generate_assemble(
     markdown_path = tmp_trestle_dir / md_name
     ac1_path = markdown_path / 'ac/ac-1.md'
     assembled_prof_dir = tmp_trestle_dir / f'profiles/{assembled_prof_name}'
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
+        if add_header:
+            test_args.extend(['-y', str(yaml_header_path)])
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
@@ -103,7 +114,11 @@ def test_profile_generate_assemble(
         assert Trestle().run() == 0
     else:
         profile_generate = ProfileGenerate()
-        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)
+        yaml_header = {}
+        if add_header:
+            yaml = YAML(typ='safe')
+            yaml_header = yaml.load(yaml_header_path.open('r'))
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header)
         assert ac1_path.exists()
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         if dir_exists:

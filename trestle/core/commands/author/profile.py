@@ -20,6 +20,9 @@ import shutil
 import traceback
 from typing import List
 
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
+
 import trestle.oscal.profile as prof
 import trestle.utils.fs as fs
 import trestle.utils.log as log
@@ -42,6 +45,8 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated profile markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        yaml_help_str = 'Path to the optional yaml header file'
+        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -51,18 +56,28 @@ class ProfileGenerate(AuthorCommonCommand):
                 logger.warning(f'{args.output} is not an allowed directory name')
                 return 1
 
+            yaml_header: dict = {}
+            if 'yaml_header' in args and args.yaml_header is not None:
+                try:
+                    logging.debug(f'Loading yaml header file {args.yaml_header}')
+                    yaml = YAML(typ='safe')
+                    yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+                except YAMLError as e:
+                    logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
+                    return 1
+
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
             markdown_path = trestle_root / args.output
 
-            return self.generate_markdown(trestle_root, profile_path, markdown_path)
+            return self.generate_markdown(trestle_root, profile_path, markdown_path, yaml_header)
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
             logger.debug(traceback.format_exc())
             return 1
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, profile_path: pathlib.Path, markdown_path: pathlib.Path
+        self, trestle_root: pathlib.Path, profile_path: pathlib.Path, markdown_path: pathlib.Path, yaml_header: dict
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -78,7 +93,7 @@ class ProfileGenerate(AuthorCommonCommand):
             _, _, profile = load_distributed(profile_path, trestle_root)
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False, True, profile)
+            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False, True, profile)
         except TrestleError as e:
             logger.warning(f'Error generating the catalog as markdown: {e}')
             return 1

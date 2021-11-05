@@ -21,6 +21,8 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from ruamel.yaml import YAML
+
 from tests import test_utils
 
 from trestle.cli import Trestle
@@ -32,10 +34,11 @@ from trestle.oscal.common import Part, Property
 markdown_name = 'my_md'
 
 
+@pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
-    use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    add_header: bool, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
@@ -51,9 +54,12 @@ def test_catalog_generate_assemble(
     ac1_path = markdown_path / 'ac/ac-1.md'
     new_prose = 'My added item'
     assembled_cat_dir = tmp_trestle_dir / f'catalogs/{assembled_cat_name}'
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
+        if add_header:
+            test_args.extend(['-y', str(yaml_header_path)])
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
@@ -65,7 +71,11 @@ def test_catalog_generate_assemble(
         assert Trestle().run() == 0
     else:
         catalog_generate = CatalogGenerate()
-        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
+        yaml_header = {}
+        if add_header:
+            yaml = YAML(typ='safe')
+            yaml_header = yaml.load(yaml_header_path.open('r'))
+        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header)
         assert (markdown_path / 'ac/ac-1.md').exists()
         assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         if dir_exists:

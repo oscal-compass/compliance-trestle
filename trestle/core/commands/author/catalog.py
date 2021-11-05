@@ -18,6 +18,9 @@ import logging
 import pathlib
 import shutil
 
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
+
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
@@ -38,6 +41,8 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated catalog markdown folder'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        yaml_help_str = 'Path to the optional yaml header file'
+        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -46,20 +51,30 @@ class CatalogGenerate(AuthorCommonCommand):
             logger.warning(f'{args.output} is not an allowed directory name')
             return 1
 
+        yaml_header: dict = {}
+        if 'yaml_header' in args and args.yaml_header is not None:
+            try:
+                logging.debug(f'Loading yaml header file {args.yaml_header}')
+                yaml = YAML(typ='safe')
+                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+            except YAMLError as e:
+                logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
+                return 1
+
         catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
 
         markdown_path = trestle_root / args.output
 
-        return self.generate_markdown(trestle_root, catalog_path, markdown_path)
+        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header)
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path
+        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path, yaml_header: dict
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False)
+            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False)
         except Exception as e:
             raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
         return 0
