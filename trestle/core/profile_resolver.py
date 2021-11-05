@@ -101,16 +101,40 @@ class ProfileResolver():
         def _find_needed_control_ids(self) -> List[str]:
             """Get list of control_ids needed by profile and corresponding groups."""
             control_ids: List[str] = []
+            exclude_ids: List[str] = []
 
             if self._import.include_controls is not None:
                 for include_control in self._import.include_controls:
-                    new_ids = [withid.__root__ for withid in include_control.with_ids]
-                    control_ids.extend(new_ids)
+                    if include_control.matching is not None:
+                        raise TrestleError('Profiles with include-controls based on matching are not supported.')
+                    include_children = include_control.with_child_controls == prof.WithChildControls.yes
+                    if include_control.with_ids:
+                        new_ids = [withid.__root__ for withid in include_control.with_ids]
+                        for id_ in new_ids:
+                            control_ids.append(id_)
+                            if include_children:
+                                control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
             else:
+                if self._import.include_all is None:
+                    logger.warning('Profile does not specify include-controls, so including all.')
                 control_ids = self._catalog_interface.get_control_ids()
 
             if self._import.exclude_controls is not None:
-                raise TrestleError('exclude controls is not currently supported')
+                for exclude_control in self._import.exclude_controls:
+                    if exclude_control.matching is not None:
+                        raise TrestleError('Profiles with exclude-controls based on matching are not supported.')
+                    exclude_children = exclude_control.with_child_controls == prof.WithChildControls.yes
+                    if exclude_control.with_ids:
+                        new_ids = [withid.__root__ for withid in exclude_control.with_ids]
+                        for id_ in new_ids:
+                            exclude_ids.append(id_)
+                            if exclude_children:
+                                exclude_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
+
+            if exclude_ids:
+                if not set(control_ids).issuperset(set(exclude_ids)):
+                    raise TrestleError('Profile has excluded controls that are not in the included set.')
+                control_ids = list(set(control_ids) - set(exclude_ids))
 
             return control_ids
 
@@ -241,8 +265,36 @@ class ProfileResolver():
                         merged_list.append(src)
                     # if anything else regard as use-first and only keep first one, ignoring new one
 
+        def _merge_groups(self, dest: List[cat.Group], src: List[cat.Group], merge_method: prof.Method) -> None:
+            for group in src:
+                if group.id not in [g.id for g in dest]:
+                    # clone the group except for controls
+                    new_group = cat.Group(
+                        id=group.id,
+                        title=group.title,
+                        controls=[],
+                        class_=group.class_,
+                        params=group.params,
+                        props=group.props,
+                        links=group.links,
+                        parts=group.parts
+                        # insert_controls=group.insert_controls # FIXME need to do this
+                    )
+                    dest.append(new_group)
+                index = [g.id for g in dest].index(group.id)
+                self._merge_lists(dest[index].controls, group.controls, merge_method)
+
         def _merge_catalog(self, merged: cat.Catalog, catalog: cat.Catalog) -> cat.Catalog:
             """Merge the controls in the catalog into merged catalog."""
+            # no merge means keep, including dups
+            # same for merge with no combine
+            # groups are merged only if separate directive such as as-is is given
+            # use-first is a merge combination rule
+            # merge is a merge combination rule for controls.  groups are not merged by this rule
+            # merge/as-is and merge/custom are used for merging groups
+            # if neither as-is nor custom is specified - just get single list of controls
+            # unstructured controls should appear after any loose params
+
             merge_method = prof.Method.keep
             if self._profile.merge is not None:
                 if self._profile.merge.combine is None:
@@ -262,12 +314,7 @@ class ProfileResolver():
             if catalog.groups is not None:
                 if merged.groups is None:
                     merged.groups = []
-                for group in catalog.groups:
-                    # FIXME this should recurse for groups containing groups
-                    if group.id not in [g.id for g in merged.groups]:
-                        merged.groups.append(cat.Group(id=group.id, title=group.title, controls=[]))
-                    index = [g.id for g in merged.groups].index(group.id)
-                    self._merge_lists(merged.groups[index].controls, group.controls, merge_method)
+                self._merge_groups(merged.groups, catalog.groups, merge_method)
             if catalog.controls:
                 if not merged.controls:
                     merged.controls = catalog.controls
