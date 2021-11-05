@@ -27,7 +27,6 @@ from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
-from trestle.core.err import TrestleError
 from trestle.oscal import catalog as cat
 from trestle.oscal.common import Part, Property
 
@@ -111,14 +110,21 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
 
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
+    # disallowed output name
     test_args = 'trestle author catalog-generate -n foo -o profiles'.split()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
+    # catalog doesn't exist
     test_args = 'trestle author catalog-generate -n foo -o my_md'.split()
-    with pytest.raises(TrestleError):
-        monkeypatch.setattr(sys, 'argv', test_args)
-        Trestle().run()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
+
+    # bad yaml
+    bad_yaml_path = str(test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml')
+    test_args = f'trestle author catalog-generate -n foo -o my_md -y {bad_yaml_path}'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
 
 
 def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

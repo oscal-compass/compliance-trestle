@@ -13,6 +13,7 @@
 # limitations under the License.
 """Tests for the profile author module."""
 
+import argparse
 import pathlib
 import shutil
 import sys
@@ -137,14 +138,25 @@ def test_profile_generate_assemble(
 
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
-    test_args = 'trestle author profile-generate -n my_prof -o profiles'.split()
+    # disallowed output name
+    test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
-    # no trestle root specified
-    test_args = 'trestle author profile-generate -n my_prof -o new_prof'.split()
+    # no trestle root specified direct command
+    test_args = argparse.Namespace(name='my_prof', output='new_prof', verbose=0)
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
+    # no trestle root specified
     profile_assemble = ProfileAssemble()
     assert profile_assemble._run(test_args) == 1
+
+    # bad yaml
+    bad_yaml_path = str(test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml')
+    trestle_root = str(tmp_trestle_dir)
+    test_args = argparse.Namespace(
+        trestle_root=trestle_root, name='my_prof', output='new_prof', yaml_header=bad_yaml_path, verbose=0
+    )
+    profile_generate = ProfileGenerate()
+    assert profile_generate._run(test_args) == 1

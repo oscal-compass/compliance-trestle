@@ -28,7 +28,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.err import TrestleError
+from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.utils.load_distributed import load_distributed
 
@@ -94,6 +94,9 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False, True, profile)
+        except TrestleNotFoundError as e:
+            logger.warning(f'Profile {profile_path} not found, error {e}')
+            return 1
         except TrestleError as e:
             logger.warning(f'Error generating the catalog as markdown: {e}')
             return 1

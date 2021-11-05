@@ -25,7 +25,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.err import TrestleError
+from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 yaml = YAML(typ='safe')
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
-                logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
+                logging.warning(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
                 return 1
 
         catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
@@ -75,6 +75,9 @@ class CatalogGenerate(AuthorCommonCommand):
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False)
+        except TrestleNotFoundError as e:
+            logger.warning(f'Catalog {catalog_path} not found for load {e}')
+            return 1
         except Exception as e:
             raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
         return 0
