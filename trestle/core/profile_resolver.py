@@ -241,8 +241,8 @@ class ProfileResolver():
                         merged_list.append(src)
                     # if anything else regard as use-first and only keep first one, ignoring new one
 
-        def _merge_catalog(self, merged: cat.Catalog, catalog: cat.Catalog) -> cat.Catalog:
-            """Merge the controls in the catalog into merged catalog."""
+        def _resolve_merge_method(self) -> prof.Method:
+            """Resolve the merge method based on trestle defaults and available content."""
             merge_method = prof.Method.keep
             if self._profile.merge is not None:
                 if self._profile.merge.combine is None:
@@ -254,11 +254,14 @@ class ProfileResolver():
                         logger.warning('Profile has merge combine but no method.  Defaulting to merge.')
                         merge_method = prof.Method.merge
                     else:
-                        # use-first, merge, or keep
                         merge_method = merge_combine.method
+            return merge_method
 
+        def _merge_catalog(self, merged: Optional[cat.Catalog], catalog: cat.Catalog) -> cat.Catalog:
+            """Merge the controls in the catalog into merged catalog."""
             if merged is None:
                 return catalog
+            merge_method = self._resolve_merge_method()
             if catalog.groups is not None:
                 if merged.groups is None:
                     merged.groups = []
