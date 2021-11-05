@@ -240,3 +240,7 @@ NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
 NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'
 
 DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
+
+HELP_YAML_PATH = 'Path to the optional yaml header file'
+
+HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'

@@ -43,21 +43,15 @@ def setup_for_ssp(include_header: bool,
     """Create the markdown ssp content from catalog and profile."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
 
-    yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
+    )
+
+    yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     if include_header:
-        args = argparse.Namespace(
-            trestle_root=tmp_trestle_dir,
-            profile=prof_name,
-            output=ssp_name,
-            verbose=True,
-            sections=sections,
-            yaml_header=str(yaml_path)
-        )
-    else:
-        args = argparse.Namespace(
-            trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
-        )
+        args.yaml_header = str(yaml_path)
+
     return args, sections, yaml_path
 
 
