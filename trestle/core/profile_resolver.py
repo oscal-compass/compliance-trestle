@@ -266,7 +266,7 @@ class ProfileResolver():
                 if merged.groups is None:
                     merged.groups = []
                 for group in catalog.groups:
-                    # FIXME this should recurse for groups containing groups
+                    # FIXME issue #829
                     if group.id not in [g.id for g in merged.groups]:
                         merged.groups.append(cat.Group(id=group.id, title=group.title, controls=[]))
                     index = [g.id for g in merged.groups].index(group.id)
@@ -476,7 +476,10 @@ class ProfileResolver():
             position: prof.Position,
             by_id: Optional[str] = None
         ) -> bool:
-            """Add to a list based on a position, for the list or its direct sublist."""
+            """Add to a list based on a position, for the list or its direct sublist.
+
+            The assumption is that the list is an OSCAL model containing a id attributed (e.g. control, part, etc.)
+            """
             if input_list is None:
                 input_list: List[OBT] = []
             if not by_id:
@@ -533,19 +536,21 @@ class ProfileResolver():
                 add.position = prof.Position.ending
             if add.by_id == control.id:
                 updated = ProfileResolver.Modify._add_to_list(control.props, add.props, add.position)
-            else:
-                # Try props in params
-                if control.params:
-                    for idx, param in enumerate(control.params):
-                        if param.id == add.by_id:
-                            updated = ProfileResolver.Modify._add_to_list(param.props, add.props, add.position)
-                            if updated:
-                                control.params[idx] = param
-                                continue
-                if control.parts and not updated:
-                    updated = ProfileResolver.Modify._add_props_to_parts(control.parts, add)
+                if updated:
+                    return
+            if control.params:
+                for idx, param in enumerate(control.params):
+                    if param.id == add.by_id:
+                        updated = ProfileResolver.Modify._add_to_list(param.props, add.props, add.position)
+                        if updated:
+                            control.params[idx] = param
+                            continue
+            if updated:
+                return
+            if control.parts:
+                updated = ProfileResolver.Modify._add_props_to_parts(control.parts, add)
             if not updated:
-                # FIXME:
+                # FIXME: See #830 - this is not strictly enforcing and may result in errors.
                 logger.warning(f'Did not find the correct ID to add props for control {control.id} and id {add.by_id}')
 
         @staticmethod
