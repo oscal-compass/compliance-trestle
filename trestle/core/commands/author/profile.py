@@ -23,6 +23,7 @@ from typing import List
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
+import trestle.core.const as const
 import trestle.oscal.profile as prof
 import trestle.utils.fs as fs
 import trestle.utils.log as log
@@ -43,10 +44,8 @@ class ProfileGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the source profile model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        output_help_str = 'Name of the output generated profile markdown folder'
-        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        yaml_help_str = 'Path to the optional yaml header file'
-        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
+        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:

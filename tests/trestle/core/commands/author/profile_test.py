@@ -144,7 +144,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path,
     assert Trestle().run() == 1
 
     # no trestle root specified direct command
-    test_args = argparse.Namespace(name='my_prof', output='new_prof', verbose=0)
+    test_args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='my_prof', output='new_prof', verbose=0)
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
