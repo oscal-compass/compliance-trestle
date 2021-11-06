@@ -75,6 +75,7 @@ def monkey_uuid_result2():
 
 
 def monkey_uuid_getnode():
+    """Monkey uuid getnode."""
     return 79349043886013
 
 
