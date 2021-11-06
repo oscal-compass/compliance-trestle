@@ -51,13 +51,13 @@ class RuleUse():
             self.check_id = comply['Check ID']
             self.rule_id = comply['Rule ID']
             self.state = comply['State']
-            #
+            # defaults
             self.check_id_level = '[no results]'
             self.check_id_version = '[no results]'
             self.check_id_benchmark = '[no results]'
             self.component = '[no results]'
             self.component_type = '[no results]'
-            #
+            # parse
             if ';' in self.check_id:
                 items = self.check_id.split(';')
                 if len(items) > 2:
@@ -72,9 +72,9 @@ class RuleUse():
                     if self.component.endswith(' Benchmark'):
                         self.component = self.component[:-len(' Benchmark')]
                     self.component_type = 'Operating System'
-            #
+            # timestamp
             self.timestamp = comply.get('Timestamp', default_timestamp)
-            #
+            # collected
             self.collected = default_timestamp
         except Exception as e:
             logger.debug(f'tanium-row: {tanium_row}')
