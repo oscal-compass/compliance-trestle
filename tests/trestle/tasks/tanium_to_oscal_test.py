@@ -74,6 +74,10 @@ def monkey_uuid_result2():
     return str(uuid.UUID(int=rnd.getrandbits(128), version=4))
 
 
+def monkey_uuid_getnode():
+    return 79349043886013
+
+
 def test_tanium_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -170,6 +174,7 @@ def test_tanium_simulate_bad_input_file(tmp_path):
 
 def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
+    monkeypatch.setattr(uuid, 'getnode', monkey_uuid_getnode)
     monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
     monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
     monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
@@ -247,6 +252,7 @@ def test_tanium_execute_no_overwrite_dir(tmp_path, monkeypatch: MonkeyPatch):
 
 def execute_no_overwrite_dir_part1(tmp_path, monkeypatch: MonkeyPatch):
     """Create expected output."""
+    monkeypatch.setattr(uuid, 'getnode', monkey_uuid_getnode)
     monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
     monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
     monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
@@ -265,6 +271,7 @@ def execute_no_overwrite_dir_part1(tmp_path, monkeypatch: MonkeyPatch):
 
 def execute_no_overwrite_dir_part2(tmp_path, monkeypatch: MonkeyPatch):
     """Attempt to overwrite."""
+    monkeypatch.setattr(uuid, 'getnode', monkey_uuid_getnode)
     monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
     monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
     monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
@@ -323,6 +330,7 @@ def test_tanium_execute_bad_timestamp(tmp_path):
 
 def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute override timestamp call."""
+    monkeypatch.setattr(uuid, 'getnode', monkey_uuid_getnode)
     monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
     monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
     monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
