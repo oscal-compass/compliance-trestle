@@ -14,13 +14,12 @@
 # limitations under the License.
 """Facilitate Tanium report to NIST OSCAL transformation."""
 
-import json
 import logging
-from typing import List
 
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
-from trestle.transforms.utils.tanium_helper import ResultsMgr
+from trestle.transforms.utils.tanium_helper import OscalFactory
+from trestle.transforms.utils.tanium_helper import RuleUseFactory
 
 logger = logging.getLogger(__name__)
 
@@ -28,29 +27,24 @@ logger = logging.getLogger(__name__)
 class TaniumTransformer(ResultsTransformer):
     """Interface for Tanium transformer."""
 
-    def __init__(self):
-        """Initialize."""
-        self._results_mgr = ResultsMgr()
-        self._results_mgr.set_timestamp(self.get_timestamp())
-        self._results_mgr.get_timestamp()
+    def __init__(self, blocksize: str = None, cpus_max: str = None, cpus_min: str = None) -> None:
+        """Initialize given specified args."""
+        self._analysis = []
+        self._blocksize = blocksize
+        self._cpus_max = cpus_max
+        self._cpus_min = cpus_min
 
     @property
-    def analysis(self) -> List[str]:
-        """Analysis."""
-        return self._results_mgr.analysis
+    def analysis(self):
+        """Return analysis info."""
+        return self._analysis
 
     def transform(self, blob: str) -> Results:
         """Transform the blob into a Results."""
         results = Results()
-        lines = blob.splitlines()
-        for line in lines:
-            line = line.strip()
-            if len(line) > 0:
-                jdata = json.loads(line)
-                if type(jdata) is list:
-                    for item in jdata:
-                        self._results_mgr.ingest(item)
-                else:
-                    self._results_mgr.ingest(jdata)
-        results.__root__.append(self._results_mgr.result)
+        ru_factory = RuleUseFactory(self.get_timestamp())
+        ru_list = ru_factory.make_list(blob)
+        oscal_factory = OscalFactory(self.get_timestamp(), ru_list, self._blocksize, self._cpus_max, self._cpus_min)
+        results.__root__.append(oscal_factory.result)
+        self._analysis = oscal_factory.analysis
         return results

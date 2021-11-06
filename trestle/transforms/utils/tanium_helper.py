@@ -15,10 +15,13 @@
 """Facilitate Tanium report to NIST OSCAL json transformation."""
 
 import datetime
+import json
 import logging
+import os
 import traceback
 import uuid
-from typing import Any, Dict, List, Union, ValuesView
+from multiprocessing import Pool
+from typing import Any, Dict, List, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
@@ -31,33 +34,11 @@ from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, 
 
 logger = logging.getLogger(__name__)
 
-t_analysis = Dict[str, Any]
-t_component = SystemComponent
-t_component_ref = str
-t_computer_name = str
-t_control = str
-t_control_selection = ControlSelection
-t_inventory = InventoryItem
-t_inventory_ref = str
-t_local_definitions = LocalDefinitions1
-t_observation = Observation
-t_oscal = Union[str, Dict[str, Any]]
-t_tanium_collection = Any
-t_tanium_row = Dict[str, Any]
-t_timestamp = str
-t_resource = Dict[str, Any]
-t_result = Result
-t_reviewed_controls = ReviewedControls
-
-t_component_map = Dict[t_component_ref, t_component]
-t_inventory_map = Dict[t_computer_name, t_inventory]
-t_observation_list = List[Observation]
-
 
 class RuleUse():
     """Represents one row of Tanium data."""
 
-    def __init__(self, tanium_row: t_tanium_row, comply, default_timestamp: t_timestamp) -> None:
+    def __init__(self, tanium_row: Dict[str, Any], comply, default_timestamp: str) -> None:
         """Initialize given specified args."""
         logger.debug(f'tanium-row: {tanium_row}')
         try:
@@ -103,206 +84,319 @@ class RuleUse():
         return
 
 
-class ResultsMgr():
-    """Represents collection of data to transformed into an AssessmentResult.results."""
+class RuleUseFactory():
+    """Build RuleUse list."""
 
-    # the current time for consistent timestamping
-    timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+    def __init__(self, timestamp: str) -> None:
+        """Initialize given specified args."""
+        self._timestamp = timestamp
 
-    @staticmethod
-    def set_timestamp(value: str) -> None:
-        """Set the default timestamp value."""
-        datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
-        ResultsMgr.timestamp = value
-
-    @staticmethod
-    def get_timestamp() -> str:
-        """Get the default timestamp value."""
-        return ResultsMgr.timestamp
-
-    def __init__(self) -> None:
-        """Initialize."""
-        self.observation_list: t_observation_list = []
-        self.component_map: t_component_map = {}
-        self.inventory_map: t_inventory_map = {}
-        self.ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
-        # track ip-address to computer-name
-        self.map_ip_address_to_computer_name = {}
-        # list of controls
-        self.control_list = []
-
-    @property
-    def controls(self) -> t_component_map:
-        """OSCAL controls."""
-        return sorted(self.control_list)
-
-    @property
-    def components(self) -> t_component_map:
-        """OSCAL components."""
-        return list(self.component_map.values())
-
-    @property
-    def inventory(self) -> ValuesView[InventoryItem]:
-        """OSCAL inventory."""
-        return self.inventory_map.values()
-
-    @property
-    def observations(self) -> List[t_observation]:
-        """OSCAL observations."""
-        return self.observation_list
-
-    @property
-    def control_selections(self) -> List[t_control_selection]:
-        """OSCAL control selections."""
-        prop = []
-        prop.append(ControlSelection())
-        return prop
-
-    @property
-    def local_definitions(self) -> t_local_definitions:
-        """OSCAL local definitions."""
-        prop = LocalDefinitions1()
-        prop.components = self.components
-        prop.inventory_items = list(self.inventory)
-        return prop
-
-    @property
-    def reviewed_controls(self) -> t_reviewed_controls:
-        """OSCAL reviewed controls."""
-        prop = ReviewedControls(control_selections=self.control_selections)
-        return prop
-
-    @property
-    def result(self) -> t_result:
-        """OSCAL result."""
-        prop = Result(
-            uuid=str(uuid.uuid4()),
-            title='Tanium',
-            description='Tanium',
-            start=ResultsMgr.timestamp,
-            end=ResultsMgr.timestamp,
-            reviewed_controls=self.reviewed_controls,
-            local_definitions=self.local_definitions,
-            observations=self.observations
-        )
-        return prop
-
-    @property
-    def analysis(self) -> List[str]:
-        """OSCAL statistics."""
-        logger.debug(f'controls: {self.controls}')
-        analysis = []
-        analysis.append(f'inventory: {len(self.inventory)}')
-        analysis.append(f'observations: {len(self.observations)}')
-        return analysis
-
-    def _get_inventory_ref(self, rule_use: RuleUse) -> t_inventory_ref:
-        """Get inventory reference for specified rule use."""
-        return self.inventory_map[rule_use.tanium_client_ip_address].uuid
-
-    def _component_extract(self, rule_use: RuleUse) -> None:
-        """Extract component from Tanium row."""
-        component_type = rule_use.component_type
-        component_title = rule_use.component
-        component_description = rule_use.component
-        for component in self.component_map.values():
-            if component.type == component_type:
-                if component.title == component_title:
-                    if component.description == component_description:
-                        return
-        component_ref = str(uuid.uuid4())
-        status = Status1(state='operational')
-        component = SystemComponent(
-            uuid=component_ref,
-            type=component_type,
-            title=component_title,
-            description=component_description,
-            status=status
-        )
-        self.component_map[component_ref] = component
-
-    def _get_component_ref(self, rule_use: RuleUse) -> t_component_ref:
-        """Get component reference for specified rule use."""
-        uuid = None
-        component_type = rule_use.component_type
-        component_title = rule_use.component
-        component_description = rule_use.component
-        for component_ref, component in self.component_map.items():
-            if component.type == component_type:
-                if component.title == component_title:
-                    if component.description == component_description:
-                        uuid = component_ref
-                        break
-        return uuid
-
-    def _inventory_extract(self, rule_use: RuleUse) -> None:
-        """Extract inventory from Tanium row."""
-        if rule_use.tanium_client_ip_address in self.inventory_map:
-            pass
-        else:
-            inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
-            props = []
-            props.append(Property(name='Computer_Name', value=rule_use.computer_name, ns=self.ns))
-            props.append(
-                Property(
-                    name='Tanium_Client_IP_Address',
-                    value=rule_use.tanium_client_ip_address,
-                    ns=self.ns,
-                    class_='scc_inventory_item_id'
-                )
-            )
-            props.append(Property(name='IP_Address', value=rule_use.ip_address, ns=self.ns))
-            props.append(Property(name='Count', value=rule_use.count, ns=self.ns))
-            inventory.props = props
-            inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
-            self.inventory_map[rule_use.tanium_client_ip_address] = inventory
-
-    def _observation_extract(self, rule_use: RuleUse) -> None:
-        """Extract observation from Tanium row."""
-        observation = Observation(
-            uuid=str(uuid.uuid4()),
-            description=rule_use.rule_id,
-            methods=['TEST-AUTOMATED'],
-            collected=rule_use.collected
-        )
-        subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
-        observation.subjects = [subject_reference]
-        props = [
-            Property(name='Check_ID', value=rule_use.check_id, ns=self.ns),
-            Property(
-                name='Check_ID_Benchmark',
-                value=rule_use.check_id_benchmark,
-                ns=self.ns,
-                class_='scc_predefined_profile'
-            ),
-            Property(
-                name='Check_ID_Version',
-                value=rule_use.check_id_version,
-                ns=self.ns,
-                class_='scc_predefined_profile_version'
-            ),
-            Property(name='Check_ID_Level', value=rule_use.check_id_level, ns=self.ns),
-            Property(name='Rule_ID', value=rule_use.rule_id, ns=self.ns, class_='scc_goal_description'),
-            Property(name='Rule_ID', value=rule_use.rule_id, ns=self.ns, class_='scc_check_name_id'),
-            Property(name='State', value=rule_use.state, ns=self.ns, class_='scc_result'),
-            Property(name='Timestamp', value=rule_use.timestamp, ns=self.ns, class_='scc_timestamp'),
-        ]
-        observation.props = props
-        self.observation_list.append(observation)
-        rule_use.observation = observation
-
-    def _process(self, rule_use: RuleUse) -> None:
-        self._component_extract(rule_use)
-        self._inventory_extract(rule_use)
-        self._observation_extract(rule_use)
-
-    def ingest(self, tanium_row: t_tanium_row) -> None:
-        """Process one row of Tanium."""
+    def _make_sublist(self, tanium_row: Dict[str, Any]) -> List[RuleUse]:
+        """Build RuleUse sublist from input data item."""
+        retval = []
         keys = tanium_row.keys()
         for key in keys:
             if key.startswith('Comply'):
                 break
         comply_list = tanium_row[key]
         for comply in comply_list:
-            rule_use = RuleUse(tanium_row, comply, ResultsMgr.timestamp)
-            self._process(rule_use)
+            rule_use = RuleUse(tanium_row, comply, self._timestamp)
+            retval.append(rule_use)
+        return retval
+
+    def make_list(self, blob: str) -> List[RuleUse]:
+        """Build RuleUse list from input data."""
+        retval = []
+        lines = blob.splitlines()
+        for line in lines:
+            line = line.strip()
+            if len(line) > 0:
+                jdata = json.loads(line)
+                if type(jdata) is list:
+                    for item in jdata:
+                        logger.debug(f'item: {item}')
+                        retval += self._make_sublist(item)
+                else:
+                    logger.debug(f'jdata: {jdata}')
+                    retval += self._make_sublist(jdata)
+        logger.debug(f'ru_list: {len(retval)}')
+        return retval
+
+
+def _uuid():
+    """Create uuid."""
+    return str(uuid.uuid4())
+
+
+def _uuid_component():
+    """Create uuid for component."""
+    return _uuid()
+
+
+def _uuid_inventory():
+    """Create uuid for inventory."""
+    return _uuid()
+
+
+def _uuid_observation():
+    """Create uuid for observation."""
+    return _uuid()
+
+
+def _uuid_result():
+    """Create uuid for result."""
+    return _uuid()
+
+
+class OscalFactory():
+    """Build OSCAL entities."""
+
+    def __init__(
+        self,
+        timestamp: str,
+        rule_use_list: List[RuleUse],
+        blocksize: str = None,
+        cpus_max: str = None,
+        cpus_min: str = None
+    ) -> None:
+        """Initialize given specified args."""
+        self._rule_use_list = rule_use_list
+        self._timestamp = timestamp
+        self._component_map = {}
+        self._inventory_map = {}
+        self._observation_list = []
+        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
+        self._cpus = None
+        self._result = None
+        # blocksize: default, min
+        if blocksize is None:
+            self._blocksize = 11000
+        else:
+            self._blocksize = int(blocksize)
+        if self._blocksize < 1:
+            self._blocksize = 1
+        # cpus max: default, max, min
+        if cpus_max is None:
+            self._cpus_max = os.cpu_count()
+        else:
+            self._cpus_max = int(cpus_max)
+        if self._cpus_max > os.cpu_count():
+            self._cpus_max = os.cpu_count()
+        if self._cpus_max < 1:
+            self._cpus_max = 1
+        # cpus min: default, max, min
+        if cpus_min is None:
+            self._cpus_min = 1
+        else:
+            self._cpus_min = int(cpus_min)
+        if self._cpus_min > self._cpus_max:
+            self._cpus_min = self._cpus_max
+        if self._cpus_min < 1:
+            self._cpus_min = 1
+
+    def _is_duplicate_component(self, rule_use: RuleUse) -> bool:
+        """Check for duplicate component."""
+        retval = False
+        component_type = rule_use.component_type
+        component_title = rule_use.component
+        component_description = rule_use.component
+        for component in self._component_map.values():
+            if component.type == component_type:
+                if component.title == component_title:
+                    if component.description == component_description:
+                        retval = True
+                        break
+        return retval
+
+    def _derive_components(self) -> Dict[str, ValuesView[InventoryItem]]:
+        """Derive components from RuleUse list."""
+        self._component_map = {}
+        for rule_use in self._rule_use_list:
+            if self._is_duplicate_component(rule_use):
+                continue
+            component_type = rule_use.component_type
+            component_title = rule_use.component
+            component_description = rule_use.component
+            component_ref = _uuid_component()
+            status = Status1(state='operational')
+            component = SystemComponent(
+                uuid=component_ref,
+                type=component_type,
+                title=component_title,
+                description=component_description,
+                status=status
+            )
+            self._component_map[component_ref] = component
+        return self._component_map
+
+    def _get_component_ref(self, rule_use: RuleUse) -> str:
+        """Get component reference for specified rule use."""
+        uuid = None
+        for component_ref, component in self._component_map.items():
+            if component.type == rule_use.component_type:
+                if component.title == rule_use.component:
+                    if component.description == rule_use.component:
+                        uuid = component_ref
+                        break
+        return uuid
+
+    def _derive_inventory(self) -> Dict[str, InventoryItem]:
+        """Derive inventory from RuleUse list."""
+        self._inventory_map = {}
+        for rule_use in self._rule_use_list:
+            if rule_use.tanium_client_ip_address in self._inventory_map:
+                continue
+            inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
+            props = []
+            props.append(Property(name='Computer_Name', value=rule_use.computer_name, ns=self._ns))
+            props.append(
+                Property(
+                    name='Tanium_Client_IP_Address',
+                    value=rule_use.tanium_client_ip_address,
+                    ns=self._ns,
+                    class_='scc_inventory_item_id'
+                )
+            )
+            props.append(Property(name='IP_Address', value=rule_use.ip_address, ns=self._ns))
+            props.append(Property(name='Count', value=rule_use.count, ns=self._ns))
+            inventory.props = props
+            component_uuid = self._get_component_ref(rule_use)
+            if component_uuid is not None:
+                inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
+            self._inventory_map[rule_use.tanium_client_ip_address] = inventory
+        return self._inventory_map
+
+    def _get_inventory_ref(self, rule_use: RuleUse) -> str:
+        """Get inventory reference for specified rule use."""
+        return self._inventory_map[rule_use.tanium_client_ip_address].uuid
+
+    # parallel process to process one chuck of entire data set
+    def _batch_observations(self, index):
+        """Derive batch of observations from RuleUse list."""
+        observation_partial_list = []
+        # determine which chunk to process
+        batch_size = len(self._rule_use_list) // self._batch_workers
+        start = index * batch_size
+        end = (index + 1) * batch_size
+        # process just the one chunk
+        for i in range(start, end):
+            rule_use = self._rule_use_list[i]
+            observation = Observation(
+                uuid=_uuid_observation(),
+                description=rule_use.rule_id,
+                methods=['TEST-AUTOMATED'],
+                collected=rule_use.collected
+            )
+            subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
+            observation.subjects = [subject_reference]
+            props = [
+                Property(name='Check_ID', value=rule_use.check_id, ns=self._ns),
+                Property(
+                    name='Check_ID_Benchmark',
+                    value=rule_use.check_id_benchmark,
+                    ns=self._ns,
+                    class_='scc_predefined_profile'
+                ),
+                Property(
+                    name='Check_ID_Version',
+                    value=rule_use.check_id_version,
+                    ns=self._ns,
+                    class_='scc_predefined_profile_version'
+                ),
+                Property(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
+                Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'),
+                Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
+                Property(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
+                Property(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
+            ]
+            observation.props = props
+            observation_partial_list.append(observation)
+        return observation_partial_list
+
+    @property
+    def _batch_workers(self) -> int:
+        """Calculate number of parallel processes to employ."""
+        if self._cpus is None:
+            cpus_estimate = len(self._rule_use_list) // self._blocksize
+            self._cpus = max(min(cpus_estimate, self._cpus_max), self._cpus_min)
+            logger.debug(f'CPUs estimate: {cpus_estimate} available: {os.cpu_count()} selection: {self._cpus}')
+        return self._cpus
+
+    def _derive_observations(self) -> List[Observation]:
+        """Derive observations from RuleUse list."""
+        self._observation_list = []
+        # use multiprocessing to perform observations creation in parallel
+        pool = Pool(processes=self._batch_workers)
+        rval_list = pool.map(self._batch_observations, range(self._batch_workers))
+        # gather observations from the sundry batch workers
+        for observations_partial_list in rval_list:
+            self._observation_list += observations_partial_list
+        return self._observation_list
+
+    @property
+    def components(self) -> Dict[str, SystemComponent]:
+        """OSCAL components."""
+        return list(self._component_map.values())
+
+    @property
+    def inventory(self) -> ValuesView[InventoryItem]:
+        """OSCAL inventory."""
+        return self._inventory_map.values()
+
+    @property
+    def observations(self) -> List[Observation]:
+        """OSCAL observations."""
+        return self._observation_list
+
+    @property
+    def local_definitions(self) -> LocalDefinitions1:
+        """OSCAL local definitions."""
+        rval = LocalDefinitions1()
+        rval.components = self.components
+        rval.inventory_items = list(self.inventory)
+        return rval
+
+    @property
+    def control_selections(self) -> List[ControlSelection]:
+        """OSCAL control selections."""
+        rval = []
+        rval.append(ControlSelection())
+        return rval
+
+    @property
+    def reviewed_controls(self) -> ReviewedControls:
+        """OSCAL reviewed controls."""
+        rval = ReviewedControls(control_selections=self.control_selections)
+        return rval
+
+    @property
+    def analysis(self) -> List[str]:
+        """OSCAL statistics."""
+        analysis = []
+        analysis.append(f'components: {len(self.components)}')
+        analysis.append(f'inventory: {len(self.inventory)}')
+        analysis.append(f'observations: {len(self.observations)}')
+        analysis.append(f'transform time: {self._transform_time}')
+        return analysis
+
+    @property
+    def result(self) -> Result:
+        """OSCAL result."""
+        if self._result is None:
+            ts0 = datetime.datetime.now()
+            self._derive_components()
+            self._derive_inventory()
+            self._derive_observations()
+            self._result = Result(
+                uuid=_uuid_result(),
+                title='Tanium',
+                description='Tanium',
+                start=self._timestamp,
+                end=self._timestamp,
+                reviewed_controls=self.reviewed_controls,
+                local_definitions=self.local_definitions,
+                observations=self.observations
+            )
+            ts1 = datetime.datetime.now()
+            self._transform_time = f'{ts1-ts0}'
+        return self._result
