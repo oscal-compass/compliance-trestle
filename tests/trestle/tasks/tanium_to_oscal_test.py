@@ -17,7 +17,6 @@
 import configparser
 import os
 import pathlib
-import uuid
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -27,41 +26,42 @@ import trestle.transforms.implementations.tanium as tanium
 import trestle.transforms.utils.tanium_helper as tanium_helper
 from trestle.tasks.base_task import TaskOutcome
 
-uuid._seed_component = 25529320
-uuid._seed_inventory = 36618780
-uuid._seed_observation = 47732990
-uuid._seed_result = 18847350
-uuid._seed_result2 = 51169030
 
+class MonkeyBusiness():
+    """Monkey business."""
 
-def monkey_uuid_component():
-    """Monkey the creation of uuid for component."""
-    uuid._seed_component += 1
-    return str(uuid._seed_component) + '-71b1-46f6-b2f0-edc34a977809'
+    def __init__(self):
+        """Initialize context."""
+        self._seed_component = 25529320
+        self._seed_inventory = 36618780
+        self._seed_observation = 47732990
+        self._seed_result = 18847350
+        self._seed_result2 = 51169030
 
+    def uuid_component(self):
+        """Monkey the creation of uuid for component."""
+        self._seed_component += 1
+        return str(self._seed_component) + '-71b1-46f6-b2f0-edc34a977809'
 
-def monkey_uuid_inventory():
-    """Monkey the creation of uuid for inventory."""
-    uuid._seed_inventory += 1
-    return str(uuid._seed_inventory) + '-0f02-40f3-adb7-f1d5cbf15150'
+    def uuid_inventory(self):
+        """Monkey the creation of uuid for inventory."""
+        self._seed_inventory += 1
+        return str(self._seed_inventory) + '-0f02-40f3-adb7-f1d5cbf15150'
 
+    def uuid_observation(self):
+        """Monkey the creation of uuid for observation."""
+        self._seed_observation += 1
+        return str(self._seed_observation) + '-5c28-45ba-8f0f-9d8c7f51c46e'
 
-def monkey_uuid_observation():
-    """Monkey the creation of uuid for observation."""
-    uuid._seed_observation += 1
-    return str(uuid._seed_observation) + '-5c28-45ba-8f0f-9d8c7f51c46e'
+    def uuid_result(self):
+        """Monkey the creation of uuid for result."""
+        self._seed_result += 1
+        return str(self._seed_result) + '-8012-434e-801b-19e6ba3cdc0e'
 
-
-def monkey_uuid_result():
-    """Monkey the creation of uuid for result."""
-    uuid._seed_result += 1
-    return str(uuid._seed_result) + '-8012-434e-801b-19e6ba3cdc0e'
-
-
-def monkey_uuid_result2():
-    """Monkey the creation of uuid for result, alternate."""
-    uuid._seed_result2 += 1
-    return str(uuid._seed_result2) + '-ca25-4eec-8152-506286489d9a'
+    def uuid_result2(self):
+        """Monkey the creation of uuid for result, alternate."""
+        self._seed_result2 += 1
+        return str(self._seed_result2) + '-ca25-4eec-8152-506286489d9a'
 
 
 def test_tanium_print_info(tmp_path):
@@ -160,10 +160,11 @@ def test_tanium_simulate_bad_input_file(tmp_path):
 
 def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
     config = configparser.ConfigParser()
@@ -183,10 +184,11 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
 
 def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
     config = configparser.ConfigParser()
@@ -202,10 +204,11 @@ def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
 
 def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute optional call."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
     config.read(config_path)
@@ -221,10 +224,11 @@ def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
 
 def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute optional call."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
     config.read(config_path)
@@ -257,10 +261,11 @@ def test_tanium_execute_no_overwrite_dir(tmp_path, monkeypatch: MonkeyPatch):
 
 def execute_no_overwrite_dir_part1(tmp_path, monkeypatch: MonkeyPatch):
     """Create expected output."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
     config.read(config_path)
@@ -275,10 +280,11 @@ def execute_no_overwrite_dir_part1(tmp_path, monkeypatch: MonkeyPatch):
 
 def execute_no_overwrite_dir_part2(tmp_path, monkeypatch: MonkeyPatch):
     """Attempt to overwrite."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result2)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
     config.read(config_path)
@@ -333,10 +339,11 @@ def test_tanium_execute_bad_timestamp(tmp_path):
 
 def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute override timestamp call."""
-    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
-    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
-    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
-    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2020-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2020-02-24T19:31:13+00:00'
     config = configparser.ConfigParser()
