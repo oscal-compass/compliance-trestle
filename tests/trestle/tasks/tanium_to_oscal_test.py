@@ -256,6 +256,7 @@ def execute_no_overwrite_dir_part1(tmp_path, monkeypatch: MonkeyPatch):
     config.read(config_path)
     section = config['task.tanium-to-oscal']
     section['output-dir'] = str(tmp_path)
+    section['cpus-max'] = '1'
     tgt = tanium_to_oscal.TaniumToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -274,6 +275,7 @@ def execute_no_overwrite_dir_part2(tmp_path, monkeypatch: MonkeyPatch):
     section = config['task.tanium-to-oscal']
     section['output-overwrite'] = 'false'
     section['output-dir'] = str(tmp_path)
+    section['cpus-max'] = '1'
     tgt = tanium_to_oscal.TaniumToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
