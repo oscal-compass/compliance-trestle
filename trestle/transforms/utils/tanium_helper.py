@@ -325,12 +325,16 @@ class OscalFactory():
     def _derive_observations(self) -> List[Observation]:
         """Derive observations from RuleUse list."""
         self._observation_list = []
-        # use multiprocessing to perform observations creation in parallel
-        pool = Pool(processes=self._batch_workers)
-        rval_list = pool.map(self._batch_observations, range(self._batch_workers))
-        # gather observations from the sundry batch workers
-        for observations_partial_list in rval_list:
-            self._observation_list += observations_partial_list
+        if self._batch_workers == 1:
+            # no need for multiprocessing
+            self._observation_list = self._batch_observations(0)
+        else:
+            # use multiprocessing to perform observations creation in parallel
+            pool = Pool(processes=self._batch_workers)
+            rval_list = pool.map(self._batch_observations, range(self._batch_workers))
+            # gather observations from the sundry batch workers
+            for observations_partial_list in rval_list:
+                self._observation_list += observations_partial_list
         return self._observation_list
 
     @property
