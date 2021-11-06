@@ -31,6 +31,7 @@ uuid._seed_component = 25529320
 uuid._seed_inventory = 36618780
 uuid._seed_observation = 47732990
 uuid._seed_result = 18847350
+uuid._seed_result2 = 51169030
 
 
 def monkey_uuid_component():
@@ -59,8 +60,8 @@ def monkey_uuid_result():
 
 def monkey_uuid_result2():
     """Monkey the creation of uuid for result, alternate."""
-    uuid._seed_result += 1
-    return str(uuid._seed_result) + '-ca25-4eec-8152-506286489d9a'
+    uuid._seed_result2 += 1
+    return str(uuid._seed_result2) + '-ca25-4eec-8152-506286489d9a'
 
 
 def test_tanium_print_info(tmp_path):
@@ -170,6 +171,7 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     config.read(config_path)
     section = config['task.tanium-to-oscal']
     section['output-dir'] = str(tmp_path)
+    section['cpus-max'] = '1'
     tgt = tanium_to_oscal.TaniumToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -177,6 +179,25 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
+
+
+def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
+    """Test execute call."""
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkey_uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkey_uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkey_uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkey_uuid_result)
+    tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
+    assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
+    config.read(config_path)
+    section = config['task.tanium-to-oscal']
+    section['output-dir'] = str(tmp_path)
+    tgt = tanium_to_oscal.TaniumToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert len(os.listdir(str(tmp_path))) == 1
 
 
 def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
@@ -323,6 +344,7 @@ def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     config.read(config_path)
     section = config['task.tanium-to-oscal']
     section['output-dir'] = str(tmp_path)
+    section['cpus-max'] = '1'
     tgt = tanium_to_oscal.TaniumToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
