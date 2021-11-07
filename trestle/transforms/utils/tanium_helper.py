@@ -17,10 +17,10 @@
 import datetime
 import json
 import logging
+import multiprocessing
 import os
 import traceback
 import uuid
-from multiprocessing import Pool
 from typing import Any, Dict, List, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
@@ -233,11 +233,14 @@ class OscalFactory():
         """Get component reference for specified rule use."""
         uuid = None
         for component_ref, component in self._component_map.items():
-            if component.type == rule_use.component_type:
-                if component.title == rule_use.component:
-                    if component.description == rule_use.component:
-                        uuid = component_ref
-                        break
+            if component.type != rule_use.component_type:
+                continue
+            if component.title != rule_use.component:
+                continue
+            if component.description != rule_use.component:
+                continue
+            uuid = component_ref
+            break
         return uuid
 
     def _derive_inventory(self) -> Dict[str, InventoryItem]:
@@ -330,7 +333,7 @@ class OscalFactory():
             self._observation_list = self._batch_observations(0)
         else:
             # use multiprocessing to perform observations creation in parallel
-            pool = Pool(processes=self._batch_workers)
+            pool = multiprocessing.Pool(processes=self._batch_workers)
             rval_list = pool.map(self._batch_observations, range(self._batch_workers))
             # gather observations from the sundry batch workers
             for observations_partial_list in rval_list:
@@ -338,7 +341,7 @@ class OscalFactory():
         return self._observation_list
 
     @property
-    def components(self) -> Dict[str, SystemComponent]:
+    def components(self) -> List[SystemComponent]:
         """OSCAL components."""
         return list(self._component_map.values())
 
