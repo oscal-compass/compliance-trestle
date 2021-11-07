@@ -236,10 +236,6 @@ def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     section['output-dir'] = str(tmp_path)
     section['cpus-max'] = '1000000'
     section['cpus-min'] = '2000000'
-    # <hack>
-    #section['cpus-max'] = '1'
-    #section['cpus-min'] = '1'
-    # </hack>
     tgt = tanium_to_oscal.TaniumToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
