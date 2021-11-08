@@ -19,6 +19,14 @@
               "ac-5"
             ]
           }
+        ],
+        "exclude-controls": [
+          {
+            "with-child-controls": "yes",
+            "with-ids": [
+              "ac-5"
+            ]
+          }
         ]
       },
       {

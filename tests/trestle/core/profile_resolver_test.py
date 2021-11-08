@@ -15,6 +15,7 @@
 # limitations under the License.
 """Tests profile_resolver module."""
 
+import copy
 import pathlib
 from typing import List, Tuple
 
@@ -57,7 +58,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     assert interface.get_count_of_controls(True) == 7
 
-    assert len(cat.controls) == 1
+    assert len(cat.controls) == 4
 
     assert interface.get_dependent_control_ids('ac-3') == ['ac-3.3']
 
@@ -143,24 +144,31 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     profile.merge = prof.Merge(combine=combine)
     merge = ProfileResolver.Merge(profile)
 
+    # merge into empty catalog
     merged = gens.generate_sample_model(cat.Catalog)
     new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
     catalog_interface = CatalogInterface(new_merged)
     assert catalog_interface.get_count_of_controls(True) == 5
 
-    merged = gens.generate_sample_model(cat.Catalog)
-    merged.controls = []
-    new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
-    catalog_interface = CatalogInterface(new_merged)
-    assert catalog_interface.get_count_of_controls(True) == 5
-
+    # add part to first control and merge, then make sure it is there
     part = com.Part(name='foo', title='added part')
     control_id = sample_catalog_rich_controls.controls[0].id
-    sample_catalog_rich_controls.controls[0].parts.append(part)
-    final_merged = merge._merge_catalog(new_merged, sample_catalog_rich_controls)
+    cat_with_added_part = copy.deepcopy(sample_catalog_rich_controls)
+    cat_with_added_part.controls[0].parts.append(part)
+    final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
     assert catalog_interface.get_count_of_controls(True) == 5
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
+
+    # add part to first control and merge but with use-first.  The part should not be there at end.
+    method = prof.Method.use_first
+    combine = prof.Combine(method=method)
+    profile.merge = prof.Merge(combine=combine)
+    merge = ProfileResolver.Merge(profile)
+    final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
+    catalog_interface = CatalogInterface(final_merged)
+    assert catalog_interface.get_count_of_controls(True) == 5
+    assert len(catalog_interface.get_control(control_id).parts) == 1
 
     # now force a merge with keep
     profile.merge = None
@@ -242,3 +250,18 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     # Incorrect behaviour
     assert len(locations) == 0
     assert len(locations_a) == 1
+
+
+def test_merge_params() -> None:
+    """Test the merge of params."""
+    param_1 = gens.generate_sample_model(com.Parameter, True, 2)
+    param_2 = gens.generate_sample_model(com.Parameter, True, 2)
+    profile = gens.generate_sample_model(prof.Profile)
+    method = prof.Method.merge
+    combine = prof.Combine(method=method)
+    profile.merge = prof.Merge(combine=combine)
+
+    merge = ProfileResolver.Merge(profile)
+    merge._merge_params(param_1, param_2)
+    # FIXME this should check the right things happened
+    assert param_1

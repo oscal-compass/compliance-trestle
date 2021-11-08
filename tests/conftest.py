@@ -130,16 +130,19 @@ def sample_catalog_missing_roles():
 def sample_catalog_rich_controls():
     """Return a catalog with controls in groups and in the catalog itself."""
     catalog_obj = gens.generate_sample_model(cat.Catalog)
+
     control_a = cat.Control(id='control_a', title='this is control a')
     control_b = cat.Control(id='control_b', title='this is control b')
+    group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
+    catalog_obj.groups = [group]
+
     part = common.Part(id='cpart', name='name.c.part')
     control_c = cat.Control(id='control_c', title='this is control c', parts=[part])
+
     control_d = cat.Control(id='control_d', title='this is control d')
     control_d1 = cat.Control(id='control_d1', title='this is control d1')
     control_d.controls = [control_d1]
 
-    group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
-    catalog_obj.groups = [group]
     catalog_obj.controls = [control_c, control_d]
     return catalog_obj
 

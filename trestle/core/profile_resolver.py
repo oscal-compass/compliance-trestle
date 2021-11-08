@@ -13,11 +13,12 @@
 # limitations under the License.
 """Create resolved catalog from profile."""
 
+import copy
 import logging
 import pathlib
 import re
 import string
-from typing import Dict, Iterator, List, Optional, Set, Union
+from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 import trestle.core.const as const
@@ -132,9 +133,12 @@ class ProfileResolver():
                                 exclude_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
 
             if exclude_ids:
-                if not set(control_ids).issuperset(set(exclude_ids)):
-                    raise TrestleError('Profile has excluded controls that are not in the included set.')
-                control_ids = list(set(control_ids) - set(exclude_ids))
+                # This does not complain if controls are excluded that are not present in the first place
+                final_control_ids = []
+                for id_ in control_ids:
+                    if id_ not in exclude_ids:
+                        final_control_ids.append(id_)
+                control_ids = final_control_ids
 
             return control_ids
 
@@ -227,7 +231,12 @@ class ProfileResolver():
             yield self._prune_catalog()
 
     class Merge(Pipeline.Filter):
-        """Merge the incoming catalogs according to rules in the profile."""
+        """
+        Merge the incoming catalogs according to rules in the profile.
+
+        The incoming catalogs have already been pruned based on the import.
+        Now the controls must be gathered, merged, and grouped based on the merge settings.
+        """
 
         def __init__(self, profile: prof.Profile) -> None:
             """Initialize the class with the profile."""
@@ -235,7 +244,7 @@ class ProfileResolver():
             self._profile = profile
 
         def _merge_controls(self, dest: cat.Control, src: cat.Control) -> None:
-            """Use when the merge method is merge."""
+            """Merge two controls together when the merge method is merge."""
             dest_parts = []
             if dest.parts:
                 dest_parts = [part.name for part in dest.parts]
@@ -247,9 +256,55 @@ class ProfileResolver():
                 if not dest.controls:
                     dest.controls = src.controls
                 else:
-                    self._merge_lists(dest.controls, src.controls, prof.Method.merge)
+                    self._merge_control_lists(dest.controls, src.controls, prof.Method.merge)
 
-        def _merge_lists(
+        def _merge_params(self, dest: common.Parameter, src: common.Parameter) -> None:
+            """Merge src parameter into dest when the merge method is merge."""
+            if src.props is not None:
+                dest.props = dest.props if dest.props is not None else []
+                dest_names = [prop.name for prop in dest.props]
+                for prop in src.props:
+                    if prop.name not in dest_names:
+                        dest.props.append(prop)
+            if src.links is not None:
+                dest.links = dest.links if dest.links is not None else []
+                dest_hrefs = [link.href for link in dest.links]
+                for link in src.links:
+                    if link.href not in dest_hrefs:
+                        dest.props.append(link)
+            if src.constraints is not None:
+                # add constraint from src if it has description that is not in dest
+                dest.constraints = dest.constraints if dest.constraints is not None else []
+                constraints = []
+                for constraint in dest.constraints:
+                    if constraint.description is not None:
+                        constraints.append(constraint.description)
+                for constraint in src.constraints:
+                    if constraint.description is not None and constraint.description in constraints:
+                        dest.constraints.append(constraint)
+            if src.guidelines is not None:
+                dest.guidelines = dest.guidelines if dest.guidelines is not None else []
+                guideline_proses = [guideline.prose for guideline in dest.guidelines]
+                for guideline in src.guidelines:
+                    if guideline.prose not in guideline_proses:
+                        dest.guidelines.append(guideline)
+            if src.values is not None:
+                dest.values = dest.values if dest.values is not None else []
+                values = [value.__root__ for value in dest.values]
+                for value in src.values:
+                    if value.__root__ not in values:
+                        dest.values.append(value)
+            if src.select is not None and dest.select is None:
+                dest.select = src.select
+            if src.remarks is not None:
+                dest.remarks = dest.remarks if dest.remarks is not None else []
+                # FIXME why is this a tuple and not a __root__ reference?
+                remarks = [remark[1] for remark in dest.remarks]
+                for remark in src.remarks:
+                    if remark[1] not in remarks:
+                        dest.remarks.append(remark)
+
+        def _merge_control_lists(
             self, merged_list: List[cat.Control], src_list: List[cat.Control], method: prof.Method
         ) -> None:
             merged_ids = [control.id for control in merged_list]
@@ -266,8 +321,9 @@ class ProfileResolver():
                     # if anything else regard as use-first and only keep first one, ignoring new one
 
         def _merge_groups(self, dest: List[cat.Group], src: List[cat.Group], merge_method: prof.Method) -> None:
+            # merge two lists of groups recursively
             for group in src:
-                if group.id not in [g.id for g in dest]:
+                if group.id not in [grp.id for grp in dest]:
                     # clone the group except for controls
                     new_group = cat.Group(
                         id=group.id,
@@ -278,11 +334,83 @@ class ProfileResolver():
                         props=group.props,
                         links=group.links,
                         parts=group.parts
-                        # insert_controls=group.insert_controls # FIXME need to do this
+                        # insert_controls only apply to custom merge, not currently supported
                     )
                     dest.append(new_group)
-                index = [g.id for g in dest].index(group.id)
-                self._merge_lists(dest[index].controls, group.controls, merge_method)
+                index = [grp.id for grp in dest].index(group.id)
+                self._merge_control_lists(dest[index].controls, group.controls, merge_method)
+                if group.groups is not None:
+                    dest[index].groups = dest[index].groups if dest[index].groups is not None else []
+                    self._merge_groups(dest[index].groups, group.groups, merge_method)
+
+        def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
+            # get flattened content of group and its groups recursively
+            controls = []
+            params = []
+            if group.controls is not None:
+                controls.extend(group.controls)
+            if group.params is not None:
+                params.extend(group.params)
+            if group.groups is not None:
+                for sub_group in group.groups:
+                    new_controls, new_params = self._group_contents(sub_group)
+                    controls.extend(new_controls)
+                    params.extend(new_params)
+            return controls, params
+
+        def _flatten_catalog(self, catalog: cat.Catalog, as_is: bool) -> cat.Catalog:
+            """Flatten the groups of the catalog if as_is is False."""
+            if as_is or catalog.groups is None:
+                return catalog
+            catalog.controls = [] if catalog.controls is None else catalog.controls
+            catalog.params = [] if catalog.params is None else catalog.params
+            for group in catalog.groups:
+                new_controls, new_params = self._group_contents(group)
+                catalog.controls.extend(new_controls)
+                catalog.params.extend(new_params)
+            catalog.controls = catalog.controls if catalog.controls else None
+            catalog.params = catalog.params if catalog.params else None
+            catalog.groups = None
+            return catalog
+
+        def _merge_two_catalogs(
+            self, dest: cat.Catalog, src: cat.Catalog, merge_method: prof.Method, as_is: bool
+        ) -> cat.Catalog:
+            # merge_method is use_first, merge, or keep
+            # if as_is is false, the result is flattened
+
+            dest = self._flatten_catalog(dest, as_is)
+            src = self._flatten_catalog(src, as_is)
+
+            if src.controls is not None:
+                dest.controls = dest.controls if dest.controls else []
+                dest_ids = [control.id for control in dest.controls]
+                for control in src.controls:
+                    in_list = control.id in dest_ids
+                    if merge_method == prof.Method.keep or not in_list:
+                        dest.controls.append(control)
+                    elif merge_method == prof.Method.merge:
+                        index = dest_ids.index(control.id)
+                        self._merge_controls(dest.controls[index], control)
+
+            if src.params is not None:
+                dest.params = dest.params if dest.params else []
+                dest_ids = [param.id for param in dest.params]
+                for param in src.params:
+                    in_list = param.id in dest_ids
+                    if merge_method == prof.Method.keep or not in_list:
+                        dest.params.append(param)
+                    elif merge_method == prof.Method.merge:
+                        index = dest_ids.index(param.id)
+                        self._merge_params(dest.params[index], param)
+
+            # we only have groups at this point if as_is is True
+            if src.groups is not None:
+                if dest.groups is None:
+                    dest.groups = []
+                self._merge_groups(dest.groups, src.groups, merge_method)
+
+            return dest
 
         def _merge_catalog(self, merged: cat.Catalog, catalog: cat.Catalog) -> cat.Catalog:
             """Merge the controls in the catalog into merged catalog."""
@@ -295,8 +423,17 @@ class ProfileResolver():
             # if neither as-is nor custom is specified - just get single list of controls
             # unstructured controls should appear after any loose params
 
+            # make copies to avoid changing them
+            local_cat = copy.deepcopy(catalog)
+            local_merged = copy.deepcopy(merged)
+
             merge_method = prof.Method.keep
+            as_is = False
             if self._profile.merge is not None:
+                if self._profile.merge.custom is not None:
+                    raise TrestleError('Profile with custom merge is not supported.')
+                if self._profile.merge.as_is is not None:
+                    as_is = self._profile.merge.as_is
                 if self._profile.merge.combine is None:
                     logger.warning('Profile has merge but no combine so defaulting to combine/merge.')
                     merge_method = prof.Method.merge
@@ -309,18 +446,11 @@ class ProfileResolver():
                         # use-first, merge, or keep
                         merge_method = merge_combine.method
 
-            if merged is None:
-                return catalog
-            if catalog.groups is not None:
-                if merged.groups is None:
-                    merged.groups = []
-                self._merge_groups(merged.groups, catalog.groups, merge_method)
-            if catalog.controls:
-                if not merged.controls:
-                    merged.controls = catalog.controls
-                else:
-                    self._merge_lists(merged.controls, catalog.controls, merge_method)
-            return merged
+            if local_merged is None:
+                return self._flatten_catalog(local_cat, as_is)
+
+            # merge the incoming catalog with merged based on merge_method and as_is
+            return self._merge_two_catalogs(local_merged, local_cat, merge_method, as_is)
 
         def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
             """
@@ -655,6 +785,7 @@ class ProfileResolver():
                         self._replace_part_prose(control, part, param_dict)
                 self._catalog_interface.replace_control(control)
 
+            self._catalog_interface.update_catalog_controls()
             catalog = self._catalog_interface._catalog
 
             # update the original profile metadata with new contents
