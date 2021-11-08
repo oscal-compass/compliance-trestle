@@ -216,6 +216,7 @@ class OscalFactory():
                 continue
             component_type = rule_use.component_type
             component_title = rule_use.component
+            # See Note in _get_component_ref.
             component_description = rule_use.component
             component_ref = _uuid_component()
             status = Status1(state='operational')
@@ -237,8 +238,8 @@ class OscalFactory():
                 continue
             if component.title != rule_use.component:
                 continue
-            if component.description != rule_use.component:
-                continue
+            # Note: currently title and description are the same,
+            # therefore checking description is not necessary.
             uuid = component_ref
             break
         return uuid
