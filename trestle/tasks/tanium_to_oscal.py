@@ -117,18 +117,20 @@ class TaniumToOscal(TaskBase):
         if not self._config:
             logger.error('Config missing')
             return TaskOutcome(mode + 'failure')
-        # process config
-        idir = self._config.get('input-dir')
-        if idir is None:
-            logger.error('config missing "input-dir"')
+        # config required input & output dirs
+        try:
+            idir = self._config['input-dir']
+            ipth = pathlib.Path(idir)
+            odir = self._config['output-dir']
+            opth = pathlib.Path(odir)
+        except KeyError as e:
+            logger.debug(f'key {e.args[0]} missing')
             return TaskOutcome(mode + 'failure')
-        ipth = pathlib.Path(idir)
-        odir = self._config.get('output-dir')
-        opth = pathlib.Path(odir)
+        # config optional overwrite & quiet
         self._overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.get('quiet', False)
         self._verbose = not self._simulate and not quiet
-        # timestamp
+        # config optional timestamp
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
@@ -136,7 +138,7 @@ class TaniumToOscal(TaskBase):
             except Exception:
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
-        # performance
+        # config optional performance
         blocksize = self._config.get('blocksize')
         cpus_max = self._config.get('cpus-max')
         cpus_min = self._config.get('cpus-min')
