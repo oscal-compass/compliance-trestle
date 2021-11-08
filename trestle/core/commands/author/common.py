@@ -18,10 +18,12 @@ import argparse
 import logging
 import pathlib
 
-import trestle.core.const as const
 import trestle.utils.fs as fs
 import trestle.utils.log as log
+from trestle.core.commands.author.consts import TRESTLE_RESOURCES
+from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.const import TRESTLE_CONFIG_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -38,20 +40,39 @@ class AuthorCommonCommand(CommandPlusDocs):
         # Externalize
         self.trestle_root = args.trestle_root
         self.task_name = args.task_name
+
+        try:
+            self.global_ = args.__getattribute__('global')
+        except AttributeError:
+            self.global_ = None
+
+        _, all_versions = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES)
+        if args.template_version is None:
+            args.template_version = max(all_versions)
+        elif args.template_version and args.template_version is not all_versions:
+            logger.error('Specified template version is invalid, please select other version.')
+            return 1
+
+        if not self.global_ and self.task_name is None:
+            logger.error('At least a global flag or a task name should be provided.')
+            return 1
+        if self.global_:
+            old_template_dir = self.trestle_root / TRESTLE_CONFIG_DIR / 'author' / '__global__'
+            self.template_dir = old_template_dir / args.template_version
+        elif self.task_name and not self.global_:
+            old_template_dir = self.trestle_root / TRESTLE_CONFIG_DIR / 'author' / self.task_name
+            self.template_dir = old_template_dir / args.template_version
         if self.task_name:
             self.task_path = self.trestle_root / self.task_name
-            self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
             if not fs.allowed_task_name(self.task_name):
                 logger.error(
                     f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
                 )
                 return 1
-        try:
-            self.global_ = args.__getattribute__('global')
-        except AttributeError:
-            self.global_ = None
-        if self.global_:
-            self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / '__global__'
+
+        if old_template_dir.exists():
+            TemplateVersioning.validate_template_folder(old_template_dir)
+            self.template_dir = TemplateVersioning.update_template_folder_structure(old_template_dir)
 
         return 0
 

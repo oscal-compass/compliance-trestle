@@ -24,6 +24,9 @@ from pkg_resources import resource_filename
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.consts import TRESTLE_RESOURCES
+from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -45,6 +48,12 @@ class Docs(AuthorCommonCommand):
             author_const.LONG_HEADER_VALIDATE,
             help=author_const.HEADER_VALIDATE_HELP,
             action='store_true'
+        )
+        self.add_argument(
+            author_const.SHORT_TEMPLATE_VERSION,
+            author_const.LONG_TEMPLATE_VERSION,
+            help=author_const.TEMPLATE_VERSION_HELP,
+            action='store'
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
@@ -73,10 +82,11 @@ class Docs(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        if self._initialize(args):
-            return 1
-        status = 1
         try:
+            status = 1
+            if self._initialize(args):
+                return status
+
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
@@ -87,7 +97,7 @@ class Docs(AuthorCommonCommand):
                     args.header_only_validate,
                 )
             elif args.mode == 'setup':
-                status = self.setup_template_governed_docs()
+                status = self.setup_template_governed_docs(args.template_version)
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
@@ -97,12 +107,18 @@ class Docs(AuthorCommonCommand):
                     args.recurse,
                     args.readme_validate
                 )
-        except Exception as e:
-            logger.error(f'Error "{e}"" occurred when running trestle author docs.')
-            logger.error('Exiting')
-        return status
 
-    def setup_template_governed_docs(self) -> int:
+            return status
+        except TrestleError as e:
+            logger.error(f'Error occurred when running trestle author docs: {e}')
+            logger.error('Exiting')
+            return 1
+        except Exception as e:
+            logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
+            logger.error('Exiting')
+            return 1
+
+    def setup_template_governed_docs(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement.
 
         Returns:
@@ -125,7 +141,8 @@ class Docs(AuthorCommonCommand):
         template_file = self.template_dir / self.template_name
         if template_file.is_file():
             return 0
-        reference_template = pathlib.Path(resource_filename('trestle.resources', 'template.md')).resolve()
+        versioned_temp_res, _ = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES, template_version)
+        reference_template = pathlib.Path(resource_filename(versioned_temp_res, 'template.md')).resolve()
         shutil.copy(reference_template, template_file)
         logger.info(f'Template file setup for task {self.task_name} at {self.rel_dir(template_file)}')
         logger.info(f'Task directory is {self.rel_dir(self.task_path)}')
@@ -172,7 +189,7 @@ class Docs(AuthorCommonCommand):
 
     def _validate_template_dir(self) -> bool:
         """Template directory should only have template file."""
-        for child in self.template_dir.iterdir():
+        for child in fs.iterdir_without_hidden_files(self.template_dir):
             # Only allowable template file in the directory is the template directory.
             if child.name != self.template_name and child.name.lower() != 'readme.md':
                 logger.error(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')

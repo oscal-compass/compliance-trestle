@@ -26,6 +26,9 @@ import trestle.core.commands.author.consts as author_const
 import trestle.core.draw_io as draw_io
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.consts import TRESTLE_RESOURCES
+from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -53,7 +56,7 @@ class Folders(AuthorCommonCommand):
             author_const.SHORT_TEMPLATE_VERSION,
             author_const.LONG_TEMPLATE_VERSION,
             help=author_const.TEMPLATE_VERSION_HELP,
-            action='store_true'
+            action='store'
         )
         self.add_argument(author_const.MODE_ARG_NAME, choices=author_const.MODE_CHOICES)
         tn_help_str = '\n'.join(
@@ -77,23 +80,18 @@ class Folders(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        if self._initialize(args):
-            return 1
-        status = 1
         try:
+            if self._initialize(args):
+                return 1
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
                 status = self.template_validate(
-                    args.header_validate,
-                    args.header_only_validate,
-                    args.governed_heading,
-                    args.readme_validate,
-                    args.template_version
+                    args.header_validate, args.header_only_validate, args.governed_heading, args.readme_validate
                 )
             elif args.mode == 'setup':
-                status = self.setup_template()
+                status = self.setup_template(args.template_version)
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
@@ -103,11 +101,17 @@ class Folders(AuthorCommonCommand):
                     args.readme_validate,
                     args.template_version
                 )
+            return status
+        except TrestleError as e:
+            logger.error(f'Error occurred when running trestle author folders: {e}')
+            logger.error('Exiting')
+            return 1
         except Exception as e:
-            logger.error(f'Exception "{e}" running trestle md governed folders.')
-        return status
+            logger.error(f'Unexpected error occurred when running trestle author folders: {e}')
+            logger.error('Exiting')
+            return 1
 
-    def setup_template(self) -> int:
+    def setup_template(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement."""
         if not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
@@ -123,20 +127,16 @@ class Folders(AuthorCommonCommand):
         template_file_a_md = self.template_dir / 'a_template.md'
         template_file_another_md = self.template_dir / 'another_template.md'
         template_file_drawio = self.template_dir / 'architecture.drawio'
-        md_template = pathlib.Path(resource_filename('trestle.resources', 'template.md')).resolve()
-        drawio_template = pathlib.Path(resource_filename('trestle.resources', 'template.drawio')).resolve()
+        versioned_temp_res, _ = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES, template_version)
+        md_template = pathlib.Path(resource_filename(versioned_temp_res, 'template.md')).resolve()
+        drawio_template = pathlib.Path(resource_filename(versioned_temp_res, 'template.drawio')).resolve()
         shutil.copy(md_template, template_file_a_md)
         shutil.copy(md_template, template_file_another_md)
         shutil.copy(drawio_template, template_file_drawio)
         return 0
 
     def template_validate(
-        self,
-        validate_header: bool,
-        validate_only_header: bool,
-        heading: str,
-        readme_validate: bool,
-        template_version: bool
+        self, validate_header: bool, validate_only_header: bool, heading: str, readme_validate: bool
     ) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
@@ -159,7 +159,7 @@ class Folders(AuthorCommonCommand):
                 try:
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(
-                        template_file, validate_header, not validate_only_header, heading, template_version
+                        template_file, validate_header, not validate_only_header, heading
                     )
                 except Exception as ex:
                     logger.error(
@@ -191,8 +191,7 @@ class Folders(AuthorCommonCommand):
         validate_header: bool,
         validate_only_header: bool,
         governed_heading: str,
-        readme_validate: bool,
-        template_version: bool
+        readme_validate: bool
     ) -> bool:
 
         r_instance_files: List[pathlib.Path] = []
@@ -227,7 +226,7 @@ class Folders(AuthorCommonCommand):
                     # Measure
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(
-                        template_file, validate_header, not validate_only_header, governed_heading, template_version
+                        template_file, validate_header, not validate_only_header, governed_heading
                     )
                     status = md_api.validate_instance(full_path)
                     if not status:
@@ -269,7 +268,7 @@ class Folders(AuthorCommonCommand):
         validate_only_header: bool,
         governed_heading: str,
         readme_validate: bool,
-        template_version: bool
+        template_version: str
     ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
@@ -287,7 +286,6 @@ class Folders(AuthorCommonCommand):
                     validate_only_header,
                     governed_heading,
                     readme_validate,
-                    template_version
                 )
                 if not result:
                     logger.error(

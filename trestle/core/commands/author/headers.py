@@ -26,7 +26,10 @@ import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.consts import TRESTLE_RESOURCES
+from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.draw_io import DrawIOMetadataValidator
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -63,6 +66,12 @@ class Headers(AuthorCommonCommand):
             help=author_const.README_VALIDATE_HELP,
             action='store_true'
         )
+        self.add_argument(
+            author_const.SHORT_TEMPLATE_VERSION,
+            author_const.LONG_TEMPLATE_VERSION,
+            help=author_const.TEMPLATE_VERSION_HELP,
+            action='store'
+        )
 
         self.add_argument(
             author_const.GLOBAL_SHORT, author_const.GLOBAL_LONG, help=author_const.GLOBAL_HELP, action='store_true'
@@ -77,33 +86,38 @@ class Headers(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        if self._initialize(args):
-            return 1
-        status = 1
-        # Handle conditional requirement of args.task_name
-        # global is special so we need to use get attribute.
-        if not self.global_ and not self.task_name:
-            logger.warning('Task name (-tn) argument is required when global is not specified')
-            return status
-
         try:
+            status = 1
+            if self._initialize(args):
+                return status
+            # Handle conditional requirement of args.task_name
+            # global is special so we need to use get attribute.
+            if not self.global_ and not self.task_name:
+                logger.warning('Task name (-tn) argument is required when global is not specified')
+                return status
+
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
                 status = self.template_validate()
             elif args.mode == 'setup':
-                status = self.setup()
+                status = self.setup(args.template_version)
             elif args.mode == 'validate':
                 exclusions = []
                 if args.exclude:
                     exclusions = args.exclude
                 # mode is validate
                 status = self.validate(args.recurse, args.readme_validate, exclusions)
-        except Exception as e:
-            logger.error(f'Error "{e}"" occurred when running trestle author docs.')
+            return status
+        except TrestleError as e:
+            logger.error(f'Error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
-        return status
+            return 1
+        except Exception as e:
+            logger.error(f'Unexpected error occurred when running trestle author headers: {e}')
+            logger.error('Exiting')
+            return 1
 
     def create_sample(self) -> int:
         """Create sample object, this always defaults to markdown."""
@@ -111,7 +125,7 @@ class Headers(AuthorCommonCommand):
         logger.info('Exiting')
         return 0
 
-    def setup(self) -> int:
+    def setup(self, template_version: str) -> int:
         """Create template directory and templates."""
         # Step 1 - validation
 
@@ -124,7 +138,9 @@ class Headers(AuthorCommonCommand):
             self.template_dir.mkdir(exist_ok=True, parents=True)
         logger.info(f'Populating template files to {self.rel_dir(self.template_dir)}')
         for template in author_const.REFERENCE_TEMPLATES.values():
-            template_path = pathlib.Path(resource_filename('trestle.resources', template)).resolve()
+            versioned_temp_res, _ = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES,
+                                                                                       template_version)
+            template_path = pathlib.Path(resource_filename(versioned_temp_res, template)).resolve()
             destination_path = self.template_dir / template
             shutil.copy(template_path, destination_path)
             logger.info(f'Template directory populated {self.rel_dir(destination_path)}')

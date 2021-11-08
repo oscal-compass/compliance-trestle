@@ -20,6 +20,8 @@ import re
 from typing import Any, Dict, List, Optional
 
 import trestle.core.markdown.markdown_const as md_const
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)
@@ -30,13 +32,12 @@ class MarkdownValidator:
 
     def __init__(
         self,
-        tmp_path: str,
+        tmp_path: pathlib.Path,
         template_header: Dict,
         template_tree: MarkdownNode,
         validate_yaml_header: bool,
         validate_md_body: bool,
-        md_header_to_validate: Optional[str] = None,
-        template_version: Optional[bool] = False,
+        md_header_to_validate: Optional[str] = None
     ):
         """Initialize markdown validator."""
         self._validate_yaml_header = validate_yaml_header
@@ -45,7 +46,15 @@ class MarkdownValidator:
         self.template_header = template_header
         self.template_tree = template_tree
         self.template_path = tmp_path
-        self.template_version = template_version
+        self.template_version = self.extract_template_version(self.template_header)
+
+        if self.template_version not in str(self.template_path):
+            raise TrestleError(
+                f'Version of the template {self.template_version} does not match the path {self.template_path}.'
+                + f'Move the template to the folder {self.template_version}'
+            )
+        if 'Version' in self.template_header.keys() and self.template_header['Version'] != self.template_version:
+            raise TrestleError(f'Version does not match template-version in template: {self.template_path}.')
 
     def is_valid_against_template(
         self, instance: pathlib.Path, instance_header: Dict, instance_tree: MarkdownNode
@@ -56,6 +65,7 @@ class MarkdownValidator:
         Instance is correct against a template iff:
             1. For YAML header keys:
                 a. All keys from the template are present and not modified
+                b. Template version in the template and instance match
             2. On the Markdown w/o YAML header:
                 a. No additional headers of the level 1 were added
                 b. Headers were not reordered
@@ -72,17 +82,6 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate is valid against the template.
         """
-        if self.template_version:
-            if 'x-trestle-template-version' in self.template_header.keys():
-                if self.template_header['x-trestle-template-version'] not in str(instance):
-                    return False
-                if self._validate_yaml_header:
-                    if 'Version' in self.template_header.keys():
-                        return self.template_header['Version'] == self.template_header['x-trestle-template-version']
-                    else:
-                        return False
-            else:
-                return False
         if self._validate_yaml_header:
             headers_match = self.compare_keys(self.template_header, instance_header)
 
@@ -135,6 +134,12 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate matches the template keys.
         """
+        template_version = cls.extract_template_version(template)
+        candidate_version = cls.extract_template_version(candidate)
+        if template_version != candidate_version:
+            logger.info(f'Versions of the template {template_version} and instance {candidate_version} are different')
+            return False
+
         if len(template.keys()) != len(candidate.keys()):
             return False
         for key in template.keys():
@@ -171,3 +176,15 @@ class MarkdownValidator:
             return False
 
         return True
+
+    @classmethod
+    def extract_template_version(cls, header: Dict[str, Any]) -> Optional[str]:
+        """
+        Extract the template version from the header.
+
+        If no header is found then starting version(0.0.1) will be used by default
+        """
+        if 'x-trestle-template-version' not in header.keys():
+            return START_TEMPLATE_VERSION
+
+        return header['x-trestle-template-version']
