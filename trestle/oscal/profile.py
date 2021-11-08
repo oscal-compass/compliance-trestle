@@ -33,11 +33,18 @@ class WithId(OscalBaseModel):
 
 
 class WithChildControls(Enum):
+    """
+    When a control is included, whether its child (dependent) controls are also included.
+    """
+
     yes = 'yes'
     no = 'no'
 
 
 class SetParameter(OscalBaseModel):
+    """
+    A parameter setting, to be propagated to points of insertion
+    """
 
     class Config:
         extra = Extra.forbid
@@ -89,6 +96,9 @@ class SetParameter(OscalBaseModel):
 
 
 class Remove(OscalBaseModel):
+    """
+    Specifies objects to be removed from a control based on specific aspects of the object that must all match.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -141,6 +151,10 @@ class Remove(OscalBaseModel):
 
 
 class Position(Enum):
+    """
+    Where to add the new content with respect to the targeted element (beside it or inside it)
+    """
+
     before = 'before'
     after = 'after'
     starting = 'starting'
@@ -148,18 +162,29 @@ class Position(Enum):
 
 
 class Order(Enum):
+    """
+    A designation of how a selection of controls in a profile is to be ordered.
+    """
+
     keep = 'keep'
     ascending = 'ascending'
     descending = 'descending'
 
 
 class Method(Enum):
+    """
+    How clashing controls should be handled
+    """
+
     use_first = 'use-first'
     merge = 'merge'
     keep = 'keep'
 
 
 class Matching(OscalBaseModel):
+    """
+    Select controls by (regular expression) match on ID
+    """
 
     class Config:
         extra = Extra.forbid
@@ -172,6 +197,10 @@ class Matching(OscalBaseModel):
 
 
 class IncludeAll(OscalBaseModel):
+    """
+    Insert all controls from the imported catalog or profile resources identified in the import directive.
+    """
+
     pass
 
     class Config:
@@ -179,6 +208,9 @@ class IncludeAll(OscalBaseModel):
 
 
 class Combine(OscalBaseModel):
+    """
+    A Combine element defines whether and how to combine multiple (competing) versions of the same control
+    """
 
     class Config:
         extra = Extra.forbid
@@ -200,6 +232,9 @@ class AsIs(OscalBaseModel):
 
 
 class Add(OscalBaseModel):
+    """
+    Specifies contents to be added into controls, in resolution
+    """
 
     class Config:
         extra = Extra.forbid
@@ -230,6 +265,9 @@ class Add(OscalBaseModel):
 
 
 class Alter(OscalBaseModel):
+    """
+    An Alter element specifies changes to be made to an included control when a profile is resolved.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -248,6 +286,9 @@ class Alter(OscalBaseModel):
 
 
 class Modify(OscalBaseModel):
+    """
+    Set parameters or amend controls in resolution
+    """
 
     class Config:
         extra = Extra.forbid
@@ -257,6 +298,9 @@ class Modify(OscalBaseModel):
 
 
 class SelectControlById(OscalBaseModel):
+    """
+    Call a control by its ID
+    """
 
     class Config:
         extra = Extra.forbid
@@ -272,6 +316,9 @@ class SelectControlById(OscalBaseModel):
 
 
 class Import(OscalBaseModel):
+    """
+    The import designates a catalog, profile, or other resource to be included (referenced and potentially modified) by this profile. The import also identifies which controls to select using the include-all, include-controls, and exclude-controls directives.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -287,6 +334,9 @@ class Import(OscalBaseModel):
 
 
 class InsertControls(OscalBaseModel):
+    """
+    Specifies which controls to use in the containing context.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -302,6 +352,9 @@ class InsertControls(OscalBaseModel):
 
 
 class Group(OscalBaseModel):
+    """
+    A group of (selected) controls or of groups of controls
+    """
 
     class Config:
         extra = Extra.forbid
@@ -338,6 +391,9 @@ class Group(OscalBaseModel):
 
 
 class Custom(OscalBaseModel):
+    """
+    A Custom element frames a structure for embedding represented controls in resolution.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -347,6 +403,9 @@ class Custom(OscalBaseModel):
 
 
 class Merge(OscalBaseModel):
+    """
+    A Merge element merges controls in resolution.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -357,6 +416,9 @@ class Merge(OscalBaseModel):
 
 
 class Profile(OscalBaseModel):
+    """
+    Each OSCAL profile is defined by a Profile element
+    """
 
     class Config:
         extra = Extra.forbid

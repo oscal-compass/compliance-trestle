@@ -172,7 +172,7 @@ def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[A
         root = fields['__root__']
         singular_type = root.type_
         root_type = root.outer_type_._name
-    except BaseException:
+    except Exception:  # noqa S110
         pass
     return root, root_type, singular_type
 

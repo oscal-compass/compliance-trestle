@@ -30,6 +30,9 @@ class AddrLine(OscalBaseModel):
 
 
 class Address(OscalBaseModel):
+    """
+    A postal address for the location.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -65,6 +68,9 @@ class Address(OscalBaseModel):
 
 
 class WithinDateRange(OscalBaseModel):
+    """
+    The task is intended to occur within the specified date range.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -96,6 +102,10 @@ class Value(OscalBaseModel):
 
 
 class Unit(Enum):
+    """
+    The unit of time for the period.
+    """
+
     seconds = 'seconds'
     minutes = 'minutes'
     hours = 'hours'
@@ -105,6 +115,10 @@ class Unit(Enum):
 
 
 class Type3(Enum):
+    """
+    The kind of actor.
+    """
+
     tool = 'tool'
     assessment_platform = 'assessment-platform'
     party = 'party'
@@ -123,21 +137,36 @@ class Type2(OscalBaseModel):
 
 
 class Type1(Enum):
+    """
+    Identifies the type of the target.
+    """
+
     statement_id = 'statement-id'
     objective_id = 'objective-id'
 
 
 class Type(Enum):
+    """
+    A category describing the kind of party the object describes.
+    """
+
     person = 'person'
     organization = 'organization'
 
 
 class Transport(Enum):
+    """
+    Indicates the transport type.
+    """
+
     TCP = 'TCP'
     UDP = 'UDP'
 
 
 class ThreatId(OscalBaseModel):
+    """
+    A pointer, by ID, to an externally-defined threat.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -156,6 +185,9 @@ class ThreatId(OscalBaseModel):
 
 
 class TelephoneNumber(OscalBaseModel):
+    """
+    Contact number by telephone.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -167,6 +199,9 @@ class TelephoneNumber(OscalBaseModel):
 
 
 class SystemId(OscalBaseModel):
+    """
+    A unique identifier for the system described by this system security plan.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -192,6 +227,9 @@ class StatementId(OscalBaseModel):
 
 
 class Source(OscalBaseModel):
+    """
+    Assessment subjects will be identified while conducting the referenced activity-instance.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -208,6 +246,9 @@ class Source(OscalBaseModel):
 
 
 class SelectObjectiveById(OscalBaseModel):
+    """
+    Used to select a control objective for inclusion/exclusion based on the control objective's identifier.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -254,6 +295,9 @@ class Remarks(OscalBaseModel):
 
 
 class RelatedRisk(OscalBaseModel):
+    """
+    Relates the finding to a set of referenced risks that were used to determine the finding.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -268,21 +312,9 @@ class RelatedRisk(OscalBaseModel):
 
 
 class RelatedObservation1(OscalBaseModel):
-
-    class Config:
-        extra = Extra.forbid
-
-    observation_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='observation-uuid',
-        description='References an observation defined in the list of observations.',
-        title='Observation Universally Unique Identifier Reference',
-    )
-
-
-class RelatedObservation(OscalBaseModel):
+    """
+    Relates the finding to a set of referenced observations that were used to determine the finding.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -307,6 +339,9 @@ class Published(OscalBaseModel):
 
 
 class Property(OscalBaseModel):
+    """
+    An attribute, characteristic, or quality of the containing object expressed as a namespace qualified name/value pair. The value of a property is a simple scalar value, which may be expressed as a list of values.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -353,6 +388,9 @@ class Property(OscalBaseModel):
 
 
 class PortRange(OscalBaseModel):
+    """
+    Where applicable this is the IPv4 port range on which the service operates.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -371,6 +409,9 @@ class PortRange(OscalBaseModel):
 
 
 class Protocol(OscalBaseModel):
+    """
+    Information about the protocol used to provide a service.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -412,6 +453,9 @@ class ParameterValue(OscalBaseModel):
 
 
 class ParameterGuideline(OscalBaseModel):
+    """
+    A prose statement that provides a recommendation for the use of a parameter.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -432,6 +476,9 @@ class OscalVersion(OscalBaseModel):
 
 
 class OnDate(OscalBaseModel):
+    """
+    The task is intended to occur on the specified date.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -455,6 +502,9 @@ class MemberOfOrganization(OscalBaseModel):
 
 
 class LoggedBy(OscalBaseModel):
+    """
+    Used to indicate who created a log entry in what role.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -487,6 +537,9 @@ class LocationUuid(OscalBaseModel):
 
 
 class Link(OscalBaseModel):
+    """
+    A reference to a local or remote resource
+    """
 
     class Config:
         extra = Extra.forbid
@@ -529,6 +582,9 @@ class LastModified(OscalBaseModel):
 
 
 class ImportSsp(OscalBaseModel):
+    """
+    Used by the assessment plan and POA&M to import information about the system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -542,6 +598,9 @@ class ImportSsp(OscalBaseModel):
 
 
 class ImplementationStatus(OscalBaseModel):
+    """
+    Indicates the degree to which the a given control is implemented.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -558,11 +617,18 @@ class ImplementationStatus(OscalBaseModel):
 
 
 class HowMany(Enum):
+    """
+    Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.
+    """
+
     one = 'one'
     one_or_more = 'one-or-more'
 
 
 class Hash(OscalBaseModel):
+    """
+    A representation of a cryptographic digest generated over a resource using a specified hash algorithm.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -581,6 +647,9 @@ class FunctionPerformed(OscalBaseModel):
 
 
 class Facet(OscalBaseModel):
+    """
+    An individual characteristic that is part of a larger set produced by the same actor.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -607,6 +676,9 @@ class Facet(OscalBaseModel):
 
 
 class ExternalId(OscalBaseModel):
+    """
+    An identifier for a person or organization using a designated scheme. e.g. an Open Researcher and Contributor ID (ORCID)
+    """
 
     class Config:
         extra = Extra.forbid
@@ -628,6 +700,9 @@ class EmailAddress(OscalBaseModel):
 
 
 class DocumentId(OscalBaseModel):
+    """
+    A document identifier qualified by an identifier scheme. A document identifier provides a globally unique identifier for a group of documents that are to be treated as different versions of the same document. If this element does not appear, or if the value of this element is empty, the value of "document-id" is equal to the value of the "uuid" flag of the top-level root element.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -642,6 +717,9 @@ class DocumentId(OscalBaseModel):
 
 
 class Dependency(OscalBaseModel):
+    """
+    Used to indicate that a task is dependent on another task.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -657,6 +735,9 @@ class Dependency(OscalBaseModel):
 
 
 class ControlObjectiveSelection(OscalBaseModel):
+    """
+    Identifies the control objectives of the assessment. In the assessment plan, these are the planned objectives. In the assessment results, these are the assessed objectives, and reflects any changes from the plan.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -680,6 +761,9 @@ class ControlObjectiveSelection(OscalBaseModel):
 
 
 class Citation(OscalBaseModel):
+    """
+    A citation consisting of end note text and optional structured bibliographic data.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -690,6 +774,9 @@ class Citation(OscalBaseModel):
 
 
 class Base64(OscalBaseModel):
+    """
+    The Base64 alphabet in RFC 2045 - aligned with XSD.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -711,6 +798,9 @@ class Base64(OscalBaseModel):
 
 
 class AuthorizedPrivilege(OscalBaseModel):
+    """
+    Identifies a specific system privilege held by the user, along with an associated description and/or rationale for the privilege.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -729,6 +819,9 @@ class AuthorizedPrivilege(OscalBaseModel):
 
 
 class AtFrequency(OscalBaseModel):
+    """
+    The task is intended to occur at the specified frequency.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -744,6 +837,9 @@ class AtFrequency(OscalBaseModel):
 
 
 class AssessmentSubjectPlaceholder(OscalBaseModel):
+    """
+    Used when the assessment subjects will be determined as part of one or more other assessment activities. These assessment subjects will be recorded in the assessment results in the assessment log.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -768,6 +864,9 @@ class AssessmentSubjectPlaceholder(OscalBaseModel):
 
 
 class AssessmentPart(OscalBaseModel):
+    """
+    A partition of an assessment plan or results or a child of another part.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -820,6 +919,9 @@ class AssessmentPart(OscalBaseModel):
 
 
 class AssessmentMethod(OscalBaseModel):
+    """
+    A local definition of a control objective. Uses catalog syntax for control objective and assessment activities.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -844,6 +946,9 @@ class AssessmentMethod(OscalBaseModel):
 
 
 class Timing(OscalBaseModel):
+    """
+    The timing under which the task is intended to occur.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -869,6 +974,9 @@ class Timing(OscalBaseModel):
 
 
 class Test(OscalBaseModel):
+    """
+    A test expression which is expected to be evaluated by a tool.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -882,6 +990,9 @@ class Test(OscalBaseModel):
 
 
 class ParameterConstraint(OscalBaseModel):
+    """
+    A formal or informal expression of a constraint or test
+    """
 
     class Config:
         extra = Extra.forbid
@@ -895,6 +1006,9 @@ class ParameterConstraint(OscalBaseModel):
 
 
 class SystemUser(OscalBaseModel):
+    """
+    A type of user that interacts with the system based on an associated role.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -929,6 +1043,9 @@ class SystemUser(OscalBaseModel):
 
 
 class SubjectReference(OscalBaseModel):
+    """
+    A pointer to a resource based on its universally unique identifier (UUID). Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -960,6 +1077,9 @@ class SubjectReference(OscalBaseModel):
 
 
 class MitigatingFactor(OscalBaseModel):
+    """
+    Describes an existing mitigating factor that may affect the overall determination of the risk, with an optional link to an implementation statement in the SSP.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -991,6 +1111,9 @@ class MitigatingFactor(OscalBaseModel):
 
 
 class SelectSubjectById(OscalBaseModel):
+    """
+    Identifies a set of assessment subjects to include/exclude by UUID.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1017,6 +1140,9 @@ class SelectSubjectById(OscalBaseModel):
 
 
 class AssessmentSubject(OscalBaseModel):
+    """
+    Identifies system elements being assessed, such as components, inventory items, and locations. In the assessment plan, this identifies a planned assessment subject. In the assessment results this is an actual assessment subject, and reflects any changes from the plan. exactly what will be the focus of this assessment. Any subjects not identified in this way are out-of-scope.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1049,6 +1175,9 @@ class AssessmentSubject(OscalBaseModel):
 
 
 class Role(OscalBaseModel):
+    """
+    Defines a function assumed or expected to be assumed by a party in a specific situation.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1084,6 +1213,9 @@ class Role(OscalBaseModel):
 
 
 class Rlink(OscalBaseModel):
+    """
+    A pointer to an external resource with an optional hash for verification and change detection.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1104,6 +1236,9 @@ class Rlink(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
+    """
+    A resource associated with content in the containing document. A resource may be directly included in the document base64 encoded or may point to one or more equivalent internet resources.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1143,6 +1278,9 @@ class Resource(OscalBaseModel):
 
 
 class BackMatter(OscalBaseModel):
+    """
+    A collection of resources, which may be included directly or by reference.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1151,6 +1289,9 @@ class BackMatter(OscalBaseModel):
 
 
 class Revision(OscalBaseModel):
+    """
+    An entry in a sequential list of revisions to the containing document in reverse chronological order (i.e., most recent previous revision first).
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1170,6 +1311,9 @@ class Revision(OscalBaseModel):
 
 
 class ResponsibleRole(OscalBaseModel):
+    """
+    A reference to one or more roles with responsibility for performing a function relative to the containing object.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1190,6 +1334,9 @@ class ResponsibleRole(OscalBaseModel):
 
 
 class ResponsibleParty(OscalBaseModel):
+    """
+    A reference to a set of organizations or persons that have responsibility for performing a referenced role in the context of the containing object.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1210,6 +1357,9 @@ class ResponsibleParty(OscalBaseModel):
 
 
 class RequiredAsset(OscalBaseModel):
+    """
+    Identifies an asset required to achieve remediation.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1239,6 +1389,9 @@ class RequiredAsset(OscalBaseModel):
 
 
 class RelevantEvidence(OscalBaseModel):
+    """
+    Links this observation to relevant evidence.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1259,6 +1412,9 @@ class RelevantEvidence(OscalBaseModel):
 
 
 class Party(OscalBaseModel):
+    """
+    A responsible entity which is either a person or an organization.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1299,6 +1455,9 @@ class Party(OscalBaseModel):
 
 
 class Part(OscalBaseModel):
+    """
+    A partition of a control's definition or a child of another part.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1352,6 +1511,9 @@ class Part(OscalBaseModel):
 
 
 class LocalObjective(OscalBaseModel):
+    """
+    A local definition of a control objective for this assessment. Uses catalog syntax for control objective and assessment actions.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1377,6 +1539,9 @@ class LocalObjective(OscalBaseModel):
 
 
 class ParameterSelection(OscalBaseModel):
+    """
+    Presenting a choice among alternatives
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1392,6 +1557,9 @@ class ParameterSelection(OscalBaseModel):
 
 
 class Parameter(OscalBaseModel):
+    """
+    Parameters provide a mechanism for the dynamic assignment of value(s) in a control.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1444,6 +1612,9 @@ class Parameter(OscalBaseModel):
 
 
 class OriginActor(OscalBaseModel):
+    """
+    The actor that produces an observation, a finding, or a risk. One or more actor type can be used to specify a person that is using a tool.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1470,6 +1641,9 @@ class OriginActor(OscalBaseModel):
 
 
 class Location(OscalBaseModel):
+    """
+    A location, with associated metadata that can be referenced.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1497,6 +1671,9 @@ class Location(OscalBaseModel):
 
 
 class Metadata(OscalBaseModel):
+    """
+    Provides information about the publication and availability of the containing document.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1522,6 +1699,9 @@ class Metadata(OscalBaseModel):
 
 
 class ImplementedComponent(OscalBaseModel):
+    """
+    The set of components that are implemented in a given system inventory item.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1541,6 +1721,9 @@ class ImplementedComponent(OscalBaseModel):
 
 
 class InventoryItem(OscalBaseModel):
+    """
+    A single managed inventory item within the system.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1566,6 +1749,9 @@ class InventoryItem(OscalBaseModel):
 
 
 class IdentifiedSubject(OscalBaseModel):
+    """
+    Used to detail assessment subjects that were identfied by this task.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1582,6 +1768,9 @@ class IdentifiedSubject(OscalBaseModel):
 
 
 class RelatedTask(OscalBaseModel):
+    """
+    Identifies an individual task for which the containing object is a consequence of.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1607,6 +1796,9 @@ class RelatedTask(OscalBaseModel):
 
 
 class RelatedResponse(OscalBaseModel):
+    """
+    Identifies an individual risk response that this log entry is for.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1626,6 +1818,9 @@ class RelatedResponse(OscalBaseModel):
 
 
 class AssociatedActivity(OscalBaseModel):
+    """
+    Identifies an individual activity to be performed as part of a task.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1646,6 +1841,9 @@ class AssociatedActivity(OscalBaseModel):
 
 
 class Task(OscalBaseModel):
+    """
+    Represents a scheduled event or milestone, which may be associated with a series of assessment actions.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1682,6 +1880,9 @@ class Task(OscalBaseModel):
 
 
 class UsesComponent(OscalBaseModel):
+    """
+    The set of components that are used by the assessment platform.
+    """
 
     class Config:
         extra = Extra.forbid
@@ -1701,6 +1902,9 @@ class UsesComponent(OscalBaseModel):
 
 
 class AssessmentPlatform(OscalBaseModel):
+    """
+    Used to represent the toolset used to perform aspects of the assessment.
+    """
 
     class Config:
         extra = Extra.forbid

@@ -13,6 +13,7 @@
 # limitations under the License.
 """Tests for the profile author module."""
 
+import argparse
 import pathlib
 import shutil
 import sys
@@ -21,6 +22,8 @@ from typing import Dict
 from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
+
+from ruamel.yaml import YAML
 
 from tests import test_utils
 
@@ -65,11 +68,17 @@ multi_guidance_dict = {
 }
 
 
+@pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_profile_generate_assemble(
-    guid_dict: Dict, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    add_header: bool,
+    guid_dict: Dict,
+    use_cli: bool,
+    dir_exists: bool,
+    tmp_trestle_dir: pathlib.Path,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test the profile markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
@@ -87,15 +96,18 @@ def test_profile_generate_assemble(
     markdown_path = tmp_trestle_dir / md_name
     ac1_path = markdown_path / 'ac/ac-1.md'
     assembled_prof_dir = tmp_trestle_dir / f'profiles/{assembled_prof_name}'
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
+        if add_header:
+            test_args.extend(['-y', str(yaml_header_path)])
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
         # insert text in the control after the found ref text in the control
-        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
+        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if dir_exists:
             assembled_prof_dir.mkdir()
@@ -103,9 +115,13 @@ def test_profile_generate_assemble(
         assert Trestle().run() == 0
     else:
         profile_generate = ProfileGenerate()
-        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path)
+        yaml_header = {}
+        if add_header:
+            yaml = YAML(typ='safe')
+            yaml_header = yaml.load(yaml_header_path.open('r'))
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header)
         assert ac1_path.exists()
-        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text']) == 0
+        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name) == 0
@@ -122,14 +138,25 @@ def test_profile_generate_assemble(
 
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
-    test_args = 'trestle author profile-generate -n my_prof -o profiles'.split()
+    # disallowed output name
+    test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
-    # no trestle root specified
-    test_args = 'trestle author profile-generate -n my_prof -o new_prof'.split()
+    # no trestle root specified direct command
+    test_args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='my_prof', output='new_prof', verbose=0)
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
+    # no trestle root specified
     profile_assemble = ProfileAssemble()
     assert profile_assemble._run(test_args) == 1
+
+    # bad yaml
+    bad_yaml_path = str(test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml')
+    trestle_root = str(tmp_trestle_dir)
+    test_args = argparse.Namespace(
+        trestle_root=trestle_root, name='my_prof', output='new_prof', yaml_header=bad_yaml_path, verbose=0
+    )
+    profile_generate = ProfileGenerate()
+    assert profile_generate._run(test_args) == 1
