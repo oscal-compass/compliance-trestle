@@ -412,33 +412,23 @@ class ProfileResolver():
             """Add new elements at the given position."""
             if position in {prof.Position.after, prof.Position.before} and id_ is None:
                 raise TrestleError('Reference ID (by_id) must be given when position is set to before or after.')
+            status = ProfileResolver.Modify._add_to_list(control_parts, new_parts, position, id_)
+            if status:
+                return True
+
             for idx, child_part in enumerate(control_parts):
                 if child_part.id == id_:
-                    if not child_part.parts:
+                    # Undesirable hack
+                    if child_part.parts is None:
                         child_part.parts = []
-
-                    if position == prof.Position.after:
-                        for offset, new_part in enumerate(new_parts):
-                            control_parts.insert(idx + 1 + offset, new_part)
-                    elif position == prof.Position.before:
-                        for offset, new_part in enumerate(new_parts):
-                            control_parts.insert(idx + offset, new_part)
-                    elif position == prof.Position.starting:
-                        for offset, new_part in enumerate(new_parts):
-                            child_part.parts.insert(offset, new_part)
-                    elif position == prof.Position.ending:
-                        child_part.parts.extend(new_parts)
-                    else:
-                        raise TrestleError(f'Add position not recognized: {position}')
-
+                    ProfileResolver.Modify._add_to_list(child_part.parts, new_parts, position, None)
+                    control_parts[idx].parts = child_part.parts
                     return True
-                else:
-                    if child_part.parts is not None:
-                        if ProfileResolver.Modify._add_to_parts_given_position(child_part.parts,
-                                                                               id_,
-                                                                               new_parts,
-                                                                               position):
-                            return True
+
+                if child_part.parts is not None:
+                    if ProfileResolver.Modify._add_to_parts_given_position(child_part.parts, id_, new_parts, position):
+                        control_parts[idx].parts = child_part.parts
+                        return True
             return False
 
         @staticmethod
@@ -449,39 +439,37 @@ class ProfileResolver():
 
             Update the control with the new parts - otherwise error.
             """
+            if control.parts is None:
+                if not new_parts:
+                    return
+                parts = []
+            else:
+                parts = control.parts
             # handle simplest case first
-            if position == prof.Position.starting and id_ is None:
-                # add inside the control at the start
-                for offset, new_part in enumerate(new_parts):
-                    control.parts.insert(offset, new_part)
-            elif position == prof.Position.ending and id_ is None:
-                # add inside the control at the end
-                if control.parts is None:
-                    control.parts = new_parts
-                else:
-                    control.parts.extend(new_parts)
+            if id_ is None or id_ == control.id:
+                status = ProfileResolver.Modify._add_to_list(parts, new_parts, position, None)
+                if status:
+                    control.parts = parts
+                    return
             else:
                 # id is given, add by reference
-                if control.parts is None:
-                    if not new_parts:
-                        return
-                    control.parts = []
-                if not ProfileResolver.Modify._add_to_parts_given_position(control.parts, id_, new_parts, position):
+
+                status = ProfileResolver.Modify._add_to_parts_given_position(parts, id_, new_parts, position)
+
+                if not status:
                     raise TrestleError(f'Unable to add parts for control {control.id} and part {id_} is not found.')
+                control.parts = parts
 
         @staticmethod
         def _add_to_list(
-            input_list: Optional[List[OBT]],
-            new: List[OBT],
-            position: prof.Position,
-            by_id: Optional[str] = None
+            input_list: List[OBT], new: List[OBT], position: prof.Position, by_id: Optional[str] = None
         ) -> bool:
             """Add to a list based on a position, for the list or its direct sublist.
 
             The assumption is that the list is an OSCAL model containing a id attributed (e.g. control, part, etc.)
+
+            Note: If a list can be none this method will fail
             """
-            if input_list is None:
-                input_list: List[OBT] = []
             if not by_id:
                 if position == prof.Position.starting:
                     for offset, new_part in enumerate(new):
@@ -491,16 +479,23 @@ class ProfileResolver():
                     input_list.extend(new)
                     return True
                 raise TrestleError('Position argument must be starting or ending if ID is not provided')
-            for index in range(len(input_list)):
-                if input_list[index].id == by_id:
-                    if position == prof.Position.after:
-                        for offset, new_item in enumerate(new):
-                            input_list.insert(index + 1 + offset, new_item)
-                        return True
-                    elif position == prof.Position.before:
-                        for offset, new_item in enumerate(new):
-                            input_list.insert(index + offset, new_item)
-                        return True
+            # Test here for has id attribute.
+            try:
+                for index in range(len(input_list)):
+                    if input_list[index].id == by_id:
+                        if position == prof.Position.after:
+                            for offset, new_item in enumerate(new):
+                                input_list.insert(index + 1 + offset, new_item)
+                            return True
+                        elif position == prof.Position.before:
+                            for offset, new_item in enumerate(new):
+                                input_list.insert(index + offset, new_item)
+                            return True
+            except AttributeError:
+                raise TrestleError(
+                    'Cannot use "after" or "insert" modifictions for a list where elements'
+                    + ' do not contain an id attribute.'
+                )
             return False
 
         @staticmethod
@@ -514,6 +509,8 @@ class ProfileResolver():
             updated = False
             for idx, part in enumerate(parts):
                 if add.by_id == part.id:
+                    if part.props is None:
+                        part.props = []
                     updated = ProfileResolver.Modify._add_to_list(part.props, add.props, add.position)
                     if updated:
                         parts[idx] = part
@@ -541,12 +538,12 @@ class ProfileResolver():
             if control.params:
                 for idx, param in enumerate(control.params):
                     if param.id == add.by_id:
+                        if param.props is None:
+                            param.props = []
                         updated = ProfileResolver.Modify._add_to_list(param.props, add.props, add.position)
                         if updated:
                             control.params[idx] = param
-                            continue
-            if updated:
-                return
+                            return
             if control.parts:
                 updated = ProfileResolver.Modify._add_props_to_parts(control.parts, add)
             if not updated:
@@ -615,7 +612,7 @@ class ProfileResolver():
                     for part in control.parts:
                         self._replace_part_prose(control, part, param_dict)
                 self._catalog_interface.replace_control(control)
-
+            self._catalog_interface.update_catalog_controls()
             catalog = self._catalog_interface._catalog
 
             # update the original profile metadata with new contents

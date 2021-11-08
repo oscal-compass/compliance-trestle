@@ -77,13 +77,13 @@ class SSPGenerate(AuthorCommonCommand):
             for section in section_tuples:
                 if ':' in section:
                     s = section.split(':')
-                    section_label = s[0].strip()
-                    if section_label == 'statement':
-                        logger.warning('Section label "statement" is not allowed.')
-                        return 1
                     sections[s[0].strip()] = s[1].strip()
                 else:
+
                     sections[section] = section
+            if 'statement' in sections.keys():
+                logger.warning('Section label "statement" is not allowed.')
+                return 1
 
         logger.debug(f'ssp sections: {sections}')
 
