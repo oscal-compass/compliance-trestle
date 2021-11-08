@@ -126,7 +126,7 @@ class MDWriter():
             self._file_path.parent.mkdir(exist_ok=True, parents=True)
             with open(self._file_path, 'w', encoding=const.FILE_ENCODING) as f:
                 # Make sure yaml header is written first
-                if self._yaml_header is not None:
+                if self._yaml_header:
                     f.write('---\n')
                     f.write('\n')
                     yaml = YAML(typ='safe')

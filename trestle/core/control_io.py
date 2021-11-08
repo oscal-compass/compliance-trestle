@@ -16,7 +16,7 @@
 import logging
 import pathlib
 import re
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
 
@@ -302,6 +302,35 @@ class ControlIOWriter():
                 prose += ControlIOWriter._get_control_section_part(part, part_name)
         return prose
 
+    @staticmethod
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
+        """
+        Merge dict src into dest in a deep manner and handle lists.
+
+        All contents of dest are retained and new values from src do not change dest.
+        But any new items in src are added to dest.
+        This changes dest in place.
+        """
+        for key in src.keys():
+            if key in dest:
+                if isinstance(dest[key], dict) and isinstance(src[key], dict):
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key])
+                elif isinstance(dest[key], list):
+                    # grow dest list for the key by adding new items from src
+                    if isinstance(src[key], list):
+                        missing = set(src[key]) - set(dest[key])
+                        dest[key].extend(missing)
+                    else:
+                        if src[key] not in dest[key]:
+                            dest[key].append(src[key])
+                elif isinstance(src[key], list):
+                    dest[key] = [dest[key]]
+                    dest[key].extend(src[key])
+                # if the item is in both, leave dest as-is and ignore the src value
+            else:
+                # if the item was not already in dest, add it from src
+                dest[key] = src[key]
+
     def write_control(
         self,
         dest_path: pathlib.Path,
@@ -330,14 +359,20 @@ class ControlIOWriter():
             None
 
         Notes:
-            The filename is constructed from the control's id, so only the markdown directory is required
+            The filename is constructed from the control's id, so only the markdown directory is required.
+            If a yaml header is present in the file it is merged with the optional provided header.
+            The header in the file takes precedence over the provided one.
         """
         control_file = dest_path / (control.id + '.md')
-        existing_text = ControlIOReader.read_all_implementation_prose(control_file)
+        existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
-        self._add_yaml_header(yaml_header)
+        # Need to merge any existing header info with the new one.  Either could be empty.
+        merged_header = yaml_header if yaml_header else {}
+        if header:
+            ControlIOWriter.merge_dicts_deep(merged_header, header)
+        self._add_yaml_header(merged_header)
 
         self._add_control_statement(control, group_title)
 
@@ -684,7 +719,9 @@ class ControlIOReader():
         return ii, control_parts
 
     @staticmethod
-    def read_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
+    def read_all_implementation_prose_and_header(
+        control_file: pathlib.Path
+    ) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.
 
@@ -695,7 +732,10 @@ class ControlIOReader():
             Dictionary of part labels and corresponding prose read from the markdown file.
         """
         if not control_file.exists():
-            return {}
+            return {}, {}
+        md_api = MarkdownAPI()
+        header, _ = md_api.processor.process_markdown(control_file)
+
         lines = ControlIOReader._load_control_lines(control_file)
         ii = 0
         # keep moving down through the file picking up labels and prose
@@ -710,7 +750,7 @@ class ControlIOReader():
                 responses[part_label] = prose_lines
             if ii < 0:
                 break
-        return responses
+        return responses, header
 
     @staticmethod
     def read_implementations(control_file: pathlib.Path,
@@ -718,7 +758,7 @@ class ControlIOReader():
         """Get implementation requirements associated with given control and link to the one component we created."""
         control_id = control_file.stem
         imp_reqs: List[ossp.ImplementedRequirement] = []
-        responses = ControlIOReader.read_all_implementation_prose(control_file)
+        responses, _ = ControlIOReader.read_all_implementation_prose_and_header(control_file)
 
         for response in responses.items():
             label = response[0]

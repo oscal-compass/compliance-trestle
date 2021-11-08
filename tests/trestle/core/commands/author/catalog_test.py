@@ -21,21 +21,23 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from ruamel.yaml import YAML
+
 from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
-from trestle.core.err import TrestleError
 from trestle.oscal import catalog as cat
 from trestle.oscal.common import Part, Property
 
 markdown_name = 'my_md'
 
 
+@pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
-    use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    add_header: bool, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
@@ -51,13 +53,16 @@ def test_catalog_generate_assemble(
     ac1_path = markdown_path / 'ac/ac-1.md'
     new_prose = 'My added item'
     assembled_cat_dir = tmp_trestle_dir / f'catalogs/{assembled_cat_name}'
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
+        if add_header:
+            test_args.extend(['-y', str(yaml_header_path)])
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
-        test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         if dir_exists:
             assembled_cat_dir.mkdir()
@@ -65,9 +70,13 @@ def test_catalog_generate_assemble(
         assert Trestle().run() == 0
     else:
         catalog_generate = CatalogGenerate()
-        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
+        yaml_header = {}
+        if add_header:
+            yaml = YAML(typ='safe')
+            yaml_header = yaml.load(yaml_header_path.open('r'))
+        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header)
         assert (markdown_path / 'ac/ac-1.md').exists()
-        test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
         CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
@@ -101,14 +110,21 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
 
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
+    # disallowed output name
     test_args = 'trestle author catalog-generate -n foo -o profiles'.split()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
 
+    # catalog doesn't exist
     test_args = 'trestle author catalog-generate -n foo -o my_md'.split()
-    with pytest.raises(TrestleError):
-        monkeypatch.setattr(sys, 'argv', test_args)
-        Trestle().run()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
+
+    # bad yaml
+    bad_yaml_path = str(test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml')
+    test_args = f'trestle author catalog-generate -n foo -o my_md -y {bad_yaml_path}'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
 
 
 def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
