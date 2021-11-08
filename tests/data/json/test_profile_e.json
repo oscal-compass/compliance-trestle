@@ -14,15 +14,15 @@
       }
     ],
     "modify": {
-      "set_parameters": [
+      "set-parameters": [
         {
-          "param_id": "ac-1_prm_1",
+          "param-id": "ac-1_prm_1",
             "values": [
               "## Override value ##"
             ]
         },
         {
-          "param_id": "test-1_prm_1",
+          "param-id": "test-1_prm_1",
           "constraints": [{
             "description": "This is a constraint"
           }]

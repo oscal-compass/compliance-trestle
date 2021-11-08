@@ -330,8 +330,6 @@ class ControlIOWriter():
                         except TypeError:
                             # This is a complex type - use simplistic safe behaviour
                             logger.debug('Ignoring complex types within lists when merging dictionaries.')
-                            pass
-
                     else:
                         if src[key] not in dest[key]:
                             dest[key].append(src[key])

@@ -265,3 +265,38 @@ def test_merge_params() -> None:
     merge._merge_params(param_1, param_2)
     # FIXME this should check the right things happened
     assert param_1
+
+
+def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test all types of property additions."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_f_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_f', prof.Profile, fs.FileContentType.JSON)
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_f_path)
+    interface = CatalogInterface(cat)
+    ac_3 = interface.get_control('ac-3')
+
+    assert len(ac_3.props) == 6
+    assert ac_3.props[-1].value == 'four'
+
+    for part in ac_3.parts:
+        if part.id == 'ac-3_stmt':
+            assert len(part.props) == 4
+
+    ac_5 = interface.get_control('ac-5')
+    for part in ac_5.parts:
+        if part.id == 'ac-5_stmt':
+            for sub_part in part.parts:
+                if sub_part.id == 'ac-5_smt.a':
+                    assert len(sub_part.props) == 4
+
+
+def test_add_props_failure(tmp_trestle_dir: pathlib.Path) -> None:
+    """
+    Test for bad properties additions.
+
+    Properties can only be added with starting or ending.
+    """
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
+    with pytest.raises(TrestleError):
+        _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
