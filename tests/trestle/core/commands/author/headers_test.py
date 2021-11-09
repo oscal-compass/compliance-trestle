@@ -454,10 +454,14 @@ def test_e2e_backward_compatibility(
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
 
     # Copy in template using old path
-    old_template_loc.mkdir(exist_ok=True, parents=True)
     template_loc = testdata_dir / template_path
     if template_loc.is_dir():
-        shutil.copytree(str(template_loc), str(old_template_loc), dirs_exist_ok=True)
+        shutil.copytree(str(template_loc), str(old_template_loc))
+    else:
+        if not old_template_loc.exists():
+            old_template_loc.mkdir(parents=True)
+        if template_loc.is_file():
+            shutil.copy2(str(template_loc), str(old_template_loc))
 
     assert old_template_loc.exists()
     assert not template_target_loc.exists()

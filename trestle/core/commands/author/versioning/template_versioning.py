@@ -159,11 +159,11 @@ class TemplateVersioning:
         If no version was given the latest version will be returned.
 
         Args:
-            resource_base_name - dotted representation of resource path
-            version - return a resource of a specific version
+            resource_base_name:  dotted representation of resource path
+            version: return a resource of a specific version
 
         Returns:
-            a dotted path of a versioned template, list of all available versions
+            A dotted path of a versioned template, list of all available versions
         """
         templates_dot_path = f'{resource_base_name}.templates'
 
