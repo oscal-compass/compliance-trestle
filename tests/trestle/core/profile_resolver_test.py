@@ -254,17 +254,35 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_merge_params() -> None:
     """Test the merge of params."""
-    param_1 = gens.generate_sample_model(com.Parameter, True, 2)
-    param_2 = gens.generate_sample_model(com.Parameter, True, 2)
+    params: List[com.Parameter] = test_utils.generate_param_list('foo', 2)
     profile = gens.generate_sample_model(prof.Profile)
     method = prof.Method.merge
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
 
     merge = ProfileResolver.Merge(profile)
-    merge._merge_params(param_1, param_2)
+    merge._merge_params(params[0], params[1])
     # FIXME this should check the right things happened
-    assert param_1
+    assert params[0]
+    assert len(params[0].constraints) == 2
+    assert len(params[0].guidelines) == 2
+    assert len(params[0].props) == 2
+
+
+def test_merge_two_catalogs() -> None:
+    """Test the merge of two complex catalogs."""
+    cat_1 = test_utils.generate_complex_catalog('foo')
+    cat_2 = test_utils.generate_complex_catalog('bar')
+    method = prof.Method.merge
+    combine = prof.Combine(method=method)
+    profile = gens.generate_sample_model(prof.Profile)
+    profile.merge = prof.Merge(combine=combine)
+    merge = ProfileResolver.Merge(profile)
+    merge._merge_two_catalogs(cat_1, cat_2, method, True)
+    assert cat_1
+    assert len(cat_1.controls) == 8
+    assert len(cat_1.groups) == 4
+    assert len(cat_1.params) == 6
 
 
 def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:

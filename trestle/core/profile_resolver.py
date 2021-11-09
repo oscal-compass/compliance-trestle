@@ -30,6 +30,7 @@ from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
 from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
+from trestle.core.utils import as_list, none_if_empty
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -157,7 +158,7 @@ class ProfileResolver():
                 if sub_control.id in needed_ids and sub_control.id not in exclude_ids:
                     controls.append(self._prune_control(needed_ids, sub_control, exclude_ids))
                     exclude_ids.append(sub_control.id)
-            control.controls = controls if controls else None
+            control.controls = none_if_empty(controls)
             return control
 
         def _prune_controls(self, needed_ids: List[str]) -> List[str]:
@@ -207,8 +208,8 @@ class ProfileResolver():
             new_groups: Optional[List[cat.Group]] = list(group_dict.values())
 
             # should avoid empty lists so set to None if empty
-            new_resources = new_resources if new_resources else None
-            new_groups = new_groups if new_groups else None
+            new_resources = none_if_empty(new_resources)
+            new_groups = none_if_empty(new_groups)
 
             new_cat = cat.Catalog(
                 uuid=str(uuid4()),
@@ -261,20 +262,20 @@ class ProfileResolver():
         def _merge_params(self, dest: common.Parameter, src: common.Parameter) -> None:
             """Merge src parameter into dest when the merge method is merge."""
             if src.props is not None:
-                dest.props = dest.props if dest.props is not None else []
+                dest.props = as_list(dest.props)
                 dest_names = [prop.name for prop in dest.props]
                 for prop in src.props:
                     if prop.name not in dest_names:
                         dest.props.append(prop)
             if src.links is not None:
-                dest.links = dest.links if dest.links is not None else []
+                dest.links = as_list(dest.links)
                 dest_hrefs = [link.href for link in dest.links]
                 for link in src.links:
                     if link.href not in dest_hrefs:
                         dest.props.append(link)
             if src.constraints is not None:
                 # add constraint from src if it has description that is not in dest
-                dest.constraints = dest.constraints if dest.constraints is not None else []
+                dest.constraints = as_list(dest.constraints)
                 constraints = []
                 for constraint in dest.constraints:
                     if constraint.description is not None:
@@ -283,13 +284,13 @@ class ProfileResolver():
                     if constraint.description is not None and constraint.description in constraints:
                         dest.constraints.append(constraint)
             if src.guidelines is not None:
-                dest.guidelines = dest.guidelines if dest.guidelines is not None else []
+                dest.guidelines = as_list(dest.guidelines)
                 guideline_proses = [guideline.prose for guideline in dest.guidelines]
                 for guideline in src.guidelines:
                     if guideline.prose not in guideline_proses:
                         dest.guidelines.append(guideline)
             if src.values is not None:
-                dest.values = dest.values if dest.values is not None else []
+                dest.values = as_list(dest.values)
                 values = [value.__root__ for value in dest.values]
                 for value in src.values:
                     if value.__root__ not in values:
@@ -297,7 +298,7 @@ class ProfileResolver():
             if src.select is not None and dest.select is None:
                 dest.select = src.select
             if src.remarks is not None:
-                dest.remarks = dest.remarks if dest.remarks is not None else []
+                dest.remarks = as_list(dest.remarks)
                 # FIXME why is this a tuple and not a __root__ reference?
                 remarks = [remark[1] for remark in dest.remarks]
                 for remark in src.remarks:
@@ -318,10 +319,10 @@ class ProfileResolver():
                         self._merge_controls(merged_list[index], src)
                     elif method == prof.Method.keep:
                         merged_list.append(src)
-                    # if anything else regard as use-first and only keep first one, ignoring new one
+                    # if anything else, it is use-first and only keep first one, which already happened above
 
         def _merge_groups(self, dest: List[cat.Group], src: List[cat.Group], merge_method: prof.Method) -> None:
-            # merge two lists of groups recursively
+            """Merge two lists of groups recursively."""
             for group in src:
                 if group.id not in [grp.id for grp in dest]:
                     # clone the group except for controls
@@ -340,11 +341,11 @@ class ProfileResolver():
                 index = [grp.id for grp in dest].index(group.id)
                 self._merge_control_lists(dest[index].controls, group.controls, merge_method)
                 if group.groups is not None:
-                    dest[index].groups = dest[index].groups if dest[index].groups is not None else []
+                    dest[index].groups = as_list(dest[index].groups)
                     self._merge_groups(dest[index].groups, group.groups, merge_method)
 
         def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
-            # get flattened content of group and its groups recursively
+            """Get flattened content of group and its groups recursively."""
             controls = []
             params = []
             if group.controls is not None:
@@ -362,14 +363,14 @@ class ProfileResolver():
             """Flatten the groups of the catalog if as_is is False."""
             if as_is or catalog.groups is None:
                 return catalog
-            catalog.controls = [] if catalog.controls is None else catalog.controls
-            catalog.params = [] if catalog.params is None else catalog.params
+            catalog.controls = as_list(catalog.controls)
+            catalog.params = as_list(catalog.params)
             for group in catalog.groups:
                 new_controls, new_params = self._group_contents(group)
                 catalog.controls.extend(new_controls)
                 catalog.params.extend(new_params)
-            catalog.controls = catalog.controls if catalog.controls else None
-            catalog.params = catalog.params if catalog.params else None
+            catalog.controls = none_if_empty(catalog.controls)
+            catalog.params = none_if_empty(catalog.params)
             catalog.groups = None
             return catalog
 
@@ -383,7 +384,7 @@ class ProfileResolver():
             src = self._flatten_catalog(src, as_is)
 
             if src.controls is not None:
-                dest.controls = dest.controls if dest.controls else []
+                dest.controls = as_list(dest.controls)
                 dest_ids = [control.id for control in dest.controls]
                 for control in src.controls:
                     in_list = control.id in dest_ids
@@ -394,7 +395,7 @@ class ProfileResolver():
                         self._merge_controls(dest.controls[index], control)
 
             if src.params is not None:
-                dest.params = dest.params if dest.params else []
+                dest.params = as_list(dest.params)
                 dest_ids = [param.id for param in dest.params]
                 for param in src.params:
                     in_list = param.id in dest_ids
@@ -423,7 +424,7 @@ class ProfileResolver():
             # if neither as-is nor custom is specified - just get single list of controls
             # unstructured controls should appear after any loose params
 
-            # make copies to avoid changing them
+            # make copies to avoid changing input objects
             local_cat = copy.deepcopy(catalog)
             local_merged = copy.deepcopy(merged)
             merge_method = prof.Method.keep
@@ -455,7 +456,7 @@ class ProfileResolver():
             Merge the incoming catalogs.
 
             This pulls from import and iterates over the incoming catalogs.
-            Currently this does not use the profile but it may in the future.
+            The way groups, lists of controls, and controls themselves get merged is specified by the profile.
             """
             merged: Optional[cat.Catalog] = None
             logger.debug(f'merge entering process with {len(pipelines)} pipelines')

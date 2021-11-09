@@ -223,3 +223,13 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e
+
+
+def as_list(list_or_none: Optional[List[Any]]) -> List[Any]:
+    """Convert list or None object to itself or an empty list if none."""
+    return list_or_none if list_or_none else []
+
+
+def none_if_empty(list_: List[Any]) -> Optional[List[Any]]:
+    """Convert to None if empty list."""
+    return list_ if list_ else None

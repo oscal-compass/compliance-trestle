@@ -233,7 +233,7 @@ def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
