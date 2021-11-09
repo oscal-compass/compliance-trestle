@@ -20,7 +20,7 @@ import pathlib
 
 import trestle.utils.fs as fs
 import trestle.utils.log as log
-from trestle.core.commands.author.consts import TRESTLE_RESOURCES
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TRESTLE_RESOURCES
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.const import TRESTLE_CONFIG_DIR
@@ -46,10 +46,28 @@ class AuthorCommonCommand(CommandPlusDocs):
         except AttributeError:
             self.global_ = None
 
+        if self.task_name:
+            self.task_path = self.trestle_root / self.task_name
+            if not fs.allowed_task_name(self.task_name):
+                logger.error(
+                    f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
+                )
+                return 1
+
+        rc = self._setup_template_dir(args)
+
+        return rc
+
+    def rel_dir(self, path: pathlib.Path) -> str:
+        """Stringify a directory relative to trestle root."""
+        return str(path.relative_to(self.trestle_root))
+
+    def _setup_template_dir(self, args: argparse.Namespace) -> int:
+        """Set template directory and update to new format."""
         _, all_versions = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES)
         if args.template_version is None:
             args.template_version = max(all_versions)
-        elif args.template_version and args.template_version is not all_versions:
+        elif args.template_version != START_TEMPLATE_VERSION and args.template_version is not all_versions:
             logger.error('Specified template version is invalid, please select other version.')
             return 1
 
@@ -62,20 +80,9 @@ class AuthorCommonCommand(CommandPlusDocs):
         elif self.task_name and not self.global_:
             old_template_dir = self.trestle_root / TRESTLE_CONFIG_DIR / 'author' / self.task_name
             self.template_dir = old_template_dir / args.template_version
-        if self.task_name:
-            self.task_path = self.trestle_root / self.task_name
-            if not fs.allowed_task_name(self.task_name):
-                logger.error(
-                    f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
-                )
-                return 1
 
         if old_template_dir.exists():
             TemplateVersioning.validate_template_folder(old_template_dir)
             self.template_dir = TemplateVersioning.update_template_folder_structure(old_template_dir)
 
         return 0
-
-    def rel_dir(self, path: pathlib.Path) -> str:
-        """Stringify a directory relative to trestle root."""
-        return str(path.relative_to(self.trestle_root))

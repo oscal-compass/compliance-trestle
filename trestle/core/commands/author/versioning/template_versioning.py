@@ -34,14 +34,14 @@ class TemplateVersioning:
     Template versioning solution.
 
     1. Load template with a specified version.
-        1. If template version can be specified during setup.
+        1. Template version can be specified via -tv flag
         2. If no version specified the latest version will be used by default.
         3. Otherwise use the templates from the specified version.
     2. Backward compatibility.
         1. Version 0.0.1 will be reserved for the template versions prior to this change.
         2. If the old template path is detected (i.e. without the template version).
             then the filesystem will be updated to the new path with the version.
-        3. Upon first setup, old template versions prior to this change will be placed to the folder 0.0.1.
+        3. Upon first run, old template versions prior to this change will be placed to the folder 0.0.1.
         4. If templates have no headers then 0.0.1 version will be used.
     3. Versioning organization.
         1. Template and instance version is added both: in the file system (via path) and in the headers or metadata.

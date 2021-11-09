@@ -43,19 +43,19 @@ def test_missing_file(tmp_path) -> None:
     'file_path, metadata_exists, metadata_valid',
     [
         (
-            pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_bad_metadata_extra_fields_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_bad_metadata_extra_fields_compressed.drawio'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_bad_metadata_missing_fields_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_bad_metadata_missing_fields_compressed.drawio'),
             True,
             False
-        ), (pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_metadata_compressed.drawio'), True, True),
-        (pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_no_metadata_compressed.drawio'), False, False),
-        (pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_no_metadata_uncompressed.drawio'), False, False),
-        (pathlib.Path('tests/data/author/0.0.1/drawio//two_tabs_metadata_compressed.drawio'), True, True),
-        (pathlib.Path('tests/data/author/0.0.1/drawio//two_tabs_metadata_second_tab_compressed.drawio'), True, False)
+        ), (pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio'), True, True),
+        (pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_no_metadata_compressed.drawio'), False, False),
+        (pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_no_metadata_uncompressed.drawio'), False, False),
+        (pathlib.Path('tests/data/author/0.0.1/drawio/two_tabs_metadata_compressed.drawio'), True, True),
+        (pathlib.Path('tests/data/author/0.0.1/drawio/two_tabs_metadata_second_tab_compressed.drawio'), True, False)
     ]
 )
 def test_valid_drawio(file_path: pathlib.Path, metadata_exists: bool, metadata_valid: bool) -> None:
@@ -78,9 +78,9 @@ def test_valid_drawio(file_path: pathlib.Path, metadata_exists: bool, metadata_v
 @pytest.mark.parametrize(
     'bad_file_name',
     [
-        (pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_no_metadata_uncompressed_mangled.drawio')),
-        (pathlib.Path('tests/data/author/0.0.1/drawio//not_mxfile.drawio')),
-        (pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_no_metadata_bad_internal_structure.drawio'))
+        (pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_no_metadata_uncompressed_mangled.drawio')),
+        (pathlib.Path('tests/data/author/0.0.1/drawio/not_mxfile.drawio')),
+        (pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_no_metadata_bad_internal_structure.drawio'))
     ]
 )
 def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
@@ -93,19 +93,19 @@ def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
     'template_file, sample_file, must_be_first_tab, metadata_valid',
     [
         (
-            pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_metadata_compressed.drawio'),
-            pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio'),
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_metadata_compressed.drawio'),
-            pathlib.Path('tests/data/author/0.0.1/drawio//two_tabs_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/two_tabs_metadata_compressed.drawio'),
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/0.0.1/drawio//single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/author/0.0.1/drawio/single_tab_metadata_compressed.drawio'),
             pathlib.Path('tests/data/author/0.0.1/drawio/two_tabs_metadata_second_tab_compressed.drawio'),
             True,
             False
