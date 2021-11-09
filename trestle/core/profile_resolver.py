@@ -100,46 +100,37 @@ class ProfileResolver():
                 refs.update(self._find_uuid_refs(control_id))
             return refs
 
-        def _find_needed_control_ids(self) -> List[str]:
-            """Get list of control_ids needed by profile and corresponding groups."""
+        def _controls_selected(self, select_list: Optional[List[prof.SelectControlById]]) -> List[str]:
             control_ids: List[str] = []
-            exclude_ids: List[str] = []
-
-            if self._import.include_controls is not None:
-                for include_control in self._import.include_controls:
-                    if include_control.matching is not None:
-                        raise TrestleError('Profiles with include-controls based on matching are not supported.')
-                    include_children = include_control.with_child_controls == prof.WithChildControls.yes
-                    if include_control.with_ids:
-                        new_ids = [withid.__root__ for withid in include_control.with_ids]
+            if select_list is not None:
+                for select_control in select_list:
+                    if select_control.matching is not None:
+                        raise TrestleError('Profiles with SelectControlById based on matching are not supported.')
+                    include_children = select_control.with_child_controls == prof.WithChildControls.yes
+                    if select_control.with_ids:
+                        new_ids = [withid.__root__ for withid in select_control.with_ids]
                         for id_ in new_ids:
                             control_ids.append(id_)
                             if include_children:
                                 control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
+            return control_ids
+
+        def _find_needed_control_ids(self) -> List[str]:
+            """Get list of control_ids needed by profile and corresponding groups."""
+            if self._import.include_controls is not None:
+                include_ids = self._controls_selected(self._import.include_controls)
             else:
                 if self._import.include_all is None:
                     logger.warning('Profile does not specify include-controls, so including all.')
-                control_ids = self._catalog_interface.get_control_ids()
+                include_ids = self._catalog_interface.get_control_ids()
 
-            if self._import.exclude_controls is not None:
-                for exclude_control in self._import.exclude_controls:
-                    if exclude_control.matching is not None:
-                        raise TrestleError('Profiles with exclude-controls based on matching are not supported.')
-                    exclude_children = exclude_control.with_child_controls == prof.WithChildControls.yes
-                    if exclude_control.with_ids:
-                        new_ids = [withid.__root__ for withid in exclude_control.with_ids]
-                        for id_ in new_ids:
-                            exclude_ids.append(id_)
-                            if exclude_children:
-                                exclude_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
+            exclude_ids = self._controls_selected(self._import.exclude_controls)
 
-            if exclude_ids:
-                # This does not complain if controls are excluded that are not present in the first place
-                final_control_ids = []
-                for id_ in control_ids:
-                    if id_ not in exclude_ids:
-                        final_control_ids.append(id_)
-                control_ids = final_control_ids
+            # This does not complain if controls are excluded that are not present in the first place
+            control_ids = []
+            for id_ in include_ids:
+                if id_ not in exclude_ids:
+                    control_ids.append(id_)
 
             return control_ids
 
@@ -324,7 +315,8 @@ class ProfileResolver():
         def _merge_groups(self, dest: List[cat.Group], src: List[cat.Group], merge_method: prof.Method) -> None:
             """Merge two lists of groups recursively."""
             for group in src:
-                if group.id not in [grp.id for grp in dest]:
+                dest_ids = [grp.id for grp in dest]
+                if group.id not in dest_ids:
                     # clone the group except for controls
                     new_group = cat.Group(
                         id=group.id,
@@ -338,7 +330,8 @@ class ProfileResolver():
                         # insert_controls only apply to custom merge, not currently supported
                     )
                     dest.append(new_group)
-                index = [grp.id for grp in dest].index(group.id)
+                    dest_ids.append(group.id)
+                index = dest_ids.index(group.id)
                 self._merge_control_lists(dest[index].controls, group.controls, merge_method)
                 if group.groups is not None:
                     dest[index].groups = as_list(dest[index].groups)
@@ -363,6 +356,8 @@ class ProfileResolver():
             """Flatten the groups of the catalog if as_is is False."""
             if as_is or catalog.groups is None:
                 return catalog
+
+            # as_is is False so flatten the controls into a single list
             catalog.controls = as_list(catalog.controls)
             catalog.params = as_list(catalog.params)
             for group in catalog.groups:

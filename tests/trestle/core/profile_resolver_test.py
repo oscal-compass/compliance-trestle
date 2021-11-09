@@ -262,7 +262,6 @@ def test_merge_params() -> None:
 
     merge = ProfileResolver.Merge(profile)
     merge._merge_params(params[0], params[1])
-    # FIXME this should check the right things happened
     assert params[0]
     assert len(params[0].constraints) == 2
     assert len(params[0].guidelines) == 2
