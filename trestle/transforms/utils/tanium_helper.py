@@ -14,7 +14,6 @@
 # limitations under the License.
 """Facilitate Tanium report to NIST OSCAL json transformation."""
 
-import datetime
 import json
 import logging
 import multiprocessing
@@ -278,9 +277,11 @@ class OscalFactory():
         """Derive batch of observations from RuleUse list."""
         observation_partial_list = []
         # determine which chunk to process
-        batch_size = len(self._rule_use_list) // self._batch_workers
+        batch_size = (len(self._rule_use_list) // self._batch_workers) + 1
         start = index * batch_size
         end = (index + 1) * batch_size
+        end = min(end, len(self._rule_use_list))
+        logger.debug(f'start: {start} end: {end-1}')
         # process just the one chunk
         for i in range(start, end):
             rule_use = self._rule_use_list[i]
@@ -292,7 +293,6 @@ class OscalFactory():
             )
             subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
             observation.subjects = [subject_reference]
-
             observation.props = [
                 Property.construct(name='Check_ID', value=rule_use.check_id, ns=self._ns),
                 Property.construct(
@@ -384,14 +384,12 @@ class OscalFactory():
         analysis.append(f'components: {len(self.components)}')
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
-        analysis.append(f'transform time: {self._transform_time}')
         return analysis
 
     @property
     def result(self) -> Result:
         """OSCAL result."""
         if self._result is None:
-            ts0 = datetime.datetime.now()
             self._derive_components()
             self._derive_inventory()
             self._derive_observations()
@@ -405,6 +403,4 @@ class OscalFactory():
                 local_definitions=self.local_definitions,
                 observations=self.observations
             )
-            ts1 = datetime.datetime.now()
-            self._transform_time = f'{ts1-ts0}'
         return self._result

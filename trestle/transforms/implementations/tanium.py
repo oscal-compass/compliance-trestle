@@ -14,6 +14,7 @@
 # limitations under the License.
 """Facilitate Tanium report to NIST OSCAL transformation."""
 
+import datetime
 import logging
 
 from trestle.transforms.results import Results
@@ -41,10 +42,13 @@ class TaniumTransformer(ResultsTransformer):
 
     def transform(self, blob: str) -> Results:
         """Transform the blob into a Results."""
+        ts0 = datetime.datetime.now()
         results = Results()
         ru_factory = RuleUseFactory(self.get_timestamp())
         ru_list = ru_factory.make_list(blob)
         oscal_factory = OscalFactory(self.get_timestamp(), ru_list, self._blocksize, self._cpus_max, self._cpus_min)
         results.__root__.append(oscal_factory.result)
+        ts1 = datetime.datetime.now()
         self._analysis = oscal_factory.analysis
+        self._analysis.append(f'transform time: {ts1-ts0}')
         return results
