@@ -50,9 +50,7 @@ class MarkdownProcessor:
     def process_markdown(self, md_path: pathlib.Path) -> Tuple[Dict, MarkdownNode]:
         """Parse the markdown and builds the tree to operate over it."""
         try:
-            contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
-            header = contents.metadata
-            markdown_wo_header = contents.content
+            header, markdown_wo_header = self.read_markdown_wo_processing(md_path)
 
             _ = self.render_gfm_to_html(markdown_wo_header)
 
@@ -69,3 +67,11 @@ class MarkdownProcessor:
         except FileNotFoundError as e:
             logger.debug(traceback.print_exc())
             raise TrestleError(f'Markdown with path {md_path}, not found: {e}')
+
+    def read_markdown_wo_processing(self, md_path) -> Tuple[Dict, str]:
+        """Read markdown header to dictionary and body to string."""
+        contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
+        header = contents.metadata
+        markdown_wo_header = contents.content
+
+        return header, markdown_wo_header

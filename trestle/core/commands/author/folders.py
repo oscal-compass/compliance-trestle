@@ -20,13 +20,10 @@ import pathlib
 import shutil
 from typing import List
 
-from pkg_resources import resource_filename
-
 import trestle.core.commands.author.consts as author_const
 import trestle.core.draw_io as draw_io
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.consts import TRESTLE_RESOURCES
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -127,12 +124,16 @@ class Folders(AuthorCommonCommand):
         template_file_a_md = self.template_dir / 'a_template.md'
         template_file_another_md = self.template_dir / 'another_template.md'
         template_file_drawio = self.template_dir / 'architecture.drawio'
-        versioned_temp_res, _ = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES, template_version)
-        md_template = pathlib.Path(resource_filename(versioned_temp_res, 'template.md')).resolve()
-        drawio_template = pathlib.Path(resource_filename(versioned_temp_res, 'template.drawio')).resolve()
-        shutil.copy(md_template, template_file_a_md)
-        shutil.copy(md_template, template_file_another_md)
-        shutil.copy(drawio_template, template_file_drawio)
+        TemplateVersioning.write_versioned_template(
+            'template.md', self.template_dir, template_file_a_md, template_version
+        )
+        TemplateVersioning.write_versioned_template(
+            'template.md', self.template_dir, template_file_another_md, template_version
+        )
+        TemplateVersioning.write_versioned_template(
+            'template.drawio', self.template_dir, template_file_drawio, template_version
+        )
+
         return 0
 
     def template_validate(

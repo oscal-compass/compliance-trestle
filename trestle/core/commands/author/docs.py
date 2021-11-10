@@ -19,12 +19,9 @@ import logging
 import pathlib
 import shutil
 
-from pkg_resources import resource_filename
-
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.consts import TRESTLE_RESOURCES
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -141,9 +138,7 @@ class Docs(AuthorCommonCommand):
         template_file = self.template_dir / self.template_name
         if template_file.is_file():
             return 0
-        versioned_temp_res, _ = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES, template_version)
-        reference_template = pathlib.Path(resource_filename(versioned_temp_res, 'template.md')).resolve()
-        shutil.copy(reference_template, template_file)
+        TemplateVersioning.write_versioned_template('template.md', self.template_dir, template_file, template_version)
         logger.info(f'Template file setup for task {self.task_name} at {self.rel_dir(template_file)}')
         logger.info(f'Task directory is {self.rel_dir(self.task_path)}')
         return 0

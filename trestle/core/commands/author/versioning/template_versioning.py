@@ -22,8 +22,10 @@ from typing import List, Optional, Tuple
 
 from pkg_resources import resource_filename, resource_listdir
 
-from trestle.core.commands.author.consts import LATEST_TEMPLATE_VERSION, START_TEMPLATE_VERSION
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER, TRESTLE_RESOURCES
+from trestle.core.draw_io import DrawIO
 from trestle.core.err import TrestleError
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
@@ -53,7 +55,7 @@ class TemplateVersioning:
     """
 
     @staticmethod
-    def update_template_folder_structure(task_path: Path) -> Path:
+    def update_template_folder_structure(task_path: Path) -> None:
         """
         Automatically detect whether the path is an old style and update it.
 
@@ -72,8 +74,7 @@ class TemplateVersioning:
             new_dir.mkdir(parents=True, exist_ok=True)
 
             if len(all_files_wo_version) == 0:
-                logger.info('No templates outside of the version folders.')
-                return new_dir
+                logger.debug('No templates outside of the version folders.')
 
             for f in all_files_wo_version:
                 shutil.copy(f, new_dir)
@@ -84,7 +85,6 @@ class TemplateVersioning:
                 else:
                     p.unlink()
 
-            return new_dir
         except OSError as e:
             logger.error(f'Error while updating template folder: {e}')
             raise TrestleError(f'Error while updating template folder: {e}')
@@ -116,7 +116,7 @@ class TemplateVersioning:
         TemplateVersioning._check_if_exists_and_dir(task_path)
         latest_path = None
         if version is None:
-            latest_path = TemplateVersioning.get_latest_version_path(task_path)
+            latest_path, _ = TemplateVersioning.get_latest_version_for_task(task_path)
         else:
             latest_path = Path(f'{task_path}/{version}/')
 
@@ -126,13 +126,28 @@ class TemplateVersioning:
         return latest_path
 
     @staticmethod
-    def get_latest_version_path(task_path: Path) -> Path:
+    def get_latest_version_for_task(task_path: Path) -> Tuple[Path, str]:
         """Get latest version of the template for the given task."""
         TemplateVersioning._check_if_exists_and_dir(task_path)
 
+        all_versions = TemplateVersioning.get_all_versions_for_task(task_path)
+        max_version = START_TEMPLATE_VERSION
+
+        if len(all_versions) == 0:
+            logger.debug(f'No template versions were found for task: {task_path}, defaulting to 0.0.1')
+            max_version = START_TEMPLATE_VERSION
+        else:
+            max_version = max(all_versions)
+
+        latest_path = Path(f'{task_path}/{max_version}')
+
+        return latest_path, max_version
+
+    @staticmethod
+    def get_all_versions_for_task(task_path: Path) -> List[str]:
+        """Get all versions for the task."""
         version_regex = r'[0-9]+.[0-9]+.[0-9]+'
         pattern = re.compile(version_regex)
-
         all_versions = []
         max_version = START_TEMPLATE_VERSION
         for p in task_path.iterdir():
@@ -142,44 +157,65 @@ class TemplateVersioning:
                 if match > max_version:
                     max_version = match
 
-        if len(all_versions) == 0:
-            logger.info(f'No template versions were found for task: {task_path}')
-            max_version = LATEST_TEMPLATE_VERSION
-
-        latest_path = Path(f'{task_path}/{max_version}')
-
-        return latest_path
+        return all_versions
 
     @staticmethod
-    def get_versioned_template_resource(resource_base_name: str,
-                                        version: Optional[str] = None) -> Tuple[Optional[str], List[str]]:
+    def write_versioned_template(
+        resource_name: str, task_path: Path, target_file: Path, version: Optional[str] = None
+    ) -> None:
         """
-        Get a template resource name for the specified version.
+        Write a template with the header or metadata of a specified version.
 
-        If no version was given the latest version will be returned.
+        If no version was given the latest version for the task will be used.
 
         Args:
-            resource_base_name:  dotted representation of resource path
+            resource_name:  Template resource name
+            task_path: Task path
+            target_file: File path where template will be written
             version: return a resource of a specific version
 
         Returns:
             A dotted path of a versioned template, list of all available versions
         """
-        templates_dot_path = f'{resource_base_name}.templates'
+        TemplateVersioning._check_if_exists_and_dir(task_path)
+        try:
+            templates_resource_path = TRESTLE_RESOURCES + '.templates'
 
-        versioned_dot_path = None
-        all_dot_paths = []
-        TemplateVersioning._build_dotted_path(templates_dot_path, all_dot_paths)
+            generic_template = Path(resource_filename(templates_resource_path, resource_name)).resolve()
+            if version is None:
+                _, version = TemplateVersioning.get_latest_version_for_task(task_path)
 
-        if version is None:
-            versioned_dot_path = max(all_dot_paths)
+            # modify header/metadata in the template
+            if generic_template.suffix == '.md':
+                md_api = MarkdownAPI()
+                header, md_body = md_api.processor.read_markdown_wo_processing(generic_template)
+                header[TEMPLATE_VERSION_HEADER] = version
+                md_api.write_markdown_with_header(target_file, header, md_body)
+                logger.debug(f'Successfully written template markdown to {target_file}')
+            elif generic_template.suffix == '.drawio':
+                drawio = DrawIO(generic_template)
+                metadata = drawio.get_metadata()[0]
+                metadata[TEMPLATE_VERSION_HEADER] = version
+
+                drawio.write_drawio_with_metadata(generic_template, metadata, 0, target_file)
+                logger.debug(f'Successfully written template drawio to {target_file}')
+            else:
+                raise TrestleError(f'Unsupported template file extension {generic_template.suffix}')
+        except OSError as e:
+            logger.error(f'Error while updating template folder: {e}')
+            raise TrestleError(f'Error while updating template folder: {e}')
+
+    @staticmethod
+    def is_valid_version(template_version: str) -> bool:
+        """Check if the version format is correct."""
+        if template_version is None:
+            return True  # we can have empty version
+        version_regex = r'^[0-9]+.[0-9]+.[0-9]+$'
+        pattern = re.compile(version_regex)
+        if pattern.search(template_version):
+            return True
         else:
-            selected_version = f'{resource_base_name}.templates.{version}'
-            if selected_version in all_dot_paths:
-                versioned_dot_path = selected_version
-
-        all_versions = ['.'.join(d.split('.')[-3:None]) for d in all_dot_paths]
-        return versioned_dot_path, all_versions
+            return False
 
     @staticmethod
     def _build_dotted_path(dotted_path: str, all_paths: List[str]) -> None:
@@ -193,34 +229,6 @@ class TemplateVersioning:
 
         if are_all_files:
             all_paths.append(dotted_path)
-
-    @staticmethod
-    def write_versioned_template(task_path: Path, file_path: Path, version: Optional[str] = None) -> Path:
-        """
-        Write template to a specified version and return new path.
-
-        If no version specified, it will be written to the latest template version
-        """
-        TemplateVersioning._check_if_exists_and_dir(task_path)
-        versioned_path = None
-
-        if version is None:
-            versioned_path = TemplateVersioning.get_latest_version_path(task_path)
-        else:
-            versioned_path = Path(f'{task_path}/{version}')
-
-        try:
-            versioned_path.mkdir(parents=True, exist_ok=True)
-
-            shutil.copy(file_path, versioned_path)
-
-            return versioned_path
-        except OSError as e:
-            logger.error(f'Error while updating template folder: {e}')
-            raise TrestleError(f'Error while updating template folder: {e}')
-        except Exception as e:
-            logger.error(f'Unexpected error while updating template folder: {e}')
-            raise TrestleError(f'Unexpected error while updating template folder: {e}')
 
     @staticmethod
     def _check_if_exists_and_dir(task_path: Path) -> None:

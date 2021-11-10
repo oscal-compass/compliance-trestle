@@ -20,10 +20,11 @@ import pathlib
 
 import trestle.utils.fs as fs
 import trestle.utils.log as log
-from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TRESTLE_RESOURCES
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.const import TRESTLE_CONFIG_DIR
+from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
@@ -64,25 +65,32 @@ class AuthorCommonCommand(CommandPlusDocs):
 
     def _setup_template_dir(self, args: argparse.Namespace) -> int:
         """Set template directory and update to new format."""
-        _, all_versions = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES)
-        if args.template_version is None:
-            args.template_version = max(all_versions)
-        elif args.template_version != START_TEMPLATE_VERSION and args.template_version is not all_versions:
-            logger.error('Specified template version is invalid, please select other version.')
-            return 1
-
         if not self.global_ and self.task_name is None:
             logger.error('At least a global flag or a task name should be provided.')
             return 1
         if self.global_:
             old_template_dir = self.trestle_root / TRESTLE_CONFIG_DIR / 'author' / '__global__'
+            self._set_template_version_to_latest(args, old_template_dir)
             self.template_dir = old_template_dir / args.template_version
         elif self.task_name and not self.global_:
             old_template_dir = self.trestle_root / TRESTLE_CONFIG_DIR / 'author' / self.task_name
+            self._set_template_version_to_latest(args, old_template_dir)
             self.template_dir = old_template_dir / args.template_version
 
         if old_template_dir.exists():
             TemplateVersioning.validate_template_folder(old_template_dir)
-            self.template_dir = TemplateVersioning.update_template_folder_structure(old_template_dir)
+            TemplateVersioning.update_template_folder_structure(old_template_dir)
 
         return 0
+
+    def _set_template_version_to_latest(self, args: argparse.Namespace, template_dir: pathlib.Path):
+        """Set template version argument to the latest version if none was given."""
+        if not TemplateVersioning.is_valid_version(args.template_version):
+            raise TrestleError(f'Version {args.template_version} is invalid, version format should be: 0.0.1')
+        if args.template_version is None:
+            args.template_version = START_TEMPLATE_VERSION
+            if template_dir.exists():
+                all_versions = TemplateVersioning.get_all_versions_for_task(template_dir)
+                if all_versions:
+                    args.template_version = max(all_versions)
+        logger.info(f'Set template version to {args.template_version}.')

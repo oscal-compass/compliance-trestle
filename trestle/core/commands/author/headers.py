@@ -17,16 +17,12 @@
 import argparse
 import logging
 import pathlib
-import shutil
 from typing import Dict, List
-
-from pkg_resources import resource_filename
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.consts import TRESTLE_RESOURCES
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.draw_io import DrawIOMetadataValidator
 from trestle.core.err import TrestleError
@@ -138,11 +134,9 @@ class Headers(AuthorCommonCommand):
             self.template_dir.mkdir(exist_ok=True, parents=True)
         logger.info(f'Populating template files to {self.rel_dir(self.template_dir)}')
         for template in author_const.REFERENCE_TEMPLATES.values():
-            versioned_temp_res, _ = TemplateVersioning.get_versioned_template_resource(TRESTLE_RESOURCES,
-                                                                                       template_version)
-            template_path = pathlib.Path(resource_filename(versioned_temp_res, template)).resolve()
             destination_path = self.template_dir / template
-            shutil.copy(template_path, destination_path)
+            TemplateVersioning.write_versioned_template(template, self.template_dir, destination_path, template_version)
+
             logger.info(f'Template directory populated {self.rel_dir(destination_path)}')
         return 0
 

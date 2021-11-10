@@ -137,7 +137,9 @@ class DrawIO():
                 result[key] = cls.restructure_metadata(holding)
         return result
 
-    def write_drawio_with_metadata(self, path: pathlib.Path, metadata: Dict, diagram_metadata_idx: int) -> None:
+    def write_drawio_with_metadata(
+        self, path: pathlib.Path, metadata: Dict, diagram_metadata_idx: int, target_path: pathlib.Path = None
+    ) -> None:
         """
         Write modified metadata to drawio file.
 
@@ -148,7 +150,7 @@ class DrawIO():
             path: path to write modified drawio file to
             metadata: dictionary of modified metadata to insert to drawio
             diagram_metadata_idx: index of diagram which metadata was modified
-
+            target_path: if not provided the changes will be written to path
         """
         flattened_dict = self._flatten_dictionary(metadata)
         if diagram_metadata_idx >= len(list(self.diagrams)):
@@ -169,11 +171,18 @@ class DrawIO():
             if key in self.banned_keys:
                 continue
             md_objects[0].attrib[key] = flattened_dict[key]
+        for key in flattened_dict.keys():
+            if key in self.banned_keys:
+                continue
+            md_objects[0].attrib[key] = flattened_dict[key]
         parent_diagram = self.mx_file.findall('diagram')[diagram_metadata_idx]
         if len(parent_diagram.findall('mxGraphModel')) == 0:
             parent_diagram.insert(0, diagram)
 
-        self.raw_xml.write(path)
+        if target_path:
+            self.raw_xml.write(target_path)
+        else:
+            self.raw_xml.write(path)
 
     def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.') -> Dict[str, str]:
         """Flatten hierarchial dict back to xml attributes."""

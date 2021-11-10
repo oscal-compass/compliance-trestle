@@ -25,7 +25,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 import trestle.cli
-from trestle.core.commands.author.consts import LATEST_TEMPLATE_VERSION, START_TEMPLATE_VERSION
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.utils import fs
 
 
@@ -476,7 +476,7 @@ def test_e2e_backward_compatibility(
     command_string_create_sample = f'trestle author folders create-sample -tn {task_name} {readme_flag}'
     command_string_validate_template = f'trestle author folders template-validate -tn {task_name} {readme_flag}'
     command_string_validate_content = f'trestle author folders validate -tn {task_name} --header-validate {readme_flag}'
-    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / LATEST_TEMPLATE_VERSION
+    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION
     old_template_path = tmp_trestle_dir / '.trestle' / 'author' / task_name
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
 

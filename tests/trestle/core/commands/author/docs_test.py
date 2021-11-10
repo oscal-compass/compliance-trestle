@@ -25,7 +25,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 import trestle.cli
-from trestle.core.commands.author.consts import LATEST_TEMPLATE_VERSION, START_TEMPLATE_VERSION
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 
 
 @pytest.mark.parametrize(
@@ -121,7 +121,8 @@ def test_e2e(
     template_code: int,
     validate_code: int,
     testdata_dir: pathlib.Path,
-    tmp_trestle_dir: pathlib.Path
+    tmp_trestle_dir: pathlib.Path,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
@@ -142,20 +143,16 @@ def test_e2e(
         return
     # Copy in template:
     shutil.copyfile(str(testdata_dir / template_content), str(template_target_loc))
-
-    with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == template_code
+    monkeypatch.setattr(sys, 'argv', command_string_validate_template.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == template_code
     if template_code > 0:
         return
+
     # Create sample - should always work if we are here.
-    with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 0
+    monkeypatch.setattr(sys, 'argv', command_string_create_sample.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
 
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
     if recurse:
@@ -166,11 +163,10 @@ def test_e2e(
         subdir.mkdir()
         sub_content = subdir / f'{uuid4()}.md'
         shutil.copyfile(str(sub_file_path), str(sub_content))
-    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == validate_code
+
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == validate_code
 
 
 def test_failure_bad_template_dir(tmp_trestle_dir: pathlib.Path) -> None:
@@ -459,7 +455,7 @@ def test_e2e_backward_compatibility(
     if setup_code > 0:
         return
     assert not template_target_loc.exists()
-    assert (tmp_trestle_dir / '.trestle' / 'author' / task_name / LATEST_TEMPLATE_VERSION / 'template.md').exists()
+    assert (tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION / 'template.md').exists()
 
     monkeypatch.setattr(sys, 'argv', command_string_validate_template.split())
     rc = trestle.cli.Trestle().run()

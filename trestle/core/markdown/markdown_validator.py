@@ -20,7 +20,7 @@ import re
 from typing import Any, Dict, List, Optional
 
 import trestle.core.markdown.markdown_const as md_const
-from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 
@@ -184,7 +184,7 @@ class MarkdownValidator:
 
         If no header is found then starting version(0.0.1) will be used by default
         """
-        if 'x-trestle-template-version' not in header.keys():
+        if TEMPLATE_VERSION_HEADER not in header.keys():
             return START_TEMPLATE_VERSION
 
-        return header['x-trestle-template-version']
+        return header[TEMPLATE_VERSION_HEADER]

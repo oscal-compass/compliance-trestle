@@ -44,8 +44,8 @@ README_VALIDATE_FOLDERS_HELP = (
 )
 
 START_TEMPLATE_VERSION = '0.0.1'  # first ever template version, all templates without version will be defaulted to this
-LATEST_TEMPLATE_VERSION = '0.0.1'  # initialize templates with this version
 TRESTLE_RESOURCES = 'trestle.resources'
+TEMPLATE_VERSION_HEADER = 'x-trestle-template-version'
 
 # Governed heading - capability: To be removed
 GH_SHORT = '-gh'
