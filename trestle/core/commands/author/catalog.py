@@ -121,7 +121,7 @@ class CatalogAssemble(AuthorCommonCommand):
             catalog = catalog_interface.read_catalog_from_markdown(md_dir)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
-        if catalog_interface.get_count_of_controls(True) == 0:
+        if catalog_interface.get_count_of_controls_in_catalog(True) == 0:
             logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
             return 1
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'

@@ -153,14 +153,14 @@ class ProfileResolver():
             return control
 
         def _prune_controls(self, needed_ids: List[str]) -> List[str]:
-            exclude_ids = []
+            loaded_ids = []
             final_ids: List[str] = []
             for control_id in needed_ids:
-                if control_id not in exclude_ids:
+                if control_id not in loaded_ids:
                     control = self._catalog_interface.get_control(control_id)
-                    control = self._prune_control(needed_ids, control, exclude_ids)
+                    control = self._prune_control(needed_ids, control, loaded_ids)
                     self._catalog_interface.replace_control(control)
-                    exclude_ids.append(control_id)
+                    loaded_ids.append(control_id)
                     final_ids.append(control_id)
             return final_ids
 
@@ -463,105 +463,79 @@ class ProfileResolver():
     class Modify(Pipeline.Filter):
         """Modify the controls based on the profile."""
 
-        def __init__(self, profile: prof.Profile, block_adds: bool = False) -> None:
+        def __init__(self, profile: prof.Profile, change_prose=False, block_adds=False) -> None:
             """Initialize the filter."""
             self._profile = profile
             self._catalog_interface: Optional[CatalogInterface] = None
             self._block_adds = block_adds
+            self._change_prose = change_prose
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
         @staticmethod
-        def _replace_id_with_text(prose, param_id, param_text):
+        def _replace_id_with_text(prose: str, param_dict: Dict[str, str]) -> str:
             """Find all instances of param_id in prose and replace with param_text.
 
+            Need to check all values in dict for a match
             Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
             """
-            bad_chars = string.ascii_letters + string.digits
-            new_prose = prose
-            id_len = len(param_id)
-            loc = 0
-            # handle simple case directly
-            if prose == param_id:
-                return param_text
-            # it's there, but may be param_10 instead of param_1
-            while True:
-                if loc >= len(new_prose):
-                    return new_prose
-                next_loc = new_prose[loc:].find(param_id)
-                if next_loc < 0:
-                    return new_prose
-                loc += next_loc
-                if loc > 0 and new_prose[loc - 1] in bad_chars:
+            for param_id, param_value in param_dict.items():
+                bad_chars = string.ascii_letters + string.digits + '._'
+                new_prose = prose
+                id_len = len(param_id)
+                loc = 0
+                if param_id not in prose:
+                    continue
+                # handle simple case directly
+                if prose == param_id:
+                    return param_value
+                # it's there, but may be param_10 instead of param_1
+                while True:
+                    if loc >= len(new_prose):
+                        return new_prose
+                    next_loc = new_prose[loc:].find(param_id)
+                    if next_loc < 0:
+                        return new_prose
+                    loc += next_loc
+                    if loc > 0 and new_prose[loc - 1] in bad_chars:
+                        loc += id_len
+                        continue
+                    end_loc = loc + id_len
+                    if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
+                        new_prose = new_prose[:loc] + param_value + new_prose[end_loc:]
+                        loc += len(param_value)
+                        continue
                     loc += id_len
-                    continue
-                end_loc = loc + id_len
-                if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
-                    new_prose = new_prose[:loc] + param_text + new_prose[end_loc:]
-                    loc += len(param_text)
-                    continue
-                loc += id_len
 
         @staticmethod
-        def _replace_params(text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-            """Replace params found in moustaches with assignments for this control from profile or description info."""
+        def _replace_params(text: str, param_dict: Dict[str, str]) -> str:
+            """
+            Replace params found in moustaches with values from the param_dict.
+
+            A single line of prose may contain multiple moustaches.
+            """
             # first check if there are any moustache patterns in the text
             staches = re.findall(r'{{.*?}}', text)
             if not staches:
                 return text
             # now have list of all staches including braces, e.g. ['{{foo}}', '{{bar}}']
-            new_staches = []
-            # clean the staches so they just have the param text
+            # clean the staches so they just have the param ids
+            param_ids = []
             for stache in staches:
-                # remove braces
-                stache = stache[2:(-2)]
-                stache = stache.replace('insert: param,', '').strip()
-                new_staches.append(stache)
-            if control.params is not None:
-                for param in control.params:
-                    # need to find the param_text that requires substitution.  It can be in a few places.
-                    # set default if no information available for text
-                    param_text = f'[{param.id} = no description available]'
-                    set_param = param_dict.get(param.id, None)
-                    # param value provided so just replace it
-                    if set_param is not None and set_param.values is not None:
-                        # TODO: Fix with issue #824
-                        # If there is no value set - continue using default parameter info for now.
-                        values = [value.__root__ for value in set_param.values]
-                        param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
-                    else:
-                        if param.values is not None:
-                            values = [value.__root__ for value in param.values]
-                            param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
-                        # if select present, use it
-                        if param.select is not None:
-                            param_text = '['
-                            if param.select.how_many is not None:
-                                param_text += f'{param.select.how_many.value}: '
-                            if param.select.choice is not None:
-                                param_text += ', '.join(param.select.choice)
-                            param_text = f'{param_text}]'
-                        # else use the label
-                        elif param.label is not None:
-                            param_text = f'[{param.label}]'
-                        # replace this pattern in all the staches with the new param_text
-                    fixed_staches = []
-                    for stache in new_staches:
-                        fixed = ProfileResolver.Modify._replace_id_with_text(stache, param.id, param_text)
-                        fixed_staches.append(fixed)
-                    new_staches = fixed_staches
+                # remove braces so these are just param_ids but may have extra chars
+                stache_contents = stache[2:(-2)]
+                param_id = stache_contents.replace('insert: param,', '').strip()
+                param_ids.append(param_id)
 
-            # now replace original stache text with new versions
+            # now replace original stache text with param values
             for i, _ in enumerate(staches):
-                text = text.replace(staches[i], new_staches[i], 1)
+                text = text.replace(staches[i], param_dict[param_ids[i]], 1)
             return text
 
         @staticmethod
-        def _replace_part_prose(
-            control: cat.Control, part: common.Part, param_dict: Dict[str, prof.SetParameter]
-        ) -> None:
-            """Replace the params using the _param_dict."""
+        def _replace_part_prose(control: cat.Control, part: common.Part, param_dict: Dict[str, str]) -> None:
+            """Replace the part prose according to set_param."""
             if part.prose is not None:
-                fixed_prose = ProfileResolver.Modify._replace_params(part.prose, control, param_dict)
+                fixed_prose = ProfileResolver.Modify._replace_params(part.prose, param_dict)
                 # change the prose in the control itself
                 part.prose = fixed_prose
             if part.parts is not None:
@@ -572,6 +546,24 @@ class ProfileResolver():
                     if sub_control.parts:
                         for prt in sub_control.parts:
                             ProfileResolver.Modify._replace_part_prose(sub_control, prt, param_dict)
+
+        @staticmethod
+        def _replace_control_prose(control: cat.Control, param_dict: Dict[str, str]) -> None:
+            """Replace the control prose according to set_param."""
+            if control.parts is not None:
+                for part in control.parts:
+                    if part.prose is not None:
+                        fixed_prose = ProfileResolver.Modify._replace_params(part.prose, param_dict)
+                        # change the prose in the control itself
+                        part.prose = fixed_prose
+                    if part.parts is not None:
+                        for prt in part.parts:
+                            ProfileResolver.Modify._replace_part_prose(control, prt, param_dict)
+                    if control.controls:
+                        for sub_control in control.controls:
+                            if sub_control.parts:
+                                for prt in sub_control.parts:
+                                    ProfileResolver.Modify._replace_part_prose(sub_control, prt, param_dict)
 
         @staticmethod
         def _add_to_parts_given_position(
@@ -739,19 +731,48 @@ class ProfileResolver():
                     control.props = []
                     control.props.extend(add.props)
 
+        def _set_parameter_in_control(self, set_param: prof.SetParameter) -> None:
+            """Find the control with the param_id in it and set the parameter value."""
+            control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
+            if control is None:
+                raise TrestleError(f'Cannot find control referenced by SetParameter {set_param.param_id}')
+            control.params = as_list(control.params)
+            param_ids = [param.id for param in control.params]
+            index = param_ids.index(set_param.param_id)
+            control.params[index].values = set_param.values
+            self._catalog_interface.replace_control(control)
+
+        def _change_prose_with_param_values(self):
+            """Go through all controls and change prose based on param values."""
+            param_dict: Dict[str, str] = {}
+            for control in self._catalog_interface.get_all_controls_from_dict():
+                params = as_list(control.params)
+                for param in params:
+                    value_str = 'No value found'
+                    if param.label:
+                        value_str = param.label
+                    if param.values:
+                        values = [val.__root__ for val in param.values]
+                        if len(values) == 1:
+                            value_str = values[0]
+                        else:
+                            value_str = f"[{', '.join(value for value in values)}]"
+                    param_dict[param.id] = value_str
+            for control in self._catalog_interface.get_all_controls_from_dict():
+                self._replace_control_prose(control, param_dict)
+
         def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
             """Modify the controls based on the profile."""
             logger.debug(f'modify specify catalog {catalog.metadata.title} for profile {self._profile.metadata.title}')
             self._catalog_interface = CatalogInterface(catalog)
-            param_dict: Dict[str, prof.SetParameter] = {}
             alters: Optional[List[prof.Alter]] = None
             # find the modify and alters
-            # build a param_dict for all the modifys
             if self._profile.modify is not None:
+                # change all parameter values
                 if self._profile.modify.set_parameters is not None:
                     param_list = self._profile.modify.set_parameters
                     for param in param_list:
-                        param_dict[param.param_id] = param
+                        self._set_parameter_in_control(param)
                 alters = self._profile.modify.alters
 
             if alters is not None:
@@ -772,14 +793,10 @@ class ProfileResolver():
                             control = self._catalog_interface.get_control(alter.control_id)
                             self._add_to_control(add, control)
                             self._catalog_interface.replace_control(control)
-            # use the param_dict to apply all modifys
-            control_ids = self._catalog_interface.get_control_ids()
-            for control_id in control_ids:
-                control = self._catalog_interface.get_control(control_id)
-                if control.parts is not None:
-                    for part in control.parts:
-                        self._replace_part_prose(control, part, param_dict)
-                self._catalog_interface.replace_control(control)
+
+            if self._change_prose:
+                # go through all controls and fix the prose based on param values
+                self._change_prose_with_param_values()
 
             self._catalog_interface.update_catalog_controls()
             catalog = self._catalog_interface._catalog
@@ -815,11 +832,18 @@ class ProfileResolver():
     class Import(Pipeline.Filter):
         """Import filter class."""
 
-        def __init__(self, trestle_root: pathlib.Path, import_: prof.Import, block_adds: bool = False) -> None:
+        def __init__(
+            self,
+            trestle_root: pathlib.Path,
+            import_: prof.Import,
+            change_prose=False,
+            block_adds: bool = False
+        ) -> None:
             """Initialize and store trestle root for cache access."""
             self._trestle_root = trestle_root
             self._import = import_
             self._block_adds = block_adds
+            self._change_prose = change_prose
 
         def process(self, input_=None) -> Iterator[cat.Catalog]:
             """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
@@ -850,7 +874,7 @@ class ProfileResolver():
                         f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}'
                     )
                 merge_filter = ProfileResolver.Merge(profile)
-                modify_filter = ProfileResolver.Modify(profile, self._block_adds)
+                modify_filter = ProfileResolver.Modify(profile, self._change_prose, self._block_adds)
                 final_pipeline = Pipeline([merge_filter, modify_filter])
                 yield next(final_pipeline.process(pipelines))
 
@@ -861,7 +885,7 @@ class ProfileResolver():
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
-        import_filter = ProfileResolver.Import(trestle_root, import_, block_adds)
+        import_filter = ProfileResolver.Import(trestle_root, import_, True, block_adds)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result

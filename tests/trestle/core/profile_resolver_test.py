@@ -36,7 +36,7 @@ from trestle.utils import fs
 def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:
     """Find all instances of this string in catalog prose and return with control id."""
     hits: List[Tuple[str, str]] = []
-    for control in interface.get_all_controls(True):
+    for control in interface.get_all_controls_from_catalog(True):
         hits.extend(interface.find_string_in_control(control, seek_str))
     return hits
 
@@ -48,15 +48,17 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
+    # added part ac-1_expevid from prof a
     list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')
+    # modify param ac-3.3_prm_2 in prof b
     list2 = find_string_in_all_controls_prose(interface, 'full and complete compliance')
 
     assert len(list1) == 1
     assert len(list2) == 1
 
-    assert interface.get_count_of_controls(False) == 6
+    assert interface.get_count_of_controls_in_catalog(False) == 6
 
-    assert interface.get_count_of_controls(True) == 7
+    assert interface.get_count_of_controls_in_catalog(True) == 7
 
     assert len(cat.controls) == 4
 
@@ -70,8 +72,8 @@ def test_deep_catalog() -> None:
     """Test ssp generation with deep catalog."""
     catalog = test_utils.generate_complex_catalog()
     interface = CatalogInterface(catalog)
-    assert interface.get_count_of_controls(False) == 11
-    assert interface.get_count_of_controls(True) == 16
+    assert interface.get_count_of_controls_in_catalog(False) == 11
+    assert interface.get_count_of_controls_in_catalog(True) == 16
 
 
 def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
@@ -148,7 +150,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     merged = gens.generate_sample_model(cat.Catalog)
     new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
     catalog_interface = CatalogInterface(new_merged)
-    assert catalog_interface.get_count_of_controls(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
 
     # add part to first control and merge, then make sure it is there
     part = com.Part(name='foo', title='added part')
@@ -157,7 +159,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     cat_with_added_part.controls[0].parts.append(part)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
-    assert catalog_interface.get_count_of_controls(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
     # add part to first control and merge but with use-first.  The part should not be there at end.
@@ -167,14 +169,14 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     merge = ProfileResolver.Merge(profile)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
-    assert catalog_interface.get_count_of_controls(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
     assert len(catalog_interface.get_control(control_id).parts) == 1
 
     # now force a merge with keep
     profile.merge = None
     merge_keep = ProfileResolver.Merge(profile)
     merged_keep = merge_keep._merge_catalog(new_merged, sample_catalog_rich_controls)
-    assert CatalogInterface(merged_keep).get_count_of_controls(True) == 10
+    assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 10
 
 
 def test_profile_resolver_failures() -> None:
@@ -206,27 +208,18 @@ def test_profile_resolver_failures() -> None:
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
-    assert ProfileResolver.Modify._replace_id_with_text(prose, param_id, param_text) == result
+    param_dict = {param_id: param_text}
+    assert ProfileResolver.Modify._replace_id_with_text(prose, param_dict) == result
 
 
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
-    control = gens.generate_sample_model(cat.Control)
     id_1 = 'ac-2_smt.1'
     id_10 = 'ac-2_smt.10'
-    param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.'
-    param_raw_dict = {id_1: 'the cat', id_10: 'well fed'}
-    param_value_1 = com.ParameterValue(__root__=param_raw_dict[id_1])
-    param_value_10 = com.ParameterValue(__root__=param_raw_dict[id_10])
-    # the SetParameters would come from the profile and modify control contents via moustaches
-    set_param_1 = prof.SetParameter(param_id=id_1, values=[param_value_1])
-    set_param_10 = prof.SetParameter(param_id=id_10, values=[param_value_10])
-    param_dict = {id_1: set_param_1, id_10: set_param_10}
-    param_1 = com.Parameter(id=id_1, values=[param_value_1])
-    param_10 = com.Parameter(id=id_10, values=[param_value_10])
-    control.params = [param_1, param_10]
-    new_text = ProfileResolver.Modify._replace_params(param_text, control, param_dict)
-    assert new_text == 'Make sure that the cat is very well fed today.'
+    param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
+    param_dict = {id_1: 'the cat', id_10: 'well fed'}
+    new_text = ProfileResolver.Modify._replace_params(param_text, param_dict)
+    assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
 
 
 def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
@@ -243,13 +236,8 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     control = interface.get_control('ac-1')
     locations = interface.find_string_in_control(control, profile_e_parameter_string)
     locations_a = interface.find_string_in_control(control, profile_a_value)
-    # TODO: This behaviour will need to be corrected, see issue #824
-    # Correct behaviour
-    # assert len(locations) == 1  # noqa: E800
-    # assert len(locations_a) == 0  # noqa: E800
-    # Incorrect behaviour
-    assert len(locations) == 0
-    assert len(locations_a) == 1
+    assert len(locations) == 1
+    assert len(locations_a) == 0
 
 
 def test_merge_params() -> None:
