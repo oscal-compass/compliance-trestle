@@ -28,12 +28,15 @@ logger = logging.getLogger(__name__)
 class TaniumTransformer(ResultsTransformer):
     """Interface for Tanium transformer."""
 
-    def __init__(self, blocksize: str = None, cpus_max: str = None, cpus_min: str = None) -> None:
+    def __init__(
+        self, blocksize: str = None, cpus_max: str = None, cpus_min: str = None, checking: bool = False
+    ) -> None:
         """Initialize given specified args."""
         self._analysis = []
         self._blocksize = blocksize
         self._cpus_max = cpus_max
         self._cpus_min = cpus_min
+        self._checking = checking
 
     @property
     def analysis(self):
@@ -46,7 +49,9 @@ class TaniumTransformer(ResultsTransformer):
         results = Results()
         ru_factory = RuleUseFactory(self.get_timestamp())
         ru_list = ru_factory.make_list(blob)
-        oscal_factory = OscalFactory(self.get_timestamp(), ru_list, self._blocksize, self._cpus_max, self._cpus_min)
+        oscal_factory = OscalFactory(
+            self.get_timestamp(), ru_list, self._blocksize, self._cpus_max, self._cpus_min, self._checking
+        )
         results.__root__.append(oscal_factory.result)
         ts1 = datetime.datetime.now()
         self._analysis = oscal_factory.analysis

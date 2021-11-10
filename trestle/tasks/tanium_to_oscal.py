@@ -63,8 +63,11 @@ class TaniumToOscal(TaskBase):
         logger.info('')
         logger.info('Configuration flags sit under [task.tanium-to-oscal]:')
         logger.info('  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.')
-        logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ.')
+        logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.')
         logger.info('  cpus-min  = (optional) the desired minimum number of CPUs to employ.')
+        logger.info(
+            '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
+        )
         logger.info('  input-dir = (required) the path of the input directory comprising Tanium reports.')
         logger.info(
             '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
@@ -142,12 +145,15 @@ class TaniumToOscal(TaskBase):
         blocksize = self._config.get('blocksize')
         cpus_max = self._config.get('cpus-max')
         cpus_min = self._config.get('cpus-min')
+        checking = bool(self._config.get('checking', False))
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
         for ifile in sorted(ipth.iterdir()):
             blob = self._read_file(ifile)
-            tanium_transformer = TaniumTransformer(blocksize=blocksize, cpus_max=cpus_max, cpus_min=cpus_min)
+            tanium_transformer = TaniumTransformer(
+                blocksize=blocksize, cpus_max=cpus_max, cpus_min=cpus_min, checking=checking
+            )
             results = tanium_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname

@@ -156,7 +156,8 @@ class OscalFactory():
         rule_use_list: List[RuleUse],
         blocksize: str = None,
         cpus_max: str = None,
-        cpus_min: str = None
+        cpus_min: str = None,
+        checking: bool = False
     ) -> None:
         """Initialize given specified args."""
         self._rule_use_list = rule_use_list
@@ -166,6 +167,7 @@ class OscalFactory():
         self._observation_list = []
         self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
         self._cpus = None
+        self._checking = checking
         self._result = None
         # blocksize: default, min
         if blocksize is None:
@@ -176,7 +178,7 @@ class OscalFactory():
             self._blocksize = 1
         # cpus max: default, max, min
         if cpus_max is None:
-            self._cpus_max = os.cpu_count()
+            self._cpus_max = 1
         else:
             self._cpus_max = int(cpus_max)
         if self._cpus_max > os.cpu_count():
@@ -250,18 +252,30 @@ class OscalFactory():
             if rule_use.tanium_client_ip_address in self._inventory_map:
                 continue
             inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
-            inventory.props = [
-                Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
-                Property.construct(
-                    name='Tanium_Client_IP_Address',
-                    value=rule_use.tanium_client_ip_address,
-                    ns=self._ns,
-                    class_='scc_inventory_item_id'
-                ),
-                Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
-                Property.construct(name='Count', value=rule_use.count, ns=self._ns)
-            ]
-
+            if self._checking:
+                inventory.props = [
+                    Property(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
+                    Property(
+                        name='Tanium_Client_IP_Address',
+                        value=rule_use.tanium_client_ip_address,
+                        ns=self._ns,
+                        class_='scc_inventory_item_id'
+                    ),
+                    Property(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
+                    Property(name='Count', value=rule_use.count, ns=self._ns)
+                ]
+            else:
+                inventory.props = [
+                    Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
+                    Property.construct(
+                        name='Tanium_Client_IP_Address',
+                        value=rule_use.tanium_client_ip_address,
+                        ns=self._ns,
+                        class_='scc_inventory_item_id'
+                    ),
+                    Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
+                    Property.construct(name='Count', value=rule_use.count, ns=self._ns)
+                ]
             component_uuid = self._get_component_ref(rule_use)
             if component_uuid is not None:
                 inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
@@ -293,27 +307,50 @@ class OscalFactory():
             )
             subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
             observation.subjects = [subject_reference]
-            observation.props = [
-                Property.construct(name='Check_ID', value=rule_use.check_id, ns=self._ns),
-                Property.construct(
-                    name='Check_ID_Benchmark',
-                    value=rule_use.check_id_benchmark,
-                    ns=self._ns,
-                    class_='scc_predefined_profile'
-                ),
-                Property.construct(
-                    name='Check_ID_Version',
-                    value=rule_use.check_id_version,
-                    ns=self._ns,
-                    class_='scc_predefined_profile_version'
-                ),
-                Property.construct(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
-                Property.construct(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'),
-                Property.construct(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
-                Property.construct(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
-                Property.construct(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
-            ]
-
+            if self._checking:
+                observation.props = [
+                    Property(name='Check_ID', value=rule_use.check_id, ns=self._ns),
+                    Property(
+                        name='Check_ID_Benchmark',
+                        value=rule_use.check_id_benchmark,
+                        ns=self._ns,
+                        class_='scc_predefined_profile'
+                    ),
+                    Property(
+                        name='Check_ID_Version',
+                        value=rule_use.check_id_version,
+                        ns=self._ns,
+                        class_='scc_predefined_profile_version'
+                    ),
+                    Property(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
+                    Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'),
+                    Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
+                    Property(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
+                    Property(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
+                ]
+            else:
+                observation.props = [
+                    Property.construct(name='Check_ID', value=rule_use.check_id, ns=self._ns),
+                    Property.construct(
+                        name='Check_ID_Benchmark',
+                        value=rule_use.check_id_benchmark,
+                        ns=self._ns,
+                        class_='scc_predefined_profile'
+                    ),
+                    Property.construct(
+                        name='Check_ID_Version',
+                        value=rule_use.check_id_version,
+                        ns=self._ns,
+                        class_='scc_predefined_profile_version'
+                    ),
+                    Property.construct(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
+                    Property.construct(
+                        name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'
+                    ),
+                    Property.construct(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
+                    Property.construct(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
+                    Property.construct(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
+                ]
             observation_partial_list.append(observation)
         return observation_partial_list
 

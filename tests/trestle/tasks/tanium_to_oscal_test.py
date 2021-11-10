@@ -182,6 +182,31 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
 
+def test_tanium_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
+    """Test execute call."""
+    monkeybusiness = MonkeyBusiness()
+    monkeypatch.setattr(tanium_helper, '_uuid_component', monkeybusiness.uuid_component)
+    monkeypatch.setattr(tanium_helper, '_uuid_inventory', monkeybusiness.uuid_inventory)
+    monkeypatch.setattr(tanium_helper, '_uuid_observation', monkeybusiness.uuid_observation)
+    monkeypatch.setattr(tanium_helper, '_uuid_result', monkeybusiness.uuid_result)
+    tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
+    assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
+    config.read(config_path)
+    section = config['task.tanium-to-oscal']
+    section['output-dir'] = str(tmp_path)
+    section['cpus-max'] = '1'
+    section['checking'] = 'true'
+    tgt = tanium_to_oscal.TaniumToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert len(os.listdir(str(tmp_path))) == 1
+    f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
+    f_produced = tmp_path / 'Tanium.oscal.json'
+    assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
+
+
 def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeybusiness = MonkeyBusiness()
