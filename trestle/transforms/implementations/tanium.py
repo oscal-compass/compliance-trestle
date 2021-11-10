@@ -16,6 +16,7 @@
 
 import datetime
 import logging
+from typing import List
 
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
@@ -39,7 +40,7 @@ class TaniumTransformer(ResultsTransformer):
         self._checking = checking
 
     @property
-    def analysis(self):
+    def analysis(self) -> List[str]:
         """Return analysis info."""
         return self._analysis
 

@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class RuleUse():
     """Represents one row of Tanium data."""
 
-    def __init__(self, tanium_row: Dict[str, Any], comply, default_timestamp: str) -> None:
+    def __init__(self, tanium_row: Dict[str, Any], comply: Dict[str, str], default_timestamp: str) -> None:
         """Initialize given specified args."""
         logger.debug(f'tanium-row: {tanium_row}')
         try:
@@ -122,27 +122,27 @@ class RuleUseFactory():
         return retval
 
 
-def _uuid():
+def _uuid() -> str:
     """Create uuid."""
     return str(uuid.uuid4())
 
 
-def _uuid_component():
+def _uuid_component() -> str:
     """Create uuid for component."""
     return _uuid()
 
 
-def _uuid_inventory():
+def _uuid_inventory() -> str:
     """Create uuid for inventory."""
     return _uuid()
 
 
-def _uuid_observation():
+def _uuid_observation() -> str:
     """Create uuid for observation."""
     return _uuid()
 
 
-def _uuid_result():
+def _uuid_result() -> str:
     """Create uuid for result."""
     return _uuid()
 
@@ -287,7 +287,7 @@ class OscalFactory():
         return self._inventory_map[rule_use.tanium_client_ip_address].uuid
 
     # parallel process to process one chuck of entire data set
-    def _batch_observations(self, index):
+    def _batch_observations(self, index: int):
         """Derive batch of observations from RuleUse list."""
         observation_partial_list = []
         # determine which chunk to process

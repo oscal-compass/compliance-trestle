@@ -24,13 +24,8 @@ from trestle.core import const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.tanium import TaniumTransformer
-from trestle.transforms.results import Results
 
 logger = logging.getLogger(__name__)
-
-t_filename = str
-t_results = Results
-t_tanium_transformer = TaniumTransformer
 
 
 class TaniumToOscal(TaskBase):
@@ -164,7 +159,7 @@ class TaniumToOscal(TaskBase):
             self._show_analysis(tanium_transformer)
         return TaskOutcome(mode + 'success')
 
-    def _read_file(self, ifile: t_filename):
+    def _read_file(self, ifile: str):
         """Read raw input file."""
         if not self._simulate:
             if self._verbose:
@@ -173,14 +168,14 @@ class TaniumToOscal(TaskBase):
             blob = fp.read()
         return blob
 
-    def _write_file(self, result: str, ofile: t_filename) -> None:
+    def _write_file(self, result: str, ofile: str) -> None:
         """Write oscal results file."""
         if not self._simulate:
             if self._verbose:
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
 
-    def _show_analysis(self, tanium_transformer: t_tanium_transformer) -> None:
+    def _show_analysis(self, tanium_transformer: TaniumTransformer) -> None:
         """Show analysis."""
         if not self._simulate:
             if self._verbose:
