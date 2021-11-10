@@ -708,7 +708,7 @@ class ProfileResolver():
                 updated = ProfileResolver.Modify._add_props_to_parts(control.parts, add)
             if not updated:
                 # FIXME: See #830 - this is not strictly enforcing and may result in errors.
-                logger.warning(f'Did not find the correct ID to add props for control {control.id} and id {add.by_id}')
+                logger.debug(f'Did not find the correct ID to add props for control {control.id} and id {add.by_id}')
 
         @staticmethod
         def _add_to_control(add: prof.Add, control: cat.Control) -> None:
