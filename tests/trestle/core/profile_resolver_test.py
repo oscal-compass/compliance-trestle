@@ -238,6 +238,7 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     locations_a = interface.find_string_in_control(control, profile_a_value)
     assert len(locations) == 1
     assert len(locations_a) == 0
+    # FIXME  this should also confirm the constraint was loaded from profile e
 
 
 def test_merge_params() -> None:

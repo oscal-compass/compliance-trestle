@@ -739,7 +739,23 @@ class ProfileResolver():
             control.params = as_list(control.params)
             param_ids = [param.id for param in control.params]
             index = param_ids.index(set_param.param_id)
-            control.params[index].values = set_param.values
+            param = control.params[index]
+            # FIXME these may need to merge
+            if set_param.values:
+                param.values = set_param.values
+            if set_param.constraints:
+                param.constraints = set_param.constraints
+            if set_param.guidelines:
+                param.guidelines = set_param.guidelines
+            if set_param.links:
+                param.links = set_param.links
+            if set_param.props:
+                param.props = set_param.props
+            if set_param.select:
+                param.select = set_param.select
+            if set_param.usage:
+                param.usage = set_param.usage
+            control.params[index] = param
             self._catalog_interface.replace_control(control)
 
         def _change_prose_with_param_values(self):
