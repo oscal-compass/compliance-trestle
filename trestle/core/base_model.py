@@ -84,9 +84,10 @@ class OscalBaseModel(BaseModel):
     class Config:
         """Overriding configuration class for pydantic base model, for use with OSCAL data classes."""
 
+        json_loads = orjson.loads
+        # TODO: json_dumps with orjson.dumps see #840
+
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
-        # this is not safe and caused class: nan in yaml output
-        # TODO: Explore fix.
         allow_population_by_field_name = True
 
         # Enforce strict schema
