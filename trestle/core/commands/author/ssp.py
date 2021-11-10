@@ -120,7 +120,7 @@ class SSPAssemble(AuthorCommonCommand):
         try:
             # generate the one dummy component that implementations will refer to in by_components
             component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-            component.description = 'Dummy component created by trestle'
+            component.description = 'The System'
 
             # create system implementation to hold the dummy component
             system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)

@@ -126,7 +126,7 @@ class CatalogAssemble(AuthorCommonCommand):
             return 1
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
-            logger.info('Creating catalog from markdown and destination catalog directory exists, so deleting.')
+            logger.info('Creating catalog from markdown and destination catalog directory exists, so updating.')
             try:
                 shutil.rmtree(str(new_cat_dir))
             except OSError as e:
