@@ -342,8 +342,8 @@ class OscalBaseModel(BaseModel):
         if self.__class__.__name__ == new_oscal_type.__name__:
             logger.debug('Json based copy')
             # Note: Json based oppportunistic copy
-            # FIXME: use dicts not json
-            return new_oscal_type.parse_raw(self.json(exclude_none=True, by_alias=True))
+            # Dev notes: Do not change this from json. Due to enums (in particular) json is the closest we can get.
+            return new_oscal_type.parse_raw(self.oscal_serialize_json(pretty=False, wrapped=False))
 
         if ('__root__' in self.__fields__ and len(self.__fields__) == 1 and '__root__' in new_oscal_type.__fields__
                 and len(new_oscal_type.__fields__) == 1):
