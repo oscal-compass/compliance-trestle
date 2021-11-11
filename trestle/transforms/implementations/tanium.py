@@ -107,11 +107,12 @@ class RuleUse():
             self.rule_id = comply['Rule ID']
             self.state = comply['State']
             # defaults
-            self.check_id_level = '[no results]'
-            self.check_id_version = '[no results]'
-            self.check_id_benchmark = '[no results]'
-            self.component = '[no results]'
-            self.component_type = '[no results]'
+            no_results = '[no results]'
+            self.check_id_level = no_results
+            self.check_id_version = no_results
+            self.check_id_benchmark = no_results
+            self.component = no_results
+            self.component_type = no_results
             # parse
             if ';' in self.check_id:
                 items = self.check_id.split(';')
@@ -136,7 +137,6 @@ class RuleUse():
             logger.debug(e)
             logger.debug(traceback.format_exc())
             raise e
-        return
 
 
 class RuleUseFactory():
@@ -285,7 +285,6 @@ class TaniumOscalFactory():
                 status=status
             )
             self._component_map[component_ref] = component
-        return self._component_map
 
     def _get_component_ref(self, rule_use: RuleUse) -> str:
         """Get component reference for specified rule use."""
@@ -305,46 +304,55 @@ class TaniumOscalFactory():
         """Derive inventory from RuleUse list."""
         self._inventory_map = {}
         if self._checking:
-            for rule_use in self._rule_use_list:
-                if rule_use.tanium_client_ip_address in self._inventory_map:
-                    continue
-                inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
-                inventory.props = [
-                    Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
-                    Property.construct(
-                        name='Tanium_Client_IP_Address',
-                        value=rule_use.tanium_client_ip_address,
-                        ns=self._ns,
-                        class_='scc_inventory_item_id'
-                    ),
-                    Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
-                    Property.construct(name='Count', value=rule_use.count, ns=self._ns)
-                ]
-                component_uuid = self._get_component_ref(rule_use)
-                if component_uuid is not None:
-                    inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
-                self._inventory_map[rule_use.tanium_client_ip_address] = inventory
+            self._derive_inventory_checked()
         else:
-            for rule_use in self._rule_use_list:
-                if rule_use.tanium_client_ip_address in self._inventory_map:
-                    continue
-                inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
-                inventory.props = [
-                    Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
-                    Property.construct(
-                        name='Tanium_Client_IP_Address',
-                        value=rule_use.tanium_client_ip_address,
-                        ns=self._ns,
-                        class_='scc_inventory_item_id'
-                    ),
-                    Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
-                    Property.construct(name='Count', value=rule_use.count, ns=self._ns)
-                ]
-                component_uuid = self._get_component_ref(rule_use)
-                if component_uuid is not None:
-                    inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
-                self._inventory_map[rule_use.tanium_client_ip_address] = inventory
-        return self._inventory_map
+            self._derive_inventory_unchecked()
+
+    def _derive_inventory_checked(self) -> Dict[str, InventoryItem]:
+        """Derive inventory from RuleUse list."""
+        self._inventory_map = {}
+        for rule_use in self._rule_use_list:
+            if rule_use.tanium_client_ip_address in self._inventory_map:
+                continue
+            inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
+            inventory.props = [
+                Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
+                Property.construct(
+                    name='Tanium_Client_IP_Address',
+                    value=rule_use.tanium_client_ip_address,
+                    ns=self._ns,
+                    class_='scc_inventory_item_id'
+                ),
+                Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
+                Property.construct(name='Count', value=rule_use.count, ns=self._ns)
+            ]
+            component_uuid = self._get_component_ref(rule_use)
+            if component_uuid is not None:
+                inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
+            self._inventory_map[rule_use.tanium_client_ip_address] = inventory
+
+    def _derive_inventory_unchecked(self) -> Dict[str, InventoryItem]:
+        """Derive inventory from RuleUse list."""
+        self._inventory_map = {}
+        for rule_use in self._rule_use_list:
+            if rule_use.tanium_client_ip_address in self._inventory_map:
+                continue
+            inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
+            inventory.props = [
+                Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
+                Property.construct(
+                    name='Tanium_Client_IP_Address',
+                    value=rule_use.tanium_client_ip_address,
+                    ns=self._ns,
+                    class_='scc_inventory_item_id'
+                ),
+                Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
+                Property.construct(name='Count', value=rule_use.count, ns=self._ns)
+            ]
+            component_uuid = self._get_component_ref(rule_use)
+            if component_uuid is not None:
+                inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
+            self._inventory_map[rule_use.tanium_client_ip_address] = inventory
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:
         """Get inventory reference for specified rule use."""
@@ -440,7 +448,6 @@ class TaniumOscalFactory():
             # gather observations from the sundry batch workers
             for observations_partial_list in rval_list:
                 self._observation_list += observations_partial_list
-        return self._observation_list
 
     @property
     def components(self) -> List[SystemComponent]:
