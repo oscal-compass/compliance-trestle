@@ -309,7 +309,7 @@ class TaniumOscalFactory():
             self._derive_inventory_unchecked()
 
     def _derive_inventory_checked(self) -> Dict[str, InventoryItem]:
-        """Derive inventory from RuleUse list."""
+        """Derive inventory from RuleUse list, properties checked."""
         self._inventory_map = {}
         for rule_use in self._rule_use_list:
             if rule_use.tanium_client_ip_address in self._inventory_map:
@@ -332,7 +332,7 @@ class TaniumOscalFactory():
             self._inventory_map[rule_use.tanium_client_ip_address] = inventory
 
     def _derive_inventory_unchecked(self) -> Dict[str, InventoryItem]:
-        """Derive inventory from RuleUse list."""
+        """Derive inventory from RuleUse list, properties unchecked."""
         self._inventory_map = {}
         for rule_use in self._rule_use_list:
             if rule_use.tanium_client_ip_address in self._inventory_map:
@@ -358,6 +358,61 @@ class TaniumOscalFactory():
         """Get inventory reference for specified rule use."""
         return self._inventory_map[rule_use.tanium_client_ip_address].uuid
 
+    def _get_observtion_properties(self, rule_use):
+        """Get observation properties."""
+        if self._checking:
+            return self._get_observtion_properties_checked(rule_use)
+        else:
+            return self._get_observtion_properties_unchecked(rule_use)
+
+    def _get_observtion_properties_checked(self, rule_use):
+        """Get observation properties, with checking."""
+        props = [
+            Property(name='Check_ID', value=rule_use.check_id, ns=self._ns),
+            Property(
+                name='Check_ID_Benchmark',
+                value=rule_use.check_id_benchmark,
+                ns=self._ns,
+                class_='scc_predefined_profile'
+            ),
+            Property(
+                name='Check_ID_Version',
+                value=rule_use.check_id_version,
+                ns=self._ns,
+                class_='scc_predefined_profile_version'
+            ),
+            Property(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
+            Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'),
+            Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
+            Property(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
+            Property(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
+        ]
+        return props
+
+    def _get_observtion_properties_unchecked(self, rule_use):
+        """Get observation properties, without checking."""
+        props = [
+            Property.construct(name='Check_ID', value=rule_use.check_id, ns=self._ns),
+            Property.construct(
+                name='Check_ID_Benchmark',
+                value=rule_use.check_id_benchmark,
+                ns=self._ns,
+                class_='scc_predefined_profile'
+            ),
+            Property.construct(
+                name='Check_ID_Version',
+                value=rule_use.check_id_version,
+                ns=self._ns,
+                class_='scc_predefined_profile_version'
+            ),
+            Property.construct(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
+            Property.construct(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'),
+            Property.construct(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
+            Property.construct(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
+            Property.construct(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
+        ]
+        return props
+
     # parallel process to process one chuck of entire data set
     def _batch_observations(self, index: int):
         """Derive batch of observations from RuleUse list."""
@@ -379,50 +434,7 @@ class TaniumOscalFactory():
             )
             subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
             observation.subjects = [subject_reference]
-            if self._checking:
-                observation.props = [
-                    Property(name='Check_ID', value=rule_use.check_id, ns=self._ns),
-                    Property(
-                        name='Check_ID_Benchmark',
-                        value=rule_use.check_id_benchmark,
-                        ns=self._ns,
-                        class_='scc_predefined_profile'
-                    ),
-                    Property(
-                        name='Check_ID_Version',
-                        value=rule_use.check_id_version,
-                        ns=self._ns,
-                        class_='scc_predefined_profile_version'
-                    ),
-                    Property(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
-                    Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'),
-                    Property(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
-                    Property(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
-                    Property(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
-                ]
-            else:
-                observation.props = [
-                    Property.construct(name='Check_ID', value=rule_use.check_id, ns=self._ns),
-                    Property.construct(
-                        name='Check_ID_Benchmark',
-                        value=rule_use.check_id_benchmark,
-                        ns=self._ns,
-                        class_='scc_predefined_profile'
-                    ),
-                    Property.construct(
-                        name='Check_ID_Version',
-                        value=rule_use.check_id_version,
-                        ns=self._ns,
-                        class_='scc_predefined_profile_version'
-                    ),
-                    Property.construct(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
-                    Property.construct(
-                        name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'
-                    ),
-                    Property.construct(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
-                    Property.construct(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
-                    Property.construct(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
-                ]
+            observation.props = self._get_observtion_properties(rule_use)
             observation_partial_list.append(observation)
         return observation_partial_list
 
