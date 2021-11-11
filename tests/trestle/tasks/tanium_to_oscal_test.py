@@ -259,6 +259,7 @@ def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     config.read(config_path)
     section = config['task.tanium-to-oscal']
     section['output-dir'] = str(tmp_path)
+    # set values for number of CPUs to unattainable numbers forcing code to chose reasonable ones.
     section['cpus-max'] = '1000000'
     section['cpus-min'] = '2000000'
     tgt = tanium_to_oscal.TaniumToOscal(section)

@@ -154,9 +154,9 @@ class OscalFactory():
         self,
         timestamp: str,
         rule_use_list: List[RuleUse],
-        blocksize: str = None,
-        cpus_max: str = None,
-        cpus_min: str = None,
+        blocksize: int = None,
+        cpus_max: int = None,
+        cpus_min: int = None,
         checking: bool = False
     ) -> None:
         """Initialize given specified args."""
@@ -173,14 +173,14 @@ class OscalFactory():
         if blocksize is None:
             self._blocksize = 11000
         else:
-            self._blocksize = int(blocksize)
+            self._blocksize = blocksize
         if self._blocksize < 1:
             self._blocksize = 1
         # cpus max: default, max, min
         if cpus_max is None:
             self._cpus_max = 1
         else:
-            self._cpus_max = int(cpus_max)
+            self._cpus_max = cpus_max
         if self._cpus_max > os.cpu_count():
             self._cpus_max = os.cpu_count()
         if self._cpus_max < 1:
@@ -189,7 +189,7 @@ class OscalFactory():
         if cpus_min is None:
             self._cpus_min = 1
         else:
-            self._cpus_min = int(cpus_min)
+            self._cpus_min = cpus_min
         if self._cpus_min > self._cpus_max:
             self._cpus_min = self._cpus_max
         if self._cpus_min < 1:
@@ -248,23 +248,11 @@ class OscalFactory():
     def _derive_inventory(self) -> Dict[str, InventoryItem]:
         """Derive inventory from RuleUse list."""
         self._inventory_map = {}
-        for rule_use in self._rule_use_list:
-            if rule_use.tanium_client_ip_address in self._inventory_map:
-                continue
-            inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
-            if self._checking:
-                inventory.props = [
-                    Property(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
-                    Property(
-                        name='Tanium_Client_IP_Address',
-                        value=rule_use.tanium_client_ip_address,
-                        ns=self._ns,
-                        class_='scc_inventory_item_id'
-                    ),
-                    Property(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
-                    Property(name='Count', value=rule_use.count, ns=self._ns)
-                ]
-            else:
+        if self._checking:
+            for rule_use in self._rule_use_list:
+                if rule_use.tanium_client_ip_address in self._inventory_map:
+                    continue
+                inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
                 inventory.props = [
                     Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
                     Property.construct(
@@ -276,10 +264,30 @@ class OscalFactory():
                     Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
                     Property.construct(name='Count', value=rule_use.count, ns=self._ns)
                 ]
-            component_uuid = self._get_component_ref(rule_use)
-            if component_uuid is not None:
-                inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
-            self._inventory_map[rule_use.tanium_client_ip_address] = inventory
+                component_uuid = self._get_component_ref(rule_use)
+                if component_uuid is not None:
+                    inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
+                self._inventory_map[rule_use.tanium_client_ip_address] = inventory
+        else:
+            for rule_use in self._rule_use_list:
+                if rule_use.tanium_client_ip_address in self._inventory_map:
+                    continue
+                inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
+                inventory.props = [
+                    Property.construct(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
+                    Property.construct(
+                        name='Tanium_Client_IP_Address',
+                        value=rule_use.tanium_client_ip_address,
+                        ns=self._ns,
+                        class_='scc_inventory_item_id'
+                    ),
+                    Property.construct(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
+                    Property.construct(name='Count', value=rule_use.count, ns=self._ns)
+                ]
+                component_uuid = self._get_component_ref(rule_use)
+                if component_uuid is not None:
+                    inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
+                self._inventory_map[rule_use.tanium_client_ip_address] = inventory
         return self._inventory_map
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:

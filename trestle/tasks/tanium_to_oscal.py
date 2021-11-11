@@ -137,18 +137,19 @@ class TaniumToOscal(TaskBase):
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
         # config optional performance
-        blocksize = self._config.get('blocksize')
-        cpus_max = self._config.get('cpus-max')
-        cpus_min = self._config.get('cpus-min')
-        checking = bool(self._config.get('checking', False))
+        modes = {
+            'blocksize': self._config.getint('blocksize'),
+            'cpus_max': self._config.getint('cpus-max'),
+            'cpus_min': self._config.getint('cpus-min'),
+            'checking': self._config.getboolean('checking'),
+        }
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
         for ifile in sorted(ipth.iterdir()):
             blob = self._read_file(ifile)
-            tanium_transformer = TaniumTransformer(
-                blocksize=blocksize, cpus_max=cpus_max, cpus_min=cpus_min, checking=checking
-            )
+            tanium_transformer = TaniumTransformer()
+            tanium_transformer.set_modes(modes)
             results = tanium_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname

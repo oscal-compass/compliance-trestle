@@ -16,7 +16,7 @@
 
 import datetime
 import logging
-from typing import List
+from typing import Any, Dict, List
 
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
@@ -29,20 +29,39 @@ logger = logging.getLogger(__name__)
 class TaniumTransformer(ResultsTransformer):
     """Interface for Tanium transformer."""
 
-    def __init__(
-        self, blocksize: str = None, cpus_max: str = None, cpus_min: str = None, checking: bool = False
-    ) -> None:
-        """Initialize given specified args."""
-        self._analysis = []
-        self._blocksize = blocksize
-        self._cpus_max = cpus_max
-        self._cpus_min = cpus_min
-        self._checking = checking
+    def __init__(self) -> None:
+        """Initialize."""
+        self._modes = {}
 
     @property
     def analysis(self) -> List[str]:
         """Return analysis info."""
         return self._analysis
+
+    @property
+    def blocksize(self):
+        """Return blocksize."""
+        return self._modes.get('blocksize', None)
+
+    @property
+    def cpus_max(self):
+        """Return cpus_max."""
+        return self._modes.get('cpus_max', None)
+
+    @property
+    def cpus_min(self):
+        """Return cpus_min."""
+        return self._modes.get('cpus_min', None)
+
+    @property
+    def checking(self):
+        """Return checking."""
+        return self._modes.get('checking', False)
+
+    def set_modes(self, modes: Dict[str, Any]) -> None:
+        """Keep modes info."""
+        if modes is not None:
+            self._modes = modes
 
     def transform(self, blob: str) -> Results:
         """Transform the blob into a Results."""
@@ -51,7 +70,7 @@ class TaniumTransformer(ResultsTransformer):
         ru_factory = RuleUseFactory(self.get_timestamp())
         ru_list = ru_factory.make_list(blob)
         oscal_factory = OscalFactory(
-            self.get_timestamp(), ru_list, self._blocksize, self._cpus_max, self._cpus_min, self._checking
+            self.get_timestamp(), ru_list, self.blocksize, self.cpus_max, self.cpus_min, self.checking
         )
         results.__root__.append(oscal_factory.result)
         ts1 = datetime.datetime.now()
