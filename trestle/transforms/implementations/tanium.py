@@ -256,13 +256,10 @@ class TaniumOscalFactory():
         retval = False
         component_type = rule_use.component_type
         component_title = rule_use.component
-        component_description = rule_use.component
         for component in self._component_map.values():
             if component.type != component_type:
                 continue
             if component.title != component_title:
-                continue
-            if component.description != component_description:
                 continue
             retval = True
             break
