@@ -230,12 +230,7 @@ class Folders(AuthorCommonCommand):
                     template_file = versioned_template_dir / instance_file_name
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(
-                        filter(
-                            lambda p: fs.local_and_visible(p) and not str(p).startswith('.'),
-                            versioned_template_dir.iterdir()
-                        )
-                    )
+                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
 
@@ -281,12 +276,7 @@ class Folders(AuthorCommonCommand):
                     template_file = versioned_template_dir / instance_file_name
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(
-                        filter(
-                            lambda p: fs.local_and_visible(p) and not str(p).startswith('.'),
-                            versioned_template_dir.iterdir()
-                        )
-                    )
+                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
 
