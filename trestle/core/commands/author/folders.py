@@ -211,8 +211,6 @@ class Folders(AuthorCommonCommand):
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
                 continue
             instance_file_name = instance_file.relative_to(instance_dir)
-            if str(instance_file_name).startswith('.'):
-                continue
             instance_file_names.append(instance_file_name)
             if instance_file.suffix == '.md':
                 md_api = MarkdownAPI()
@@ -232,7 +230,12 @@ class Folders(AuthorCommonCommand):
                     template_file = versioned_template_dir / instance_file_name
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
+                    templates = list(
+                        filter(
+                            lambda p: fs.local_and_visible(p) and not str(p).startswith('.'),
+                            versioned_template_dir.iterdir()
+                        )
+                    )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
 
@@ -278,7 +281,12 @@ class Folders(AuthorCommonCommand):
                     template_file = versioned_template_dir / instance_file_name
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
+                    templates = list(
+                        filter(
+                            lambda p: fs.local_and_visible(p) and not str(p).startswith('.'),
+                            versioned_template_dir.iterdir()
+                        )
+                    )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
 
