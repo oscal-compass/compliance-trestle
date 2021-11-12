@@ -138,10 +138,10 @@ class TaniumToOscal(TaskBase):
                 return TaskOutcome(mode + 'failure')
         # config optional performance
         modes = {
-            'blocksize': self._config.getint('blocksize'),
-            'cpus_max': self._config.getint('cpus-max'),
-            'cpus_min': self._config.getint('cpus-min'),
-            'checking': self._config.getboolean('checking'),
+            'blocksize': self._config.getint('blocksize', 10000),
+            'cpus_max': self._config.getint('cpus-max', 1),
+            'cpus_min': self._config.getint('cpus-min', 1),
+            'checking': self._config.getboolean('checking', False),
         }
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)

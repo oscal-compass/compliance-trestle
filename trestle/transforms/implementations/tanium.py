@@ -52,17 +52,17 @@ class TaniumTransformer(ResultsTransformer):
     @property
     def blocksize(self):
         """Return blocksize."""
-        return self._modes.get('blocksize', None)
+        return self._modes.get('blocksize', 10000)
 
     @property
     def cpus_max(self):
         """Return cpus_max."""
-        return self._modes.get('cpus_max', None)
+        return self._modes.get('cpus_max', 1)
 
     @property
     def cpus_min(self):
         """Return cpus_min."""
-        return self._modes.get('cpus_min', None)
+        return self._modes.get('cpus_min', 1)
 
     @property
     def checking(self):
@@ -236,6 +236,8 @@ class TaniumOscalFactory():
         self._cpus_min = cpus_min
         if self._cpus_min > self._cpus_max:
             self._cpus_min = self._cpus_max
+        if self._cpus_min < 1:
+            self._cpus_min = 1
 
     def _is_duplicate_component(self, rule_use: RuleUse) -> bool:
         """Check for duplicate component."""
