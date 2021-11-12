@@ -20,7 +20,6 @@
           "adds": [
             {
               "position": "starting",
-              "by-id": "ac-3",
               "props": [
                 {
                   "name": "test_prop",
@@ -34,7 +33,6 @@
             },
             {
               "position": "ending",
-              "by-id": "ac-3",
               "props": [
                 {
                   "name": "test_three",
@@ -48,7 +46,7 @@
             },
             {
               "position": "starting",
-              "by-id": "ac-3_stmt",
+              "by-id": "ac-3_smt",
               "props": [
                 {
                   "name": "test_prop",
@@ -62,7 +60,7 @@
             },
             {
               "position": "ending",
-              "by-id": "ac-3_stmt",
+              "by-id": "ac-3_smt",
               "props": [
                 {
                   "name": "test_three",

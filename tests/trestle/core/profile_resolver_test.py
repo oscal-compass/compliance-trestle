@@ -179,23 +179,6 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 10
 
 
-def test_profile_resolver_failures() -> None:
-    """Test failure modes of profile resolver."""
-    profile = gens.generate_sample_model(prof.Profile)
-    modify = ProfileResolver.Modify(profile)
-    control = gens.generate_sample_model(cat.Control)
-    # this should not cause error
-    add = prof.Add()
-    with pytest.raises(TrestleError):
-        modify._add_to_control(add, control)
-    add.parts = []
-    with pytest.raises(TrestleError):
-        modify._add_to_control(add, control)
-    add.position = prof.Position.before
-    with pytest.raises(TrestleError):
-        modify._add_to_control(add, control)
-
-
 @pytest.mark.parametrize(
     'param_id, param_text, prose, result',
     [
@@ -238,23 +221,22 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     locations_a = interface.find_string_in_control(control, profile_a_value)
     assert len(locations) == 1
     assert len(locations_a) == 0
-    # FIXME  this should also confirm the constraint was loaded from profile e
+    assert len(control.params[1].constraints) == 1
 
 
 def test_merge_params() -> None:
     """Test the merge of params."""
     params: List[com.Parameter] = test_utils.generate_param_list('foo', 2)
+    params[0].remarks = None
     profile = gens.generate_sample_model(prof.Profile)
-    method = prof.Method.merge
-    combine = prof.Combine(method=method)
-    profile.merge = prof.Merge(combine=combine)
-
     merge = ProfileResolver.Merge(profile)
     merge._merge_params(params[0], params[1])
     assert params[0]
     assert len(params[0].constraints) == 2
     assert len(params[0].guidelines) == 2
     assert len(params[0].props) == 2
+    # confirm that in the merge, the source remark overwrote the dest remark because it was None
+    assert params[0].remarks == params[1].remarks
 
 
 def test_merge_two_catalogs() -> None:

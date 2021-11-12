@@ -24,7 +24,6 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
-from trestle.core.err import TrestleError
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -76,7 +75,7 @@ class CatalogInterface():
         if control.params is not None:
             for param in control.params:
                 if param.id in self._param_dict:
-                    raise TrestleError(
+                    logger.warning(
                         f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
                     )
                 self._param_dict[param.id] = control.id
