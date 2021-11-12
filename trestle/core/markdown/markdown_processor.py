@@ -17,7 +17,7 @@
 import logging
 import pathlib
 import traceback
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 import cmarkgfm
 
@@ -68,10 +68,20 @@ class MarkdownProcessor:
             logger.debug(traceback.print_exc())
             raise TrestleError(f'Markdown with path {md_path}, not found: {e}')
 
-    def read_markdown_wo_processing(self, md_path) -> Tuple[Dict, str]:
+    def read_markdown_wo_processing(self, md_path: pathlib.Path) -> Tuple[Dict, str]:
         """Read markdown header to dictionary and body to string."""
         contents = frontmatter.loads(md_path.open('r', encoding=const.FILE_ENCODING).read())
         header = contents.metadata
         markdown_wo_header = contents.content
 
         return header, markdown_wo_header
+
+    def fetch_value_from_header(self, md_path: pathlib.Path, key: str) -> Optional[str]:
+        """Fetch value for the given key from the markdown header if exists."""
+        header, _ = self.read_markdown_wo_processing(md_path)
+        value = None
+
+        if key in header.keys():
+            value = header[key]
+
+        return value
