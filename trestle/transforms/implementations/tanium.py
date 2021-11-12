@@ -21,7 +21,7 @@ import multiprocessing
 import os
 import traceback
 import uuid
-from typing import Any, Dict, List, ValuesView
+from typing import Any, Dict, List, Optional, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
@@ -210,9 +210,9 @@ class TaniumOscalFactory():
         self,
         timestamp: str,
         rule_use_list: List[RuleUse],
-        blocksize: int = None,
-        cpus_max: int = None,
-        cpus_min: int = None,
+        blocksize: int = 11000,
+        cpus_max: int = 1,
+        cpus_min: int = 1,
         checking: bool = False
     ) -> None:
         """Initialize given specified args."""
@@ -226,30 +226,16 @@ class TaniumOscalFactory():
         self._checking = checking
         self._result = None
         # blocksize: default, min
-        if blocksize is None:
-            self._blocksize = 11000
-        else:
-            self._blocksize = blocksize
+        self._blocksize = blocksize
         if self._blocksize < 1:
             self._blocksize = 1
         # cpus max: default, max, min
-        if cpus_max is None:
-            self._cpus_max = 1
-        else:
-            self._cpus_max = cpus_max
+        self._cpus_max = cpus_max
         if self._cpus_max > os.cpu_count():
             self._cpus_max = os.cpu_count()
-        if self._cpus_max < 1:
-            self._cpus_max = 1
-        # cpus min: default, max, min
-        if cpus_min is None:
-            self._cpus_min = 1
-        else:
-            self._cpus_min = cpus_min
+        self._cpus_min = cpus_min
         if self._cpus_min > self._cpus_max:
             self._cpus_min = self._cpus_max
-        if self._cpus_min < 1:
-            self._cpus_min = 1
 
     def _is_duplicate_component(self, rule_use: RuleUse) -> bool:
         """Check for duplicate component."""
@@ -286,7 +272,7 @@ class TaniumOscalFactory():
             )
             self._component_map[component_ref] = component
 
-    def _get_component_ref(self, rule_use: RuleUse) -> str:
+    def _get_component_ref(self, rule_use: RuleUse) -> Optional[str]:
         """Get component reference for specified rule use."""
         uuid = None
         for component_ref, component in self._component_map.items():
