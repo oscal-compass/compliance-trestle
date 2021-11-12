@@ -258,11 +258,14 @@ class TaniumOscalFactory():
         component_title = rule_use.component
         component_description = rule_use.component
         for component in self._component_map.values():
-            if component.type == component_type:
-                if component.title == component_title:
-                    if component.description == component_description:
-                        retval = True
-                        break
+            if component.type != component_type:
+                continue
+            if component.title != component_title:
+                continue
+            if component.description != component_description:
+                continue
+            retval = True
+            break
         return retval
 
     def _derive_components(self) -> Dict[str, ValuesView[InventoryItem]]:
