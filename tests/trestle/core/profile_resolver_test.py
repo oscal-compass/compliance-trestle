@@ -24,7 +24,6 @@ import pytest
 from tests import test_utils
 
 from trestle.core import generators as gens
-from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
@@ -76,7 +75,7 @@ def test_deep_catalog() -> None:
     assert interface.get_count_of_controls_in_catalog(True) == 16
 
 
-def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ok_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
     """Test when by_id is not given and position is set to after or before it fails."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
@@ -84,8 +83,9 @@ def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pa
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
     repo.load_and_import_model(prof_path, 'incorrect_profile')
 
-    with pytest.raises(TrestleError):
-        ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    # this originally failed but now it is OK based on OSCAL saying to default to starting or ending if no by_id
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    assert catalog
 
 
 def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
@@ -278,13 +278,12 @@ def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
                     assert len(sub_part.props) == 4
 
 
-def test_add_props_failure(tmp_trestle_dir: pathlib.Path) -> None:
+def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     """
-    Test for bad properties additions.
+    Test for property addition behavior with before or after.
 
-    Properties can only be added with starting or ending.
+    Properties added with before or after will default to starting or ending.
     """
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
     prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
-    with pytest.raises(TrestleError):
-        _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
+    _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
