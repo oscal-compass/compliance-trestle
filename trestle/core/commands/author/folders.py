@@ -211,6 +211,8 @@ class Folders(AuthorCommonCommand):
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
                 continue
             instance_file_name = instance_file.relative_to(instance_dir)
+            if str(instance_file_name).startswith('.'):
+                continue
             instance_file_names.append(instance_file_name)
             if instance_file.suffix == '.md':
                 md_api = MarkdownAPI()
