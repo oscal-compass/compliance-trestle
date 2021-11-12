@@ -87,10 +87,16 @@ class AuthorCommonCommand(CommandPlusDocs):
         """Set template version argument to the latest version if none was given."""
         if not TemplateVersioning.is_valid_version(args.template_version):
             raise TrestleError(f'Version {args.template_version} is invalid, version format should be: 0.0.1')
+        if args.template_version is None and args.mode == 'validate':
+            # in validate mode no version will validate instances based on header version
+            args.template_version = ''
         if args.template_version is None:
             args.template_version = START_TEMPLATE_VERSION
             if template_dir.exists():
                 all_versions = TemplateVersioning.get_all_versions_for_task(template_dir)
                 if all_versions:
                     args.template_version = max(all_versions)
-        logger.info(f'Set template version to {args.template_version}.')
+        if args.template_version == '':
+            logger.info('Instances will be validated against template version specified in their headers.')
+        else:
+            logger.info(f'Set template version to {args.template_version}.')

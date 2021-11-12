@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle author folders subcommand."""
+import os
 import pathlib
 import shutil
 import sys
@@ -27,6 +28,10 @@ import pytest
 import trestle.cli
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.utils import fs
+
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
 
 
 @pytest.mark.parametrize(
@@ -245,6 +250,12 @@ def test_e2e(
     command_string_validate_content = f'trestle author folders validate -tn {task_name} --header-validate {readme_flag}'
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
+    if os.name == 'nt' and str(template_content) == 'author/governed_folders/template_folder_with_drawio':
+        hidden_file = testdata_dir / pathlib.Path(
+            'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
+        )
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
     monkeypatch.setattr(sys, 'argv', command_string_setup.split())
     rc = trestle.cli.Trestle().run()
     assert rc == setup_code
@@ -479,6 +490,13 @@ def test_e2e_backward_compatibility(
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION
     old_template_path = tmp_trestle_dir / '.trestle' / 'author' / task_name
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
+
+    if os.name == 'nt' and str(template_content) == 'author/governed_folders/template_folder_with_drawio':
+        hidden_file = testdata_dir / pathlib.Path(
+            'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
+        )
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
 
     # Add old templates
     template_loc = testdata_dir / template_content

@@ -18,6 +18,7 @@ import argparse
 import logging
 import pathlib
 import shutil
+from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
@@ -102,7 +103,8 @@ class Docs(AuthorCommonCommand):
                     args.header_validate,
                     args.header_only_validate,
                     args.recurse,
-                    args.readme_validate
+                    args.readme_validate,
+                    args.template_version
                 )
 
             return status
@@ -193,15 +195,19 @@ class Docs(AuthorCommonCommand):
 
     def _validate_dir(
         self,
-        template_file: pathlib.Path,
         governed_heading: str,
         md_dir: pathlib.Path,
         validate_header: bool,
         validate_only_header: bool,
         recurse: bool,
-        readme_validate: bool
+        readme_validate: bool,
+        template_version: Optional[str] = None
     ) -> int:
-        """Validate md files in a directory with option to recurse."""
+        """
+        Validate md files in a directory with option to recurse.
+
+        Template version will be fetched from the instance header.
+        """
         # status is a linux returncode
         status = 0
         for item_path in md_dir.iterdir():
@@ -216,6 +222,19 @@ class Docs(AuthorCommonCommand):
                         if item_path.name.lower() == 'readme.md':
                             continue
                     md_api = MarkdownAPI()
+                    if template_version != '':
+                        template_file = self.template_dir / self.template_name
+                    else:
+                        instance_version = md_api.processor.fetch_value_from_header(
+                            item_path, author_const.TEMPLATE_VERSION_HEADER
+                        )
+                        versione_template_dir = TemplateVersioning.get_versioned_template_dir(
+                            self.template_dir, instance_version
+                        )
+                        template_file = versione_template_dir / self.template_name
+                    if not template_file.is_file():
+                        logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
+                        return 1
                     md_api.load_validator_with_template(
                         template_file, validate_header, not validate_only_header, governed_heading
                     )
@@ -225,13 +244,13 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
-                    if not self._validate_dir(template_file,
-                                              governed_heading,
+                    if not self._validate_dir(governed_heading,
                                               item_path,
                                               validate_header,
                                               validate_only_header,
                                               recurse,
-                                              readme_validate):
+                                              readme_validate,
+                                              template_version):
                         status = 1
         return status
 
@@ -241,7 +260,8 @@ class Docs(AuthorCommonCommand):
         validate_header: bool,
         validate_only_header: bool,
         recurse: bool,
-        readme_validate: bool
+        readme_validate: bool,
+        template_version: str
     ) -> int:
         """
         Validate task.
@@ -258,16 +278,12 @@ class Docs(AuthorCommonCommand):
         """
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
-        template_file = self.template_dir / self.template_name
-        if not template_file.is_file():
-            logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
-            return 1
         return self._validate_dir(
-            template_file,
             governed_heading,
             self.task_path,
             validate_header,
             validate_only_header,
             recurse,
-            readme_validate
+            readme_validate,
+            template_version
         )
