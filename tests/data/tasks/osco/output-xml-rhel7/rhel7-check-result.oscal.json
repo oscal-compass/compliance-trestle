@@ -4,8 +4,8 @@
       "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
       "title": "OpenShift Compliance Operator",
       "description": "OpenShift Compliance Operator Scan Results",
-      "start": "2021-02-24T19:31:13.000+00:00",
-      "end": "2021-02-24T19:31:13.000+00:00",
+      "start": "2021-02-24T19:31:13+00:00",
+      "end": "2021-02-24T19:31:13+00:00",
       "local-definitions": {
         "components": [
           {
@@ -124,7 +124,7 @@
               "type": "inventory-item"
             }
           ],
-          "collected": "2021-02-24T19:31:13.000+00:00"
+          "collected": "2021-02-24T19:31:13+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -201,7 +201,7 @@
               "type": "inventory-item"
             }
           ],
-          "collected": "2021-02-24T19:31:13.000+00:00"
+          "collected": "2021-02-24T19:31:13+00:00"
         }
       ]
     }
