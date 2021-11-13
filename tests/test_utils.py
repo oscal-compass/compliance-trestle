@@ -281,7 +281,11 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
 
 
 def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
-    """Make files hidden on windows."""
+    """
+    Make a file hidden on windows.
+
+    if_dot will make the change only if the filename is of the form .*
+    """
     if os.name == 'nt':
         if not if_dot or file_path.stem.startswith('.'):
             atts = win32api.GetFileAttributes(str(file_path))
