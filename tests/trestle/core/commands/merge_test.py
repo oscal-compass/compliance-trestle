@@ -34,10 +34,6 @@ from trestle.core.models.plans import Plan
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
-if os.name == 'nt':  # pragma: no cover
-    import win32api
-    import win32con
-
 
 def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     """Test to make sure each element in -e contains 2 parts at least, and no chained element paths."""
@@ -270,21 +266,10 @@ def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir
     delete_element_action = RemovePathAction(Path('catalog').resolve())
     expected_plan.add_action(delete_element_action)
 
-    # Add some hidden files
-    if os.name == 'nt':
-        hidden_file = tmp_trestle_dir / 'catalogs/mycatalog/hidden.txt'
-        hidden_file.touch()
-        hidden_file2 = tmp_trestle_dir / 'catalogs/mycatalog/catalog/hidden.txt'
-        hidden_file2.touch()
-        atts = win32api.GetFileAttributes(str(hidden_file))
-        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
-        atts = win32api.GetFileAttributes(str(hidden_file2))
-        win32api.SetFileAttributes(str(hidden_file2), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
-    else:
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/.DS_Store').touch()
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/.DS_Store').touch()
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata/.DS_Store').touch()
-        Path(tmp_trestle_dir / 'catalogs/mycatalog/catalog/groups/.DS_Store').touch()
+    test_utils.make_hidden_file(tmp_trestle_dir / 'catalogs/mycatalog/.DS_Store')
+    test_utils.make_hidden_file(tmp_trestle_dir / 'catalogs/mycatalog/catalog/.DS_Store')
+    test_utils.make_hidden_file(tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata/.DS_Store')
+    test_utils.make_hidden_file(tmp_trestle_dir / 'catalogs/mycatalog/catalog/groups/.DS_Store')
 
     # Call merge()
     generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.*'), tmp_trestle_dir)

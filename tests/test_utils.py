@@ -19,6 +19,7 @@ import argparse
 import logging
 import os
 import pathlib
+import shutil
 import sys
 from typing import Any, List
 
@@ -35,6 +36,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
 
 logger = logging.getLogger(__name__)
 
@@ -273,3 +278,47 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     else:
         new_href = str(cat_path.resolve())
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
+
+
+def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
+    """Make files hidden on windows."""
+    if os.name == 'nt':
+        if not if_dot or file_path.stem.startswith('.'):
+            atts = win32api.GetFileAttributes(str(file_path))
+            win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+
+def make_dot_files_in_tree_hidden(dir_path: pathlib.Path) -> None:
+    """On windows change all .* files to have hidden attributes."""
+    for dot_file in dir_path.rglob('.*'):
+        make_file_hidden(dot_file, True)
+
+
+def copy_tree_with_hidden(src_path: pathlib.Path, dest_path: pathlib.Path) -> None:
+    """Copy directory and make sure dot files are hidden."""
+    if not dest_path.parent.exists():
+        dest_path.parent.mkdir(parents=True)
+    shutil.copytree(str(src_path), str(dest_path), copy_function=shutil.copy2)
+    make_dot_files_in_tree_hidden(dest_path)
+
+
+def copy_file_with_hidden(src_path: pathlib.Path, dest_path: pathlib.Path) -> None:
+    """Copy a file and if it is a dot file make it hidden."""
+    if not dest_path.parent.exists():
+        dest_path.mkdir(parents=True)
+    shutil.copy2(str(src_path), str(dest_path))
+    make_file_hidden(dest_path, True)
+
+
+def copy_tree_or_file_with_hidden(src_path: pathlib.Path, dest_path: pathlib.Path) -> None:
+    """Copy directory tree along with file attributes."""
+    if src_path.is_dir():
+        copy_tree_with_hidden(src_path, dest_path)
+    else:
+        copy_file_with_hidden(src_path, dest_path)
+
+
+def make_hidden_file(file_path: pathlib.Path) -> None:
+    """Make a hidden file with the given file path."""
+    file_path.touch()
+    make_file_hidden(file_path)
