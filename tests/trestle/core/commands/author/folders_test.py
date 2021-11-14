@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle author folders subcommand."""
-import os
 import pathlib
 import shutil
 import sys
@@ -25,13 +24,11 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+from tests import test_utils
+
 import trestle.cli
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.utils import fs
-
-if os.name == 'nt':  # pragma: no cover
-    import win32api
-    import win32con
 
 
 @pytest.mark.parametrize(
@@ -250,12 +247,11 @@ def test_e2e(
     command_string_validate_content = f'trestle author folders validate -tn {task_name} --header-validate {readme_flag}'
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
-    if os.name == 'nt' and str(template_content) == 'author/governed_folders/template_folder_with_drawio':
+    if template_content == pathlib.Path('author/governed_folders/template_folder_with_drawio'):
         hidden_file = testdata_dir / pathlib.Path(
             'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
         )
-        atts = win32api.GetFileAttributes(str(hidden_file))
-        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        test_utils.make_file_hidden(hidden_file)
     monkeypatch.setattr(sys, 'argv', command_string_setup.split())
     rc = trestle.cli.Trestle().run()
     assert rc == setup_code
@@ -263,10 +259,7 @@ def test_e2e(
         return
     shutil.rmtree(str(template_target_loc))
     template_loc = testdata_dir / template_content
-    if template_loc.is_dir():
-        shutil.copytree(str(template_loc), str(template_target_loc))
-    else:
-        shutil.copy2(str(template_loc), str(template_target_loc))
+    test_utils.copy_tree_or_file_with_hidden(template_loc, template_target_loc)
 
     monkeypatch.setattr(sys, 'argv', command_string_validate_template.split())
     rc = trestle.cli.Trestle().run()
@@ -280,10 +273,7 @@ def test_e2e(
     assert rc == 0
 
     target_source = testdata_dir / target_content
-    if target_source.is_dir():
-        shutil.copytree(str(target_source), str(test_content_loc))
-    else:
-        shutil.copy2(str(target_source), str(test_content_loc))
+    test_utils.copy_tree_or_file_with_hidden(target_source, test_content_loc)
 
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
@@ -491,21 +481,15 @@ def test_e2e_backward_compatibility(
     old_template_path = tmp_trestle_dir / '.trestle' / 'author' / task_name
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
 
-    if os.name == 'nt' and str(template_content) == 'author/governed_folders/template_folder_with_drawio':
+    if template_content == pathlib.Path('author/governed_folders/template_folder_with_drawio'):
         hidden_file = testdata_dir / pathlib.Path(
             'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
         )
-        atts = win32api.GetFileAttributes(str(hidden_file))
-        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        test_utils.make_file_hidden(hidden_file)
 
     # Add old templates
     template_loc = testdata_dir / template_content
-    if template_loc.is_dir():
-        shutil.copytree(str(template_loc), str(old_template_path))
-    else:
-        if not old_template_path.exists():
-            old_template_path.mkdir(parents=True)
-        shutil.copy2(str(template_loc), str(old_template_path))
+    test_utils.copy_tree_or_file_with_hidden(template_loc, old_template_path)
 
     assert old_template_path.exists()
     assert not template_target_loc.exists()
@@ -532,10 +516,7 @@ def test_e2e_backward_compatibility(
 
     shutil.rmtree(str(template_target_loc))
     template_loc = testdata_dir / template_content
-    if template_loc.is_dir():
-        shutil.copytree(str(template_loc), str(template_target_loc))
-    else:
-        shutil.copy2(str(template_loc), str(template_target_loc))
+    test_utils.copy_tree_or_file_with_hidden(template_loc, template_target_loc)
 
     monkeypatch.setattr(sys, 'argv', command_string_validate_template.split())
     rc = trestle.cli.Trestle().run()
