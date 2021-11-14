@@ -17,6 +17,7 @@
 
 from typing import TypeVar
 
+from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import common
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
@@ -36,6 +37,8 @@ TopLevelOscalModel = TypeVar(
     Profile,
     SystemSecurityPlan
 )
+
+OBT = TypeVar('OBT', bound=OscalBaseModel)
 
 # model types containing uuids that should not regenerate
 FixedUuidModel = common.Resource

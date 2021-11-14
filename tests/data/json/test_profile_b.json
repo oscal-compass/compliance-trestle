@@ -19,6 +19,14 @@
               "ac-5"
             ]
           }
+        ],
+        "exclude-controls": [
+          {
+            "with-child-controls": "yes",
+            "with-ids": [
+              "ac-4"
+            ]
+          }
         ]
       },
       {
@@ -27,14 +35,14 @@
       }
     ],
     "modify": {
-      "set_parameters": [
+      "set-parameters": [
         {
-          "param_id": "ac-3.3_prm_1",
+          "param-id": "ac-3.3_prm_1",
             "values": [
               "key power users"
             ]
         },
-        {  "param_id": "ac-3.3_prm_2",
+        {  "param-id": "ac-3.3_prm_2",
             "values": [
               "full and complete compliance"
             ]

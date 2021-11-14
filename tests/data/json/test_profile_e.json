@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "metadata": {
+      "title": "Test profile e",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://profiles/test_profile_a/profile.json",
+        "include-all": {}
+      }
+    ],
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "ac-1_prm_1",
+            "values": [
+              "## Override value ##"
+            ]
+        },
+        {
+          "param-id": "ac-1_prm_2",
+          "constraints": [{
+            "description": "This is a constraint"
+          }]
+        }
+      ]
+    }
+  }
+}

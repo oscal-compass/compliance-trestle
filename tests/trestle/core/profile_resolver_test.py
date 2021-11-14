@@ -15,7 +15,7 @@
 # limitations under the License.
 """Tests profile_resolver module."""
 
-import argparse
+import copy
 import pathlib
 from typing import List, Tuple
 
@@ -24,8 +24,6 @@ import pytest
 from tests import test_utils
 
 from trestle.core import generators as gens
-from trestle.core.commands.author.ssp import SSPGenerate
-from trestle.core.err import TrestleError
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
@@ -37,7 +35,7 @@ from trestle.utils import fs
 def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:
     """Find all instances of this string in catalog prose and return with control id."""
     hits: List[Tuple[str, str]] = []
-    for control in interface.get_all_controls(True):
+    for control in interface.get_all_controls_from_catalog(True):
         hits.extend(interface.find_string_in_control(control, seek_str))
     return hits
 
@@ -49,26 +47,19 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
+    # added part ac-1_expevid from prof a
     list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')
+    # modify param ac-3.3_prm_2 in prof b
     list2 = find_string_in_all_controls_prose(interface, 'full and complete compliance')
 
     assert len(list1) == 1
     assert len(list2) == 1
 
-    fs.save_top_level_model(cat, tmp_trestle_dir, 'my_cat', fs.FileContentType.JSON)
+    assert interface.get_count_of_controls_in_catalog(False) == 6
 
-    ssp_cmd = SSPGenerate()
-    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile='test_profile_a', output='my_ssp', verbose=True, sections=sections
-    )
-    assert ssp_cmd._run(args) == 0
+    assert interface.get_count_of_controls_in_catalog(True) == 7
 
-    assert interface.get_count_of_controls(False) == 6
-
-    assert interface.get_count_of_controls(True) == 7
-
-    assert len(cat.controls) == 1
+    assert len(cat.controls) == 4
 
     assert interface.get_dependent_control_ids('ac-3') == ['ac-3.3']
 
@@ -80,11 +71,11 @@ def test_deep_catalog() -> None:
     """Test ssp generation with deep catalog."""
     catalog = test_utils.generate_complex_catalog()
     interface = CatalogInterface(catalog)
-    assert interface.get_count_of_controls(False) == 10
-    assert interface.get_count_of_controls(True) == 15
+    assert interface.get_count_of_controls_in_catalog(False) == 11
+    assert interface.get_count_of_controls_in_catalog(True) == 16
 
 
-def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ok_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
     """Test when by_id is not given and position is set to after or before it fails."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
@@ -92,8 +83,9 @@ def test_fail_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pa
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
     repo.load_and_import_model(prof_path, 'incorrect_profile')
 
-    with pytest.raises(TrestleError):
-        ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    # this originally failed but now it is OK based on OSCAL saying to default to starting or ending if no by_id
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    assert catalog
 
 
 def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
@@ -146,37 +138,45 @@ def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) 
     assert control_a2.parts[0].id == 'ac-2_implgdn_lev1'
 
 
-def test_profile_resolver_merge(sample_catalog_rich_controls) -> None:
+def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test profile resolver merge."""
     profile = gens.generate_sample_model(prof.Profile)
+    method = prof.Method.merge
+    combine = prof.Combine(method=method)
+    profile.merge = prof.Merge(combine=combine)
     merge = ProfileResolver.Merge(profile)
+
+    # merge into empty catalog
     merged = gens.generate_sample_model(cat.Catalog)
     new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
     catalog_interface = CatalogInterface(new_merged)
-    assert catalog_interface.get_count_of_controls(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
 
-    merged = gens.generate_sample_model(cat.Catalog)
-    merged.controls = []
-    new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
-    catalog_interface = CatalogInterface(new_merged)
-    assert catalog_interface.get_count_of_controls(True) == 5
+    # add part to first control and merge, then make sure it is there
+    part = com.Part(name='foo', title='added part')
+    control_id = sample_catalog_rich_controls.controls[0].id
+    cat_with_added_part = copy.deepcopy(sample_catalog_rich_controls)
+    cat_with_added_part.controls[0].parts.append(part)
+    final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
+    catalog_interface = CatalogInterface(final_merged)
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
+    assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
+    # add part to first control and merge but with use-first.  The part should not be there at end.
+    method = prof.Method.use_first
+    combine = prof.Combine(method=method)
+    profile.merge = prof.Merge(combine=combine)
+    merge = ProfileResolver.Merge(profile)
+    final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
+    catalog_interface = CatalogInterface(final_merged)
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
+    assert len(catalog_interface.get_control(control_id).parts) == 1
 
-def test_profile_resolver_failures() -> None:
-    """Test failure modes of profile resolver."""
-    profile = gens.generate_sample_model(prof.Profile)
-    modify = ProfileResolver.Modify(profile)
-    control = gens.generate_sample_model(cat.Control)
-    # this should not cause error
-    add = prof.Add()
-    with pytest.raises(TrestleError):
-        modify._add_to_control(add, control)
-    add.parts = []
-    with pytest.raises(TrestleError):
-        modify._add_to_control(add, control)
-    add.position = prof.Position.before
-    with pytest.raises(TrestleError):
-        modify._add_to_control(add, control)
+    # now force a merge with keep
+    profile.merge = None
+    merge_keep = ProfileResolver.Merge(profile)
+    merged_keep = merge_keep._merge_catalog(new_merged, sample_catalog_rich_controls)
+    assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 10
 
 
 @pytest.mark.parametrize(
@@ -191,24 +191,99 @@ def test_profile_resolver_failures() -> None:
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
-    assert ProfileResolver.Modify._replace_id_with_text(prose, param_id, param_text) == result
+    param_dict = {param_id: param_text}
+    assert ProfileResolver.Modify._replace_id_with_text(prose, param_dict) == result
 
 
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
-    control = gens.generate_sample_model(cat.Control)
     id_1 = 'ac-2_smt.1'
     id_10 = 'ac-2_smt.10'
-    param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.'
-    param_raw_dict = {id_1: 'the cat', id_10: 'well fed'}
-    param_value_1 = com.ParameterValue(__root__=param_raw_dict[id_1])
-    param_value_10 = com.ParameterValue(__root__=param_raw_dict[id_10])
-    # the SetParameters would come from the profile and modify control contents via moustaches
-    set_param_1 = prof.SetParameter(param_id=id_1, values=[param_value_1])
-    set_param_10 = prof.SetParameter(param_id=id_10, values=[param_value_10])
-    param_dict = {id_1: set_param_1, id_10: set_param_10}
-    param_1 = com.Parameter(id=id_1, values=[param_value_1])
-    param_10 = com.Parameter(id=id_10, values=[param_value_10])
-    control.params = [param_1, param_10]
-    new_text = ProfileResolver.Modify._replace_params(param_text, control, param_dict)
-    assert new_text == 'Make sure that the cat is very well fed today.'
+    param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
+    param_dict = {id_1: 'the cat', id_10: 'well fed'}
+    new_text = ProfileResolver.Modify._replace_params(param_text, param_dict)
+    assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
+
+
+def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test whether expected order of operations is preserved for parameter substution."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_e_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_e', prof.Profile, fs.FileContentType.JSON)
+    profile_e_parameter_string = '## Override value ##'
+    profile_a_value = 'all alert personell'
+
+    # based on 800-53 rev 5
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_e_path)
+    interface = CatalogInterface(cat)
+    control = interface.get_control('ac-1')
+    locations = interface.find_string_in_control(control, profile_e_parameter_string)
+    locations_a = interface.find_string_in_control(control, profile_a_value)
+    assert len(locations) == 1
+    assert len(locations_a) == 0
+    assert len(control.params[1].constraints) == 1
+
+
+def test_merge_params() -> None:
+    """Test the merge of params."""
+    params: List[com.Parameter] = test_utils.generate_param_list('foo', 2)
+    params[0].remarks = None
+    profile = gens.generate_sample_model(prof.Profile)
+    merge = ProfileResolver.Merge(profile)
+    merge._merge_params(params[0], params[1])
+    assert params[0]
+    assert len(params[0].constraints) == 2
+    assert len(params[0].guidelines) == 2
+    assert len(params[0].props) == 2
+    # confirm that in the merge, the source remark overwrote the dest remark because it was None
+    assert params[0].remarks == params[1].remarks
+
+
+def test_merge_two_catalogs() -> None:
+    """Test the merge of two complex catalogs."""
+    cat_1 = test_utils.generate_complex_catalog('foo')
+    cat_2 = test_utils.generate_complex_catalog('bar')
+    method = prof.Method.merge
+    combine = prof.Combine(method=method)
+    profile = gens.generate_sample_model(prof.Profile)
+    profile.merge = prof.Merge(combine=combine)
+    merge = ProfileResolver.Merge(profile)
+    merge._merge_two_catalogs(cat_1, cat_2, method, True)
+    assert cat_1
+    assert len(cat_1.controls) == 8
+    assert len(cat_1.groups) == 4
+    assert len(cat_1.params) == 6
+
+
+def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test all types of property additions."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_f_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_f', prof.Profile, fs.FileContentType.JSON)
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_f_path)
+    interface = CatalogInterface(cat)
+    ac_3 = interface.get_control('ac-3')
+
+    assert len(ac_3.props) == 6
+    assert ac_3.props[-1].value == 'four'
+
+    for part in ac_3.parts:
+        if part.id == 'ac-3_stmt':
+            assert len(part.props) == 4
+
+    ac_5 = interface.get_control('ac-5')
+    for part in ac_5.parts:
+        if part.id == 'ac-5_stmt':
+            for sub_part in part.parts:
+                if sub_part.id == 'ac-5_smt.a':
+                    assert len(sub_part.props) == 4
+
+
+def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
+    """
+    Test for property addition behavior with before or after.
+
+    Properties added with before or after will default to starting or ending.
+    """
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
+    _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)

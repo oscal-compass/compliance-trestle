@@ -229,6 +229,8 @@ class ControlIOWriter():
                                 continue
                             if not did_write_part:
                                 self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
+                                # insert extra line to make mdformat happy
+                                self._md_file._add_line_raw('')
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
@@ -288,6 +290,9 @@ class ControlIOWriter():
         self._md_file.new_line(
             '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
         )
+        # next is to make mdformat happy
+        self._md_file._add_line_raw('')
+
         for add in adds:
             name, prose = add
             self._md_file.new_header(level=2, title=f'Control {name}')
@@ -318,8 +323,13 @@ class ControlIOWriter():
                 elif isinstance(dest[key], list):
                     # grow dest list for the key by adding new items from src
                     if isinstance(src[key], list):
-                        missing = set(src[key]) - set(dest[key])
-                        dest[key].extend(missing)
+                        try:
+                            # Simple types (e.g. lists of strings) will get merged neatly
+                            missing = set(src[key]) - set(dest[key])
+                            dest[key].extend(missing)
+                        except TypeError:
+                            # This is a complex type - use simplistic safe behaviour
+                            logger.debug('Ignoring complex types within lists when merging dictionaries.')
                     else:
                         if src[key] not in dest[key]:
                             dest[key].append(src[key])

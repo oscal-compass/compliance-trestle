@@ -137,6 +137,19 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert not header
 
 
+def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
+    """
+    Test the ssp generator fails if 'statement' is provided.
+
+    Also checking code where not label is provided.
+    """
+    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir)
+    args.sections = 'statement'
+    ssp_cmd = SSPGenerate()
+    # run the command for happy path
+    assert ssp_cmd._run(args) > 0
+
+
 @pytest.mark.parametrize('yaml_header', [False, True])
 def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
@@ -220,7 +233,7 @@ def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'

@@ -414,3 +414,19 @@ def test_import_from_nist(tmp_trestle_dir: pathlib.Path) -> None:
     )
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
+
+
+def test_import_load_profile(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test load of profile and contents."""
+    external_prof_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_e.json'
+    read_profile: Profile = Profile.oscal_read(external_prof_path)
+    assert len(read_profile.modify.set_parameters[1].constraints) == 1
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(external_prof_path), output='my_prof', verbose=True, regenerate=False
+    )
+    i = importcmd.ImportCmd()
+    assert i._run(args) == 0
+
+    loaded_profile, _ = fs.load_top_level_model(tmp_trestle_dir, 'my_prof', Profile)
+    assert len(loaded_profile.modify.set_parameters[1].constraints) == 1

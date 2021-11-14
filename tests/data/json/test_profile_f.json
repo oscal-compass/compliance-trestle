@@ -1,0 +1,127 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000001",
+    "metadata": {
+      "title": "test profile f",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://profiles/test_profile_b/profile.json",
+        "include-all": {}
+      }
+    ],
+    "modify": {
+      "alters": [
+        {
+          "control-id": "ac-3",
+          "adds": [
+            {
+              "position": "starting",
+              "props": [
+                {
+                  "name": "test_prop",
+                  "value": "one"
+                },
+                {
+                  "name": "test_two",
+                  "value": "two"
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "props": [
+                {
+                  "name": "test_three",
+                  "value": "three"
+                },
+                {
+                  "name": "test_four",
+                  "value": "four"
+                }
+              ]
+            },
+            {
+              "position": "starting",
+              "by-id": "ac-3_smt",
+              "props": [
+                {
+                  "name": "test_prop",
+                  "value": "one"
+                },
+                {
+                  "name": "test_two",
+                  "value": "two"
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "by-id": "ac-3_smt",
+              "props": [
+                {
+                  "name": "test_three",
+                  "value": "three"
+                },
+                {
+                  "name": "test_four",
+                  "value": "four"
+                }
+              ]
+            }                    
+          ]
+        },
+        {
+          "control-id": "ac-5",
+          "adds": [
+            {
+              "position": "starting",
+              "by-id": "ac-5_smt.a",
+              "props": [
+                {
+                  "name": "test_prop",
+                  "value": "one"
+                },
+                {
+                  "name": "test_two",
+                  "value": "two"
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "by-id": "ac-5_smt.a",
+              "props": [
+                {
+                  "name": "test_three",
+                  "value": "three"
+                },
+                {
+                  "name": "test_four",
+                  "value": "four"
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "by-id": "ac-5_gdn",
+              "props": [
+                {
+                  "name": "test_epty",
+                  "value": "one"
+                },
+                {
+                  "name": "test_epty_2",
+                  "value": "two"
+                }
+              ]              
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
