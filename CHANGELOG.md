@@ -3,6 +3,25 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.0 (2021-11-14)
+### Feature
+* Add ability to use different versions of templates ([#837](https://github.com/IBM/compliance-trestle/issues/837)) ([`c6d3618`](https://github.com/IBM/compliance-trestle/commit/c6d3618f13e6dc945413867a8d102cd3a7c3c211))
+* Facilitate improved performance within Tanium transformer. ([#835](https://github.com/IBM/compliance-trestle/issues/835)) ([`4d2ded4`](https://github.com/IBM/compliance-trestle/commit/4d2ded49d314f6e632f531b08a58bc66d53d8997))
+* Significant json (de)serialisation performance improvements. ([#841](https://github.com/IBM/compliance-trestle/issues/841)) ([`d6f3cb1`](https://github.com/IBM/compliance-trestle/commit/d6f3cb1ab8113c997d463d832aa8c8b721faffd2))
+* Add yaml header output for profile and catalog generate ([#833](https://github.com/IBM/compliance-trestle/issues/833)) ([`50093f0`](https://github.com/IBM/compliance-trestle/commit/50093f075615fe25bb6e25b16ff5d98fb0a308f9))
+* Add ability to write modified drawio files ([#813](https://github.com/IBM/compliance-trestle/issues/813)) ([`ea814bf`](https://github.com/IBM/compliance-trestle/commit/ea814bfdcfb8e75e2812e182ec09b009e693312a))
+* Build-component-definition ([#788](https://github.com/IBM/compliance-trestle/issues/788)) ([`9f7b1fe`](https://github.com/IBM/compliance-trestle/commit/9f7b1fec0efc017698ceef4c6bf77c132626ec93))
+* Ssp filter allows filter of ssp based on profile ([#805](https://github.com/IBM/compliance-trestle/issues/805)) ([`494ba1b`](https://github.com/IBM/compliance-trestle/commit/494ba1b9a749c44657365f45fc88a8c4aa94ed73))
+* Add centralised markdown API ([#797](https://github.com/IBM/compliance-trestle/issues/797)) ([`8582516`](https://github.com/IBM/compliance-trestle/commit/8582516f59a8258b513312185b8efdd4cb7a001e))
+
+### Fix
+* Preliminary fix for parameters where 'set parameter' is called an a value does not exist. ([#823](https://github.com/IBM/compliance-trestle/issues/823)) ([`d20f2b9`](https://github.com/IBM/compliance-trestle/commit/d20f2b9e6ca10c4fa829bb723d68ea3d06902cd0))
+* Merge yaml header content when writing control ([#825](https://github.com/IBM/compliance-trestle/issues/825)) ([`8d0b3b0`](https://github.com/IBM/compliance-trestle/commit/8d0b3b0f3a6c5e3a47a42b46b77081a700947d6b))
+* All Alter/Add of prop by_id ([#821](https://github.com/IBM/compliance-trestle/issues/821)) ([`a9047a8`](https://github.com/IBM/compliance-trestle/commit/a9047a83e0b0c64c34448f776a7e13fff77e6b2a))
+* Ssp generate with alter props issue ([#819](https://github.com/IBM/compliance-trestle/issues/819)) ([`a1e4219`](https://github.com/IBM/compliance-trestle/commit/a1e421944ce11432b2b2832b8f669b65428f1b38))
+* Allow markdown substitutions ([#812](https://github.com/IBM/compliance-trestle/issues/812)) ([`8d52d3e`](https://github.com/IBM/compliance-trestle/commit/8d52d3eb4aaa0a73685983114ffa38c494b9fec4))
+* Handle hard line breaks ([#804](https://github.com/IBM/compliance-trestle/issues/804)) ([`b1e39c1`](https://github.com/IBM/compliance-trestle/commit/b1e39c1173b235a87981a2856081cd54aeac86e3))
+
 ## v0.26.0 (2021-10-20)
 ### Feature
 * Add exclusion flags to trestle author header validate to allow practical use without a task name. ([#793](https://github.com/IBM/compliance-trestle/issues/793)) ([`d77408f`](https://github.com/IBM/compliance-trestle/commit/d77408f39e914bff3dfc20ecf91e3a982a49bf4e))
