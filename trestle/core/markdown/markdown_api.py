@@ -22,6 +22,8 @@ from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
+import yaml
+
 logger = logging.getLogger(__name__)
 
 
@@ -66,3 +68,16 @@ class MarkdownAPI:
             raise TrestleError('Markdown validator is not initialized, load template first.')
         instance_header, instance_tree = self.processor.process_markdown(md_instance_path)
         return self.validator.is_valid_against_template(md_instance_path, instance_header, instance_tree)
+
+    # TODO-Ekat place all markdown writer functionality to one place
+    def write_markdown_with_header(self, path, header, md_body) -> None:
+        """Write markdown with the YAML header."""
+        try:
+            with open(path, 'w') as md_file:
+                md_file.write('---\n')
+                yaml.safe_dump(header, md_file, sort_keys=False)
+                md_file.write('---\n\n')
+                md_file.write(md_body)
+        except IOError as e:
+            logger.error(f'Error while writing markdown file: {e}')
+            raise TrestleError(f'Error while writing markdown file: {e}')

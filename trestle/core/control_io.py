@@ -26,10 +26,10 @@ from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.markdown.md_writer import MDWriter
 from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
-from trestle.utils.md_writer import MDWriter
 
 logger = logging.getLogger(__name__)
 
