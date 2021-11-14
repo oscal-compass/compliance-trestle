@@ -150,6 +150,18 @@ By default `author docs` only indexes a flat directory. The recursive option all
 
 Turns off the validation of the structure of the document and only validates the yaml header structure.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author folders`
 
 \`author folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
@@ -197,6 +209,18 @@ Validate the headers in markdown and metadata in drawio files.
 
 Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author headers`
 
 Trestle author headers supports a different usecase that of `docs` and `folders` above: Some content is governed, however, it the content is non-standardized.
@@ -233,16 +257,34 @@ If `--task-name` is not provided all folders in the repository will be measured.
 
 Primarily intended for use with global (`-g`), exclude will remove any _directory_ from the search scope of trestle author headers. Must be a relative path to the root of a trestle project, however, can be multiple levels deep (e.g. `--exclude=architecture/drafts`) would allow content in `architecture/diagrams` to still be indexed to find the header.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author catalog-generate` and `trestle author catalog-assemble`
 
 The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
-## `treatle author profile-generate` and `trestle author profile-assemble`
+## `trestle author profile-generate` and `trestle author profile-assemble`
 
 The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
 ## `trestle author ssp-generate` and `trestle author ssp-assemble`
 
 The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` can then assemble the markdown files into a single json SSP file.
+
+For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
+## `trestle author ssp-filter`
+
+The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile.  The SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.
 
 For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).

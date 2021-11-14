@@ -19,6 +19,7 @@ from typing import Dict, Iterator, List, Optional, Tuple
 
 from pydantic import BaseModel
 
+import trestle.core.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
@@ -66,7 +67,18 @@ class CatalogInterface():
     def __init__(self, catalog: Optional[cat.Catalog] = None) -> None:
         """Initialize the interface with the catalog."""
         self._catalog = catalog
+        self._param_dict: Dict[str, str] = {}
         self._control_dict = self._create_control_dict() if catalog else None
+
+    def _add_params_to_dict(self, control: cat.Control) -> None:
+        # this does not need to recurse because it is called for each control in the catalog
+        if control.params is not None:
+            for param in control.params:
+                if param.id in self._param_dict:
+                    logger.warning(
+                        f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
+                    )
+                self._param_dict[param.id] = control.id
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
@@ -125,15 +137,21 @@ class CatalogInterface():
                 self._add_group_controls(group, control_dict, [])
         # now add controls not in a group, if any
         if self._catalog.controls is not None:
-            group_path = ['catalog']
+            group_path = [const.MODEL_TYPE_CATALOG]
             for control in self._catalog.controls:
                 new_path = group_path[:]
                 new_path.append(control.id)
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id='catalog', group_title='catalog', group_class='catalog', control=control, path=new_path
+                    group_id=const.MODEL_TYPE_CATALOG,
+                    group_title=const.MODEL_TYPE_CATALOG,
+                    group_class=const.MODEL_TYPE_CATALOG,
+                    control=control,
+                    path=new_path
                 )
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, new_path)
+        for handle in control_dict.values():
+            self._add_params_to_dict(handle.control)
         return control_dict
 
     def _get_all_controls_in_list(self, controls: List[cat.Control], recurse: bool) -> List[cat.Control]:
@@ -168,17 +186,23 @@ class CatalogInterface():
         """Get all control ids in catalog using the dict."""
         return self._control_dict.keys()
 
-    def get_control(self, control_id: str) -> cat.Control:
+    def get_control(self, control_id: str) -> Optional[cat.Control]:
         """Get control from catalog with this id using the dict."""
-        return self._control_dict[control_id].control
+        return None if control_id not in self._control_dict else self._control_dict[control_id].control
+
+    def get_control_by_param_id(self, param_id: str) -> Optional[cat.Control]:
+        """Get control from catalog that has this param id using the dict."""
+        if param_id in self._param_dict:
+            return self.get_control(self._param_dict[param_id])
+        return None
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """Get the prose for a named part in the control."""
         control = self.get_control(control_id)
         return ControlIOWriter.get_part_prose(control, part_name)
 
-    def get_all_controls(self, recurse: bool) -> Iterator[cat.Control]:
-        """Yield all deep and individual controls from the catalog by group."""
+    def get_all_controls_from_catalog(self, recurse: bool) -> Iterator[cat.Control]:
+        """Yield all deep and individual controls from the actual catalog by group."""
         if self._catalog.groups:
             for group in self._catalog.groups:
                 controls = self._get_all_controls_in_group(group, recurse)
@@ -189,12 +213,20 @@ class CatalogInterface():
             for control in cat_controls:
                 yield control
 
-    def get_count_of_controls(self, recurse: bool) -> int:
-        """Find number of controls in the catalog with or without recursion."""
-        return len(list(self.get_all_controls(recurse)))
+    def get_all_controls_from_dict(self) -> Iterator[cat.Control]:
+        """Yield individual controls from the dict."""
+        return [handle.control for handle in self._control_dict.values()]
+
+    def get_count_of_controls_in_dict(self) -> int:
+        """Find number of controls in the dict."""
+        return len(self._control_dict.keys())
+
+    def get_count_of_controls_in_catalog(self, recurse: bool) -> int:
+        """Get count of controls from the actual catalog."""
+        return len(list(self.get_all_controls_from_catalog(recurse)))
 
     def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
-        """Get the group_id, title, class for this control."""
+        """Get the group_id, title, class for this control from the dict."""
         return (
             self._control_dict[control_id].group_id,
             self._control_dict[control_id].group_title,
@@ -209,16 +241,22 @@ class CatalogInterface():
         """Replace the control in the control_dict after modifying it."""
         self._control_dict[control.id].control = control
 
+    def get_catalog(self, update=True) -> cat.Catalog:
+        """Safe method to get catalog after forced update from catalog dict."""
+        if update:
+            self.update_catalog_controls()
+        return self._catalog
+
     def _update_all_controls_in_list(self, controls: List[cat.Control]) -> List[cat.Control]:
         """Given a list of controls, create fresh list pulled from the control dict."""
         new_list: List[cat.Control] = []
         for control in controls:
-            # first update the control itself
+            # first update the control itself by getting it from the dict
             control = self.get_control(control.id)
-            # then update any controls it contains
+            # then update any controls it contains from the dict
             if control.controls:
                 control.controls = self._update_all_controls_in_list(control.controls)
-            new_list.append(self.get_control(control.id))
+            new_list.append(control)
         return new_list
 
     def _update_all_controls_in_group(self, group: cat.Group) -> None:
@@ -233,7 +271,7 @@ class CatalogInterface():
             group.groups = new_groups
 
     def update_catalog_controls(self) -> None:
-        """Update the catalog by pulling fresh controls from the dict."""
+        """Update the actual catalog by pulling fresh controls from the dict."""
         if self._catalog.groups:
             for group in self._catalog.groups:
                 self._update_all_controls_in_group(group)
@@ -274,9 +312,9 @@ class CatalogInterface():
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
         # write out the controls
-        for control in catalog_interface.get_all_controls(True):
+        for control in catalog_interface.get_all_controls_from_catalog(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            group_dir = md_path if group_id == 'catalog' else md_path / group_id
+            group_dir = md_path if group_id == const.MODEL_TYPE_CATALOG else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             writer.write_control(
@@ -402,11 +440,10 @@ class CatalogInterface():
     def equivalent_to(self, catalog: cat.Catalog) -> bool:
         """Test equivalence of catalog dict contents in various ways."""
         other = CatalogInterface(catalog)
-        recurse = True
-        if other.get_count_of_controls(recurse) != self.get_count_of_controls(recurse):
+        if other.get_count_of_controls_in_dict() != self.get_count_of_controls_in_dict():
             logging.error('count of controls is different')
             return False
-        for a in self.get_all_controls(recurse):
+        for a in self.get_all_controls_from_dict():
             try:
                 b = other.get_control(a.id)
             except Exception as e:

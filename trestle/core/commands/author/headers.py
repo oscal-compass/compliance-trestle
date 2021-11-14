@@ -17,17 +17,16 @@
 import argparse
 import logging
 import pathlib
-import shutil
-from typing import Dict, List
-
-from pkg_resources import resource_filename
+from typing import List
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.draw_io import DrawIOMetadataValidator
-from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
+from trestle.core.err import TrestleError
+from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +62,12 @@ class Headers(AuthorCommonCommand):
             help=author_const.README_VALIDATE_HELP,
             action='store_true'
         )
+        self.add_argument(
+            author_const.SHORT_TEMPLATE_VERSION,
+            author_const.LONG_TEMPLATE_VERSION,
+            help=author_const.TEMPLATE_VERSION_HELP,
+            action='store'
+        )
 
         self.add_argument(
             author_const.GLOBAL_SHORT, author_const.GLOBAL_LONG, help=author_const.GLOBAL_HELP, action='store_true'
@@ -77,33 +82,38 @@ class Headers(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        if self._initialize(args):
-            return 1
-        status = 1
-        # Handle conditional requirement of args.task_name
-        # global is special so we need to use get attribute.
-        if not self.global_ and not self.task_name:
-            logger.warning('Task name (-tn) argument is required when global is not specified')
-            return status
-
         try:
+            status = 1
+            if self._initialize(args):
+                return status
+            # Handle conditional requirement of args.task_name
+            # global is special so we need to use get attribute.
+            if not self.global_ and not self.task_name:
+                logger.warning('Task name (-tn) argument is required when global is not specified')
+                return status
+
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
                 status = self.template_validate()
             elif args.mode == 'setup':
-                status = self.setup()
+                status = self.setup(args.template_version)
             elif args.mode == 'validate':
                 exclusions = []
                 if args.exclude:
                     exclusions = args.exclude
                 # mode is validate
-                status = self.validate(args.recurse, args.readme_validate, exclusions)
-        except Exception as e:
-            logger.error(f'Error "{e}"" occurred when running trestle author docs.')
+                status = self.validate(args.recurse, args.readme_validate, exclusions, args.template_version)
+            return status
+        except TrestleError as e:
+            logger.error(f'Error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
-        return status
+            return 1
+        except Exception as e:
+            logger.error(f'Unexpected error occurred when running trestle author headers: {e}')
+            logger.error('Exiting')
+            return 1
 
     def create_sample(self) -> int:
         """Create sample object, this always defaults to markdown."""
@@ -111,7 +121,7 @@ class Headers(AuthorCommonCommand):
         logger.info('Exiting')
         return 0
 
-    def setup(self) -> int:
+    def setup(self, template_version: str) -> int:
         """Create template directory and templates."""
         # Step 1 - validation
 
@@ -124,9 +134,9 @@ class Headers(AuthorCommonCommand):
             self.template_dir.mkdir(exist_ok=True, parents=True)
         logger.info(f'Populating template files to {self.rel_dir(self.template_dir)}')
         for template in author_const.REFERENCE_TEMPLATES.values():
-            template_path = pathlib.Path(resource_filename('trestle.resources', template)).resolve()
             destination_path = self.template_dir / template
-            shutil.copy(template_path, destination_path)
+            TemplateVersioning.write_versioned_template(template, self.template_dir, destination_path, template_version)
+
             logger.info(f'Template directory populated {self.rel_dir(destination_path)}')
         return 0
 
@@ -141,7 +151,8 @@ class Headers(AuthorCommonCommand):
                 return 1
             if template_file.suffix == '.md':
                 try:
-                    _ = MarkdownValidator(template_file, True, True)
+                    md_api = MarkdownAPI()
+                    md_api.load_validator_with_template(template_file, True, False)
                 except Exception as ex:
                     logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
                     return 1
@@ -154,58 +165,113 @@ class Headers(AuthorCommonCommand):
         logger.info('Templates validated')
         return 0
 
-    def _discover_templates(self) -> Dict[str, pathlib.Path]:
-        """Based on an initial known set of templates."""
-        # Hardcoded list of supported types
-        new_templates: Dict[str, pathlib.Path] = {}
-        for template_name, template_fname in author_const.REFERENCE_TEMPLATES.items():
-            template_path = self.template_dir / template_fname
-            if template_path.exists() and template_path.is_file():
-                new_templates[template_name] = template_path
-        return new_templates
-
     def _validate_dir(
         self,
-        template_lut: Dict[str, pathlib.Path],
         candidate_dir: pathlib.Path,
         recurse: bool,
         readme_validate: bool,
-        relative_excludes: List[pathlib.Path]
+        relative_exclusions: List[pathlib.Path],
+        template_version: str
     ) -> bool:
         """Validate a directory within the trestle project."""
-        for candidate_path in candidate_dir.iterdir():
-            if fs.local_and_visible(candidate_path):
-                if candidate_path.is_file():
-                    clean_suffix = candidate_path.suffix.lstrip('.')
-                    if clean_suffix == 'md':
-                        logger.info(f'Validating: {self.rel_dir(candidate_path)}')
-                        md_validator = MarkdownValidator(template_lut['md'], True, True)
-                        validate_status = md_validator.validate(candidate_path)
-                        if not validate_status:
-                            logger.info(f'Invalid: {self.rel_dir(candidate_path)}')
-                            return False
-                        logger.info(f'Valid: {self.rel_dir(candidate_path)}')
-                    elif clean_suffix == 'drawio':
-                        logger.info(f'Validating: {self.rel_dir(candidate_path)}')
-                        drawio_validator = DrawIOMetadataValidator(template_lut['drawio'])
-                        validate_status = drawio_validator.validate(candidate_path)
-                        if not validate_status:
-                            logger.info(f'Invalid: {self.rel_dir(candidate_path)}')
-                            return False
-                        logger.info(f'Valid: {self.rel_dir(candidate_path)}')
+        all_versioned_templates = {}
+        instance_version = template_version
+        instance_file_names: List[pathlib.Path] = []
+        # Fetch all instances versions and build dictionary of required template files
+        for instance_file in candidate_dir.rglob('*'):
+            if not fs.local_and_visible(instance_file):
+                continue
+            if instance_file.name.lower() == 'readme.md' and not readme_validate:
+                continue
+            if instance_file.is_dir() and not recurse:
+                continue
+            if any(str(ex) in str(instance_file) for ex in relative_exclusions):
+                continue
+            instance_file_name = instance_file.relative_to(candidate_dir)
+            instance_file_names.append(instance_file_name)
+            if instance_file.suffix == '.md':
+                md_api = MarkdownAPI()
+                versioned_template_dir = None
+                if template_version != '':
+                    versioned_template_dir = self.template_dir
+                else:
+                    instance_version = md_api.processor.fetch_value_from_header(
+                        instance_file, author_const.TEMPLATE_VERSION_HEADER
+                    )
+                    if instance_version is None:
+                        instance_version = '0.0.1'  # backward compatibility
+                    versioned_template_dir = TemplateVersioning.get_versioned_template_dir(
+                        self.template_dir, instance_version
+                    )
+
+                if instance_version not in all_versioned_templates.keys():
+                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
+                    if not readme_validate:
+                        templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
+                    all_versioned_templates[instance_version] = {}
+                    all_versioned_templates[instance_version]['drawio'] = list(
+                        filter(lambda p: p.suffix == '.drawio', templates)
+                    )[0]
+                    all_versioned_templates[instance_version]['md'] = list(
+                        filter(lambda p: p.suffix == '.md', templates)
+                    )[0]
+
+                # validate
+                md_api.load_validator_with_template(all_versioned_templates[instance_version]['md'], True, False)
+                status = md_api.validate_instance(instance_file)
+                if not status:
+                    logger.info(f'INVALID: {self.rel_dir(instance_file)}')
+                    return False
+                else:
+                    logger.info(f'VALID: {self.rel_dir(instance_file)}')
+
+            elif instance_file.suffix == '.drawio':
+                drawio = DrawIO(instance_file)
+                metadata = drawio.get_metadata()[0]
+
+                versioned_template_dir = None
+                if template_version != '':
+                    versioned_template_dir = self.template_dir
+                else:
+                    if author_const.TEMPLATE_VERSION_HEADER in metadata.keys():
+                        instance_version = metadata[author_const.TEMPLATE_VERSION_HEADER]
                     else:
-                        logger.info(f'Unsupported file {self.rel_dir(candidate_path)} ignored.')
-                elif recurse:
-                    if candidate_path.relative_to(self.trestle_root) in relative_excludes:
-                        continue
-                    if not self._validate_dir(template_lut, candidate_path, recurse, readme_validate,
-                                              relative_excludes):
-                        return False
+                        instance_version = '0.0.1'  # backward compatibility
+
+                    versioned_template_dir = TemplateVersioning.get_versioned_template_dir(
+                        self.template_dir, instance_version
+                    )
+
+                if instance_version not in all_versioned_templates.keys():
+                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
+                    if not readme_validate:
+                        templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
+                    all_versioned_templates[instance_version] = {}
+                    all_versioned_templates[instance_version]['drawio'] = list(
+                        filter(lambda p: p.suffix == '.drawio', templates)
+                    )[0]
+                    all_versioned_templates[instance_version]['md'] = list(
+                        filter(lambda p: p.suffix == '.md', templates)
+                    )[0]
+
+                # validate
+                drawio_validator = DrawIOMetadataValidator(all_versioned_templates[instance_version]['drawio'])
+                status = drawio_validator.validate(instance_file)
+                if not status:
+                    logger.info(f'INVALID: {self.rel_dir(instance_file)}')
+                    return False
+                else:
+                    logger.info(f'VALID: {self.rel_dir(instance_file)}')
+
+            else:
+                logger.debug(f'Unsupported extension of the instance file: {instance_file}, will not be validated.')
+
         return True
 
-    def validate(self, recurse: bool, readme_validate: bool, relative_excludes: List[pathlib.Path]) -> int:
+    def validate(
+        self, recurse: bool, readme_validate: bool, relative_excludes: List[pathlib.Path], template_version: str
+    ) -> int:
         """Run validation based on available templates."""
-        template_lut = self._discover_templates()
         paths = []
         if self.task_name:
             if not self.task_path.is_dir():
@@ -229,7 +295,7 @@ class Headers(AuthorCommonCommand):
 
         for path in paths:
             try:
-                valid = self._validate_dir(template_lut, path, recurse, readme_validate, relative_excludes)
+                valid = self._validate_dir(path, recurse, readme_validate, relative_excludes, template_version)
                 if not valid:
                     logger.info(f'validation failed on {path}')
                     return 1

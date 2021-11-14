@@ -1,0 +1,155 @@
+{
+  "kubelet_eviction_thresholds_set_soft_memory_available": {
+    "name": "var_kubelet_evictionsoft_memory_available",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictionSoft Memory Avilable",
+    "description": "Memory Available for the EvictionSoft threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "500Mi"
+    }
+  },
+  "kubelet_eviction_thresholds_set_soft_nodefs_available": {
+    "name": "var_kubelet_evictionsoft_nodefs_available",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictionSoft NodeFS Available",
+    "description": "Node FS Available for the EvictionSoft threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "10%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_soft_nodefs_inodesfree": {
+    "name": "var_kubelet_evictionsoft_nodefs_inodesfree",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictionSoft Node FS inodes Free",
+    "description": "Node FS inodes Free for the EvictionSoft threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "5%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_soft_imagefs_available": {
+    "name": "var_kubelet_evictionsoft_imagefs_available",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictionSoft Image FS Avilable",
+    "description": "Image FS Available for the EvictionSoft threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "15%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_soft_imagefs_inodesfree": {
+    "name": "var_kubelet_evictionsoft_imagefs_inodesfree",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictionSoft Image FS inodes Free",
+    "description": "Image FS inodes Free for the EvictionSoft threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "10%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_hard_memory_available": {
+    "name": "var_kubelet_evictionhard_memory_available",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictonHard Memory Avilable",
+    "description": "Memory Available for the EvictonHard threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "200Mi"
+    }
+  },
+  "kubelet_eviction_thresholds_set_hard_nodefs_available": {
+    "name": "var_kubelet_evictionhard_nodefs_available",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictonHard NodeFS Available",
+    "description": "Node FS Available for the EvictonHard threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "5%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_hard_nodefs_inodesfree": {
+    "name": "var_kubelet_evictionhard_nodefs_inodesfree",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictonHard Node FS inodes Free",
+    "description": "Node FS inodes Free for the EvictonHard threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "4%",
+      "4pc": "4%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_hard_imagefs_available": {
+    "name": "var_kubelet_evictionhard_imagefs_available",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictonHard Image FS Avilable",
+    "description": "Image FS Available for the EvictonHard threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "10%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  },
+  "kubelet_eviction_thresholds_set_hard_imagefs_inodesfree": {
+    "name": "var_kubelet_evictionhard_imagefs_inodesfree",
+    "documentation_complete": true,
+    "title": "Configure Kubelet EvictonHard Image FS inodes Free",
+    "description": "Image FS inodes Free for the EvictonHard threshold to trigger.",
+    "type": "string",
+    "operator": "equals",
+    "interactive": false,
+    "options": {
+      "default": "5%",
+      "5pc": "5%",
+      "10pc": "10%",
+      "15pc": "15%",
+      "20pc": "20%"
+    }
+  }
+}

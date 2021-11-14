@@ -1,0 +1,91 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "metadata": {
+      "title": "Corrupt Profile with missing reference ID",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/nist_cat/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set_parameters": [
+        {
+          "param_id": "ac-1_prm_1",
+            "values": [
+              "all personell"
+            ]
+        },
+        {  "param_id": "ac-1_prm_2",
+            "values": [
+              "A thorough"
+            ]
+        },
+        {  "param_id": "ac-1_prm_3",
+            "values": [
+              "officer"
+            ]
+        }
+      ],
+      "alters": [
+        {
+          "control_id": "ac-1",
+          "adds": [
+            {
+              "props": [
+                {
+                  "name": "foo",
+                  "value": "bar",
+                  "remarks": "good stuff"
+                }
+              ]
+            },
+            {
+              "by_id": "ac-1_prm_2",
+              "props": [
+                {
+                  "name": "foo",
+                  "value": "bar",
+                  "remarks": "good stuff"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "control_id": "ac-1",
+          "adds": [
+            {
+              "position": "after",
+              "by_id" : "ac-1_smt",
+              "parts": [
+                {
+                  "id": "ac-1_implgdn",
+                  "name": "ImplGuidance",
+                  "prose": "Maintain compliance"
+                },
+                {
+                  "id": "ac-1_expevid",
+                  "name": "ExpectedEvidence",
+                  "prose": "Daily logs."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

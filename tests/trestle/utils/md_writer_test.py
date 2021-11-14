@@ -15,7 +15,7 @@
 
 import pathlib
 
-from trestle.utils.md_writer import MDWriter
+from trestle.core.markdown.md_writer import MDWriter
 
 
 def test_md_writer(tmp_path: pathlib.Path) -> None:

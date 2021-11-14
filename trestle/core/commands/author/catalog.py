@@ -18,11 +18,15 @@ import logging
 import pathlib
 import shutil
 
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
+
+import trestle.core.const as const
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.err import TrestleError
+from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -36,10 +40,8 @@ class CatalogGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the catalog model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        output_help_str = 'Name of the output generated catalog markdown folder'
-        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
+        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -48,20 +50,33 @@ class CatalogGenerate(AuthorCommonCommand):
             logger.warning(f'{args.output} is not an allowed directory name')
             return 1
 
+        yaml_header: dict = {}
+        if 'yaml_header' in args and args.yaml_header is not None:
+            try:
+                logging.debug(f'Loading yaml header file {args.yaml_header}')
+                yaml = YAML(typ='safe')
+                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+            except YAMLError as e:
+                logging.warning(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
+                return 1
+
         catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
 
         markdown_path = trestle_root / args.output
 
-        return self.generate_markdown(trestle_root, catalog_path, markdown_path)
+        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header)
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path
+        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path, yaml_header: dict
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, {}, None, False)
+            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False)
+        except TrestleNotFoundError as e:
+            logger.warning(f'Catalog {catalog_path} not found for load {e}')
+            return 1
         except Exception as e:
             raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
         return 0
@@ -77,14 +92,11 @@ class CatalogAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Catalog'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        verbose_help_str = 'Display verbose output'
-        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
-        CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
-        return 0
+        return CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
 
     @staticmethod
     def assemble_catalog(trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
@@ -101,17 +113,20 @@ class CatalogAssemble(AuthorCommonCommand):
 
         """
         md_dir = trestle_root / md_name
+        if not md_dir.exists():
+            logger.warning(f'Markdown directory {md_name} does not exist.')
+            return 1
         catalog_interface = CatalogInterface()
         try:
             catalog = catalog_interface.read_catalog_from_markdown(md_dir)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
-        if catalog_interface.get_count_of_controls(True) == 0:
+        if catalog_interface.get_count_of_controls_in_catalog(True) == 0:
             logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
             return 1
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
-            logger.info('Creating catalog from markdown and destination catalog directory exists, so deleting.')
+            logger.info('Creating catalog from markdown and destination catalog directory exists, so updating.')
             try:
                 shutil.rmtree(str(new_cat_dir))
             except OSError as e:

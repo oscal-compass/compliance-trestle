@@ -1,0 +1,152 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "metadata": {
+      "title": "Trestle test profile",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/nist_cat/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set_parameters": [
+        {
+          "param_id": "ac-1_prm_1",
+            "values": [
+              "all personell"
+            ]
+        },
+        {  "param_id": "ac-1_prm_2",
+            "values": [
+              "A thorough"
+            ]
+        },
+        {  "param_id": "ac-1_prm_3",
+            "values": [
+              "officer"
+            ]
+        },
+        {  "param_id": "ac-1_prm_4",
+            "values": [
+              "weekly"
+            ]
+        },
+        {  "param_id": "ac-1_prm_5",
+            "values": [
+              "all meetings"
+            ]
+        },
+        {  "param_id": "ac-1_prm_6",
+            "values": [
+              "monthly"
+            ]
+        },
+        {  "param_id": "ac-1_prm_7",
+            "values": [
+              "conferences"
+            ]
+        },
+        {  "param_id": "ac-2_prm_1",
+            "values": [
+              "passwords"
+            ]
+        },
+        {  "param_id": "ac-2_prm_2",
+            "values": [
+              "approvals"
+            ]
+        },
+        {  "param_id": "ac-2_prm_3",
+            "values": [
+              "authorized personell"
+            ]
+        },
+        {  "param_id": "ac-2_prm_4",
+            "values": [
+              "guidelines"
+            ]
+        },
+        {  "param_id": "ac-2_prm_5",
+            "values": [
+              "personell"
+            ]
+        },
+        {  "param_id": "ac-2_prm_6",
+            "values": [
+              "one week"
+            ]
+        },
+        {  "param_id": "ac-2_prm_7",
+            "values": [
+              "one day"
+            ]
+        },
+        {  "param_id": "ac-2_prm_8",
+            "values": [
+              "one hour"
+            ]
+        },
+        {  "param_id": "ac-2_prm_9",
+            "values": [
+              "special needs"
+            ]
+        }
+      ],
+      "alters": [
+        {
+          "control_id": "ac-1",
+          "adds": [
+            {
+              "by_id": "ac-1_smt",
+              "parts": [
+                {
+                  "id": "ac-1_implgdn",
+                  "name": "ImplGuidance",
+                  "prose": "Do it carefully."
+                },
+                {
+                  "id": "ac-1_expevid",
+                  "name": "ExpectedEvidence",
+                  "prose": "Detailed logs."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "control_id": "ac-2",
+          "adds": [
+            {
+              "position": "after",
+              "by_id": "ac-2_smt",
+              "parts": [
+                {
+                  "id": "ac-2_implgdn",
+                  "name": "ImplGuidance",
+                  "prose": "Maintain compliance"
+                },
+                {
+                  "id": "ac-2_expevid",
+                  "name": "ExpectedEvidence",
+                  "prose": "Daily logs."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -16,7 +16,7 @@
 import logging
 import pathlib
 import re
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
 
@@ -25,10 +25,11 @@ import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.err import TrestleError
+from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.markdown.md_writer import MDWriter
 from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
-from trestle.utils.md_writer import MDWriter
 
 logger = logging.getLogger(__name__)
 
@@ -228,6 +229,8 @@ class ControlIOWriter():
                                 continue
                             if not did_write_part:
                                 self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
+                                # insert extra line to make mdformat happy
+                                self._md_file._add_line_raw('')
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
@@ -287,6 +290,9 @@ class ControlIOWriter():
         self._md_file.new_line(
             '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
         )
+        # next is to make mdformat happy
+        self._md_file._add_line_raw('')
+
         for add in adds:
             name, prose = add
             self._md_file.new_header(level=2, title=f'Control {name}')
@@ -300,6 +306,40 @@ class ControlIOWriter():
             for part in control.parts:
                 prose += ControlIOWriter._get_control_section_part(part, part_name)
         return prose
+
+    @staticmethod
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
+        """
+        Merge dict src into dest in a deep manner and handle lists.
+
+        All contents of dest are retained and new values from src do not change dest.
+        But any new items in src are added to dest.
+        This changes dest in place.
+        """
+        for key in src.keys():
+            if key in dest:
+                if isinstance(dest[key], dict) and isinstance(src[key], dict):
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key])
+                elif isinstance(dest[key], list):
+                    # grow dest list for the key by adding new items from src
+                    if isinstance(src[key], list):
+                        try:
+                            # Simple types (e.g. lists of strings) will get merged neatly
+                            missing = set(src[key]) - set(dest[key])
+                            dest[key].extend(missing)
+                        except TypeError:
+                            # This is a complex type - use simplistic safe behaviour
+                            logger.debug('Ignoring complex types within lists when merging dictionaries.')
+                    else:
+                        if src[key] not in dest[key]:
+                            dest[key].append(src[key])
+                elif isinstance(src[key], list):
+                    dest[key] = [dest[key]]
+                    dest[key].extend(src[key])
+                # if the item is in both, leave dest as-is and ignore the src value
+            else:
+                # if the item was not already in dest, add it from src
+                dest[key] = src[key]
 
     def write_control(
         self,
@@ -329,14 +369,20 @@ class ControlIOWriter():
             None
 
         Notes:
-            The filename is constructed from the control's id, so only the markdown directory is required
+            The filename is constructed from the control's id, so only the markdown directory is required.
+            If a yaml header is present in the file it is merged with the optional provided header.
+            The header in the file takes precedence over the provided one.
         """
         control_file = dest_path / (control.id + '.md')
-        existing_text = ControlIOReader.read_all_implementation_prose(control_file)
+        existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
-        self._add_yaml_header(yaml_header)
+        # Need to merge any existing header info with the new one.  Either could be empty.
+        merged_header = yaml_header if yaml_header else {}
+        if header:
+            ControlIOWriter.merge_dicts_deep(merged_header, header)
+        self._add_yaml_header(merged_header)
 
         self._add_control_statement(control, group_title)
 
@@ -480,24 +526,20 @@ class ControlIOReader():
         return clean_lines
 
     @staticmethod
-    def _read_id_group_id_title(ii: int, lines: List[str]) -> Tuple[int, str, str, str]:
-        while ii < len(lines):
-            line = lines[ii]
-            ii += 1
-            if line.startswith('# '):
-                if line.count('-') < 2:
-                    raise TrestleError(f'Markdown control title format error: {line}')
-                control_id = line.split()[1]
-                first_dash = line.find('-')
-                title_line = line[first_dash + 1:]
-                group_start = title_line.find('\[')
-                group_end = title_line.find('\]')
-                if group_start < 0 or group_end < 0 or group_start > group_end:
-                    raise TrestleError(f'unable to read group and title for control {control_id}')
-                group_id = title_line[group_start + 2:group_end].strip()
-                control_title = title_line[group_end + 2:].strip()
-                return ii, control_id, group_id, control_title
-        raise TrestleError('Unable to find #Control: heading in control markdown file.')
+    def _read_id_group_id_title(line: str) -> Tuple[int, str, str]:
+        """Process the line and find the control id, group id and control title."""
+        if line.count('-') < 2:
+            raise TrestleError(f'Markdown control title format error: {line}')
+        control_id = line.split()[1]
+        first_dash = line.find('-')
+        title_line = line[first_dash + 1:]
+        group_start = title_line.find('\[')
+        group_end = title_line.find('\]')
+        if group_start < 0 or group_end < 0 or group_start > group_end:
+            raise TrestleError(f'unable to read group and title for control {control_id}')
+        group_id = title_line[group_start + 2:group_end].strip()
+        control_title = title_line[group_end + 2:].strip()
+        return control_id, group_id, control_title
 
     @staticmethod
     def _indent(line: str) -> int:
@@ -620,6 +662,7 @@ class ControlIOReader():
         ii_orig = ii
         while 0 <= ii < len(lines) and not lines[ii].startswith('## Control Objective'):
             ii += 1
+
         if ii >= len(lines):
             return ii_orig, None
         ii += 1
@@ -674,6 +717,7 @@ class ControlIOReader():
                 ii += 1
             if prose:
                 id_ = ControlIOReader._strip_to_make_ncname(control_id + '_smt.' + label)
+                label = ControlIOReader._strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
             if control_parts:
@@ -685,7 +729,9 @@ class ControlIOReader():
         return ii, control_parts
 
     @staticmethod
-    def read_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
+    def read_all_implementation_prose_and_header(
+        control_file: pathlib.Path
+    ) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.
 
@@ -696,7 +742,10 @@ class ControlIOReader():
             Dictionary of part labels and corresponding prose read from the markdown file.
         """
         if not control_file.exists():
-            return {}
+            return {}, {}
+        md_api = MarkdownAPI()
+        header, _ = md_api.processor.process_markdown(control_file)
+
         lines = ControlIOReader._load_control_lines(control_file)
         ii = 0
         # keep moving down through the file picking up labels and prose
@@ -711,7 +760,7 @@ class ControlIOReader():
                 responses[part_label] = prose_lines
             if ii < 0:
                 break
-        return responses
+        return responses, header
 
     @staticmethod
     def read_implementations(control_file: pathlib.Path,
@@ -719,7 +768,7 @@ class ControlIOReader():
         """Get implementation requirements associated with given control and link to the one component we created."""
         control_id = control_file.stem
         imp_reqs: List[ossp.ImplementedRequirement] = []
-        responses = ControlIOReader.read_all_implementation_prose(control_file)
+        responses, _ = ControlIOReader.read_all_implementation_prose_and_header(control_file)
 
         for response in responses.items():
             label = response[0]
@@ -801,17 +850,39 @@ class ControlIOReader():
     def read_control(control_path: pathlib.Path) -> cat.Control:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)
-        lines = ControlIOReader._load_control_lines(control_path)
-        ii, control.id, _, control.title = ControlIOReader._read_id_group_id_title(0, lines)
-        ii, statement_part = ControlIOReader._read_control_statement(ii, lines, control.id)
-        if ii < 0:
+        md_api = MarkdownAPI()
+        _, control_tree = md_api.processor.process_markdown(control_path)
+        control_titles = list(control_tree.get_all_headers_for_level(1))
+        if len(control_titles) == 0:
+            raise TrestleError(f'Control markdown: {control_path} contains no control title.')
+
+        control.id, _, control.title = ControlIOReader._read_id_group_id_title(control_titles[0])
+
+        control_headers = list(control_tree.get_all_headers_for_level(2))
+        if len(control_headers) == 0:
+            raise TrestleError(f'Control markdown: {control_path} contains no control statements.')
+
+        control_statement = control_tree.get_node_for_key(control_headers[0])
+        rc, statement_part = ControlIOReader._read_control_statement(
+            0, control_statement.content.raw_text.split('\n'), control.id
+        )
+        if rc < 0:
             return control
         control.parts = [statement_part] if statement_part else None
-        ii, objective_part = ControlIOReader._read_control_objective(ii, lines, control.id)
-        if objective_part:
-            if control.parts:
-                control.parts.append(objective_part)
-            else:
-                control.parts = [objective_part]
-        ii, control.parts = ControlIOReader._read_sections(ii, lines, control.id, control.parts)
+        control_objective = control_tree.get_node_for_key('## Control Objective')
+        if control_objective is not None:
+            _, objective_part = ControlIOReader._read_control_objective(
+                0, control_objective.content.raw_text.split('\n'), control.id
+            )
+            if objective_part:
+                if control.parts:
+                    control.parts.append(objective_part)
+                else:
+                    control.parts = [objective_part]
+        for header_key in control_tree.get_all_headers_for_key('## Control', False):
+            if header_key not in {control_headers[0], '## Control Objective', control_titles[0]}:
+                section_node = control_tree.get_node_for_key(header_key)
+                _, control.parts = ControlIOReader._read_sections(
+                    0, section_node.content.raw_text.split('\n'), control.id, control.parts
+                )
         return control

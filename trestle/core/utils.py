@@ -15,6 +15,7 @@
 """Utilities for dealing with models."""
 import importlib
 import logging
+import string
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, no_type_check
 
 from pydantic import BaseModel
@@ -101,9 +102,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
         # things like class_ should just be class
         if suffix[-1] == '_':
             suffix = suffix[:-1]
-        return camel_to_dash(suffix).rstrip('1234567890')
+        return camel_to_dash(suffix).rstrip(string.digits)
     if mode == 'field':
-        return camel_to_snake(suffix).rstrip('1234567890')
+        return camel_to_snake(suffix).rstrip(string.digits)
     raise err.TrestleError('Bad option')
 
 
@@ -171,7 +172,7 @@ def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[A
         root = fields['__root__']
         singular_type = root.type_
         root_type = root.outer_type_._name
-    except BaseException:
+    except Exception:  # noqa S110
         pass
     return root, root_type, singular_type
 
@@ -222,3 +223,13 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e
+
+
+def as_list(list_or_none: Optional[List[Any]]) -> List[Any]:
+    """Convert list or None object to itself or an empty list if none."""
+    return list_or_none if list_or_none else []
+
+
+def none_if_empty(list_: List[Any]) -> Optional[List[Any]]:
+    """Convert to None if empty list."""
+    return list_ if list_ else None

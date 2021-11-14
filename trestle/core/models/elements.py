@@ -13,7 +13,6 @@
 # limitations under the License.
 """Element wrapper of an OSCAL model element."""
 
-import json
 import logging
 import pathlib
 from typing import Any, List, Optional, Type, Union, cast
@@ -553,25 +552,31 @@ class Element:
         yaml.default_flow_style = False
         from io import StringIO
         string_stream = StringIO()
-        yaml.dump(yaml.load(self.to_json()), string_stream)
+        yaml.dump(yaml.load(self.to_json(pretty=False)), string_stream)
         yaml_data = string_stream.getvalue()
         string_stream.close()
 
         return yaml_data
 
-    def to_json(self) -> str:
+    def to_json(self, pretty: bool = True) -> str:
         """Convert into JSON string."""
         if self._wrapper_alias == self.IGNORE_WRAPPER_ALIAS:
-            json_data = json.dumps(self._elem, sort_keys=False, indent=4, ensure_ascii=False)
+            json_data = self._elem.oscal_serialize_json(pretty=pretty, wrapped=False)
+
         else:
             # Note before trying to edit this
             # This transient model allows self._elem not be an OscalBaseModel (e.g. a DICT or LIST)
             # typing need to be clarified.
-            dynamic_passer = {}
-            dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
-            wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
-            wrapped_model = wrapper_model(**{self._wrapper_alias: self._elem})
-            json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4, ensure_ascii=False)
+            if isinstance(self._elem, OscalBaseModel):
+                json_data = self._elem.oscal_serialize_json(pretty=pretty)
+            else:
+                dynamic_passer = {}
+                dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
+                wrapper_model = create_model(
+                    'TransientModel', __base__=OscalBaseModel, **dynamic_passer
+                )  # type: ignore
+                wrapped_model = wrapper_model.construct(**{self._wrapper_alias: self._elem})
+                json_data = wrapped_model.oscal_serialize_json(pretty=pretty, wrapped=False)
         return json_data
 
     @classmethod
