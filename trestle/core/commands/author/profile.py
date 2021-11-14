@@ -185,7 +185,7 @@ class ProfileAssemble(AuthorCommonCommand):
         new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
 
         if new_prof_dir.exists():
-            logger.info('Creating profile from markdown and destination profile directory exists, so deleting.')
+            logger.info('Creating profile from markdown and destination profile directory exists, so updating.')
             try:
                 shutil.rmtree(str(new_prof_dir))
             except OSError as e:

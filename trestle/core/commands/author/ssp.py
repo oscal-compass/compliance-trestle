@@ -75,13 +75,13 @@ class SSPGenerate(AuthorCommonCommand):
             for section in section_tuples:
                 if ':' in section:
                     s = section.split(':')
-                    section_label = s[0].strip()
-                    if section_label == 'statement':
-                        logger.warning('Section label "statement" is not allowed.')
-                        return 1
                     sections[s[0].strip()] = s[1].strip()
                 else:
+
                     sections[section] = section
+            if 'statement' in sections.keys():
+                logger.warning('Section label "statement" is not allowed.')
+                return 1
 
         logger.debug(f'ssp sections: {sections}')
 
@@ -90,13 +90,13 @@ class SSPGenerate(AuthorCommonCommand):
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
             catalog_interface = CatalogInterface(resolved_catalog)
         except Exception as e:
-            logger.warning(f'Error creating the resolved profile catalog: {e}')
+            logger.error(f'Error creating the resolved profile catalog: {e}')
             logger.debug(traceback.print_exc())
             return 1
         try:
             catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
         except Exception as e:
-            logger.warning(f'Error writing the catalog as markdown: {e}')
+            logger.error(f'Error writing the catalog as markdown: {e}')
             logger.debug(traceback.print_exc())
             return 1
 
@@ -120,7 +120,7 @@ class SSPAssemble(AuthorCommonCommand):
         try:
             # generate the one dummy component that implementations will refer to in by_components
             component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-            component.description = 'Dummy component created by trestle'
+            component.description = 'The System'
 
             # create system implementation to hold the dummy component
             system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)

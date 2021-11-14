@@ -220,27 +220,52 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
     return controls
 
 
-def generate_complex_catalog() -> cat.Catalog:
+def generate_param_list(label: str, count: int) -> List[cat.Control]:
+    """Generate a list of params with indexed names."""
+    params: List[common.Parameter] = []
+    for ii in range(count):
+        param = generators.generate_sample_model(common.Parameter, True)
+        param.id = f'{label}-{ii + 1}'
+        param.label = f'label-{param.id}'
+        param.props[0].name = f'name-{param.id}'
+        param.props[0].value = f'value-{param.id}'
+        param.guidelines[0].prose = f'prose-{param.id}'
+        params.append(param)
+    return params
+
+
+def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     """Generate a complex and deep catalog for testing."""
     group_a = generators.generate_sample_model(cat.Group, True)
-    group_a.id = 'a'
-    group_a.controls = generate_control_list('a', 4)
+    group_a.id = f'{stem}a'
+    group_a.controls = generate_control_list(group_a.id, 4)
     part = generators.generate_sample_model(common.Part)
-    part.id = 'a-1_smt'
+    part.id = f'{stem}a-1_smt'
     part.parts = None
-    group_a.controls[0].parts[0].id = 'part_with_subpart'
+    group_a.controls[0].parts[0].id = f'{stem}_part_with_subpart'
     group_a.controls[0].parts[0].parts = [part]
     group_b = generators.generate_sample_model(cat.Group, True)
-    group_b.id = 'b'
-    group_b.controls = generate_control_list('b', 3)
-    group_b.controls[2].controls = generate_control_list('b-2', 3)
+    group_b.id = f'{stem}b'
+    group_b.controls = generate_control_list(group_b.id, 3)
+    group_b.controls[2].controls = generate_control_list(f'{group_b.id}-2', 3)
     group_ba = generators.generate_sample_model(cat.Group, True)
-    group_ba.id = 'ba'
-    group_ba.controls = generate_control_list('ba', 2)
+    group_ba.id = f'{stem}ba'
+    group_ba.controls = generate_control_list(group_ba.id, 2)
     group_b.groups = [group_ba]
 
     catalog = generators.generate_sample_model(cat.Catalog, True)
-    catalog.controls = generate_control_list('cat', 3)
+    catalog.controls = generate_control_list(f'{stem}cat', 3)
+    catalog.params = generate_param_list(f'{stem}parm', 3)
+
+    test_control = generators.generate_sample_model(cat.Control, False)
+    test_control.id = f'{stem}test-1'
+    test_control.params = [common.Parameter(id=f'{test_control.id}_prm_1', values=['Default', 'Values'])]
+    test_control.parts = [
+        common.Part(
+            id=f'{test_control.id}-stmt', prose='The prose with {{ insert: param, test-1_prm_1 }}', name='statement'
+        )
+    ]
+    catalog.controls.append(test_control)
     catalog.groups = [group_a, group_b]
 
     return catalog
@@ -262,7 +287,7 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
 
-    for letter in 'abcd':
+    for letter in 'abcdefg':
         prof_name = f'test_profile_{letter}'
         prof_path = JSON_TEST_DATA_PATH / f'{prof_name}.json'
         repo.load_and_import_model(prof_path, prof_name)

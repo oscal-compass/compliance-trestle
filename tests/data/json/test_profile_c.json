@@ -24,11 +24,11 @@
     "modify": {
       "alters": [
         {
-          "control_id": "a-1",
+          "control-id": "a-1",
           "adds": [
             {
               "position": "starting",
-              "by_id": "a-1_smt",
+              "by-id": "a-1_smt",
               "parts": [
                 {
                   "id": "a-1_deep",
