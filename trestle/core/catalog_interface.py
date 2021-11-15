@@ -303,7 +303,8 @@ class CatalogInterface():
         sections: Optional[Dict[str, str]],
         responses: bool,
         additional_content: bool = False,
-        profile: Optional[prof.Profile] = None
+        profile: Optional[prof.Profile] = None,
+        yaml_safe: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -318,7 +319,15 @@ class CatalogInterface():
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             writer.write_control(
-                group_dir, control, group_title, yaml_header, sections, additional_content, responses, profile
+                group_dir,
+                control,
+                group_title,
+                yaml_header,
+                sections,
+                additional_content,
+                responses,
+                profile,
+                yaml_safe
             )
 
     @staticmethod

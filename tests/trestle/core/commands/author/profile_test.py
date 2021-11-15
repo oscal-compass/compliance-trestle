@@ -119,7 +119,7 @@ def test_profile_generate_assemble(
         if add_header:
             yaml = YAML(typ='safe')
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header)
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, False)
         assert ac1_path.exists()
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         if dir_exists:

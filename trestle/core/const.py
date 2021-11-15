@@ -243,4 +243,6 @@ DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
 
 HELP_YAML_PATH = 'Path to the optional yaml header file'
 
+HELP_YAML_SAFE = 'Only add the yaml header if no header exists.'
+
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'

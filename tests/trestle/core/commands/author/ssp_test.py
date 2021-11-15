@@ -45,7 +45,12 @@ def setup_for_ssp(include_header: bool,
 
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=True,
+        sections=sections,
+        yaml_safe=False
     )
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -109,7 +114,8 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         verbose=True,
         sections=sections,
-        yaml_header=str(yaml_path)
+        yaml_header=str(yaml_path),
+        yaml_safe=False
     )
     assert ssp_cmd._run(args) == 1
 

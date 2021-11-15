@@ -350,7 +350,8 @@ class ControlIOWriter():
         sections: Optional[Dict[str, str]],
         additional_content: bool,
         prompt_responses: bool,
-        profile: Optional[prof.Profile]
+        profile: Optional[prof.Profile],
+        yaml_safe: bool
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -379,7 +380,7 @@ class ControlIOWriter():
         self._sections = sections
 
         # Need to merge any existing header info with the new one.  Either could be empty.
-        merged_header = yaml_header if yaml_header else {}
+        merged_header = yaml_header if yaml_header and not yaml_safe else {}
         if header:
             ControlIOWriter.merge_dicts_deep(merged_header, header)
         self._add_yaml_header(merged_header)
