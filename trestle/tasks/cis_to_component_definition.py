@@ -176,7 +176,7 @@ class CisToComponentDefinition(TaskBase):
                 profile_sets[profile]['component-name'] = component_name
             odir = self._config['output-dir']
         except KeyError as e:
-            logger.debug(f'key {e.args[0]} missing')
+            logger.info(f'key {e.args[0]} missing')
             return TaskOutcome('failure')
         # selected rules
         self._selected_rules = self._get_filter_rules('selected-rules', 'selected')
@@ -341,10 +341,10 @@ class CisToComponentDefinition(TaskBase):
             f.close()
         except KeyError as e:
             logger.debug(f'key {e.args[0]} missing')
-            parameters_map = []
+            parameters_map = {}
         except Exception:
             logger.error(f'unable to process {self._config[config_key]}')
-            parameters_map = []
+            parameters_map = {}
         return parameters_map
 
     # fetch the set of rules that will be included/excluded from the CIS rules
