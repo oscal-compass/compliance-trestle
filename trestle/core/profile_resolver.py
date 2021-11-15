@@ -705,11 +705,11 @@ class ProfileResolver():
                 title = self._profile.metadata.title
                 for alter in alters:
                     if alter.control_id is None:
-                        logger.warning(f'Alters must have control id specified in profile {title}.')
+                        logger.warning(f'Alter must have control id specified in profile {title}.')
                         continue
                     id_ = alter.control_id
                     if alter.removes is not None:
-                        logger.warning(f'Alters not supported for removes in profile {title} control {id_}')
+                        logger.warning(f'Alter not supported for removes in profile {title} control {id_}')
                         continue
                     # we want a warning about adds even if adds are blocked, as in profile generate
                     if alter.adds is None:
