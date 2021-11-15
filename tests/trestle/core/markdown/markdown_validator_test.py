@@ -98,71 +98,71 @@ from trestle.core.markdown.markdown_validator import MarkdownValidator
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/correct_instance.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/correct_instance.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/correct_instance_extra_features.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/correct_instance_extra_features.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
             False,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_yaml_header_change.md'),
             True,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_reordered.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_reordered.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_missing_heading.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_missing_heading.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_missing_heading.md'),
             True,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_heading_wrong_type.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_heading_wrong_type.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_bold_heading.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/author/test_4_md_format_extras/bad_instance_bold_heading.md'),
-            pathlib.Path('tests/data/author/test_4_md_format_extras/template.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/bad_instance_bold_heading.md'),
+            pathlib.Path('tests/data/author/0.0.1/test_4_md_format_extras/template.md'),
             False,
             False,
             False
