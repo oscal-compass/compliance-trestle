@@ -16,7 +16,6 @@
 """Tests for trestle author command module."""
 import pathlib
 import sys
-from unittest import mock
 
 from _pytest.monkeypatch import MonkeyPatch
 
