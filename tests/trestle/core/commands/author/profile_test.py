@@ -117,7 +117,7 @@ def test_profile_generate_assemble(
         profile_generate = ProfileGenerate()
         yaml_header = {}
         if add_header:
-            yaml = YAML(typ='safe')
+            yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
         profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header)
         assert ac1_path.exists()
