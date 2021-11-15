@@ -50,7 +50,7 @@ def setup_for_ssp(include_header: bool,
         output=ssp_name,
         verbose=True,
         sections=sections,
-        yaml_safe=False
+        header_merge=True
     )
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -115,7 +115,7 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
         verbose=True,
         sections=sections,
         yaml_header=str(yaml_path),
-        yaml_safe=False
+        header_merge=True
     )
     assert ssp_cmd._run(args) == 1
 
