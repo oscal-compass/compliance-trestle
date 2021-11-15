@@ -178,7 +178,10 @@ class Headers(AuthorCommonCommand):
         instance_version = template_version
         instance_file_names: List[pathlib.Path] = []
         # Fetch all instances versions and build dictionary of required template files
-        for instance_file in candidate_dir.rglob('*'):
+        instances = list(candidate_dir.iterdir())
+        if recurse:
+            instances = candidate_dir.rglob('*')
+        for instance_file in instances:
             if not fs.local_and_visible(instance_file):
                 continue
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
