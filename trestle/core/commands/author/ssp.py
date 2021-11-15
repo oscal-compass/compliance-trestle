@@ -97,7 +97,9 @@ class SSPGenerate(AuthorCommonCommand):
             logger.debug(traceback.print_exc())
             return 1
         try:
-            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True, args.yaml_safe)
+            catalog_interface.write_catalog_as_markdown(
+                markdown_path, yaml_header, sections, True, yaml_safe=args.yaml_safe
+            )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
             logger.debug(traceback.print_exc())

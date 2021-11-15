@@ -380,7 +380,10 @@ class ControlIOWriter():
         self._sections = sections
 
         # Need to merge any existing header info with the new one.  Either could be empty.
-        merged_header = copy.deepcopy(yaml_header) if yaml_header and not yaml_safe else {}
+        if yaml_safe and not header == {}:
+            merged_header = {}
+        else:
+            merged_header = copy.deepcopy(yaml_header) if yaml_header else {}
         if header:
             ControlIOWriter.merge_dicts_deep(merged_header, header)
         self._add_yaml_header(merged_header)
