@@ -702,21 +702,27 @@ class ProfileResolver():
                 alters = self._profile.modify.alters
 
             if alters is not None:
+                title = self._profile.metadata.title
                 for alter in alters:
                     if alter.control_id is None:
-                        raise TrestleError('Alters must have control id specified.')
+                        logger.warning(f'Alters must have control id specified in profile {title}.')
+                        continue
+                    id_ = alter.control_id
                     if alter.removes is not None:
-                        raise TrestleError('Alters not supported for removes.')
-                    if alter.adds is None and not self._block_adds:
-                        raise TrestleError('Alter has no adds to perform.')
+                        logger.warning(f'Alters not supported for removes in profile {title} control {id_}')
+                        continue
+                    # we want a warning about adds even if adds are blocked, as in profile generate
+                    if alter.adds is None:
+                        logger.warning(f'Alter has no adds in profile {title} control {id_}')
+                        continue
                     if not self._block_adds:
                         for add in alter.adds:
                             if add.position is None and add.parts is not None:
-                                msg = f'Alter/Add position is not specified in control {alter.control_id}'
+                                msg = f'Alter/Add position is not specified in profile {title} control {id_}'
                                 msg += ' when adding part, so defaulting to ending.'
                                 logger.warning(msg)
                                 add.position = prof.Position.ending
-                            control = self._catalog_interface.get_control(alter.control_id)
+                            control = self._catalog_interface.get_control(id_)
                             self._add_to_control(control, add)
                             self._catalog_interface.replace_control(control)
 
