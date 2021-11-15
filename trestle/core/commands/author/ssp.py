@@ -63,7 +63,7 @@ class SSPGenerate(AuthorCommonCommand):
         if 'yaml_header' in args and args.yaml_header is not None:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
-                yaml = YAML(typ='safe')
+                yaml = YAML()
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
                 logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
