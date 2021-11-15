@@ -44,6 +44,9 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-ys', '--yaml-safe', help=const.HELP_YAML_SAFE, required=False, action='store_true', default=False
+        )
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
 
@@ -60,7 +63,7 @@ class SSPGenerate(AuthorCommonCommand):
         if 'yaml_header' in args and args.yaml_header is not None:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
-                yaml = YAML(typ='safe')
+                yaml = YAML()
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
                 logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
@@ -94,7 +97,9 @@ class SSPGenerate(AuthorCommonCommand):
             logger.debug(traceback.print_exc())
             return 1
         try:
-            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
+            catalog_interface.write_catalog_as_markdown(
+                markdown_path, yaml_header, sections, True, yaml_safe=args.yaml_safe
+            )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
             logger.debug(traceback.print_exc())

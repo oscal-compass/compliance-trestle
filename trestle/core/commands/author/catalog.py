@@ -42,6 +42,9 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-ys', '--yaml-safe', help=const.HELP_YAML_SAFE, required=False, action='store_true', default=False
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -64,16 +67,21 @@ class CatalogGenerate(AuthorCommonCommand):
 
         markdown_path = trestle_root / args.output
 
-        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header)
+        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header, args.yaml_safe)
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path, yaml_header: dict
+        self,
+        trestle_root: pathlib.Path,
+        catalog_path: pathlib.Path,
+        markdown_path: pathlib.Path,
+        yaml_header: dict,
+        yaml_safe: bool
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False)
+            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False, yaml_safe=yaml_safe)
         except TrestleNotFoundError as e:
             logger.warning(f'Catalog {catalog_path} not found for load {e}')
             return 1
