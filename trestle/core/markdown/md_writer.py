@@ -128,12 +128,9 @@ class MDWriter():
                 # Make sure yaml header is written first
                 if self._yaml_header:
                     f.write('---\n')
-                    f.write('\n')
-                    yaml = YAML(typ='safe')
-                    yaml.default_flow_style = False
+                    yaml = YAML()
                     yaml.indent(mapping=2, sequence=4, offset=2)
                     yaml.dump(self._yaml_header, f)
-                    f.write('\n')
                     f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))

@@ -45,7 +45,12 @@ def setup_for_ssp(include_header: bool,
 
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=True,
+        sections=sections,
+        yaml_safe=False
     )
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -91,7 +96,7 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert ac_2.stat().st_size > 2000
 
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML(typ='safe')
+        yaml = YAML()
         expected_header = yaml.load(f)
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
@@ -109,7 +114,8 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         verbose=True,
         sections=sections,
-        yaml_header=str(yaml_path)
+        yaml_header=str(yaml_path),
+        yaml_safe=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -162,7 +168,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     ac_1 = ac_dir / 'ac-1.md'
 
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML(typ='safe')
+        yaml = YAML()
         expected_header = yaml.load(f)
 
     md_api = MarkdownAPI()
@@ -170,7 +176,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     assert tree is not None
     assert expected_header == header
 
-    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n')
+    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
     assert test_utils.delete_line_in_file(ac_1, 'Corporate')
 
     # if the yaml header is not written out, the new header should be the one currently in the control
