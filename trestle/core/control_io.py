@@ -305,7 +305,7 @@ class ControlIOWriter():
         if control.parts:
             for part in control.parts:
                 prose += ControlIOWriter._get_control_section_part(part, part_name)
-        return prose
+        return prose.strip()
 
     @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
