@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.1 (2021-11-15)
+### Fix
+* Profile resolver issues with alter that has no adds ([#847](https://github.com/IBM/compliance-trestle/issues/847)) ([`6865eb7`](https://github.com/IBM/compliance-trestle/commit/6865eb7967ae954b14f5a10921d88ca567fae921))
+
 ## v0.27.0 (2021-11-14)
 ### Feature
 * Add ability to use different versions of templates ([#837](https://github.com/IBM/compliance-trestle/issues/837)) ([`c6d3618`](https://github.com/IBM/compliance-trestle/commit/c6d3618f13e6dc945413867a8d102cd3a7c3c211))
