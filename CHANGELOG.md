@@ -3,6 +3,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.28.0 (2021-11-16)
+### Feature
+* Add yaml header to various trestle author docs in a safe manner. ([#853](https://github.com/IBM/compliance-trestle/issues/853)) ([`0b6f8a1`](https://github.com/IBM/compliance-trestle/commit/0b6f8a18d1de460c14fa36d107729e367682045e))
+
+### Fix
+* Fix instance version ([#862](https://github.com/IBM/compliance-trestle/issues/862)) ([`56f7cdf`](https://github.com/IBM/compliance-trestle/commit/56f7cdfe537adfcfcb8398df7d06b71cbf35781d))
+* Correcting mkdocs ([#860](https://github.com/IBM/compliance-trestle/issues/860)) ([`89a6d0d`](https://github.com/IBM/compliance-trestle/commit/89a6d0dc42d87b7082ec4c1a2def684cc4ae543b))
+* Relabel yaml-safe to header-dont-merge. ([#858](https://github.com/IBM/compliance-trestle/issues/858)) ([`58e6b1d`](https://github.com/IBM/compliance-trestle/commit/58e6b1d8bec4a5b210d47d24acaf2ea770a31000))
+* 2 bugs in task cis-to-component-definition ([#856](https://github.com/IBM/compliance-trestle/issues/856)) ([`61da0b8`](https://github.com/IBM/compliance-trestle/commit/61da0b89aaab4c15b0e4a2c885efbdf387b30d10))
+* Fix headers recurse flag ([#849](https://github.com/IBM/compliance-trestle/issues/849)) ([`d285cc6`](https://github.com/IBM/compliance-trestle/commit/d285cc61ff52531d821c03ab4bcfdf4966b9c44e))
+
 ## v0.27.2 (2021-11-16)
 ### Fix
 * Force trestle relesae. ([`49243e3`](https://github.com/IBM/compliance-trestle/commit/49243e369120958536a644a4a063cf19f1870b7a))
