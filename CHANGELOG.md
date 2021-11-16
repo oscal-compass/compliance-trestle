@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.27.2 (2021-11-16)
+### Fix
+* Force trestle relesae. ([`49243e3`](https://github.com/IBM/compliance-trestle/commit/49243e369120958536a644a4a063cf19f1870b7a))
+
 ## v0.27.1 (2021-11-15)
 ### Fix
 * Profile resolver issues with alter that has no adds ([#847](https://github.com/IBM/compliance-trestle/issues/847)) ([`6865eb7`](https://github.com/IBM/compliance-trestle/commit/6865eb7967ae954b14f5a10921d88ca567fae921))
