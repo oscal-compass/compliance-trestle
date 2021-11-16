@@ -243,6 +243,9 @@ DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
 
 HELP_YAML_PATH = 'Path to the optional yaml header file'
 
-HELP_YAML_SAFE = 'Only add the yaml header if no header exists.'
+HELP_HEADER_MERGE = (
+    'Flag to disable merging of the headers.'
+    + ' If provided, if a header currently exists the new header, passed with -y, will not be applied.'
+)
 
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'

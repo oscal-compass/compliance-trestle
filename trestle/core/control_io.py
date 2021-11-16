@@ -351,7 +351,7 @@ class ControlIOWriter():
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
-        yaml_safe: bool
+        header_dont_merge: bool
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -380,7 +380,7 @@ class ControlIOWriter():
         self._sections = sections
 
         # Need to merge any existing header info with the new one.  Either could be empty.
-        if yaml_safe and not header == {}:
+        if header_dont_merge and not header == {}:
             merged_header = {}
         else:
             merged_header = copy.deepcopy(yaml_header) if yaml_header else {}
