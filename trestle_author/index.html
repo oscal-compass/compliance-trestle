@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_author/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.a57b2b03.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -313,6 +313,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
+        SSP, Catalog, and Profile Authoring
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
         Transformer construction
       </a>
@@ -410,6 +424,8 @@
       </a>
       
         
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -507,6 +523,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#template-version-tracking-tv-template-version" class="md-nav__link">
+    Template version tracking (-tv, --template-version)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -543,6 +566,13 @@
           <li class="md-nav__item">
   <a href="#header-only-validation-hov-header-only-validate_1" class="md-nav__link">
     Header only validation (-hov, --header-only-validate)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-version-tracking-tv-template-version_1" class="md-nav__link">
+    Template version tracking (-tv, --template-version)
   </a>
   
 </li>
@@ -594,6 +624,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#template-version-tracking-tv-template-version_2" class="md-nav__link">
+    Template version tracking (-tv, --template-version)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -612,8 +649,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#treatle-author-profile-generate-and-trestle-author-profile-assemble" class="md-nav__link">
-    treatle author profile-generate and trestle author profile-assemble
+  <a href="#trestle-author-profile-generate-and-trestle-author-profile-assemble" class="md-nav__link">
+    trestle author profile-generate and trestle author profile-assemble
   </a>
   
 </li>
@@ -621,6 +658,13 @@
         <li class="md-nav__item">
   <a href="#trestle-author-ssp-generate-and-trestle-author-ssp-assemble" class="md-nav__link">
     trestle author ssp-generate and trestle author ssp-assemble
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-ssp-filter" class="md-nav__link">
+    trestle author ssp-filter
   </a>
   
 </li>
@@ -875,10 +919,127 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_1" type="checkbox" id="__nav_8_2_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2_1">
+          tasks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.cli/" class="md-nav__link">
-        cli
+      <a href="../api_reference/trestle.tasks.cis_to_component_definition/" class="md-nav__link">
+        cis_to_component_definition
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.profile_to_osco/" class="md-nav__link">
+        profile_to_osco
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -916,9 +1077,299 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.all_validator/" class="md-nav__link">
-        all_validator
+      <a href="../api_reference/trestle.core.validator/" class="md-nav__link">
+        validator
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.oscal_version_validator/" class="md-nav__link">
+        oscal_version_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.common_types/" class="md-nav__link">
+        common_types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.profile_resolver/" class="md-nav__link">
+        profile_resolver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_6" type="checkbox" id="__nav_8_2_2_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2_2_6">
+          markdown
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_2_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          markdown
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown.md_writer/" class="md-nav__link">
+        md_writer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown.markdown_processor/" class="md-nav__link">
+        markdown_processor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown.markdown_api/" class="md-nav__link">
+        markdown_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown.markdown_node/" class="md-nav__link">
+        markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown.markdown_const/" class="md-nav__link">
+        markdown_const
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown.markdown_validator/" class="md-nav__link">
+        markdown_validator
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.control_io/" class="md-nav__link">
+        control_io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_8" type="checkbox" id="__nav_8_2_2_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2_2_8">
+          models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_2_2_8">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -957,26 +1408,180 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.all_validator/" class="md-nav__link">
+        all_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.pipeline/" class="md-nav__link">
+        pipeline
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_4" type="checkbox" id="__nav_8_2_2_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_17" type="checkbox" id="__nav_8_2_2_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_2_2_4">
+        <label class="md-nav__link" for="__nav_8_2_2_17">
           commands
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_2_4">
+        <label class="md-nav__title" for="__nav_8_2_2_17">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.describe/" class="md-nav__link">
+        describe
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -998,8 +1603,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
-        assemble
+      <a href="../api_reference/trestle.core.commands.create/" class="md-nav__link">
+        create
       </a>
     </li>
   
@@ -1015,18 +1620,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_4_3" type="checkbox" id="__nav_8_2_2_4_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_17_8" type="checkbox" id="__nav_8_2_2_17_8" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_2_2_4_3">
+        <label class="md-nav__link" for="__nav_8_2_2_17_8">
           author
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_8_2_2_4_3">
+        <label class="md-nav__title" for="__nav_8_2_2_17_8">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1066,22 +1671,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.author.common/" class="md-nav__link">
-        common
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.author.consts/" class="md-nav__link">
-        consts
+      <a href="../api_reference/trestle.core.commands.author.profile/" class="md-nav__link">
+        profile
       </a>
     </li>
   
@@ -1108,8 +1699,36 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.author.folders/" class="md-nav__link">
-        folders
+      <a href="../api_reference/trestle.core.commands.author.consts/" class="md-nav__link">
+        consts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.ssp/" class="md-nav__link">
+        ssp
       </a>
     </li>
   
@@ -1136,8 +1755,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.author.profile/" class="md-nav__link">
-        profile
+      <a href="../api_reference/trestle.core.commands.author.folders/" class="md-nav__link">
+        folders
       </a>
     </li>
   
@@ -1149,10 +1768,43 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_17_8_10" type="checkbox" id="__nav_8_2_2_17_8_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2_2_17_8_10">
+          versioning
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+        <label class="md-nav__title" for="__nav_8_2_2_17_8_10">
+          <span class="md-nav__icon md-icon"></span>
+          versioning
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.author.ssp/" class="md-nav__link">
-        ssp
+      <a href="../api_reference/trestle.core.commands.author.versioning.template_versioning/" class="md-nav__link">
+        template_versioning
       </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1171,8 +1823,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.cmd_utils/" class="md-nav__link">
-        cmd_utils
+      <a href="../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
       </a>
     </li>
   
@@ -1199,22 +1865,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.create/" class="md-nav__link">
-        create
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.describe/" class="md-nav__link">
-        describe
+      <a href="../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
       </a>
     </li>
   
@@ -1229,6 +1881,34 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.core.commands.href/" class="md-nav__link">
         href
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
       </a>
     </li>
   
@@ -1269,321 +1949,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.merge/" class="md-nav__link">
-        merge
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../api_reference/trestle.core.commands.partial_object_validate/" class="md-nav__link">
         partial_object_validate
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.remove/" class="md-nav__link">
-        remove
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
-        replicate
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.split/" class="md-nav__link">
-        split
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.task/" class="md-nav__link">
-        task
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.validate/" class="md-nav__link">
-        validate
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.version/" class="md-nav__link">
-        version
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.common_types/" class="md-nav__link">
-        common_types
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.const/" class="md-nav__link">
-        const
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.control_io/" class="md-nav__link">
-        control_io
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.draw_io/" class="md-nav__link">
-        draw_io
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
-        duplicates_validator
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.err/" class="md-nav__link">
-        err
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.generators/" class="md-nav__link">
-        generators
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.markdown_validator/" class="md-nav__link">
-        markdown_validator
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_13" type="checkbox" id="__nav_8_2_2_13" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_8_2_2_13">
-          models
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_2_13">
-          <span class="md-nav__icon md-icon"></span>
-          models
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.actions/" class="md-nav__link">
-        actions
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.elements/" class="md-nav__link">
-        elements
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
-        file_content_type
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
-        interfaces
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.plans/" class="md-nav__link">
-        plans
       </a>
     </li>
   
@@ -1617,8 +1984,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.oscal_version_validator/" class="md-nav__link">
-        oscal_version_validator
+      <a href="../api_reference/trestle.core.repository/" class="md-nav__link">
+        repository
       </a>
     </li>
   
@@ -1631,8 +1998,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
-        parser
+      <a href="../api_reference/trestle.core.err/" class="md-nav__link">
+        err
       </a>
     </li>
   
@@ -1645,8 +2012,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.pipeline/" class="md-nav__link">
-        pipeline
+      <a href="../api_reference/trestle.core.const/" class="md-nav__link">
+        const
       </a>
     </li>
   
@@ -1659,8 +2026,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.profile_resolver/" class="md-nav__link">
-        profile_resolver
+      <a href="../api_reference/trestle.core.draw_io/" class="md-nav__link">
+        draw_io
       </a>
     </li>
   
@@ -1686,22 +2053,36 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_20" type="checkbox" id="__nav_8_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_25" type="checkbox" id="__nav_8_2_2_25" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_2_2_20">
+        <label class="md-nav__link" for="__nav_8_2_2_25">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_2_20">
+        <label class="md-nav__title" for="__nav_8_2_2_25">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1723,76 +2104,6 @@
           
         </ul>
       </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.repository/" class="md-nav__link">
-        repository
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.utils/" class="md-nav__link">
-        utils
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.validator/" class="md-nav__link">
-        validator
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.validator_factory/" class="md-nav__link">
-        validator_factory
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.validator_helper/" class="md-nav__link">
-        validator_helper
-      </a>
     </li>
   
 
@@ -1820,12 +2131,115 @@
       
       
         <label class="md-nav__link" for="__nav_8_2_3">
+          utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_4" type="checkbox" id="__nav_8_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2_4">
           oscal
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="oscal" data-md-level="3">
-        <label class="md-nav__title" for="__nav_8_2_3">
+        <label class="md-nav__title" for="__nav_8_2_4">
           <span class="md-nav__icon md-icon"></span>
           oscal
         </label>
@@ -1837,64 +2251,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
-        assessment_plan
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../api_reference/trestle.oscal.catalog/" class="md-nav__link">
         catalog
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.common/" class="md-nav__link">
-        common
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.component/" class="md-nav__link">
-        component
       </a>
     </li>
   
@@ -1935,6 +2293,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.oscal.ssp/" class="md-nav__link">
         ssp
       </a>
@@ -1943,47 +2329,14 @@
 
             
           
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_4" type="checkbox" id="__nav_8_2_4" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_8_2_4">
-          tasks
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="tasks" data-md-level="3">
-        <label class="md-nav__title" for="__nav_8_2_4">
-          <span class="md-nav__icon md-icon"></span>
-          tasks
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
             
               
   
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.base_task/" class="md-nav__link">
-        base_task
+      <a href="../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
       </a>
     </li>
   
@@ -1996,64 +2349,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
-        osco_to_oscal
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.profile_to_osco/" class="md-nav__link">
-        profile_to_osco
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
-        tanium_to_oscal
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.transform/" class="md-nav__link">
-        transform
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
-        xlsx_to_oscal_component_definition
+      <a href="../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
       </a>
     </li>
   
@@ -2098,57 +2395,10 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_5_1" type="checkbox" id="__nav_8_2_5_1" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_8_2_5_1">
-          implementations
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="implementations" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_5_1">
-          <span class="md-nav__icon md-icon"></span>
-          implementations
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.transforms.implementations.osco/" class="md-nav__link">
-        osco
+      <a href="../api_reference/trestle.transforms.transformer_factory/" class="md-nav__link">
+        transformer_factory
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.transforms.implementations.tanium/" class="md-nav__link">
-        tanium
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -2162,20 +2412,6 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.transforms.results/" class="md-nav__link">
         results
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.transforms.transformer_factory/" class="md-nav__link">
-        transformer_factory
       </a>
     </li>
   
@@ -2205,18 +2441,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_5_5" type="checkbox" id="__nav_8_2_5_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_5_4" type="checkbox" id="__nav_8_2_5_4" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_2_5_5">
+        <label class="md-nav__link" for="__nav_8_2_5_4">
           utils
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="utils" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_5_5">
+        <label class="md-nav__title" for="__nav_8_2_5_4">
           <span class="md-nav__icon md-icon"></span>
           utils
         </label>
@@ -2231,27 +2467,6 @@
       <a href="../api_reference/trestle.transforms.utils.osco_helper/" class="md-nav__link">
         osco_helper
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.transforms.utils.tanium_helper/" class="md-nav__link">
-        tanium_helper
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -2273,20 +2488,20 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_6" type="checkbox" id="__nav_8_2_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_5_5" type="checkbox" id="__nav_8_2_5_5" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_8_2_6">
-          utils
+        <label class="md-nav__link" for="__nav_8_2_5_5">
+          implementations
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="utils" data-md-level="3">
-        <label class="md-nav__title" for="__nav_8_2_6">
+      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+        <label class="md-nav__title" for="__nav_8_2_5_5">
           <span class="md-nav__icon md-icon"></span>
-          utils
+          implementations
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -2296,8 +2511,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.fs/" class="md-nav__link">
-        fs
+      <a href="../api_reference/trestle.transforms.implementations.tanium/" class="md-nav__link">
+        tanium
       </a>
     </li>
   
@@ -2310,64 +2525,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
-        load_distributed
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.log/" class="md-nav__link">
-        log
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.md_writer/" class="md-nav__link">
-        md_writer
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.oscal_helper/" class="md-nav__link">
-        oscal_helper
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
-        trash
+      <a href="../api_reference/trestle.transforms.implementations.osco/" class="md-nav__link">
+        osco
       </a>
     </li>
   
@@ -2376,6 +2535,27 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
     </li>
   
 
@@ -2406,6 +2586,8 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -2503,6 +2685,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#template-version-tracking-tv-template-version" class="md-nav__link">
+    Template version tracking (-tv, --template-version)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2539,6 +2728,13 @@
           <li class="md-nav__item">
   <a href="#header-only-validation-hov-header-only-validate_1" class="md-nav__link">
     Header only validation (-hov, --header-only-validate)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-version-tracking-tv-template-version_1" class="md-nav__link">
+    Template version tracking (-tv, --template-version)
   </a>
   
 </li>
@@ -2590,6 +2786,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#template-version-tracking-tv-template-version_2" class="md-nav__link">
+    Template version tracking (-tv, --template-version)
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2608,8 +2811,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#treatle-author-profile-generate-and-trestle-author-profile-assemble" class="md-nav__link">
-    treatle author profile-generate and trestle author profile-assemble
+  <a href="#trestle-author-profile-generate-and-trestle-author-profile-assemble" class="md-nav__link">
+    trestle author profile-generate and trestle author profile-assemble
   </a>
   
 </li>
@@ -2617,6 +2820,13 @@
         <li class="md-nav__item">
   <a href="#trestle-author-ssp-generate-and-trestle-author-ssp-assemble" class="md-nav__link">
     trestle author ssp-generate and trestle author ssp-assemble
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-ssp-filter" class="md-nav__link">
+    trestle author ssp-filter
   </a>
   
 </li>
@@ -2740,6 +2950,17 @@ A template file will be created in <code>TRESTLE_ROOT/.trestle/author/my_task_na
 <p>By default <code>author docs</code> only indexes a flat directory. The recursive option allows the markdown files to be nested in sub-directories.</p>
 <h4 id="header-only-validation-hov-header-only-validate">Header only validation (<code>-hov</code>, <code>--header-only-validate</code>)<a class="headerlink" href="#header-only-validation-hov-header-only-validate" title="Permanent link">¤</a></h4>
 <p>Turns off the validation of the structure of the document and only validates the yaml header structure.</p>
+<h4 id="template-version-tracking-tv-template-version">Template version tracking (<code>-tv</code>, <code>--template-version</code>)<a class="headerlink" href="#template-version-tracking-tv-template-version" title="Permanent link">¤</a></h4>
+<p>This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version <em>of that document</em> (be it an instance or the template itself). This means:</p>
+<ul>
+<li>For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.</li>
+<li>For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.</li>
+</ul>
 <h2 id="trestle-author-folders"><code>trestle author folders</code><a class="headerlink" href="#trestle-author-folders" title="Permanent link">¤</a></h2>
 <p>`author folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.</p>
 <p>For example given the following template setup using <code>trestle author folders setup -tn my_task_2</code></p>
@@ -2773,6 +2994,17 @@ The names, numbers, and nesting of folders is user specifiable, however, unlike 
 <p>Validate the headers in markdown and metadata in drawio files.</p>
 <h4 id="header-only-validation-hov-header-only-validate_1">Header only validation (<code>-hov</code>, <code>--header-only-validate</code>)<a class="headerlink" href="#header-only-validation-hov-header-only-validate_1" title="Permanent link">¤</a></h4>
 <p>Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.</p>
+<h4 id="template-version-tracking-tv-template-version_1">Template version tracking (<code>-tv</code>, <code>--template-version</code>)<a class="headerlink" href="#template-version-tracking-tv-template-version_1" title="Permanent link">¤</a></h4>
+<p>This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version <em>of that document</em> (be it an instance or the template itself). This means:</p>
+<ul>
+<li>For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.</li>
+<li>For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.</li>
+</ul>
 <h2 id="trestle-author-headers"><code>trestle author headers</code><a class="headerlink" href="#trestle-author-headers" title="Permanent link">¤</a></h2>
 <p>Trestle author headers supports a different usecase that of <code>docs</code> and <code>folders</code> above: Some content is governed, however, it the content is non-standardized.</p>
 <p>The result: metadata but not content needs to be measured. <code>author headers</code> provides this functionality for drawio and markdown files.</p>
@@ -2795,12 +3027,26 @@ trestle_root
 If <code>--task-name</code> is not provided all folders in the repository will be measured.</p>
 <h4 id="exclude-ex-exclude">Exclude (<code>-ex</code>, <code>--exclude</code>)<a class="headerlink" href="#exclude-ex-exclude" title="Permanent link">¤</a></h4>
 <p>Primarily intended for use with global (<code>-g</code>), exclude will remove any <em>directory</em> from the search scope of trestle author headers. Must be a relative path to the root of a trestle project, however, can be multiple levels deep (e.g. <code>--exclude=architecture/drafts</code>) would allow content in <code>architecture/diagrams</code> to still be indexed to find the header.</p>
+<h4 id="template-version-tracking-tv-template-version_2">Template version tracking (<code>-tv</code>, <code>--template-version</code>)<a class="headerlink" href="#template-version-tracking-tv-template-version_2" title="Permanent link">¤</a></h4>
+<p>This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version <em>of that document</em> (be it an instance or the template itself). This means:</p>
+<ul>
+<li>For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.</li>
+<li>For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.</li>
+</ul>
 <h2 id="trestle-author-catalog-generate-and-trestle-author-catalog-assemble"><code>trestle author catalog-generate</code> and <code>trestle author catalog-assemble</code><a class="headerlink" href="#trestle-author-catalog-generate-and-trestle-author-catalog-assemble" title="Permanent link">¤</a></h2>
 <p>The <code>catalog</code> author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
-<h2 id="treatle-author-profile-generate-and-trestle-author-profile-assemble"><code>treatle author profile-generate</code> and <code>trestle author profile-assemble</code><a class="headerlink" href="#treatle-author-profile-generate-and-trestle-author-profile-assemble" title="Permanent link">¤</a></h2>
+<h2 id="trestle-author-profile-generate-and-trestle-author-profile-assemble"><code>trestle author profile-generate</code> and <code>trestle author profile-assemble</code><a class="headerlink" href="#trestle-author-profile-generate-and-trestle-author-profile-assemble" title="Permanent link">¤</a></h2>
 <p>The <code>profile</code> author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
 <h2 id="trestle-author-ssp-generate-and-trestle-author-ssp-assemble"><code>trestle author ssp-generate</code> and <code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-generate-and-trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
 <p>The <code>ssp-generate</code> sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  <code>ssp-assemble</code> can then assemble the markdown files into a single json SSP file.</p>
+<p>For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
+<h2 id="trestle-author-ssp-filter"><code>trestle author ssp-filter</code><a class="headerlink" href="#trestle-author-ssp-filter" title="Permanent link">¤</a></h2>
+<p>The <code>ssp-filter</code> sub-command takes a given SSP and filters its contents based on a given profile.  The SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.</p>
 <p>For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
                 
               
@@ -2874,10 +3120,10 @@ If <code>--task-name</code> is not provided all folders in the repository will b
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.8397ff9e.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../assets/javascripts/bundle.b1047164.min.js"></script>
       
     
   </body>
