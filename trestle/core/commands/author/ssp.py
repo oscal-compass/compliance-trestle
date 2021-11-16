@@ -45,7 +45,12 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-hm', '--header-merge', help=const.HELP_HEADER_MERGE, required=False, action='store_true', default=False
+            '-hdm',
+            '--header-dont-merge',
+            help=const.HELP_HEADER_MERGE,
+            required=False,
+            action='store_true',
+            default=False
         )
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
@@ -98,7 +103,7 @@ class SSPGenerate(AuthorCommonCommand):
             return 1
         try:
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, sections, True, header_merge=args.header_merge
+                markdown_path, yaml_header, sections, True, header_dont_merge=args.header_dont_merge
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')

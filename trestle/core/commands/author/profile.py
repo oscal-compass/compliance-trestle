@@ -47,7 +47,12 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-hm', '--header-merge', help=const.HELP_HEADER_MERGE, required=False, action='store_true', default=False
+            '-hdm',
+            '--header-dont-merge',
+            help=const.HELP_HEADER_MERGE,
+            required=False,
+            action='store_true',
+            default=False
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -72,7 +77,9 @@ class ProfileGenerate(AuthorCommonCommand):
 
             markdown_path = trestle_root / args.output
 
-            return self.generate_markdown(trestle_root, profile_path, markdown_path, yaml_header, args.header_merge)
+            return self.generate_markdown(
+                trestle_root, profile_path, markdown_path, yaml_header, args.header_dont_merge
+            )
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
             logger.debug(traceback.format_exc())
@@ -84,7 +91,7 @@ class ProfileGenerate(AuthorCommonCommand):
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        header_merge: bool
+        header_dont_merge: bool
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -101,7 +108,7 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, None, False, True, profile, header_merge
+                markdown_path, yaml_header, None, False, True, profile, header_dont_merge
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Profile {profile_path} not found, error {e}')

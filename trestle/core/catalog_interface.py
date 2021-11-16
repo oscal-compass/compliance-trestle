@@ -304,7 +304,7 @@ class CatalogInterface():
         responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        header_merge: bool = False
+        header_dont_merge: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -327,7 +327,7 @@ class CatalogInterface():
                 additional_content,
                 responses,
                 profile,
-                header_merge
+                header_dont_merge
             )
 
     @staticmethod
