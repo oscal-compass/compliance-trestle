@@ -228,6 +228,8 @@ class Docs(AuthorCommonCommand):
                         instance_version = md_api.processor.fetch_value_from_header(
                             item_path, author_const.TEMPLATE_VERSION_HEADER
                         )
+                        if instance_version is None:
+                            instance_version = '0.0.1'
                         versione_template_dir = TemplateVersioning.get_versioned_template_dir(
                             self.template_dir, instance_version
                         )
