@@ -135,6 +135,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         set_values = self._get_set_values(profile)
         # spec
         spec = {
+            'description': self._get_metadata_prop_value(profile, 'profile_mnemonic', self._name),
             'extends': self._get_metadata_prop_value(profile, 'base_profile_mnemonic', self._extends),
             'title': profile.metadata.title,
             'setValues': set_values,
