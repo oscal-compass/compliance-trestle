@@ -311,7 +311,6 @@ class ResultsMgr():
         analysis = []
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
-        analysis.append(f'results: {self.results_map}')
         return analysis
 
     def _component_extract(self, rule_use: RuleUse) -> None:
