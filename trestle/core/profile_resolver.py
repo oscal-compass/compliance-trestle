@@ -34,6 +34,73 @@ from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
+PART = 'part'
+NS = 'ns'
+CLASS = 'class_'
+TITLE = 'title'
+PROPS = 'props'
+PROSE = 'prose'
+PARTS = 'parts'
+LINKS = 'links'
+DEPENDS_ON = 'depends_on'
+LABEL = 'label'
+USAGE = 'usage'
+CONSTRAINTS = 'constraints'
+GUIDELINES = 'guidelines'
+VALUES = 'values'
+SELECT = 'select'
+REMARKS = 'remarks'
+HOW_MANY = 'how_many'
+CHOICE = 'choice'
+PARAMS = 'params'
+CONTROLS = 'controls'
+UUID = 'uuid'
+VALUE = 'value'
+PROPERTY = 'property'
+PARAMETER = 'parameter'
+CONTROL = 'control'
+LINK = 'link'
+CONSTRAINT = 'constraint'
+GUIDELINE = 'guideline'
+GROUPS = 'groups'
+GROUP = 'group'
+ID = 'id'
+NAME = 'name'
+CATALOG = 'catalog'
+
+PART_ITEMS = [NS, CLASS, TITLE, PROPS, PROSE, PARTS, LINKS]
+
+PROPERTY_ITEMS = [UUID, NS, VALUE, CLASS, REMARKS]
+
+PARAMETER_ITEMS = [CLASS, DEPENDS_ON, PROPS, LINKS, LABEL, USAGE, CONSTRAINTS, GUIDELINES, VALUES, SELECT, REMARKS]
+
+CONTROL_ITEMS = [CLASS, TITLE, PARAMS, PROPS, LINKS, PARTS, CONTROLS]
+
+GROUP_ITEMS = [ID, CLASS, TITLE, PARAMS, PROPS, LINKS, PARTS, GROUPS, CONTROLS]
+
+CATALOG_ITEMS = [PARAMS, CONTROLS, GROUPS]
+
+LIST_TYPE_ITEMS = [PROPS, PARAMS, PARTS, LINKS, CONSTRAINTS, GUIDELINES, VALUES, CONTROLS, GROUPS]
+
+LIST_ELEMENT_TYPE = {
+    PROPS: PROPERTY,
+    PARTS: PART,
+    LINKS: LINK,
+    CONSTRAINTS: CONSTRAINT,
+    GUIDELINES: GUIDELINE,
+    VALUES: VALUE,
+    CONTROLS: CONTROL
+}
+
+ITEM_CONTENTS_MAP = {
+    PART: PART_ITEMS,
+    PROPERTY: PROPERTY_ITEMS,
+    PARAMETER: PARAMETER_ITEMS,
+    CONTROL: CONTROL_ITEMS,
+    GROUP: GROUP_ITEMS,
+    CATALOG: CATALOG_ITEMS
+}
+
 
 class ProfileResolver():
     """Class to resolve a catalog given a profile."""
@@ -169,12 +236,17 @@ class ProfileResolver():
             # if a control includes controls - only include those that we know are needed
             final_control_ids = self._prune_controls(needed_ids)
 
+            cat_controls = []
+
             # build the needed groups of controls
             group_dict: Dict[str, cat.Group] = {}
             for control_id in final_control_ids:
-                group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
-                group = group_dict.get(group_id)
                 control = self._catalog_interface.get_control(control_id)
+                group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
+                if group_id == 'catalog':
+                    cat_controls.append(control)
+                    continue
+                group = group_dict.get(group_id)
                 if group is None:
                     group = cat.Group(id=group_id, title=group_title, class_=group_class, controls=[control])
                     group_dict[group_id] = group
@@ -194,11 +266,13 @@ class ProfileResolver():
             # should avoid empty lists so set to None if empty
             new_resources = none_if_empty(new_resources)
             new_groups = none_if_empty(new_groups)
+            cat_controls = none_if_empty(cat_controls)
 
             new_cat = cat.Catalog(
                 uuid=str(uuid4()),
                 metadata=self._catalog.metadata,
                 back_matter=common.BackMatter(resources=new_resources),
+                controls=cat_controls,
                 groups=new_groups
             )
 
@@ -228,90 +302,74 @@ class ProfileResolver():
             logger.debug('merge filter initialize')
             self._profile = profile
 
-        def _join_attr_lists(self, dest: OBT, src: OBT, attr: str) -> None:
-            src_list = getattr(src, attr, None)
-            if not src_list:
+        def _get_id(self, item: OBT) -> Optional[str]:
+            id_ = getattr(item, ID, None)
+            if id_ is None:
+                id_ = getattr(item, NAME, None)
+            return id_
+
+        def _merge_attr_lists(self, dest: List[OBT], src: List[OBT], attr: str, merge_method: prof.Method) -> None:
+            added_items = []
+            if merge_method == prof.Method.keep:
+                dest.extend(src)
                 return
-            dest_list = as_list(getattr(dest, attr, None))
-            dest_list.extend(src_list)
-            setattr(dest, attr, dest_list)
+            for item in src:
+                # if there is an exact copy of this in dest then ignore it
+                if item not in dest:
+                    merged = False
+                    item_id = self._get_id(item)
+                    if item_id is not None:
+                        for other in dest:
+                            other_id = self._get_id(other)
+                            if other_id == item_id:
+                                if merge_method == prof.Method.merge:
+                                    self._merge_items(other, item, LIST_ELEMENT_TYPE[attr], merge_method)
+                                merged = True
+                                break
+                    # it isn't already in dest and no match was found for merge, so append
+                    if not merged:
+                        added_items.append(item)
+            dest.extend(added_items)
 
-        def _merge_controls(self, dest: cat.Control, src: cat.Control) -> None:
-            """
-            Merge two controls together when the merge method is merge.
-
-            According to OSCAL docs the merge combines all contents of two merged controls
-            even if two items have the same name.  ids, such as control ids, must be unique -
-            but names, such as prop names, may be duplicated.
-            """
-            for attr in ['params', 'props', 'links', 'parts']:
-                self._join_attr_lists(dest, src, attr)
-
-            if src.controls:
-                if not dest.controls:
-                    dest.controls = src.controls
-                else:
-                    self._merge_control_lists(dest.controls, src.controls, prof.Method.merge)
-
-        def _set_dest_attr_if_none(self, dest: OBT, src: OBT, attr: str) -> None:
-            dest_val = getattr(dest, attr, None)
-            src_val = getattr(src, attr, None)
-            id_ = getattr(dest, 'id', 'id_not_available')
-            if src_val is None:
-                return
-            if dest_val is None:
-                setattr(dest, attr, src_val)
-            else:
-                logger.debug(f'Attribute from source was dropped in merge for {id_}')
-
-        def _merge_params(self, dest: common.Parameter, src: common.Parameter) -> None:
-            """Merge src parameter into dest when the merge method is merge."""
-            for attr in ['props', 'links', 'constraints', 'guidelines', 'values']:
-                self._join_attr_lists(dest, src, attr)
-
-            for attr in ['depends_on', 'usage', 'select', 'remarks']:
-                self._set_dest_attr_if_none(dest, src, attr)
-
-        def _merge_control_lists(
-            self, merged_list: List[cat.Control], src_list: List[cat.Control], method: prof.Method
+        def _merge_attrs(
+            self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: prof.Method
         ) -> None:
-            merged_ids = [control.id for control in merged_list]
-            for src in src_list:
-                if src.id not in merged_ids:
-                    # this applies to all methods: keep, use-first and merge
-                    merged_list.append(src)
-                else:
-                    if method == prof.Method.merge:
-                        index = merged_ids.index(src.id)
-                        self._merge_controls(merged_list[index], src)
-                    elif method == prof.Method.keep:
-                        merged_list.append(src)
-                    # if anything else, it is use-first and only keep first one, which already happened above
+            """Merge this attr of src into the attr of dest."""
+            src_attr = getattr(src, attr, None)
+            if src_attr is None:
+                return
+            dest_attr = getattr(dest, attr, None)
+            if dest_attr is not None:
+                if merge_method == prof.Method.use_first:
+                    return
+            if dest_attr == src_attr and merge_method != prof.Method.keep:
+                return
+            if attr in LIST_TYPE_ITEMS:
+                dest_attr = as_list(dest_attr)
+                self._merge_attr_lists(dest_attr, src_attr, attr, merge_method)
+                setattr(dest, attr, dest_attr)
+            # does this attrib contain sub items that can be merged
+            elif attr in ITEM_CONTENTS_MAP:
+                for sub_attr in ITEM_CONTENTS_MAP[attr]:
+                    src_sub_attr = getattr(src_attr, sub_attr, None)
+                    if src_sub_attr is not None:
+                        dest_sub_attr = getattr(dest_attr, sub_attr, None)
+                        if dest_sub_attr == src_sub_attr:
+                            continue
+                        if sub_attr in LIST_TYPE_ITEMS:
+                            dest_sub_attr = as_list(dest_sub_attr)
+                            self._merge_attr_lists(dest_sub_attr, src_sub_attr, sub_attr, merge_method)
+                        else:
+                            self._merge_attrs(dest_sub_attr, src_sub_attr, sub_attr, merge_method)
+                        setattr(dest_attr, sub_attr, dest_sub_attr)
+                setattr(dest, attr, dest_attr)
+            # it is just a value and src will override it, including if dest is None
+            else:
+                setattr(dest, attr, src_attr)
 
-        def _merge_groups(self, dest: List[cat.Group], src: List[cat.Group], merge_method: prof.Method) -> None:
-            """Merge two lists of groups recursively."""
-            for group in src:
-                dest_ids = [grp.id for grp in dest]
-                if group.id not in dest_ids:
-                    # clone the group except for controls
-                    new_group = cat.Group(
-                        id=group.id,
-                        title=group.title,
-                        controls=[],
-                        class_=group.class_,
-                        params=group.params,
-                        props=group.props,
-                        links=group.links,
-                        parts=group.parts
-                        # insert_controls only apply to custom merge, not currently supported
-                    )
-                    dest.append(new_group)
-                    dest_ids.append(group.id)
-                index = dest_ids.index(group.id)
-                self._merge_control_lists(dest[index].controls, group.controls, merge_method)
-                if group.groups is not None:
-                    dest[index].groups = as_list(dest[index].groups)
-                    self._merge_groups(dest[index].groups, group.groups, merge_method)
+        def _merge_items(self, dest: OBT, src: OBT, item_type: str, merge_method: prof.Method) -> None:
+            for attr in ITEM_CONTENTS_MAP[item_type]:
+                self._merge_attrs(dest, src, attr, merge_method)
 
         def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
             """Get flattened content of group and its groups recursively."""
@@ -352,34 +410,7 @@ class ProfileResolver():
             dest = self._flatten_catalog(dest, as_is)
             src = self._flatten_catalog(src, as_is)
 
-            # The two loops below are similar but no big win converting to single loop invoked twice
-            if src.controls is not None:
-                dest.controls = as_list(dest.controls)
-                dest_ids = [control.id for control in dest.controls]
-                for control in src.controls:
-                    in_list = control.id in dest_ids
-                    if merge_method == prof.Method.keep or not in_list:
-                        dest.controls.append(control)
-                    elif merge_method == prof.Method.merge:
-                        index = dest_ids.index(control.id)
-                        self._merge_controls(dest.controls[index], control)
-
-            if src.params is not None:
-                dest.params = as_list(dest.params)
-                dest_ids = [param.id for param in dest.params]
-                for param in src.params:
-                    in_list = param.id in dest_ids
-                    if merge_method == prof.Method.keep or not in_list:
-                        dest.params.append(param)
-                    elif merge_method == prof.Method.merge:
-                        index = dest_ids.index(param.id)
-                        self._merge_params(dest.params[index], param)
-
-            # we only have groups at this point if as_is is True
-            if src.groups is not None:
-                if dest.groups is None:
-                    dest.groups = []
-                self._merge_groups(dest.groups, src.groups, merge_method)
+            self._merge_items(dest, src, CATALOG, merge_method)
 
             return dest
 
@@ -723,8 +754,14 @@ class ProfileResolver():
                                 logger.warning(msg)
                                 add.position = prof.Position.ending
                             control = self._catalog_interface.get_control(id_)
-                            self._add_to_control(control, add)
-                            self._catalog_interface.replace_control(control)
+                            if control is None:
+                                logger.warning(
+                                    f'Alter/Add refers to control {id_} but it is not found in the import '
+                                    + f'for profile {self._profile.metadata.title}'
+                                )
+                            else:
+                                self._add_to_control(control, add)
+                                self._catalog_interface.replace_control(control)
 
             if self._change_prose:
                 # go through all controls and fix the prose based on param values

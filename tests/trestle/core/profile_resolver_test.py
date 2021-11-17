@@ -227,12 +227,15 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
 def test_merge_params() -> None:
     """Test the merge of params."""
     params: List[com.Parameter] = test_utils.generate_param_list('foo', 2)
+    # ids don't need to match in merge but normally they would
+    params[1].id = params[0].id
+    # kill remarks to confirm it is filled in by merge
     params[0].remarks = None
     profile = gens.generate_sample_model(prof.Profile)
     merge = ProfileResolver.Merge(profile)
-    merge._merge_params(params[0], params[1])
+    merge._merge_items(params[0], params[1], 'parameter', prof.Method.merge)
     assert params[0]
-    assert len(params[0].constraints) == 2
+    assert len(params[0].constraints) == 1
     assert len(params[0].guidelines) == 2
     assert len(params[0].props) == 2
     # confirm that in the merge, the source remark overwrote the dest remark because it was None
