@@ -235,6 +235,7 @@ def test_merge_params() -> None:
     merge = ProfileResolver.Merge(profile)
     merge._merge_items(params[0], params[1], 'parameter', prof.Method.merge)
     assert params[0]
+    # the contraints in each are identical so they don't merge
     assert len(params[0].constraints) == 1
     assert len(params[0].guidelines) == 2
     assert len(params[0].props) == 2
