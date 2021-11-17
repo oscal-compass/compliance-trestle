@@ -170,6 +170,7 @@ profile-title.cis = CIS Red Hat OpenShift Container Platform 4 Benchmark
 selected-rules  = adjunct-data/task-files/selected_rules.json
 enabled-rules  = adjunct-data/task-files/enabled_rules.json
 ```
+
 </details>
 
 <details>
@@ -215,7 +216,6 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 ```
 
 </details>
-
 
 - Perform and validate the transform.
 
