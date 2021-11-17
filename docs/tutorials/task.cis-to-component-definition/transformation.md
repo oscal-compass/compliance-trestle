@@ -187,24 +187,7 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
     "file_permissions_scheduler",
     "file_owner_kube_scheduler",
     "file_groupowner_kube_scheduler",
-    "file_permissions_etcd_member",
-    "file_owner_etcd_member",
-    "file_groupowner_etcd_member",
-    "file_permissions_cni_conf",
-    "file_permissions_multus_conf",
-    "file_permissions_ip_allocations",
-    "file_perms_openshift_sdn_cniserver_config",
-    "kubelet_eviction_thresholds_set_soft_memory_available",
-    "kubelet_eviction_thresholds_set_soft_nodefs_available",
-    "kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
-    "kubelet_eviction_thresholds_set_soft_imagefs_available",
-    "kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
-    "kubelet_eviction_thresholds_set_hard_memory_available",
-    "kubelet_eviction_thresholds_set_hard_nodefs_available",
-    "kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
-    "kubelet_eviction_thresholds_set_hard_imagefs_available",
-    "kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
-    "etcd_unique_ca"
+    "file_permissions_etcd_member"
   ]
 }
 
@@ -226,24 +209,7 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
     "file_permissions_scheduler",
     "file_owner_kube_scheduler",
     "file_groupowner_kube_scheduler",
-    "file_permissions_etcd_member",
-    "file_owner_etcd_member",
-    "file_groupowner_etcd_member",
-    "file_permissions_cni_conf",
-    "file_permissions_multus_conf",
-    "file_permissions_ip_allocations",
-    "file_perms_openshift_sdn_cniserver_config",
-    "kubelet_eviction_thresholds_set_soft_memory_available",
-    "kubelet_eviction_thresholds_set_soft_nodefs_available",
-    "kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
-    "kubelet_eviction_thresholds_set_soft_imagefs_available",
-    "kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
-    "kubelet_eviction_thresholds_set_hard_memory_available",
-    "kubelet_eviction_thresholds_set_hard_nodefs_available",
-    "kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
-    "kubelet_eviction_thresholds_set_hard_imagefs_available",
-    "kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
-    "etcd_unique_ca"
+    "file_permissions_etcd_member"
   ]
 }
 ```
@@ -275,10 +241,10 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
 ```
 {
   "component-definition": {
-    "uuid": "801a494c-995c-47e6-b260-0b6c74c69c33",
+    "uuid": "c08f1c4d-fc9e-4fa9-a6bd-8b4e20422ae0",
     "metadata": {
       "title": "Component definition for OCP4 profiles",
-      "last-modified": "2021-11-17T13:00:44+00:00",
+      "last-modified": "2021-11-17T14:27:27+00:00",
       "version": "0.28.1",
       "oscal-version": "1.0.0",
       "roles": [
@@ -297,19 +263,19 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
       ],
       "parties": [
         {
-          "uuid": "5984fa8a-d834-4b44-9b86-1cb139baf16b",
+          "uuid": "741d5f7e-2296-4224-ad75-5a60bb30a826",
           "type": "organization",
           "name": "International Business Machines",
           "remarks": "IBM"
         },
         {
-          "uuid": "ef42b0ee-46ea-4af0-908f-a497ce348e72",
+          "uuid": "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
           "type": "organization",
           "name": "Customer",
           "remarks": "organization to be customized at account creation only for their Component Definition"
         },
         {
-          "uuid": "62eff0cc-a97a-45a8-80a0-17c106cc4eff",
+          "uuid": "813451c9-5265-447d-b39e-4fbcac440888",
           "type": "organization",
           "name": "ISV",
           "remarks": "organization to be customized at ISV subscription only for their Component Definition"
@@ -319,33 +285,33 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
         {
           "role-id": "prepared-by",
           "party-uuids": [
-            "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+            "741d5f7e-2296-4224-ad75-5a60bb30a826"
           ]
         },
         {
           "role-id": "prepared-for",
           "party-uuids": [
-            "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-            "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+            "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+            "813451c9-5265-447d-b39e-4fbcac440888"
           ]
         },
         {
           "role-id": "content-approver",
           "party-uuids": [
-            "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+            "741d5f7e-2296-4224-ad75-5a60bb30a826"
           ]
         }
       ]
     },
     "components": [
       {
-        "uuid": "b504fe1c-abb1-4bec-bf38-bdddd73f34f6",
+        "uuid": "944e20f9-6a7d-4af0-9066-911cfbeb3d9a",
         "type": "Service",
         "title": "OSCO",
         "description": "OSCO",
         "control-implementations": [
           {
-            "uuid": "cdb45880-f5ab-4415-8f3b-012cfa82d3ca",
+            "uuid": "51ce9ce9-c455-4124-a189-22f84301723d",
             "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
             "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
             "props": [
@@ -374,7 +340,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
             ],
             "implemented-requirements": [
               {
-                "uuid": "7c073d0e-0670-4a30-8a65-10ae43a83815",
+                "uuid": "fd024a93-cbc2-40da-b43b-8d972a089dfc",
                 "control-id": "CIS-1.1.1",
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -390,26 +356,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "35d7922e-2794-4cfc-9715-b953366a270a",
+                "uuid": "b64e6a80-2d6e-4c38-9c03-f479b782d406",
                 "control-id": "CIS-1.1.2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
@@ -425,26 +391,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "1cb19b3e-e402-45c3-8ded-f47bfd783e62",
+                "uuid": "966d4e45-f3bc-4abd-84a9-48a7351c3a15",
                 "control-id": "CIS-1.1.2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
@@ -460,26 +426,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "799568f6-b25b-415a-84f2-41c0702edaa8",
+                "uuid": "82b8964f-b878-4e80-ae18-d0eb423dfdcf",
                 "control-id": "CIS-1.1.3",
                 "description": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -495,26 +461,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "af2e9a66-c490-4d2a-ab0b-b61f3fe155a9",
+                "uuid": "9690ee49-11a9-4e31-93a0-f46a5f69c5dd",
                 "control-id": "CIS-1.1.4",
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
@@ -530,26 +496,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "7c267f4e-5b34-4086-9dde-45ec792326e5",
+                "uuid": "6f3b4689-0166-4d31-83ae-4d82ac6697eb",
                 "control-id": "CIS-1.1.4",
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
@@ -565,26 +531,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "db1f7ec4-0de3-41a0-b815-aeba1291753d",
+                "uuid": "9d4f32ed-8305-4dbf-8ba1-7a82b7b5156f",
                 "control-id": "CIS-1.1.5",
                 "description": "Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -600,26 +566,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "7e6109a8-ab1f-4599-9acb-990376948b16",
+                "uuid": "84210a78-491c-4c85-8587-df51ed67ca28",
                 "control-id": "CIS-1.1.6",
                 "description": "Ensure that the scheduler pod specification file ownership is set to root:root",
                 "props": [
@@ -635,26 +601,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "fc8f09a8-43a3-4b8e-811b-a1c25a5efb86",
+                "uuid": "85bcd145-2d04-49bc-bc53-0aa7dc39c34b",
                 "control-id": "CIS-1.1.6",
                 "description": "Ensure that the scheduler pod specification file ownership is set to root:root",
                 "props": [
@@ -670,26 +636,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "f2af22b6-4a2c-484e-9930-c363fd7bd52d",
+                "uuid": "6cf649b3-2fec-42a1-ada8-fb971648cfb6",
                 "control-id": "CIS-1.1.7",
                 "description": "Ensure that the etcd pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -705,615 +671,20 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "8cb1fe31-605d-46cb-9aa5-5f69f92b6c0a",
-                "control-id": "CIS-1.1.8",
-                "description": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "74a0274a-c409-4fbe-81b9-d638a130f660",
-                "control-id": "CIS-1.1.8",
-                "description": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "36d679f3-bd20-4cac-acac-a561d769f13d",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "090c2587-ef48-4ab6-b3d1-5187b5951e6e",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_multus_conf",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "f7aca68c-54df-43e1-8319-722b1c3bc75f",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_ip_allocations",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "2cf5f1fc-c67b-425a-80a9-abf0bdc5e9bf",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_perms_openshift_sdn_cniserver_config",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "15f24146-e258-4934-8a8e-a7e5654ff108",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "8ed03260-0101-4ee8-8a5c-d901be0f8100",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "88f3db3f-dd48-4925-8b9c-04b65cf07743",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "c30637f6-c333-4532-8314-ffce33f075a6",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "a8e2a409-6ef6-4030-b95d-0c924910759b",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "521a4f71-6fbf-41dd-b0e4-e9955bfd5daa",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_memory_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "ae7714a7-e435-4130-8b4c-9f5f92a873a8",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "1aef5512-af43-4e0d-bf90-50cdfbfee29b",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "58f502bf-4680-4bb1-b6e6-1839bd04c7de",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "79b4541f-05c5-4bf0-a315-74f4eb0891ba",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "1c60e94b-a755-4856-a57c-fe99506ee41d",
-                "control-id": "CIS-2.7",
-                "description": "Ensure that a unique Certificate Authority is used for etcd",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that a unique Certificate Authority is used for etcd"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
@@ -1321,7 +692,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
             ]
           },
           {
-            "uuid": "d77d736c-9d4f-4518-b5dc-cada20abe005",
+            "uuid": "02798083-2376-4ab6-a1d7-846a82ed4ecb",
             "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
             "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
             "props": [
@@ -1350,7 +721,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
             ],
             "implemented-requirements": [
               {
-                "uuid": "f2f68f7c-b926-40e3-a36e-c82cf0281506",
+                "uuid": "202478c7-e5a2-4aaf-a218-4485c4117e9c",
                 "control-id": "CIS-1.1.1",
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -1366,26 +737,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "d7a7947e-1be2-4b13-865e-313a8a310a2e",
+                "uuid": "287593de-8c05-4d50-9d30-1b078563a071",
                 "control-id": "CIS-1.1.2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
@@ -1401,26 +772,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "57e0683f-f4a1-4c4c-ac2d-cf58507becf9",
+                "uuid": "3e5dbc64-b426-4134-b9a1-33eba02633bb",
                 "control-id": "CIS-1.1.2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
@@ -1436,26 +807,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "b497deaf-7dbf-4bf7-944b-899e9b6b4ce4",
+                "uuid": "aeb6f0a4-6ce8-4e13-a0d8-189309db535c",
                 "control-id": "CIS-1.1.3",
                 "description": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -1471,26 +842,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "e7a74fa5-036e-4437-8b62-98012677ad12",
+                "uuid": "b736f9d5-69fe-4b73-9f27-bd3af16e375e",
                 "control-id": "CIS-1.1.4",
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
@@ -1506,26 +877,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "ab529cc7-7319-44d4-ab70-402a4b31b920",
+                "uuid": "7442edce-c31a-42e6-a69c-9064f61954a9",
                 "control-id": "CIS-1.1.4",
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
@@ -1541,26 +912,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "b42fad4c-1599-4b7f-8d5d-c0a33a340be3",
+                "uuid": "ed20fe11-158c-441f-aef8-5cb936f3e92a",
                 "control-id": "CIS-1.1.5",
                 "description": "Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -1576,26 +947,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "616c95af-ed6e-4e07-bd93-2a8007233da6",
+                "uuid": "849a350c-020a-43ac-9204-46f28fe4b08c",
                 "control-id": "CIS-1.1.6",
                 "description": "Ensure that the scheduler pod specification file ownership is set to root:root",
                 "props": [
@@ -1611,26 +982,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "9ddcd998-4f32-4015-a8c2-4c0b42df7432",
+                "uuid": "1a4ff758-fe3f-4ebd-a7af-755e5ce35050",
                 "control-id": "CIS-1.1.6",
                 "description": "Ensure that the scheduler pod specification file ownership is set to root:root",
                 "props": [
@@ -1646,26 +1017,26 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "9795434c-f16c-444d-b569-7ff40913a385",
+                "uuid": "574a6c2c-6dc3-4251-9ed2-484784c827ec",
                 "control-id": "CIS-1.1.7",
                 "description": "Ensure that the etcd pod specification file permissions are set to 644 or more restrictive",
                 "props": [
@@ -1681,615 +1052,20 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
+                      "8572bffc-8cd0-46f8-84aa-f4e9ff952a7f",
+                      "813451c9-5265-447d-b39e-4fbcac440888"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "da0d0035-89e2-417b-92bb-c0c46e860057",
-                "control-id": "CIS-1.1.8",
-                "description": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "935c4456-130d-4cdf-acd6-6b42ea9eb3d7",
-                "control-id": "CIS-1.1.8",
-                "description": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "7acef902-420f-488e-8c65-1f0bfcc0a0cc",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "03e31bb7-0392-418d-9e31-af157cbd18e6",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_multus_conf",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "ab2d6e0c-ce93-43b1-abaa-e7b224f6547f",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_ip_allocations",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "653d080c-ee8a-466f-9eca-7edfe1034a0f",
-                "control-id": "CIS-1.1.9",
-                "description": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_perms_openshift_sdn_cniserver_config",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "b26fcd6c-0aad-4550-93bf-818fd2445489",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "7da94d7a-a9c7-4432-927d-35a178a616b7",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "b7adf41a-ac28-4ba4-bf85-a8555335cfdf",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "e731367e-1820-4666-894b-759de7f674ae",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "e1a86160-f228-468c-8adc-2fe54ec8336c",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "9ea15f05-ffdf-428b-8db5-1f1f082520f6",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_memory_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "446ec3da-78a8-4a21-ba2c-fc20d404c1ac",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "3cb915c3-d7a9-4a48-9927-1f63e8c74bc8",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "1d26f20f-5553-4d55-8f82-3522a1e522cf",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "0fc2dd39-5917-4099-be36-41c7122e9672",
-                "control-id": "CIS-1.3.1",
-                "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that garbage collection is configured as appropriate"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "468a48bf-6ca7-4aa1-8c0e-89cb6d450aa7",
-                "control-id": "CIS-2.7",
-                "description": "Ensure that a unique Certificate Authority is used for etcd",
-                "props": [
-                  {
-                    "name": "XCCDF_rule",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure that a unique Certificate Authority is used for etcd"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "ef42b0ee-46ea-4af0-908f-a497ce348e72",
-                      "62eff0cc-a97a-45a8-80a0-17c106cc4eff"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "5984fa8a-d834-4b44-9b86-1cb139baf16b"
+                      "741d5f7e-2296-4224-ad75-5a60bb30a826"
                     ]
                   }
                 ]

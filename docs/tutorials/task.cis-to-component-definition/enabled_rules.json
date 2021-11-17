@@ -9,23 +9,6 @@
     "file_permissions_scheduler",
     "file_owner_kube_scheduler",
     "file_groupowner_kube_scheduler",
-    "file_permissions_etcd_member",
-    "file_owner_etcd_member",
-    "file_groupowner_etcd_member",
-    "file_permissions_cni_conf",
-    "file_permissions_multus_conf",
-    "file_permissions_ip_allocations",
-    "file_perms_openshift_sdn_cniserver_config",
-    "kubelet_eviction_thresholds_set_soft_memory_available",
-    "kubelet_eviction_thresholds_set_soft_nodefs_available",
-    "kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
-    "kubelet_eviction_thresholds_set_soft_imagefs_available",
-    "kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
-    "kubelet_eviction_thresholds_set_hard_memory_available",
-    "kubelet_eviction_thresholds_set_hard_nodefs_available",
-    "kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
-    "kubelet_eviction_thresholds_set_hard_imagefs_available",
-    "kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
-    "etcd_unique_ca"
+    "file_permissions_etcd_member"
   ]
 }
