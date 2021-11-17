@@ -3,6 +3,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.28.1 (2021-11-17)
+### Fix
+* Remove results {} from osco-to-oscal console display ([#866](https://github.com/IBM/compliance-trestle/issues/866)) ([`d62051e`](https://github.com/IBM/compliance-trestle/commit/d62051e0fb45c99edd97b0314117b7208dd11d91))
+* Add spec.desctiption to produced yaml ([#865](https://github.com/IBM/compliance-trestle/issues/865)) ([`b988684`](https://github.com/IBM/compliance-trestle/commit/b988684ffb02011c4f890b8f889abb0c7184e03c))
+
 ## v0.28.0 (2021-11-16)
 ### Feature
 * Add yaml header to various trestle author docs in a safe manner. ([#853](https://github.com/IBM/compliance-trestle/issues/853)) ([`0b6f8a1`](https://github.com/IBM/compliance-trestle/commit/0b6f8a18d1de460c14fa36d107729e367682045e))
