@@ -4,6 +4,7 @@ metadata:
   name: roks-cis-node
   namespace: openshift-compliance
 spec:
+  description: roks-cis-node
   disableRules:
   - name: xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver
     rationale: not determinable from specification

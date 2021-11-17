@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle direct i/o reading and writing controls as markdown."""
-
+import copy
 import logging
 import pathlib
 import re
@@ -305,7 +305,7 @@ class ControlIOWriter():
         if control.parts:
             for part in control.parts:
                 prose += ControlIOWriter._get_control_section_part(part, part_name)
-        return prose
+        return prose.strip()
 
     @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
@@ -350,7 +350,8 @@ class ControlIOWriter():
         sections: Optional[Dict[str, str]],
         additional_content: bool,
         prompt_responses: bool,
-        profile: Optional[prof.Profile]
+        profile: Optional[prof.Profile],
+        header_dont_merge: bool
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -379,7 +380,10 @@ class ControlIOWriter():
         self._sections = sections
 
         # Need to merge any existing header info with the new one.  Either could be empty.
-        merged_header = yaml_header if yaml_header else {}
+        if header_dont_merge and not header == {}:
+            merged_header = {}
+        else:
+            merged_header = copy.deepcopy(yaml_header) if yaml_header else {}
         if header:
             ControlIOWriter.merge_dicts_deep(merged_header, header)
         self._add_yaml_header(merged_header)

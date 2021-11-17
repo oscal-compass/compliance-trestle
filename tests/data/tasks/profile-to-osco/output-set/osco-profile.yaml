@@ -4,6 +4,7 @@ metadata:
   name: name
   namespace: namespace
 spec:
+  description: name
   extends: extends
   setValues:
   - name: myco_minimum_password_length
