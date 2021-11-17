@@ -341,9 +341,8 @@ class ProfileResolver():
             if src_attr is None:
                 return
             dest_attr = getattr(dest, attr, None)
-            if dest_attr is not None:
-                if merge_method == prof.Method.use_first:
-                    return
+            if dest_attr is not None and merge_method == prof.Method.use_first:
+                return
             if dest_attr == src_attr and merge_method != prof.Method.keep:
                 return
             if attr in LIST_TYPE_ITEMS:
