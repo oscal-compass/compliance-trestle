@@ -16,7 +16,8 @@ import argparse
 import shutil
 import sys
 from pathlib import Path
-from unittest import mock
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -33,6 +34,11 @@ from trestle.utils.load_distributed import load_distributed
 subcommand_list = const.MODEL_TYPE_LIST
 
 
+def mock_return(*args, **kwargs):
+    """Mock successful function call with no return value."""
+    return
+
+
 def _copy_local(source_model_path, source_model_name, model_alias):
     plural_alias = fs.model_type_to_model_dir(model_alias)
     full_model_path = source_model_path / plural_alias / source_model_name
@@ -41,17 +47,17 @@ def _copy_local(source_model_path, source_model_name, model_alias):
     shutil.copytree(full_model_path, local_model_path)
 
 
-def test_replicate_cmd_no_file(tmp_trestle_dir: Path) -> None:
+def test_replicate_cmd_no_file(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) -> None:
     """Confirm failure when file does not exist."""
     for subcommand in subcommand_list:
         test_args = f'trestle replicate {subcommand} -n mock_file_name -o random_named_{subcommand}'.split()
-        with mock.patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
-            assert rc != 0
+        monkeypatch.setattr(sys, 'argv', test_args)
+        rc = Trestle().run()
+        assert rc != 0
 
 
 @pytest.mark.parametrize('regen', ['', '-r'])
-def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
+def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen, monkeypatch: MonkeyPatch) -> None:
     """Test replicate command."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
@@ -67,9 +73,9 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
 
     # execute the command to replicate the model into replicated
     test_args = f'trestle replicate catalog -n {source_name} -o {rep_name} {regen}'.split()
-    with mock.patch.object(sys, 'argv', test_args):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', test_args)
+    rc = Trestle().run()
+    assert rc == 0
 
     # now load the replicate and compare
 
@@ -88,8 +94,26 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
     assert (expected_model_instance == rep_model_instance) == (regen == '')
 
 
-def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
+@pytest.mark.parametrize('regen', ['', '-r'])
+def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatch: MonkeyPatch) -> None:
     """Test replicate command failure paths."""
+
+    def load_distributed_permission_error(*args, **kwargs):
+        raise PermissionError
+
+    def load_distributed_error(*args, **kwargs):
+        raise err.TrestleError('load_distributed_error')
+
+    def load_distributed_return(*args, **kwargs):
+        model_instance = Catalog.oscal_read(local_data_file)
+        return any, 'catalog', model_instance
+
+    def execute_trestle_error(*args, **kwargs):
+        raise err.TrestleError('execute_trestle_error')
+
+    def simulate_trestle_error(*args, **kwargs):
+        raise err.TrestleError('simulate_trestle_error')
+
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
     source_name = 'minimal_catalog'
@@ -107,9 +131,9 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
     rep_file.touch()
 
     test_args = f'trestle replicate catalog -n {source_name} -o {rep_name} -tr {tmp_trestle_dir}'.split()
-    with mock.patch.object(sys, 'argv', test_args):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', test_args)
+    rc = Trestle().run()
+    assert rc == 1
 
     shutil.rmtree(catalogs_dir / rep_name, ignore_errors=True)
 
@@ -118,34 +142,30 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
     )
 
     # Force PermissionError:
-    with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:
-        load_distributed_mock.side_effect = PermissionError
-        rc = ReplicateCmd.replicate_object('catalog', args)
-        assert rc == 1
+    monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_permission_error)
+    rc = ReplicateCmd.replicate_object('catalog', args)
+    assert rc == 1
 
-    # Force TrestleError:
-    with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:
-        load_distributed_mock.side_effect = err.TrestleError('load_distributed_error')
-        rc = ReplicateCmd.replicate_object('catalog', args)
-        assert rc == 1
+    # Force TrestleError only:
+    monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_error)
+    rc = ReplicateCmd.replicate_object('catalog', args)
+    assert rc == 1
 
-    with mock.patch('trestle.core.commands.replicate.Plan.execute') as execute_mock:
-        with mock.patch('trestle.core.commands.replicate.Plan.simulate') as simulate_mock:
-            with mock.patch('trestle.core.commands.replicate.Plan.rollback') as rollback_mock:
-                simulate_mock.side_effect = None
-                rollback_mock.side_effect = None
-                execute_mock.side_effect = err.TrestleError('execute_trestle_error')
-                rc = ReplicateCmd.replicate_object('catalog', args)
-                assert rc == 1
+    monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_return)
+    monkeypatch.setattr('trestle.core.commands.replicate.Plan.simulate', mock_return)
+    monkeypatch.setattr('trestle.core.commands.replicate.Plan.rollback', mock_return)
+    monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
+    rc = ReplicateCmd.replicate_object('catalog', args)
+    assert rc == 1
 
     # Force TrestleError in simulate:
-    with mock.patch('trestle.core.commands.replicate.Plan.simulate') as simulate_mock:
-        simulate_mock.side_effect = err.TrestleError('simulate_trestle_error')
-        rc = ReplicateCmd.replicate_object('catalog', args)
-        assert rc == 1
+    monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_return)
+    monkeypatch.setattr('trestle.core.commands.replicate.Plan.simulate', simulate_trestle_error)
+    rc = ReplicateCmd.replicate_object('catalog', args)
+    assert rc == 1
 
 
-def test_replicate_load_file_failure(tmp_trestle_dir: Path) -> None:
+def test_replicate_load_file_failure(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) -> None:
     """Test model load failures."""
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
@@ -159,17 +179,16 @@ def test_replicate_load_file_failure(tmp_trestle_dir: Path) -> None:
     bad_file.close()
 
     args = 'trestle replicate catalog -n bad_catalog -o rep_bad_catalog'.split()
-    with mock.patch.object(sys, 'argv', args):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', args)
+    rc = Trestle().run()
+    assert rc == 1
 
 
-def test_replicate_file_system(tmp_trestle_dir: Path) -> None:
+def test_replicate_file_system(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) -> None:
     """Test model load failures."""
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=False)
-    with mock.patch('trestle.core.commands.replicate.fs.get_trestle_project_root') as get_root_mock:
-        get_root_mock.side_effect = [None]
-        rc = ReplicateCmd.replicate_object('catalog', args)
-        assert rc == 1
+    monkeypatch.setattr('trestle.core.commands.replicate.fs.get_trestle_project_root', mock_return)
+    rc = ReplicateCmd.replicate_object('catalog', args)
+    assert rc == 1
