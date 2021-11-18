@@ -16,43 +16,44 @@
 """Tests for trestle author command module."""
 import pathlib
 import sys
-from unittest import mock
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
 import trestle.cli
 
 
-def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path) -> None:
+def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test happy path of md governed-docs subcommand."""
     command = 'trestle author docs'
-    with mock.patch.object(sys, 'argv', command.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-            # FIXME: Needs to be changed once implemented.
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 2
+    monkeypatch.setattr(sys, 'argv', command.split())
+    with pytest.raises(SystemExit) as wrapped_error:
+        trestle.cli.run()
+        # FIXME: Needs to be changed once implemented.
+    assert wrapped_error.type == SystemExit
+    assert wrapped_error.value.code == 2
 
 
-def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path) -> None:
+def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test happy path of author governed-folders subcommand."""
     command = 'trestle author folders'
-    with mock.patch.object(sys, 'argv', command.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-            # FIXME: Needs to be changed once implemented.
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 2
+    monkeypatch.setattr(sys, 'argv', command.split())
+    with pytest.raises(SystemExit) as wrapped_error:
+        trestle.cli.run()
+        # FIXME: Needs to be changed once implemented.
+    assert wrapped_error.type == SystemExit
+    assert wrapped_error.value.code == 2
 
 
 @pytest.mark.parametrize(
     'command_string', [('trestle author docs setup -tn test'), ('trestle author folders setup -tn test')]
 )
-def test_failure_not_trestle(command_string, tmp_path: pathlib.Path) -> None:
+def test_failure_not_trestle(command_string, tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test for failure based on not in trestle directory."""
-    with mock.patch.object(sys, 'argv', command_string.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-            # FIXME: Needs to be changed once implemented.
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 1
+    monkeypatch.setattr(sys, 'argv', command_string.split())
+    with pytest.raises(SystemExit) as wrapped_error:
+        trestle.cli.run()
+        # FIXME: Needs to be changed once implemented.
+    assert wrapped_error.type == SystemExit
+    assert wrapped_error.value.code == 1

@@ -19,29 +19,31 @@ import os
 import pathlib
 import shutil
 import sys
-from unittest import mock
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import trestle.core.err as err
 from trestle.cli import Trestle
 from trestle.core import const
 from trestle.core.commands.assemble import AssembleCmd
+from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog
 from trestle.utils.load_distributed import load_distributed
 
 subcommand_list = const.MODEL_TYPE_LIST
 
 
-def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path) -> None:
+def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test _run and test it fails without top level model file."""
     testargs_root = ['trestle', 'assemble']
     for subcommand in subcommand_list:
         test_args = testargs_root + [subcommand] + ['-n', f'my_{subcommand}'] + ['-x', 'json']
-        with mock.patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
-            assert rc != 0
+        monkeypatch.setattr(sys, 'argv', test_args)
+        rc = Trestle().run()
+        assert rc != 0
 
 
-def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test assembling a catalog."""
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = tmp_trestle_dir / 'catalogs'
@@ -52,9 +54,9 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
     shutil.copytree(test_data_source, catalogs_dir)
 
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 0
 
     # Read assembled model
     actual_model = Catalog.oscal_read(pathlib.Path('dist/catalogs/mycatalog.json'))
@@ -63,40 +65,49 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
     assert actual_model == expected_model
 
 
-def test_assemble_not_trestle_project(tmp_empty_cwd: pathlib.Path) -> None:
+def test_assemble_not_trestle_project(tmp_empty_cwd: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure if not trestle project."""
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 1
 
 
-def test_assemble_not_trestle_root(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_assemble_not_trestle_root(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test execution of assemble from a folder that is not trestle root."""
     os.chdir(pathlib.Path.cwd() / 'catalogs')
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 1
 
 
-def test_assemble_execution_failure(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_assemble_execution_failure(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test execution of assemble plan fails."""
+
+    def simulate_mock(*args, **kwargs):
+        raise err.TrestleError('simulate_fail')
+
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = pathlib.Path('catalogs/')
     # Copy files from test/data/split_merge/step4
     shutil.rmtree(catalogs_dir)
     shutil.rmtree(pathlib.Path('dist'))
     shutil.copytree(test_data_source, catalogs_dir)
-    with mock.patch('trestle.core.models.plans.Plan.simulate') as simulate_mock:
-        simulate_mock.side_effect = err.TrestleError('simulation error')
-        rc = AssembleCmd().assemble_model(
-            'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
-        )
-        assert rc == 1
+    monkeypatch.setattr(Plan, 'simulate', simulate_mock)
+    rc = AssembleCmd().assemble_model(
+        'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
+    )
+    assert rc == 1
 
 
-def test_assemble_missing_top_model(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_assemble_missing_top_model(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test assembling a catalog."""
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = pathlib.Path('catalogs/')
@@ -108,12 +119,14 @@ def test_assemble_missing_top_model(testdata_dir: pathlib.Path, tmp_trestle_dir:
     (mycatalog_dir / 'catalog.json').unlink()
 
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 1
 
 
-def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+def test_assemble_catalog_all(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test assembling all catalogs in trestle dir."""
     shutil.rmtree(pathlib.Path('dist'))
     catalogs_dir = tmp_trestle_dir / 'catalogs'
@@ -123,9 +136,9 @@ def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathl
         shutil.copytree(test_data_source, catalogs_dir / my_name)
 
     testargs = ['trestle', 'assemble', 'catalog', '-t', '-x', 'json']
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 0
 
     # Read assembled model
     for my_name in my_names:
@@ -135,6 +148,6 @@ def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathl
 
     testargs = ['trestle', 'assemble', 'profile', '-t', '-x', 'json']
     # Tests should pass on empty set of directories.
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 0
