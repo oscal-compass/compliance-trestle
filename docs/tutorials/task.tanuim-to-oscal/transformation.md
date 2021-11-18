@@ -8,7 +8,7 @@ How to transform a `Tanium.results` compliance file into a standardized `OSCAL.j
 
 There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
-The second is a one-command transformation form Tanium to OSCAL.
+The second is a one-command transformation from `Tanium.results` to `OSCAL.json`.
 
 ## *Step 1: Environment setup*
 
