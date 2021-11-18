@@ -186,6 +186,18 @@ class ComplianceOperatorReport():
                 break
         return value
 
+    def _get_host_name(self, root: t_element) -> str:
+        """Extract asset:identifier:host_name from the XML."""
+        value = None
+        for lev1 in root:
+            tag = _remove_namespace(lev1.tag)
+            if tag == 'target-facts':
+                value = self._get_fact(lev1, 'urn:xccdf:fact:asset:identifier:host_name')
+                break
+        if value is None:
+            value = self._get_target(root)
+        return value
+
     def _get_result(self, lev1: t_element) -> str:
         """Extract result from the XML."""
         value = None
@@ -202,7 +214,7 @@ class ComplianceOperatorReport():
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
         id_ = self._get_id(root)
-        target = self._get_target(root)
+        target = self._get_host_name(root)
         target_type = self._get_target_type(root)
         benchmark_href = self._get_benchmark_href(root)
         benchmark_id = self._get_benchmark_id(root)
