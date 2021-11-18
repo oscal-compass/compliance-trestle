@@ -166,6 +166,8 @@ site_description: Documentation for compliance-trestle package.
 site_name: Compliance Trestle
 site_url: https://ibm.github.io/compliance-trestle
 theme:
+  features:
+  - content.code.annotate
   name: material
   palette:
     accent: purple
