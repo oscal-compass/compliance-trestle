@@ -10,7 +10,11 @@ There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
 The second is a one-command transformation from `.profile` to `OSCAL.json`.
 
-## *Step 1: Environment setup*
+## *Step 1: Install trestle in a Python virtual environment*
+
+Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_trestle_setup/) to install trestle in a virtual environment.
+
+## *Step 2: Transform profile data (CIS benchmarks)*
 
 Linux, Mac
 
@@ -27,54 +31,10 @@ Make these changes:
 </ul>
 </details>
 
-- Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
+- Navigate to trestle workspace.
 
 ```
-$ python -V
-Python 3.8.7
-```
-
-- Setup a virtual environment.
-
-```
-$ cd
-$ python -m venv venv.trestle
-$ source venv.trestle/bin/activate
-(venv.trestle)$
-
-```
-
-- Insure you have a modern [pip](https://pip.pypa.io/en/stable/installation/) (19.x or greater).
-
-```
-(venv.trestle)$ pip --version
-pip 21.2.4 from /home...
-```
-
-- Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
-
-```
-(venv.trestle)$ pip install compliance-trestle
-Looking in indexes: https://pypi.org/simple,...
-
-```
-
-- Check trestle viability (and view help).
-
-```
-(venv.trestle)$ trestle -h
-usage: trestle [-h] 
-{add,assemble,author,create,describe,href,import,init,merge,partial-object-validate,remove,replicate,split,task,validate,version} ...
-
-```
-
-- Create trestle workspace.
-
-```
-(venv.trestle)$ mkdir trestle.workspace
 (venv.trestle)$ cd trestle.workspace
-(venv.trestle)$ trestle init
-Initialized trestle project successfully in /home/<user>/trestle.workspace
 ```
 
 - View configuration information.
@@ -111,8 +71,6 @@ Notes:
 2. If a control has selected and enabled rules, then only those enabled are included.
 3. If a control has no selected rules, then none are included regardless of enabled.
 ```
-
-## *Step 2: Transform profile data (CIS benchmarks)*
 
 - Create data folders.
 
@@ -198,6 +156,7 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 
 <details>
 <summary>enabled_rules.json</summary>
+
 ```
 {
   "enabled": [
