@@ -12,6 +12,9 @@ markdown_extensions:
 - pymdownx.superfences
 - pymdownx.tabbed
 - pymdownx.tasklist
+- pymdownx.highlight
+- pymdownx.inlinehilite
+- pymdownx.snippets
 - toc:
     permalink: ¤
 nav:
