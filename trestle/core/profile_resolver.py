@@ -34,73 +34,29 @@ from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
-PART = 'part'
-NS = 'ns'
-CLASS = 'class_'
-TITLE = 'title'
-PROPS = 'props'
-PROSE = 'prose'
-PARTS = 'parts'
-LINKS = 'links'
-DEPENDS_ON = 'depends_on'
-LABEL = 'label'
-USAGE = 'usage'
-CONSTRAINTS = 'constraints'
-GUIDELINES = 'guidelines'
-VALUES = 'values'
-SELECT = 'select'
-REMARKS = 'remarks'
-HOW_MANY = 'how_many'
-CHOICE = 'choice'
-PARAMS = 'params'
-CONTROLS = 'controls'
-UUID = 'uuid'
-VALUE = 'value'
-PROPERTY = 'property'
-PARAMETER = 'parameter'
-CONTROL = 'control'
-LINK = 'link'
-CONSTRAINT = 'constraint'
-GUIDELINE = 'guideline'
-GROUPS = 'groups'
-GROUP = 'group'
 ID = 'id'
+
 NAME = 'name'
-CATALOG = 'catalog'
 
-PART_ITEMS = [NS, CLASS, TITLE, PROPS, PROSE, PARTS, LINKS]
+PART_EXCLUDE = [NAME]
 
-PROPERTY_ITEMS = [UUID, NS, VALUE, CLASS, REMARKS]
+PROPERTY_EXCLUDE = [NAME]
 
-PARAMETER_ITEMS = [CLASS, DEPENDS_ON, PROPS, LINKS, LABEL, USAGE, CONSTRAINTS, GUIDELINES, VALUES, SELECT, REMARKS]
+PARAMETER_EXCLUDE = [ID]
 
-CONTROL_ITEMS = [CLASS, TITLE, PARAMS, PROPS, LINKS, PARTS, CONTROLS]
+CONTROL_EXCLUDE = [ID]
 
-GROUP_ITEMS = [ID, CLASS, TITLE, PARAMS, PROPS, LINKS, PARTS, GROUPS, CONTROLS]
+GROUP_EXCLUDE = []
 
-CATALOG_ITEMS = [PARAMS, CONTROLS, GROUPS]
+CATALOG_EXCLUDE = ['uuid', 'metadata', 'back-matter']
 
-LIST_TYPE_ITEMS = [PROPS, PARAMS, PARTS, LINKS, CONSTRAINTS, GUIDELINES, VALUES, CONTROLS, GROUPS]
-
-LIST_ELEMENT_TYPE = {
-    PROPS: PROPERTY,
-    PARTS: PART,
-    LINKS: LINK,
-    CONSTRAINTS: CONSTRAINT,
-    GUIDELINES: GUIDELINE,
-    VALUES: VALUE,
-    CONTROLS: CONTROL,
-    GROUPS: GROUP,
-    PARAMS: PARAMETER
-}
-
-ITEM_CONTENTS_MAP = {
-    PART: PART_ITEMS,
-    PROPERTY: PROPERTY_ITEMS,
-    PARAMETER: PARAMETER_ITEMS,
-    CONTROL: CONTROL_ITEMS,
-    GROUP: GROUP_ITEMS,
-    CATALOG: CATALOG_ITEMS
+ITEM_EXCLUDE_MAP = {
+    'Part': PART_EXCLUDE,
+    'Property': PROPERTY_EXCLUDE,
+    'Parameter': PARAMETER_EXCLUDE,
+    'Control': CONTROL_EXCLUDE,
+    'Group': GROUP_EXCLUDE,
+    'Catalog': CATALOG_EXCLUDE
 }
 
 
@@ -310,7 +266,7 @@ class ProfileResolver():
                 id_ = getattr(item, NAME, None)
             return id_
 
-        def _merge_attr_lists(self, dest: List[OBT], src: List[OBT], attr: str, merge_method: prof.Method) -> None:
+        def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: prof.Method) -> None:
             added_items = []
             if merge_method == prof.Method.keep:
                 dest.extend(src)
@@ -325,7 +281,7 @@ class ProfileResolver():
                             other_id = self._get_id(other)
                             if other_id == item_id:
                                 if merge_method == prof.Method.merge:
-                                    self._merge_items(other, item, LIST_ELEMENT_TYPE[attr], merge_method)
+                                    self._merge_items(other, item, merge_method)
                                 merged = True
                                 break
                     # it isn't already in dest and no match was found for merge, so append
@@ -340,37 +296,43 @@ class ProfileResolver():
             src_attr = getattr(src, attr, None)
             if src_attr is None:
                 return
+            item_type = type(src).__name__
+            if attr in ITEM_EXCLUDE_MAP.get(item_type, []):
+                return
             dest_attr = getattr(dest, attr, None)
             if dest_attr is not None and merge_method == prof.Method.use_first:
                 return
             if dest_attr == src_attr and merge_method != prof.Method.keep:
                 return
-            if attr in LIST_TYPE_ITEMS:
-                dest_attr = as_list(dest_attr)
-                self._merge_attr_lists(dest_attr, src_attr, attr, merge_method)
+            if isinstance(dest_attr, list):
+                self._merge_lists(dest_attr, src_attr, merge_method)
                 setattr(dest, attr, dest_attr)
+                return
+
             # does this attrib contain sub items that can be merged
-            elif attr in ITEM_CONTENTS_MAP:
-                for sub_attr in ITEM_CONTENTS_MAP[attr]:
+            fields = getattr(src_attr, const.FIELDS_SET, None)
+            if fields is not None and const.ROOT not in fields:
+                for sub_attr in fields:
                     src_sub_attr = getattr(src_attr, sub_attr, None)
                     if src_sub_attr is not None:
                         dest_sub_attr = getattr(dest_attr, sub_attr, None)
                         if dest_sub_attr == src_sub_attr:
                             continue
-                        if sub_attr in LIST_TYPE_ITEMS:
+                        if isinstance(sub_attr, list):
                             dest_sub_attr = as_list(dest_sub_attr)
-                            self._merge_attr_lists(dest_sub_attr, src_sub_attr, sub_attr, merge_method)
+                            self._merge_lists(dest_sub_attr, src_sub_attr, merge_method)
                         else:
-                            self._merge_attrs(dest_sub_attr, src_sub_attr, sub_attr, merge_method)
+                            self._merge_attrs(dest_attr, src_attr, sub_attr, merge_method)
                         setattr(dest_attr, sub_attr, dest_sub_attr)
                 setattr(dest, attr, dest_attr)
             # it is just a value and src will override it, including if dest is None
             else:
                 setattr(dest, attr, src_attr)
 
-        def _merge_items(self, dest: OBT, src: OBT, item_type: str, merge_method: prof.Method) -> None:
-            for attr in ITEM_CONTENTS_MAP[item_type]:
-                self._merge_attrs(dest, src, attr, merge_method)
+        def _merge_items(self, dest: OBT, src: OBT, merge_method: prof.Method) -> None:
+            """Merge two items recursively."""
+            for field in src.__fields_set__:
+                self._merge_attrs(dest, src, field, merge_method)
 
         def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
             """Get flattened content of group and its groups recursively."""
@@ -411,7 +373,7 @@ class ProfileResolver():
             dest = self._flatten_catalog(dest, as_is)
             src = self._flatten_catalog(src, as_is)
 
-            self._merge_items(dest, src, CATALOG, merge_method)
+            self._merge_items(dest, src, merge_method)
 
             return dest
 

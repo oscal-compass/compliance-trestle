@@ -233,7 +233,7 @@ def test_merge_params() -> None:
     params[0].remarks = None
     profile = gens.generate_sample_model(prof.Profile)
     merge = ProfileResolver.Merge(profile)
-    merge._merge_items(params[0], params[1], 'parameter', prof.Method.merge)
+    merge._merge_items(params[0], params[1], prof.Method.merge)
     assert params[0]
     # the contraints in each are identical so they don't merge
     assert len(params[0].constraints) == 1
