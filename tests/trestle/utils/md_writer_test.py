@@ -40,13 +40,11 @@ def test_md_writer(tmp_path: pathlib.Path) -> None:
     md_writer.write_out()
 
     desired_result = """---
-
 a: 1
 b:
   x: 2
   y: 3
 c: 4
-
 ---
 
 ## Control Statement

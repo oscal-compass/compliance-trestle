@@ -74,7 +74,7 @@ def test_catalog_generate_assemble(
         if add_header:
             yaml = YAML(typ='safe')
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header)
+        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
         assert (markdown_path / 'ac/ac-1.md').exists()
         assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
         if dir_exists:
