@@ -59,13 +59,13 @@ class MarkdownProcessor:
             return header, tree
 
         except UnicodeDecodeError as e:
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             raise TrestleError(f'Markdown cannot be decoded into {const.FILE_ENCODING}, error: {e}')
         except ScannerError as e:
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             raise TrestleError(f'Header is not in a valid YAML format: {e}')
         except FileNotFoundError as e:
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             raise TrestleError(f'Markdown with path {md_path}, not found: {e}')
 
     def read_markdown_wo_processing(self, md_path: pathlib.Path) -> Tuple[Dict, str]:
