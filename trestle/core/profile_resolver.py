@@ -303,26 +303,6 @@ class ProfileResolver():
                 return
             if isinstance(dest_attr, list):
                 self._merge_lists(dest_attr, src_attr, merge_method)
-                setattr(dest, attr, dest_attr)
-                return
-
-            # does this attrib contain sub items that can be merged
-            fields = getattr(src_attr, const.FIELDS_SET, None)
-            if fields is not None and const.ROOT not in fields:
-                for sub_attr in fields:
-                    src_sub_attr = getattr(src_attr, sub_attr, None)
-                    if src_sub_attr is not None:
-                        dest_sub_attr = getattr(dest_attr, sub_attr, None)
-                        if dest_sub_attr == src_sub_attr:
-                            continue
-                        if isinstance(sub_attr, list):
-                            dest_sub_attr = as_list(dest_sub_attr)
-                            self._merge_lists(dest_sub_attr, src_sub_attr, merge_method)
-                        else:
-                            self._merge_attrs(dest_attr, src_attr, sub_attr, merge_method)
-                        setattr(dest_attr, sub_attr, dest_sub_attr)
-                setattr(dest, attr, dest_attr)
-            # it is just a value and src will override it, including if dest is None
             else:
                 setattr(dest, attr, src_attr)
 

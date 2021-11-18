@@ -247,6 +247,7 @@ def test_merge_two_catalogs() -> None:
     """Test the merge of two complex catalogs."""
     cat_1 = test_utils.generate_complex_catalog('foo')
     cat_2 = test_utils.generate_complex_catalog('bar')
+    cat_2.controls[0].id = cat_1.controls[0].id
     method = prof.Method.merge
     combine = prof.Combine(method=method)
     profile = gens.generate_sample_model(prof.Profile)
@@ -254,7 +255,7 @@ def test_merge_two_catalogs() -> None:
     merge = ProfileResolver.Merge(profile)
     merge._merge_two_catalogs(cat_1, cat_2, method, True)
     assert cat_1
-    assert len(cat_1.controls) == 8
+    assert len(cat_1.controls) == 7
     assert len(cat_1.groups) == 4
     assert len(cat_1.params) == 6
 
