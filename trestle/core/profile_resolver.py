@@ -46,16 +46,13 @@ PARAMETER_EXCLUDE = [ID]
 
 CONTROL_EXCLUDE = [ID]
 
-GROUP_EXCLUDE = []
-
-CATALOG_EXCLUDE = ['uuid', 'metadata', 'back-matter']
+CATALOG_EXCLUDE = ['uuid', 'metadata', 'back_matter']
 
 ITEM_EXCLUDE_MAP = {
     'Part': PART_EXCLUDE,
     'Property': PROPERTY_EXCLUDE,
     'Parameter': PARAMETER_EXCLUDE,
     'Control': CONTROL_EXCLUDE,
-    'Group': GROUP_EXCLUDE,
     'Catalog': CATALOG_EXCLUDE
 }
 
