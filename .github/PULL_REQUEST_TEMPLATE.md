@@ -1,9 +1,3 @@
----
-name: Trestle PR
-title: 'chore: Replace me using the semantic release commit format.'
-assignees: butler54
----
-
 ## Types of changes
 
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
@@ -31,6 +25,6 @@ assignees: butler54
 
 # Before you merge
 
-- Ensure it is a 'squash commit'
+- Ensure it is a 'squash commit' if not a release.
 - Ensure CI is currently passing
-- Is this a merge to `develop` from any branch except `main` and `ghpages`
+- Check sonar
