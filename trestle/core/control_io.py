@@ -814,25 +814,29 @@ class ControlIOReader():
         Returns:
             Dictionary of part labels and corresponding prose read from the markdown file.
         """
-        if not control_file.exists():
-            return {}, {}
-        md_api = MarkdownAPI()
-        header, _ = md_api.processor.process_markdown(control_file)
+        try:
+            if not control_file.exists():
+                return {}, {}
+            md_api = MarkdownAPI()
+            header, _ = md_api.processor.process_markdown(control_file)
 
-        lines = ControlIOReader._load_control_lines(control_file)
-        ii = 0
-        # keep moving down through the file picking up labels and prose
-        responses: Dict[str, List[str]] = {}
-        while True:
-            ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
-            while prose_lines and not prose_lines[0].strip(' \r\n'):
-                del prose_lines[0]
-            while prose_lines and not prose_lines[-1].strip(' \r\n'):
-                del prose_lines[-1]
-            if part_label and prose_lines:
-                responses[part_label] = prose_lines
-            if ii < 0:
-                break
+            lines = ControlIOReader._load_control_lines(control_file)
+            ii = 0
+            # keep moving down through the file picking up labels and prose
+            responses: Dict[str, List[str]] = {}
+            while True:
+                ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
+                while prose_lines and not prose_lines[0].strip(' \r\n'):
+                    del prose_lines[0]
+                while prose_lines and not prose_lines[-1].strip(' \r\n'):
+                    del prose_lines[-1]
+                if part_label and prose_lines:
+                    responses[part_label] = prose_lines
+                if ii < 0:
+                    break
+        except TrestleError as e:
+            logger.error(f'Error occurred reading {control_file}')
+            raise e
         return responses, header
 
     @staticmethod

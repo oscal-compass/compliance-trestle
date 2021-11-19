@@ -17,7 +17,6 @@
 import pathlib
 import shutil
 import sys
-from unittest import mock
 from uuid import uuid4
 
 from _pytest.monkeypatch import MonkeyPatch
@@ -38,14 +37,16 @@ from trestle.utils import fs
         ('trestle author folders setup --task-name catalogs', 1)
     ]
 )
-def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int) -> None:
+def test_governed_folders_high(
+    tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int, monkeypatch: MonkeyPatch
+) -> None:
     """Simple execution tests of trestle author folders."""
-    with mock.patch.object(sys, 'argv', command_string.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-            # FIXME: Needs to be changed once implemented.
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == return_code
+    monkeypatch.setattr(sys, 'argv', command_string.split())
+    with pytest.raises(SystemExit) as wrapped_error:
+        trestle.cli.run()
+        # FIXME: Needs to be changed once implemented.
+    assert wrapped_error.type == SystemExit
+    assert wrapped_error.value.code == return_code
 
 
 @pytest.mark.parametrize(
