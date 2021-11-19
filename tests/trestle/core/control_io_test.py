@@ -197,7 +197,8 @@ def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
 
 
 @pytest.mark.parametrize(
-    ['prev_label', 'bumped_label'], [['a', 'b'], ['z', 'aa'], ['aa', 'ab'], ['9', '10'], ['99', '100'], ['zz', 'aaa']]
+    ['prev_label', 'bumped_label'],
+    [['', 'a'], ['a', 'b'], ['z', 'aa'], ['aa', 'ab'], ['9', '10'], ['99', '100'], ['zz', 'aaa']]
 )
 def test_bump_label(prev_label, bumped_label) -> None:
     """Test bumping of label strings."""

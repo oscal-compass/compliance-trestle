@@ -602,7 +602,13 @@ class ControlIOReader():
 
     @staticmethod
     def _bump_label(label: str) -> str:
-        """Find next label given a string of 1 or more pure letters or digits."""
+        """
+        Find next label given a string of 1 or more pure letters or digits.
+
+        The input must be either a string of digits or a string of ascii letters - or empty string.
+        """
+        if not label:
+            return 'a'
         if label[0] in string.digits:
             return str(int(label) + 1)
         if len(label) == 1 and label[0].lower() < 'z':
