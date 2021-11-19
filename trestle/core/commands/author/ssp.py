@@ -99,7 +99,7 @@ class SSPGenerate(AuthorCommonCommand):
             catalog_interface = CatalogInterface(resolved_catalog)
         except Exception as e:
             logger.error(f'Error creating the resolved profile catalog: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
         try:
             catalog_interface.write_catalog_as_markdown(
@@ -107,7 +107,7 @@ class SSPGenerate(AuthorCommonCommand):
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         return 0
@@ -143,7 +143,7 @@ class SSPAssemble(AuthorCommonCommand):
             imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
         except Exception as e:
             logger.warning(f'Error reading the catalog markdown: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         try:
@@ -166,7 +166,7 @@ class SSPAssemble(AuthorCommonCommand):
             fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         return 0
@@ -230,14 +230,14 @@ class SSPFilter(AuthorCommonCommand):
             # make sure all controls in the profile have implemented reqs in the final ssp
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
                 logger.warning('Unable to filter the ssp because the profile references controls not in it.')
-                logger.debug(traceback.print_exc())
+                logger.debug(traceback.format_exc())
                 return 1
 
             ssp.control_implementation = control_imp
             fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         return 0
