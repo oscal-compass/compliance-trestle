@@ -17,6 +17,10 @@
 
 import string
 
+FIELDS_SET = '__fields_set__'
+
+ROOT = '__root__'
+
 PACKAGE_OSCAL = 'trestle.oscal'
 
 TRESTLE_CONFIG_DIR = '.trestle'
