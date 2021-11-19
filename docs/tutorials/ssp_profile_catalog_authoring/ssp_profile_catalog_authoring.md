@@ -127,7 +127,7 @@ A valid control header in Trestle is the header that is correctly displayed as s
 
 In GFM, headers are considered to be any line of text that has any number of `#` symbols at the beginning. For example those are all valid headers and will be treated as such by Github:
 
-```
+```markdown
 # Valid header
 ## Valid header 
 ##### Valid header
@@ -138,20 +138,20 @@ In GFM, headers are considered to be any line of text that has any number of `#`
 The headers above are valid Control headers and will be added to the control. However, there are multiple exceptions where the header will not be displayed. The header will not be displayed correctly if it is:
 
 1. Written in the HTML comments `<!-- # not a header -->` or tags `<ins> # not a header </ins>` as well as multi-line comments:
-   ```
+   ```markdown
    <!--
    # not a header
    -->
    ```
    or multi-line HTML blocks:
-   ```
+   ```markdown
    <dl> # not a header
    # not a header
      <dt># not a header</dt>
    </dl>
    ```
 1. Written in the single-line `# not a header` and multi-line code blocks:
-   ```
+   ```markdown
    # not a header 
    ```
 1. Written in the links `[# not a header](url)`
