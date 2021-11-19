@@ -87,7 +87,7 @@ class CatalogGenerate(AuthorCommonCommand):
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, None, False, header_dont_merge=header_dont_merge
+                markdown_path, yaml_header, None, False, False, None, header_dont_merge=header_dont_merge
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Catalog {catalog_path} not found for load {e}')

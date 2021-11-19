@@ -611,6 +611,7 @@ class ControlIOReader():
         label = label.lower()
         factor = 1
         value = 0
+        # delta is needed because a counts as 0 when first value on right, but 1 for all others
         delta = 0
         for letter in label[::-1]:
             value += (ord(letter) - ord('a') + delta) * factor
@@ -620,7 +621,6 @@ class ControlIOReader():
         value += 1
 
         new_label = ''
-        # delta is needed so that z -> aa and not ba
         delta = 0
         while value > 0:
             new_label += chr(ord('a') + value % 26 - delta)

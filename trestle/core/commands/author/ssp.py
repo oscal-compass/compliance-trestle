@@ -103,7 +103,7 @@ class SSPGenerate(AuthorCommonCommand):
             return 1
         try:
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, sections, True, header_dont_merge=args.header_dont_merge
+                markdown_path, yaml_header, sections, True, False, None, header_dont_merge=args.header_dont_merge
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
