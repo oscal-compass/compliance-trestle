@@ -3,6 +3,19 @@
 
 <!--next-version-placeholder-->
 
+## v0.29.0 (2021-11-19)
+### Feature
+* Tutorial for task cis-to-component-definition ([#870](https://github.com/IBM/compliance-trestle/issues/870)) ([`4e4d6b4`](https://github.com/IBM/compliance-trestle/commit/4e4d6b4ba600792ce5a6dfd3606fb730099cbdef))
+* Add support for ignored fields to header ([#794](https://github.com/IBM/compliance-trestle/issues/794)) ([`37e9b60`](https://github.com/IBM/compliance-trestle/commit/37e9b60cecf6516c934fafa8fa969672ade8ef7f))
+
+### Fix
+* Cat assemble label needs to load labels as properties when reading controls ([#878](https://github.com/IBM/compliance-trestle/issues/878)) ([`0b97476`](https://github.com/IBM/compliance-trestle/commit/0b97476db8bfbac4925b2af2ec1b8edda9178e33))
+* Cleanup PR template. ([`f7c433b`](https://github.com/IBM/compliance-trestle/commit/f7c433b8a4d86a39150e596e4e395b03a2dab984))
+* Current support for multiple PR templates is insufficient in Github. ([#879](https://github.com/IBM/compliance-trestle/issues/879)) ([`bf12f2e`](https://github.com/IBM/compliance-trestle/commit/bf12f2e464adaf371ec2f7f63050395a05ec1cfb))
+* Updating documentation to exploit code highlighting. ([#877](https://github.com/IBM/compliance-trestle/issues/877)) ([`10bd679`](https://github.com/IBM/compliance-trestle/commit/10bd6792d8a9b9b42d26653fffd40baaad4d3251))
+* Mangled merging of lists and lack of recursion in profile resolver ([#869](https://github.com/IBM/compliance-trestle/issues/869)) ([`e3ccbbc`](https://github.com/IBM/compliance-trestle/commit/e3ccbbc4c6675264dcc245ed6c5e2454d04078c8))
+* Incorrect behaviour of lint PR. ([#868](https://github.com/IBM/compliance-trestle/issues/868)) ([`e5209c3`](https://github.com/IBM/compliance-trestle/commit/e5209c33f8d53bd022e410d52ef97d3316746023))
+
 ## v0.28.1 (2021-11-17)
 ### Fix
 * Remove results {} from osco-to-oscal console display ([#866](https://github.com/IBM/compliance-trestle/issues/866)) ([`d62051e`](https://github.com/IBM/compliance-trestle/commit/d62051e0fb45c99edd97b0314117b7208dd11d91))
