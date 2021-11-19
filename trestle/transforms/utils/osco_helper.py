@@ -61,38 +61,22 @@ t_results_map = Dict[str, Any]
 class RuleUse():
     """Represents one rule of OSCO data."""
 
-    def __init__(
-        self,
-        id_: str,
-        target: str,
-        target_type: str,
-        host_name: str,
-        benchmark_href: str,
-        benchmark_id: str,
-        scanner_name: str,
-        scanner_version: str,
-        idref: str,
-        version: str,
-        time: str,
-        result: str,
-        severity: str,
-        weight: str
-    ) -> None:
+    def __init__(self, **args) -> None:
         """Initialize given specified args."""
-        self.id_ = id_
-        self.target = target
-        self.target_type = target_type
-        self.host_name = host_name
-        self.benchmark_href = benchmark_href
-        self.benchmark_id = benchmark_id
-        self.scanner_name = scanner_name
-        self.scanner_version = scanner_version
-        self.idref = idref
-        self.version = version
-        self.time = time
-        self.result = result
-        self.severity = severity
-        self.weight = weight
+        self.id_ = args['id_']
+        self.target = args['target']
+        self.target_type = args['target_type']
+        self.host_name = args['host_name']
+        self.benchmark_href = args['benchmark_href']
+        self.benchmark_id = args['benchmark_id']
+        self.scanner_name = args['scanner_name']
+        self.scanner_version = args['scanner_version']
+        self.idref = args['idref']
+        self.version = args['version']
+        self.time = args['time']
+        self.result = args['result']
+        self.severity = args['severity']
+        self.weight = args['weight']
 
     @property
     def inventory_key(self):
@@ -240,20 +224,20 @@ class ComplianceOperatorReport():
                 weight = lev1.get('weight')
                 result = self._get_result(lev1)
                 rule_use = RuleUse(
-                    id_,
-                    target,
-                    target_type,
-                    host_name,
-                    benchmark_href,
-                    benchmark_id,
-                    scanner_name,
-                    scanner_version,
-                    idref,
-                    version,
-                    time,
-                    result,
-                    severity,
-                    weight
+                    id_=id_,
+                    target=target,
+                    target_type=target_type,
+                    host_name=host_name,
+                    benchmark_href=benchmark_href,
+                    benchmark_id=benchmark_id,
+                    scanner_name=scanner_name,
+                    scanner_version=scanner_version,
+                    idref=idref,
+                    version=version,
+                    time=time,
+                    result=result,
+                    severity=severity,
+                    weight=weight
                 )
                 yield rule_use
 
