@@ -66,6 +66,7 @@ class RuleUse():
         id_: str,
         target: str,
         target_type: str,
+        host_name: str,
         benchmark_href: str,
         benchmark_id: str,
         scanner_name: str,
@@ -81,6 +82,7 @@ class RuleUse():
         self.id_ = id_
         self.target = target
         self.target_type = target_type
+        self.host_name = host_name
         self.benchmark_href = benchmark_href
         self.benchmark_id = benchmark_id
         self.scanner_name = scanner_name
@@ -91,6 +93,16 @@ class RuleUse():
         self.result = result
         self.severity = severity
         self.weight = weight
+
+    @property
+    def inventory_key(self):
+        """Derive inventory key."""
+        if self.host_name is None:
+            # OpenScap 1.3.3
+            return self.target + ':' + self.target_type
+        else:
+            # OpenScap 1.3.5
+            return self.host_name + ':' + self.target_type
 
 
 class ComplianceOperatorReport():
@@ -194,8 +206,6 @@ class ComplianceOperatorReport():
             if tag == 'target-facts':
                 value = self._get_fact(lev1, 'urn:xccdf:fact:asset:identifier:host_name')
                 break
-        if value is None:
-            value = self._get_target(root)
         return value
 
     def _get_result(self, lev1: t_element) -> str:
@@ -214,8 +224,9 @@ class ComplianceOperatorReport():
         root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
         id_ = self._get_id(root)
-        target = self._get_host_name(root)
+        target = self._get_target(root)
         target_type = self._get_target_type(root)
+        host_name = self._get_host_name(root)
         benchmark_href = self._get_benchmark_href(root)
         benchmark_id = self._get_benchmark_id(root)
         scanner_name = self._get_scanner_name(root)
@@ -232,6 +243,7 @@ class ComplianceOperatorReport():
                     id_,
                     target,
                     target_type,
+                    host_name,
                     benchmark_href,
                     benchmark_id,
                     scanner_name,
@@ -356,21 +368,26 @@ class ResultsMgr():
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from RuleUse."""
-        key = rule_use.target + ':' + rule_use.target_type
-        if key in self.inventory_map:
+        if rule_use.inventory_key in self.inventory_map:
             return
         inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
         props = []
-        props.append(Property(name='target', value=rule_use.target, ns=self.ns, class_='scc_inventory_item_id'))
-        props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+        if rule_use.host_name is None:
+            props.append(Property(name='target', value=rule_use.target, ns=self.ns, class_='scc_inventory_item_id'))
+            props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+        else:
+            props.append(Property(name='target', value=rule_use.target, ns=self.ns))
+            props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+            props.append(
+                Property(name='host_name', value=rule_use.host_name, ns=self.ns, class_='scc_inventory_item_id')
+            )
         inventory.props = props
         inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
-        self.inventory_map[key] = inventory
+        self.inventory_map[rule_use.inventory_key] = inventory
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> t_inventory_ref:
         """Get inventory reference for specified RuleUse."""
-        key = rule_use.target + ':' + rule_use.target_type
-        return self.inventory_map[key].uuid
+        return self.inventory_map[rule_use.inventory_key].uuid
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from RuleUse."""
