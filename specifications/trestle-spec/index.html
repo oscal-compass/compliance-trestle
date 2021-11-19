@@ -2914,18 +2914,18 @@ The command would replace the <code>revision-history.json</code> file by a <code
 <p><code>$TRESTLE_BASEDIR/catalogs/nist800-53/catalog/metadata$ trestle split -e 'revision-history.*'</code></p>
 </blockquote>
 <p>OSCAL also makes use of named fields by leveraging<code>additionalProperties</code> supported by JSON Schema which behaves as a map or dict. OSCAL normally uses this feature as a way to assign multiple objects to a property without necessarily having to enforce a specific order as is the case with JSON array properties. It is like assigning a map/dict to a property. An example of such property in the catalog schema is the <code>responsible-parties</code> under <code>metadata</code>. One example of contents for a <code>responsible-parties</code> property is:</p>
-<div class="highlight"><pre><span></span><code>&quot;responsible-parties&quot;: {
-  &quot;creator&quot;: {
-    &quot;party-uuids&quot;: [
-      &quot;4ae7292e-6d8e-4735-86ea-11047c575e87&quot;
-    ]
-  },
-  &quot;contact&quot;: {
-    &quot;party-uuids&quot;: [
-      &quot;4ae7292e-6d8e-4735-86ea-11047c575e87&quot;
-    ]
-  }
-}
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;responsible-parties&quot;</span><span class="p">:</span> <span class="p">{</span>
+  <span class="nt">&quot;creator&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;4ae7292e-6d8e-4735-86ea-11047c575e87&quot;</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;contact&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;4ae7292e-6d8e-4735-86ea-11047c575e87&quot;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>A more evident example of this type of property is in the <code>targets</code> property under the <code>target-definition</code> schema.</p>
 <p><strong>Step 4</strong>: Suppose the user wants to split the <code>responsible-parties</code> property in order to be able to edit each arbitrary key/value object under it as a separate file. The command to achieve that would be:</p>
@@ -2988,19 +2988,19 @@ The following option is required:</p>
 <p><code>$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles</code></p>
 </blockquote>
 <p>will add the following property under the <code>metadata</code> property for a catalog that will be written to the appropriate file under <code>catalogs/nist800-53</code> directory:</p>
-<div class="highlight"><pre><span></span><code>&quot;roles&quot;: [
-  {
-    &quot;id&quot;: &quot;REPLACE_ME&quot;,
-    &quot;title&quot;: &quot;REPLACE_ME&quot;
-  }
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;roles&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;REPLACE_ME&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;REPLACE_ME&quot;</span>
+  <span class="p">}</span>
 </code></pre></div>
 <p>Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.</p>
-<div class="highlight"><pre><span></span><code>- DateTime: &lt;Current date-time&gt;
-- Boolean: False
-- Integer: 0 
-- String: REPLACE_ME
-- Float/Double: 0.00
-- Id field: Auto generated UUID
+<div class="highlight"><pre><span></span><code>  <span class="p p-Indicator">-</span> <span class="nt">DateTime</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;Current date-time&gt;</span>
+  <span class="p p-Indicator">-</span> <span class="nt">Boolean</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="p p-Indicator">-</span> <span class="nt">Integer</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="p p-Indicator">-</span> <span class="nt">String</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">REPLACE_ME</span>
+  <span class="p p-Indicator">-</span> <span class="nt">Float/Double</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.00</span>
+  <span class="p p-Indicator">-</span> <span class="nt">Id field</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Auto generated UUID</span>
 </code></pre></div>
 <h4 id="trestle-remove"><code>trestle remove</code><a class="headerlink" href="#trestle-remove" title="Permanent link">¤</a></h4>
 <p>The trestle remove command is the reversal of <code>trestle add</code>.</p>
@@ -3073,7 +3073,7 @@ The following option is required:</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>

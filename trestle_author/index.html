@@ -3009,14 +3009,15 @@ version <em>of that document</em> (be it an instance or the template itself). Th
 <p>Trestle author headers supports a different usecase that of <code>docs</code> and <code>folders</code> above: Some content is governed, however, it the content is non-standardized.</p>
 <p>The result: metadata but not content needs to be measured. <code>author headers</code> provides this functionality for drawio and markdown files.</p>
 <p><code>trestle author headers setup -tn my_task_name</code> Create the necessary directory structures for running header only validation. Per supported file type (e.g. drawio and md) a template file will be generated with the format of <code>template.{extension name}</code> e.g.</p>
-<p>e.g.:
-trestle_root
+<p>e.g.:</p>
+<div class="highlight"><pre><span></span><code>trestle_root
 ┣ .trestle
 ┃ ┣ md
 ┃ ┃ ┗ my_task_2
 ┃ ┃ ┃ ┣ template.md
 ┃ ┃ ┃ ┗ template.drawio
-┃ ┗ config.ini</p>
+┃ ┗ config.ini
+</code></pre></div>
 <p><code>trestle author headers template-validate -tn my_task_name</code> Ensures that the respective template files are parseable.</p>
 <p><code>trestle author headers validate -tn my_task_name</code> Will validate all files within the directory against the templates by matching the extensions.</p>
 <h3 id="supported-options_1">Supported options<a class="headerlink" href="#supported-options_1" title="Permanent link">¤</a></h3>
@@ -3120,7 +3121,7 @@ version <em>of that document</em> (be it an instance or the template itself). Th
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.b1047164.min.js"></script>

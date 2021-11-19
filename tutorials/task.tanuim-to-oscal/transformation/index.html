@@ -2436,7 +2436,7 @@
 <p>How to transform a <code>Tanium.results</code> compliance file into a standardized <code>OSCAL.json</code> file.</p>
 <p>There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
-The second is a one-command transformation form Tanium to OSCAL.</p>
+The second is a one-command transformation from <code>Tanium.results</code> to <code>OSCAL.json</code>.</p>
 <h2 id="step-1-environment-setup"><em>Step 1: Environment setup</em><a class="headerlink" href="#step-1-environment-setup" title="Permanent link">¤</a></h2>
 <p>Linux, Mac</p>
 <details>
@@ -2456,57 +2456,113 @@ Make these changes:
 <li>Insure you have a modern <a href="https://www.python.org/downloads/">Python</a> (3.7, 3.8, 3.9).</li>
 </ul>
 <div class="highlight"><pre><span></span><code>$ python -V
-Python 3.8.3
+Python <span class="m">3</span>.8.3
 </code></pre></div>
 <ul>
 <li>Setup a virtual environment.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>$ cd
+<div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span>
 $ python -m venv venv.trestle
-$ source venv.trestle/bin/activate
-(venv.trestle)$
+$ <span class="nb">source</span> venv.trestle/bin/activate
+<span class="o">(</span>venv.trestle<span class="o">)</span>$
 </code></pre></div>
 <ul>
 <li>Insure you have a modern <a href="https://pip.pypa.io/en/stable/installing/">pip</a> (19.x or greater).</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ pip --version
-pip 19.2.3 from /home...
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ pip --version
+pip <span class="m">19</span>.2.3 from /home...
 </code></pre></div>
 <ul>
 <li>Install <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a>.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ pip install compliance-trestle
-Looking in indexes: https://pypi.org/simple,...
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ pip install compliance-trestle
+Looking <span class="k">in</span> indexes: https://pypi.org/simple,...
 </code></pre></div>
 <ul>
 <li>Check trestle viability (and view help).</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ trestle -h
-usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,import,task,assemble} ...
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle -h
+usage: trestle <span class="o">[</span>-h<span class="o">]</span> <span class="o">{</span>init,create,split,merge,replicate,add,remove,validate,import,task,assemble<span class="o">}</span> ...
 </code></pre></div>
 <ul>
 <li>Create trestle workspace.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ mkdir trestle.workspace
-(venv.trestle)$ cd trestle.workspace
-(venv.trestle)$ trestle init
-Initialized trestle project successfully in /home/&lt;user&gt;/trestle.workspace
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir trestle.workspace
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> trestle.workspace
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle init
+Initialized trestle project successfully <span class="k">in</span> /home/&lt;user&gt;/trestle.workspace
 </code></pre></div>
 <h2 id="step-2-transform-sample"><em>Step 2: Transform sample</em><a class="headerlink" href="#step-2-transform-sample" title="Permanent link">¤</a></h2>
 <ul>
 <li>Create Tanium data folders.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ mkdir -p tanium/tests/data/tasks/tanium/input
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p tanium/tests/data/tasks/tanium/input
 </code></pre></div>
 <ul>
 <li>Fetch sample Tanium data file. It is a "raw" Tanium report for which a transformation to OSCAL is desired.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.comply-nist-results&#39; &gt; tanium/tests/data/tasks/tanium/input/Tanium.doc-json
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.comply-nist-results&#39;</span> &gt; tanium/tests/data/tasks/tanium/input/Tanium.doc-json
 </code></pre></div>
 <details>
 <summary>sample: Tanium.doc-json</summary>
 
-<div class="highlight"><pre><span></span><code>{&quot;Computer Name&quot;:&quot;RHEL8&quot;,&quot;Tanium Client IP Address&quot;:&quot;192.168.0.125&quot;,&quot;IP Address&quot;:[&quot;192.168.0.125&quot;,&quot;192.168.122.1&quot;,&quot;fe80::3c47:1aff:fe33:601&quot;],&quot;Comply - Compliance Findings&quot;:[{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,&quot;State&quot;:&quot;fail&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;,&quot;State&quot;:&quot;fail&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;,&quot;State&quot;:&quot;fail&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;,&quot;State&quot;:&quot;pass&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;,&quot;State&quot;:&quot;pass&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;,&quot;State&quot;:&quot;pass&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;,&quot;State&quot;:&quot;pass&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;,&quot;State&quot;:&quot;fail&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;},{&quot;Check ID&quot;:&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;,&quot;State&quot;:&quot;notchecked&quot;,&quot;Rule ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;}],&quot;Count&quot;:&quot;1&quot;}
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;Computer Name&quot;</span><span class="p">:</span> <span class="s2">&quot;RHEL8&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Tanium Client IP Address&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.0.125&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;IP Address&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;192.168.0.125&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;192.168.122.1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fe80::3c47:1aff:fe33:601&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;Comply - Compliance Findings&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Check ID&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;State&quot;</span><span class="p">:</span> <span class="s2">&quot;notchecked&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Rule ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;Count&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 
 </details>
@@ -2514,7 +2570,7 @@ Initialized trestle project successfully in /home/&lt;user&gt;/trestle.workspace
 <ul>
 <li>Fetch sample trestle tanium-to-oscal config file. It informs the trestle command where to read input and write output.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-to-oscal.config&#39; &gt; tanium/demo-tanium-to-oscal.config
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-to-oscal.config&#39;</span> &gt; tanium/demo-tanium-to-oscal.config
 </code></pre></div>
 <details>
 <summary>sample: demo-tanium-to-oscal.config</summary>
@@ -2530,705 +2586,705 @@ output-dir = tests/data/tasks/tanium/runtime
 <ul>
 <li>Perform the transform.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ cd tanium
-(venv.trestle)$ trestle task tanium-to-oscal -c demo-tanium-to-oscal.config 
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> tanium
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle task tanium-to-oscal -c demo-tanium-to-oscal.config 
 input: tests/data/tasks/tanium/input/Tanium.doc-json
 output: tests/data/tasks/tanium/runtime/Tanium.oscal.json
-inventory: 1
-observations: 9
+inventory: <span class="m">1</span>
+observations: <span class="m">9</span>
 Task: tanium-to-oscal executed successfully.
 </code></pre></div>
 <ul>
 <li>View the generated OSCAL.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ cat tests/data/tasks/tanium/runtime/Tanium.oscal.json
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ cat tests/data/tasks/tanium/runtime/Tanium.oscal.json
 </code></pre></div>
 <details>
 <summary>sample:  Tanium.oscal.json</summary>
 
-<div class="highlight"><pre><span></span><code>{
-  &quot;results&quot;: [
-    {
-      &quot;uuid&quot;: &quot;f79add8e-488a-45f3-9024-72ecf95c7952&quot;,
-      &quot;title&quot;: &quot;Tanium&quot;,
-      &quot;description&quot;: &quot;Tanium&quot;,
-      &quot;start&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;,
-      &quot;end&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;,
-      &quot;local-definitions&quot;: {
-        &quot;components&quot;: {
-          &quot;1ea447fe-a2af-4110-baae-c70ed5223261&quot;: {
-            &quot;type&quot;: &quot;Operating System&quot;,
-            &quot;title&quot;: &quot;Red Hat Enterprise Linux 8&quot;,
-            &quot;description&quot;: &quot;Red Hat Enterprise Linux 8&quot;,
-            &quot;status&quot;: {
-              &quot;state&quot;: &quot;operational&quot;
-            }
-          }
-        },
-        &quot;inventory-items&quot;: [
-          {
-            &quot;uuid&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-            &quot;description&quot;: &quot;inventory&quot;,
-            &quot;props&quot;: [
-              {
-                &quot;name&quot;: &quot;Computer Name&quot;,
-                &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-                &quot;value&quot;: &quot;RHEL8&quot;
-              },
-              {
-                &quot;name&quot;: &quot;Tanium Client IP Address&quot;,
-                &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-                &quot;value&quot;: &quot;192.168.0.125&quot;,
-                &quot;class&quot;: &quot;scc_inventory_item_id&quot;
-              },
-              {
-                &quot;name&quot;: &quot;IP Address&quot;,
-                &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-                &quot;value&quot;: &quot;[&#39;192.168.0.125&#39;, &#39;192.168.122.1&#39;, &#39;fe80::3c47:1aff:fe33:601&#39;]&quot;
-              },
-              {
-                &quot;name&quot;: &quot;Count&quot;,
-                &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-                &quot;value&quot;: &quot;1&quot;
-              }
-            ],
-            &quot;implemented-components&quot;: [
-              {
-                &quot;component-uuid&quot;: &quot;1ea447fe-a2af-4110-baae-c70ed5223261&quot;
-              }
-            ]
-          }
-        ]
-      },
-      &quot;reviewed-controls&quot;: {
-        &quot;control-selections&quot;: [
-          {}
-        ]
-      },
-      &quot;observations&quot;: [
-        {
-          &quot;uuid&quot;: &quot;e67f5fd9-5b1f-4134-a67e-cebdc2e5735c&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;fail&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;6cb81459-9c25-4a8b-bf3c-d8ff08ee728c&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;fail&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;9453eaed-db41-4a20-b684-2887de2d9657&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;fail&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;a37c2569-8695-4cfe-8b5c-bd8d6eaf9df7&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;pass&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;b77e1b49-a818-4d43-adaf-69effcbd9219&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;pass&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;ac25b329-7a4a-45f4-b42b-1cce470e237b&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;pass&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;f9c0f033-f08b-431d-b411-fe1f63c2c98c&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;pass&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;149a814e-7f80-4e6d-a613-54f027e0d663&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;fail&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        },
-        {
-          &quot;uuid&quot;: &quot;a0e602b5-e587-41c5-846b-675b26cf3e18&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;Check ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Benchmark&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_check_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Version&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;1.0.0-1&quot;,
-              &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Check ID Level&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;Level 1 - Server&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;,
-              &quot;class&quot;: &quot;scc_goal_description&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Rule ID&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;,
-              &quot;class&quot;: &quot;scc_check_name_id&quot;
-            },
-            {
-              &quot;name&quot;: &quot;State&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;notchecked&quot;,
-              &quot;class&quot;: &quot;scc_result&quot;
-            },
-            {
-              &quot;name&quot;: &quot;Timestamp&quot;,
-              &quot;ns&quot;: &quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
-              &quot;value&quot;: &quot;2021-05-12T13:46:46+00:00&quot;,
-              &quot;class&quot;: &quot;scc_timestamp&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ],
-          &quot;collected&quot;: &quot;2021-05-12T13:46:46.000+00:00&quot;
-        }
-      ],
-      &quot;findings&quot;: [
-        {
-          &quot;uuid&quot;: &quot;00000000-0000-4000-8000-000000000000&quot;,
-          &quot;title&quot;: &quot;No Finding.&quot;,
-          &quot;description&quot;: &quot;No Finding.&quot;
-        }
-      ]
-    }
-  ]
-}
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;f79add8e-488a-45f3-9024-72ecf95c7952&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Tanium&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Tanium&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;end&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;local-definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;components&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;1ea447fe-a2af-4110-baae-c70ed5223261&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Operating System&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Red Hat Enterprise Linux 8&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Red Hat Enterprise Linux 8&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="p">{</span>
+              <span class="nt">&quot;state&quot;</span><span class="p">:</span> <span class="s2">&quot;operational&quot;</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;inventory-items&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Computer Name&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;RHEL8&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Tanium Client IP Address&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.0.125&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_inventory_item_id&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;IP Address&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;[&#39;192.168.0.125&#39;, &#39;192.168.122.1&#39;, &#39;fe80::3c47:1aff:fe33:601&#39;]&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Count&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+              <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;implemented-components&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;component-uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;1ea447fe-a2af-4110-baae-c70ed5223261&quot;</span>
+              <span class="p">}</span>
+            <span class="p">]</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;reviewed-controls&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;control-selections&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{}</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;observations&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;e67f5fd9-5b1f-4134-a67e-cebdc2e5735c&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;6cb81459-9c25-4a8b-bf3c-d8ff08ee728c&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;9453eaed-db41-4a20-b684-2887de2d9657&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;a37c2569-8695-4cfe-8b5c-bd8d6eaf9df7&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;b77e1b49-a818-4d43-adaf-69effcbd9219&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;ac25b329-7a4a-45f4-b42b-1cce470e237b&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;f9c0f033-f08b-431d-b411-fe1f63c2c98c&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;149a814e-7f80-4e6d-a613-54f027e0d663&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;a0e602b5-e587-41c5-846b-675b26cf3e18&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Version&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0-1&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_predefined_profile_version&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Check ID Level&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Level 1 - Server&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_description&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rule ID&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_check_name_id&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;notchecked&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_result&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46+00:00&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_timestamp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2d33d2b0-af5c-4c37-85b1-e4f414183de2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-05-12T13:46:46.000+00:00&quot;</span>
+        <span class="p">}</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;findings&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;00000000-0000-4000-8000-000000000000&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;No Finding.&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;No Finding.&quot;</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 
 </details>
@@ -3316,7 +3372,7 @@ Congratulations! You have bridged Tanium data into an OSCAL Assessment Results F
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>

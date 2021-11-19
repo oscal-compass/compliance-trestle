@@ -2680,6 +2680,13 @@ MarkdownValidator        </code>
         <span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;Version&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="p">[</span><span class="s1">&#39;Version&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Version does not match template-version in template: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;x-trestle-&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;x-trestle-ignore&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key2</span> <span class="ow">in</span> <span class="n">template_header</span><span class="p">[</span><span class="s1">&#39;x-trestle-ignore&#39;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key2</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 </code></pre></div>
         </details>
     </div>
@@ -2693,7 +2700,7 @@ MarkdownValidator        </code>
 
 
 <h6 class="doc doc-heading" id="trestle.core.markdown.markdown_validator.MarkdownValidator.compare_keys">
-<code class="highlight language-python"><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">candidate</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">candidate</span><span class="p">,</span> <span class="n">ignore_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
@@ -2748,7 +2755,12 @@ MarkdownValidator        </code>
         <details class="quote">
           <summary>Source code in <code>trestle/core/markdown/markdown_validator.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">compare_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">compare_keys</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">,</span>
+    <span class="n">template</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">candidate</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">ignore_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare a template dictionary against a candidate as to whether key structure is maintained.</span>
 
@@ -2758,6 +2770,14 @@ MarkdownValidator        </code>
 <span class="sd">    Returns:</span>
 <span class="sd">        Whether or not the the candidate matches the template keys.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ignore_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ignore_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ignore_fields</span><span class="p">:</span>
+            <span class="n">candidate</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ignore_fields</span><span class="p">:</span>
+            <span class="n">template</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="n">template_version</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">extract_template_version</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
     <span class="n">candidate_version</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">extract_template_version</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">template_version</span> <span class="o">!=</span> <span class="n">candidate_version</span><span class="p">:</span>
@@ -2770,7 +2790,7 @@ MarkdownValidator        </code>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">candidate</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">candidate</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">ignore_fields</span><span class="p">)</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">status</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2926,7 +2946,7 @@ MarkdownValidator        </code>
 <span class="sd">        Whether or not the the candidate is valid against the template.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_yaml_header</span><span class="p">:</span>
-        <span class="n">headers_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="p">,</span> <span class="n">instance_header</span><span class="p">)</span>
+        <span class="n">headers_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="p">,</span> <span class="n">instance_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">headers_match</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML header mismatch between template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1"> and instance </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -3066,7 +3086,7 @@ MarkdownValidator        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>

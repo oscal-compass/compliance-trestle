@@ -2627,12 +2627,11 @@ For example, if each instance of source data includes not much more than:</p>
 <details>
 <summary>example snippet: instance suitable for mapping to Observation</summary>
 
-<div class="highlight"><pre><span></span><code>data:
-  &lt;rule-result idref=&quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot; time=&quot;2020-08-03T02:26:26+00:00&quot; severity=&quot;low&quot; weight=&quot;1.000000&quot;&gt;
-    &lt;result&gt;fail&lt;/result&gt;
-  &lt;/rule-result&gt;
-metadata:
-  name: ssg-ocp4-ds-cis-111.222.333.444-pod
+<div class="highlight"><pre><span></span><code><span class="nt">data</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;rule-result idref=&quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">time=&quot;2020-08-03T02:26:26+00:00&quot; severity=&quot;low&quot; weight=&quot;1.000000&quot;&gt; &lt;result&gt;fail&lt;/result&gt;</span>
+  <span class="l l-Scalar l-Scalar-Plain">&lt;/rule-result&gt;</span>
+<span class="nt">metadata</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ssg-ocp4-ds-cis-111.222.333.444-pod</span>
 </code></pre></div>
 
 </details>
@@ -2640,76 +2639,76 @@ metadata:
 <details>
 <summary>example snippet: instance OSCAL Observation</summary>
 
-<div class="highlight"><pre><span></span><code>    {
-      &quot;uuid&quot;: &quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;,
-      &quot;title&quot;: &quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;,
-      &quot;description&quot;: &quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;,
-      &quot;methods&quot;: [
-        &quot;TEST-AUTOMATED&quot;
-      ],
-      &quot;subjects&quot;: [
-        {
-          &quot;uuid-ref&quot;: &quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;,
-          &quot;type&quot;: &quot;component&quot;,
-          &quot;title&quot;: &quot;Red Hat OpenShift Kubernetes&quot;
-        },
-        {
-          &quot;uuid-ref&quot;: &quot;46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e&quot;,
-          &quot;type&quot;: &quot;inventory-item&quot;,
-          &quot;title&quot;: &quot;Pod&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;target&quot;,
-              &quot;value&quot;: &quot;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&quot;
-            },
-            {
-              &quot;name&quot;: &quot;cluster-name&quot;,
-              &quot;value&quot;: &quot;ROKS-OpenSCAP-1&quot;
-            },
-            {
-              &quot;name&quot;: &quot;cluster-type&quot;,
-              &quot;value&quot;: &quot;openshift&quot;
-            },
-            {
-              &quot;name&quot;: &quot;cluster-region&quot;,
-              &quot;value&quot;: &quot;us-south&quot;
-            }
-          ]
-        }
-      ],
-      &quot;relevant-evidence&quot;: [
-        {
-          &quot;href&quot;: &quot;https://github.mycorp.com/degenaro/evidence-locker&quot;,
-          &quot;description&quot;: &quot;Evidence location.&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;rule&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;id&quot;,
-              &quot;value&quot;: &quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;
-            },
-            {
-              &quot;name&quot;: &quot;time&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;timestamp&quot;,
-              &quot;value&quot;: &quot;2020-08-03T02:26:26+00:00&quot;
-            },
-            {
-              &quot;name&quot;: &quot;result&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;result&quot;,
-              &quot;value&quot;: &quot;fail&quot;
-            },
-            {
-              &quot;name&quot;: &quot;target&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;target&quot;,
-              &quot;value&quot;: &quot;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&quot;
-            }
-          ]
-        }
-      ]
-    },
+<div class="highlight"><pre><span></span><code>    <span class="p">{</span>
+      <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;component&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Red Hat OpenShift Kubernetes&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Pod&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cluster-name&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;ROKS-OpenSCAP-1&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cluster-type&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;openshift&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cluster-region&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;us-south&quot;</span>
+            <span class="p">}</span>
+          <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;relevant-evidence&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;href&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.mycorp.com/degenaro/evidence-locker&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Evidence location.&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rule&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_scheduler_profiling_argument&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-08-03T02:26:26+00:00&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;target&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&quot;</span>
+            <span class="p">}</span>
+          <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
 </code></pre></div>
 
 </details>
@@ -2728,22 +2727,23 @@ The control information can be part of the source data itself or can be provided
 <details>
 <summary>example snippet: xml instance suitable for mapping to Finding with Observation</summary>
 
-<div class="highlight"><pre><span></span><code>{&quot;IP Address&quot;:&quot;10.8.68.218&quot;,
-  &quot;Computer Name&quot;:&quot;cmp-wn-2115.demo.tanium.local&quot;,
-  &quot;Comply - JovalCM Results[c2dc8749]&quot;:
-    [{
-      &quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,
-      &quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,
-      &quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,
-      &quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled&quot;,
-      &quot;Result&quot;:&quot;fail&quot;,
-      &quot;Custom ID&quot;:&quot;800-53: SC-18&quot;,
-      &quot;Version&quot;:&quot;version: 1&quot;
-     }
-    ],
-  &quot;Count&quot;:&quot;1&quot;,
-  &quot;Age&quot;:&quot;600&quot;
-}
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;IP Address&quot;</span><span class="p">:</span> <span class="s2">&quot;10.8.68.218&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Computer Name&quot;</span><span class="p">:</span> <span class="s2">&quot;cmp-wn-2115.demo.tanium.local&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Comply - JovalCM Results[c2dc8749]&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;Benchmark&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Benchmark Version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.5.0.1&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Profile&quot;</span><span class="p">:</span> <span class="s2">&quot;Windows 10 - NIST 800-53&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ID&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Result&quot;</span><span class="p">:</span> <span class="s2">&quot;fail&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Custom ID&quot;</span><span class="p">:</span> <span class="s2">&quot;800-53: SC-18&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;version: 1&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;Count&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Age&quot;</span><span class="p">:</span> <span class="s2">&quot;600&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 
 </details>
@@ -2751,42 +2751,42 @@ The control information can be part of the source data itself or can be provided
 <details>
 <summary>example snippet: instance OSCAL Finding</summary>
 
-<div class="highlight"><pre><span></span><code>      &quot;findings&quot;: [
-        {
-          &quot;uuid&quot;: &quot;99c0a0de-e34e-4e22-95a1-1d4f24826565&quot;,
-          &quot;title&quot;: &quot;800-53: IA-5&quot;,
-          &quot;description&quot;: &quot;800-53: IA-5&quot;,
-          &quot;collected&quot;: &quot;2021-03-16T13:29:14.000+00:00&quot;,
-          &quot;objective-status&quot;: {
-            &quot;props&quot;: [
-              {
-                &quot;name&quot;: &quot;profile&quot;,
-                &quot;ns&quot;: &quot;dns://tanium&quot;,
-                &quot;class&quot;: &quot;source&quot;,
-                &quot;value&quot;: &quot;NIST 800-53&quot;
-              },
-              {
-                &quot;name&quot;: &quot;id-ref&quot;,
-                &quot;ns&quot;: &quot;dns://tanium&quot;,
-                &quot;class&quot;: &quot;source&quot;,
-                &quot;value&quot;: &quot;IA-5&quot;
-              },
-              {
-                &quot;name&quot;: &quot;result&quot;,
-                &quot;ns&quot;: &quot;dns://xccdf&quot;,
-                &quot;class&quot;: &quot;STRVALUE&quot;,
-                &quot;value&quot;: &quot;FAIL&quot;
-              }
-            ],
-            &quot;status&quot;: &quot;not-satisfied&quot;
-          },
-          &quot;related-observations&quot;: [
-            {
-              &quot;observation-uuid&quot;: &quot;61092735-e365-4638-bc2c-ecd0ed407e73&quot;
-            },
-            {
-              &quot;observation-uuid&quot;: &quot;95a20b8e-ed0a-4b6c-bf87-8789265c7158&quot;
-            },
+<div class="highlight"><pre><span></span><code>      <span class="nt">&quot;findings&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;99c0a0de-e34e-4e22-95a1-1d4f24826565&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;800-53: IA-5&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;800-53: IA-5&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;collected&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-03-16T13:29:14.000+00:00&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;objective-status&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;NIST 800-53&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id-ref&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;IA-5&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;STRVALUE&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;FAIL&quot;</span>
+              <span class="p">}</span>
+            <span class="p">],</span>
+            <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;not-satisfied&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;related-observations&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;observation-uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;61092735-e365-4638-bc2c-ecd0ed407e73&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;observation-uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;95a20b8e-ed0a-4b6c-bf87-8789265c7158&quot;</span>
+            <span class="p">},</span>
 </code></pre></div>
 
 </details>
@@ -2794,45 +2794,45 @@ The control information can be part of the source data itself or can be provided
 <details>
 <summary>example snippet: instance OSCAL Observation</summary>
 
-<div class="highlight"><pre><span></span><code>      &quot;observations&quot;: [
-        {
-          &quot;uuid&quot;: &quot;61092735-e365-4638-bc2c-ecd0ed407e73&quot;,
-          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
-          &quot;props&quot;: [
-            {
-              &quot;name&quot;: &quot;benchmark&quot;,
-              &quot;ns&quot;: &quot;dns://tanium&quot;,
-              &quot;class&quot;: &quot;source&quot;,
-              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
-            },
-            {
-              &quot;name&quot;: &quot;rule&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;id&quot;,
-              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
-            },
-            {
-              &quot;name&quot;: &quot;result&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;result&quot;,
-              &quot;value&quot;: &quot;pass&quot;
-            },
-            {
-              &quot;name&quot;: &quot;time&quot;,
-              &quot;ns&quot;: &quot;dns://xccdf&quot;,
-              &quot;class&quot;: &quot;timestamp&quot;,
-              &quot;value&quot;: &quot;2021-03-16T13:29:14+00:00&quot;
-            }
-          ],
-          &quot;methods&quot;: [
-            &quot;TEST-AUTOMATED&quot;
-          ],
-          &quot;subjects&quot;: [
-            {
-              &quot;uuid-ref&quot;: &quot;2650b9ba-e767-4381-9a3f-127d1552d7d2&quot;,
-              &quot;type&quot;: &quot;inventory-item&quot;
-            }
-          ]
+<div class="highlight"><pre><span></span><code>      <span class="nt">&quot;observations&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;61092735-e365-4638-bc2c-ecd0ed407e73&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;benchmark&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://tanium&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rule&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;pass&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://xccdf&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-03-16T13:29:14+00:00&quot;</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;TEST-AUTOMATED&quot;</span>
+          <span class="p">],</span>
+          <span class="nt">&quot;subjects&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&quot;uuid-ref&quot;</span><span class="p">:</span> <span class="s2">&quot;2650b9ba-e767-4381-9a3f-127d1552d7d2&quot;</span><span class="p">,</span>
+              <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory-item&quot;</span>
+            <span class="p">}</span>
+          <span class="p">]</span>
 </code></pre></div>
 
 </details>
@@ -2840,38 +2840,38 @@ The control information can be part of the source data itself or can be provided
 <details>
 <summary>example snippet: local definitions</summary>
 
-<div class="highlight"><pre><span></span><code>&quot;results&quot;: [
-    {
-      &quot;uuid&quot;: &quot;98028241-8705-4211-bf36-71e1f7aa6192&quot;,
-      &quot;title&quot;: &quot;Tanium&quot;,
-      &quot;description&quot;: &quot;Tanium&quot;,
-      &quot;start&quot;: &quot;2021-03-16T13:29:14.000+00:00&quot;,
-      &quot;local-definitions&quot;: {
-        &quot;inventory-items&quot;: [
-          {
-            &quot;uuid&quot;: &quot;2650b9ba-e767-4381-9a3f-127d1552d7d2&quot;,
-            &quot;description&quot;: &quot;inventory&quot;,
-            &quot;props&quot;: [
-              {
-                &quot;name&quot;: &quot;computer-name&quot;,
-                &quot;ns&quot;: &quot;dns://tanium&quot;,
-                &quot;class&quot;: &quot; inventory-item&quot;,
-                &quot;value&quot;: &quot;cmp-wn-2106.demo.tanium.local&quot;
-              },
-              {
-                &quot;name&quot;: &quot;computer-ip&quot;,
-                &quot;ns&quot;: &quot;dns://tanium&quot;,
-                &quot;class&quot;: &quot; inventory-item&quot;,
-                &quot;value&quot;: &quot;fe80::3cd5:564b:940e:49ab&quot;
-              },
-              {
-                &quot;name&quot;: &quot;profile&quot;,
-                &quot;ns&quot;: &quot;dns://tanium&quot;,
-                &quot;class&quot;: &quot; inventory-item&quot;,
-                &quot;value&quot;: &quot;Windows 10&quot;
-              }
-            ]
-          },
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;98028241-8705-4211-bf36-71e1f7aa6192&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Tanium&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Tanium&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-03-16T13:29:14.000+00:00&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;local-definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;inventory-items&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;2650b9ba-e767-4381-9a3f-127d1552d7d2&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;inventory&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;computer-name&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot; inventory-item&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;cmp-wn-2106.demo.tanium.local&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;computer-ip&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot; inventory-item&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;fe80::3cd5:564b:940e:49ab&quot;</span>
+              <span class="p">},</span>
+              <span class="p">{</span>
+                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;dns://tanium&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot; inventory-item&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;Windows 10&quot;</span>
+              <span class="p">}</span>
+            <span class="p">]</span>
+          <span class="p">},</span>
 </code></pre></div>
 
 </details>
@@ -3023,7 +3023,7 @@ other appropriate open source repository.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>

@@ -2595,27 +2595,27 @@ Detailed logs.
 <p>For the ease of editing markdown in Github, Trestle's markdown parser follows <a href="https://github.github.com/gfm/">Github Flavoured Markdown (GFM) specifications</a> and therefore only certain Control headers will be parsed and added to the control.</p>
 <p>A valid control header in Trestle is the header that is correctly displayed as such when reading or previewing the edited markdown on Github website.</p>
 <p>In GFM, headers are considered to be any line of text that has any number of <code>#</code> symbols at the beginning. For example those are all valid headers and will be treated as such by Github:</p>
-<div class="highlight"><pre><span></span><code># Valid header
-## Valid header 
-##### Valid header
-# Valid &lt;ins&gt; header &lt;/ins&gt; 
-# Valid header &lt;!-- some comment here --&gt;
+<div class="highlight"><pre><span></span><code><span class="gh"># Valid header</span>
+<span class="gu">## Valid header </span>
+<span class="gu">##### Valid header</span>
+<span class="gh"># Valid &lt;ins&gt; header &lt;/ins&gt; </span>
+<span class="gh"># Valid header &lt;!-- some comment here --&gt;</span>
 </code></pre></div>
 <p>The headers above are valid Control headers and will be added to the control. However, there are multiple exceptions where the header will not be displayed. The header will not be displayed correctly if it is:</p>
 <ol>
 <li>Written in the HTML comments <code>&lt;!-- # not a header --&gt;</code> or tags <code>&lt;ins&gt; # not a header &lt;/ins&gt;</code> as well as multi-line comments:
    <div class="highlight"><pre><span></span><code>&lt;!--
-# not a header
+<span class="gh"># not a header</span>
 --&gt;
 </code></pre></div>
    or multi-line HTML blocks:
    <div class="highlight"><pre><span></span><code>&lt;dl&gt; # not a header
-# not a header
+<span class="gh"># not a header</span>
   &lt;dt&gt;# not a header&lt;/dt&gt;
 &lt;/dl&gt;
 </code></pre></div></li>
 <li>Written in the single-line <code># not a header</code> and multi-line code blocks:
-   <div class="highlight"><pre><span></span><code># not a header 
+   <div class="highlight"><pre><span></span><code><span class="gh"># not a header </span>
 </code></pre></div></li>
 <li>Written in the links <code>[# not a header](url)</code></li>
 <li>Trestle will also not support headers inside the blockquotes <code>&gt; # not a header</code></li>
@@ -2798,7 +2798,7 @@ lines or modify/remove the lines with <code>### Part</code> in them.  They are u
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>

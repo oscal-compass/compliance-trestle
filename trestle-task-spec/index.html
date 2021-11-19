@@ -2443,15 +2443,14 @@
 trestle tasks tasks_name -c config.file <span class="c1"># tasks will execute using user provided config file.</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>trestle tasks -l
-
-returns all tasks with descriptions
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>class MyTask(TasksBase):
+<p>returns all tasks with descriptions</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MyTask</span><span class="p">(</span><span class="n">TasksBase</span><span class="p">):</span>
 
-    def __init__(self, config_object):
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">):</span>
 
-    def execute(self) 
-        returns succes criteria
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
+        <span class="n">returns</span> <span class="n">succes</span> <span class="n">criteria</span>
 </code></pre></div>
 <h1 id="reference-tasks">Reference tasks<a class="headerlink" href="#reference-tasks" title="Permanent link">¤</a></h1>
 <h2 id="tasks-6-target-to-component-generation-based-on-applicable-controls">tasks 6: Target to component generation based on applicable controls.<a class="headerlink" href="#tasks-6-target-to-component-generation-based-on-applicable-controls" title="Permanent link">¤</a></h2>
@@ -2528,7 +2527,7 @@ returns all tasks with descriptions
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.b1047164.min.js"></script>

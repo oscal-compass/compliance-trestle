@@ -2544,9 +2544,9 @@ here
 <p><br></p>
 <h2 id="step-1-create-a-trestle-workspace-if-you-dont-have-one-already">Step 1: Create a trestle workspace if you don't have one already<a class="headerlink" href="#step-1-create-a-trestle-workspace-if-you-dont-have-one-already" title="Permanent link">¤</a></h2>
 <div class="highlight"><pre><span></span><code>mkdir my_workspace
-cd my_workspace
+<span class="nb">cd</span> my_workspace
 trestle init
-&gt;&gt;&gt; Initialized trestle project successfully in [user_path]/my_workspace
+&gt;&gt;&gt; Initialized trestle project successfully <span class="k">in</span> <span class="o">[</span>user_path<span class="o">]</span>/my_workspace
 </code></pre></div>
 <h2 id="step-2-import-a-catalog-from-the-trestle-sample-data-directory-into-your-trestle-workspace">Step 2: Import a catalog from the trestle sample data directory into your trestle workspace<a class="headerlink" href="#step-2-import-a-catalog-from-the-trestle-sample-data-directory-into-your-trestle-workspace" title="Permanent link">¤</a></h2>
 <p>For this tutorial we will use a catalog file from NIST, but we first must <code>import</code> it into the trestle workspace.  This can be done either by first downloading the file locally and then importing it, or you can download it directly using its url address.</p>
@@ -2612,8 +2612,8 @@ If there are any errors the Import will fail and the file must be corrected.</p>
 <h2 id="step-3-split-the-file-into-smaller-parts">Step 3: Split the file into smaller parts<a class="headerlink" href="#step-3-split-the-file-into-smaller-parts" title="Permanent link">¤</a></h2>
 <p>The OSCAL schema specifies that a catalog must contain metadata, groups, and back-matter - so this command will pull them out of the original file and place them in separate json files for additional manipulations.</p>
 <p>To begin splitting the file, first cd to the directory where <code>catalog.json</code> has been placed.</p>
-<div class="highlight"><pre><span></span><code>cd catalogs/mycatalog
-trestle split -f ./catalog.json -e &#39;catalog.metadata,catalog.groups,catalog.back-matter&#39;
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> catalogs/mycatalog
+trestle split -f ./catalog.json -e <span class="s1">&#39;catalog.metadata,catalog.groups,catalog.back-matter&#39;</span>
 </code></pre></div>
 <p>Here the <code>-f</code> refers to the filename of the json catalog file, and <code>-e</code> refers to the comma-separated list of <code>elements</code> you would like to split from the file.  This list does not represent the full file contents of the source <code>catalog.json</code> file, so some contents will be left behind in a much smaller <code>catalog.json</code> file after the split.  The elements that were split off will be placed in separate json files next to the new and smaller <code>catalog.json</code> file.</p>
 <p><br></p>
@@ -2633,15 +2633,15 @@ trestle split -f ./catalog.json -e &#39;catalog.metadata,catalog.groups,catalog.
 <p><br></p>
 <p>Note there still remains a catalog.json file, but it is much smaller since the bulk of its contents have been split off.</p>
 <p>Any split step can be reversed by a corresponding <code>merge</code> operation.  In this case we can go backwards with:</p>
-<div class="highlight"><pre><span></span><code>trestle merge -e &#39;catalog.metadata,catalog.groups,catalog.back-matter&#39;
+<div class="highlight"><pre><span></span><code>trestle merge -e <span class="s1">&#39;catalog.metadata,catalog.groups,catalog.back-matter&#39;</span>
 </code></pre></div>
 <p>or simply</p>
-<div class="highlight"><pre><span></span><code>trestle merge -e &#39;catalog.*&#39;
+<div class="highlight"><pre><span></span><code>trestle merge -e <span class="s1">&#39;catalog.*&#39;</span>
 </code></pre></div>
 <p>You can go back and forth splitting and merging, but for the next step please start with the above files split so that <code>metadata.json</code> can be further split.</p>
 <h2 id="step-4-split-the-metadata-into-constituent-files">Step 4: Split the metadata into constituent files<a class="headerlink" href="#step-4-split-the-metadata-into-constituent-files" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code>cd catalog
-trestle split -f ./metadata.json -e &#39;metadata.roles,metadata.parties,metadata.responsible-parties&#39;
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> catalog
+trestle split -f ./metadata.json -e <span class="s1">&#39;metadata.roles,metadata.parties,metadata.responsible-parties&#39;</span>
 </code></pre></div>
 <p><br></p>
 <details>
@@ -2664,15 +2664,15 @@ trestle split -f ./metadata.json -e &#39;metadata.roles,metadata.parties,metadat
 <p><br></p>
 <p>Again there remains a metadata.json file but it is smaller than the original.</p>
 <p>And this step can be reversed with the following:</p>
-<div class="highlight"><pre><span></span><code>trestle merge -e &#39;metadata.roles,metadata.parties,metadata.responsible-parties&#39;
+<div class="highlight"><pre><span></span><code>trestle merge -e <span class="s1">&#39;metadata.roles,metadata.parties,metadata.responsible-parties&#39;</span>
 </code></pre></div>
 <p>or simply</p>
-<div class="highlight"><pre><span></span><code>trestle merge -e &#39;metadata.*&#39;
+<div class="highlight"><pre><span></span><code>trestle merge -e <span class="s1">&#39;metadata.*&#39;</span>
 </code></pre></div>
 <h2 id="step-5-split-metadata-further-using-wildcards">Step 5: Split metadata further using wildcards<a class="headerlink" href="#step-5-split-metadata-further-using-wildcards" title="Permanent link">¤</a></h2>
-<div class="highlight"><pre><span></span><code>cd metadata
-trestle split -f ./roles.json -e &#39;roles.*&#39;
-trestle split -f ./responsible-parties.json -e &#39;responsible-parties.*&#39;
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> metadata
+trestle split -f ./roles.json -e <span class="s1">&#39;roles.*&#39;</span>
+trestle split -f ./responsible-parties.json -e <span class="s1">&#39;responsible-parties.*&#39;</span>
 </code></pre></div>
 <p><br></p>
 <details>
@@ -2699,12 +2699,12 @@ trestle split -f ./responsible-parties.json -e &#39;responsible-parties.*&#39;
 <p><br></p>
 <p>Note that the presence of wildcards caused new directories to be created containing the full lists of roles and responsible parties.  You can read the wildcard as <em>split off </em><em>all</em><em> roles</em> from <code>roles.json</code>.</p>
 <p>This split can be reversed with</p>
-<div class="highlight"><pre><span></span><code>trestle merge -e &#39;roles.*,responsible-parties.*&#39;
+<div class="highlight"><pre><span></span><code>trestle merge -e <span class="s1">&#39;roles.*,responsible-parties.*&#39;</span>
 </code></pre></div>
 <h2 id="step-6-split-groups-and-controls-with-two-wildcards">Step 6: Split groups and controls with two wildcards<a class="headerlink" href="#step-6-split-groups-and-controls-with-two-wildcards" title="Permanent link">¤</a></h2>
 <p>This single command will split off <em>all</em> controls in <em>all</em> groups.  To do it you need to go back up into the catalog directory where the <code>groups.json</code> file is found:</p>
-<div class="highlight"><pre><span></span><code>cd ..
-trestle split -f ./groups.json -e &#39;groups.*.controls.*&#39;
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> ..
+trestle split -f ./groups.json -e <span class="s1">&#39;groups.*.controls.*&#39;</span>
 </code></pre></div>
 <p><br></p>
 <details>
@@ -3113,12 +3113,12 @@ trestle split -f ./groups.json -e &#39;groups.*.controls.*&#39;
 <p><br></p>
 <p>All 20 groups of controls have been split off, and each one has a corresponding directory with its full list of controls in it.</p>
 <p>You can then reverse the split with</p>
-<div class="highlight"><pre><span></span><code>trestle merge -e &#39;groups.*&#39;
+<div class="highlight"><pre><span></span><code>trestle merge -e <span class="s1">&#39;groups.*&#39;</span>
 </code></pre></div>
 <h2 id="step-7-collapse-the-entire-directory-structure-back-into-a-single-catalogjson-file-possibly-after-modifying-individual-files">Step 7: Collapse the entire directory structure back into a single <code>catalog.json</code> file - possibly after modifying individual files<a class="headerlink" href="#step-7-collapse-the-entire-directory-structure-back-into-a-single-catalogjson-file-possibly-after-modifying-individual-files" title="Permanent link">¤</a></h2>
 <p>You can collapse everything back to a single <code>catalog.json</code> file after first going up one directory to the mycatalog directory</p>
-<div class="highlight"><pre><span></span><code>cd ..
-trestle merge -e &#39;catalog.*&#39;
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> ..
+trestle merge -e <span class="s1">&#39;catalog.*&#39;</span>
 </code></pre></div>
 <p><br></p>
 <details>
@@ -3205,7 +3205,7 @@ trestle merge -e &#39;catalog.*&#39;
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
