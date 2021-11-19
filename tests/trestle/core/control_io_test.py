@@ -98,23 +98,30 @@ def test_read_write_controls(
     dummy_title = 'dummy title'
     control = cat.Control(id='ac-1', title=dummy_title)
     statement_part = common.Part(id='ac-1_smt', name='statement')
-    part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose')
-    part_b = common.Part(id='ac-1_smt.b', name='item', prose='b prose')
-    part_b1 = common.Part(id='ac-1_smt.b.1', name='item', prose='b.1 prose')
-    part_b2 = common.Part(id='ac-1_smt.b.2', name='item', prose='b.2 prose')
-    part_b2i = common.Part(id='ac-1_smt.b.2.i', name='item', prose='b.2.i prose')
-    part_b3 = common.Part(id='ac-1_smt.b.3', name='item', prose='b.3 prose')
-    part_c = common.Part(id='ac-1_smt.c', name='item', prose='c prose')
+    prop = common.Property(name='label', value='a')
+    part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose', props=[prop])
+    prop.value = 'b'
+    part_b = common.Part(id='ac-1_smt.b', name='item', prose='b prose', props=[prop])
+    prop.value = '1'
+    part_b1 = common.Part(id='ac-1_smt.b.1', name='item', prose='b.1 prose', props=[prop])
+    prop.value = '2'
+    part_b2 = common.Part(id='ac-1_smt.b.2', name='item', prose='b.2 prose', props=[prop])
+    prop.value = 'i'
+    part_b2i = common.Part(id='ac-1_smt.b.2.i', name='item', prose='b.2.i prose', props=[prop])
+    prop.value = '3'
+    part_b3 = common.Part(id='ac-1_smt.b.3', name='item', prose='b.3 prose', props=[prop])
+    prop.value = 'c'
+    part_c = common.Part(id='ac-1_smt.c', name='item', prose='c prose', props=[prop])
     sec_1_text = """
 General comment
 on separate lines
 
 ### header line
 
-- list 1
-- list 2
-    - sublist 1
-    - sublist 2
+- \[a\] list 1
+- \[b\] list 2
+    - \[1\] sublist 1
+    - \[2\] sublist 2
 
 end of text
 """
@@ -174,6 +181,42 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     control_writer.write_control(sub_dir, control, 'XY', None, None, False, False, None, False)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
+
+
+def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
+    """Test reading a control that doesn't have a part label in statement."""
+    md_file = testdata_dir / 'author/controls/control_no_labels.md'
+    control = ControlIOReader.read_control(md_file)
+    assert control.parts[0].parts[2].props[0].value == 'c'
+    assert control.parts[0].parts[2].parts[0].props[0].value == '1'
+    md_file = testdata_dir / 'author/controls/control_some_labels.md'
+    control = ControlIOReader.read_control(md_file)
+    assert control.parts[0].parts[2].props[0].value == 'aa'
+    assert control.parts[0].parts[2].parts[1].props[0].value == 'abc13'
+    assert control.parts[0].parts[3].props[0].value == 'ab'
+
+
+@pytest.mark.parametrize(
+    ['prev_label', 'bumped_label'],
+    [['', 'a'], ['a', 'b'], ['z', 'aa'], ['aa', 'ab'], ['9', '10'], ['99', '100'], ['zz', 'aaa']]
+)
+def test_bump_label(prev_label, bumped_label) -> None:
+    """Test bumping of label strings."""
+    assert ControlIOReader._bump_label(prev_label) == bumped_label
+
+
+@pytest.mark.parametrize(
+    ['prev_label', 'next_label', 'indent'], [
+        ['', 'a', 0],
+        ['', '1', 2],
+        ['1z', '1aa', 0],
+        ['1a9', '1a10', 0],
+        ['a_4.99', 'a_4.100', 0],
+    ]
+)
+def test_create_next_label(prev_label, next_label, indent) -> None:
+    """Test bumping of label strings."""
+    assert ControlIOReader._create_next_label(prev_label, indent) == next_label
 
 
 def test_control_failures(tmp_path: pathlib.Path) -> None:
