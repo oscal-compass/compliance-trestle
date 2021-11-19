@@ -8,7 +8,7 @@ How to transform a `Tanium.results` compliance file into a standardized `OSCAL.j
 
 There are 2 short steps shown below.
 The first is a one-time check/set-up of your environment.
-The second is a one-command transformation form Tanium to OSCAL.
+The second is a one-command transformation from `Tanium.results` to `OSCAL.json`.
 
 ## *Step 1: Environment setup*
 
@@ -29,14 +29,14 @@ Make these changes:
 
 - Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
 
-```
+```bash
 $ python -V
 Python 3.8.3
 ```
 
 - Setup a virtual environment.
 
-```
+```bash
 $ cd
 $ python -m venv venv.trestle
 $ source venv.trestle/bin/activate
@@ -46,14 +46,14 @@ $ source venv.trestle/bin/activate
 
 - Insure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
 
-```
+```bash
 (venv.trestle)$ pip --version
 pip 19.2.3 from /home...
 ```
 
 - Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
 
-```
+```bash
 (venv.trestle)$ pip install compliance-trestle
 Looking in indexes: https://pypi.org/simple,...
 
@@ -61,7 +61,7 @@ Looking in indexes: https://pypi.org/simple,...
 
 - Check trestle viability (and view help).
 
-```
+```bash
 (venv.trestle)$ trestle -h
 usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,import,task,assemble} ...
 
@@ -69,7 +69,7 @@ usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,impor
 
 - Create trestle workspace.
 
-```
+```bash
 (venv.trestle)$ mkdir trestle.workspace
 (venv.trestle)$ cd trestle.workspace
 (venv.trestle)$ trestle init
@@ -80,35 +80,91 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 
 - Create Tanium data folders.
 
-```
+```bash
 (venv.trestle)$ mkdir -p tanium/tests/data/tasks/tanium/input
 ```
 
 - Fetch sample Tanium data file. It is a "raw" Tanium report for which a transformation to OSCAL is desired.
 
-```
+```bash
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.comply-nist-results' > tanium/tests/data/tasks/tanium/input/Tanium.doc-json
 ```
 
 <details>
 <summary>sample: Tanium.doc-json</summary>
 
-```
-{"Computer Name":"RHEL8","Tanium Client IP Address":"192.168.0.125","IP Address":["192.168.0.125","192.168.122.1","fe80::3c47:1aff:fe33:601"],"Comply - Compliance Findings":[{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled","State":"fail","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled","State":"fail","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled","State":"fail","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition","State":"pass","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition","State":"pass","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition","State":"pass","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition","State":"pass","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition","State":"fail","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"},{"Check ID":"CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions","State":"notchecked","Rule ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"}],"Count":"1"}
+```json
+{
+  "Computer Name": "RHEL8",
+  "Tanium Client IP Address": "192.168.0.125",
+  "IP Address": [
+    "192.168.0.125",
+    "192.168.122.1",
+    "fe80::3c47:1aff:fe33:601"
+  ],
+  "Comply - Compliance Findings": [
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
+      "State": "fail",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled",
+      "State": "fail",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.3_Ensure_mounting_of_squashfs_filesystems_is_disabled"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled",
+      "State": "fail",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.4_Ensure_mounting_of_udf_filesystems_is_disabled"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition",
+      "State": "pass",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.10_Ensure_noexec_option_set_on_vartmp_partition"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition",
+      "State": "pass",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.14_Ensure_nodev_option_set_on_home_partition"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition",
+      "State": "pass",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.15_Ensure_nodev_option_set_on_devshm_partition"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition",
+      "State": "pass",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.16_Ensure_nosuid_option_set_on_devshm_partition"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition",
+      "State": "fail",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.17_Ensure_noexec_option_set_on_devshm_partition"
+    },
+    {
+      "Check ID": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions",
+      "State": "notchecked",
+      "Rule ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.18_Ensure_nodev_option_set_on_removable_media_partitions"
+    }
+  ],
+  "Count": "1"
+}
 ```
 
 </details>
 
 - Fetch sample trestle tanium-to-oscal config file. It informs the trestle command where to read input and write output.
 
-```
+```bash
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-to-oscal.config' > tanium/demo-tanium-to-oscal.config
 ```
 
 <details>
 <summary>sample: demo-tanium-to-oscal.config</summary>
 
-```
+```conf
 [task.tanium-to-oscal]
 
 input-dir =  tests/data/tasks/tanium/input
@@ -120,7 +176,7 @@ output-dir = tests/data/tasks/tanium/runtime
 
 - Perform the transform.
 
-```
+```bash
 (venv.trestle)$ cd tanium
 (venv.trestle)$ trestle task tanium-to-oscal -c demo-tanium-to-oscal.config 
 input: tests/data/tasks/tanium/input/Tanium.doc-json
@@ -132,14 +188,14 @@ Task: tanium-to-oscal executed successfully.
 
 - View the generated OSCAL.
 
-```
+```bash
 (venv.trestle)$ cat tests/data/tasks/tanium/runtime/Tanium.oscal.json
 ```
 
 <details>
 <summary>sample:  Tanium.oscal.json</summary>
 
-```
+```json
 {
   "results": [
     {

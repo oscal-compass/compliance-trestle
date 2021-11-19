@@ -138,6 +138,17 @@ class CisToComponentDefinition(TaskBase):
         text2 = 'file with list of enabled rules, e.g. '
         text3 = root_trestle + '/component-definitions/osco/enabled_rules.json.'
         logger.info(text1 + text2 + text3)
+        #
+        text = ''
+        logger.info(text)
+        text = 'Notes:'
+        logger.info(text)
+        text = '1. If a control has selected rules but no enabled rules, then all those selected are included.'
+        logger.info(text)
+        text = '2. If a control has selected and enabled rules, then only those enabled are included.'
+        logger.info(text)
+        text = '3. If a control has no selected rules, then none are included regardless of enabled.'
+        logger.info(text)
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
