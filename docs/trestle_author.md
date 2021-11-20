@@ -168,7 +168,7 @@ version _of that document_ (be it an instance or the template itself). This mean
 
 For example given the following template setup using `trestle author folders setup -tn my_task_2`
 
-```
+```text
 trestle_root
  ┣ .trestle
  ┃ ┣ author
@@ -184,7 +184,7 @@ The names, numbers, and nesting of folders is user specifiable, however, unlike 
 
 Following the similar structure of `docs`, measurement occurs in the `my_task_2` where this structure is enforced for every directory.
 
-```
+```text
 trestle_root
  ┣ .trestle
  ┣ my_task_2
@@ -230,6 +230,8 @@ The result: metadata but not content needs to be measured. `author headers` prov
 `trestle author headers setup -tn my_task_name` Create the necessary directory structures for running header only validation. Per supported file type (e.g. drawio and md) a template file will be generated with the format of `template.{extension name}` e.g.
 
 e.g.:
+
+```text
 trestle_root
 ┣ .trestle
 ┃ ┣ md
@@ -237,6 +239,7 @@ trestle_root
 ┃ ┃ ┃ ┣ template.md
 ┃ ┃ ┃ ┗ template.drawio
 ┃ ┗ config.ini
+```
 
 `trestle author headers template-validate -tn my_task_name` Ensures that the respective template files are parseable.
 

@@ -20,7 +20,7 @@ The directory structure setup by trestle has three major elements:
 
 The outline of the schema is below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist
@@ -43,7 +43,7 @@ The outline of the schema is below:
 
 The bulk of the folder structure is used to represent each of the *top level schemas* or *top level models* such as `catalogs` and `profiles`. For each of these directories the following root structure is maintained:
 
-```
+```text
 
 ├── .trestle
 └── TOP_LEVEL_MODEL_PLURAL
@@ -54,7 +54,7 @@ The bulk of the folder structure is used to represent each of the *top level sch
 
 which appears, for a catalog a user decides is titled nist-800-53, as:
 
-```
+```text
 ├── .trestle
 └── catalogs
     └── nist-800-53
@@ -73,7 +73,7 @@ Directory structures such as the one below can represent OSCAL document structur
 
 Users can query the contents of files using `trestle describe`, and probe the contents more deeply using it in combination with element paths.
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -138,7 +138,7 @@ Trestle provides utilities for converting from element path to trestle's python 
 
 This command will create a trestle project in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
 
-```
+```text
 .
 ├── .trestle
 ├── dist
@@ -167,7 +167,7 @@ Notice that trestle is a highly opinionated tool and, therefore, the names of th
 
 This command will create a bare-bones sample file for one of the OSCAL models.  For example, `trestle create catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
 
-```
+```text
 .
 ├── .trestle
 └── catalogs
@@ -201,7 +201,7 @@ Passing `-iof` or `--include-optional-fields` will make `trestle create` generat
 
 This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f /local_dir/existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
 
-```
+```text
 .
 ├── .trestle
 └── catalogs
@@ -242,7 +242,7 @@ If you just want to split a file into all its constituent parts and the file doe
 
 Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if we do `trestle split -f catalog.json -e 'catalog.*'` we end up with:
 
-```
+```text
 catalogs
  ┗ my_catalog
  ┃ ┣ catalog
@@ -254,7 +254,7 @@ catalogs
 
 If I then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` I would end up with:
 
-```
+```text
 catalogs
  ┗ my_catalog
  ┃ ┣ catalog
@@ -268,7 +268,7 @@ catalogs
 
 If instead I had specified `-e 'metadata.roles.*'` I would get:
 
-```
+```text
 my_catalog
  ┣ catalog
  ┃ ┣ metadata
@@ -310,36 +310,36 @@ Unlike split, describe only describes the contents of a single item, so the elem
 
 For example, if a catalog file has been imported to `catalogs/my_catalog/catalog.json` then the commmand, `trestle describe -f catalog.json` might yield:
 
-```
-Model file catalog.json is of type catalog.Catalog and contains:
-    uuid: 613fca2d-704a-42e7-8e2b-b206fb92b456
-    metadata: common.Metadata
-    params: None
-    controls: None
-    groups: list of 20 items of type catalog.Group
-    back_matter: common.BackMatter
+```yaml
+#Model file catalog.json is of type catalog.Catalog and contains
+uuid: 613fca2d-704a-42e7-8e2b-b206fb92b456
+metadata: common.Metadata
+params: None
+controls: None
+groups: list of 20 items of type catalog.Group
+back_matter: common.BackMatter
 ```
 
 Note that contents are listed even when they are empty (and therefore optional) so the full potential contents can be seen.  Also note that if an item corresponds to a list of elements, the number and type of elements is provided.  Finally, if an item is a simple string such as `id`, `uuid` or `title`, the string is shown directly up to a maximum of 100 characters.  If the string is clipped it will be indicated by `[truncated]` at the end of the string.
 
 An element path can be specified to probe the contents, as in `trestle describe -f catalog.json -e 'catalog.metadata.roles'`.  A possible response is:
 
-```
+```text
 Model file catalog.json at element path catalog.metadata.roles is a list of 2 items of type common.Role
 ```
 
 You can also query individual elements, and elements of an element, e.g. `trestle describe -f catalog.json -e 'catalog.groups.5.controls.3'`
 
-```
-Model file catalog.json at element path catalog.groups.5.controls.3 is of type catalog.Control and contains:
-    id: cp-4
-    class_: SP800-53
-    title: Contingency Plan Testing
-    params: list of 2 items of type common.Parameter
-    props: list of 2 items of type common.Property
-    links: list of 14 items of type common.Link
-    parts: list of 2 items of type common.Part
-    controls: list of 5 items of type catalog.Control
+```yaml
+# Model file catalog.json at element path catalog.groups.5.controls.3 is of type catalog.Control and contains:
+id: cp-4
+class_: SP800-53
+title: Contingency Plan Testing
+params: list of 2 items of type common.Parameter
+props: list of 2 items of type common.Property
+links: list of 14 items of type common.Link
+parts: list of 2 items of type common.Part
+controls: list of 5 items of type catalog.Control
 ```
 
 (Note that the numbering starts at 0, so the `.3` corresponds to the 4th element.)
@@ -348,13 +348,13 @@ In all output from `describe` the type of the item shown corresponds to the pyth
 
 If you split items off a model so they end up in a subdirectory, the original file is referred to as a "stripped" model, with parts of it stripped off and only some elements remaining.  For example, if you do `trestle split -f catalog.json -e 'catalog.metadata'` it will split off metadata from the original `catalog.json` file and place it in `catalog/metadata.json`.  If you then do `trestle describe -f catalog.json` on the new file, it will say something like:
 
-```
-Model file catalog.json is of type stripped.Catalog and contains:
-    uuid: 613fca2d-704a-42e7-8e2b-b206fb92b456
-    params: None
-    controls: None
-    groups: list of 20 items of type catalog.Group
-    back_matter: common.BackMatter
+```yaml
+# Model file catalog.json is of type stripped.Catalog and contains:
+uuid: 613fca2d-704a-42e7-8e2b-b206fb92b456
+params: None
+controls: None
+groups: list of 20 items of type catalog.Group
+back_matter: common.BackMatter
 ```
 
 Note that the type of the file is now `stripped.Catalog` and it no longer contains `metadata`.  Even though metadata is no longer in the original `.json` file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, `catalog`.
@@ -384,7 +384,7 @@ Remembering in the end you only care about the end type. So in this scenario `ca
 This command changes the href of an Import in a profile and is needed when generating an SSP (system security plan) with the author tool, `ssp-generate`.
 The Imports in a profile are used to load associated catalogs of controls and profiles, and must be available at the corresponding href uri.  If an imported catalog is in the trestle directory then the href should be changed with a command of the form:
 
-```
+```bash
 trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 ```
 
@@ -395,13 +395,13 @@ catalog file.  The profile itself, which is having its imports modified, is just
 
 If the profile has more than one import, you can display the corresponding hrefs with:
 
-```
+```bash
 trestle href -n my_profile
 ```
 
 This will give a numbered list of the hrefs.  You can then change them individually by providing the corresponding item number:
 
-```
+```bash
 trestle href -n my_profile -i 1 -hr trestle://catalogs/my_catalog/catalog.json
 ```
 
@@ -432,7 +432,7 @@ This command allows users to add an OSCAL model to a subcomponent in source dire
 
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
-```
+```json
 "roles": [
   {
     "id": "REPLACE_ME",
@@ -442,13 +442,13 @@ will add the following property under the `metadata` property for a catalog that
 
 Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
 
-```
-- DateTime: <Current date-time>
-- Boolean: False
-- Integer: 0 
-- String: REPLACE_ME
-- Float/Double: 0.00
-- Id field: Auto generated UUID
+```yaml
+  - DateTime: <Current date-time>
+  - Boolean: false
+  - Integer: 0
+  - String: REPLACE_ME
+  - Float/Double: 0.00
+  - Id field: Auto generated UUID
 ```
 
 Passing `-iof` or `--include-optional-fields` will make `trestle add` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
@@ -511,7 +511,7 @@ Example config:
 
 */home/user/task.config*
 
-```
+```conf
 [task.osco-to-oscal]
 
 input-dir =  /home/user/git/evidence/osco/input
@@ -528,7 +528,7 @@ Example input directory contents listing:
 
 */home/user/git/evidence/osco/input*
 
-```
+```bash
 -rw-rw-r--. 1 user user  3832 Feb  2 09:36 oscal-metadata.yaml
 -rw-rw-r--. 1 user user 49132 Feb  2 06:12 ssg-ocp4-ds-cis-111.222.333.444-pod.yaml
 -rw-rw-r--. 1 user user 52747 Feb  2 06:41 ssg-ocp4-ds-cis-111.222.333.555-pod.yaml
@@ -544,10 +544,10 @@ Example input OSCO scan result file contents (snippet):
 <details>
 <summary>display sample</summary>
 
-```
+```yaml
 apiVersion: v1
 data:
-  exit-code: "2"
+  exit-code: '2'
   results: |
     <?xml version="1.0" encoding="UTF-8"?>
     <TestResult xmlns="https://checklists.nist.gov/xccdf/1.2" 
@@ -589,19 +589,19 @@ data:
 kind: ConfigMap
 metadata:
   annotations:
-    compliance-remediations/processed: ""
-    compliance.openshift.io/scan-error-msg: ""
+    compliance-remediations/processed: ''
+    compliance.openshift.io/scan-error-msg: ''
     compliance.openshift.io/scan-result: NON-COMPLIANT
     openscap-scan-result/node: 111.222.333.444
-  creationTimestamp: "2020-08-03T02:26:34Z"
+  creationTimestamp: '2020-08-03T02:26:34Z'
   labels:
     compliance-scan: ssg-ocp4-ds-cis
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
   namespace: openshift-compliance
-  resourceVersion: "22693328"
+  resourceVersion: '22693328'
   selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
   uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
-  
+
 ```
 
 </details>
@@ -616,46 +616,46 @@ Example input OSCAL metadata file contents:
 <details>
 <summary>display sample</summary>
 
-```
+```yaml
 ssg-ocp4-ds-cis-111.222.333.444-pod:
-   locker: https://github.mycorp.com/degenaro/evidence-locker
-   namespace: xccdf
-   benchmark: CIS Kubernetes Benchmark
-   subject-references:
-      component:
-         uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
-         type: component
-         title: Red Hat OpenShift Kubernetes
-      inventory-item:
-         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
-         type: inventory-item
-         title: Pod
-         properties:
-            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
-            target-ip: 111.222.333.444
-            cluster-name: ROKS-OpenSCAP-1
-            cluster-type: openshift
-            cluster-region: us-south
-                    
+  locker: https://github.mycorp.com/degenaro/evidence-locker
+  namespace: xccdf
+  benchmark: CIS Kubernetes Benchmark
+  subject-references:
+    component:
+      uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
+      type: component
+      title: Red Hat OpenShift Kubernetes
+    inventory-item:
+      uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+      type: inventory-item
+      title: Pod
+      properties:
+        target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+        target-ip: 111.222.333.444
+        cluster-name: ROKS-OpenSCAP-1
+        cluster-type: openshift
+        cluster-region: us-south
+
 ssg-rhel7-ds-cis-111.222.333.444-pod:
-   locker: https://github.mycorp.com/degenaro/evidence-locker
-   namespace: xccdf
-   benchmark: CIS Kubernetes Benchmark
-   subject-references:
-      component:
-         uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
-         type: component
-         title: RedHat Enterprise Linux 7.8
-      inventory-item:
-         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
-         type: inventory-item
-         title: VM
-         properties:
-            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
-            target-ip: 111.222.333.444
-            cluster-name: ROKS-OpenSCAP-1
-            cluster-type: openshift
-            cluster-region: us-south
+  locker: https://github.mycorp.com/degenaro/evidence-locker
+  namespace: xccdf
+  benchmark: CIS Kubernetes Benchmark
+  subject-references:
+    component:
+      uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
+      type: component
+      title: RedHat Enterprise Linux 7.8
+    inventory-item:
+      uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+      type: inventory-item
+      title: VM
+      properties:
+        target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+        target-ip: 111.222.333.444
+        cluster-name: ROKS-OpenSCAP-1
+        cluster-type: openshift
+        cluster-region: us-south
 ```
 
 </details>
@@ -670,25 +670,25 @@ The mapping whose *name* matches the `[metadata][name]` in the evidence for the
 corresponding embedded XML, if any, will be used for augmenting the produced
 OSCAL.
 
-```
+```yaml
 name:
-   locker: <locker>
-   namespace: <namespace>
-   benchmark: <benchmark>
-   subject-references:
-      component:
-         uuid-ref: <uuid-ref-component>
-         type: <component-type>
-         title: <component-title>
-      inventory-item:
-         uuid-ref: <uuid-ref-inventory-item>
-         type: <inventory-item-type>
-         title: <inventory-item-title>
-         properties:
-            target: <target>
-            cluster-name: <cluster-name>
-            cluster-type: <cluster-type>
-            cluster-region: <cluster-region>
+  locker: <locker>
+  namespace: <namespace>
+  benchmark: <benchmark>
+  subject-references:
+    component:
+      uuid-ref: <uuid-ref-component>
+      type: <component-type>
+      title: <component-title>
+    inventory-item:
+      uuid-ref: <uuid-ref-inventory-item>
+      type: <inventory-item-type>
+      title: <inventory-item-title>
+      properties:
+        target: <target>
+        cluster-name: <cluster-name>
+        cluster-type: <cluster-type>
+        cluster-region: <cluster-region>
 ```
 
 **output**
@@ -699,7 +699,7 @@ Example output directory contents listing:
 
 */home/user/git/evidence/oscal/output*
 
-```
+```bash
 -rw-rw-r--. 1 user user 49132 Feb  3 10:59 ssg-ocp4-ds-cis-111.222.333.444-pod.json
 -rw-rw-r--. 1 user user 52747 Feb  3 10:59 ssg-ocp4-ds-cis-111.222.333.555-pod.json
 
@@ -714,7 +714,7 @@ Example output OSCAL Observations file contents (snippet):
 <details>
 <summary>display sample</summary>
 
-```
+```json
 {
   "observations": [
     {
@@ -828,7 +828,7 @@ Example config:
 
 */home/user/task.config*
 
-```
+```conf
 [task.tanium-to-oscal]
 
 input-dir =  /home/user/git/compliance/tanium/input
@@ -844,7 +844,7 @@ Example input directory contents listing:
 
 */home/user/git/compliance/tanium/input*
 
-```
+```bash
 -rw-rw-r--. 1 degenaro degenaro 1830 Mar  7 08:23 Tanium.comply-nist-results
 
 ```
@@ -854,7 +854,7 @@ Example input directory contents listing:
 <details>
 <summary>display sample</summary>
 
-```
+```json
 {"IP Address":"fe80::3cd5:564b:940e:49ab","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 {"IP Address":"10.8.69.11","Computer Name":"","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 {"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days","Result":"fail","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
@@ -873,7 +873,7 @@ Example output directory contents listing:
 
 */home/user/git/compliance/oscal/output*
 
-```
+```bash
 -rw-rw-r--. 1 degenaro degenaro 6479 Mar  7 08:25 Tanium.oscal.json
 
 ```
@@ -883,7 +883,7 @@ Example output directory contents listing:
 <details>
 <summary>display sample</summary>
 
-```
+```json
 {
   "results": [
     {
@@ -1135,7 +1135,6 @@ Example output directory contents listing:
     }
   ]
 }
-
 ```
 
 </details>
@@ -1171,7 +1170,7 @@ Example config:
 
 */home/user/task.config*
 
-```
+```conf
 [task.xlsx-to-oscal-component-definition]
 
 catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json

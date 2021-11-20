@@ -80,7 +80,7 @@ Each source file must include a license header for the Apache
 Software License 2.0. Using the SPDX format is the simplest approach.
 e.g.
 
-```
+```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -107,14 +107,14 @@ must include a sign-off statement in the commit message.
 Here is an example Signed-off-by line, which indicates that the
 submitter accepts the DCO:
 
-```
+```text
 Signed-off-by: John Doe <john.doe@example.com>
 ```
 
 You can include this automatically when you commit a change to your
 local git repository using the following command:
 
-```
+```bash
 git commit --signoff
 ```
 
@@ -136,7 +136,7 @@ with a signed off commit before being accepted.
 
 - Use the following commands to setup python:
 
-```shell
+```bash
 python3 -m venv venv
 . ./venv/bin/activate
 # for zsh put .[dev] in quotes as below
@@ -183,21 +183,21 @@ and passes the linter rules.  See the [pre-commit configuration file](<>)./.pre-
 Since `yapf` and `flake8` are installed as part of the `pre-commit` hooks, running `yapf` and `flake8`
 manually must be done through `pre-commit`.  See examples below:
 
-```shell
+```bash
 make code-format
 make code-lint
 ```
 
 ...will run `yapf` and `flake8` on the entire repo and is equivalent to:
 
-```shell
+```bash
 pre-commit run yapf --all-files
 pre-commit run flake8 --all-files
 ```
 
 ...and when looking to limit execution to a subset of files do similar to:
 
-```shell
+```bash
 pre-commit run yapf --files trestle/*
 pre-commit run flake8 --files trestle/*
 ```
