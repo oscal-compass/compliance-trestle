@@ -1,0 +1,14 @@
+{
+  "enabled": [
+    "file_permissions_kube_apiserver",
+    "file_owner_kube_apiserver",
+    "file_groupowner_kube_apiserver",
+    "file_permissions_kube_controller_manager",
+    "file_owner_kube_controller_manager",
+    "file_groupowner_kube_controller_manager",
+    "file_permissions_scheduler",
+    "file_owner_kube_scheduler",
+    "file_groupowner_kube_scheduler",
+    "file_permissions_etcd_member"
+  ]
+}

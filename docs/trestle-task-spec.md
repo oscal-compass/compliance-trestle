@@ -56,18 +56,18 @@ For trestle tasks a simple interface has been designed:
 1. API call does may pass configuration manually.
 1. By default will use config
 
-```shell
+```bash
 trestle tasks tasks_name #uses default config file in .trestle directory
 trestle tasks tasks_name -c config.file # tasks will execute using user provided config file.
 ```
 
-```
+```bash
 trestle tasks -l
+```
 
 returns all tasks with descriptions
-```
 
-```
+```python
 class MyTask(TasksBase):
 
     def __init__(self, config_object):

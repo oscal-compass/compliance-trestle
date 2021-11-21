@@ -77,10 +77,9 @@ then the best mapping would be to an Observations only.
 <details>
 <summary>example snippet: instance suitable for mapping to Observation</summary>
 
-```
-data:
-  <rule-result idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument" time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000">
-    <result>fail</result>
+```yaml
+data: <rule-result idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument"
+  time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000"> <result>fail</result>
   </rule-result>
 metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
@@ -91,7 +90,7 @@ metadata:
 <details>
 <summary>example snippet: instance OSCAL Observation</summary>
 
-```
+```json
     {
       "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
       "title": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
@@ -183,25 +182,24 @@ then the best mapping wound be to Findings with Observations.
 <details>
 <summary>example snippet: xml instance suitable for mapping to Finding with Observation</summary>
 
-```
-
-{"IP Address":"10.8.68.218",
-  "Computer Name":"cmp-wn-2115.demo.tanium.local",
-  "Comply - JovalCM Results[c2dc8749]":
-    [{
-      "Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
-      "Benchmark Version":"1.5.0.1",
-      "Profile":"Windows 10 - NIST 800-53",
-      "ID":"xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled",
-      "Result":"fail",
-      "Custom ID":"800-53: SC-18",
-      "Version":"version: 1"
-     }
-    ],
-  "Count":"1",
-  "Age":"600"
+```json
+{
+  "IP Address": "10.8.68.218",
+  "Computer Name": "cmp-wn-2115.demo.tanium.local",
+  "Comply - JovalCM Results[c2dc8749]": [
+    {
+      "Benchmark": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+      "Benchmark Version": "1.5.0.1",
+      "Profile": "Windows 10 - NIST 800-53",
+      "ID": "xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled",
+      "Result": "fail",
+      "Custom ID": "800-53: SC-18",
+      "Version": "version: 1"
+    }
+  ],
+  "Count": "1",
+  "Age": "600"
 }
-
 ```
 
 </details>
@@ -209,7 +207,7 @@ then the best mapping wound be to Findings with Observations.
 <details>
 <summary>example snippet: instance OSCAL Finding</summary>
 
-```
+```json
       "findings": [
         {
           "uuid": "99c0a0de-e34e-4e22-95a1-1d4f24826565",
@@ -253,7 +251,7 @@ then the best mapping wound be to Findings with Observations.
 <details>
 <summary>example snippet: instance OSCAL Observation</summary>
 
-```
+```json
       "observations": [
         {
           "uuid": "61092735-e365-4638-bc2c-ecd0ed407e73",
@@ -300,7 +298,7 @@ then the best mapping wound be to Findings with Observations.
 <details>
 <summary>example snippet: local definitions</summary>
 
-```
+```json
 "results": [
     {
       "uuid": "98028241-8705-4211-bf36-71e1f7aa6192",

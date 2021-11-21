@@ -52,7 +52,7 @@ irrespective of protocol.
 
 The resulting structure is shown below.
 
-```
+```text
 .
 ├── .trestle
 │   └──cache

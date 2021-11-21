@@ -1,13 +1,18 @@
+---
+name: Merge to trunk branch (develop)
+about: For all contributions of new features and fixes that are not time critical.
+title: 'chore: Replace me using the semantic release commit format.'
+assignees: butler54
+---
+
 ## Types of changes
 
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
 
-- [ ] Hot fix (emergency fix and release)
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Documentation (change which affects the documentation site)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
-- [ ] Release (`develop` -> `main`)
 
 ## Quality assurance (all should be covered).
 
@@ -25,6 +30,6 @@
 
 # Before you merge
 
-- Ensure it is a 'squash commit' if not a release.
+- Ensure it is a 'squash commit'
 - Ensure CI is currently passing
-- Check sonar
+- Is this a merge to `develop` from any branch except `main` and `ghpages`
