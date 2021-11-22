@@ -340,7 +340,7 @@ class OscalResultsFactory():
         self._checking = checking
 
     @property
-    def components(self) -> Dict[str, SystemComponent]:
+    def components(self) -> List[SystemComponent]:
         """OSCAL components."""
         return list(self._component_map.values())
 
