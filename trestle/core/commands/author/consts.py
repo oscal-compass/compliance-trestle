@@ -31,6 +31,10 @@ MODE_CHOICES = ['validate', 'template-validate', 'setup', 'create-sample']
 TASK_NAME_SHORT = '-tn'
 TASK_NAME_LONG = '--task-name'
 
+SHORT_TEMPLATE_VERSION = '-tv'
+LONG_TEMPLATE_VERSION = '--template-version'
+TEMPLATE_VERSION_HELP = 'Specify a template version to use for the task, latest version will be used by default.'
+
 # Readme validate
 SHORT_README_VALIDATE = '-rv'
 LONG_README_VALIDATE = '--readme-validate'
@@ -38,6 +42,10 @@ README_VALIDATE_HELP = 'Enable to validate README.md files otherwise README file
 README_VALIDATE_FOLDERS_HELP = (
     'Enable to validate README.md files. Required if readme files are included in the' + 'template.'
 )
+
+START_TEMPLATE_VERSION = '0.0.1'  # first ever template version, all templates without version will be defaulted to this
+TRESTLE_RESOURCES = 'trestle.resources'
+TEMPLATE_VERSION_HEADER = 'x-trestle-template-version'
 
 # Governed heading - capability: To be removed
 GH_SHORT = '-gh'

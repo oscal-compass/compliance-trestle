@@ -44,6 +44,14 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-hdm',
+            '--header-dont-merge',
+            help=const.HELP_HEADER_MERGE,
+            required=False,
+            action='store_true',
+            default=False
+        )
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
 
@@ -60,7 +68,7 @@ class SSPGenerate(AuthorCommonCommand):
         if 'yaml_header' in args and args.yaml_header is not None:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
-                yaml = YAML(typ='safe')
+                yaml = YAML()
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
                 logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
@@ -75,13 +83,13 @@ class SSPGenerate(AuthorCommonCommand):
             for section in section_tuples:
                 if ':' in section:
                     s = section.split(':')
-                    section_label = s[0].strip()
-                    if section_label == 'statement':
-                        logger.warning('Section label "statement" is not allowed.')
-                        return 1
                     sections[s[0].strip()] = s[1].strip()
                 else:
+
                     sections[section] = section
+            if 'statement' in sections.keys():
+                logger.warning('Section label "statement" is not allowed.')
+                return 1
 
         logger.debug(f'ssp sections: {sections}')
 
@@ -90,14 +98,16 @@ class SSPGenerate(AuthorCommonCommand):
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
             catalog_interface = CatalogInterface(resolved_catalog)
         except Exception as e:
-            logger.warning(f'Error creating the resolved profile catalog: {e}')
-            logger.debug(traceback.print_exc())
+            logger.error(f'Error creating the resolved profile catalog: {e}')
+            logger.debug(traceback.format_exc())
             return 1
         try:
-            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, True)
+            catalog_interface.write_catalog_as_markdown(
+                markdown_path, yaml_header, sections, True, False, None, header_dont_merge=args.header_dont_merge
+            )
         except Exception as e:
-            logger.warning(f'Error writing the catalog as markdown: {e}')
-            logger.debug(traceback.print_exc())
+            logger.error(f'Error writing the catalog as markdown: {e}')
+            logger.debug(traceback.format_exc())
             return 1
 
         return 0
@@ -120,7 +130,7 @@ class SSPAssemble(AuthorCommonCommand):
         try:
             # generate the one dummy component that implementations will refer to in by_components
             component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-            component.description = 'Dummy component created by trestle'
+            component.description = 'The System'
 
             # create system implementation to hold the dummy component
             system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
@@ -133,7 +143,7 @@ class SSPAssemble(AuthorCommonCommand):
             imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
         except Exception as e:
             logger.warning(f'Error reading the catalog markdown: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         try:
@@ -156,7 +166,7 @@ class SSPAssemble(AuthorCommonCommand):
             fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         return 0
@@ -224,14 +234,14 @@ class SSPFilter(AuthorCommonCommand):
             # make sure all controls in the profile have implemented reqs in the final ssp
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
                 logger.warning('Unable to filter the ssp because the profile references controls not in it.')
-                logger.debug(traceback.print_exc())
+                logger.debug(traceback.format_exc())
                 return 1
 
             ssp.control_implementation = control_imp
             fs.save_top_level_model(ssp, trestle_root, out_name, fs.FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
-            logger.debug(traceback.print_exc())
+            logger.debug(traceback.format_exc())
             return 1
 
         return 0

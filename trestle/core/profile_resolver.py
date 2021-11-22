@@ -17,20 +17,44 @@ import logging
 import pathlib
 import re
 import string
-from typing import Dict, Iterator, List, Optional, Set, Union
+from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 import trestle.core.const as const
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.common_types import OBT
 from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
 from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
+from trestle.core.utils import as_list, none_if_empty
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
+
+ID = 'id'
+
+NAME = 'name'
+
+PART_EXCLUDE = [NAME]
+
+PROPERTY_EXCLUDE = [NAME]
+
+PARAMETER_EXCLUDE = [ID]
+
+CONTROL_EXCLUDE = [ID]
+
+CATALOG_EXCLUDE = ['uuid', 'metadata', 'back_matter']
+
+ITEM_EXCLUDE_MAP = {
+    'Part': PART_EXCLUDE,
+    'Property': PROPERTY_EXCLUDE,
+    'Parameter': PARAMETER_EXCLUDE,
+    'Control': CONTROL_EXCLUDE,
+    'Catalog': CATALOG_EXCLUDE
+}
 
 
 class ProfileResolver():
@@ -97,21 +121,35 @@ class ProfileResolver():
                 refs.update(self._find_uuid_refs(control_id))
             return refs
 
+        def _controls_selected(self, select_list: Optional[List[prof.SelectControlById]]) -> List[str]:
+            control_ids: List[str] = []
+            if select_list is not None:
+                for select_control in select_list:
+                    if select_control.matching is not None:
+                        raise TrestleError('Profiles with SelectControlById based on matching are not supported.')
+                    include_children = select_control.with_child_controls == prof.WithChildControls.yes
+                    if select_control.with_ids:
+                        new_ids = [withid.__root__ for withid in select_control.with_ids]
+                        for id_ in new_ids:
+                            control_ids.append(id_)
+                            if include_children:
+                                control_ids.extend(self._catalog_interface.get_dependent_control_ids(id_))
+            return control_ids
+
         def _find_needed_control_ids(self) -> List[str]:
             """Get list of control_ids needed by profile and corresponding groups."""
-            control_ids: List[str] = []
-
             if self._import.include_controls is not None:
-                for include_control in self._import.include_controls:
-                    new_ids = [withid.__root__ for withid in include_control.with_ids]
-                    control_ids.extend(new_ids)
+                include_ids = self._controls_selected(self._import.include_controls)
             else:
-                control_ids = self._catalog_interface.get_control_ids()
+                if self._import.include_all is None:
+                    logger.warning('Profile does not specify include-controls, so including all.')
+                include_ids = self._catalog_interface.get_control_ids()
 
-            if self._import.exclude_controls is not None:
-                raise TrestleError('exclude controls is not currently supported')
+            exclude_ids = self._controls_selected(self._import.exclude_controls)
 
-            return control_ids
+            if not set(include_ids).issuperset(set(exclude_ids)):
+                logger.debug(f'include_ids is not a superset of exclude_ids in import {self._import.href}')
+            return [id_ for id_ in include_ids if id_ not in exclude_ids]
 
         def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
             """
@@ -128,18 +166,18 @@ class ProfileResolver():
                 if sub_control.id in needed_ids and sub_control.id not in exclude_ids:
                     controls.append(self._prune_control(needed_ids, sub_control, exclude_ids))
                     exclude_ids.append(sub_control.id)
-            control.controls = controls if controls else None
+            control.controls = none_if_empty(controls)
             return control
 
         def _prune_controls(self, needed_ids: List[str]) -> List[str]:
-            exclude_ids = []
+            loaded_ids = []
             final_ids: List[str] = []
             for control_id in needed_ids:
-                if control_id not in exclude_ids:
+                if control_id not in loaded_ids:
                     control = self._catalog_interface.get_control(control_id)
-                    control = self._prune_control(needed_ids, control, exclude_ids)
+                    control = self._prune_control(needed_ids, control, loaded_ids)
                     self._catalog_interface.replace_control(control)
-                    exclude_ids.append(control_id)
+                    loaded_ids.append(control_id)
                     final_ids.append(control_id)
             return final_ids
 
@@ -153,12 +191,17 @@ class ProfileResolver():
             # if a control includes controls - only include those that we know are needed
             final_control_ids = self._prune_controls(needed_ids)
 
+            cat_controls = []
+
             # build the needed groups of controls
             group_dict: Dict[str, cat.Group] = {}
             for control_id in final_control_ids:
-                group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
-                group = group_dict.get(group_id)
                 control = self._catalog_interface.get_control(control_id)
+                group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
+                if group_id == 'catalog':
+                    cat_controls.append(control)
+                    continue
+                group = group_dict.get(group_id)
                 if group is None:
                     group = cat.Group(id=group_id, title=group_title, class_=group_class, controls=[control])
                     group_dict[group_id] = group
@@ -171,20 +214,20 @@ class ProfileResolver():
             # prune the list of resources to only those that are needed
             new_resources: Optional[List[common.Resource]] = []
             if self._catalog.back_matter is not None and self._catalog.back_matter.resources is not None:
-                for resource in self._catalog.back_matter.resources:
-                    if resource.uuid in needed_uuid_refs:
-                        new_resources.append(resource)
+                new_resources = [res for res in self._catalog.back_matter.resources if res.uuid in needed_uuid_refs]
 
             new_groups: Optional[List[cat.Group]] = list(group_dict.values())
 
             # should avoid empty lists so set to None if empty
-            new_resources = new_resources if new_resources else None
-            new_groups = new_groups if new_groups else None
+            new_resources = none_if_empty(new_resources)
+            new_groups = none_if_empty(new_groups)
+            cat_controls = none_if_empty(cat_controls)
 
             new_cat = cat.Catalog(
                 uuid=str(uuid4()),
                 metadata=self._catalog.metadata,
                 back_matter=common.BackMatter(resources=new_resources),
+                controls=cat_controls,
                 groups=new_groups
             )
 
@@ -202,38 +245,160 @@ class ProfileResolver():
             yield self._prune_catalog()
 
     class Merge(Pipeline.Filter):
-        """Merge the incoming catalogs according to rules in the profile."""
+        """
+        Merge the incoming catalogs according to rules in the profile.
+
+        The incoming catalogs have already been pruned based on the import.
+        Now the controls must be gathered, merged, and grouped based on the merge settings.
+        """
 
         def __init__(self, profile: prof.Profile) -> None:
             """Initialize the class with the profile."""
             logger.debug('merge filter initialize')
             self._profile = profile
 
-        def _merge_catalog(self, merged: cat.Catalog, catalog: cat.Catalog) -> cat.Catalog:
-            """Merge the controls in the catalog into merged catalog."""
-            if merged is None:
+        def _get_id(self, item: OBT) -> Optional[str]:
+            id_ = getattr(item, ID, None)
+            if id_ is None:
+                id_ = getattr(item, NAME, None)
+            return id_
+
+        def _merge_lists(self, dest: List[OBT], src: List[OBT], merge_method: prof.Method) -> None:
+            added_items = []
+            if merge_method == prof.Method.keep:
+                dest.extend(src)
+                return
+            for item in src:
+                # if there is an exact copy of this in dest then ignore it
+                if item not in dest:
+                    merged = False
+                    item_id = self._get_id(item)
+                    if item_id is not None:
+                        for other in dest:
+                            other_id = self._get_id(other)
+                            if other_id == item_id:
+                                if merge_method == prof.Method.merge:
+                                    self._merge_items(other, item, merge_method)
+                                merged = True
+                                break
+                    # it isn't already in dest and no match was found for merge, so append
+                    if not merged:
+                        added_items.append(item)
+            dest.extend(added_items)
+
+        def _merge_attrs(
+            self, dest: Union[OBT, List[OBT]], src: Union[OBT, List[OBT]], attr: str, merge_method: prof.Method
+        ) -> None:
+            """Merge this attr of src into the attr of dest."""
+            src_attr = getattr(src, attr, None)
+            if src_attr is None:
+                return
+            item_type = type(src).__name__
+            if attr in ITEM_EXCLUDE_MAP.get(item_type, []):
+                return
+            dest_attr = getattr(dest, attr, None)
+            if dest_attr is not None and merge_method == prof.Method.use_first:
+                return
+            if dest_attr == src_attr and merge_method != prof.Method.keep:
+                return
+            if isinstance(dest_attr, list):
+                self._merge_lists(dest_attr, src_attr, merge_method)
+            else:
+                setattr(dest, attr, src_attr)
+
+        def _merge_items(self, dest: OBT, src: OBT, merge_method: prof.Method) -> None:
+            """Merge two items recursively."""
+            for field in src.__fields_set__:
+                self._merge_attrs(dest, src, field, merge_method)
+
+        def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
+            """Get flattened content of group and its groups recursively."""
+            controls = []
+            params = []
+            controls.extend(as_list(group.controls))
+            params.extend(as_list(group.params))
+            if group.groups is not None:
+                for sub_group in group.groups:
+                    new_controls, new_params = self._group_contents(sub_group)
+                    controls.extend(new_controls)
+                    params.extend(new_params)
+            return controls, params
+
+        def _flatten_catalog(self, catalog: cat.Catalog, as_is: bool) -> cat.Catalog:
+            """Flatten the groups of the catalog if as_is is False."""
+            if as_is or catalog.groups is None:
                 return catalog
-            if catalog.groups is not None:
-                if merged.groups is None:
-                    merged.groups = []
-                for group in catalog.groups:
-                    if group.id not in [g.id for g in merged.groups]:
-                        merged.groups.append(cat.Group(id=group.id, title=group.title, controls=[]))
-                    index = [g.id for g in merged.groups].index(group.id)
-                    merged.groups[index].controls.extend(group.controls)
-            if catalog.controls:
-                if not merged.controls:
-                    merged.controls = catalog.controls
+
+            # as_is is False so flatten the controls into a single list
+            catalog.controls = as_list(catalog.controls)
+            catalog.params = as_list(catalog.params)
+            for group in catalog.groups:
+                new_controls, new_params = self._group_contents(group)
+                catalog.controls.extend(new_controls)
+                catalog.params.extend(new_params)
+            catalog.controls = none_if_empty(catalog.controls)
+            catalog.params = none_if_empty(catalog.params)
+            catalog.groups = None
+            return catalog
+
+        def _merge_two_catalogs(
+            self, dest: cat.Catalog, src: cat.Catalog, merge_method: prof.Method, as_is: bool
+        ) -> cat.Catalog:
+            # merge_method is use_first, merge, or keep
+            # if as_is is false, the result is flattened
+
+            dest = self._flatten_catalog(dest, as_is)
+            src = self._flatten_catalog(src, as_is)
+
+            self._merge_items(dest, src, merge_method)
+
+            return dest
+
+        def _merge_catalog(self, merged: Optional[cat.Catalog], catalog: cat.Catalog) -> cat.Catalog:
+            """Merge the controls in the catalog into merged catalog."""
+            # no merge means keep, including dups
+            # same for merge with no combine
+            # groups are merged only if separate directive such as as-is is given
+            # use-first is a merge combination rule
+            # merge is a merge combination rule for controls.  groups are not merged by this rule
+            # merge/as-is and merge/custom are used for merging groups
+            # if neither as-is nor custom is specified - just get single list of controls
+            # unstructured controls should appear after any loose params
+
+            # make copies to avoid changing input objects
+            local_cat = catalog.copy(deep=True)
+            local_merged = merged.copy(deep=True) if merged else None
+
+            merge_method = prof.Method.keep
+            as_is = False
+            if self._profile.merge is not None:
+                if self._profile.merge.custom is not None:
+                    raise TrestleError('Profile with custom merge is not supported.')
+                if self._profile.merge.as_is is not None:
+                    as_is = self._profile.merge.as_is
+                if self._profile.merge.combine is None:
+                    logger.warning('Profile has merge but no combine so defaulting to combine/merge.')
+                    merge_method = prof.Method.merge
                 else:
-                    merged.controls.extend(catalog.controls)
-            return merged
+                    merge_combine = self._profile.merge.combine
+                    if merge_combine.method is None:
+                        logger.warning('Profile has merge combine but no method.  Defaulting to merge.')
+                        merge_method = prof.Method.merge
+                    else:
+                        merge_method = merge_combine.method
+
+            if local_merged is None:
+                return self._flatten_catalog(local_cat, as_is)
+
+            # merge the incoming catalog with merged based on merge_method and as_is
+            return self._merge_two_catalogs(local_merged, local_cat, merge_method, as_is)
 
         def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
             """
             Merge the incoming catalogs.
 
             This pulls from import and iterates over the incoming catalogs.
-            Currently this does not use the profile but it may in the future.
+            The way groups, lists of controls, and controls themselves get merged is specified by the profile.
             """
             merged: Optional[cat.Catalog] = None
             logger.debug(f'merge entering process with {len(pipelines)} pipelines')
@@ -245,257 +410,304 @@ class ProfileResolver():
     class Modify(Pipeline.Filter):
         """Modify the controls based on the profile."""
 
-        def __init__(self, profile: prof.Profile, block_adds: bool = False) -> None:
+        def __init__(self, profile: prof.Profile, change_prose=False, block_adds=False) -> None:
             """Initialize the filter."""
             self._profile = profile
             self._catalog_interface: Optional[CatalogInterface] = None
             self._block_adds = block_adds
+            self._change_prose = change_prose
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
         @staticmethod
-        def _replace_id_with_text(prose, param_id, param_text):
+        def _replace_id_with_text(prose: str, param_dict: Dict[str, str]) -> str:
             """Find all instances of param_id in prose and replace with param_text.
 
+            Need to check all values in dict for a match
             Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
             """
-            bad_chars = string.ascii_letters + string.digits
-            new_prose = prose
-            id_len = len(param_id)
-            loc = 0
-            # handle simple case directly
-            if prose == param_id:
-                return param_text
-            # it's there, but may be param_10 instead of param_1
-            while True:
-                if loc >= len(new_prose):
-                    return new_prose
-                next_loc = new_prose[loc:].find(param_id)
-                if next_loc < 0:
-                    return new_prose
-                loc += next_loc
-                if loc > 0 and new_prose[loc - 1] in bad_chars:
+            for param_id, param_value in param_dict.items():
+                bad_chars = string.ascii_letters + string.digits + '._'
+                new_prose = prose
+                id_len = len(param_id)
+                loc = 0
+                if param_id not in prose:
+                    continue
+                # handle simple case directly
+                if prose == param_id:
+                    return param_value
+                # it's there, but may be param_10 instead of param_1
+                while True:
+                    if loc >= len(new_prose):
+                        return new_prose
+                    next_loc = new_prose[loc:].find(param_id)
+                    if next_loc < 0:
+                        return new_prose
+                    loc += next_loc
+                    if loc > 0 and new_prose[loc - 1] in bad_chars:
+                        loc += id_len
+                        continue
+                    end_loc = loc + id_len
+                    if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
+                        new_prose = new_prose[:loc] + param_value + new_prose[end_loc:]
+                        loc += len(param_value)
+                        continue
                     loc += id_len
-                    continue
-                end_loc = loc + id_len
-                if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
-                    new_prose = new_prose[:loc] + param_text + new_prose[end_loc:]
-                    loc += len(param_text)
-                    continue
-                loc += id_len
 
         @staticmethod
-        def _replace_params(text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-            """Replace params found in moustaches with assignments for this control from profile or description info."""
+        def _replace_params(text: str, param_dict: Dict[str, str]) -> str:
+            """
+            Replace params found in moustaches with values from the param_dict.
+
+            A single line of prose may contain multiple moustaches.
+            """
             # first check if there are any moustache patterns in the text
             staches = re.findall(r'{{.*?}}', text)
             if not staches:
                 return text
             # now have list of all staches including braces, e.g. ['{{foo}}', '{{bar}}']
-            new_staches = []
-            # clean the staches so they just have the param text
+            # clean the staches so they just have the param ids
+            param_ids = []
             for stache in staches:
-                # remove braces
-                stache = stache[2:(-2)]
-                stache = stache.replace('insert: param,', '').strip()
-                new_staches.append(stache)
-            if control.params is not None:
-                for param in control.params:
-                    # need to find the param_text that requires substitution.  It can be in a few places.
-                    # set default if no information available for text
-                    param_text = f'[{param.id} = no description available]'
-                    set_param = param_dict.get(param.id, None)
-                    # param value provided so just replace it
-                    if set_param is not None:
-                        values = [value.__root__ for value in set_param.values]
-                        param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
-                    else:
-                        # if select present, use it
-                        if param.select is not None:
-                            param_text = '['
-                            if param.select.how_many is not None:
-                                param_text += f'{param.select.how_many.value}: '
-                            if param.select.choice is not None:
-                                param_text += ', '.join(param.select.choice)
-                            param_text = f'{param_text}]'
-                        # else use the label
-                        if param.label is not None:
-                            param_text = f'[{param.label}]'
-                    # replace this pattern in all the staches with the new param_text
-                    fixed_staches = []
-                    for stache in new_staches:
-                        fixed = ProfileResolver.Modify._replace_id_with_text(stache, param.id, param_text)
-                        fixed_staches.append(fixed)
-                    new_staches = fixed_staches
+                # remove braces so these are just param_ids but may have extra chars
+                stache_contents = stache[2:(-2)]
+                param_id = stache_contents.replace('insert: param,', '').strip()
+                param_ids.append(param_id)
 
-            # now replace original stache text with new versions
+            # now replace original stache text with param values
             for i, _ in enumerate(staches):
-                text = text.replace(staches[i], new_staches[i], 1)
+                text = text.replace(staches[i], param_dict[param_ids[i]], 1)
             return text
 
         @staticmethod
-        def _replace_part_prose(
-            control: cat.Control, part: common.Part, param_dict: Dict[str, prof.SetParameter]
-        ) -> None:
-            """Replace the params using the _param_dict."""
+        def _replace_part_prose(control: cat.Control, part: common.Part, param_dict: Dict[str, str]) -> None:
+            """Replace the part prose according to set_param."""
             if part.prose is not None:
-                fixed_prose = ProfileResolver.Modify._replace_params(part.prose, control, param_dict)
+                fixed_prose = ProfileResolver.Modify._replace_params(part.prose, param_dict)
                 # change the prose in the control itself
                 part.prose = fixed_prose
-            if part.parts is not None:
-                for prt in part.parts:
-                    ProfileResolver.Modify._replace_part_prose(control, prt, param_dict)
-            if control.controls:
-                for sub_control in control.controls:
-                    if sub_control.parts:
-                        for prt in sub_control.parts:
-                            ProfileResolver.Modify._replace_part_prose(sub_control, prt, param_dict)
+            for prt in as_list(part.parts):
+                ProfileResolver.Modify._replace_part_prose(control, prt, param_dict)
+            for sub_control in as_list(control.controls):
+                for prt in as_list(sub_control.parts):
+                    ProfileResolver.Modify._replace_part_prose(sub_control, prt, param_dict)
 
         @staticmethod
-        def _add_to_parts_given_position(
-            control_parts: List[common.Part], id_: str, new_parts: List[common.Part], position: prof.Position
-        ) -> bool:
-            """Add new elements at the given position."""
-            if position in {prof.Position.after, prof.Position.before} and id_ is None:
-                raise TrestleError('Reference ID (by_id) must be given when position is set to before or after.')
-            for idx, child_part in enumerate(control_parts):
-                if child_part.id == id_:
-                    if not child_part.parts:
-                        child_part.parts = []
+        def _replace_control_prose(control: cat.Control, param_dict: Dict[str, str]) -> None:
+            """Replace the control prose according to set_param."""
+            for part in as_list(control.parts):
+                if part.prose is not None:
+                    fixed_prose = ProfileResolver.Modify._replace_params(part.prose, param_dict)
+                    # change the prose in the control itself
+                    part.prose = fixed_prose
+                for prt in as_list(part.parts):
+                    ProfileResolver.Modify._replace_part_prose(control, prt, param_dict)
+            for sub_control in as_list(control.controls):
+                for prt in as_list(sub_control.parts):
+                    ProfileResolver.Modify._replace_part_prose(sub_control, prt, param_dict)
 
-                    if position == prof.Position.after:
-                        for offset, new_part in enumerate(new_parts):
-                            control_parts.insert(idx + 1 + offset, new_part)
-                    elif position == prof.Position.before:
-                        for offset, new_part in enumerate(new_parts):
-                            control_parts.insert(idx + offset, new_part)
-                    elif position == prof.Position.starting:
-                        for offset, new_part in enumerate(new_parts):
-                            child_part.parts.insert(offset, new_part)
-                    elif position == prof.Position.ending:
-                        child_part.parts.extend(new_parts)
-                    else:
-                        raise TrestleError(f'Add position not recognized: {position}')
+        @staticmethod
+        def _add_contents_as_list(add: prof.Add) -> List[OBT]:
+            add_list = []
+            add_list.extend(as_list(add.props))
+            add_list.extend(as_list(add.parts))
+            add_list.extend(as_list(add.links))
+            return add_list
 
+        @staticmethod
+        def _add_adds_to_part(part: common.Part, add: prof.Add) -> None:
+            for attr in ['params', 'props', 'parts', 'links']:
+                add_list = getattr(add, attr, None)
+                if add_list:
+                    ProfileResolver.Modify._add_attr_to_part(part, add_list, attr, add.position)
+
+        @staticmethod
+        def _add_to_list(input_list: List[OBT], add: prof.Add) -> bool:
+            """Add the contents of the add according to its by_id and position.
+
+            Return True on success or False if id needed and not found.
+
+            If the add is not by_id then the insertion will happen immediately.
+            But if the add is by_id it will insert if the id is found, or return False if not.
+            This allows a separate recursive routine to search sub-lists for the id.
+
+            Note: If a list can be none this method will fail
+            """
+            add_list = ProfileResolver.Modify._add_contents_as_list(add)
+            # if by_id is not specified then OSCAL docs say to interpret before and after as starting or ending
+            if not add.by_id:
+                # if we are just adding to the list then the add contents should be of the same type
+                if add.position in [prof.Position.before, prof.Position.starting]:
+                    for offset, item in enumerate(add_list):
+                        input_list.insert(offset, item)
                     return True
                 else:
-                    if child_part.parts is not None:
-                        if ProfileResolver.Modify._add_to_parts_given_position(child_part.parts,
-                                                                               id_,
-                                                                               new_parts,
-                                                                               position):
+                    input_list.extend(add_list)
+                    return True
+            # Test here for matched by_id attribute.
+            try:
+                for index in range(len(input_list)):
+                    if input_list[index].id == add.by_id:
+                        if add.position == prof.Position.after:
+                            for offset, new_item in enumerate(add_list):
+                                input_list.insert(index + 1 + offset, new_item)
                             return True
+                        elif add.position == prof.Position.before:
+                            for offset, new_item in enumerate(add_list):
+                                input_list.insert(index + offset, new_item)
+                            return True
+                        # if starting or ending, the adds go directly into this part according to type
+                        ProfileResolver.Modify._add_adds_to_part(input_list[index], add)
+                        return True
+            except AttributeError:
+                raise TrestleError(
+                    'Cannot use "after" or "before" modifictions for a list where elements'
+                    + ' do not contain the referenced by_id attribute.'
+                )
             return False
 
         @staticmethod
-        def _add_to_parts(
-            control: cat.Control, id_: str, new_parts: List[common.Part], position: prof.Position
-        ) -> None:
-            """Find part in control and add to the specified position.
+        def _add_to_parts(parts: List[common.Part], add: prof.Add) -> bool:
+            if ProfileResolver.Modify._add_to_list(parts, add):
+                return True
+            for part in parts:
+                if part.parts is not None and ProfileResolver.Modify._add_to_parts(part.parts, add):
+                    return True
+            return False
 
-            Update the control with the new parts - otherwise error.
-            """
-            # handle simplest case first
-            if position == prof.Position.starting and id_ is None:
-                # add inside the control at the start
-                for offset, new_part in enumerate(new_parts):
-                    control.parts.insert(offset, new_part)
-            elif position == prof.Position.ending and id_ is None:
-                # add inside the control at the end
-                if control.parts is None:
-                    control.parts = new_parts
-                else:
-                    control.parts.extend(new_parts)
+        @staticmethod
+        def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: prof.Position) -> None:
+            attr_list = as_list(getattr(part, attr, None))
+            if position in [prof.Position.starting, prof.Position.before]:
+                items.extend(attr_list)
+                attr_list = items
             else:
-                # id is given, add by reference
-                if control.parts is None:
-                    if not new_parts:
-                        return
-                    control.parts = []
-                if not ProfileResolver.Modify._add_to_parts_given_position(control.parts, id_, new_parts, position):
-                    raise TrestleError(f'Unable to add parts for control {control.id} and part {id_} is not found.')
+                attr_list.extend(items)
+            setattr(part, attr, attr_list)
 
         @staticmethod
-        def _add_props_to_control(control: cat.Control, add: prof.Add) -> None:
-            """Add the props to the control param by_id in the Add."""
-            replaced_param = False
-            if control.params:
-                new_params = []
-                for param in control.params:
-                    if param.id == add.by_id:
-                        replaced_param = True
-                        if param.props:
-                            param.props.extend(add.props)
+        def _add_attr_to_control(control: cat.Control, items: List[OBT], attr: str, position: prof.Position) -> None:
+            attr_list = as_list(getattr(control, attr, None))
+            if position in [prof.Position.starting, prof.Position.before]:
+                items.extend(attr_list)
+                attr_list = items
+            else:
+                attr_list.extend(items)
+            setattr(control, attr, attr_list)
+
+        @staticmethod
+        def _add_to_control(control: cat.Control, add: prof.Add) -> None:
+            control.parts = as_list(control.parts)
+            if add.by_id is None or add.by_id == control.id:
+                # add contents will be added to the control directly
+                for attr in ['params', 'props', 'parts', 'links']:
+                    add_list = getattr(add, attr, None)
+                    if add_list:
+                        ProfileResolver.Modify._add_attr_to_control(control, add_list, attr, add.position)
+                return
+            else:
+                if not ProfileResolver.Modify._add_to_parts(control.parts, add):
+                    logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
+
+        def _set_parameter_in_control(self, set_param: prof.SetParameter) -> None:
+            """
+            Find the control with the param_id in it and set the parameter value.
+
+            This does not recurse because expectation is that only top level params will be set.
+            """
+            control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
+            if control is None:
+                raise TrestleError(f'Cannot find control referenced by SetParameter {set_param.param_id}')
+            control.params = as_list(control.params)
+            param_ids = [param.id for param in control.params]
+            index = param_ids.index(set_param.param_id)
+            param = control.params[index]
+            # FIXME these may need to merge
+            if set_param.values:
+                param.values = set_param.values
+            if set_param.constraints:
+                param.constraints = set_param.constraints
+            if set_param.guidelines:
+                param.guidelines = set_param.guidelines
+            if set_param.links:
+                param.links = set_param.links
+            if set_param.props:
+                param.props = set_param.props
+            if set_param.select:
+                param.select = set_param.select
+            if set_param.usage:
+                param.usage = set_param.usage
+            control.params[index] = param
+            self._catalog_interface.replace_control(control)
+
+        def _change_prose_with_param_values(self):
+            """Go through all controls and change prose based on param values."""
+            param_dict: Dict[str, str] = {}
+            for control in self._catalog_interface.get_all_controls_from_dict():
+                params = as_list(control.params)
+                for param in params:
+                    value_str = 'No value found'
+                    if param.label:
+                        value_str = param.label
+                    if param.values:
+                        values = [val.__root__ for val in param.values]
+                        if len(values) == 1:
+                            value_str = values[0]
                         else:
-                            param.props = add.props
-                    new_params.append(param)
-                if replaced_param:
-                    control.params = new_params
-            if not replaced_param:
-                raise TrestleError(f'Did not find param for add props: control {control.id} param {add.by_id}')
-
-        @staticmethod
-        def _add_to_control(add: prof.Add, control: cat.Control) -> None:
-            """Add altered parts and properties to the control."""
-            if not add.parts and not add.props:
-                raise TrestleError('Alter must add parts or props, however none were given.')
-
-            # Add parts
-            if add.parts is not None:
-                if add.position is None:
-                    logger.warning(f'Add for parts has no position.  Defaulting to after for control {control.id}')
-                    add.position = prof.Position.after
-                ProfileResolver.Modify._add_to_parts(control, add.by_id, add.parts, add.position)
-
-            # Add properties
-            if add.props is not None:
-                if add.by_id is not None:
-                    ProfileResolver.Modify._add_props_to_control(control, add)
-                elif not control.props:
-                    control.props = []
-                    control.props.extend(add.props)
+                            value_str = f"[{', '.join(value for value in values)}]"
+                    param_dict[param.id] = value_str
+            for control in self._catalog_interface.get_all_controls_from_dict():
+                self._replace_control_prose(control, param_dict)
 
         def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
             """Modify the controls based on the profile."""
             logger.debug(f'modify specify catalog {catalog.metadata.title} for profile {self._profile.metadata.title}')
             self._catalog_interface = CatalogInterface(catalog)
-            param_dict: Dict[str, prof.SetParameter] = {}
             alters: Optional[List[prof.Alter]] = None
             # find the modify and alters
-            # build a param_dict for all the modifys
             if self._profile.modify is not None:
+                # change all parameter values
                 if self._profile.modify.set_parameters is not None:
                     param_list = self._profile.modify.set_parameters
                     for param in param_list:
-                        param_dict[param.param_id] = param
+                        self._set_parameter_in_control(param)
                 alters = self._profile.modify.alters
 
             if alters is not None:
+                title = self._profile.metadata.title
                 for alter in alters:
                     if alter.control_id is None:
-                        raise TrestleError('Alters must have control id specified.')
+                        logger.warning(f'Alter must have control id specified in profile {title}.')
+                        continue
+                    id_ = alter.control_id
                     if alter.removes is not None:
-                        raise TrestleError('Alters not supported for removes.')
-                    if alter.adds is None and not self._block_adds:
-                        raise TrestleError('Alter has no adds to perform.')
+                        logger.warning(f'Alter not supported for removes in profile {title} control {id_}')
+                        continue
+                    # we want a warning about adds even if adds are blocked, as in profile generate
+                    if alter.adds is None:
+                        logger.warning(f'Alter has no adds in profile {title} control {id_}')
+                        continue
                     if not self._block_adds:
                         for add in alter.adds:
                             if add.position is None and add.parts is not None:
-                                msg = f'Alter/Add position is not specified in control {alter.control_id}'
-                                msg += ' when adding part, so defaulting to after.'
+                                msg = f'Alter/Add position is not specified in profile {title} control {id_}'
+                                msg += ' when adding part, so defaulting to ending.'
                                 logger.warning(msg)
-                                add.position = prof.Position.after
-                            control = self._catalog_interface.get_control(alter.control_id)
-                            self._add_to_control(add, control)
-                            self._catalog_interface.replace_control(control)
-            # use the param_dict to apply all modifys
-            control_ids = self._catalog_interface.get_control_ids()
-            for control_id in control_ids:
-                control = self._catalog_interface.get_control(control_id)
-                if control.parts is not None:
-                    for part in control.parts:
-                        self._replace_part_prose(control, part, param_dict)
-                self._catalog_interface.replace_control(control)
+                                add.position = prof.Position.ending
+                            control = self._catalog_interface.get_control(id_)
+                            if control is None:
+                                logger.warning(
+                                    f'Alter/Add refers to control {id_} but it is not found in the import '
+                                    + f'for profile {self._profile.metadata.title}'
+                                )
+                            else:
+                                self._add_to_control(control, add)
+                                self._catalog_interface.replace_control(control)
 
+            if self._change_prose:
+                # go through all controls and fix the prose based on param values
+                self._change_prose_with_param_values()
+
+            self._catalog_interface.update_catalog_controls()
             catalog = self._catalog_interface._catalog
 
             # update the original profile metadata with new contents
@@ -529,11 +741,18 @@ class ProfileResolver():
     class Import(Pipeline.Filter):
         """Import filter class."""
 
-        def __init__(self, trestle_root: pathlib.Path, import_: prof.Import, block_adds: bool = False) -> None:
+        def __init__(
+            self,
+            trestle_root: pathlib.Path,
+            import_: prof.Import,
+            change_prose=False,
+            block_adds: bool = False
+        ) -> None:
             """Initialize and store trestle root for cache access."""
             self._trestle_root = trestle_root
             self._import = import_
             self._block_adds = block_adds
+            self._change_prose = change_prose
 
         def process(self, input_=None) -> Iterator[cat.Catalog]:
             """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
@@ -564,7 +783,7 @@ class ProfileResolver():
                         f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}'
                     )
                 merge_filter = ProfileResolver.Merge(profile)
-                modify_filter = ProfileResolver.Modify(profile, self._block_adds)
+                modify_filter = ProfileResolver.Modify(profile, self._change_prose, self._block_adds)
                 final_pipeline = Pipeline([merge_filter, modify_filter])
                 yield next(final_pipeline.process(pipelines))
 
@@ -575,7 +794,7 @@ class ProfileResolver():
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
-        import_filter = ProfileResolver.Import(trestle_root, import_, block_adds)
+        import_filter = ProfileResolver.Import(trestle_root, import_, True, block_adds)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result

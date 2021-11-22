@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle direct i/o reading and writing controls as markdown."""
-
+import copy
 import logging
 import pathlib
 import re
+import string
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
@@ -26,10 +27,10 @@ from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.markdown.md_writer import MDWriter
 from trestle.core.utils import spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
-from trestle.utils.md_writer import MDWriter
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,7 @@ class ControlIOWriter():
 
     @staticmethod
     def _get_label(part: common.Part) -> str:
-        # get the label from the props of a part
+        """Get the label from the props of a part."""
         if part.props is not None:
             for prop in part.props:
                 if prop.name == 'label':
@@ -229,6 +230,8 @@ class ControlIOWriter():
                                 continue
                             if not did_write_part:
                                 self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
+                                # insert extra line to make mdformat happy
+                                self._md_file._add_line_raw('')
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
@@ -288,6 +291,9 @@ class ControlIOWriter():
         self._md_file.new_line(
             '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
         )
+        # next is to make mdformat happy
+        self._md_file._add_line_raw('')
+
         for add in adds:
             name, prose = add
             self._md_file.new_header(level=2, title=f'Control {name}')
@@ -300,7 +306,7 @@ class ControlIOWriter():
         if control.parts:
             for part in control.parts:
                 prose += ControlIOWriter._get_control_section_part(part, part_name)
-        return prose
+        return prose.strip()
 
     @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
@@ -318,8 +324,13 @@ class ControlIOWriter():
                 elif isinstance(dest[key], list):
                     # grow dest list for the key by adding new items from src
                     if isinstance(src[key], list):
-                        missing = set(src[key]) - set(dest[key])
-                        dest[key].extend(missing)
+                        try:
+                            # Simple types (e.g. lists of strings) will get merged neatly
+                            missing = set(src[key]) - set(dest[key])
+                            dest[key].extend(missing)
+                        except TypeError:
+                            # This is a complex type - use simplistic safe behaviour
+                            logger.debug('Ignoring complex types within lists when merging dictionaries.')
                     else:
                         if src[key] not in dest[key]:
                             dest[key].append(src[key])
@@ -340,7 +351,8 @@ class ControlIOWriter():
         sections: Optional[Dict[str, str]],
         additional_content: bool,
         prompt_responses: bool,
-        profile: Optional[prof.Profile]
+        profile: Optional[prof.Profile],
+        header_dont_merge: bool
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -369,7 +381,10 @@ class ControlIOWriter():
         self._sections = sections
 
         # Need to merge any existing header info with the new one.  Either could be empty.
-        merged_header = yaml_header if yaml_header else {}
+        if header_dont_merge and not header == {}:
+            merged_header = {}
+        else:
+            merged_header = copy.deepcopy(yaml_header) if yaml_header else {}
         if header:
             ControlIOWriter.merge_dicts_deep(merged_header, header)
         self._add_yaml_header(merged_header)
@@ -586,6 +601,74 @@ class ControlIOReader():
         return id_, prose
 
     @staticmethod
+    def _bump_label(label: str) -> str:
+        """
+        Find next label given a string of 1 or more pure letters or digits.
+
+        The input must be either a string of digits or a string of ascii letters - or empty string.
+        """
+        if not label:
+            return 'a'
+        if label[0] in string.digits:
+            return str(int(label) + 1)
+        if len(label) == 1 and label[0].lower() < 'z':
+            return chr(ord(label[0]) + 1)
+        # if this happens to be a string of letters, force it lowercase and bump
+        label = label.lower()
+        factor = 1
+        value = 0
+        # delta is needed because a counts as 0 when first value on right, but 1 for all others
+        delta = 0
+        for letter in label[::-1]:
+            value += (ord(letter) - ord('a') + delta) * factor
+            factor *= 26
+            delta = 1
+
+        value += 1
+
+        new_label = ''
+        delta = 0
+        while value > 0:
+            new_label += chr(ord('a') + value % 26 - delta)
+            value = value // 26
+            delta = 1
+        return new_label[::-1]
+
+    @staticmethod
+    def _create_next_label(prev_label: str, indent: int) -> str:
+        """
+        Create new label at indent level based on previous label if available.
+
+        If previous label is available, make this the next one in the sequence.
+        Otherwise start with a or 1 on alternate levels of indentation.
+        If alphabetic label reaches z, next one is aa.
+        Numeric ranges from 1 to 9, then 10 etc.
+        """
+        if not prev_label:
+            # assume indent goes in steps of 2
+            return ['a', '1'][(indent // 2) % 2]
+        label_prefix = ''
+        label_suffix = prev_label
+        is_char = prev_label[-1] in string.ascii_letters
+        # if it isn't ending in letter or digit just append 'a' to end
+        if not is_char and prev_label[-1] not in string.digits:
+            return prev_label + 'a'
+        # break in middle of string if mixed types
+        if len(prev_label) > 1:
+            ii = len(prev_label) - 1
+            while ii >= 0:
+                if prev_label[ii] not in string.ascii_letters + string.digits:
+                    break
+                if (prev_label[ii] in string.ascii_letters) != is_char:
+                    break
+                ii -= 1
+            if ii >= 0:
+                label_prefix = prev_label[:(ii + 1)]
+                label_suffix = prev_label[(ii + 1):]
+
+        return label_prefix + ControlIOReader._bump_label(label_suffix)
+
+    @staticmethod
     def _read_parts(indent: int, ii: int, lines: List[str], parent_id: str,
                     parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
         """If indentation level goes up or down, create new list or close current one."""
@@ -597,9 +680,15 @@ class ControlIOReader():
             if new_indent == indent:
                 # create new item part and add to current list of parts
                 id_text, prose = ControlIOReader._read_part_id_prose(line)
+                # id_text is the part id and needs to be as a label property value
+                # if none is there then create one from previous part, or use default
+                if not id_text:
+                    prev_label = ControlIOWriter._get_label(parts[-1]) if parts else ''
+                    id_text = ControlIOReader._create_next_label(prev_label, indent)
                 id_ = ControlIOReader._strip_to_make_ncname(parent_id + '.' + id_text)
                 name = 'objective' if id_.find('_obj') > 0 else 'item'
-                part = common.Part(name=name, id=id_, prose=prose)
+                prop = common.Property(name='label', value=id_text)
+                part = common.Part(name=name, id=id_, prose=prose, props=[prop])
                 parts.append(part)
                 ii += 1
             elif new_indent > indent:
@@ -731,25 +820,29 @@ class ControlIOReader():
         Returns:
             Dictionary of part labels and corresponding prose read from the markdown file.
         """
-        if not control_file.exists():
-            return {}, {}
-        md_api = MarkdownAPI()
-        header, _ = md_api.processor.process_markdown(control_file)
+        try:
+            if not control_file.exists():
+                return {}, {}
+            md_api = MarkdownAPI()
+            header, _ = md_api.processor.process_markdown(control_file)
 
-        lines = ControlIOReader._load_control_lines(control_file)
-        ii = 0
-        # keep moving down through the file picking up labels and prose
-        responses: Dict[str, List[str]] = {}
-        while True:
-            ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
-            while prose_lines and not prose_lines[0].strip(' \r\n'):
-                del prose_lines[0]
-            while prose_lines and not prose_lines[-1].strip(' \r\n'):
-                del prose_lines[-1]
-            if part_label and prose_lines:
-                responses[part_label] = prose_lines
-            if ii < 0:
-                break
+            lines = ControlIOReader._load_control_lines(control_file)
+            ii = 0
+            # keep moving down through the file picking up labels and prose
+            responses: Dict[str, List[str]] = {}
+            while True:
+                ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
+                while prose_lines and not prose_lines[0].strip(' \r\n'):
+                    del prose_lines[0]
+                while prose_lines and not prose_lines[-1].strip(' \r\n'):
+                    del prose_lines[-1]
+                if part_label and prose_lines:
+                    responses[part_label] = prose_lines
+                if ii < 0:
+                    break
+        except TrestleError as e:
+            logger.error(f'Error occurred reading {control_file}')
+            raise e
         return responses, header
 
     @staticmethod

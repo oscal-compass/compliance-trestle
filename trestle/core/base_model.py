@@ -31,6 +31,8 @@ import logging
 import pathlib
 from typing import Any, Dict, List, Optional, Type, Union, cast
 
+import orjson
+
 from pydantic import BaseModel, Extra, Field, create_model
 from pydantic.fields import ModelField
 from pydantic.parse import load_file
@@ -82,9 +84,10 @@ class OscalBaseModel(BaseModel):
     class Config:
         """Overriding configuration class for pydantic base model, for use with OSCAL data classes."""
 
+        json_loads = orjson.loads
+        # TODO: json_dumps with orjson.dumps see #840
+
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
-        # this is not safe and caused class: nan in yaml output
-        # TODO: Explore fix.
         allow_population_by_field_name = True
 
         # Enforce strict schema
@@ -202,54 +205,46 @@ class OscalBaseModel(BaseModel):
 
         return stripped_instance
 
-    def _oscal_wrap(self) -> 'OscalBaseModel':
-        """
-        Wrap a oscal object such that it is inside a containing object.
-
-        Returns:
-            Wrapped model as a OscalBaseModel.
-        """
-        class_name = self.__class__.__name__
-        # It would be nice to pass through the description but I can't seem to and
-        # it does not affect the output
-        dynamic_parser = {}
-        dynamic_parser[classname_to_alias(class_name, 'field')] = (
-            self.__class__,
-            Field(self, title=classname_to_alias(class_name, 'field'), alias=classname_to_alias(class_name, 'json'))
-        )
-        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_parser)  # type: ignore
-        # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
-        return wrapped_model
-
     def oscal_dict(self) -> Dict[str, Any]:
         """Return a dictionary including the root wrapping object key."""
         class_name = self.__class__.__name__
         result = {}
-        result[classname_to_alias(class_name, 'json')] = self.dict(by_alias=True, exclude_none=True)
+        raw_dict = self.dict(by_alias=True, exclude_none=True)
+        # Additional check to avoid root serialization
+        if '__root__' in raw_dict.keys():
+            result[classname_to_alias(class_name, 'json')] = raw_dict['__root__']
+        else:
+            result[classname_to_alias(class_name, 'json')] = raw_dict
         return result
 
-    def oscal_serialize_json(self, pretty: bool = False) -> str:
+    def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
         """
-        Return an 'oscal wrapped' json object serialized in a compressed form.
+        Return an 'oscal wrapped' json object serialized in a compressed form as bytes.
 
         Args:
             pretty: Whether or not to pretty-print json output or have in compressed form.
         Returns:
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
-        if pretty:
-            wrapped = self._oscal_wrap()
-            wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2, ensure_ascii=False)
-
+        if wrapped:
+            odict = self.oscal_dict()
         else:
-            # Ma
-            class_name = self.__class__.__name__
-            tl_alias = classname_to_alias(class_name, 'json')
-            raw_model = self.json(exclude_none=True, by_alias=True, ensure_ascii=False)
+            odict = self.dict(by_alias=True, exclude_none=True)
+        if pretty:
+            return orjson.dumps(odict, default=self.__json_encoder__, option=orjson.OPT_INDENT_2)
+        return orjson.dumps(odict, default=self.__json_encoder__)
 
-            wrapped_str = f'{{"{tl_alias}": {raw_model}}}'
-        return wrapped_str
+    def oscal_serialize_json(self, pretty: bool = False, wrapped: bool = True) -> str:
+        """
+        Return an 'oscal wrapped' json object serialized in a compressed form as bytes.
+
+        Args:
+            pretty: Whether or not to pretty-print json output or have in compressed form.
+        Returns:
+            Oscal model serialized to a json object including packaging inside of a single top level key.
+        """
+        # This function is provided for backwards compatibility
+        return self.oscal_serialize_json_bytes(pretty, wrapped).decode(const.FILE_ENCODING)
 
     def oscal_write(self, path: pathlib.Path) -> None:
         """
@@ -267,15 +262,19 @@ class OscalBaseModel(BaseModel):
         """
         content_type = FileContentType.to_content_type(path.suffix)
         # The output will have \r\n newlines on windows and \n newlines elsewhere
-        write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
+
         if content_type == FileContentType.YAML:
+            write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
             yaml = YAML(typ='safe')
             yaml.dump(yaml.load(self.oscal_serialize_json()), write_file)
+            write_file.flush()
+            write_file.close()
         elif content_type == FileContentType.JSON:
-            write_file.write(self.oscal_serialize_json(pretty=True))
-        # Flush / close required (by experience) due to flushing issues in tests.
-        write_file.flush()
-        write_file.close()
+            write_file = pathlib.Path(path).open('wb')
+            write_file.write(self.oscal_serialize_json_bytes(pretty=True))
+            # Flush / close required (by experience) due to flushing issues in tests.
+            write_file.flush()
+            write_file.close()
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
@@ -343,7 +342,8 @@ class OscalBaseModel(BaseModel):
         if self.__class__.__name__ == new_oscal_type.__name__:
             logger.debug('Json based copy')
             # Note: Json based oppportunistic copy
-            return new_oscal_type.parse_raw(self.json(exclude_none=True, by_alias=True))
+            # Dev notes: Do not change this from json. Due to enums (in particular) json is the closest we can get.
+            return new_oscal_type.parse_raw(self.oscal_serialize_json(pretty=False, wrapped=False))
 
         if ('__root__' in self.__fields__ and len(self.__fields__) == 1 and '__root__' in new_oscal_type.__fields__
                 and len(new_oscal_type.__fields__) == 1):

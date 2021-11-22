@@ -46,6 +46,14 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-hdm',
+            '--header-dont-merge',
+            help=const.HELP_HEADER_MERGE,
+            required=False,
+            action='store_true',
+            default=False
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -59,7 +67,7 @@ class ProfileGenerate(AuthorCommonCommand):
             if 'yaml_header' in args and args.yaml_header is not None:
                 try:
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
-                    yaml = YAML(typ='safe')
+                    yaml = YAML()
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
                     logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
@@ -69,14 +77,21 @@ class ProfileGenerate(AuthorCommonCommand):
 
             markdown_path = trestle_root / args.output
 
-            return self.generate_markdown(trestle_root, profile_path, markdown_path, yaml_header)
+            return self.generate_markdown(
+                trestle_root, profile_path, markdown_path, yaml_header, args.header_dont_merge
+            )
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
             logger.debug(traceback.format_exc())
             return 1
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, profile_path: pathlib.Path, markdown_path: pathlib.Path, yaml_header: dict
+        self,
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
+        markdown_path: pathlib.Path,
+        yaml_header: dict,
+        header_dont_merge: bool
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -92,7 +107,9 @@ class ProfileGenerate(AuthorCommonCommand):
             _, _, profile = load_distributed(profile_path, trestle_root)
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False, True, profile)
+            catalog_interface.write_catalog_as_markdown(
+                markdown_path, yaml_header, None, False, True, profile, header_dont_merge
+            )
         except TrestleNotFoundError as e:
             logger.warning(f'Profile {profile_path} not found, error {e}')
             return 1
@@ -185,7 +202,7 @@ class ProfileAssemble(AuthorCommonCommand):
         new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
 
         if new_prof_dir.exists():
-            logger.info('Creating profile from markdown and destination profile directory exists, so deleting.')
+            logger.info('Creating profile from markdown and destination profile directory exists, so updating.')
             try:
                 shutil.rmtree(str(new_prof_dir))
             except OSError as e:

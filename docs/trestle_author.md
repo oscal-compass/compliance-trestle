@@ -150,13 +150,25 @@ By default `author docs` only indexes a flat directory. The recursive option all
 
 Turns off the validation of the structure of the document and only validates the yaml header structure.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author folders`
 
 \`author folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
 
 For example given the following template setup using `trestle author folders setup -tn my_task_2`
 
-```
+```text
 trestle_root
  ┣ .trestle
  ┃ ┣ author
@@ -172,7 +184,7 @@ The names, numbers, and nesting of folders is user specifiable, however, unlike 
 
 Following the similar structure of `docs`, measurement occurs in the `my_task_2` where this structure is enforced for every directory.
 
-```
+```text
 trestle_root
  ┣ .trestle
  ┣ my_task_2
@@ -197,6 +209,18 @@ Validate the headers in markdown and metadata in drawio files.
 
 Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author headers`
 
 Trestle author headers supports a different usecase that of `docs` and `folders` above: Some content is governed, however, it the content is non-standardized.
@@ -206,6 +230,8 @@ The result: metadata but not content needs to be measured. `author headers` prov
 `trestle author headers setup -tn my_task_name` Create the necessary directory structures for running header only validation. Per supported file type (e.g. drawio and md) a template file will be generated with the format of `template.{extension name}` e.g.
 
 e.g.:
+
+```text
 trestle_root
 ┣ .trestle
 ┃ ┣ md
@@ -213,6 +239,7 @@ trestle_root
 ┃ ┃ ┃ ┣ template.md
 ┃ ┃ ┃ ┗ template.drawio
 ┃ ┗ config.ini
+```
 
 `trestle author headers template-validate -tn my_task_name` Ensures that the respective template files are parseable.
 
@@ -233,11 +260,23 @@ If `--task-name` is not provided all folders in the repository will be measured.
 
 Primarily intended for use with global (`-g`), exclude will remove any _directory_ from the search scope of trestle author headers. Must be a relative path to the root of a trestle project, however, can be multiple levels deep (e.g. `--exclude=architecture/drafts`) would allow content in `architecture/diagrams` to still be indexed to find the header.
 
+#### Template version tracking (`-tv`, `--template-version`)
+
+This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
+to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
+of the template used to create an instance document. With this change, the Version header specifically refers to the
+version _of that document_ (be it an instance or the template itself). This means:
+
+- For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
+  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.
+- For an instance, the Version header should not be compared with the Version header of the template. Rather,
+  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.
+
 ## `trestle author catalog-generate` and `trestle author catalog-assemble`
 
 The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 
-## `treatle author profile-generate` and `trestle author profile-assemble`
+## `trestle author profile-generate` and `trestle author profile-assemble`
 
 The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
 

@@ -25,7 +25,7 @@ from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes on
 import defusedxml.ElementTree
 
 import trestle.core.const as const
-import trestle.core.err as err
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 logger = logging.getLogger(__name__)
@@ -49,16 +49,16 @@ class DrawIO():
         """Load the file."""
         if not self.file_path.exists() or self.file_path.is_dir():
             logger.error(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
-            raise err.TrestleError(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
+            raise TrestleError(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
         try:
             self.raw_xml = defusedxml.ElementTree.parse(self.file_path, forbid_dtd=True)
         except Exception as e:
             logger.error(f'Exception loading Element tree from file: {e}')
-            raise err.TrestleError(f'Exception loading Element tree from file: {e}')
+            raise TrestleError(f'Exception loading Element tree from file: {e}')
         self.mx_file = self.raw_xml.getroot()
         if not self.mx_file.tag == 'mxfile':
             logger.error('DrawIO file is not a draw io file (mxfile)')
-            raise err.TrestleError('DrawIO file is not a draw io file (mxfile)')
+            raise TrestleError('DrawIO file is not a draw io file (mxfile)')
         self.diagrams = []
         for diagram in list(self.mx_file):
             # Determine if compressed or not
@@ -70,7 +70,7 @@ class DrawIO():
             elif n_children == 1:
                 self.diagrams.append(list(diagram)[0])
             else:
-                raise err.TrestleError('Unhandled behaviour in drawio read.')
+                raise TrestleError('Unhandled behaviour in drawio read.')
 
     def _uncompress(self, compressed_text: str) -> Element:
         """
@@ -87,7 +87,7 @@ class DrawIO():
         clean_text = unquote(zlib.decompress(decoded, -15).decode(const.FILE_ENCODING))
         element = defusedxml.ElementTree.fromstring(clean_text, forbid_dtd=True)
         if not element.tag == 'mxGraphModel':
-            raise err.TrestleError('Unknown data structure within a compressed drawio file.')
+            raise TrestleError('Unknown data structure within a compressed drawio file.')
         return element
 
     def get_metadata(self) -> List[Dict[str, str]]:
@@ -137,7 +137,9 @@ class DrawIO():
                 result[key] = cls.restructure_metadata(holding)
         return result
 
-    def write_drawio_with_metadata(self, path: pathlib.Path, metadata: Dict, diagram_metadata_idx: int) -> None:
+    def write_drawio_with_metadata(
+        self, path: pathlib.Path, metadata: Dict, diagram_metadata_idx: int, target_path: pathlib.Path = None
+    ) -> None:
         """
         Write modified metadata to drawio file.
 
@@ -148,18 +150,18 @@ class DrawIO():
             path: path to write modified drawio file to
             metadata: dictionary of modified metadata to insert to drawio
             diagram_metadata_idx: index of diagram which metadata was modified
-
+            target_path: if not provided the changes will be written to path
         """
         flattened_dict = self._flatten_dictionary(metadata)
         if diagram_metadata_idx >= len(list(self.diagrams)):
-            raise err.TrestleError(f'Drawio file {path} does not contain a diagram for index {diagram_metadata_idx}')
+            raise TrestleError(f'Drawio file {path} does not contain a diagram for index {diagram_metadata_idx}')
 
         diagram = list(self.diagrams)[diagram_metadata_idx]
         children = list(diagram)
         root_obj = children[0]
         md_objects = root_obj.findall('object')
         if len(md_objects) == 0:
-            raise err.TrestleError(f'Unable to write metadata, diagram in drawio file {path} does not have objects.')
+            raise TrestleError(f'Unable to write metadata, diagram in drawio file {path} does not have objects.')
 
         for key in md_objects[0].attrib.copy():
             if key not in flattened_dict.keys() and key not in self.banned_keys:
@@ -169,11 +171,18 @@ class DrawIO():
             if key in self.banned_keys:
                 continue
             md_objects[0].attrib[key] = flattened_dict[key]
+        for key in flattened_dict.keys():
+            if key in self.banned_keys:
+                continue
+            md_objects[0].attrib[key] = flattened_dict[key]
         parent_diagram = self.mx_file.findall('diagram')[diagram_metadata_idx]
         if len(parent_diagram.findall('mxGraphModel')) == 0:
             parent_diagram.insert(0, diagram)
 
-        self.raw_xml.write(path)
+        if target_path:
+            self.raw_xml.write(target_path)
+        else:
+            self.raw_xml.write(path)
 
     def _flatten_dictionary(self, metadata: Dict, parent_key='', separator='.') -> Dict[str, str]:
         """Flatten hierarchial dict back to xml attributes."""
@@ -204,6 +213,14 @@ class DrawIOMetadataValidator():
         template_drawio = DrawIO(self.template_path)
         # Zero index as must be first tab
         self.template_metadata = template_drawio.get_metadata()[0]
+        self.template_version = MarkdownValidator.extract_template_version(self.template_metadata)
+        if self.template_version not in str(self.template_path):
+            raise TrestleError(
+                f'Version of the template {self.template_version} does not match the path {self.template_path}.'
+                + f'Move the template to the folder {self.template_version}'
+            )
+        if 'Version' in self.template_metadata.keys() and self.template_metadata['Version'] != self.template_version:
+            raise TrestleError(f'Version does not match template-version in template: {self.template_path}.')
 
     def validate(self, candidate: pathlib.Path) -> bool:
         """

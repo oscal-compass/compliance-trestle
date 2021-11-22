@@ -42,6 +42,14 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-hdm',
+            '--header-dont-merge',
+            help=const.HELP_HEADER_MERGE,
+            required=False,
+            action='store_true',
+            default=False
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -64,16 +72,23 @@ class CatalogGenerate(AuthorCommonCommand):
 
         markdown_path = trestle_root / args.output
 
-        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header)
+        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header, args.header_dont_merge)
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path, yaml_header: dict
+        self,
+        trestle_root: pathlib.Path,
+        catalog_path: pathlib.Path,
+        markdown_path: pathlib.Path,
+        yaml_header: dict,
+        header_dont_merge: bool
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, None, False)
+            catalog_interface.write_catalog_as_markdown(
+                markdown_path, yaml_header, None, False, True, None, header_dont_merge=header_dont_merge
+            )
         except TrestleNotFoundError as e:
             logger.warning(f'Catalog {catalog_path} not found for load {e}')
             return 1
@@ -121,12 +136,12 @@ class CatalogAssemble(AuthorCommonCommand):
             catalog = catalog_interface.read_catalog_from_markdown(md_dir)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
-        if catalog_interface.get_count_of_controls(True) == 0:
+        if catalog_interface.get_count_of_controls_in_catalog(True) == 0:
             logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
             return 1
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
-            logger.info('Creating catalog from markdown and destination catalog directory exists, so deleting.')
+            logger.info('Creating catalog from markdown and destination catalog directory exists, so updating.')
             try:
                 shutil.rmtree(str(new_cat_dir))
             except OSError as e:

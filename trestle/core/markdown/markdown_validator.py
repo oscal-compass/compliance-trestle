@@ -20,6 +20,8 @@ import re
 from typing import Any, Dict, List, Optional
 
 import trestle.core.markdown.markdown_const as md_const
+from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)
@@ -30,7 +32,7 @@ class MarkdownValidator:
 
     def __init__(
         self,
-        tmp_path: str,
+        tmp_path: pathlib.Path,
         template_header: Dict,
         template_tree: MarkdownNode,
         validate_yaml_header: bool,
@@ -44,6 +46,22 @@ class MarkdownValidator:
         self.template_header = template_header
         self.template_tree = template_tree
         self.template_path = tmp_path
+        self.template_version = self.extract_template_version(self.template_header)
+
+        if self.template_version not in str(self.template_path):
+            raise TrestleError(
+                f'Version of the template {self.template_version} does not match the path {self.template_path}.'
+                + f'Move the template to the folder {self.template_version}'
+            )
+        if 'Version' in self.template_header.keys() and self.template_header['Version'] != self.template_version:
+            raise TrestleError(f'Version does not match template-version in template: {self.template_path}.')
+        self._ignore_headers = []
+        for key in self.template_header.keys():
+            if key.lower().startswith('x-trestle-'):
+                self._ignore_headers.append(key.lower())
+                if key.lower() == 'x-trestle-ignore':
+                    for key2 in template_header['x-trestle-ignore']:
+                        self._ignore_headers.append(key2.lower())
 
     def is_valid_against_template(
         self, instance: pathlib.Path, instance_header: Dict, instance_tree: MarkdownNode
@@ -54,6 +72,7 @@ class MarkdownValidator:
         Instance is correct against a template iff:
             1. For YAML header keys:
                 a. All keys from the template are present and not modified
+                b. Template version in the template and instance match
             2. On the Markdown w/o YAML header:
                 a. No additional headers of the level 1 were added
                 b. Headers were not reordered
@@ -71,7 +90,7 @@ class MarkdownValidator:
             Whether or not the the candidate is valid against the template.
         """
         if self._validate_yaml_header:
-            headers_match = self.compare_keys(self.template_header, instance_header)
+            headers_match = self.compare_keys(self.template_header, instance_header, self._ignore_headers)
 
             if not headers_match:
                 logger.info(f'YAML header mismatch between template {self.template_path} and instance {instance}')
@@ -93,14 +112,18 @@ class MarkdownValidator:
                 return False
 
         if self._validate_md_body:
+            instance_keys = instance_tree.content.subnodes_keys
+            template_keys = self.template_tree.content.subnodes_keys
+            if len(template_keys) > len(instance_keys):
+                logger.info(f'Headings in the instance: {instance} were removed.')
+                return False
+
             instance_lvl1_keys = list(instance_tree.get_all_headers_for_level(1))
             template_lvl1_keys = list(self.template_tree.get_all_headers_for_level(1))
             if len(template_lvl1_keys) < len(instance_lvl1_keys):
                 logger.info(f'New headers of level 1 were added to the markdown instance: {instance}. ')
                 return False
 
-            instance_keys = instance_tree.content.subnodes_keys
-            template_keys = self.template_tree.content.subnodes_keys
             is_valid = self._validate_headers(instance, template_keys, instance_keys)
             if not is_valid:
                 return False
@@ -108,7 +131,12 @@ class MarkdownValidator:
         return True
 
     @classmethod
-    def compare_keys(cls, template: Dict[str, Any], candidate: Dict[str, Any]) -> bool:
+    def compare_keys(
+        cls,
+        template: Dict[str, Any],
+        candidate: Dict[str, Any],
+        ignore_fields: Optional[Dict[str, Any]] = None
+    ) -> bool:
         """
         Compare a template dictionary against a candidate as to whether key structure is maintained.
 
@@ -118,13 +146,27 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate matches the template keys.
         """
+        if ignore_fields is None:
+            ignore_fields = []
+        for key in list(candidate.keys()):
+            if key.lower() in ignore_fields:
+                candidate.pop(key)
+        for key in list(template.keys()):
+            if key.lower() in ignore_fields:
+                template.pop(key)
+        template_version = cls.extract_template_version(template)
+        candidate_version = cls.extract_template_version(candidate)
+        if template_version != candidate_version:
+            logger.info(f'Versions of the template {template_version} and instance {candidate_version} are different')
+            return False
+
         if len(template.keys()) != len(candidate.keys()):
             return False
         for key in template.keys():
             if key in candidate.keys():
                 if type(template[key]) == dict:
                     if type(candidate[key]) == dict:
-                        status = cls.compare_keys(template[key], candidate[key])
+                        status = cls.compare_keys(template[key], candidate[key], ignore_fields)
                         if not status:
                             return status
                     else:
@@ -154,3 +196,15 @@ class MarkdownValidator:
             return False
 
         return True
+
+    @classmethod
+    def extract_template_version(cls, header: Dict[str, Any]) -> Optional[str]:
+        """
+        Extract the template version from the header.
+
+        If no header is found then starting version(0.0.1) will be used by default
+        """
+        if TEMPLATE_VERSION_HEADER not in header.keys():
+            return START_TEMPLATE_VERSION
+
+        return header[TEMPLATE_VERSION_HEADER]

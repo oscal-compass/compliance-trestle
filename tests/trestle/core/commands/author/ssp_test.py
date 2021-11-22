@@ -45,7 +45,12 @@ def setup_for_ssp(include_header: bool,
 
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=True,
+        sections=sections,
+        header_dont_merge=False
     )
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -91,7 +96,7 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert ac_2.stat().st_size > 2000
 
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML(typ='safe')
+        yaml = YAML()
         expected_header = yaml.load(f)
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
@@ -109,7 +114,8 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         verbose=True,
         sections=sections,
-        yaml_header=str(yaml_path)
+        yaml_header=str(yaml_path),
+        header_dont_merge=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -137,6 +143,19 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert not header
 
 
+def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
+    """
+    Test the ssp generator fails if 'statement' is provided.
+
+    Also checking code where not label is provided.
+    """
+    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir)
+    args.sections = 'statement'
+    ssp_cmd = SSPGenerate()
+    # run the command for happy path
+    assert ssp_cmd._run(args) > 0
+
+
 @pytest.mark.parametrize('yaml_header', [False, True])
 def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
@@ -149,7 +168,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     ac_1 = ac_dir / 'ac-1.md'
 
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML(typ='safe')
+        yaml = YAML()
         expected_header = yaml.load(f)
 
     md_api = MarkdownAPI()
@@ -157,7 +176,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     assert tree is not None
     assert expected_header == header
 
-    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '- My new edits\n')
+    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
     assert test_utils.delete_line_in_file(ac_1, 'Corporate')
 
     # if the yaml header is not written out, the new header should be the one currently in the control
@@ -220,7 +239,7 @@ def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'

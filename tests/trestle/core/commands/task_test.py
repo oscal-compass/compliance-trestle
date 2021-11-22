@@ -18,7 +18,8 @@ import argparse
 import configparser
 import pathlib
 import sys
-from unittest import mock
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -26,17 +27,18 @@ import trestle.cli
 import trestle.core.commands.task as taskcmd
 import trestle.core.const as const
 import trestle.core.err as err
+from trestle.tasks.base_task import PassFail
 
 
-def test_get_list_cli(tmp_trestle_dir: pathlib.Path) -> None:
+def test_get_list_cli(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Simple test which does E2E tests."""
     command = 'trestle task -l'
 
-    with mock.patch.object(sys, 'argv', command.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 0
+    monkeypatch.setattr(sys, 'argv', command.split())
+    with pytest.raises(SystemExit) as wrapped_error:
+        trestle.cli.run()
+    assert wrapped_error.type == SystemExit
+    assert wrapped_error.value.code == 0
 
 
 def test_arguments(tmp_trestle_dir: pathlib.Path) -> None:
@@ -227,8 +229,12 @@ def test_trestle_no_config(tmp_trestle_dir: pathlib.Path) -> None:
     assert rc == 1
 
 
-def test_trestle_fail_on_task_exception(tmp_trestle_dir: pathlib.Path) -> None:
+def test_trestle_fail_on_task_exception(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Force an exception in a running trestle task and ensure it is captured."""
+
+    def simulate_mock(*args, **kwargs):
+        raise err.TrestleError('simulate_fail')
+
     # Load and overwrite config file
     section_name = 'task.pass-fail'
     config_object = configparser.ConfigParser()
@@ -240,10 +246,9 @@ def test_trestle_fail_on_task_exception(tmp_trestle_dir: pathlib.Path) -> None:
     config_object[section_name]['simulate_status'] = 'True'
     config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
     # Now good.
-    with mock.patch('trestle.tasks.base_task.PassFail.execute') as simulate_mock:
-        simulate_mock.side_effect = err.TrestleError('stuff')
-        args = argparse.Namespace(
-            trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
-        )
-        rc = taskcmd.TaskCmd()._run(args)
-        assert rc > 0
+    monkeypatch.setattr(PassFail, 'execute', simulate_mock)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
+    )
+    rc = taskcmd.TaskCmd()._run(args)
+    assert rc > 0

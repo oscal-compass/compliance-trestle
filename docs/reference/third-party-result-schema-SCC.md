@@ -4,32 +4,32 @@ This document depicts the structure and guidelines for creating an OSCAL result 
 
 The overall object will be a *results* element of OSCAL Assessment Result schema wrapped in an outer json object as shown below.
 
-```
+```json
 {
-    results: [
-        {
-            result object ...
-        },
-        {
-            result object ...
-        }
-    ]
+  "results": [
+    {
+      "result": "object"
+    },
+    {
+      "result": "object"
+    }
+  ]
 }
 ```
 
 Each result object represents one assessment scan and should have the required properties as per OSCAL schema. The *start* and *end* represents the start and end datetime of evidence collection activity. The *end* is optional. In addition to these, the result object may contain details about inventory, list of observations (checks) for each inventory, and findings for profile level controls (such as NIST).
 
-```
+```json
 {
-    "uuid": "cd54e9bf-f4d3-45d6-ae3b-6e8255847dc2",
-    "title": "Tanium",
-    "description": "Tanium",
-    "start": "2021-04-05T20:19:11.000+00:00", 
-    "end": "2021-04-05T20:19:11.000+00:00", 
-    "local-definitions": { },
-    "reviewed-controls": { },
-    "observations": { },
-    "findings": { }
+  "uuid": "cd54e9bf-f4d3-45d6-ae3b-6e8255847dc2",
+  "title": "Tanium",
+  "description": "Tanium",
+  "start": "2021-04-05T20:19:11.000+00:00",
+  "end": "2021-04-05T20:19:11.000+00:00",
+  "local-definitions": {},
+  "reviewed-controls": {},
+  "observations": {},
+  "findings": {}
 }
 ```
 
@@ -57,7 +57,7 @@ The inventory should be included in *local-definitions* if observations are bein
 
 1. Inventory is captured under *local-definitions* in result object. local-definitions can be used to represent inventory items, components, users, etc. For our purposes only components and inventory-items will be used. Components should be used to represent software, services, etc. whereas inventory-items represent specific machines, VMs, network devices, etc. The inventory items should be associated to a component through *implemented-components* as shown below.
 
-   ```
+   ```json
    "local-definitions": {
        "components": {
            "b3e243a1-4660-4f5a-aa85-159b4b2d69ce": {
@@ -115,7 +115,7 @@ The inventory should be included in *local-definitions* if observations are bein
 
 1. Loosely speaking, an *observation* object equates with results from a goal check, and the observation is uniquely identified by a uuid, e.g.,
 
-   ```
+   ```json
    {
        "uuid" : "00000000-0000-4000-9999-000000000016",
        "description" : "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
@@ -125,74 +125,74 @@ The inventory should be included in *local-definitions* if observations are bein
 
 1. A sample observation object generated from Tanium result looks like -
 
-   ```
+   ```json
    {
-       "uuid": "74b605f8-7e8c-41b3-9514-2412692fbe01",
-       "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
-       "props": [
-           {
-               "name": "Check ID",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"
-           },
-           {
-               "name": "Check ID Benchmark",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
-               "class": "scc_predefined_profile"
-           },
-           {
-               "name": "Check ID Version",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "1.0.0-1",
-               "class": "scc_check_version"
-           },
-           {
-               "name": "Check ID Version",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "1.0.0-1",
-               "class": "scc_predefined_profile_version"
-           },
-           {
-               "name": "Check ID Level",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "Level 1 - Server"
-           },
-           {
-               "name": "Rule ID",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
-               "class": "scc_goal_description"
-           },
-           {
-               "name": "Rule ID",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
-               "class": "scc_check_name_id"
-           },
-           {
-               "name": "State",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "fail",
-               "class": "scc_result"
-           },
-           {
-               "name": "Timestamp",
-               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "2021-05-11T22:34:03+00:00",
-               "class": "scc_timestamp"
-           }
-       ],
-       "methods": [
-           "TEST-AUTOMATED"
-       ],
-       "subjects": [
-           {
-               "uuid-ref": "c8919d2b-3300-4f3f-98f6-15a7104c2e04",
-               "type": "inventory-item"
-           }
-       ],
-       "collected": "2021-05-11T22:34:03.000+00:00"
+     "uuid": "74b605f8-7e8c-41b3-9514-2412692fbe01",
+     "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
+     "props": [
+       {
+         "name": "Check ID",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"
+       },
+       {
+         "name": "Check ID Benchmark",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
+         "class": "scc_predefined_profile"
+       },
+       {
+         "name": "Check ID Version",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "1.0.0-1",
+         "class": "scc_check_version"
+       },
+       {
+         "name": "Check ID Version",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "1.0.0-1",
+         "class": "scc_predefined_profile_version"
+       },
+       {
+         "name": "Check ID Level",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "Level 1 - Server"
+       },
+       {
+         "name": "Rule ID",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
+         "class": "scc_goal_description"
+       },
+       {
+         "name": "Rule ID",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
+         "class": "scc_check_name_id"
+       },
+       {
+         "name": "State",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "fail",
+         "class": "scc_result"
+       },
+       {
+         "name": "Timestamp",
+         "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+         "value": "2021-05-11T22:34:03+00:00",
+         "class": "scc_timestamp"
+       }
+     ],
+     "methods": [
+       "TEST-AUTOMATED"
+     ],
+     "subjects": [
+       {
+         "uuid-ref": "c8919d2b-3300-4f3f-98f6-15a7104c2e04",
+         "type": "inventory-item"
+       }
+     ],
+     "collected": "2021-05-11T22:34:03.000+00:00"
    }
    ```
 
@@ -210,7 +210,7 @@ The inventory should be included in *local-definitions* if observations are bein
 
 1. A *finding* represents the assessment of a profile control such as NIST 800-53: AC-1 and the related observations. A sample finding object looks like -
 
-   ```
+   ```json
    {
        "uuid": "cde35fad-3922-4046-8ef8-830e77ffd75a",
        "title": "800-53: IA-5",
@@ -254,10 +254,10 @@ The inventory should be included in *local-definitions* if observations are bein
 
 1. If there is no finding associated with a PVP, a single finding will be created (to preserve valid OSCAL) where the UUID maps to a 'all zeros' UUID e.g.:
 
-   ```
+   ```json
    {
-       "uuid": "00000000-0000-4000-8000-000000000000",
-       "title": "No finding",
-       "description": "No finding."
+     "uuid": "00000000-0000-4000-8000-000000000000",
+     "title": "No finding",
+     "description": "No finding."
    }
    ```

@@ -18,6 +18,7 @@
 from typing import TypeVar
 
 from trestle.core import const
+from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import common
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
@@ -47,6 +48,8 @@ MODEL_ALIAS_TO_TOP_LEVEL_MODEL = {
     const.MODEL_TYPE_A_RESULT: AssessmentResults,
     const.MODEL_TYPE_POAM: PlanOfActionAndMilestones
 }
+
+OBT = TypeVar('OBT', bound=OscalBaseModel)
 
 # model types containing uuids that should not regenerate
 FixedUuidModel = common.Resource
