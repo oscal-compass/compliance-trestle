@@ -17,6 +17,10 @@
 
 import string
 
+FIELDS_SET = '__fields_set__'
+
+ROOT = '__root__'
+
 PACKAGE_OSCAL = 'trestle.oscal'
 
 TRESTLE_CONFIG_DIR = '.trestle'
@@ -240,3 +244,12 @@ NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
 NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'
 
 DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
+
+HELP_YAML_PATH = 'Path to the optional yaml header file'
+
+HELP_HEADER_MERGE = (
+    'Flag to disable merging of the headers.'
+    + ' If provided, if a header currently exists the new header, passed with -y, will not be applied.'
+)
+
+HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'

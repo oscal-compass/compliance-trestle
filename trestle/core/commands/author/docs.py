@@ -18,12 +18,13 @@ import argparse
 import logging
 import pathlib
 import shutil
-
-from pkg_resources import resource_filename
+from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -45,6 +46,12 @@ class Docs(AuthorCommonCommand):
             author_const.LONG_HEADER_VALIDATE,
             help=author_const.HEADER_VALIDATE_HELP,
             action='store_true'
+        )
+        self.add_argument(
+            author_const.SHORT_TEMPLATE_VERSION,
+            author_const.LONG_TEMPLATE_VERSION,
+            help=author_const.TEMPLATE_VERSION_HELP,
+            action='store'
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
@@ -73,10 +80,11 @@ class Docs(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        if self._initialize(args):
-            return 1
-        status = 1
         try:
+            status = 1
+            if self._initialize(args):
+                return status
+
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
@@ -87,7 +95,7 @@ class Docs(AuthorCommonCommand):
                     args.header_only_validate,
                 )
             elif args.mode == 'setup':
-                status = self.setup_template_governed_docs()
+                status = self.setup_template_governed_docs(args.template_version)
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
@@ -95,14 +103,21 @@ class Docs(AuthorCommonCommand):
                     args.header_validate,
                     args.header_only_validate,
                     args.recurse,
-                    args.readme_validate
+                    args.readme_validate,
+                    args.template_version
                 )
-        except Exception as e:
-            logger.error(f'Error "{e}"" occurred when running trestle author docs.')
-            logger.error('Exiting')
-        return status
 
-    def setup_template_governed_docs(self) -> int:
+            return status
+        except TrestleError as e:
+            logger.error(f'Error occurred when running trestle author docs: {e}')
+            logger.error('Exiting')
+            return 1
+        except Exception as e:
+            logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
+            logger.error('Exiting')
+            return 1
+
+    def setup_template_governed_docs(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement.
 
         Returns:
@@ -125,8 +140,7 @@ class Docs(AuthorCommonCommand):
         template_file = self.template_dir / self.template_name
         if template_file.is_file():
             return 0
-        reference_template = pathlib.Path(resource_filename('trestle.resources', 'template.md')).resolve()
-        shutil.copy(reference_template, template_file)
+        TemplateVersioning.write_versioned_template('template.md', self.template_dir, template_file, template_version)
         logger.info(f'Template file setup for task {self.task_name} at {self.rel_dir(template_file)}')
         logger.info(f'Task directory is {self.rel_dir(self.task_path)}')
         return 0
@@ -172,7 +186,7 @@ class Docs(AuthorCommonCommand):
 
     def _validate_template_dir(self) -> bool:
         """Template directory should only have template file."""
-        for child in self.template_dir.iterdir():
+        for child in fs.iterdir_without_hidden_files(self.template_dir):
             # Only allowable template file in the directory is the template directory.
             if child.name != self.template_name and child.name.lower() != 'readme.md':
                 logger.error(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')
@@ -181,15 +195,19 @@ class Docs(AuthorCommonCommand):
 
     def _validate_dir(
         self,
-        template_file: pathlib.Path,
         governed_heading: str,
         md_dir: pathlib.Path,
         validate_header: bool,
         validate_only_header: bool,
         recurse: bool,
-        readme_validate: bool
+        readme_validate: bool,
+        template_version: Optional[str] = None
     ) -> int:
-        """Validate md files in a directory with option to recurse."""
+        """
+        Validate md files in a directory with option to recurse.
+
+        Template version will be fetched from the instance header.
+        """
         # status is a linux returncode
         status = 0
         for item_path in md_dir.iterdir():
@@ -204,6 +222,21 @@ class Docs(AuthorCommonCommand):
                         if item_path.name.lower() == 'readme.md':
                             continue
                     md_api = MarkdownAPI()
+                    if template_version != '':
+                        template_file = self.template_dir / self.template_name
+                    else:
+                        instance_version = md_api.processor.fetch_value_from_header(
+                            item_path, author_const.TEMPLATE_VERSION_HEADER
+                        )
+                        if instance_version is None:
+                            instance_version = '0.0.1'
+                        versione_template_dir = TemplateVersioning.get_versioned_template_dir(
+                            self.template_dir, instance_version
+                        )
+                        template_file = versione_template_dir / self.template_name
+                    if not template_file.is_file():
+                        logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
+                        return 1
                     md_api.load_validator_with_template(
                         template_file, validate_header, not validate_only_header, governed_heading
                     )
@@ -213,13 +246,13 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
-                    if not self._validate_dir(template_file,
-                                              governed_heading,
+                    if not self._validate_dir(governed_heading,
                                               item_path,
                                               validate_header,
                                               validate_only_header,
                                               recurse,
-                                              readme_validate):
+                                              readme_validate,
+                                              template_version):
                         status = 1
         return status
 
@@ -229,7 +262,8 @@ class Docs(AuthorCommonCommand):
         validate_header: bool,
         validate_only_header: bool,
         recurse: bool,
-        readme_validate: bool
+        readme_validate: bool,
+        template_version: str
     ) -> int:
         """
         Validate task.
@@ -246,16 +280,12 @@ class Docs(AuthorCommonCommand):
         """
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
-        template_file = self.template_dir / self.template_name
-        if not template_file.is_file():
-            logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
-            return 1
         return self._validate_dir(
-            template_file,
             governed_heading,
             self.task_path,
             validate_header,
             validate_only_header,
             recurse,
-            readme_validate
+            readme_validate,
+            template_version
         )

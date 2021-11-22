@@ -27,7 +27,7 @@ In this tutorial you will see sections that contain dropdown that is revealed wh
 <details>
 <summary>Like this</summary>
 
-```
+```text
 
 more
 information
@@ -41,7 +41,7 @@ here
 
 ## Step 1: Create a trestle workspace if you don't have one already
 
-```
+```bash
 mkdir my_workspace
 cd my_workspace
 trestle init
@@ -56,7 +56,7 @@ We will import the file directly from the [NIST OSCAL github site](https://githu
 
 Import the file from the url with the following command:
 
-```
+```bash
 trestle import -f https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json -o mycatalog
 ```
 
@@ -71,7 +71,7 @@ If there are any errors the Import will fail and the file must be corrected.
 <details>
 <summary>Your initial workspace will look like this</summary>
 
-```
+```text
 my_workspace
  ┣ .trestle
  ┃ ┣ .keep
@@ -128,7 +128,7 @@ The OSCAL schema specifies that a catalog must contain metadata, groups, and bac
 
 To begin splitting the file, first cd to the directory where `catalog.json` has been placed.
 
-```
+```bash
 cd catalogs/mycatalog
 trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
@@ -139,7 +139,7 @@ Here the `-f` refers to the filename of the json catalog file, and `-e` refers t
 <details>
 <summary>Your new catalogs directory with json files split out</summary>
 
-```
+```text
 catalogs
  ┗ mycatalog
  ┃ ┣ catalog
@@ -156,13 +156,13 @@ Note there still remains a catalog.json file, but it is much smaller since the b
 
 Any split step can be reversed by a corresponding `merge` operation.  In this case we can go backwards with:
 
-```
+```bash
 trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
 
 or simply
 
-```
+```bash
 trestle merge -e 'catalog.*'
 ```
 
@@ -170,7 +170,7 @@ You can go back and forth splitting and merging, but for the next step please st
 
 ## Step 4: Split the metadata into constituent files
 
-```
+```bash
 cd catalog
 trestle split -f ./metadata.json -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
 ```
@@ -179,7 +179,7 @@ trestle split -f ./metadata.json -e 'metadata.roles,metadata.parties,metadata.re
 <details>
 <summary>The directory will now look like this, with metadata split into files</summary>
 
-```
+```text
 
 catalogs
  ┗ mycatalog
@@ -202,19 +202,19 @@ Again there remains a metadata.json file but it is smaller than the original.
 
 And this step can be reversed with the following:
 
-```
+```bash
 trestle merge -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
 ```
 
 or simply
 
-```
+```bash
 trestle merge -e 'metadata.*'
 ```
 
 ## Step 5: Split metadata further using wildcards
 
-```
+```bash
 cd metadata
 trestle split -f ./roles.json -e 'roles.*'
 trestle split -f ./responsible-parties.json -e 'responsible-parties.*'
@@ -224,7 +224,7 @@ trestle split -f ./responsible-parties.json -e 'responsible-parties.*'
 <details>
 <summary>The directory now looks like this, with new subdirectories containing multiple roles and responsible-parties</summary>
 
-```
+```text
 
 catalogs
  ┗ mycatalog
@@ -251,7 +251,7 @@ Note that the presence of wildcards caused new directories to be created contain
 
 This split can be reversed with
 
-```
+```bash
 trestle merge -e 'roles.*,responsible-parties.*'
 ```
 
@@ -259,7 +259,7 @@ trestle merge -e 'roles.*,responsible-parties.*'
 
 This single command will split off *all* controls in *all* groups.  To do it you need to go back up into the catalog directory where the `groups.json` file is found:
 
-```
+```bash
 cd ..
 trestle split -f ./groups.json -e 'groups.*.controls.*'
 ```
@@ -268,7 +268,7 @@ trestle split -f ./groups.json -e 'groups.*.controls.*'
 <details>
 <summary>Your directory is now very large with that one command!</summary>
 
-```
+```text
 
 catalogs
  ┗ mycatalog
@@ -677,7 +677,7 @@ All 20 groups of controls have been split off, and each one has a corresponding 
 
 You can then reverse the split with
 
-```
+```bash
 trestle merge -e 'groups.*'
 ```
 
@@ -685,7 +685,7 @@ trestle merge -e 'groups.*'
 
 You can collapse everything back to a single `catalog.json` file after first going up one directory to the mycatalog directory
 
-```
+```bash
 cd ..
 trestle merge -e 'catalog.*'
 ```
@@ -694,7 +694,7 @@ trestle merge -e 'catalog.*'
 <details>
 <summary>After all that splitting and merging you are back to this directory structure</summary>
 
-```
+```text
 
 catalogs
  ┗ mycatalog

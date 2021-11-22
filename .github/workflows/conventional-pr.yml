@@ -6,14 +6,11 @@ on:
       - opened
       - edited
       - synchronize
-    branch:
+    branches:
       - 'develop'
 jobs:
   lint:
     if: ${{ github.head_ref != 'develop' }}
-    concurrency: 
-      group: ${{ github.head_ref }}-${{ github.workflow }}
-      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       # Please look up the latest version from

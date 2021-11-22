@@ -19,6 +19,7 @@ import argparse
 import logging
 import os
 import pathlib
+import shutil
 import sys
 from typing import Any, List
 
@@ -35,6 +36,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +130,7 @@ def create_trestle_project_with_model(
             trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
         )
         assert i._run(args) == 0
-    except BaseException as e:
+    except Exception as e:
         raise TrestleError(f'Error creating trestle project with model: {e}')
     finally:
         os.chdir(cur_dir)
@@ -172,10 +177,10 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
+def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     r"""Insert text lines after line containing tag.
 
-    Return 0 on success, 1 tag not found.
+    Return True on success, False tag not found.
     Text is a string with appropriate \n line endings.
     """
     lines: List[str] = []
@@ -186,8 +191,22 @@ def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
             lines.insert(ii + 1, text)
             with file_path.open('w') as f:
                 f.writelines(lines)
-            return 0
-    return 1
+            return True
+    return False
+
+
+def delete_line_in_file(file_path: pathlib.Path, tag: str) -> bool:
+    """Delete a line in a file containing tag."""
+    lines: List[str] = []
+    with file_path.open('r') as f:
+        lines = f.readlines()
+    for ii, line in enumerate(lines):
+        if line.find(tag) >= 0:
+            del lines[ii]
+            with file_path.open('w') as f:
+                f.writelines(lines)
+            return True
+    return False
 
 
 def generate_control_list(label: str, count: int) -> List[cat.Control]:
@@ -201,27 +220,52 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
     return controls
 
 
-def generate_complex_catalog() -> cat.Catalog:
+def generate_param_list(label: str, count: int) -> List[cat.Control]:
+    """Generate a list of params with indexed names."""
+    params: List[common.Parameter] = []
+    for ii in range(count):
+        param = generators.generate_sample_model(common.Parameter, True)
+        param.id = f'{label}-{ii + 1}'
+        param.label = f'label-{param.id}'
+        param.props[0].name = f'name-{param.id}'
+        param.props[0].value = f'value-{param.id}'
+        param.guidelines[0].prose = f'prose-{param.id}'
+        params.append(param)
+    return params
+
+
+def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     """Generate a complex and deep catalog for testing."""
     group_a = generators.generate_sample_model(cat.Group, True)
-    group_a.id = 'a'
-    group_a.controls = generate_control_list('a', 4)
+    group_a.id = f'{stem}a'
+    group_a.controls = generate_control_list(group_a.id, 4)
     part = generators.generate_sample_model(common.Part)
-    part.id = 'a-1_smt'
+    part.id = f'{stem}a-1_smt'
     part.parts = None
-    group_a.controls[0].parts[0].id = 'part_with_subpart'
+    group_a.controls[0].parts[0].id = f'{stem}_part_with_subpart'
     group_a.controls[0].parts[0].parts = [part]
     group_b = generators.generate_sample_model(cat.Group, True)
-    group_b.id = 'b'
-    group_b.controls = generate_control_list('b', 3)
-    group_b.controls[2].controls = generate_control_list('b-2', 3)
+    group_b.id = f'{stem}b'
+    group_b.controls = generate_control_list(group_b.id, 3)
+    group_b.controls[2].controls = generate_control_list(f'{group_b.id}-2', 3)
     group_ba = generators.generate_sample_model(cat.Group, True)
-    group_ba.id = 'ba'
-    group_ba.controls = generate_control_list('ba', 2)
+    group_ba.id = f'{stem}ba'
+    group_ba.controls = generate_control_list(group_ba.id, 2)
     group_b.groups = [group_ba]
 
     catalog = generators.generate_sample_model(cat.Catalog, True)
-    catalog.controls = generate_control_list('cat', 3)
+    catalog.controls = generate_control_list(f'{stem}cat', 3)
+    catalog.params = generate_param_list(f'{stem}parm', 3)
+
+    test_control = generators.generate_sample_model(cat.Control, False)
+    test_control.id = f'{stem}test-1'
+    test_control.params = [common.Parameter(id=f'{test_control.id}_prm_1', values=['Default', 'Values'])]
+    test_control.parts = [
+        common.Part(
+            id=f'{test_control.id}-stmt', prose='The prose with {{ insert: param, test-1_prm_1 }}', name='statement'
+        )
+    ]
+    catalog.controls.append(test_control)
     catalog.groups = [group_a, group_b]
 
     return catalog
@@ -243,7 +287,7 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
 
-    for letter in 'abcd':
+    for letter in 'abcdefg':
         prof_name = f'test_profile_{letter}'
         prof_path = JSON_TEST_DATA_PATH / f'{prof_name}.json'
         repo.load_and_import_model(prof_path, prof_name)
@@ -259,3 +303,51 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     else:
         new_href = str(cat_path.resolve())
     assert HrefCmd.change_import_href(trestle_root, main_profile_name, new_href, 0) == 0
+
+
+def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
+    """
+    Make a file hidden on windows.
+
+    if_dot will make the change only if the filename is of the form .*
+    """
+    if os.name == 'nt':
+        if not if_dot or file_path.stem.startswith('.'):
+            atts = win32api.GetFileAttributes(str(file_path))
+            win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+
+def make_dot_files_in_tree_hidden(dir_path: pathlib.Path) -> None:
+    """On windows change all .* files to have hidden attributes."""
+    for dot_file in dir_path.rglob('.*'):
+        make_file_hidden(dot_file, True)
+
+
+def copy_tree_with_hidden(src_path: pathlib.Path, dest_path: pathlib.Path) -> None:
+    """Copy directory and make sure dot files are hidden."""
+    if not dest_path.parent.exists():
+        dest_path.parent.mkdir(parents=True)
+    shutil.copytree(str(src_path), str(dest_path), copy_function=shutil.copy2)
+    make_dot_files_in_tree_hidden(dest_path)
+
+
+def copy_file_with_hidden(src_path: pathlib.Path, dest_path: pathlib.Path) -> None:
+    """Copy a file and if it is a dot file make it hidden."""
+    if not dest_path.parent.exists():
+        dest_path.mkdir(parents=True)
+    shutil.copy2(str(src_path), str(dest_path))
+    make_file_hidden(dest_path, True)
+
+
+def copy_tree_or_file_with_hidden(src_path: pathlib.Path, dest_path: pathlib.Path) -> None:
+    """Copy directory tree along with file attributes."""
+    if src_path.is_dir():
+        copy_tree_with_hidden(src_path, dest_path)
+    else:
+        copy_file_with_hidden(src_path, dest_path)
+
+
+def make_hidden_file(file_path: pathlib.Path) -> None:
+    """Make a hidden file with the given file path."""
+    file_path.touch()
+    make_file_hidden(file_path)

@@ -172,7 +172,7 @@ def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[A
         root = fields['__root__']
         singular_type = root.type_
         root_type = root.outer_type_._name
-    except BaseException:
+    except Exception:  # noqa S110
         pass
     return root, root_type, singular_type
 
@@ -223,3 +223,13 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e
+
+
+def as_list(list_or_none: Optional[List[Any]]) -> List[Any]:
+    """Convert list or None object to itself or an empty list if none."""
+    return list_or_none if list_or_none else []
+
+
+def none_if_empty(list_: List[Any]) -> Optional[List[Any]]:
+    """Convert to None if empty list."""
+    return list_ if list_ else None

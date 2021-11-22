@@ -3,6 +3,66 @@
 
 <!--next-version-placeholder-->
 
+## v0.30.0 (2021-11-22)
+### Feature
+* OSCO transformer support for OpenScap 1.3.5 ([#876](https://github.com/IBM/compliance-trestle/issues/876)) ([`dcfb34a`](https://github.com/IBM/compliance-trestle/commit/dcfb34ae67ce0bf057d224a6eb4065e25d616a42))
+
+## v0.29.0 (2021-11-19)
+### Feature
+* Tutorial for task cis-to-component-definition ([#870](https://github.com/IBM/compliance-trestle/issues/870)) ([`4e4d6b4`](https://github.com/IBM/compliance-trestle/commit/4e4d6b4ba600792ce5a6dfd3606fb730099cbdef))
+* Add support for ignored fields to header ([#794](https://github.com/IBM/compliance-trestle/issues/794)) ([`37e9b60`](https://github.com/IBM/compliance-trestle/commit/37e9b60cecf6516c934fafa8fa969672ade8ef7f))
+
+### Fix
+* Cat assemble label needs to load labels as properties when reading controls ([#878](https://github.com/IBM/compliance-trestle/issues/878)) ([`0b97476`](https://github.com/IBM/compliance-trestle/commit/0b97476db8bfbac4925b2af2ec1b8edda9178e33))
+* Cleanup PR template. ([`f7c433b`](https://github.com/IBM/compliance-trestle/commit/f7c433b8a4d86a39150e596e4e395b03a2dab984))
+* Current support for multiple PR templates is insufficient in Github. ([#879](https://github.com/IBM/compliance-trestle/issues/879)) ([`bf12f2e`](https://github.com/IBM/compliance-trestle/commit/bf12f2e464adaf371ec2f7f63050395a05ec1cfb))
+* Updating documentation to exploit code highlighting. ([#877](https://github.com/IBM/compliance-trestle/issues/877)) ([`10bd679`](https://github.com/IBM/compliance-trestle/commit/10bd6792d8a9b9b42d26653fffd40baaad4d3251))
+* Mangled merging of lists and lack of recursion in profile resolver ([#869](https://github.com/IBM/compliance-trestle/issues/869)) ([`e3ccbbc`](https://github.com/IBM/compliance-trestle/commit/e3ccbbc4c6675264dcc245ed6c5e2454d04078c8))
+* Incorrect behaviour of lint PR. ([#868](https://github.com/IBM/compliance-trestle/issues/868)) ([`e5209c3`](https://github.com/IBM/compliance-trestle/commit/e5209c33f8d53bd022e410d52ef97d3316746023))
+
+## v0.28.1 (2021-11-17)
+### Fix
+* Remove results {} from osco-to-oscal console display ([#866](https://github.com/IBM/compliance-trestle/issues/866)) ([`d62051e`](https://github.com/IBM/compliance-trestle/commit/d62051e0fb45c99edd97b0314117b7208dd11d91))
+* Add spec.desctiption to produced yaml ([#865](https://github.com/IBM/compliance-trestle/issues/865)) ([`b988684`](https://github.com/IBM/compliance-trestle/commit/b988684ffb02011c4f890b8f889abb0c7184e03c))
+
+## v0.28.0 (2021-11-16)
+### Feature
+* Add yaml header to various trestle author docs in a safe manner. ([#853](https://github.com/IBM/compliance-trestle/issues/853)) ([`0b6f8a1`](https://github.com/IBM/compliance-trestle/commit/0b6f8a18d1de460c14fa36d107729e367682045e))
+
+### Fix
+* Fix instance version ([#862](https://github.com/IBM/compliance-trestle/issues/862)) ([`56f7cdf`](https://github.com/IBM/compliance-trestle/commit/56f7cdfe537adfcfcb8398df7d06b71cbf35781d))
+* Correcting mkdocs ([#860](https://github.com/IBM/compliance-trestle/issues/860)) ([`89a6d0d`](https://github.com/IBM/compliance-trestle/commit/89a6d0dc42d87b7082ec4c1a2def684cc4ae543b))
+* Relabel yaml-safe to header-dont-merge. ([#858](https://github.com/IBM/compliance-trestle/issues/858)) ([`58e6b1d`](https://github.com/IBM/compliance-trestle/commit/58e6b1d8bec4a5b210d47d24acaf2ea770a31000))
+* 2 bugs in task cis-to-component-definition ([#856](https://github.com/IBM/compliance-trestle/issues/856)) ([`61da0b8`](https://github.com/IBM/compliance-trestle/commit/61da0b89aaab4c15b0e4a2c885efbdf387b30d10))
+* Fix headers recurse flag ([#849](https://github.com/IBM/compliance-trestle/issues/849)) ([`d285cc6`](https://github.com/IBM/compliance-trestle/commit/d285cc61ff52531d821c03ab4bcfdf4966b9c44e))
+
+## v0.27.2 (2021-11-16)
+### Fix
+* Force trestle relesae. ([`49243e3`](https://github.com/IBM/compliance-trestle/commit/49243e369120958536a644a4a063cf19f1870b7a))
+
+## v0.27.1 (2021-11-15)
+### Fix
+* Profile resolver issues with alter that has no adds ([#847](https://github.com/IBM/compliance-trestle/issues/847)) ([`6865eb7`](https://github.com/IBM/compliance-trestle/commit/6865eb7967ae954b14f5a10921d88ca567fae921))
+
+## v0.27.0 (2021-11-14)
+### Feature
+* Add ability to use different versions of templates ([#837](https://github.com/IBM/compliance-trestle/issues/837)) ([`c6d3618`](https://github.com/IBM/compliance-trestle/commit/c6d3618f13e6dc945413867a8d102cd3a7c3c211))
+* Facilitate improved performance within Tanium transformer. ([#835](https://github.com/IBM/compliance-trestle/issues/835)) ([`4d2ded4`](https://github.com/IBM/compliance-trestle/commit/4d2ded49d314f6e632f531b08a58bc66d53d8997))
+* Significant json (de)serialisation performance improvements. ([#841](https://github.com/IBM/compliance-trestle/issues/841)) ([`d6f3cb1`](https://github.com/IBM/compliance-trestle/commit/d6f3cb1ab8113c997d463d832aa8c8b721faffd2))
+* Add yaml header output for profile and catalog generate ([#833](https://github.com/IBM/compliance-trestle/issues/833)) ([`50093f0`](https://github.com/IBM/compliance-trestle/commit/50093f075615fe25bb6e25b16ff5d98fb0a308f9))
+* Add ability to write modified drawio files ([#813](https://github.com/IBM/compliance-trestle/issues/813)) ([`ea814bf`](https://github.com/IBM/compliance-trestle/commit/ea814bfdcfb8e75e2812e182ec09b009e693312a))
+* Build-component-definition ([#788](https://github.com/IBM/compliance-trestle/issues/788)) ([`9f7b1fe`](https://github.com/IBM/compliance-trestle/commit/9f7b1fec0efc017698ceef4c6bf77c132626ec93))
+* Ssp filter allows filter of ssp based on profile ([#805](https://github.com/IBM/compliance-trestle/issues/805)) ([`494ba1b`](https://github.com/IBM/compliance-trestle/commit/494ba1b9a749c44657365f45fc88a8c4aa94ed73))
+* Add centralised markdown API ([#797](https://github.com/IBM/compliance-trestle/issues/797)) ([`8582516`](https://github.com/IBM/compliance-trestle/commit/8582516f59a8258b513312185b8efdd4cb7a001e))
+
+### Fix
+* Preliminary fix for parameters where 'set parameter' is called an a value does not exist. ([#823](https://github.com/IBM/compliance-trestle/issues/823)) ([`d20f2b9`](https://github.com/IBM/compliance-trestle/commit/d20f2b9e6ca10c4fa829bb723d68ea3d06902cd0))
+* Merge yaml header content when writing control ([#825](https://github.com/IBM/compliance-trestle/issues/825)) ([`8d0b3b0`](https://github.com/IBM/compliance-trestle/commit/8d0b3b0f3a6c5e3a47a42b46b77081a700947d6b))
+* All Alter/Add of prop by_id ([#821](https://github.com/IBM/compliance-trestle/issues/821)) ([`a9047a8`](https://github.com/IBM/compliance-trestle/commit/a9047a83e0b0c64c34448f776a7e13fff77e6b2a))
+* Ssp generate with alter props issue ([#819](https://github.com/IBM/compliance-trestle/issues/819)) ([`a1e4219`](https://github.com/IBM/compliance-trestle/commit/a1e421944ce11432b2b2832b8f669b65428f1b38))
+* Allow markdown substitutions ([#812](https://github.com/IBM/compliance-trestle/issues/812)) ([`8d52d3e`](https://github.com/IBM/compliance-trestle/commit/8d52d3eb4aaa0a73685983114ffa38c494b9fec4))
+* Handle hard line breaks ([#804](https://github.com/IBM/compliance-trestle/issues/804)) ([`b1e39c1`](https://github.com/IBM/compliance-trestle/commit/b1e39c1173b235a87981a2856081cd54aeac86e3))
+
 ## v0.26.0 (2021-10-20)
 ### Feature
 * Add exclusion flags to trestle author header validate to allow practical use without a task name. ([#793](https://github.com/IBM/compliance-trestle/issues/793)) ([`d77408f`](https://github.com/IBM/compliance-trestle/commit/d77408f39e914bff3dfc20ecf91e3a982a49bf4e))

@@ -280,8 +280,8 @@ def test_run_failure_plan_execute(
     monkeypatch.setattr(Plan, 'execute', mock_execute)
     monkeypatch.setattr(sys, 'argv', testargs)
     caplog.clear()
-    Trestle().run()
-    assert logged_error in caplog.text
+    rc = Trestle().run()
+    assert rc > 0
 
 
 def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: MonkeyPatch):

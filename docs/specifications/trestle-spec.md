@@ -52,7 +52,7 @@ For the draft phase of compliance engineering, trestle provides the following co
 
 This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create a directory structure like below for different artefacts:
 
-```
+```text
 .
 ├── .trestle
 ├── dist
@@ -81,7 +81,7 @@ Notice that trestle is a highly opinionated tool and, therefore, the names of th
 
 This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, `trestle create catalog -o nist800-53` will create a directory structure of a sample catalog like below.
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -132,7 +132,7 @@ This default or reference decomposition behaviour can be changed by modifying th
 
 For `catalog`, the inital sample content is broken down as shown below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -166,7 +166,7 @@ For `catalog`, the inital sample content is broken down as shown below:
 
 For `profile`, the initial sample content is not broken down by default as shown below.
 
-```
+```text
 .
 ├── .trestle
 ├── dist
@@ -185,7 +185,7 @@ For `profile`, the initial sample content is not broken down by default as shown
 *THIS IS LEGACY CONTENT TARGET DEFINITIONS NO LONGER EXIST*
 For `target-definition`, the initial sample content is broken down as shown below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist
@@ -223,7 +223,7 @@ The user can increase the level of decomposition by using `trestle split` comman
 
 This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -286,7 +286,7 @@ In the near future, `trestle split` should be smart enough to figure out which j
 
 To illustrate how this command could be used consider a catalog model named `nist800-53` that was created via `trestle create catalog -o nist800-53` or imported via `trestle import -f nist800-53.json`.
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -316,7 +316,7 @@ To illustrate how this command could be used consider a catalog model named `nis
 
 This would create a `metadata.json` file under `catalog` subdirectory and move the whole `metadata` property/section from `catalog.json` to `catalog/metadata.json` as below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -352,7 +352,7 @@ The future version of this command would be:
 
 The result would be the creation of a `metadata` subdirectory under `catalog` and the creation of a `revision-history.json` file under `metadata` as shown below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -390,7 +390,7 @@ The future version of this command would be:
 Notice the `.*` referring to each element in the array.
 The command would replace the `revision-history.json` file by a `revision-history` directory containing multiple files prefixed with a 5 digit number representing the index of the array element followed by two underscores and the string `revision-history.json` as shown below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -426,7 +426,7 @@ The future version of this command would be:
 
 OSCAL also makes use of named fields by leveraging`additionalProperties` supported by JSON Schema which behaves as a map or dict. OSCAL normally uses this feature as a way to assign multiple objects to a property without necessarily having to enforce a specific order as is the case with JSON array properties. It is like assigning a map/dict to a property. An example of such property in the catalog schema is the `responsible-parties` under `metadata`. One example of contents for a `responsible-parties` property is:
 
-```
+```json
 "responsible-parties": {
   "creator": {
     "party-uuids": [
@@ -450,7 +450,7 @@ A more evident example of this type of property is in the `targets` property und
 Notice the `.*` at the end referring to each key/value pair in the map).
 The command would result in creating a directory called `responsible-parties` under `metadata` and multiple JSON files under it, one for each named field using the key of the named field as the name of the JSON file. The result is shown below:
 
-```
+```text
 .
 ├── .trestle
 ├── dist 
@@ -515,7 +515,7 @@ This command allows users to add an OSCAL model to a subcomponent in source dire
 
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
-```
+```json
 "roles": [
   {
     "id": "REPLACE_ME",
@@ -525,13 +525,13 @@ will add the following property under the `metadata` property for a catalog that
 
 Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
 
-```
-- DateTime: <Current date-time>
-- Boolean: False
-- Integer: 0 
-- String: REPLACE_ME
-- Float/Double: 0.00
-- Id field: Auto generated UUID
+```yaml
+  - DateTime: <Current date-time>
+  - Boolean: false
+  - Integer: 0
+  - String: REPLACE_ME
+  - Float/Double: 0.00
+  - Id field: Auto generated UUID
 ```
 
 #### `trestle remove`

@@ -4,6 +4,7 @@ metadata:
   name: customized-tailored-profile
   namespace: openshift-compliance
 spec:
+  description: customized-tailored-profile
   extends: ocp4-cis-node
   setValues:
   - name: myco_minimum_password_length

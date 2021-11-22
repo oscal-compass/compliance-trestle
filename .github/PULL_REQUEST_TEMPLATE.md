@@ -2,13 +2,18 @@
 
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
 
+- [ ] Hot fix (emergency fix and release)
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
+- [ ] Documentation (change which affects the documentation site)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] Release (`develop` -> `main`)
+
+## Quality assurance (all should be covered).
+
 - [ ] My code follows the code style of this project.
-- [ ] My change requires a change to the documentation.
-- [ ] I have updated the documentation accordingly.
-- [ ] I have added tests to cover my changes.
+- [ ] Documentation for my change is up to date?
+- [ ] My PR meets testing requirements.
 - [ ] All new and existing tests passed.
 - [ ] All commits are signed-off.
 
@@ -17,3 +22,9 @@
 ## Key links:
 
 - [Sonar coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)
+
+# Before you merge
+
+- Ensure it is a 'squash commit' if not a release.
+- Ensure CI is currently passing
+- Check sonar

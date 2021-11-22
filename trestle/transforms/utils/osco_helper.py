@@ -61,36 +61,33 @@ t_results_map = Dict[str, Any]
 class RuleUse():
     """Represents one rule of OSCO data."""
 
-    def __init__(
-        self,
-        id_: str,
-        target: str,
-        target_type: str,
-        benchmark_href: str,
-        benchmark_id: str,
-        scanner_name: str,
-        scanner_version: str,
-        idref: str,
-        version: str,
-        time: str,
-        result: str,
-        severity: str,
-        weight: str
-    ) -> None:
+    def __init__(self, args: Dict[str, str]) -> None:
         """Initialize given specified args."""
-        self.id_ = id_
-        self.target = target
-        self.target_type = target_type
-        self.benchmark_href = benchmark_href
-        self.benchmark_id = benchmark_id
-        self.scanner_name = scanner_name
-        self.scanner_version = scanner_version
-        self.idref = idref
-        self.version = version
-        self.time = time
-        self.result = result
-        self.severity = severity
-        self.weight = weight
+        self.id_ = args['id_']
+        self.target = args['target']
+        self.target_type = args['target_type']
+        self.host_name = args['host_name']
+        self.benchmark_href = args['benchmark_href']
+        self.benchmark_id = args['benchmark_id']
+        self.scanner_name = args['scanner_name']
+        self.scanner_version = args['scanner_version']
+        self.idref = args['idref']
+        self.version = args['version']
+        self.time = args['time']
+        self.result = args['result']
+        self.severity = args['severity']
+        self.weight = args['weight']
+
+    @property
+    def inventory_key(self):
+        """Derive inventory key."""
+        if self.host_name is None:
+            # OpenScap 1.3.3
+            rval = self.target + ':' + self.target_type
+        else:
+            # OpenScap 1.3.5
+            rval = self.host_name + ':' + self.target_type
+        return rval
 
 
 class ComplianceOperatorReport():
@@ -186,6 +183,16 @@ class ComplianceOperatorReport():
                 break
         return value
 
+    def _get_host_name(self, root: t_element) -> str:
+        """Extract asset:identifier:host_name from the XML."""
+        value = None
+        for lev1 in root:
+            tag = _remove_namespace(lev1.tag)
+            if tag == 'target-facts':
+                value = self._get_fact(lev1, 'urn:xccdf:fact:asset:identifier:host_name')
+                break
+        return value
+
     def _get_result(self, lev1: t_element) -> str:
         """Extract result from the XML."""
         value = None
@@ -204,6 +211,7 @@ class ComplianceOperatorReport():
         id_ = self._get_id(root)
         target = self._get_target(root)
         target_type = self._get_target_type(root)
+        host_name = self._get_host_name(root)
         benchmark_href = self._get_benchmark_href(root)
         benchmark_id = self._get_benchmark_id(root)
         scanner_name = self._get_scanner_name(root)
@@ -216,21 +224,23 @@ class ComplianceOperatorReport():
                 severity = lev1.get('severity')
                 weight = lev1.get('weight')
                 result = self._get_result(lev1)
-                rule_use = RuleUse(
-                    id_,
-                    target,
-                    target_type,
-                    benchmark_href,
-                    benchmark_id,
-                    scanner_name,
-                    scanner_version,
-                    idref,
-                    version,
-                    time,
-                    result,
-                    severity,
-                    weight
-                )
+                args = {
+                    'id_': id_,
+                    'target': target,
+                    'target_type': target_type,
+                    'host_name': host_name,
+                    'benchmark_href': benchmark_href,
+                    'benchmark_id': benchmark_id,
+                    'scanner_name': scanner_name,
+                    'scanner_version': scanner_version,
+                    'idref': idref,
+                    'version': version,
+                    'time': time,
+                    'result': result,
+                    'severity': severity,
+                    'weight': weight
+                }
+                rule_use = RuleUse(args)
                 yield rule_use
 
     def rule_use_generator(self) -> RuleUse:
@@ -311,7 +321,6 @@ class ResultsMgr():
         analysis = []
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
-        analysis.append(f'results: {self.results_map}')
         return analysis
 
     def _component_extract(self, rule_use: RuleUse) -> None:
@@ -345,21 +354,26 @@ class ResultsMgr():
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from RuleUse."""
-        key = rule_use.target + ':' + rule_use.target_type
-        if key in self.inventory_map:
+        if rule_use.inventory_key in self.inventory_map:
             return
         inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
         props = []
-        props.append(Property(name='target', value=rule_use.target, ns=self.ns, class_='scc_inventory_item_id'))
-        props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+        if rule_use.host_name is None:
+            props.append(Property(name='target', value=rule_use.target, ns=self.ns, class_='scc_inventory_item_id'))
+            props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+        else:
+            props.append(Property(name='target', value=rule_use.target, ns=self.ns))
+            props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+            props.append(
+                Property(name='host_name', value=rule_use.host_name, ns=self.ns, class_='scc_inventory_item_id')
+            )
         inventory.props = props
         inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
-        self.inventory_map[key] = inventory
+        self.inventory_map[rule_use.inventory_key] = inventory
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> t_inventory_ref:
         """Get inventory reference for specified RuleUse."""
-        key = rule_use.target + ':' + rule_use.target_type
-        return self.inventory_map[key].uuid
+        return self.inventory_map[rule_use.inventory_key].uuid
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from RuleUse."""

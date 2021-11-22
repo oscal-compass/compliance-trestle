@@ -24,13 +24,8 @@ from trestle.core import const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.tanium import TaniumTransformer
-from trestle.transforms.results import Results
 
 logger = logging.getLogger(__name__)
-
-t_filename = str
-t_results = Results
-t_tanium_transformer = TaniumTransformer
 
 
 class TaniumToOscal(TaskBase):
@@ -62,6 +57,12 @@ class TaniumToOscal(TaskBase):
         )
         logger.info('')
         logger.info('Configuration flags sit under [task.tanium-to-oscal]:')
+        logger.info('  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.')
+        logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.')
+        logger.info('  cpus-min  = (optional) the desired minimum number of CPUs to employ.')
+        logger.info(
+            '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
+        )
         logger.info('  input-dir = (required) the path of the input directory comprising Tanium reports.')
         logger.info(
             '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
@@ -114,18 +115,20 @@ class TaniumToOscal(TaskBase):
         if not self._config:
             logger.error('Config missing')
             return TaskOutcome(mode + 'failure')
-        # process config
-        idir = self._config.get('input-dir')
-        if idir is None:
-            logger.error('config missing "input-dir"')
+        # config required input & output dirs
+        try:
+            idir = self._config['input-dir']
+            ipth = pathlib.Path(idir)
+            odir = self._config['output-dir']
+            opth = pathlib.Path(odir)
+        except KeyError as e:
+            logger.debug(f'key {e.args[0]} missing')
             return TaskOutcome(mode + 'failure')
-        ipth = pathlib.Path(idir)
-        odir = self._config.get('output-dir')
-        opth = pathlib.Path(odir)
+        # config optional overwrite & quiet
         self._overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.get('quiet', False)
         self._verbose = not self._simulate and not quiet
-        # timestamp
+        # config optional timestamp
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
@@ -133,12 +136,20 @@ class TaniumToOscal(TaskBase):
             except Exception:
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
+        # config optional performance
+        modes = {
+            'blocksize': self._config.getint('blocksize', 10000),
+            'cpus_max': self._config.getint('cpus-max', 1),
+            'cpus_min': self._config.getint('cpus-min', 1),
+            'checking': self._config.getboolean('checking', False),
+        }
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
         for ifile in sorted(ipth.iterdir()):
             blob = self._read_file(ifile)
             tanium_transformer = TaniumTransformer()
+            tanium_transformer.set_modes(modes)
             results = tanium_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
@@ -149,7 +160,7 @@ class TaniumToOscal(TaskBase):
             self._show_analysis(tanium_transformer)
         return TaskOutcome(mode + 'success')
 
-    def _read_file(self, ifile: t_filename):
+    def _read_file(self, ifile: str):
         """Read raw input file."""
         if not self._simulate:
             if self._verbose:
@@ -158,14 +169,14 @@ class TaniumToOscal(TaskBase):
             blob = fp.read()
         return blob
 
-    def _write_file(self, result: str, ofile: t_filename) -> None:
+    def _write_file(self, result: str, ofile: str) -> None:
         """Write oscal results file."""
         if not self._simulate:
             if self._verbose:
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
 
-    def _show_analysis(self, tanium_transformer: t_tanium_transformer) -> None:
+    def _show_analysis(self, tanium_transformer: TaniumTransformer) -> None:
         """Show analysis."""
         if not self._simulate:
             if self._verbose:
