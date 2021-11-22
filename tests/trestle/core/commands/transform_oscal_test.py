@@ -47,7 +47,12 @@ def setup_for_ssp(include_header: bool,
         )
     else:
         args = argparse.Namespace(
-            trestle_root=tmp_trestle_dir, profile=prof_name, output=ssp_name, verbose=True, sections=sections
+            trestle_root=tmp_trestle_dir,
+            profile=prof_name,
+            output=ssp_name,
+            verbose=True,
+            sections=sections,
+            header_dont_merge=False
         )
     return args, sections, yaml_path
 
