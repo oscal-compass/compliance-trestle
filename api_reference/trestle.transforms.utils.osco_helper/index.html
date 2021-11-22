@@ -2570,6 +2570,26 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#trestle.transforms.utils.osco_helper.RuleUse-attributes" class="md-nav__link">
+    Attributes
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.transforms.utils.osco_helper.RuleUse.inventory_key" class="md-nav__link">
+    inventory_key
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.transforms.utils.osco_helper.RuleUse-methods" class="md-nav__link">
     Methods
   </a>
@@ -3073,6 +3093,26 @@
   
     <nav class="md-nav" aria-label="RuleUse">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.transforms.utils.osco_helper.RuleUse-attributes" class="md-nav__link">
+    Attributes
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.transforms.utils.osco_helper.RuleUse.inventory_key" class="md-nav__link">
+    inventory_key
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#trestle.transforms.utils.osco_helper.RuleUse-methods" class="md-nav__link">
@@ -3863,7 +3903,7 @@ ResultsMgr        </code>
 
 
 <h6 class="doc doc-heading" id="trestle.transforms.utils.osco_helper.ResultsMgr.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s1">&#39;2021-11-19T06:23:25+00:00&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="s1">&#39;2021-11-22T02:06:38+00:00&#39;</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -3991,6 +4031,29 @@ RuleUse        </code>
 
 
 
+<h5 id="trestle.transforms.utils.osco_helper.RuleUse-attributes">Attributes<a class="headerlink" href="#trestle.transforms.utils.osco_helper.RuleUse-attributes" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.transforms.utils.osco_helper.RuleUse.inventory_key">
+<code class="highlight language-python"><span class="n">inventory_key</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.transforms.utils.osco_helper.RuleUse.inventory_key" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Derive inventory key.</p>
+    </div>
+
+  </div>
+
 
 
 
@@ -4001,7 +4064,7 @@ RuleUse        </code>
 
 
 <h6 class="doc doc-heading" id="trestle.transforms.utils.osco_helper.RuleUse.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">benchmark_href</span><span class="p">,</span> <span class="n">benchmark_id</span><span class="p">,</span> <span class="n">scanner_name</span><span class="p">,</span> <span class="n">scanner_version</span><span class="p">,</span> <span class="n">idref</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">severity</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -4015,36 +4078,22 @@ RuleUse        </code>
 
         <details class="quote">
           <summary>Source code in <code>trestle/transforms/utils/osco_helper.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span>
-    <span class="n">id_</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">target_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">benchmark_href</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">benchmark_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">scanner_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">scanner_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">idref</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">time</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">result</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">severity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Initialize given specified args.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">id_</span> <span class="o">=</span> <span class="n">id_</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">target_type</span> <span class="o">=</span> <span class="n">target_type</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_href</span> <span class="o">=</span> <span class="n">benchmark_href</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span> <span class="o">=</span> <span class="n">benchmark_id</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">scanner_name</span> <span class="o">=</span> <span class="n">scanner_name</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">scanner_version</span> <span class="o">=</span> <span class="n">scanner_version</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">idref</span> <span class="o">=</span> <span class="n">idref</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">severity</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">id_</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;id_&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">target_type</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;target_type&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">host_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;host_name&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_href</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;benchmark_href&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;benchmark_id&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scanner_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;scanner_name&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">scanner_version</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;scanner_version&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">idref</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;idref&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;severity&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span>
 </code></pre></div>
         </details>
     </div>
