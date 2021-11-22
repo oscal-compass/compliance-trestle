@@ -488,6 +488,19 @@ class OscalResultsFactory():
         )
         subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
         observation.subjects = [subject_reference]
+        observation.props = self._get_observation_properties(rule_use)
+        self._observation_list.append(observation)
+        rule_use.observation = observation
+
+    def _get_observation_properties(self, rule_use):
+        """Get observation properties."""
+        if self._checking:
+            return self._get_observation_properties_checked(rule_use)
+        else:
+            return self._get_observation_properties_unchecked(rule_use)
+
+    def _get_observation_properties_checked(self, rule_use):
+        """Get observation properties, with checking."""
         props = []
         props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
         props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
@@ -500,9 +513,27 @@ class OscalResultsFactory():
         props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
         props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
         props.append(Property(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
-        observation.props = props
-        self._observation_list.append(observation)
-        rule_use.observation = observation
+        return props
+
+    def _get_observation_properties_unchecked(self, rule_use):
+        """Get observation properties, without checking."""
+        props = []
+        props.append(Property.construct(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
+        props.append(Property.construct(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
+        props.append(Property.construct(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
+        props.append(
+            Property.construct(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version')
+        )
+        props.append(Property.construct(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
+        props.append(Property.construct(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
+        props.append(
+            Property.construct(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity')
+        )
+        props.append(Property.construct(name='weight', value=rule_use.weight, ns=self._ns))
+        props.append(Property.construct(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
+        props.append(Property.construct(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
+        props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
+        return props
 
     def _process(self, co_report: ComplianceOperatorReport) -> None:
         """Process ingested data."""
