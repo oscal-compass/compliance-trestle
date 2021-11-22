@@ -47,12 +47,39 @@ class OscoTransformer(ResultsTransformer):
 
     def __init__(self) -> None:
         """Initialize."""
-        self._results_factory = OscalResultsFactory(self.get_timestamp())
+        self._modes = {}
 
     @property
     def analysis(self) -> List[str]:
         """Analysis."""
         return self._results_factory.analysis
+
+    @property
+    def checking(self):
+        """Return checking."""
+        return self._modes.get('checking', False)
+
+    def set_modes(self, modes: Dict[str, Any]) -> None:
+        """Keep modes info."""
+        if modes is not None:
+            self._modes = modes
+
+    def transform(self, blob: str) -> Results:
+        """Transform the blob into a Results.
+
+        The expected blob is a string that is one of:
+            - data from OpenShift Compliance Operator (json, yaml, xml)
+            - data from Auditree OSCO fetcher/check (json)
+        """
+        results = None
+        self._results_factory = OscalResultsFactory(self.get_timestamp(), self.checking)
+        if results is None:
+            results = self._ingest_xml(blob)
+        if results is None:
+            results = self._ingest_json(blob)
+        if results is None:
+            results = self._ingest_yaml(blob)
+        return results
 
     def _ingest_xml(self, blob: str) -> Results:
         """Ingest xml data."""
@@ -105,22 +132,6 @@ class OscoTransformer(ResultsTransformer):
             raise e
         results = Results()
         results.__root__.append(self._results_factory.result)
-        return results
-
-    def transform(self, blob: str) -> Results:
-        """Transform the blob into a Results.
-
-        The expected blob is a string that is one of:
-            - data from OpenShift Compliance Operator (json, yaml, xml)
-            - data from Auditree OSCO fetcher/check (json)
-        """
-        results = None
-        if results is None:
-            results = self._ingest_xml(blob)
-        if results is None:
-            results = self._ingest_json(blob)
-        if results is None:
-            results = self._ingest_yaml(blob)
         return results
 
 
@@ -319,19 +330,19 @@ class OscalResultsFactory():
 
     default_timestamp = ResultsTransformer.get_timestamp()
 
-    def __init__(self, timestamp: str = default_timestamp) -> None:
+    def __init__(self, timestamp: str = default_timestamp, checking: bool = False) -> None:
         """Initialize."""
-        self.timestamp = timestamp
-        self.observation_list: List[Observation] = []
-        self.component_map: Dict[str, SystemComponent] = {}
-        self.inventory_map: Dict[str, InventoryItem] = {}
-        self.results_map: Dict[str, Any] = {}
-        self.ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
+        self._timestamp = timestamp
+        self._observation_list: List[Observation] = []
+        self._component_map: Dict[str, SystemComponent] = {}
+        self._inventory_map: Dict[str, InventoryItem] = {}
+        self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
+        self._checking = checking
 
     @property
     def components(self) -> Dict[str, SystemComponent]:
         """OSCAL components."""
-        return list(self.component_map.values())
+        return list(self._component_map.values())
 
     @property
     def control_selections(self) -> List[ControlSelection]:
@@ -343,7 +354,7 @@ class OscalResultsFactory():
     @property
     def inventory(self) -> ValuesView[InventoryItem]:
         """OSCAL inventory."""
-        return self.inventory_map.values()
+        return self._inventory_map.values()
 
     @property
     def local_definitions(self) -> LocalDefinitions1:
@@ -356,7 +367,7 @@ class OscalResultsFactory():
     @property
     def observations(self) -> List[Observation]:
         """OSCAL observations."""
-        return self.observation_list
+        return self._observation_list
 
     @property
     def reviewed_controls(self) -> ReviewedControls:
@@ -371,13 +382,13 @@ class OscalResultsFactory():
             uuid=str(uuid.uuid4()),
             title='OpenShift Compliance Operator',
             description='OpenShift Compliance Operator Scan Results',
-            start=self.timestamp,
-            end=self.timestamp,
+            start=self._timestamp,
+            end=self._timestamp,
             reviewed_controls=self.reviewed_controls,
         )
         if len(self.inventory) > 0:
             prop.local_definitions = self.local_definitions
-        if len(self.observation_list) > 0:
+        if len(self._observation_list) > 0:
             prop.observations = self.observations
         return prop
 
@@ -394,7 +405,7 @@ class OscalResultsFactory():
         component_type = 'Service'
         component_title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
         component_description = component_title
-        for component in self.component_map.values():
+        for component in self._component_map.values():
             if component.type == component_type:
                 if component.title == component_title:
                     if component.description == component_description:
@@ -408,60 +419,89 @@ class OscalResultsFactory():
             description=component_description,
             status=status
         )
-        self.component_map[component_ref] = component
+        self._component_map[component_ref] = component
 
     def _get_component_ref(self, rule_use: RuleUse) -> str:
         """Get component reference for specified RuleUse."""
         uuid = None
-        for component_ref, component in self.component_map.items():
+        for component_ref, component in self._component_map.items():
             if component.title.endswith(rule_use.target_type):
                 uuid = component_ref
         return uuid
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from RuleUse."""
-        if rule_use.inventory_key in self.inventory_map:
+        if rule_use.inventory_key in self._inventory_map:
             return
         inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
+        inventory.props = self._get_inventory_properties(rule_use)
+        inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
+        self._inventory_map[rule_use.inventory_key] = inventory
+
+    def _get_inventory_properties(self, rule_use):
+        """Get inventory properties."""
+        if self._checking:
+            return self._get_inventory_properties_checked(rule_use)
+        else:
+            return self._get_inventory_properties_unchecked(rule_use)
+
+    def _get_inventory_properties_checked(self, rule_use):
+        """Get inventory properties, with checking."""
         props = []
         if rule_use.host_name is None:
-            props.append(Property(name='target', value=rule_use.target, ns=self.ns, class_='scc_inventory_item_id'))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+            props.append(Property(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id'))
+            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
         else:
-            props.append(Property(name='target', value=rule_use.target, ns=self.ns))
-            props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
+            props.append(Property(name='target', value=rule_use.target, ns=self._ns))
+            props.append(Property(name='target_type', value=rule_use.target_type, ns=self._ns))
             props.append(
-                Property(name='host_name', value=rule_use.host_name, ns=self.ns, class_='scc_inventory_item_id')
+                Property(name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id')
             )
-        inventory.props = props
-        inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
-        self.inventory_map[rule_use.inventory_key] = inventory
+        return props
+
+    def _get_inventory_properties_unchecked(self, rule_use):
+        """Get observation properties, without checking."""
+        props = []
+        if rule_use.host_name is None:
+            props.append(
+                Property.construct(name='target', value=rule_use.target, ns=self._ns, class_='scc_inventory_item_id')
+            )
+            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
+        else:
+            props.append(Property.construct(name='target', value=rule_use.target, ns=self._ns))
+            props.append(Property.construct(name='target_type', value=rule_use.target_type, ns=self._ns))
+            props.append(
+                Property.construct(
+                    name='host_name', value=rule_use.host_name, ns=self._ns, class_='scc_inventory_item_id'
+                )
+            )
+        return props
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> str:
         """Get inventory reference for specified RuleUse."""
-        return self.inventory_map[rule_use.inventory_key].uuid
+        return self._inventory_map[rule_use.inventory_key].uuid
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from RuleUse."""
         observation = Observation(
-            uuid=str(uuid.uuid4()), description=rule_use.idref, methods=['TEST-AUTOMATED'], collected=self.timestamp
+            uuid=str(uuid.uuid4()), description=rule_use.idref, methods=['TEST-AUTOMATED'], collected=self._timestamp
         )
         subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
         observation.subjects = [subject_reference]
         props = []
-        props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self.ns))
-        props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self.ns))
-        props.append(Property(name='idref', value=rule_use.idref, ns=self.ns, class_='scc_check_name_id'))
-        props.append(Property(name='version', value=rule_use.version, ns=self.ns, class_='scc_check_version'))
-        props.append(Property(name='result', value=rule_use.result, ns=self.ns, class_='scc_result'))
-        props.append(Property(name='time', value=rule_use.time, ns=self.ns, class_='scc_timestamp'))
-        props.append(Property(name='severity', value=rule_use.severity, ns=self.ns, class_='scc_check_severity'))
-        props.append(Property(name='weight', value=rule_use.weight, ns=self.ns))
-        props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self.ns))
-        props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self.ns))
-        props.append(Property(name='id', value=rule_use.id_, ns=self.ns, class_='scc_predefined_profile'))
+        props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
+        props.append(Property(name='scanner_version', value=rule_use.scanner_version, ns=self._ns))
+        props.append(Property(name='idref', value=rule_use.idref, ns=self._ns, class_='scc_check_name_id'))
+        props.append(Property(name='version', value=rule_use.version, ns=self._ns, class_='scc_check_version'))
+        props.append(Property(name='result', value=rule_use.result, ns=self._ns, class_='scc_result'))
+        props.append(Property(name='time', value=rule_use.time, ns=self._ns, class_='scc_timestamp'))
+        props.append(Property(name='severity', value=rule_use.severity, ns=self._ns, class_='scc_check_severity'))
+        props.append(Property(name='weight', value=rule_use.weight, ns=self._ns))
+        props.append(Property(name='benchmark_id', value=rule_use.benchmark_id, ns=self._ns))
+        props.append(Property(name='benchmark_href', value=rule_use.benchmark_href, ns=self._ns))
+        props.append(Property(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
         observation.props = props
-        self.observation_list.append(observation)
+        self._observation_list.append(observation)
         rule_use.observation = observation
 
     def _process(self, co_report: ComplianceOperatorReport) -> None:

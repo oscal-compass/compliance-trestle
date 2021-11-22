@@ -62,6 +62,9 @@ class OscoToOscal(TaskBase):
         )
         logger.info('')
         logger.info('Configuration flags sit under [task.osco-to-oscal]:')
+        logger.info(
+            '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
+        )
         logger.info('  input-dir = (required) the path of the input directory comprising Osco reports.')
         logger.info(
             '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
@@ -114,18 +117,20 @@ class OscoToOscal(TaskBase):
         if not self._config:
             logger.error('config missing')
             return TaskOutcome(mode + 'failure')
-        # process config
-        idir = self._config.get('input-dir')
-        if idir is None:
-            logger.error('config missing "input-dir"')
+        # config required input & output dirs
+        try:
+            idir = self._config['input-dir']
+            ipth = pathlib.Path(idir)
+            odir = self._config['output-dir']
+            opth = pathlib.Path(odir)
+        except KeyError as e:
+            logger.debug(f'key {e.args[0]} missing')
             return TaskOutcome(mode + 'failure')
-        ipth = pathlib.Path(idir)
-        odir = self._config.get('output-dir')
-        opth = pathlib.Path(odir)
+        # config optional overwrite & quiet
         self._overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.get('quiet', False)
         self._verbose = not self._simulate and not quiet
-        # timestamp
+        # config optional timestamp
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
@@ -133,6 +138,10 @@ class OscoToOscal(TaskBase):
             except Exception:
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
+        # config optional performance
+        modes = {
+            'checking': self._config.getboolean('checking', False),
+        }
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
@@ -141,6 +150,7 @@ class OscoToOscal(TaskBase):
                 continue
             blob = self._read_file(ifile)
             osco_transformer = OscoTransformer()
+            osco_transformer.set_modes(modes)
             results = osco_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
