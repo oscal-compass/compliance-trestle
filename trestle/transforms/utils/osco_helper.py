@@ -61,7 +61,7 @@ t_results_map = Dict[str, Any]
 class RuleUse():
     """Represents one rule of OSCO data."""
 
-    def __init__(self, args: Dict[str:str]) -> None:
+    def __init__(self, args: Dict[str, str]) -> None:
         """Initialize given specified args."""
         self.id_ = args['id_']
         self.target = args['target']
