@@ -406,10 +406,13 @@ class OscalResultsFactory():
         component_title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
         component_description = component_title
         for component in self._component_map.values():
-            if component.type == component_type:
-                if component.title == component_title:
-                    if component.description == component_description:
-                        return
+            if component.type != component_type:
+                continue
+            if component.title != component_title:
+                continue
+            if component.description != component_description:
+                continue
+            return
         component_ref = str(uuid.uuid4())
         status = Status1(state='operational')
         component = SystemComponent(
