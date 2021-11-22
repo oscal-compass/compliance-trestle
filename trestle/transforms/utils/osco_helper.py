@@ -61,7 +61,7 @@ t_results_map = Dict[str, Any]
 class RuleUse():
     """Represents one rule of OSCO data."""
 
-    def __init__(self, **args) -> None:
+    def __init__(self, args: Dict[str:str]) -> None:
         """Initialize given specified args."""
         self.id_ = args['id_']
         self.target = args['target']
@@ -83,10 +83,11 @@ class RuleUse():
         """Derive inventory key."""
         if self.host_name is None:
             # OpenScap 1.3.3
-            return self.target + ':' + self.target_type
+            rval = self.target + ':' + self.target_type
         else:
             # OpenScap 1.3.5
-            return self.host_name + ':' + self.target_type
+            rval = self.host_name + ':' + self.target_type
+        return rval
 
 
 class ComplianceOperatorReport():
@@ -223,22 +224,23 @@ class ComplianceOperatorReport():
                 severity = lev1.get('severity')
                 weight = lev1.get('weight')
                 result = self._get_result(lev1)
-                rule_use = RuleUse(
-                    id_=id_,
-                    target=target,
-                    target_type=target_type,
-                    host_name=host_name,
-                    benchmark_href=benchmark_href,
-                    benchmark_id=benchmark_id,
-                    scanner_name=scanner_name,
-                    scanner_version=scanner_version,
-                    idref=idref,
-                    version=version,
-                    time=time,
-                    result=result,
-                    severity=severity,
-                    weight=weight
-                )
+                args = {
+                    'id_': id_,
+                    'target': target,
+                    'target_type': target_type,
+                    'host_name': host_name,
+                    'benchmark_href': benchmark_href,
+                    'benchmark_id': benchmark_id,
+                    'scanner_name': scanner_name,
+                    'scanner_version': scanner_version,
+                    'idref': idref,
+                    'version': version,
+                    'time': time,
+                    'result': result,
+                    'severity': severity,
+                    'weight': weight
+                }
+                rule_use = RuleUse(args)
                 yield rule_use
 
     def rule_use_generator(self) -> RuleUse:
