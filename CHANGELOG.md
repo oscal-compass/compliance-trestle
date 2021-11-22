@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.30.0 (2021-11-22)
+### Feature
+* OSCO transformer support for OpenScap 1.3.5 ([#876](https://github.com/IBM/compliance-trestle/issues/876)) ([`dcfb34a`](https://github.com/IBM/compliance-trestle/commit/dcfb34ae67ce0bf057d224a6eb4065e25d616a42))
+
 ## v0.29.0 (2021-11-19)
 ### Feature
 * Tutorial for task cis-to-component-definition ([#870](https://github.com/IBM/compliance-trestle/issues/870)) ([`4e4d6b4`](https://github.com/IBM/compliance-trestle/commit/4e4d6b4ba600792ce5a6dfd3606fb730099cbdef))
