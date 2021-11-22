@@ -320,7 +320,7 @@ class ComplianceOperatorReport():
                 rule_use = RuleUse(args)
                 yield rule_use
 
-    def rule_use_generator(self) -> RuleUse:
+    def rule_use_generator(self) -> Iterator[RuleUse]:
         """Generate RuleUses by way of parsing the embedded XML."""
         return self._parse_xml()
 
