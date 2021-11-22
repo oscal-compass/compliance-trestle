@@ -557,9 +557,7 @@ class OscalResultsFactory():
 
     def ingest_xml(self, osco_xml: str) -> None:
         """Process OSCO xml."""
-        if osco_xml.startswith('<?xml'):
-            pass
-        else:
+        if not osco_xml.startswith('<?xml'):
             osco_xml = bz2.decompress(base64.b64decode(osco_xml))
         co_report = ComplianceOperatorReport(osco_xml)
         self._process(co_report)
