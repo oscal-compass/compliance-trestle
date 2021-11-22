@@ -42,10 +42,8 @@ class SSPGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         file_help_str = 'Name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
-        output_help_str = 'Name of the output generated ssp markdown folder'
-        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        yaml_help_str = 'Path to the optional yaml header file'
-        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
+        self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
 
