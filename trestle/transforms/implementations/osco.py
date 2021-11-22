@@ -402,26 +402,15 @@ class OscalResultsFactory():
 
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
-        component_type = 'Service'
-        component_title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
-        component_description = component_title
+        _type = 'Service'
+        _title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
+        _desc = _title
         for component in self._component_map.values():
-            if component.type != component_type:
-                continue
-            if component.title != component_title:
-                continue
-            if component.description != component_description:
-                continue
-            return
+            if component.type == _type and component.title == _title and component.description == _desc:
+                return
         component_ref = str(uuid.uuid4())
         status = Status1(state='operational')
-        component = SystemComponent(
-            uuid=component_ref,
-            type=component_type,
-            title=component_title,
-            description=component_description,
-            status=status
-        )
+        component = SystemComponent(uuid=component_ref, type=_type, title=_title, description=_desc, status=status)
         self._component_map[component_ref] = component
 
     def _get_component_ref(self, rule_use: RuleUse) -> str:
