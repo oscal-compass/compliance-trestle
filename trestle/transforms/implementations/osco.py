@@ -47,23 +47,23 @@ class OscoTransformer(ResultsTransformer):
 
     def __init__(self) -> None:
         """Initialize."""
-        self._results_mgr = ResultsMgr(self.get_timestamp())
+        self._results_factory = OscalResultsFactory(self.get_timestamp())
 
     @property
     def analysis(self) -> List[str]:
         """Analysis."""
-        return self._results_mgr.analysis
+        return self._results_factory.analysis
 
     def _ingest_xml(self, blob: str) -> Results:
         """Ingest xml data."""
         # ?xml data
         if blob.startswith('<?xml'):
             resource = blob
-            self._results_mgr.ingest_xml(resource)
+            self._results_factory.ingest_xml(resource)
         else:
             return None
         results = Results()
-        results.__root__.append(self._results_mgr.result)
+        results.__root__.append(self._results_factory.result)
         return results
 
     def _ingest_json(self, blob: str) -> Results:
@@ -79,7 +79,7 @@ class OscoTransformer(ResultsTransformer):
                         data = item['data']
                         if 'results' in data:
                             resource = item
-                            self._results_mgr.ingest(resource)
+                            self._results_factory.ingest(resource)
             # https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/arboretum/kubernetes/fetchers/fetch_cluster_resource.py
             else:
                 for key in jdata.keys():
@@ -87,11 +87,11 @@ class OscoTransformer(ResultsTransformer):
                         for cluster in jdata[key][group]:
                             if 'resources' in cluster:
                                 for resource in cluster['resources']:
-                                    self._results_mgr.ingest(resource)
+                                    self._results_factory.ingest(resource)
         except json.decoder.JSONDecodeError:
             return None
         results = Results()
-        results.__root__.append(self._results_mgr.result)
+        results.__root__.append(self._results_factory.result)
         return results
 
     def _ingest_yaml(self, blob: str) -> Results:
@@ -100,11 +100,11 @@ class OscoTransformer(ResultsTransformer):
             # ? yaml data
             yaml = YAML(typ='safe')
             resource = yaml.load(blob)
-            self._results_mgr.ingest(resource)
+            self._results_factory.ingest(resource)
         except Exception as e:
             raise e
         results = Results()
-        results.__root__.append(self._results_mgr.result)
+        results.__root__.append(self._results_factory.result)
         return results
 
     def transform(self, blob: str) -> Results:
@@ -314,8 +314,8 @@ class ComplianceOperatorReport():
         return self._parse_xml()
 
 
-class ResultsMgr():
-    """Represents collection of data to transformed into an AssessmentResult.results."""
+class OscalResultsFactory():
+    """Build OSCO OSCAL entities."""
 
     default_timestamp = ResultsTransformer.get_timestamp()
 
