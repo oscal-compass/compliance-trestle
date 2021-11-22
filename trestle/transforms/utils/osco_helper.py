@@ -35,28 +35,6 @@ from trestle.transforms.transformer_factory import ResultsTransformer
 
 logger = logging.getLogger(__name__)
 
-t_analysis = List[str]
-t_component = SystemComponent
-t_component_ref = str
-t_control = str
-t_control_selection = ControlSelection
-t_element = Element
-t_inventory = InventoryItem
-t_inventory_ref = str
-t_local_definitions = LocalDefinitions1
-t_observation = Observation
-t_osco_data = Dict[str, Any]
-t_osco_xml = str
-t_result = Result
-t_target = str
-t_timestamp = str
-t_reviewed_controls = ReviewedControls
-
-t_observation_list = List[Observation]
-t_component_map = Dict[t_component_ref, t_component]
-t_inventory_map = Dict[t_target, t_inventory]
-t_results_map = Dict[str, Any]
-
 
 class RuleUse():
     """Represents one rule of OSCO data."""
@@ -93,11 +71,11 @@ class RuleUse():
 class ComplianceOperatorReport():
     """Represents one report of OSCO data."""
 
-    def __init__(self, osco_xml: t_osco_xml) -> None:
+    def __init__(self, osco_xml: str) -> None:
         """Initialize given specified args."""
         self.osco_xml = osco_xml
 
-    def _get_version(self, root: t_element) -> str:
+    def _get_version(self, root: Element) -> str:
         """Extract version from the XML."""
         value = None
         for key, val in root.attrib.items():
@@ -106,7 +84,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_id(self, root: t_element) -> str:
+    def _get_id(self, root: Element) -> str:
         """Extract id from the XML."""
         value = None
         for key, val in root.attrib.items():
@@ -115,7 +93,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_target(self, root: t_element) -> str:
+    def _get_target(self, root: Element) -> str:
         """Extract target from the XML."""
         value = None
         for lev1 in root:
@@ -125,7 +103,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_target_type(self, root: t_element) -> str:
+    def _get_target_type(self, root: Element) -> str:
         """Extract target_type from the XML."""
         value = None
         benchmark_href = self._get_benchmark_href(root)
@@ -133,7 +111,7 @@ class ComplianceOperatorReport():
             value = benchmark_href.split('-')[1]
         return value
 
-    def _get_benchmark(self, root: t_element, kw) -> str:
+    def _get_benchmark(self, root: Element, kw) -> str:
         """Extract benchmark from the XML."""
         value = None
         for lev1 in root:
@@ -143,15 +121,15 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_benchmark_href(self, root: t_element) -> str:
+    def _get_benchmark_href(self, root: Element) -> str:
         """Extract benchmark.href from the XML."""
         return self._get_benchmark(root, 'href')
 
-    def _get_benchmark_id(self, root: t_element) -> str:
+    def _get_benchmark_id(self, root: Element) -> str:
         """Extract benchmark.id from the XML."""
         return self._get_benchmark(root, 'id')
 
-    def _get_fact(self, lev1: t_element, kw: str) -> str:
+    def _get_fact(self, lev1: Element, kw: str) -> str:
         """Extract fact from the XML."""
         value = None
         for lev2 in lev1:
@@ -163,7 +141,7 @@ class ComplianceOperatorReport():
                     break
         return value
 
-    def _get_scanner_name(self, root: t_element) -> str:
+    def _get_scanner_name(self, root: Element) -> str:
         """Extract scanner:name from the XML."""
         value = None
         for lev1 in root:
@@ -173,7 +151,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_scanner_version(self, root: t_element) -> str:
+    def _get_scanner_version(self, root: Element) -> str:
         """Extract scanner:version from the XML."""
         value = None
         for lev1 in root:
@@ -183,7 +161,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_host_name(self, root: t_element) -> str:
+    def _get_host_name(self, root: Element) -> str:
         """Extract asset:identifier:host_name from the XML."""
         value = None
         for lev1 in root:
@@ -193,7 +171,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_result(self, lev1: t_element) -> str:
+    def _get_result(self, lev1: Element) -> str:
         """Extract result from the XML."""
         value = None
         for lev2 in lev1:
@@ -253,22 +231,22 @@ class ResultsMgr():
 
     default_timestamp = ResultsTransformer.get_timestamp()
 
-    def __init__(self, timestamp: t_timestamp = default_timestamp) -> None:
+    def __init__(self, timestamp: str = default_timestamp) -> None:
         """Initialize."""
         self.timestamp = timestamp
-        self.observation_list: t_observation_list = []
-        self.component_map: t_component_map = {}
-        self.inventory_map: t_inventory_map = {}
-        self.results_map: t_results_map = {}
+        self.observation_list: List[Observation] = []
+        self.component_map: Dict[str, SystemComponent] = {}
+        self.inventory_map: Dict[str, InventoryItem] = {}
+        self.results_map: Dict[str, Any] = {}
         self.ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
 
     @property
-    def components(self) -> t_component_map:
+    def components(self) -> Dict[str, SystemComponent]:
         """OSCAL components."""
         return list(self.component_map.values())
 
     @property
-    def control_selections(self) -> List[t_control_selection]:
+    def control_selections(self) -> List[ControlSelection]:
         """OSCAL control selections."""
         prop = []
         prop.append(ControlSelection())
@@ -280,7 +258,7 @@ class ResultsMgr():
         return self.inventory_map.values()
 
     @property
-    def local_definitions(self) -> t_local_definitions:
+    def local_definitions(self) -> LocalDefinitions1:
         """OSCAL local definitions."""
         prop = LocalDefinitions1()
         prop.components = self.components
@@ -288,18 +266,18 @@ class ResultsMgr():
         return prop
 
     @property
-    def observations(self) -> List[t_observation]:
+    def observations(self) -> List[Observation]:
         """OSCAL observations."""
         return self.observation_list
 
     @property
-    def reviewed_controls(self) -> t_reviewed_controls:
+    def reviewed_controls(self) -> ReviewedControls:
         """OSCAL reviewed controls."""
         prop = ReviewedControls(control_selections=self.control_selections)
         return prop
 
     @property
-    def result(self) -> t_result:
+    def result(self) -> Result:
         """OSCAL result."""
         prop = Result(
             uuid=str(uuid.uuid4()),
@@ -316,7 +294,7 @@ class ResultsMgr():
         return prop
 
     @property
-    def analysis(self) -> t_analysis:
+    def analysis(self) -> List[str]:
         """OSCAL statistics."""
         analysis = []
         analysis.append(f'inventory: {len(self.inventory)}')
@@ -344,7 +322,7 @@ class ResultsMgr():
         )
         self.component_map[component_ref] = component
 
-    def _get_component_ref(self, rule_use: RuleUse) -> t_component_ref:
+    def _get_component_ref(self, rule_use: RuleUse) -> str:
         """Get component reference for specified RuleUse."""
         uuid = None
         for component_ref, component in self.component_map.items():
@@ -371,7 +349,7 @@ class ResultsMgr():
         inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
         self.inventory_map[rule_use.inventory_key] = inventory
 
-    def _get_inventory_ref(self, rule_use: RuleUse) -> t_inventory_ref:
+    def _get_inventory_ref(self, rule_use: RuleUse) -> str:
         """Get inventory reference for specified RuleUse."""
         return self.inventory_map[rule_use.inventory_key].uuid
 
@@ -406,7 +384,7 @@ class ResultsMgr():
             self._inventory_extract(rule_use)
             self._observation_extract(rule_use)
 
-    def ingest(self, osco_data: t_osco_data) -> None:
+    def ingest(self, osco_data: Dict[str, Any]) -> None:
         """Process OSCO json."""
         if 'data' not in osco_data.keys():
             return
@@ -415,7 +393,7 @@ class ResultsMgr():
         results = osco_data['data']['results']
         self.ingest_xml(results)
 
-    def ingest_xml(self, osco_xml: t_osco_xml) -> None:
+    def ingest_xml(self, osco_xml: str) -> None:
         """Process OSCO xml."""
         if osco_xml.startswith('<?xml'):
             pass
