@@ -277,14 +277,24 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now filter the ssp through test_profile_d
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, name=ssp_name, profile='test_profile_d', output='filtered_ssp', verbose=True
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_d',
+        output='filtered_ssp',
+        verbose=True,
+        regenerate=False
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
     # now filter the ssp through test_profile_b
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, name=ssp_name, profile='test_profile_b', output='filtered_ssp', verbose=True
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_b',
+        output='filtered_ssp',
+        verbose=True,
+        regenerate=False
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1

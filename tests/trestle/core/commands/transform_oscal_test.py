@@ -19,8 +19,12 @@ from typing import Tuple
 
 from tests import test_utils
 
+from trestle.core import const
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.transform_oscal import TransformCmd
+from trestle.oscal.catalog import Catalog
+from trestle.utils import fs
 
 prof_name = 'main_profile'
 ssp_name = 'my_ssp'
@@ -75,13 +79,40 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         type='system-security-plan',
+        transform='filter-by-profile',
         input='my_ssp',
-        profile='test_profile_d',
+        transform_by='test_profile_d',
         output='xformed_ssp',
+        regenerate=False,
         verbose=True
     )
     transform_oscal = TransformCmd()
     rc = transform_oscal._run(args)
     assert rc == 0
 
-    assert transform_oscal.transform(tmp_trestle_dir, 'foo', 'bar', 'myout', 'myprof') == 1
+    assert transform_oscal.transform(
+        tmp_trestle_dir, 'system-security-plan', 'filter-by-profile', 'bar', 'myout', 'myprof', False
+    ) == 1
+
+
+def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test generation of resolved catalog from profile."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        type='profile',
+        transform=const.GENERATE_RESOLVED_CATALOG,
+        input=prof_name,
+        transform_by='',
+        output='resolved_cat',
+        regenerate=False,
+        verbose=True
+    )
+    transform_oscal = TransformCmd()
+    rc = transform_oscal._run(args)
+    assert rc == 0
+
+    resolved_catalog, _ = fs.load_top_level_model(tmp_trestle_dir, 'resolved_cat', Catalog)
+    catalog_interface = CatalogInterface(resolved_catalog)
+    assert catalog_interface.get_count_of_controls_in_dict() > 0

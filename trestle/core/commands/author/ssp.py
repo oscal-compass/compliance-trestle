@@ -184,14 +184,15 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
-        return self.filter_ssp(trestle_root, args.name, args.profile, args.output)
+        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate)
 
-    def filter_ssp(self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str):
+    def filter_ssp(self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool):
         """Filter the ssp based on the profile and output new ssp."""
         ssp: ossp.SystemSecurityPlan
 
