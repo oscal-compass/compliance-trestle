@@ -106,15 +106,31 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert tree is not None
     assert expected_header == header
 
-    # test simple failure mode
+
+def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp failure modes."""
+    ssp_cmd = SSPGenerate()
+
+    # bad yaml
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         output=ssp_name,
         verbose=True,
-        sections=sections,
+        sections=None,
         yaml_header=str(yaml_path),
+        header_dont_merge=False
+    )
+    assert ssp_cmd._run(args) == 1
+
+    # test missing profile
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile='foo',
+        output=ssp_name,
+        sections=None,
+        verbose=True,
         header_dont_merge=False
     )
     assert ssp_cmd._run(args) == 1

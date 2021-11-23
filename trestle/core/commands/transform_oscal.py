@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import traceback
 
 import trestle.core.const as const
 import trestle.utils.log as log
@@ -54,9 +55,14 @@ class TransformCmd(CommandPlusDocs):
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
 
-        return self.transform(
-            trestle_root, args.type, args.transform, args.input, args.transform_by, args.output, args.regenerate
-        )
+        try:
+            return self.transform(
+                trestle_root, args.type, args.transform, args.input, args.transform_by, args.output, args.regenerate
+            )
+        except Exception as e:
+            logger.error(f'The transform operation failed with error: {e}')
+            logger.debug(traceback.format_exc())
+            return 1
 
     def transform(
         self,
@@ -71,6 +77,9 @@ class TransformCmd(CommandPlusDocs):
         """Transform the input file based on the profile and infer the output type."""
         if model_type == const.MODEL_TYPE_SSP:
             if transform == const.FILTER_BY_PROFILE:
+                if not transform_by:
+                    logger.warning('A profile name must be provided for transform-by in the command.')
+                    return 1
                 ssp_filter = SSPFilter()
                 return ssp_filter.filter_ssp(trestle_root, input_name, transform_by, output_name, regenerate)
         elif model_type == const.MODEL_TYPE_PROFILE:

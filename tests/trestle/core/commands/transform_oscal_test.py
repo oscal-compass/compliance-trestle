@@ -29,6 +29,7 @@ from trestle.utils import fs
 prof_name = 'main_profile'
 ssp_name = 'my_ssp'
 cat_name = 'nist_cat'
+resolved_cat_name = 'resolved_cat'
 
 
 def setup_for_ssp(include_header: bool,
@@ -78,9 +79,9 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     # now transform it with: trestle transform -t system-security-plan -i my_ssp -p test_profile_d -o xformed_ssp
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
-        type='system-security-plan',
-        transform='filter-by-profile',
-        input='my_ssp',
+        type=const.MODEL_TYPE_SSP,
+        transform=const.FILTER_BY_PROFILE,
+        input=ssp_name,
         transform_by='test_profile_d',
         output='xformed_ssp',
         regenerate=False,
@@ -91,8 +92,24 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     assert rc == 0
 
     assert transform_oscal.transform(
-        tmp_trestle_dir, 'system-security-plan', 'filter-by-profile', 'bar', 'myout', 'myprof', False
+        tmp_trestle_dir, const.MODEL_TYPE_SSP, const.FILTER_BY_PROFILE, 'bar', 'myout', 'myprof', False
     ) == 1
+
+
+def test_transform_failure(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test exception paths."""
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        type=const.MODEL_TYPE_PROFILE,
+        transform=const.GENERATE_RESOLVED_CATALOG,
+        input=prof_name,
+        transform_by='',
+        output=resolved_cat_name,
+        regenerate=False,
+        verbose=True
+    )
+    transform_oscal = TransformCmd()
+    assert transform_oscal._run(args) == 1
 
 
 def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
@@ -101,11 +118,11 @@ def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
 
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
-        type='profile',
+        type=const.MODEL_TYPE_PROFILE,
         transform=const.GENERATE_RESOLVED_CATALOG,
         input=prof_name,
         transform_by='',
-        output='resolved_cat',
+        output=resolved_cat_name,
         regenerate=False,
         verbose=True
     )
@@ -113,6 +130,7 @@ def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
     rc = transform_oscal._run(args)
     assert rc == 0
 
-    resolved_catalog, _ = fs.load_top_level_model(tmp_trestle_dir, 'resolved_cat', Catalog)
+    resolved_catalog, _ = fs.load_top_level_model(tmp_trestle_dir, resolved_cat_name, Catalog)
     catalog_interface = CatalogInterface(resolved_catalog)
-    assert catalog_interface.get_count_of_controls_in_dict() > 0
+    n_controls = catalog_interface.get_count_of_controls_in_dict()
+    assert n_controls == 2
