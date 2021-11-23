@@ -70,7 +70,7 @@ def test_assemble_not_trestle_project(tmp_empty_cwd: pathlib.Path, monkeypatch: 
     testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == 5
 
 
 def test_assemble_not_trestle_root(

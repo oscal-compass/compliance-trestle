@@ -24,6 +24,7 @@ import trestle.utils.fs as fs
 from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -109,17 +110,17 @@ class Headers(AuthorCommonCommand):
         except TrestleError as e:
             logger.error(f'Error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:
             logger.error(f'Unexpected error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     def create_sample(self) -> int:
         """Create sample object, this always defaults to markdown."""
         logger.info('Header only validation does not support sample creation.')
         logger.info('Exiting')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def setup(self, template_version: str) -> int:
         """Create template directory and templates."""
@@ -301,9 +302,9 @@ class Headers(AuthorCommonCommand):
                 valid = self._validate_dir(path, recurse, readme_validate, relative_excludes, template_version)
                 if not valid:
                     logger.info(f'validation failed on {path}')
-                    return 1
+                    return CmdReturnCodes.DOCUMENTS_VALIDATION_ERROR.value
             except Exception as e:
                 logger.error(f'Error during header validation on {path} {e}')
                 logger.error('Aborting')
-                return 1
-        return 0
+                return CmdReturnCodes.COMMAND_ERROR.value
+        return CmdReturnCodes.SUCCESS.value

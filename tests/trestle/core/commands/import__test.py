@@ -233,7 +233,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path, monkeypatch: Monke
     i = importcmd.ImportCmd()
     monkeypatch.setattr(fs, 'get_trestle_project_root', get_trestle_project_root_mock)
     rc = i._run(args)
-    assert rc == 1
+    assert rc == 5
 
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:

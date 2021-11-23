@@ -76,7 +76,7 @@ from trestle.utils import fs
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_6',
@@ -94,7 +94,7 @@ from trestle.utils import fs
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_8',
@@ -103,7 +103,7 @@ from trestle.utils import fs
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_9',
@@ -348,7 +348,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_6',
@@ -366,7 +366,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_8',
@@ -375,7 +375,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_9',

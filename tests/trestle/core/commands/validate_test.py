@@ -120,16 +120,16 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path, m
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         cli.run()
     assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 1
+    assert pytest_wrapped_e.value.code == 4
 
 
 @pytest.mark.parametrize(
     'name, mode, parent, test_id, code',
     [
         ('my_ap', '-f', False, 'id1', 0), ('my_ap', '-n', False, 'id1', 0), ('my_ap', '-f', True, 'id1', 0),
-        ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 1),
-        ('my_ap', '-n', False, 'foo', 1), ('my_ap', '-f', True, 'foo', 1), ('my_ap', '-t', False, 'foo', 1),
-        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1)
+        ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 4),
+        ('my_ap', '-n', False, 'foo', 4), ('my_ap', '-f', True, 'foo', 4), ('my_ap', '-t', False, 'foo', 4),
+        ('my_ap', '-a', False, 'foo', 4), ('foo', '-n', False, 'id1', 4)
     ]
 )
 def test_role_refs_validator(
@@ -166,7 +166,7 @@ def test_role_refs_validator(
     assert pytest_wrapped_e.value.code == code
 
 
-@pytest.mark.parametrize('code', [0, 1])
+@pytest.mark.parametrize('code', [0, 4])
 def test_oscal_version_validator(
     tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int, monkeypatch: MonkeyPatch
 ) -> None:

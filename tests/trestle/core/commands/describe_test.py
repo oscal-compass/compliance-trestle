@@ -89,4 +89,4 @@ def test_describe_failures(
 
     # no filename specified
     args = argparse.Namespace(verbose=1)
-    assert DescribeCmd()._run(args) == 1
+    assert DescribeCmd()._run(args) == 2

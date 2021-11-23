@@ -23,6 +23,7 @@ import trestle.utils.log as log
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.const import TRESTLE_CONFIG_DIR
 from trestle.core.err import TrestleError
 
@@ -53,7 +54,7 @@ class AuthorCommonCommand(CommandPlusDocs):
                 logger.error(
                     f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
                 )
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
         rc = self._setup_template_dir(args)
 
@@ -67,7 +68,7 @@ class AuthorCommonCommand(CommandPlusDocs):
         """Set template directory and update to new format."""
         if not self.global_ and self.task_name is None:
             logger.error('At least a global flag or a task name should be provided.')
-            return 1
+            return CmdReturnCodes.INCORRECT_ARGS.value
         if self.global_:
             old_template_dir = self.trestle_root / TRESTLE_CONFIG_DIR / 'author' / '__global__'
             self._set_template_version_to_latest(args, old_template_dir)
@@ -81,7 +82,7 @@ class AuthorCommonCommand(CommandPlusDocs):
             TemplateVersioning.validate_template_folder(old_template_dir)
             TemplateVersioning.update_template_folder_structure(old_template_dir)
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def _set_template_version_to_latest(self, args: argparse.Namespace, template_dir: pathlib.Path):
         """Set template version argument to the latest version if none was given."""

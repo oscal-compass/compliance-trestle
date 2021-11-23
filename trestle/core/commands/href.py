@@ -18,9 +18,12 @@
 import argparse
 import logging
 import pathlib
+import traceback
 
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.err import TrestleError
 from trestle.oscal.profile import Profile
 from trestle.utils import fs
 
@@ -62,17 +65,26 @@ class HrefCmd(CommandPlusDocs):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.debug('Entering trestle href.')
+        try:
+            logger.debug('Entering trestle href.')
 
-        log.set_log_level_from_args(args)
+            log.set_log_level_from_args(args)
 
-        profile_name: str = args.name
+            profile_name: str = args.name
 
-        new_href: str = args.href.strip("'")
+            new_href: str = args.href.strip("'")
 
-        item_num = args.item
+            item_num = args.item
 
-        return self.change_import_href(args.trestle_root, profile_name, new_href, item_num)
+            return self.change_import_href(args.trestle_root, profile_name, new_href, item_num)
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while changing href or import in profile: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while changing href or import in profile: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def change_import_href(cls, trestle_root: pathlib.Path, profile_name: str, new_href: str, import_num: int) -> int:
@@ -120,13 +132,13 @@ class HrefCmd(CommandPlusDocs):
             logger.info(f'List of imports for profile {profile_name}:')
             for ii, import_ in enumerate(profile_data.imports):
                 logger.info(f'{ii:2}: {import_.href}')
-            return 0
+            return CmdReturnCodes.SUCCESS.value
         if n_imports <= import_num:
             logger.warning(f'Import number {import_num} is too large.  This profile has only {n_imports} imports.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         logger.info(f'Changing import {import_num} in profile {profile_name} from, to:')
         logger.info(f'{profile_data.imports[import_num].href}')
         logger.info(f'{new_href}')
         profile_data.imports[import_num].href = new_href
         profile_data.oscal_write(profile_path)
-        return 0
+        return CmdReturnCodes.SUCCESS.value
