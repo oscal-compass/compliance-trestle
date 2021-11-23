@@ -172,6 +172,29 @@ def test_osco_execute(tmp_path):
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
+def test_osco_execute_1_3_5(tmp_path):
+    """Test execute call."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-1.3.5.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
+@patch(target='uuid.uuid4', new=uuid_mock1)
 def test_osco_execute_compressed(tmp_path):
     """Test execute call with compressed OSCO xml data."""
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
