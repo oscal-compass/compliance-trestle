@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class TransformCmd(CommandPlusDocs):
-    """Transform one oscal model into another based on model type and profile."""
+    """Transform an oscal model or models by filtering or aggregation."""
 
     name = 'transform'
 
