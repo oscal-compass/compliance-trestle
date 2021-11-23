@@ -18,6 +18,7 @@ import argparse
 import logging
 import pathlib
 import shutil
+import traceback
 from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
@@ -110,10 +111,12 @@ class Docs(AuthorCommonCommand):
 
             return status
         except TrestleError as e:
+            logger.debug(traceback.format_exc())
             logger.error(f'Error occurred when running trestle author docs: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:
+            logger.debug(traceback.format_exc())
             logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.UNKNOWN_ERROR.value
