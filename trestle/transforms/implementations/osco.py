@@ -206,7 +206,7 @@ class ComplianceOperatorReport():
         """Extract target_type from the XML."""
         value = None
         benchmark_href = self._get_benchmark_href(root)
-        if benchmark_href is not None:
+        if benchmark_href is not None and '-' in benchmark_href:
             value = benchmark_href.split('-')[1]
         return value
 
