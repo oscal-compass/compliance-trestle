@@ -30,6 +30,7 @@ from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.utils import as_list
 from trestle.core.validator_helper import regenerate_uuids
 from trestle.utils import fs, log
 
@@ -133,23 +134,25 @@ class SSPAssemble(AuthorCommonCommand):
         """
         Check if imp_reqs are the same except for internal uuids.
 
-        Create copy of each imp_req and set its uuids to match the original - then check equality.
+        Create copy of each imp_req and set the uuids within it to match the original - then check equality.
         """
-        if len(imp_reqs) == len(orig_imp_reqs):
-            for ii, imp_req in enumerate(imp_reqs):
-                tmp_req = copy.deepcopy(imp_req)
-                tmp_req.uuid = orig_imp_reqs[ii].uuid
-                if len(tmp_req.statements) != len(orig_imp_reqs[ii].statements):
-                    return False
-                for jj in range(len(tmp_req.statements)):
-                    if len(tmp_req.statements[jj].by_components) != len(orig_imp_reqs[ii].statements[jj].by_components):
+        if len(as_list(imp_reqs)) == len(as_list(orig_imp_reqs)):
+            for reqs in zip(imp_reqs, orig_imp_reqs):
+                # make a copy of the new imp req
+                tmp_req = copy.deepcopy(reqs[0])
+                if tmp_req.statements is not None and reqs[1].statements is not None:
+                    if len(tmp_req.statements) != len(reqs[1].statements):
                         return False
-                    tmp_req.statements[jj].uuid = orig_imp_reqs[ii].statements[jj].uuid
-                    for kk in range(len(tmp_req.statements[jj].by_components)):
-                        tmp_req.statements[jj].by_components[kk].uuid = orig_imp_reqs[ii].statements[jj].by_components[
-                            kk].uuid
-                if tmp_req != orig_imp_reqs[ii]:
-                    return False
+                    tmp_req.uuid = reqs[1].uuid
+                    for stats in zip(tmp_req.statements, reqs[1].statements):
+                        if stats[0].by_components is not None and stats[1].by_components is not None:
+                            if len(stats[0].by_components) != len(stats[1].by_components):
+                                return False
+                            stats[0].uuid = stats[1].uuid
+                            for by_comps in zip(stats[0].by_components, stats[1].by_components):
+                                by_comps[0].uuid = by_comps[1].uuid
+            if tmp_req != reqs[1]:
+                return False
         return True
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -275,7 +278,7 @@ class SSPFilter(AuthorCommonCommand):
                     if control is not None:
                         new_imp_requirements.append(imp_requirement)
                         ssp_control_ids.add(control.id)
-            control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
+            control_imp.implemented_requirements = new_imp_requirements
 
             # make sure all controls in the profile have implemented reqs in the final ssp
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):

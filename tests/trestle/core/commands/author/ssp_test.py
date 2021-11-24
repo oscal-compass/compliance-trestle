@@ -312,26 +312,58 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp.control_implementation.set_parameters = [new_setparam]
     fs.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, fs.FileContentType.JSON)
 
+    filtered_name = 'filtered_ssp'
+
     # now filter the ssp through test_profile_d
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
         profile='test_profile_d',
-        output='filtered_ssp',
+        output=filtered_name,
         verbose=True,
         regenerate=False
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    # now filter the ssp through test_profile_b
+    orig_uuid = test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+
+    # filter it again to confirm uuid is same
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_d',
+        output=filtered_name,
+        verbose=True,
+        regenerate=False
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+
+    # filter again to confirm uuid is different with regen
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_d',
+        output=filtered_name,
+        verbose=True,
+        regenerate=True
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+
+    # now filter the ssp through test_profile_b to force error because b references controls not in the ssp
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
         profile='test_profile_b',
-        output='filtered_ssp',
+        output=filtered_name,
         verbose=True,
-        regenerate=False
+        regenerate=True
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
