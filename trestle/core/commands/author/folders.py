@@ -205,7 +205,7 @@ class Folders(AuthorCommonCommand):
         instance_version = template_version
         instance_file_names: List[pathlib.Path] = []
         # Fetch all instances versions and build dictionary of required template files
-        for instance_file in instance_dir.rglob('*'):
+        for instance_file in instance_dir.iterdir():
             if not fs.local_and_visible(instance_file):
                 continue
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
@@ -259,7 +259,6 @@ class Folders(AuthorCommonCommand):
             elif instance_file.suffix == '.drawio':
                 drawio = draw_io.DrawIO(instance_file)
                 metadata = drawio.get_metadata()[0]
-
                 versioned_template_dir = None
                 if template_version != '':
                     template_file = self.template_dir / instance_file_name
