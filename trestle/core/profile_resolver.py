@@ -63,13 +63,14 @@ class ProfileResolver():
     class Prune(Pipeline.Filter):
         """Prune the catalog based on the import include rule."""
 
-        def __init__(self, import_: prof.Import) -> None:
+        def __init__(self, import_: prof.Import, profile: prof.Profile) -> None:
             """
             Inject the import.
 
             This needs to be created prior to knowing the catalog.
             """
-            self._import: prof.Import = import_
+            self._import = import_
+            self._profile = profile
             self._catalog_interface: Optional[CatalogInterface] = None
             self._catalog: Optional[cat.Catalog] = None
 
@@ -175,6 +176,10 @@ class ProfileResolver():
             for control_id in needed_ids:
                 if control_id not in loaded_ids:
                     control = self._catalog_interface.get_control(control_id)
+                    if control is None:
+                        msg = f'Profile {self._profile.metadata.title} references control {control_id} '
+                        + f'but it is not in catalog {self._catalog.metadata.title}'
+                        raise TrestleError(msg)
                     control = self._prune_control(needed_ids, control, loaded_ids)
                     self._catalog_interface.replace_control(control)
                     loaded_ids.append(control_id)
@@ -776,7 +781,7 @@ class ProfileResolver():
                 )
                 for sub_import in profile.imports:
                     import_filter = ProfileResolver.Import(self._trestle_root, sub_import)
-                    prune_filter = ProfileResolver.Prune(sub_import)
+                    prune_filter = ProfileResolver.Prune(sub_import, profile)
                     pipeline = Pipeline([import_filter, prune_filter])
                     pipelines.append(pipeline)
                     logger.debug(
