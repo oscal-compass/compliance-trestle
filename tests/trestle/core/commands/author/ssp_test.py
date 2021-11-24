@@ -236,14 +236,35 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=False
+    )
     assert ssp_assemble._run(args) == 0
+
+    orig_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    orig_uuid = orig_ssp.uuid
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
+
+    # now assemble it again but don't regen uuid's
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=False
+    )
+    assert ssp_assemble._run(args) == 0
+
+    repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert orig_ssp == repeat_ssp
+
+    # assemble it again but regen uuid's
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=True
+    )
+    assert ssp_assemble._run(args) == 0
+    assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
