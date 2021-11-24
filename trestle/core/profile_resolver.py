@@ -68,6 +68,8 @@ class ProfileResolver():
             Inject the import.
 
             This needs to be created prior to knowing the catalog.
+            The profile itself is only needed for debug messages.
+            The import is one possibly several imports in that profile.
             """
             self._import = import_
             self._profile = profile
