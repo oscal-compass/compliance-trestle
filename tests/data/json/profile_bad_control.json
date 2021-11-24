@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "uuid": "b7ac2bb6-75ec-411e-a162-378f50ac4ea3",
+    "metadata": {
+      "title": "Sample profile.",
+      "last-modified": "2021-11-17T15:46:14.402466-08:00",
+      "version": "0.0.0",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "https://github.com/usnistgov/oscal-content/raw/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_MODERATE-baseline-resolved-profile_catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-2-1"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+
