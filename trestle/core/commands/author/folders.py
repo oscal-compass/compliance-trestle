@@ -214,6 +214,9 @@ class Folders(AuthorCommonCommand):
             instance_file_names.append(instance_file_name)
             if instance_file.suffix == '.md':
                 md_api = MarkdownAPI()
+                header, _ = md_api.processor.read_markdown_wo_processing(instance_file)
+                if header == {}:
+                    continue
                 versioned_template_dir = None
                 if template_version != '':
                     template_file = self.template_dir / instance_file_name
@@ -259,7 +262,8 @@ class Folders(AuthorCommonCommand):
             elif instance_file.suffix == '.drawio':
                 drawio = draw_io.DrawIO(instance_file)
                 metadata = drawio.get_metadata()[0]
-
+                if metadata == {}:
+                    continue
                 versioned_template_dir = None
                 if template_version != '':
                     template_file = self.template_dir / instance_file_name
