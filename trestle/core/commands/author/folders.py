@@ -214,7 +214,6 @@ class Folders(AuthorCommonCommand):
             instance_file_names.append(instance_file_name)
             if instance_file.suffix == '.md':
                 md_api = MarkdownAPI()
-                header, _ = md_api.processor.read_markdown_wo_processing(instance_file)
                 versioned_template_dir = None
                 if template_version != '':
                     template_file = self.template_dir / instance_file_name
