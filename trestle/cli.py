@@ -20,6 +20,7 @@ from trestle.core import const
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
+from trestle.core.commands.beta import BetaCmd
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.describe import DescribeCmd
@@ -46,6 +47,7 @@ class Trestle(CommandPlusDocs):
         AddCmd,
         AssembleCmd,
         AuthorCmd,
+        BetaCmd,
         CreateCmd,
         DescribeCmd,
         HrefCmd,

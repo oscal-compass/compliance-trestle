@@ -106,6 +106,7 @@ class MDCleanInclude(Extension):
 
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
+        parser.stream.expect('name:md_clean_include')
         component = parser.parse_expression()
         # Use the established environment to source the file
         md_content, _, _ = self.environment.loader.get_source(self.environment, component.value)
