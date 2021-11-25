@@ -186,8 +186,22 @@ def test_oscal_version_validator(
 
 
 def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test validation fails for bad oscal version."""
+    """Test validation fails for bad oscal version. Short pydantic message should be printed."""
     catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_bad_oscal_version.json'
+    mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
+    mycat_dir.mkdir()
+    catalog = mycat_dir / 'catalog.json'
+    catalog.touch()
+    shutil.copyfile(catalog_path, catalog)
+    testcmd = f'trestle validate -f {catalog}'
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(TrestleError):
+        cli.run()
+
+
+def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation fails for oscal with extra fields. Full pydantic message should be printed."""
+    catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_extra_fields.json'
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
     catalog = mycat_dir / 'catalog.json'
