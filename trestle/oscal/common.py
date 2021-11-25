@@ -15,13 +15,15 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr, validator
 
 from trestle.core.base_model import OscalBaseModel
+from trestle.oscal import OSCAL_VERSION_REGEX, OSCAL_VERSION
 
 
 class AddrLine(OscalBaseModel):
@@ -473,6 +475,14 @@ class OscalVersion(OscalBaseModel):
         description='The OSCAL model version the document was authored against.',
         title='OSCAL version',
     )
+
+    @validator('__root__')
+    def oscal_version_is_valid(cls, v):
+        p = re.compile(OSCAL_VERSION_REGEX)
+        matched = p.match(v)
+        if matched is None:
+            raise ValueError(f'OSCAL version: {v} is not supported, use {OSCAL_VERSION} instead.')
+        return v
 
 
 class OnDate(OscalBaseModel):
