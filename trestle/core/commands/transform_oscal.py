@@ -76,6 +76,7 @@ class TransformCmd(CommandPlusDocs):
     ) -> int:
         """Transform the input file based on the profile and infer the output type."""
         if model_type == const.MODEL_TYPE_SSP:
+            # anticipate more transform options here - switch to factory if it gets busy
             if transform == const.FILTER_BY_PROFILE:
                 if not transform_by:
                     logger.warning('A profile name must be provided for transform-by in the command.')
@@ -83,6 +84,7 @@ class TransformCmd(CommandPlusDocs):
                 ssp_filter = SSPFilter()
                 return ssp_filter.filter_ssp(trestle_root, input_name, transform_by, output_name, regenerate)
         elif model_type == const.MODEL_TYPE_PROFILE:
+            # anticipate more transform options here
             if transform == const.GENERATE_RESOLVED_CATALOG:
                 profile_path = fs.full_path_for_top_level_model(trestle_root, input_name, Profile)
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_path)

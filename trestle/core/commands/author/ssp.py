@@ -30,7 +30,6 @@ from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.core.utils import as_list
 from trestle.core.validator_helper import regenerate_uuids
 from trestle.utils import fs, log
 
@@ -136,7 +135,7 @@ class SSPAssemble(AuthorCommonCommand):
 
         Create copy of each imp_req and set the uuids within it to match the original - then check equality.
         """
-        if len(as_list(imp_reqs)) == len(as_list(orig_imp_reqs)):
+        if len(imp_reqs) == len(orig_imp_reqs):
             for reqs in zip(imp_reqs, orig_imp_reqs):
                 # make a copy of the new imp req
                 tmp_req = copy.deepcopy(reqs[0])
@@ -159,13 +158,7 @@ class SSPAssemble(AuthorCommonCommand):
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
-        # load the fresh imp_reqs from the markdown
-        try:
-            md_path = trestle_root / args.markdown
-        except Exception as e:
-            logger.warning(f'Error reading the catalog markdown: {e}')
-            logger.debug(traceback.format_exc())
-            return 1
+        md_path = trestle_root / args.markdown
 
         # if ssp already exists - should load it rather than make new one
         ssp_path = fs.path_for_top_level_model(
@@ -173,41 +166,47 @@ class SSPAssemble(AuthorCommonCommand):
         )
         ssp: ossp.SystemSecurityPlan
 
-        # need to load imp_reqs from markdown but need component first
-        if ssp_path.exists():
-            _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
-            # use first component
-            component = ssp.system_implementation.components[0]
-            imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
-            orig_imp_reqs = ssp.control_implementation.implemented_requirements
-            if not args.regenerate and not self._imp_reqs_equivalent(imp_reqs, orig_imp_reqs):
-                ssp.control_implementation.implemented_requirements = imp_reqs
-            if args.regenerate:
-                regenerate_uuids(ssp)
-        else:
-            # create a sample ssp to hold all the parts
-            ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-            # generate the one dummy component that implementations will refer to in by_components
-            component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-            component.description = 'The System'
-            imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+        try:
+            # need to load imp_reqs from markdown but need component first
+            if ssp_path.exists():
+                _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
+                # use first component
+                component = ssp.system_implementation.components[0]
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+                orig_imp_reqs = ssp.control_implementation.implemented_requirements
+                if not args.regenerate and not self._imp_reqs_equivalent(imp_reqs, orig_imp_reqs):
+                    ssp.control_implementation.implemented_requirements = imp_reqs
+                if args.regenerate:
+                    regenerate_uuids(ssp)
+            else:
+                # create a sample ssp to hold all the parts
+                ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+                # generate the one dummy component that implementations will refer to in by_components
+                component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
+                component.description = 'The System'
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
 
-            # create system implementation to hold the dummy component
-            system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
-            system_imp.components = [component]
+                # create system implementation to hold the dummy component
+                system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
+                system_imp.components = [component]
 
-            # create a control implementation to hold the implementation requirements
-            control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
-            control_imp.implemented_requirements = imp_reqs
-            control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
+                # create a control implementation to hold the implementation requirements
+                control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
+                control_imp.implemented_requirements = imp_reqs
+                control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
 
-            # insert the parts into the ssp
-            ssp.control_implementation = control_imp
-            ssp.system_implementation = system_imp
+                # insert the parts into the ssp
+                ssp.control_implementation = control_imp
+                ssp.system_implementation = system_imp
 
-            import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
-            import_profile.href = 'REPLACE_ME'
-            ssp.import_profile = import_profile
+                import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
+                import_profile.href = 'REPLACE_ME'
+                ssp.import_profile = import_profile
+
+        except Exception as e:
+            logger.warning(f'Error assembling the ssp from markdown: {e}')
+            logger.debug(traceback.format_exc())
+            return 1
 
         # write out the ssp as json
         try:
