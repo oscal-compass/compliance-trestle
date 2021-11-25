@@ -43,7 +43,7 @@ test::
 	python -m pytest --exitfirst -n auto
 
 test-cov::
-	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=96
+	python -m pytest --cov=trestle  --exitfirst -n auto -vv --cov-report=xml --cov-fail-under=95
 
 test-all-random::
 	python -m pytest --cov=trestle --cov-report=xml --random-order
