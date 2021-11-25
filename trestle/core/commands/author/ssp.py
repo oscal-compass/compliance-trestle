@@ -134,6 +134,7 @@ class SSPAssemble(AuthorCommonCommand):
         Check if imp_reqs are the same except for internal uuids.
 
         Create copy of each imp_req and set the uuids within it to match the original - then check equality.
+        TODO: trigger new uuid only if new imp_reqs are added
         """
         if len(imp_reqs) == len(orig_imp_reqs):
             for reqs in zip(imp_reqs, orig_imp_reqs):
