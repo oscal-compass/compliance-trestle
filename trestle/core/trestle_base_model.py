@@ -35,10 +35,11 @@ class TrestleBaseModel(BaseModel):
             # check if failed due to the wrong OSCAL version:
             oscal_version_error = False
             for err in e.errors():
-                if len(err['loc']) == 3 and err['loc'][1] == 'oscal-version':
-                    message = err['msg']
-                    oscal_version_error = True
-                    break
+                for field in err['loc']:
+                    if field == 'oscal-version':
+                        message = err['msg']
+                        oscal_version_error = True
+                        break
             if oscal_version_error:
                 raise TrestleError(f'{message}')
             else:
