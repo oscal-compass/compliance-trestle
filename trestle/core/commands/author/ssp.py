@@ -134,6 +134,7 @@ class SSPAssemble(AuthorCommonCommand):
         Check if imp_reqs are the same except for internal uuids.
 
         Create copy of each imp_req and set the uuids within it to match the original - then check equality.
+        TODO: trigger new uuid only if new imp_reqs are added
         """
         if len(imp_reqs) == len(orig_imp_reqs):
             for reqs in zip(imp_reqs, orig_imp_reqs):
@@ -150,8 +151,8 @@ class SSPAssemble(AuthorCommonCommand):
                             stats[0].uuid = stats[1].uuid
                             for by_comps in zip(stats[0].by_components, stats[1].by_components):
                                 by_comps[0].uuid = by_comps[1].uuid
-            if tmp_req != reqs[1]:
-                return False
+                if tmp_req != reqs[1]:
+                    return False
         return True
 
     def _run(self, args: argparse.Namespace) -> int:
