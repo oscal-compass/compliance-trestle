@@ -150,8 +150,8 @@ class SSPAssemble(AuthorCommonCommand):
                             stats[0].uuid = stats[1].uuid
                             for by_comps in zip(stats[0].by_components, stats[1].by_components):
                                 by_comps[0].uuid = by_comps[1].uuid
-            if tmp_req != reqs[1]:
-                return False
+                if tmp_req != reqs[1]:
+                    return False
         return True
 
     def _run(self, args: argparse.Namespace) -> int:
