@@ -252,4 +252,16 @@ HELP_HEADER_MERGE = (
     + ' If provided, if a header currently exists the new header, passed with -y, will not be applied.'
 )
 
+HELP_REGENERATE = 'Flag to force generation of new uuids in the model'
+
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'
+
+FILTER_BY_PROFILE = 'filter-by-profile'
+
+FILTER_BY_COMPONENTS = 'filter-by-components'
+
+FILTER_EXCLUDE_COMPONENTS = 'filter-exclude-components'
+
+GENERATE_RESOLVED_CATALOG = 'generate-resolved-catalog'
+
+TRANSFORM_TYPES = [FILTER_BY_PROFILE, FILTER_BY_COMPONENTS, FILTER_EXCLUDE_COMPONENTS, GENERATE_RESOLVED_CATALOG]

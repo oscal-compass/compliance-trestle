@@ -107,15 +107,31 @@ def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert tree is not None
     assert expected_header == header
 
-    # test simple failure mode
+
+def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp failure modes."""
+    ssp_cmd = SSPGenerate()
+
+    # bad yaml
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         output=ssp_name,
         verbose=True,
-        sections=sections,
+        sections=None,
         yaml_header=str(yaml_path),
+        header_dont_merge=False
+    )
+    assert ssp_cmd._run(args) == 1
+
+    # test missing profile
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile='foo',
+        output=ssp_name,
+        sections=None,
+        verbose=True,
         header_dont_merge=False
     )
     assert ssp_cmd._run(args) == 1
@@ -221,14 +237,35 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=False
+    )
     assert ssp_assemble._run(args) == 0
+
+    orig_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    orig_uuid = orig_ssp.uuid
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
+
+    # now assemble it again but don't regen uuid's
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=False
+    )
+    assert ssp_assemble._run(args) == 0
+
+    repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    assert orig_ssp == repeat_ssp
+
+    # assemble it again but regen uuid's
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=True
+    )
+    assert ssp_assemble._run(args) == 0
+    assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
@@ -276,16 +313,58 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp.control_implementation.set_parameters = [new_setparam]
     fs.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, fs.FileContentType.JSON)
 
+    filtered_name = 'filtered_ssp'
+
     # now filter the ssp through test_profile_d
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, name=ssp_name, profile='test_profile_d', output='filtered_ssp', verbose=True
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_d',
+        output=filtered_name,
+        verbose=True,
+        regenerate=False
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    # now filter the ssp through test_profile_b
+    orig_uuid = test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+
+    # filter it again to confirm uuid is same
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, name=ssp_name, profile='test_profile_b', output='filtered_ssp', verbose=True
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_d',
+        output=filtered_name,
+        verbose=True,
+        regenerate=False
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+
+    # filter again to confirm uuid is different with regen
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_d',
+        output=filtered_name,
+        verbose=True,
+        regenerate=True
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+
+    # now filter the ssp through test_profile_b to force error because b references controls not in the ssp
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile='test_profile_b',
+        output=filtered_name,
+        verbose=True,
+        regenerate=True
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
