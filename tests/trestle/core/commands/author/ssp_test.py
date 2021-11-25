@@ -300,3 +300,30 @@ def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
     )
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 1
+
+
+def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test parsing of metadata from yaml header."""
+    catalog = test_utils.generate_complex_catalog()
+    fs.save_top_level_model(catalog, tmp_trestle_dir, 'complex_cat', fs.FileContentType.JSON)
+    prof_name = 'test_profile_c'
+    ssp_name = 'my_ssp'
+    profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / f'{prof_name}.json')
+    fs.save_top_level_model(profile, tmp_trestle_dir, prof_name, fs.FileContentType.JSON)
+    header_path = test_utils.YAML_TEST_DATA_PATH / 'header_with_metadata.yaml'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=False,
+        sections=None,
+        yaml_header=header_path,
+        header_dont_merge=False
+    )
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    # create ssp from the markdown
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=False)
+    assert ssp_assemble._run(args) == 0
