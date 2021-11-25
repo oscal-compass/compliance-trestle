@@ -23,6 +23,7 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
+import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.core import const
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
@@ -367,3 +368,14 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
+
+
+def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp gen when profile has bad control id."""
+    profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'profile_bad_control.json')
+    fs.save_top_level_model(profile, tmp_trestle_dir, 'bad_prof', fs.FileContentType.JSON)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, profile='bad_prof', output='my_ssp', verbose=False, sections=None
+    )
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 1
