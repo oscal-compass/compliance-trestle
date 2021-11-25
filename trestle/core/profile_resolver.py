@@ -179,8 +179,10 @@ class ProfileResolver():
                 if control_id not in loaded_ids:
                     control = self._catalog_interface.get_control(control_id)
                     if control is None:
-                        msg = f'Profile {self._profile.metadata.title} references control {control_id} '
-                        + f'but it is not in catalog {self._catalog.metadata.title}'
+                        msg = (
+                            f'Profile titled "{self._profile.metadata.title}" references control {control_id} '
+                            f'but it is not in catalog titled "{self._catalog.metadata.title}"'
+                        )
                         raise TrestleError(msg)
                     control = self._prune_control(needed_ids, control, loaded_ids)
                     self._catalog_interface.replace_control(control)
