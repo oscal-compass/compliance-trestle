@@ -20,7 +20,7 @@ from jinja2 import DictLoader, Environment, FileSystemLoader
 
 import pytest
 
-import trestle.utils.jinja_extensions as j
+import trestle.core.jinja as j
 
 
 def test_jinja_escapes(testdata_dir: pathlib.Path, tmp_empty_cwd: pathlib.Path) -> None:
