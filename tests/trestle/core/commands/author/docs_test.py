@@ -495,15 +495,15 @@ def test_ignore_files_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
     author_template.touch()
     shutil.copyfile(test_data_folder / 'template.md', author_template)
 
-    command_string_setup = 'trestle author docs setup -tn test_task'
-    monkeypatch.setattr(sys, 'argv', command_string_setup.split())
+    # copy all files
+    shutil.copytree(test_data_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.*'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
     assert rc == 0
 
-    # copy all files
-    shutil.copytree(test_data_folder, task_instance_folder, dirs_exist_ok=True)
-
-    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.*'
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.* -r'
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
     assert rc == 0

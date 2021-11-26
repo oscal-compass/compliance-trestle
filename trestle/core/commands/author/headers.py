@@ -191,6 +191,14 @@ class Headers(AuthorCommonCommand):
         instances = list(candidate_dir.iterdir())
         if recurse:
             instances = candidate_dir.rglob('*')
+            if ignore_files:
+                p = re.compile(ignore_files)
+                instances = list(
+                    filter(
+                        lambda f: len(list(filter(p.match, str(f.relative_to(candidate_dir)).split('/')))) == 0,
+                        instances
+                    )
+                )
         for instance_file in instances:
             if not fs.local_and_visible(instance_file):
                 continue

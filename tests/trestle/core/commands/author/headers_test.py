@@ -515,7 +515,7 @@ def test_ignore_files_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
     shutil.copytree(test_template_folder, task_template_folder)
 
     # copy all files
-    shutil.copytree(test_instances_folder, task_instance_folder, dirs_exist_ok=True)
+    shutil.copytree(test_instances_folder, task_instance_folder)
 
     command_string_validate_content = 'trestle author headers validate -tn test_task -ig ^_.*'
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())

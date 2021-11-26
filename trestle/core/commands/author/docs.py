@@ -263,6 +263,11 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
+                    if ignore_files:
+                        p = re.compile(ignore_files)
+                        if len(list(filter(p.match, str(item_path.relative_to(md_dir)).split('/')))) > 0:
+                            logger.info(f'Ignoring directory {item_path} from validation.')
+                            continue
                     if not self._validate_dir(governed_heading,
                                               item_path,
                                               validate_header,
