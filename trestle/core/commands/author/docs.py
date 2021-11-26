@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import re
 import shutil
 from typing import Optional
 
@@ -55,6 +56,13 @@ class Docs(AuthorCommonCommand):
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
+        )
+        self.add_argument(
+            author_const.SHORT_IGNORE_FILES,
+            author_const.LONG_IGNORE_FILES,
+            help=author_const.IGNORE_FILES_HELP,
+            default=None,
+            type=str
         )
         self.add_argument(
             author_const.RECURSE_SHORT, author_const.RECURSE_LONG, help=author_const.RECURSE_HELP, action='store_true'
@@ -104,7 +112,8 @@ class Docs(AuthorCommonCommand):
                     args.header_only_validate,
                     args.recurse,
                     args.readme_validate,
-                    args.template_version
+                    args.template_version,
+                    args.ignore_files
                 )
 
             return status
@@ -201,7 +210,8 @@ class Docs(AuthorCommonCommand):
         validate_only_header: bool,
         recurse: bool,
         readme_validate: bool,
-        template_version: Optional[str] = None
+        template_version: Optional[str] = None,
+        ignore_files: Optional[str] = None
     ) -> int:
         """
         Validate md files in a directory with option to recurse.
@@ -218,9 +228,16 @@ class Docs(AuthorCommonCommand):
                             f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
                         )
                         continue
-                    if not readme_validate:
-                        if item_path.name.lower() == 'readme.md':
+                    if not readme_validate and item_path.name.lower() == 'readme.md':
+                        continue
+
+                    if ignore_files:
+                        p = re.compile(ignore_files)
+                        matched = p.match(item_path.parts[-1])
+                        if matched is not None:
+                            logger.info(f'Ignoring file {item_path} from validation.')
                             continue
+
                     md_api = MarkdownAPI()
                     if template_version != '':
                         template_file = self.template_dir / self.template_name
@@ -263,7 +280,8 @@ class Docs(AuthorCommonCommand):
         validate_only_header: bool,
         recurse: bool,
         readme_validate: bool,
-        template_version: str
+        template_version: str,
+        ignore_files: str
     ) -> int:
         """
         Validate task.
@@ -287,5 +305,6 @@ class Docs(AuthorCommonCommand):
             validate_only_header,
             recurse,
             readme_validate,
-            template_version
+            template_version,
+            ignore_files
         )

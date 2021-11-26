@@ -483,3 +483,27 @@ def test_e2e_backward_compatibility(
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
     assert rc == validate_code
+
+
+def test_ignore_files_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that ignored files are not validated. Validation will fail if attempted."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    author_template = task_template_folder / 'template.md'
+    test_data_folder = testdata_dir / 'author/0.0.1/test_5_md_ignored'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+    task_template_folder.mkdir(exist_ok=True, parents=True)
+    author_template.touch()
+    shutil.copyfile(test_data_folder / 'template.md', author_template)
+
+    command_string_setup = 'trestle author docs setup -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_string_setup.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    # copy all files
+    shutil.copytree(test_data_folder, task_instance_folder, dirs_exist_ok=True)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.*'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0

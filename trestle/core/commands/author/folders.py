@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import re
 import shutil
 from typing import List
 
@@ -54,6 +55,13 @@ class Folders(AuthorCommonCommand):
             author_const.LONG_TEMPLATE_VERSION,
             help=author_const.TEMPLATE_VERSION_HELP,
             action='store'
+        )
+        self.add_argument(
+            author_const.SHORT_IGNORE_FILES,
+            author_const.LONG_IGNORE_FILES,
+            help=author_const.IGNORE_FILES_HELP,
+            default=None,
+            type=str
         )
         self.add_argument(author_const.MODE_ARG_NAME, choices=author_const.MODE_CHOICES)
         tn_help_str = '\n'.join(
@@ -96,7 +104,8 @@ class Folders(AuthorCommonCommand):
                     args.header_only_validate,
                     args.governed_heading,
                     args.readme_validate,
-                    args.template_version
+                    args.template_version,
+                    args.ignore_files
                 )
             return status
         except TrestleError as e:
@@ -192,7 +201,8 @@ class Folders(AuthorCommonCommand):
         validate_only_header: bool,
         governed_heading: str,
         readme_validate: bool,
-        template_version: str
+        template_version: str,
+        ignore_files: str
     ) -> bool:
         """
         Validate instances against templates.
@@ -208,8 +218,16 @@ class Folders(AuthorCommonCommand):
         for instance_file in instance_dir.iterdir():
             if not fs.local_and_visible(instance_file):
                 continue
+            if not instance_file.is_file():
+                continue
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
                 continue
+            if ignore_files:
+                p = re.compile(ignore_files)
+                matched = p.match(instance_file.parts[-1])
+                if matched is not None:
+                    logger.info(f'Ignoring file {instance_file} from validation.')
+                    continue
             instance_file_name = instance_file.relative_to(instance_dir)
             instance_file_names.append(instance_file_name)
             if instance_file.suffix == '.md':
@@ -245,14 +263,11 @@ class Folders(AuthorCommonCommand):
                     )
                     status = md_api.validate_instance(instance_file)
                     if not status:
-                        logger.error(
-                            f'Markdown file {self.rel_dir(instance_file)} failed validation against'
-                            + f' {self.rel_dir(template_file)}'
-                        )
-                        logger.info(f'INVALID: {self.rel_dir(instance_file)}')
+                        logger.error(f'Markdown file {instance_file} failed validation against' + f' {template_file}')
+                        logger.info(f'INVALID: {instance_file}')
                         return False
                     else:
-                        logger.info(f'VALID: {self.rel_dir(instance_file)}')
+                        logger.info(f'VALID: {instance_file}')
                     # mark template as present
                     all_versioned_templates[instance_version][instance_file_name] = True
 
@@ -288,14 +303,11 @@ class Folders(AuthorCommonCommand):
                     drawio_validator = draw_io.DrawIOMetadataValidator(template_file)
                     status = drawio_validator.validate(instance_file)
                     if not status:
-                        logger.error(
-                            f'Drawio file {self.rel_dir(instance_file)} failed validation against'
-                            + f' {self.rel_dir(template_file)}'
-                        )
-                        logger.info(f'INVALID: {self.rel_dir(instance_file)}')
+                        logger.error(f'Drawio file {instance_file} failed validation against' + f' {template_file}')
+                        logger.info(f'INVALID: {instance_file}')
                         return False
                     else:
-                        logger.info(f'VALID: {self.rel_dir(instance_file)}')
+                        logger.info(f'VALID: {instance_file}')
                     # mark template as present
                     all_versioned_templates[instance_version][instance_file_name] = True
 
@@ -307,8 +319,7 @@ class Folders(AuthorCommonCommand):
             for template in all_versioned_templates[version]:
                 if not all_versioned_templates[version][template]:
                     logger.error(
-                        f'Required template file {self.rel_dir(template)} does not exist in measured instance'
-                        + f'{self.rel_dir(instance_dir)}'
+                        f'Required template file {template} does not exist in measured instance' + f'{instance_dir}'
                     )
                     return False
 
@@ -336,7 +347,8 @@ class Folders(AuthorCommonCommand):
         validate_only_header: bool,
         governed_heading: str,
         readme_validate: bool,
-        template_version: str
+        template_version: str,
+        ignore_files: str
     ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
@@ -353,7 +365,8 @@ class Folders(AuthorCommonCommand):
                     validate_only_header,
                     governed_heading,
                     readme_validate,
-                    template_version
+                    template_version,
+                    ignore_files
                 )
                 if not result:
                     logger.error(
