@@ -264,14 +264,19 @@ class Docs(AuthorCommonCommand):
                         if len(list(filter(p.match, str(item_path.relative_to(md_dir)).split('/')))) > 0:
                             logger.info(f'Ignoring directory {item_path} from validation.')
                             continue
-                    if not self._validate_dir(governed_heading,
-                                              item_path,
-                                              validate_header,
-                                              validate_only_header,
-                                              recurse,
-                                              readme_validate,
-                                              template_version):
-                        status = 1
+                    rc = self._validate_dir(
+                        governed_heading,
+                        item_path,
+                        validate_header,
+                        validate_only_header,
+                        recurse,
+                        readme_validate,
+                        template_version,
+                        ignore
+                    )
+                    if rc != 0:
+                        status = rc
+
         return status
 
     def validate(
