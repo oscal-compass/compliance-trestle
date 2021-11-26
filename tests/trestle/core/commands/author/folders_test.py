@@ -541,7 +541,7 @@ def test_e2e_backward_compatibility(
     assert rc == validate_code
 
 
-def test_ignore_files_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that ignored files are not validated. Validation will fail if attempted."""
     task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
     test_template_folder = testdata_dir / 'author/governed_folders/template_folder_with_drawio'

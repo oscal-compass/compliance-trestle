@@ -35,9 +35,9 @@ SHORT_TEMPLATE_VERSION = '-tv'
 LONG_TEMPLATE_VERSION = '--template-version'
 TEMPLATE_VERSION_HELP = 'Specify a template version to use for the task, latest version will be used by default.'
 
-SHORT_IGNORE_FILES = '-ig'
-LONG_IGNORE_FILES = '--ignore-files'
-IGNORE_FILES_HELP = 'Provide a regex to ignore files with matching name from validation(i.e. ^_.*).'
+SHORT_IGNORE = '-ig'
+LONG_IGNORE = '--ignore'
+IGNORE_HELP = 'Provide a regex to ignore files and folders with matching name from validation (i.e. ^_.*).'
 
 # Readme validate
 SHORT_README_VALIDATE = '-rv'

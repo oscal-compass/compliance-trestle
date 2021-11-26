@@ -57,11 +57,7 @@ class Folders(AuthorCommonCommand):
             action='store'
         )
         self.add_argument(
-            author_const.SHORT_IGNORE_FILES,
-            author_const.LONG_IGNORE_FILES,
-            help=author_const.IGNORE_FILES_HELP,
-            default=None,
-            type=str
+            author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
         )
         self.add_argument(author_const.MODE_ARG_NAME, choices=author_const.MODE_CHOICES)
         tn_help_str = '\n'.join(
@@ -105,7 +101,7 @@ class Folders(AuthorCommonCommand):
                     args.governed_heading,
                     args.readme_validate,
                     args.template_version,
-                    args.ignore_files
+                    args.ignore
                 )
             return status
         except TrestleError as e:
@@ -202,7 +198,7 @@ class Folders(AuthorCommonCommand):
         governed_heading: str,
         readme_validate: bool,
         template_version: str,
-        ignore_files: str
+        ignore: str
     ) -> bool:
         """
         Validate instances against templates.
@@ -222,8 +218,8 @@ class Folders(AuthorCommonCommand):
                 continue
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
                 continue
-            if ignore_files:
-                p = re.compile(ignore_files)
+            if ignore:
+                p = re.compile(ignore)
                 matched = p.match(instance_file.parts[-1])
                 if matched is not None:
                     logger.info(f'Ignoring file {instance_file} from validation.')
@@ -348,7 +344,7 @@ class Folders(AuthorCommonCommand):
         governed_heading: str,
         readme_validate: bool,
         template_version: str,
-        ignore_files: str
+        ignore: str
     ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
@@ -366,7 +362,7 @@ class Folders(AuthorCommonCommand):
                     governed_heading,
                     readme_validate,
                     template_version,
-                    ignore_files
+                    ignore
                 )
                 if not result:
                     logger.error(

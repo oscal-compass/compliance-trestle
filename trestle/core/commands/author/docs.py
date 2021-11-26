@@ -58,11 +58,7 @@ class Docs(AuthorCommonCommand):
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
         )
         self.add_argument(
-            author_const.SHORT_IGNORE_FILES,
-            author_const.LONG_IGNORE_FILES,
-            help=author_const.IGNORE_FILES_HELP,
-            default=None,
-            type=str
+            author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
         )
         self.add_argument(
             author_const.RECURSE_SHORT, author_const.RECURSE_LONG, help=author_const.RECURSE_HELP, action='store_true'
@@ -113,7 +109,7 @@ class Docs(AuthorCommonCommand):
                     args.recurse,
                     args.readme_validate,
                     args.template_version,
-                    args.ignore_files
+                    args.ignore
                 )
 
             return status
@@ -211,7 +207,7 @@ class Docs(AuthorCommonCommand):
         recurse: bool,
         readme_validate: bool,
         template_version: Optional[str] = None,
-        ignore_files: Optional[str] = None
+        ignore: Optional[str] = None
     ) -> int:
         """
         Validate md files in a directory with option to recurse.
@@ -231,8 +227,8 @@ class Docs(AuthorCommonCommand):
                     if not readme_validate and item_path.name.lower() == 'readme.md':
                         continue
 
-                    if ignore_files:
-                        p = re.compile(ignore_files)
+                    if ignore:
+                        p = re.compile(ignore)
                         matched = p.match(item_path.parts[-1])
                         if matched is not None:
                             logger.info(f'Ignoring file {item_path} from validation.')
@@ -263,8 +259,8 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
-                    if ignore_files:
-                        p = re.compile(ignore_files)
+                    if ignore:
+                        p = re.compile(ignore)
                         if len(list(filter(p.match, str(item_path.relative_to(md_dir)).split('/')))) > 0:
                             logger.info(f'Ignoring directory {item_path} from validation.')
                             continue
@@ -286,7 +282,7 @@ class Docs(AuthorCommonCommand):
         recurse: bool,
         readme_validate: bool,
         template_version: str,
-        ignore_files: str
+        ignore: str
     ) -> int:
         """
         Validate task.
@@ -311,5 +307,5 @@ class Docs(AuthorCommonCommand):
             recurse,
             readme_validate,
             template_version,
-            ignore_files
+            ignore
         )

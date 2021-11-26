@@ -70,11 +70,7 @@ class Headers(AuthorCommonCommand):
             action='store'
         )
         self.add_argument(
-            author_const.SHORT_IGNORE_FILES,
-            author_const.LONG_IGNORE_FILES,
-            help=author_const.IGNORE_FILES_HELP,
-            default=None,
-            type=str
+            author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
         )
         self.add_argument(
             author_const.GLOBAL_SHORT, author_const.GLOBAL_LONG, help=author_const.GLOBAL_HELP, action='store_true'
@@ -112,7 +108,7 @@ class Headers(AuthorCommonCommand):
                     exclusions = args.exclude
                 # mode is validate
                 status = self.validate(
-                    args.recurse, args.readme_validate, exclusions, args.template_version, args.ignore_files
+                    args.recurse, args.readme_validate, exclusions, args.template_version, args.ignore
                 )
             return status
         except TrestleError as e:
@@ -181,7 +177,7 @@ class Headers(AuthorCommonCommand):
         readme_validate: bool,
         relative_exclusions: List[pathlib.Path],
         template_version: str,
-        ignore_files: str
+        ignore: str
     ) -> bool:
         """Validate a directory within the trestle project."""
         all_versioned_templates = {}
@@ -191,8 +187,8 @@ class Headers(AuthorCommonCommand):
         instances = list(candidate_dir.iterdir())
         if recurse:
             instances = candidate_dir.rglob('*')
-            if ignore_files:
-                p = re.compile(ignore_files)
+            if ignore:
+                p = re.compile(ignore)
                 instances = list(
                     filter(
                         lambda f: len(list(filter(p.match, str(f.relative_to(candidate_dir)).split('/')))) == 0,
@@ -208,8 +204,8 @@ class Headers(AuthorCommonCommand):
                 continue
             if any(str(ex) in str(instance_file) for ex in relative_exclusions):
                 continue
-            if ignore_files:
-                p = re.compile(ignore_files)
+            if ignore:
+                p = re.compile(ignore)
                 matched = p.match(instance_file.parts[-1])
                 if matched is not None:
                     logger.info(f'Ignoring file {instance_file} from validation.')
@@ -301,7 +297,7 @@ class Headers(AuthorCommonCommand):
         readme_validate: bool,
         relative_excludes: List[pathlib.Path],
         template_version: str,
-        ignore_files: str
+        ignore: str
     ) -> int:
         """Run validation based on available templates."""
         paths = []
@@ -327,9 +323,7 @@ class Headers(AuthorCommonCommand):
 
         for path in paths:
             try:
-                valid = self._validate_dir(
-                    path, recurse, readme_validate, relative_excludes, template_version, ignore_files
-                )
+                valid = self._validate_dir(path, recurse, readme_validate, relative_excludes, template_version, ignore)
                 if not valid:
                     logger.info(f'validation failed on {path}')
                     return 1
