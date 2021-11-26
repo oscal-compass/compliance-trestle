@@ -37,7 +37,7 @@ class CommandPlusDocs(Command):
 
     def _validate_arguments(self, args):
         # if the command is 'init' then don't validate the trestle-root as it will be initialized by init command
-        if self.name in ['init', 'trestle', 'version', 'partial-object-validate']:
+        if self.name in ['init', 'trestle', 'version', 'partial-object-validate', 'fedramp-validate']:
             return 0
 
         # validate trestle-root is a valid trestle root directory

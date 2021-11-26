@@ -13,8 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Starting point for the Trestle CLI."""
+
+import importlib
 import logging
 import pathlib
+import pkgutil
 
 from trestle.core import const
 from trestle.core.commands.add import AddCmd
@@ -62,6 +65,20 @@ class Trestle(CommandPlusDocs):
         ValidateCmd,
         VersionCmd
     ]
+
+    discovered_plugins = {
+        name: importlib.import_module(name)
+        for finder,
+        name,
+        ispkg in pkgutil.iter_modules()
+        if name.startswith('trestle_')
+    }
+
+    logger.info(discovered_plugins)
+    if 'trestle_fedramp' in discovered_plugins:
+        fedramp_validate = importlib.import_module('trestle_fedramp.commands.validate')
+        subcommands.append(fedramp_validate.ValidateCmd)
+        logger.info('fedramp-validate command added')
 
     def _init_arguments(self) -> None:
         self.add_argument('-v', '--verbose', help=const.DISPLAY_VERBOSE_OUTPUT, action='count', default=0)
