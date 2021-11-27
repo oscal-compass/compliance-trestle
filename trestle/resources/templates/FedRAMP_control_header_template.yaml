@@ -15,18 +15,15 @@ x-trestle-props:
     - sp-system
     - customer-configured
     - customer-provided
-    - inherited: A0000000-0000-4000-8000-000000000000
+    - inherited: uuid of leveraged authorization
   implementation-status:
     - implemented
-    - partial: we need a gizmo
-    - planned: create the gizmo
-      completion-date: 2050-11-22
-    - alternative: we may find other gizmo
-    - not-applicable: actually we do not need this at all
+    - partial: describe gap
+    - planned: describe plan
+      completion-date: date_string
+    - alternative: describe alternative
+    - not-applicable: provide justification
   responsible_roles:
-    - id: admin-unix
-      title: Unix Administrator
-      description: System Manager, System Architect, ISSO
-    - id: ux-coder
-      title: UX SDE
-      description: User Experience Developer, Software Engineer, ACME
+    - id: role-id
+      title: title
+      description: description

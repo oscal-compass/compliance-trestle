@@ -846,12 +846,13 @@ class ControlIOReader():
         return responses, header
 
     @staticmethod
-    def read_implementations(control_file: pathlib.Path,
-                             component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+    def read_implementation_requirements(control_file: pathlib.Path,
+                                         component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
         """Get implementation requirements associated with given control and link to the one component we created."""
         control_id = control_file.stem
-        imp_reqs: List[ossp.ImplementedRequirement] = []
         responses, _ = ControlIOReader.read_all_implementation_prose_and_header(control_file)
+
+        statements: List[ossp.Statement] = []
 
         for response in responses.items():
             label = response[0]
@@ -866,12 +867,13 @@ class ControlIOReader():
             statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
             statement.statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
             statement.by_components = [by_comp]
-            # create a new implemented requirement linked to the control id to hold the statement
-            imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
-            imp_req.control_id = control_id
-            imp_req.statements = [statement]
-            imp_reqs.append(imp_req)
-        return imp_reqs
+            statements.append(statement)
+
+        # create a new implemented requirement linked to the control id to hold the statements
+        imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+        imp_req.control_id = control_id
+        imp_req.statements = statements
+        return [imp_req]
 
     @staticmethod
     def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:

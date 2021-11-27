@@ -386,7 +386,7 @@ class CatalogInterface():
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(ControlIOReader.read_implementations(control_file, component))
+                imp_reqs.extend(ControlIOReader.read_implementation_requirements(control_file, component))
         return imp_reqs
 
     @staticmethod

@@ -14,11 +14,11 @@
 """Create ssp from catalog and profile."""
 
 import argparse
-import copy
 import logging
 import pathlib
 import traceback
 from typing import List, Set
+from uuid import uuid4
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -127,32 +127,34 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
-    def _imp_reqs_equivalent(
-        self, imp_reqs: List[ossp.ImplementedRequirement], orig_imp_reqs: List[ossp.ImplementedRequirement]
-    ) -> bool:
+    def _merge_imp_reqs(
+        self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement], regenerate: bool
+    ) -> None:
         """
-        Check if imp_reqs are the same except for internal uuids.
+        Combine the new imp_reqs with previous and don't change uuids if already present.
 
-        Create copy of each imp_req and set the uuids within it to match the original - then check equality.
+        If a part was already present in the ssp, use the new text but keep the old uuid.
+        But regenerate all uuid's if regenerate is True.
         """
-        if len(imp_reqs) == len(orig_imp_reqs):
-            for reqs in zip(imp_reqs, orig_imp_reqs):
-                # make a copy of the new imp req
-                tmp_req = copy.deepcopy(reqs[0])
-                if tmp_req.statements is not None and reqs[1].statements is not None:
-                    if len(tmp_req.statements) != len(reqs[1].statements):
-                        return False
-                    tmp_req.uuid = reqs[1].uuid
-                    for stats in zip(tmp_req.statements, reqs[1].statements):
-                        if stats[0].by_components is not None and stats[1].by_components is not None:
-                            if len(stats[0].by_components) != len(stats[1].by_components):
-                                return False
-                            stats[0].uuid = stats[1].uuid
-                            for by_comps in zip(stats[0].by_components, stats[1].by_components):
-                                by_comps[0].uuid = by_comps[1].uuid
-            if tmp_req != reqs[1]:
-                return False
-        return True
+        orig_imp_reqs = ssp.control_implementation.implemented_requirements
+        # build map of statement ids and corresponding imp_req
+        id_map = {}
+        for imp_req in orig_imp_reqs:
+            if regenerate:
+                imp_req.by_components[0].uuid = uuid4()
+            for statement in imp_req.statements:
+                if regenerate:
+                    statement.uuid = uuid4()
+                id_map[statement.statement_id] = (imp_req, statement)
+        for imp_req in imp_reqs:
+            for statement in imp_req.statements:
+                stat_id = statement.statement_id
+                if stat_id in id_map:
+                    tup = id_map[stat_id]
+                    imp_req.by_components[0] = tup[0].by_components[0]
+                    tup = id_map[stat_id]
+                    statement.uuid = tup[1].uuid
+                id_map[stat_id] = (imp_req, statement)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -169,15 +171,14 @@ class SSPAssemble(AuthorCommonCommand):
         try:
             # need to load imp_reqs from markdown but need component first
             if ssp_path.exists():
+                # load the existing json ssp
                 _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
-                # use first component
+                # use its first component to build the new imp_reqs
+                # FIXME may need to handle multiple
                 component = ssp.system_implementation.components[0]
+                # read the new imp reqs from markdown
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
-                orig_imp_reqs = ssp.control_implementation.implemented_requirements
-                if not args.regenerate and not self._imp_reqs_equivalent(imp_reqs, orig_imp_reqs):
-                    ssp.control_implementation.implemented_requirements = imp_reqs
-                if args.regenerate:
-                    regenerate_uuids(ssp)
+                self._merge_imp_reqs(ssp, imp_reqs, args.regenerate)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
