@@ -652,6 +652,7 @@ def write_oscal(classes, forward_refs, fstem):
 
         for c in classes:
             out_file.writelines('\n'.join(c.lines) + '\n')
+            # add special validator for OscalVersion
             if c.name == 'OscalVersion':
                 out_file.write(oscal_validator_code)
 
