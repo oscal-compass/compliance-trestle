@@ -129,6 +129,9 @@ class CatalogInterface():
                 new_path.append(sub_group.id)
                 self._add_group_controls(sub_group, control_dict, new_path)
 
+    def _create_group_dict(self) -> Dict[str, cat.Group]:
+        pass
+
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
         control_dict: Dict[str, CatalogInterface.ControlHandle] = {}
         # add controls by group
@@ -225,7 +228,11 @@ class CatalogInterface():
         """Get count of controls from the actual catalog."""
         return len(list(self.get_all_controls_from_catalog(recurse)))
 
-    def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
+    def get_group_ids(self) -> List[str]:
+        """Get all the group id's as a string."""
+        return list({control.group_id for control in self._control_dict.values()})
+
+    def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
         return (
             self._control_dict[control_id].group_id,
@@ -314,7 +321,7 @@ class CatalogInterface():
         catalog_interface = CatalogInterface(self._catalog)
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
-            group_id, group_title, _ = catalog_interface.get_group_info(control.id)
+            group_id, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             group_dir = md_path if group_id == const.MODEL_TYPE_CATALOG else md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)

@@ -197,7 +197,7 @@ class ProfileResolver():
             group_dict: Dict[str, cat.Group] = {}
             for control_id in final_control_ids:
                 control = self._catalog_interface.get_control(control_id)
-                group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
+                group_id, group_title, group_class = self._catalog_interface.get_group_info_by_control(control_id)
                 if group_id == 'catalog':
                     cat_controls.append(control)
                     continue
