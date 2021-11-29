@@ -90,10 +90,7 @@ def test_element_set_at(sample_nist_component_def: component.ComponentDefinition
 
     metadata = common.Metadata(
         **{
-            'title': 'My simple catalog',
-            'last-modified': datetime.now(),
-            'version': '0.0.0',
-            'oscal-version': '1.0.0-rc2'
+            'title': 'My simple catalog', 'last-modified': datetime.now(), 'version': '0.0.0', 'oscal-version': '1.0.0'
         }
     )
 

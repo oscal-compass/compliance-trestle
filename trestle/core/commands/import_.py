@@ -78,6 +78,9 @@ class ImportCmd(CommandPlusDocs):
         except TrestleError as err:
             logger.warning(f'Error importing file: {err}')
             return 1
+        except Exception as e:
+            logger.warning(f'Error importing file: {e}')
+            return 1
 
         plural_path = fs.model_type_to_model_dir(parent_alias)
 
