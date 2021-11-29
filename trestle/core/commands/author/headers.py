@@ -95,6 +95,9 @@ class Headers(AuthorCommonCommand):
                 logger.warning('Task name (-tn) argument is required when global is not specified')
                 return status
 
+            if args.exclude:
+                logger.warning('--exclude or -e is deprecated, use --ignore instead.')
+
             if args.mode == 'create-sample':
                 status = self.create_sample()
 

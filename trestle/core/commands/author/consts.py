@@ -68,6 +68,6 @@ GLOBAL_HELP = (
 EXCLUDE_SHORT = '-ex'
 EXCLUDE_LONG = '--exclude'
 EXCLUDE_HELP = (
-    'The name of a folder, relative to the root of the trestle project,'
+    '[DEPRECATED: use --ignore instead] The name of a folder, relative to the root of the trestle project,'
     + 'e.g. architecture or architecture/infrastructure.'
 )
