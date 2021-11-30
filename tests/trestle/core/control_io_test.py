@@ -262,31 +262,12 @@ def test_merge_dicts_deep() -> None:
     assert dest['q'] == 99
 
 
-def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:
-    """Test read_label_prose failures."""
-    lines = ['', '## Implementation my_label', 'bad line']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, lines)
-
-    bad_header = ['', '# bad header']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, bad_header)
-
-    no_label = ['', '## Implementation']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, no_label)
-
-
-def test_read_label_prose_special_cases(tmp_path: pathlib.Path) -> None:
-    """Test special cases for read label prose."""
-    added_text = """
-# What is the solution and how is it implemented?
-
-Top level description text
-
-"""
-    full_control_text = control_text + added_text
-    lines = full_control_text.split('\n')
-    _, label, prose_lines = ControlIOReader._read_label_prose(0, lines)
-    assert label == 'top_level_description'
-    assert prose_lines[0] == 'Top level description text'
+def test_control_with_components() -> None:
+    """Test loading and parsing of implementated reqs with components."""
+    control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
+    comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
+    assert len(comp_dict.keys()) == 3
+    assert len(comp_dict['This System'].keys()) == 3
+    assert len(comp_dict['Trestle Component'].keys()) == 1
+    assert len(comp_dict['Fancy Thing'].keys()) == 2
+    assert comp_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']

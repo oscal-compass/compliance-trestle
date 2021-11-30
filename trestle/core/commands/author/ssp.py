@@ -17,8 +17,7 @@ import argparse
 import logging
 import pathlib
 import traceback
-from typing import List, Set
-from uuid import uuid4
+from typing import Dict, List, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -131,30 +130,42 @@ class SSPAssemble(AuthorCommonCommand):
         self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement], regenerate: bool
     ) -> None:
         """
-        Combine the new imp_reqs with previous and don't change uuids if already present.
+        Merge the new imp_reqs into the ssp and optionally regenerate uuids.
 
-        If a part was already present in the ssp, use the new text but keep the old uuid.
-        But regenerate all uuid's if regenerate is True.
+        If a statement has same id and same by_comp uuid as ssp, use the ssp version with new description.
+        Otherwise just insert the statement.
+        When the statement was loaded it had access to the current components so the uuids should match if present.
         """
-        orig_imp_reqs = ssp.control_implementation.implemented_requirements
-        # build map of statement ids and corresponding imp_req
-        id_map = {}
-        for imp_req in orig_imp_reqs:
-            if regenerate:
-                imp_req.by_components[0].uuid = uuid4()
+        id_map: Dict[str, Dict[str, ossp.Statement]] = {}
+        control_map: Dict[str, ossp.ImplementedRequirement] = {}
+        for imp_req in ssp.control_implementation.implemented_requirements:
+            control_map[imp_req.control_id] = imp_req
             for statement in imp_req.statements:
-                if regenerate:
-                    statement.uuid = uuid4()
-                id_map[statement.statement_id] = (imp_req, statement)
+                for by_comp in statement.by_components:
+                    id_ = statement.statement_id
+                    if id_ not in id_map:
+                        id_map[id_] = {}
+                    id_map[id_][by_comp.component_uuid] = statement
+
         for imp_req in imp_reqs:
+            if imp_req.control_id in control_map:
+                imp_req.uuid = control_map[imp_req.control_id].uuid
             for statement in imp_req.statements:
-                stat_id = statement.statement_id
-                if stat_id in id_map:
-                    tup = id_map[stat_id]
-                    imp_req.by_components[0] = tup[0].by_components[0]
-                    tup = id_map[stat_id]
-                    statement.uuid = tup[1].uuid
-                id_map[stat_id] = (imp_req, statement)
+                id_ = statement.statement_id
+                # for each statement id match the statement per component to the original
+                if id_ in id_map:
+                    comp_dict = id_map[id_]
+                    for by_comp in statement.by_components:
+                        if by_comp.component_uuid in comp_dict:
+                            statement.uuid = comp_dict[by_comp.component_uuid].uuid
+                            for orig_by_comp in comp_dict[by_comp.component_uuid].by_components:
+                                if orig_by_comp.component_uuid == by_comp.component_uuid:
+                                    by_comp.uuid = orig_by_comp.uuid
+                                    break
+
+        ssp.control_implementation.implemented_requirements = imp_reqs
+        if regenerate:
+            regenerate_uuids(ssp)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -173,23 +184,24 @@ class SSPAssemble(AuthorCommonCommand):
             if ssp_path.exists():
                 # load the existing json ssp
                 _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
-                # use its first component to build the new imp_reqs
-                # FIXME may need to handle multiple
-                component = ssp.system_implementation.components[0]
+                comp_dict = {}
+                for component in ssp.system_implementation.components:
+                    comp_dict[component.title] = component
                 # read the new imp reqs from markdown
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
                 self._merge_imp_reqs(ssp, imp_reqs, args.regenerate)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 # generate the one dummy component that implementations will refer to in by_components
-                component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-                component.description = 'The System'
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+                comp_dict = {}
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
 
                 # create system implementation to hold the dummy component
                 system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
-                system_imp.components = [component]
+                system_imp.components = []
+                for comp in comp_dict.values():
+                    system_imp.components.append(comp)
 
                 # create a control implementation to hold the implementation requirements
                 control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)

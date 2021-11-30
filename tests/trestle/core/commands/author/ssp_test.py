@@ -74,11 +74,13 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
-    if part_label not in responses:
-        return False
-    prose = '\n'.join(responses[part_label])
-    return seek_str in prose
+    comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
+    for label_dict in comp_dict.values():
+        if part_label in label_dict:
+            prose = '\n'.join(label_dict[part_label])
+            if seek_str in prose:
+                return True
+    return False
 
 
 @pytest.mark.parametrize('import_cat', [False, True])

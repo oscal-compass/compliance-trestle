@@ -370,7 +370,7 @@ class CatalogInterface():
 
     @staticmethod
     def read_catalog_imp_reqs(md_path: pathlib.Path,
-                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+                              avail_comps: Dict[str, ossp.SystemComponent]) -> List[ossp.ImplementedRequirement]:
         """Read the full set of control implemented requirements from markdown.
 
         Args:
@@ -386,7 +386,7 @@ class CatalogInterface():
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(ControlIOReader.read_implementation_requirements(control_file, component))
+                imp_reqs.extend(ControlIOReader.read_implementation_requirements(control_file, avail_comps))
         return imp_reqs
 
     @staticmethod
