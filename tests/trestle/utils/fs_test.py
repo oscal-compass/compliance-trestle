@@ -636,3 +636,10 @@ def test_iterdir_without_hidden_files(tmp_path) -> None:
         pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
 
         assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
+
+
+def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: catalog.Catalog) -> None:
+    """Test full path for top level model."""
+    fs.save_top_level_model(sample_catalog_minimal, tmp_trestle_dir, 'mycat', fs.FileContentType.JSON)
+    cat_path = fs.full_path_for_top_level_model(tmp_trestle_dir, 'mycat', catalog.Catalog)
+    assert cat_path == tmp_trestle_dir / 'catalogs/mycat/catalog.json'

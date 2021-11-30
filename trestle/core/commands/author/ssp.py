@@ -14,6 +14,7 @@
 """Create ssp from catalog and profile."""
 
 import argparse
+import copy
 import logging
 import pathlib
 import traceback
@@ -29,6 +30,7 @@ from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.validator_helper import regenerate_uuids
 from trestle.utils import fs, log
 
 logger = logging.getLogger(__name__)
@@ -123,46 +125,92 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
+
+    def _imp_reqs_equivalent(
+        self, imp_reqs: List[ossp.ImplementedRequirement], orig_imp_reqs: List[ossp.ImplementedRequirement]
+    ) -> bool:
+        """
+        Check if imp_reqs are the same except for internal uuids.
+
+        Create copy of each imp_req and set the uuids within it to match the original - then check equality.
+        TODO: trigger new uuid only if new imp_reqs are added
+        """
+        if len(imp_reqs) == len(orig_imp_reqs):
+            for reqs in zip(imp_reqs, orig_imp_reqs):
+                # make a copy of the new imp req
+                tmp_req = copy.deepcopy(reqs[0])
+                if tmp_req.statements is not None and reqs[1].statements is not None:
+                    if len(tmp_req.statements) != len(reqs[1].statements):
+                        return False
+                    tmp_req.uuid = reqs[1].uuid
+                    for stats in zip(tmp_req.statements, reqs[1].statements):
+                        if stats[0].by_components is not None and stats[1].by_components is not None:
+                            if len(stats[0].by_components) != len(stats[1].by_components):
+                                return False
+                            stats[0].uuid = stats[1].uuid
+                            for by_comps in zip(stats[0].by_components, stats[1].by_components):
+                                by_comps[0].uuid = by_comps[1].uuid
+                if tmp_req != reqs[1]:
+                    return False
+        return True
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
+        trestle_root = pathlib.Path(args.trestle_root)
+
+        md_path = trestle_root / args.markdown
+
+        # if ssp already exists - should load it rather than make new one
+        ssp_path = fs.path_for_top_level_model(
+            trestle_root, args.output, ossp.SystemSecurityPlan, fs.FileContentType.JSON
+        )
+        ssp: ossp.SystemSecurityPlan
 
         try:
-            # generate the one dummy component that implementations will refer to in by_components
-            component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-            component.description = 'The System'
+            # need to load imp_reqs from markdown but need component first
+            if ssp_path.exists():
+                _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
+                # use first component
+                component = ssp.system_implementation.components[0]
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+                orig_imp_reqs = ssp.control_implementation.implemented_requirements
+                if not args.regenerate and not self._imp_reqs_equivalent(imp_reqs, orig_imp_reqs):
+                    ssp.control_implementation.implemented_requirements = imp_reqs
+                if args.regenerate:
+                    regenerate_uuids(ssp)
+            else:
+                # create a sample ssp to hold all the parts
+                ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+                # generate the one dummy component that implementations will refer to in by_components
+                component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
+                component.description = 'The System'
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
 
-            # create system implementation to hold the dummy component
-            system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
-            system_imp.components = [component]
+                # create system implementation to hold the dummy component
+                system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
+                system_imp.components = [component]
 
-            trestle_root = pathlib.Path(args.trestle_root)
+                # create a control implementation to hold the implementation requirements
+                control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
+                control_imp.implemented_requirements = imp_reqs
+                control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
 
-            md_path = trestle_root / args.markdown
+                # insert the parts into the ssp
+                ssp.control_implementation = control_imp
+                ssp.system_implementation = system_imp
 
-            imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+                import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
+                import_profile.href = 'REPLACE_ME'
+                ssp.import_profile = import_profile
+
         except Exception as e:
-            logger.warning(f'Error reading the catalog markdown: {e}')
+            logger.warning(f'Error assembling the ssp from markdown: {e}')
             logger.debug(traceback.format_exc())
             return 1
 
+        # write out the ssp as json
         try:
-            # create a control implementation to hold the implementation requirements
-            control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
-            control_imp.implemented_requirements = imp_reqs
-            control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
-
-            # create a sample ssp to hold all the parts
-            ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-
-            # insert the parts into the ssp
-            ssp.control_implementation = control_imp
-            ssp.system_implementation = system_imp
-            import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
-            import_profile.href = 'REPLACE_ME'
-            ssp.import_profile = import_profile
-
-            # write out the ssp as json
             fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
@@ -184,17 +232,22 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
+        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate)
+
+    def filter_ssp(self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool):
+        """Filter the ssp based on the profile and output new ssp."""
         ssp: ossp.SystemSecurityPlan
 
         try:
-            ssp, _ = fs.load_top_level_model(trestle_root, args.name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+            ssp, _ = fs.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
             profile_path = fs.path_for_top_level_model(
-                trestle_root, args.profile, prof.Profile, fs.FileContentType.JSON
+                trestle_root, profile_name, prof.Profile, fs.FileContentType.JSON
             )
 
             prof_resolver = ProfileResolver()
@@ -225,7 +278,7 @@ class SSPFilter(AuthorCommonCommand):
                     if control is not None:
                         new_imp_requirements.append(imp_requirement)
                         ssp_control_ids.add(control.id)
-            control_imp.implemented_requirements = new_imp_requirements if new_imp_requirements else None
+            control_imp.implemented_requirements = new_imp_requirements
 
             # make sure all controls in the profile have implemented reqs in the final ssp
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
@@ -234,7 +287,9 @@ class SSPFilter(AuthorCommonCommand):
                 return 1
 
             ssp.control_implementation = control_imp
-            fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+            if regenerate:
+                regenerate_uuids(ssp)
+            fs.save_top_level_model(ssp, trestle_root, out_name, fs.FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
             logger.debug(traceback.format_exc())

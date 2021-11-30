@@ -36,6 +36,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+from trestle.utils import fs
 
 if os.name == 'nt':  # pragma: no cover
     import win32api
@@ -351,3 +352,9 @@ def make_hidden_file(file_path: pathlib.Path) -> None:
     """Make a hidden file with the given file path."""
     file_path.touch()
     make_file_hidden(file_path)
+
+
+def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: TopLevelOscalModel) -> str:
+    """Load the model and extract its uuid."""
+    model, _ = fs.load_top_level_model(trestle_root, model_name, model_class)
+    return model.uuid
