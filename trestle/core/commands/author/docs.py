@@ -304,6 +304,7 @@ class Docs(AuthorCommonCommand):
         """
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+            return 1
         return self._validate_dir(
             governed_heading,
             self.task_path,
