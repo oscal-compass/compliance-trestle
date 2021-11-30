@@ -527,3 +527,33 @@ def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, 
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = Trestle().run()
     assert rc == 0
+
+
+def test_instance_no_header(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating instance with no header."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/headers/good_templates'
+    test_instances_folder = testdata_dir / 'author/headers/empty_headers'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+
+    shutil.copytree(test_template_folder, task_template_folder)
+
+    # copy all files
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author headers validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 1
+
+    command_string_validate_content = 'trestle author headers validate -tn test_task -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 1
+
+    command_string_validate_content = 'trestle author headers validate -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 1
