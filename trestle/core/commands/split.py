@@ -19,8 +19,6 @@ import logging
 import pathlib
 from typing import Dict, List, Tuple
 
-from pydantic import BaseModel
-
 import trestle.utils.log as log
 from trestle.core import const
 from trestle.core import utils
@@ -32,12 +30,13 @@ from trestle.core.models.actions import Action, CreatePathAction, WriteFileActio
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
 
 
-class AliasTracker(BaseModel):
+class AliasTracker(TrestleBaseModel):
     """Convenience class to track writing out of models."""
 
     # This tracks the parts that need to be split from each element
