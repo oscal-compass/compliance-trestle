@@ -374,7 +374,7 @@ class CatalogInterface():
 
         Args:
             md_path: Path to the markdown control files, with directories for each group
-            component: The single system component that the implemented requirements will refer to by uuid
+            avail_comps: Dict mapping component names to known components
 
         Returns:
             list of implemented requirements gathered from each control
