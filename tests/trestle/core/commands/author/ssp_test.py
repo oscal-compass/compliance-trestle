@@ -263,6 +263,21 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
 
+    found_it = False
+    for imp_req in repeat_ssp.control_implementation.implemented_requirements:
+        if imp_req.control_id == 'ac-1':
+            statements = imp_req.statements
+            assert len(statements) == 3
+            for statement in statements:
+                for by_component in statement.by_components:
+                    if by_component.description == acme_string:
+                        found_it = True
+                        assert len(statement.by_components) == 2
+                        break
+        if found_it:
+            break
+    assert found_it
+
     # assemble it again but regen uuid's
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True, regenerate=True
