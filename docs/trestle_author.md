@@ -140,6 +140,8 @@ A template file will be created in `TRESTLE_ROOT/.trestle/author/my_task_name/te
 
 `trestle author docs validate -tn my_task_name` validates the markdown, optionally with a `--governed-heading` or `-hv` yaml header based on this `TRESTLE_ROOT/.trestle/author/my_task_name/template.md` template to all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`.
 
+`trestle author docs validate -tn my_task_name -ig ^_.*` will validate all files except folders and files that start with underscore `_`. Use option `-ig` or `--ignore` when you would like to ignore any folders or files that match given regular expression.
+
 ### Extra options
 
 #### recursive (`-r`, `--recurse`)
@@ -149,6 +151,10 @@ By default `author docs` only indexes a flat directory. The recursive option all
 #### Header only validation (`-hov`, `--header-only-validate`)
 
 Turns off the validation of the structure of the document and only validates the yaml header structure.
+
+#### Ignore files or folders from validation (`-ig`, `--ignore`)
+
+Provide regular expression after this flag to ignore folders and files which names match this regular expression during **validation only**.
 
 #### Template version tracking (`-tv`, `--template-version`)
 
@@ -199,6 +205,8 @@ trestle_root
  ┃ ┃ ┗ another_template.md
 ```
 
+`trestle author folders validate -tn my_task_name -ig ^_.*` will validate all files except folders and files that start with underscore `_`. Use option `-ig` or `--ignore` when you would like to ignore any folders or files that match given regular expression.
+
 ### Supported options
 
 #### Header validate (`-hv`/`--header-validate`)
@@ -208,6 +216,10 @@ Validate the headers in markdown and metadata in drawio files.
 #### Header only validation (`-hov`, `--header-only-validate`)
 
 Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.
+
+#### Ignore files or folders from validation (`-ig`, `--ignore`)
+
+Provide regular expression after this flag to ignore folders and files which names match this regular expression during **validation only**.
 
 #### Template version tracking (`-tv`, `--template-version`)
 
@@ -245,6 +257,8 @@ trestle_root
 
 `trestle author headers validate -tn my_task_name` Will validate all files within the directory against the templates by matching the extensions.
 
+`trestle author headers validate -tn my_task_name -ig ^_.*` will validate all files except folders and files that start with underscore `_`. Use option `-ig` or `--ignore` when you would like to ignore any folders or files that match given regular expression.
+
 ### Supported options
 
 #### Recursive (`-r`, `--recurse`)
@@ -259,6 +273,10 @@ If `--task-name` is not provided all folders in the repository will be measured.
 #### Exclude (`-ex`, `--exclude`)
 
 Primarily intended for use with global (`-g`), exclude will remove any _directory_ from the search scope of trestle author headers. Must be a relative path to the root of a trestle project, however, can be multiple levels deep (e.g. `--exclude=architecture/drafts`) would allow content in `architecture/diagrams` to still be indexed to find the header.
+
+#### Ignore files or folders from validation (`-ig`, `--ignore`)
+
+Provide regular expression after this flag to ignore folders and files which names match this regular expression during **validation only**.
 
 #### Template version tracking (`-tv`, `--template-version`)
 

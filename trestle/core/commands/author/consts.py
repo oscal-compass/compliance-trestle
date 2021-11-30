@@ -35,6 +35,10 @@ SHORT_TEMPLATE_VERSION = '-tv'
 LONG_TEMPLATE_VERSION = '--template-version'
 TEMPLATE_VERSION_HELP = 'Specify a template version to use for the task, latest version will be used by default.'
 
+SHORT_IGNORE = '-ig'
+LONG_IGNORE = '--ignore'
+IGNORE_HELP = 'Provide a regex to ignore files and folders with matching name from validation (i.e. ^_.*).'
+
 # Readme validate
 SHORT_README_VALIDATE = '-rv'
 LONG_README_VALIDATE = '--readme-validate'
@@ -64,6 +68,6 @@ GLOBAL_HELP = (
 EXCLUDE_SHORT = '-ex'
 EXCLUDE_LONG = '--exclude'
 EXCLUDE_HELP = (
-    'The name of a folder, relative to the root of the trestle project,'
+    '[DEPRECATED: use --ignore instead] The name of a folder, relative to the root of the trestle project,'
     + 'e.g. architecture or architecture/infrastructure.'
 )
