@@ -438,25 +438,6 @@ class ControlIOReader():
         return new_label
 
     @staticmethod
-    def _trim_prose_lines(lines: List[str]) -> List[str]:
-        """
-        Trim empty lines at start and end of list of lines in prose.
-
-        Also need to exclude the line requesting implementation prose
-        """
-        ii = 0
-        n_lines = len(lines)
-        while ii < n_lines and (lines[ii].strip(' \r\n') == ''
-                                or lines[ii].find(const.SSP_ADD_IMPLEMENTATION_PREFIX) >= 0):
-            ii += 1
-        jj = n_lines - 1
-        while jj >= 0 and lines[jj].strip(' \r\n') == '':
-            jj -= 1
-        if jj < ii:
-            return ''
-        return lines[ii:(jj + 1)]
-
-    @staticmethod
     def _load_control_lines(control_file: pathlib.Path) -> List[str]:
         lines: List[str] = []
         try:
@@ -851,15 +832,17 @@ class ControlIOReader():
         return comp_dict, yaml_header
 
     @staticmethod
-    def read_implementation_requirements(
+    def read_implementation_requirement(
         control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent]
-    ) -> List[ossp.ImplementedRequirement]:
+    ) -> ossp.ImplementedRequirement:
         """Get implementation requirements associated with given control and link to existing component or new one."""
         control_id = control_file.stem
         comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_file)
 
-        statements: List[ossp.Statement] = []
-        imp_reqs = []
+        statement_map: Dict[str, ossp.Statement] = {}
+        # create a new implemented requirement linked to the control id to hold the statements
+        imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+        imp_req.control_id = control_id
 
         for comp_name in comp_dict.keys():
             if comp_name in avail_comps:
@@ -869,25 +852,25 @@ class ControlIOReader():
                 component.title = comp_name
                 avail_comps[comp_name] = component
             for label, prose_lines in comp_dict[comp_name].items():
-                # create a new by-component to hold this statement
+                # create a statement to hold the by-components and assign the statement id
+                statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
+                if statement_id in statement_map:
+                    statement = statement_map[statement_id]
+                else:
+                    statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
+                    statement.statement_id = statement_id
+                    statement.by_components = []
+                    statement_map[statement_id] = statement
+                # create a new by-component to add to this statement
                 by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
-
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
                 # add the response prose to the description
                 by_comp.description = '\n'.join(prose_lines)
-                # create a statement to hold the by-component and assign the statement id
-                statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-                statement.statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
-                statement.by_components = [by_comp]
-                statements.append(statement)
+                statement.by_components.append(by_comp)
 
-            # create a new implemented requirement linked to the control id to hold the statements
-            imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
-            imp_req.control_id = control_id
-            imp_req.statements = statements
-            imp_reqs.append(imp_req)
-        return imp_reqs
+        imp_req.statements = list(statement_map.values())
+        return imp_req
 
     @staticmethod
     def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:

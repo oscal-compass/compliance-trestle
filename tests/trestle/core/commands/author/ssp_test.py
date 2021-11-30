@@ -225,9 +225,10 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
+    acme_string = 'Do the ACME requirements'
 
     prose_a = 'Hello there\n  How are you\n line with more text\n\ndouble line'
-    prose_b = 'This is fun\nline with *bold* text'
+    prose_b = 'This is fun\nline with *bold* text\n\n### ACME Component\n\n' + acme_string
 
     # edit it a bit
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
@@ -260,7 +261,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
-    assert orig_ssp == repeat_ssp
+    assert orig_ssp.control_implementation == repeat_ssp.control_implementation
+    assert repeat_ssp.control_implementation.implemented_requirements[0].statements[1].by_components[
+        1].description == acme_string
 
     # assemble it again but regen uuid's
     args = argparse.Namespace(
