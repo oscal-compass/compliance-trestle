@@ -20,9 +20,12 @@ import pathlib
 import shutil
 from pathlib import Path
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import pytest
 
 from tests import test_utils
+from tests.test_utils import execute_command_and_assert
 
 import trestle.oscal.common as common
 from trestle.core.commands.merge import MergeCmd
@@ -501,3 +504,41 @@ def test_split_merge_out_of_context(
     post_catalog_type, _ = fs.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
     post_merge_catalog = post_catalog_type.oscal_read(full_path_to_model)
     assert post_merge_catalog == pre_split_catalog
+
+
+def test_merge_deletes_folders(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test merge all components deletes empty folders."""
+    catalog = testdata_dir / 'json/minimal_catalog_with_groups.json'
+
+    command_import = f'trestle import -f {catalog} -o mycatalog'
+    execute_command_and_assert(command_import, 0, monkeypatch)
+
+    os.chdir(tmp_trestle_dir / 'catalogs/mycatalog')
+    command_split = "trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'"
+    execute_command_and_assert(command_split, 0, monkeypatch)
+
+    command_merge = "trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'"
+    execute_command_and_assert(command_merge, 0, monkeypatch)
+    assert not (tmp_trestle_dir / 'catalogs/mycatalog/catalog').exists()
+
+    command_split = "trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'"
+    execute_command_and_assert(command_split, 0, monkeypatch)
+
+    command_merge = "trestle merge -e 'catalog.*'"
+    execute_command_and_assert(command_merge, 0, monkeypatch)
+    assert not (tmp_trestle_dir / 'catalogs/mycatalog/catalog').exists()
+
+    # Merge subdir
+    command_split = "trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'"
+    execute_command_and_assert(command_split, 0, monkeypatch)
+
+    os.chdir(tmp_trestle_dir / 'catalogs/mycatalog/catalog')
+    command_split = "trestle split -f ./metadata.json -e 'metadata.roles,metadata.responsible-parties'"
+    execute_command_and_assert(command_split, 0, monkeypatch)
+
+    command_merge = "trestle merge -e 'metadata.roles,metadata.responsible-parties'"
+    execute_command_and_assert(command_merge, 0, monkeypatch)
+    assert (tmp_trestle_dir / 'catalogs/mycatalog/catalog').exists()
+    assert not (tmp_trestle_dir / 'catalogs/mycatalog/catalog/metadata').exists()
