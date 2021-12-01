@@ -77,7 +77,7 @@ class Trestle(CommandBase):
     }
 
     logger.debug(discovered_plugins)
-    for plugin, value in discovered_plugins.items():
+    for plugin, value in discovered_plugins.items():  # pragma: nocover
         for _, module, _ in pkgutil.iter_modules([pathlib.Path(value.__path__[0], 'commands')]):
             logger.debug(module)
             command_module = importlib.import_module(f'{plugin}.commands.{module}')
