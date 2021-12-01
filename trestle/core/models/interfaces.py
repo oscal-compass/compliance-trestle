@@ -14,7 +14,7 @@
 """Interfaces for use within other trestle functions defined as pydantic data models."""
 from typing import Dict, Optional
 
-from pydantic import BaseModel, Extra
+from pydantic import Extra
 
 import trestle.oscal.assessment_plan as o_ap
 import trestle.oscal.assessment_results as o_ar
@@ -23,9 +23,10 @@ import trestle.oscal.component as o_component
 import trestle.oscal.poam as o_poam
 import trestle.oscal.profile as o_profile
 import trestle.oscal.ssp as o_ssp
+from trestle.core.trestle_base_model import TrestleBaseModel
 
 
-class OSCALAssembly(BaseModel):
+class OSCALAssembly(TrestleBaseModel):
     """Data model to represent an assembled set of OSCAL objects.
 
     Here the assembly represents the constraints as expected by the current OSCAL

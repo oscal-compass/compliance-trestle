@@ -30,6 +30,7 @@ import trestle.core.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.core.commands.split import SplitCmd
+from trestle.core.err import TrestleError
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
@@ -82,14 +83,17 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path, mon
 
 
 @pytest.mark.parametrize(
-    'name, mode, parent',
+    'name, mode, parent, exception',
     [
-        ('my_test_model', '-f', False), ('my_test_model', '-n', False), ('my_test_model', '-f', True),
-        ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('foo', '-n', False),
-        ('my_test_model', '-x', False)
+        ('my_test_model', '-f', False, TrestleError), ('my_test_model', '-n', False, SystemExit),
+        ('my_test_model', '-f', True, TrestleError), ('my_test_model', '-t', False, TrestleError),
+        ('my_test_model', '-a', False, TrestleError), ('foo', '-n', False, SystemExit),
+        ('my_test_model', '-x', False, SystemExit)
     ]
 )
-def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_validation_unhappy(
+    name, mode, parent, exception, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
     """Test failure modes of validation."""
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
@@ -117,10 +121,9 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path, m
         testcmd = 'trestle validate -a'
 
     monkeypatch.setattr(sys, 'argv', testcmd.split())
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        cli.run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 1
+    with pytest.raises(exception):
+        rc = cli.run()
+        assert rc == 1
 
 
 @pytest.mark.parametrize(
@@ -166,13 +169,11 @@ def test_role_refs_validator(
     assert pytest_wrapped_e.value.code == code
 
 
-@pytest.mark.parametrize('code', [0, 1])
+@pytest.mark.parametrize('code', [0])
 def test_oscal_version_validator(
     tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int, monkeypatch: MonkeyPatch
 ) -> None:
     """Test oscal version validator."""
-    if code:
-        sample_catalog_minimal.metadata.oscal_version.__root__ = '1.0.0-rc1'
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
     sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
@@ -182,6 +183,34 @@ def test_oscal_version_validator(
         cli.run()
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == code
+
+
+def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation fails for bad oscal version. Short pydantic message should be printed."""
+    catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_bad_oscal_version.json'
+    mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
+    mycat_dir.mkdir()
+    catalog = mycat_dir / 'catalog.json'
+    catalog.touch()
+    shutil.copyfile(catalog_path, catalog)
+    testcmd = f'trestle validate -f {catalog}'
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(TrestleError):
+        cli.run()
+
+
+def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test validation fails for oscal with extra fields. Full pydantic message should be printed."""
+    catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_extra_fields.json'
+    mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
+    mycat_dir.mkdir()
+    catalog = mycat_dir / 'catalog.json'
+    catalog.touch()
+    shutil.copyfile(catalog_path, catalog)
+    testcmd = f'trestle validate -f {catalog}'
+    monkeypatch.setattr(sys, 'argv', testcmd.split())
+    with pytest.raises(TrestleError):
+        cli.run()
 
 
 def test_validate_direct(sample_catalog_minimal: Catalog) -> None:

@@ -86,7 +86,7 @@ class MergeCmd(CommandPlusDocs):
 
         target_model_alias = element_path.get_last()
         logger.debug(f'merge element path list: {element_path} target model alias {target_model_alias}')
-        """1. Load desination model into a stripped model"""
+        # 1. Load desination model into a stripped model
         # Load destination model
         destination_path = element_path.get_preceding_path()
         destination_model_alias = destination_path.get_last()
@@ -110,7 +110,7 @@ class MergeCmd(CommandPlusDocs):
         if destination_model_path.exists():
             logger.debug('dest filename exists so read it')
             destination_model_object = destination_model_type.oscal_read(destination_model_path)
-        """2. If target is wildcard, load distributed destination model and replace destination model."""
+        # 2. If target is wildcard, load distributed destination model and replace destination model.
         # Handle WILDCARD '*' match. Return plan to load the destination model, with its distributed attributes
         if target_model_alias == '*':
             logger.debug('handle target model alias wildcard')
@@ -138,7 +138,7 @@ class MergeCmd(CommandPlusDocs):
         # Get destination model without the target field stripped
         merged_model_type, _ = fs.get_stripped_model_type(destination_model_path, trestle_root,
                                                           aliases_not_to_be_stripped=[target_model_alias])
-        """3. Load Target model. Target model could be stripped"""
+        # 3. Load Target model. Target model could be stripped
         try:
             target_model_type = element_path.get_type(merged_model_type)
         except Exception as e:
@@ -179,14 +179,14 @@ class MergeCmd(CommandPlusDocs):
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
             logger.debug('loaded object has dict and root so set target model object to root contents')
             target_model_object = target_model_object.__dict__['__root__']
-        """4. Insert target model into destination model."""
+        # 4. Insert target model into destination model.
         merged_dict = {}
         if destination_model_object is not None:
             merged_dict = destination_model_object.__dict__
         merged_dict[target_model_alias] = target_model_object
         merged_model_object = merged_model_type(**merged_dict)  # type: ignore
         merged_destination_element = Element(merged_model_object)
-        """5. Create action  plan"""
+        # 5. Create action  plan
         logger.debug(f'create path action clear content: {destination_model_path}')
         reset_destination_action = CreatePathAction(destination_model_path, clear_content=True)
         logger.debug(f'write file action {destination_model_path}')

@@ -160,3 +160,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path,
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
+
+    # profile not available for load
+    test_args = 'trestle author profile-generate -n my_prof -o my_md -v'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1

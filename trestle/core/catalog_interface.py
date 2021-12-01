@@ -17,13 +17,12 @@ import logging
 import pathlib
 from typing import Dict, Iterator, List, Optional, Tuple
 
-from pydantic import BaseModel
-
 import trestle.core.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -48,7 +47,7 @@ class CatalogInterface():
     This class does no direct file i/o.  i/o is performed via ControlIO.
     """
 
-    class ControlHandle(BaseModel):
+    class ControlHandle(TrestleBaseModel):
         """Convenience class for handling controls as members of a group.
 
         group_id: id of parent group or 'catalog' if not in a group
