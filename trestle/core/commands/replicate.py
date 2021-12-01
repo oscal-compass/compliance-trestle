@@ -47,9 +47,7 @@ class ReplicateCmd(CommandPlusDocs):
 
         self.add_argument('-o', '--output', help='Name of replicated model.', type=str, required=True)
 
-        self.add_argument(
-            '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
-        )
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
     def _run(self, args: argparse.Namespace) -> int:
         """Execute and process the args."""

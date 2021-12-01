@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Type, Union, cast
 
 import orjson
 
-from pydantic import BaseModel, Extra, Field, create_model
+from pydantic import Extra, Field, create_model
 from pydantic.fields import ModelField
 from pydantic.parse import load_file
 
@@ -42,6 +42,7 @@ from ruamel.yaml import YAML
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.core.utils import classname_to_alias, get_origin, is_collection_field_type
 
 logger = logging.getLogger(__name__)
@@ -72,7 +73,7 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
     return input_dt.astimezone(datetime.timezone.utc).isoformat(timespec='milliseconds')
 
 
-class OscalBaseModel(BaseModel):
+class OscalBaseModel(TrestleBaseModel):
     """
     Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.
 
@@ -322,6 +323,7 @@ class OscalBaseModel(BaseModel):
             logger.error(f'Provided oscal file does not have top level key: {alias}')
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
+            logger.error(f'Failed to parse OSCAL object: {e}')
             raise err.TrestleError(f'Error parsing file {path} {str(e)}')
         return parsed
 

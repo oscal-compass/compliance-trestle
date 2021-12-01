@@ -539,3 +539,102 @@ def test_e2e_backward_compatibility(
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
     assert rc == validate_code
+
+
+def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that ignored files are not validated. Validation will fail if attempted."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/governed_folders/template_folder_with_drawio'
+    test_instances_folder = testdata_dir / 'author/governed_folders/ignored_files'
+    task_instance_folder = tmp_trestle_dir / 'test_task/folder_1'
+
+    hidden_file = testdata_dir / pathlib.Path(
+        'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
+    )
+    test_utils.make_file_hidden(hidden_file)
+
+    test_utils.copy_tree_or_file_with_hidden(test_template_folder, task_template_folder)
+
+    # copy all files
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -ig ^_.*'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+
+def test_fail_when_no_task(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that validation fails when task does not exists."""
+    command_validate = 'trestle author folders validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_validate.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+
+def test_instance_no_header(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating instance with no header."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/governed_folders/template_folder'
+    test_instances_folder = testdata_dir / 'author/governed_folders/bad_instance_no_header'
+    task_instance_folder = tmp_trestle_dir / 'test_task/folder_1'
+
+    hidden_file = testdata_dir / pathlib.Path(
+        'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
+    )
+    test_utils.make_file_hidden(hidden_file)
+
+    test_utils.copy_tree_or_file_with_hidden(test_template_folder, task_template_folder)
+
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -hv'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -tv 0.0.1 -hv'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+
+def test_drawio_versioning_validation(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating drawio instance."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/governed_folders/template_folder_with_version'
+    test_instances_folder = testdata_dir / 'author/governed_folders/good_instance_with_version'
+    task_instance_folder = tmp_trestle_dir / 'test_task/folder_1'
+
+    hidden_file = testdata_dir / pathlib.Path(
+        'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
+    )
+    test_utils.make_file_hidden(hidden_file)
+
+    test_utils.copy_tree_or_file_with_hidden(test_template_folder, task_template_folder)
+
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -hv'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -hv -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0

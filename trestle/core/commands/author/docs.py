@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import re
 import shutil
 import traceback
 from typing import Optional
@@ -57,6 +58,9 @@ class Docs(AuthorCommonCommand):
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
+        )
+        self.add_argument(
+            author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
         )
         self.add_argument(
             author_const.RECURSE_SHORT, author_const.RECURSE_LONG, help=author_const.RECURSE_HELP, action='store_true'
@@ -106,7 +110,8 @@ class Docs(AuthorCommonCommand):
                     args.header_only_validate,
                     args.recurse,
                     args.readme_validate,
-                    args.template_version
+                    args.template_version,
+                    args.ignore
                 )
 
             return status
@@ -205,7 +210,8 @@ class Docs(AuthorCommonCommand):
         validate_only_header: bool,
         recurse: bool,
         readme_validate: bool,
-        template_version: Optional[str] = None
+        template_version: Optional[str] = None,
+        ignore: Optional[str] = None
     ) -> int:
         """
         Validate md files in a directory with option to recurse.
@@ -222,9 +228,16 @@ class Docs(AuthorCommonCommand):
                             f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
                         )
                         continue
-                    if not readme_validate:
-                        if item_path.name.lower() == 'readme.md':
+                    if not readme_validate and item_path.name.lower() == 'readme.md':
+                        continue
+
+                    if ignore:
+                        p = re.compile(ignore)
+                        matched = p.match(item_path.parts[-1])
+                        if matched is not None:
+                            logger.info(f'Ignoring file {item_path} from validation.')
                             continue
+
                     md_api = MarkdownAPI()
                     if template_version != '':
                         template_file = self.template_dir / self.template_name
@@ -250,14 +263,24 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
-                    if not self._validate_dir(governed_heading,
-                                              item_path,
-                                              validate_header,
-                                              validate_only_header,
-                                              recurse,
-                                              readme_validate,
-                                              template_version):
-                        status = 1
+                    if ignore:
+                        p = re.compile(ignore)
+                        if len(list(filter(p.match, str(item_path.relative_to(md_dir)).split('/')))) > 0:
+                            logger.info(f'Ignoring directory {item_path} from validation.')
+                            continue
+                    rc = self._validate_dir(
+                        governed_heading,
+                        item_path,
+                        validate_header,
+                        validate_only_header,
+                        recurse,
+                        readme_validate,
+                        template_version,
+                        ignore
+                    )
+                    if rc != 0:
+                        status = rc
+
         return status
 
     def validate(
@@ -267,7 +290,8 @@ class Docs(AuthorCommonCommand):
         validate_only_header: bool,
         recurse: bool,
         readme_validate: bool,
-        template_version: str
+        template_version: str,
+        ignore: str
     ) -> int:
         """
         Validate task.
@@ -284,6 +308,7 @@ class Docs(AuthorCommonCommand):
         """
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+            return 1
         return self._validate_dir(
             governed_heading,
             self.task_path,
@@ -291,5 +316,6 @@ class Docs(AuthorCommonCommand):
             validate_only_header,
             recurse,
             readme_validate,
-            template_version
+            template_version,
+            ignore
         )

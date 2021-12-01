@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import re
 from typing import List
 
 import trestle.core.commands.author.consts as author_const
@@ -69,7 +70,9 @@ class Headers(AuthorCommonCommand):
             help=author_const.TEMPLATE_VERSION_HELP,
             action='store'
         )
-
+        self.add_argument(
+            author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
+        )
         self.add_argument(
             author_const.GLOBAL_SHORT, author_const.GLOBAL_LONG, help=author_const.GLOBAL_HELP, action='store_true'
         )
@@ -93,6 +96,9 @@ class Headers(AuthorCommonCommand):
                 logger.warning('Task name (-tn) argument is required when global is not specified')
                 return status
 
+            if args.exclude:
+                logger.warning('--exclude or -e is deprecated, use --ignore instead.')
+
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
@@ -105,7 +111,9 @@ class Headers(AuthorCommonCommand):
                 if args.exclude:
                     exclusions = args.exclude
                 # mode is validate
-                status = self.validate(args.recurse, args.readme_validate, exclusions, args.template_version)
+                status = self.validate(
+                    args.recurse, args.readme_validate, exclusions, args.template_version, args.ignore
+                )
             return status
         except TrestleError as e:
             logger.error(f'Error occurred when running trestle author headers: {e}')
@@ -172,7 +180,8 @@ class Headers(AuthorCommonCommand):
         recurse: bool,
         readme_validate: bool,
         relative_exclusions: List[pathlib.Path],
-        template_version: str
+        template_version: str,
+        ignore: str
     ) -> bool:
         """Validate a directory within the trestle project."""
         all_versioned_templates = {}
@@ -182,6 +191,14 @@ class Headers(AuthorCommonCommand):
         instances = list(candidate_dir.iterdir())
         if recurse:
             instances = candidate_dir.rglob('*')
+            if ignore:
+                p = re.compile(ignore)
+                instances = list(
+                    filter(
+                        lambda f: len(list(filter(p.match, str(f.relative_to(candidate_dir)).split('/')))) == 0,
+                        instances
+                    )
+                )
         for instance_file in instances:
             if not fs.local_and_visible(instance_file):
                 continue
@@ -191,6 +208,12 @@ class Headers(AuthorCommonCommand):
                 continue
             if any(str(ex) in str(instance_file) for ex in relative_exclusions):
                 continue
+            if ignore:
+                p = re.compile(ignore)
+                matched = p.match(instance_file.parts[-1])
+                if matched is not None:
+                    logger.info(f'Ignoring file {instance_file} from validation.')
+                    continue
             instance_file_name = instance_file.relative_to(candidate_dir)
             instance_file_names.append(instance_file_name)
             if instance_file.suffix == '.md':
@@ -273,7 +296,12 @@ class Headers(AuthorCommonCommand):
         return True
 
     def validate(
-        self, recurse: bool, readme_validate: bool, relative_excludes: List[pathlib.Path], template_version: str
+        self,
+        recurse: bool,
+        readme_validate: bool,
+        relative_excludes: List[pathlib.Path],
+        template_version: str,
+        ignore: str
     ) -> int:
         """Run validation based on available templates."""
         paths = []
@@ -299,7 +327,7 @@ class Headers(AuthorCommonCommand):
 
         for path in paths:
             try:
-                valid = self._validate_dir(path, recurse, readme_validate, relative_excludes, template_version)
+                valid = self._validate_dir(path, recurse, readme_validate, relative_excludes, template_version, ignore)
                 if not valid:
                     logger.info(f'validation failed on {path}')
                     return CmdReturnCodes.DOCUMENTS_VALIDATION_ERROR.value

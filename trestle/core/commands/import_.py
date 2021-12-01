@@ -19,6 +19,7 @@ import logging
 import pathlib
 
 import trestle.core.commands.validate as validatecmd
+from trestle.core import const
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -47,9 +48,7 @@ class ImportCmd(CommandPlusDocs):
 
         self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
 
-        self.add_argument(
-            '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
-        )
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
     def _run(self, args: argparse.Namespace) -> int:
         """Top level import run command."""
@@ -79,6 +78,9 @@ class ImportCmd(CommandPlusDocs):
             model_read, parent_alias = fetcher.get_oscal(True)
         except TrestleError as err:
             logger.warning(f'Error importing file: {err}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:
+            logger.warning(f'Error importing file: {e}')
             return CmdReturnCodes.COMMAND_ERROR.value
 
         plural_path = fs.model_type_to_model_dir(parent_alias)
