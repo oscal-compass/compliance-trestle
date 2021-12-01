@@ -15,6 +15,7 @@
 """Starting point for the Trestle CLI."""
 
 import importlib
+import inspect
 import logging
 import pathlib
 import pkgutil
@@ -23,6 +24,7 @@ from trestle.core import const
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
+from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.describe import DescribeCmd
@@ -43,7 +45,7 @@ from trestle.utils import log
 logger = logging.getLogger('trestle')
 
 
-class Trestle(CommandPlusDocs):
+class Trestle(CommandBase):
     """Manage OSCAL files in a human friendly manner."""
 
     subcommands = [
@@ -74,11 +76,20 @@ class Trestle(CommandPlusDocs):
         if name.startswith('trestle_')
     }
 
-    logger.info(discovered_plugins)
-    if 'trestle_fedramp' in discovered_plugins:
-        fedramp_validate = importlib.import_module('trestle_fedramp.commands.validate')
-        subcommands.append(fedramp_validate.ValidateCmd)
-        logger.info('fedramp-validate command added')
+    logger.debug(discovered_plugins)
+    for plugin, value in discovered_plugins.items():
+        for _, module, _ in pkgutil.iter_modules([pathlib.Path(value.__path__[0], 'commands')]):
+            logger.debug(module)
+            command_module = importlib.import_module(f'{plugin}.commands.{module}')
+            clsmembers = inspect.getmembers(command_module, inspect.isclass)
+            logger.debug(clsmembers)
+            for _, cmd_cls in clsmembers:
+                # add commands (derived from CommandPlusDocs or CommandBase) to subcommands list
+                if issubclass(cmd_cls, CommandBase):
+                    # don't add CommandPlusDocs or CommandBase
+                    if cmd_cls is not CommandPlusDocs and cmd_cls is not CommandBase:
+                        subcommands.append(cmd_cls)
+                        logger.info(f'{cmd_cls} added to subcommands from plugin {plugin}')
 
     def _init_arguments(self) -> None:
         self.add_argument('-v', '--verbose', help=const.DISPLAY_VERBOSE_OUTPUT, action='count', default=0)
