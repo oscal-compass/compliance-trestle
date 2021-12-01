@@ -77,6 +77,7 @@ class Trestle(CommandBase):
     }
 
     logger.debug(discovered_plugins)
+    # This block is uncovered as trestle cannot find plugins in it's unit tests - it is the base module.
     for plugin, value in discovered_plugins.items():  # pragma: nocover
         for _, module, _ in pkgutil.iter_modules([pathlib.Path(value.__path__[0], 'commands')]):
             logger.debug(module)
