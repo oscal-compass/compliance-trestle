@@ -546,12 +546,12 @@ def test_instance_no_header(
     command_string_validate_content = 'trestle author headers validate -tn test_task'
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == 3
 
     command_string_validate_content = 'trestle author headers validate -tn test_task -tv 0.0.1'
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == 3
 
     command_string_validate_content = 'trestle author headers validate -tv 0.0.1'
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
