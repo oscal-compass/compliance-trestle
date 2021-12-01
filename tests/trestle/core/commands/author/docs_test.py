@@ -158,7 +158,7 @@ def test_e2e(
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
     if recurse:
         # choose source file based on expected result
-        sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
+        sub_file_name = 'bad_instance_missing_heading.md' if validate_code else 'correct_instance_extra_features.md'
         sub_file_path = testdata_dir / 'author/0.0.1/test_1_md_format' / sub_file_name
         subdir = tmp_trestle_dir / task_name / 'subdir'
         subdir.mkdir()
@@ -246,7 +246,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
     if recurse:
         # choose source file based on expected result
-        sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
+        sub_file_name = 'bad_instance_missing_heading.md' if validate_code else 'correct_instance_extra_features.md'
         sub_file_path = testdata_dir / 'author/0.0.1/test_1_md_format' / sub_file_name
         subdir = tmp_trestle_dir / task_name / 'subdir'
         subdir.mkdir()
@@ -473,7 +473,7 @@ def test_e2e_backward_compatibility(
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
     if recurse:
         # choose source file based on expected result
-        sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
+        sub_file_name = 'bad_instance_missing_heading.md' if validate_code else 'correct_instance_extra_features.md'
         sub_file_path = testdata_dir / 'author/0.0.1/test_1_md_format' / sub_file_name
         subdir = tmp_trestle_dir / task_name / 'subdir'
         subdir.mkdir()
@@ -483,3 +483,119 @@ def test_e2e_backward_compatibility(
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = trestle.cli.Trestle().run()
     assert rc == validate_code
+
+
+def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that ignored files are not validated. Validation will fail if attempted."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    author_template = task_template_folder / 'template.md'
+    test_data_folder = testdata_dir / 'author/0.0.1/test_5_md_ignored'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+    task_template_folder.mkdir(exist_ok=True, parents=True)
+    author_template.touch()
+    shutil.copyfile(test_data_folder / 'template.md', author_template)
+
+    # copy all files
+    shutil.copytree(test_data_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.*'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.* -r'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -r'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+
+def test_fail_when_no_task(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that validation fails when task does not exists."""
+    command_validate = 'trestle author docs validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_validate.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+
+def test_fail_when_no_template(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test that validation fails when template does not exists."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    source_instance = testdata_dir / 'author/0.0.1/test_1_md_format/correct_instance.md'
+    task_instance = tmp_trestle_dir / 'test_task/correct_instance.md'
+    task_template_folder.mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / 'test_task').mkdir(parents=True)
+    task_instance.touch()
+    shutil.copyfile(source_instance, task_instance)
+
+    command_validate = 'trestle author docs validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_validate.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+
+def test_instance_no_header(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating instance with no header."""
+    test_data_folder = testdata_dir / 'author/0.0.1/test_1_md_format'
+    bad_source_instance = test_data_folder / 'bad_instance_no_header.md'
+
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+    task_template = task_template_folder / 'template.md'
+    task_instance = task_instance_folder / 'no_header_instance.md'
+    task_template_folder.mkdir(exist_ok=True, parents=True)
+    task_instance_folder.mkdir(parents=True)
+
+    shutil.copy(test_data_folder / 'template.md', task_template)
+    shutil.copy(bad_source_instance, task_instance)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -tv 0.0.1 -hv'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+    # place bad instance in subfolder
+    good_source_instance = test_data_folder / 'correct_instance.md'
+    shutil.copyfile(good_source_instance, task_instance)
+    (task_instance_folder / 'subfolder').mkdir(parents=True)
+    shutil.copy(bad_source_instance, task_instance_folder / 'subfolder/bad_instance.md')
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -hv -r'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1
+
+
+def test_template_validate_no_template(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test that template validation fails when no template."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    task_template_folder.mkdir(exist_ok=True, parents=True)
+    command_validate = 'trestle author docs template-validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_validate.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 1

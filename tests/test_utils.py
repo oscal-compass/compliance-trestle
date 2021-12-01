@@ -358,3 +358,10 @@ def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: Top
     """Load the model and extract its uuid."""
     model, _ = fs.load_top_level_model(trestle_root, model_name, model_class)
     return model.uuid
+
+
+def execute_command_and_assert(command: str, return_code: int, monkeypatch: MonkeyPatch) -> None:
+    """Execute given command using monkeypatch and assert return code."""
+    monkeypatch.setattr(sys, 'argv', command.split())
+    rc = Trestle().run()
+    assert rc == return_code
