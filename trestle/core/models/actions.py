@@ -15,6 +15,7 @@
 
 import io
 import logging
+import os
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -354,10 +355,14 @@ class RemovePathAction(Action):
         """Execute the action."""
         if not self._sub_path.exists():
             logger.debug(f'path {self._sub_path} does not exist in remove path action - ignoring.')
-            # silently ignore until plan/execute made robust
-            # raise TrestleError(f'Path "{self._sub_path}" does not exist in remove path action') # noqa: E800
 
         trash.store(self._sub_path, True)
+
+        # check if parent folder is empty and if so delete
+        parent_dir = pathlib.Path(os.path.dirname(self._sub_path))
+        files = list(parent_dir.iterdir())
+        if not files:
+            trash.store(parent_dir, True)
         self._mark_executed()
 
     def rollback(self) -> None:
