@@ -24,13 +24,13 @@ from pkg_resources import resource_filename
 
 import trestle.core.const as const
 import trestle.utils.log as log
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.command_docs import CommandBase
 from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
 
-class InitCmd(CommandPlusDocs):
+class InitCmd(CommandBase):
     """Initialize a trestle working directory."""
 
     name = 'init'
