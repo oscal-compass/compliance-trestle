@@ -247,6 +247,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     orig_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
+    assert len(orig_ssp.system_implementation.components) == 2
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
@@ -262,6 +263,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
+    assert orig_ssp.system_implementation == repeat_ssp.system_implementation
+    assert len(repeat_ssp.system_implementation.components) == 2
 
     found_it = False
     for imp_req in repeat_ssp.control_implementation.implemented_requirements:

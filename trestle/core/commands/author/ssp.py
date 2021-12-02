@@ -134,7 +134,7 @@ class SSPAssemble(AuthorCommonCommand):
 
         If a statement has same id and same by_comp uuid as ssp, use the ssp version with new description.
         Otherwise just insert the statement.
-        When the statement was loaded it had access to the current components so the uuids should match if present.
+        When the statement was loaded it had access to the current components so the uuids should match.
         """
         id_map: Dict[str, Dict[str, ossp.Statement]] = {}
         control_map: Dict[str, ossp.ImplementedRequirement] = {}
@@ -178,32 +178,29 @@ class SSPAssemble(AuthorCommonCommand):
             trestle_root, args.output, ossp.SystemSecurityPlan, fs.FileContentType.JSON
         )
         ssp: ossp.SystemSecurityPlan
+        comp_dict: Dict[str, ossp.SystemComponent] = {}
 
         try:
             # need to load imp_reqs from markdown but need component first
             if ssp_path.exists():
                 # load the existing json ssp
                 _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
-                comp_dict = {}
                 for component in ssp.system_implementation.components:
                     comp_dict[component.title] = component
-                # read the new imp reqs from markdown
+                # read the new imp reqs from markdown and have them reference existing components
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
                 self._merge_imp_reqs(ssp, imp_reqs, args.regenerate)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-                # generate the one dummy component that implementations will refer to in by_components
-                comp_dict = {}
+                # load the imp_reqs from markdown and create components as needed, referenced by ### headers
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
 
-                # create system implementation to hold the dummy component
+                # create system implementation
                 system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
-                system_imp.components = []
-                for comp in comp_dict.values():
-                    system_imp.components.append(comp)
+                ssp.system_implementation = system_imp
 
-                # create a control implementation to hold the implementation requirements
+                # create a control implementation to hold the implementated requirements
                 control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
                 control_imp.implemented_requirements = imp_reqs
                 control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
@@ -212,9 +209,16 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.control_implementation = control_imp
                 ssp.system_implementation = system_imp
 
+                # we don't have access to the original profile so we don't know the href
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = 'REPLACE_ME'
                 ssp.import_profile = import_profile
+
+            # now that we know the complete list of needed components, add them to the sys_imp
+            # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
+            ssp.system_implementation.components = []
+            for comp in comp_dict.values():
+                ssp.system_implementation.components.append(comp)
 
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')

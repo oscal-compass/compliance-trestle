@@ -23,7 +23,5 @@ x-trestle-fedramp-props:
       completion-date: date_string
     - alternative: describe alternative
     - not-applicable: provide justification
-  responsible_roles:
+  responsible-roles:
     - id: role-id
-      title: title
-      description: description

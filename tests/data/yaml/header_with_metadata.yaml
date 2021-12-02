@@ -23,10 +23,6 @@ x-trestle-fedramp-props:
       completion-date: 2050-11-22
     - alternative: we may find other gizmo
     - not-applicable: actually we do not need this at all
-  responsible_roles:
+  responsible-roles:
     - id: admin-unix
-      title: Unix Administrator
-      description: System Manager, System Architect, ISSO
     - id: ux-coder
-      title: UX SDE
-      description: User Experience Developer, Software Engineer, ACME

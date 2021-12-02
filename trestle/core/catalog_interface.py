@@ -15,6 +15,7 @@
 
 import logging
 import pathlib
+import re
 from typing import Dict, Iterator, List, Optional, Tuple
 
 import trestle.core.const as const
@@ -332,11 +333,51 @@ class CatalogInterface():
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
         """Get the list of group ids from the directories in the markdown path."""
-        group_ids: List[str] = []
+        # need to start with empty list to find controls not in group
+        group_ids: List[str] = ['']
 
         for gdir in md_path.glob('*/'):
-            group_ids.append(str(gdir.stem))
-        return group_ids
+            if gdir.is_dir():
+                group_ids.append(str(gdir.stem))
+        return sorted(group_ids)
+
+    @staticmethod
+    def _get_control_paths(group_path: pathlib.Path) -> List[pathlib.Path]:
+        """Need to parse control id and sort based on internals."""
+        control_paths = list(group_path.glob('*.md'))
+        control_map = {}
+        for control_path in control_paths:
+            control_id = control_path.stem
+            label = control_id
+            digits = 0
+            frac = 0
+            extra = ''
+            # first break off ac from ac-11.21
+            if '-' in control_id:
+                dash_split = control_id.split('-', 1)
+                label = dash_split[0]
+                remainder = dash_split[1]
+                # now try to extract 11 and 21
+                matches = re.search(r'([0-9]+)\.([0-9]+)(.*)', remainder)
+                if matches:
+                    tup = matches.groups()
+                    digits = int(tup[0])
+                    frac = int(tup[1])
+                    extra = tup[2]
+                else:
+                    # look for 11 with no decimal
+                    # this is needed so ac-2 comes before ac-11
+                    matches = re.search(r'([0-9]+)(.*)', remainder)
+                    if matches:
+                        tup = matches.groups()
+                        digits = int(tup[0])
+                        extra = tup[1]
+                    else:
+                        extra = remainder
+            # create the 4 keys used for sorting
+            control_map[control_path] = (label, digits, frac, extra)
+
+        return sorted(control_paths, key=lambda x: control_map[x])
 
     def read_catalog_from_markdown(self, md_path: pathlib.Path) -> cat.Catalog:
         """
@@ -350,21 +391,18 @@ class CatalogInterface():
         groups: List[cat.Group] = []
         # read each group dir
         for group_id in group_ids:
-            new_group = cat.Group(id=group_id, title='')
             group_dir = md_path / group_id
-            for control_path in group_dir.glob('*.md'):
+            control_list = []
+            for control_path in CatalogInterface._get_control_paths(group_dir):
                 control = ControlIOReader.read_control(control_path)
-                if not new_group.controls:
-                    new_group.controls = []
-                new_group.controls.append(control)
-            groups.append(new_group)
+                control_list.append(control)
+            if group_id:
+                new_group = cat.Group(id=group_id, title='')
+                new_group.controls = control_list
+                groups.append(new_group)
+            else:
+                self._catalog.controls = control_list
         self._catalog.groups = groups if groups else None
-        # now read any controls that aren't in a group
-        controls: List[cat.Control] = []
-        for control_path in md_path.glob('*.md'):
-            control = ControlIOReader.read_control(control_path)
-            controls.append(control)
-        self._catalog.controls = controls if controls else None
         return self._catalog
 
     @staticmethod
@@ -377,15 +415,19 @@ class CatalogInterface():
             avail_comps: Dict mapping component names to known components
 
         Returns:
-            list of implemented requirements gathered from each control
+            List of implemented requirements gathered from each control
+
+        Notes:
+            As the controls are read into the catalog the needed components are added if not already available.
+            avail_comps provides the mapping of component name to the actual component.
         """
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         imp_reqs: List[ossp.ImplementedRequirement] = []
         for group_id in group_ids:
             group_path = md_path / group_id
-            for control_file in group_path.glob('*.md'):
-                imp_reqs.append(ControlIOReader.read_implementation_requirement(control_file, avail_comps))
+            for control_file in CatalogInterface._get_control_paths(group_path):
+                imp_reqs.append(ControlIOReader.read_implemented_requirement(control_file, avail_comps))
         return imp_reqs
 
     @staticmethod

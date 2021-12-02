@@ -29,7 +29,7 @@ from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.core.utils import spaces_and_caps_to_snake
+from trestle.core.utils import as_list, spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -37,13 +37,11 @@ logger = logging.getLogger(__name__)
 
 
 class ControlIOWriter():
-    """Class write controls as markdown."""
+    """Class to write controls as markdown."""
 
     def __init__(self):
         """Initialize the class."""
         self._md_file: Optional[MDWriter] = None
-
-    # Start of section to write controls to markdown
 
     @staticmethod
     def _wrap_label(label: str):
@@ -410,9 +408,6 @@ class ControlIOWriter():
             self._add_additional_content(control, profile)
 
         self._md_file.write_out()
-
-
-# Start of section to read controls from markdown
 
 
 class ControlIOReader():
@@ -808,9 +803,12 @@ class ControlIOReader():
         Returns:
             Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
             Also returns the yaml header as dict in second part of tuple.
+            This does not generate components - it only tracks component names and associated responses.
         """
         comp_dict = {}
         yaml_header = {}
+        # this level only adds for top level component but add_node_to_dict can add for other components
+        comp_name = const.SSP_MAIN_COMP_NAME
         try:
             if not control_file.exists():
                 return comp_dict, yaml_header
@@ -819,35 +817,132 @@ class ControlIOReader():
 
             imp_string = 'Implementation'
             headers = control.get_all_headers_for_key(imp_string, False)
-            for header in headers:
-                tokens = header.split(' ', 2)
-                if tokens[0] == '##' and tokens[1] == imp_string:
-                    label = tokens[2].strip()
-                    comp_name = const.SSP_MAIN_COMP_NAME
+            if not headers:
+                # if statement has no parts there is only one response for entire control
+                headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
+                # should be only one header
+                for header in headers:
                     node = control.get_node_for_key(header)
-                    ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node)
+                    ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node)
+            else:
+                for header in headers:
+                    tokens = header.split(' ', 2)
+                    if tokens[0] == '##' and tokens[1] == imp_string:
+                        label = tokens[2].strip()
+                        node = control.get_node_for_key(header)
+                        ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node)
+
         except TrestleError as e:
             logger.error(f'Error occurred reading {control_file}')
             raise e
         return comp_dict, yaml_header
 
     @staticmethod
-    def read_implementation_requirement(
+    def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any]) -> None:
+        """Insert yaml header content into the imp_req and its by_comps."""
+        dict_ = header.get(const.SSP_FEDRAMP_TAG, {})
+        control_orig = dict_.get(const.CONTROL_ORIGINATION, [])
+        imp_status = dict_.get(const.IMPLEMENTATION_STATUS, [])
+        roles = dict_.get(const.RESPONSIBLE_ROLES, [])
+        props = []
+        responsible_roles = []
+        for co in control_orig:
+            if isinstance(co, str):
+                props.append(common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=co))
+            elif isinstance(co, dict):
+                if const.INHERITED in co:
+                    uuid = co[const.INHERITED]
+                    props.append(common.Property(name=const.LEV_AUTH_UUID, value=uuid))
+                    props.append(
+                        common.Property(
+                            ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=const.INHERITED
+                        )
+                    )
+                else:
+                    raise TrestleError(f'Unexpected dict in control yaml header: {co}')
+            else:
+                raise TrestleError(f'Unexpected structure in control yaml header: {co}')
+        for status in imp_status:
+            if isinstance(status, str):
+                props.append(
+                    common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.IMPLEMENTATION_STATUS, value=status)
+                )
+            elif isinstance(status, dict):
+                if const.PLANNED in status:
+                    if const.COMPLETION_DATE not in status:
+                        raise TrestleError(
+                            f'Planned status in control yaml header must specify completion date: {status}'
+                        )
+                    props.append(
+                        common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED, value=status[const.PLANNED])
+                    )
+                    datestr = status[const.COMPLETION_DATE]
+                    if not isinstance(datestr, str):
+                        datestr = datestr.strftime('%m-%d-%Y')
+                    props.append(
+                        common.Property(ns=const.NAMESPACE_FEDRAMP, name='planned-completion-date', value=datestr)
+                    )
+                else:
+                    if len(status) != 1:
+                        raise TrestleError(f'Unexpected deep dictionary in control yaml header: {status}')
+                    value = list(status.keys())[0]
+                    remark = list(status.values())[0]
+                    props.append(
+                        common.Property(
+                            ns=const.NAMESPACE_FEDRAMP,
+                            name=const.IMPLEMENTATION_STATUS,
+                            value=value,
+                            remarks=common.Remarks(__root__=remark)
+                        )
+                    )
+            else:
+                raise TrestleError(f'Unexpected structure in control yaml header: {status}')
+        for role in roles:
+            if isinstance(role, dict) and len(role) == 1:
+                key = list(role.keys())[0]
+                value = list(role.values())[0]
+                if key != 'id':
+                    raise TrestleError(f'Role in control yaml header must have id as key value: {role}')
+                responsible_roles.append(common.ResponsibleRole(role_id=value))
+        if props:
+            imp_req.props = as_list(imp_req.props)
+            imp_req.props.extend(props)
+        if responsible_roles:
+            imp_req.responsible_roles = as_list(imp_req.responsible_roles)
+            imp_req.responsible_roles.extend(responsible_roles)
+
+    @staticmethod
+    def read_implemented_requirement(
         control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent]
     ) -> ossp.ImplementedRequirement:
-        """Get implementation requirements associated with given control and link to existing component or new one."""
+        """
+        Get the implementated requirement associated with given control and link to existing components or new ones.
+
+        Args:
+            control_file: path of the control markdown file
+            avail_comps: dictionary of known components keyed by component name
+
+        Returns:
+            The one implemented requirement for this control.
+
+        Notes:
+            Each statement may have several responses, with each response in a by_component for a specific component.
+            statement_map keeps track of statements that may have several by_component responses.
+        """
         control_id = control_file.stem
-        comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_file)
+        comp_dict, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
 
         statement_map: Dict[str, ossp.Statement] = {}
         # create a new implemented requirement linked to the control id to hold the statements
         imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
         imp_req.control_id = control_id
 
+        # the comp_dict captures all component names referenced by the control
         for comp_name in comp_dict.keys():
             if comp_name in avail_comps:
                 component = avail_comps[comp_name]
             else:
+                # here is where we create a new component on the fly as needed
                 component = gens.generate_sample_model(ossp.SystemComponent)
                 component.title = comp_name
                 avail_comps[comp_name] = component
@@ -870,6 +965,7 @@ class ControlIOReader():
                 statement.by_components.append(by_comp)
 
         imp_req.statements = list(statement_map.values())
+        ControlIOReader._insert_header_content(imp_req, header)
         return imp_req
 
     @staticmethod

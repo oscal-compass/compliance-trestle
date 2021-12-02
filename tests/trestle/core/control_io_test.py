@@ -21,7 +21,9 @@ import pytest
 
 import tests.test_utils as test_utils
 
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.err import TrestleError
 from trestle.oscal import common
@@ -265,9 +267,22 @@ def test_merge_dicts_deep() -> None:
 def test_control_with_components() -> None:
     """Test loading and parsing of implementated reqs with components."""
     control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
-    comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
-    assert len(comp_dict.keys()) == 3
-    assert len(comp_dict['This System'].keys()) == 3
-    assert len(comp_dict['Trestle Component'].keys()) == 1
-    assert len(comp_dict['Fancy Thing'].keys()) == 2
-    assert comp_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']
+    comp_prose_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
+    assert len(comp_prose_dict.keys()) == 3
+    assert len(comp_prose_dict['This System'].keys()) == 3
+    assert len(comp_prose_dict['Trestle Component'].keys()) == 1
+    assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
+    assert comp_prose_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']
+
+    # need to build the needed components so they can be referenced
+    comp_dict = {}
+    for comp_name in comp_prose_dict.keys():
+        comp = gens.generate_sample_model(ossp.SystemComponent)
+        comp.title = comp_name
+        comp_dict[comp_name] = comp
+
+    # confirm that the header content was inserted into the props of the imp_req
+    imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
+    assert len(imp_req.props) == 12
+    assert len(imp_req.statements) == 3
+    assert len(imp_req.statements[0].by_components) == 3
