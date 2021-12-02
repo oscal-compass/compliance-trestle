@@ -460,3 +460,15 @@ class CatalogInterface():
                 logging.error(f'controls differ: {a.id}')
                 return False
         return True
+
+    def get_sections(self) -> List[str]:
+        """Get the available sections by a full index of all controls."""
+        sections: List[str] = []
+
+        for control in self._control_dict.values():
+            if not control.control.parts:
+                continue
+            for part in control.control.parts:
+                if part.name not in sections:
+                    sections.append(part.name)
+        return sections
