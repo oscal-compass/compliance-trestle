@@ -61,7 +61,7 @@ class TaskCmd(CommandPlusDocs):
             return 1
         if not args.task and not args.list:
             logger.error('Insufficient arguments passed to trestle task')
-            logger.error('Either a trestle task or "-l/--list" shoudl be passed as input arguments.')
+            logger.error('Either a trestle task or "-l/--list" should be passed as input arguments.')
             return 1
         # Ensure trestle directory (must be true)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
