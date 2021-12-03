@@ -22,6 +22,7 @@ import logging
 
 from ilcli import Command
 
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
@@ -51,6 +52,6 @@ class CommandPlusDocs(CommandBase):
         root = fs.get_trestle_project_root(args.trestle_root)
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
-            return 1
+            return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         args.trestle_root = root
-        return 0
+        return CmdReturnCodes.SUCCESS.value

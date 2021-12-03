@@ -28,6 +28,7 @@ import trestle.oscal.ssp as ossp
 from trestle.core import const, err
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.validator_helper import regenerate_uuids
 from trestle.utils import fs, log
@@ -79,7 +80,7 @@ class SSPGenerate(AuthorCommonCommand):
         trestle_root = args.trestle_root
         if not fs.allowed_task_name(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 
@@ -91,7 +92,7 @@ class SSPGenerate(AuthorCommonCommand):
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
                 logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
         markdown_path = trestle_root / args.output
 
@@ -102,7 +103,7 @@ class SSPGenerate(AuthorCommonCommand):
         except Exception as e:
             logger.error(f'Error creating the resolved profile catalog: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         try:
             sections = SSPGenerate._sections_from_args(args)
@@ -113,7 +114,7 @@ class SSPGenerate(AuthorCommonCommand):
             logger.debug(f'ssp sections: {sections}')
         except err.TrestleError:
             logger.warning('"statement" section is not allowed.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         try:
             catalog_interface.write_catalog_as_markdown(
@@ -122,9 +123,9 @@ class SSPGenerate(AuthorCommonCommand):
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -236,7 +237,7 @@ class SSPAssemble(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         # write out the ssp as json
         try:
@@ -244,9 +245,9 @@ class SSPAssemble(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPFilter(AuthorCommonCommand):
@@ -313,7 +314,7 @@ class SSPFilter(AuthorCommonCommand):
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
                 logger.warning('Unable to filter the ssp because the profile references controls not in it.')
                 logger.debug(traceback.format_exc())
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             ssp.control_implementation = control_imp
             if regenerate:
@@ -322,6 +323,6 @@ class SSPFilter(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value

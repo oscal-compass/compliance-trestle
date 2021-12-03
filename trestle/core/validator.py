@@ -20,6 +20,7 @@ from abc import ABC, abstractmethod
 from typing import TypeVar
 
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
@@ -69,12 +70,12 @@ class Validator(ABC):
                     _, _, model = load_distributed(model_path, trestle_root)
                 except TrestleError as e:
                     logger.warning(f'File load error {e}')
-                    return 1
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 if not self.model_is_valid(model):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
-                    return 1
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 logger.info(f'VALID: Model {model_path} passed the {self.error_msg()}')
-            return 0
+            return CmdReturnCodes.SUCCESS.value
 
         # validate all
         if 'all' in args and args.all:
@@ -87,9 +88,9 @@ class Validator(ABC):
                 _, _, model = load_distributed(model_path, trestle_root)
                 if not self.model_is_valid(model):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
-                    return 1
+                    return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
                 logger.info(f'VALID: Model {model_path} passed the {self.error_msg()}')
-            return 0
+            return CmdReturnCodes.SUCCESS.value
 
         # validate file
         if 'file' in args and args.file:
@@ -97,6 +98,6 @@ class Validator(ABC):
             _, _, model = load_distributed(file_path, trestle_root)
             if not self.model_is_valid(model):
                 logger.info(f'INVALID: Model {file_path} did not pass the {self.error_msg()}')
-                return 1
+                return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
             logger.info(f'VALID: Model {file_path} passed the {self.error_msg()}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value

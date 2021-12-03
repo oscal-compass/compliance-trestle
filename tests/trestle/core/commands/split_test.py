@@ -29,7 +29,7 @@ import trestle.cli
 from trestle.cli import Trestle
 from trestle.core import const
 from trestle.core import utils
-from trestle.core.commands import cmd_utils
+from trestle.core.commands.common import cmd_utils
 from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.err import TrestleError
@@ -388,8 +388,8 @@ def test_split_run_failures(
         'component-definition.metadata, component-definition.components.*'
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(TrestleError):
-        Trestle().run()
+    rc = Trestle().run()
+    assert rc == 1
 
 
 def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.Catalog) -> None:

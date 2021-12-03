@@ -144,7 +144,7 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
     # Force PermissionError:
     monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_permission_error)
     rc = ReplicateCmd.replicate_object('catalog', args)
-    assert rc == 1
+    assert rc == 7
 
     # Force TrestleError only:
     monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_error)
