@@ -74,11 +74,13 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
-    if part_label not in responses:
-        return False
-    prose = '\n'.join(responses[part_label])
-    return seek_str in prose
+    comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
+    for label_dict in comp_dict.values():
+        if part_label in label_dict:
+            prose = '\n'.join(label_dict[part_label])
+            if seek_str in prose:
+                return True
+    return False
 
 
 @pytest.mark.parametrize('import_cat', [False, True])
@@ -226,9 +228,10 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
+    acme_string = 'Do the ACME requirements'
 
     prose_a = 'Hello there\n  How are you\n line with more text\n\ndouble line'
-    prose_b = 'This is fun\nline with *bold* text'
+    prose_b = 'This is fun\nline with *bold* text\n\n### ACME Component\n\n' + acme_string
 
     # edit it a bit
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
@@ -247,6 +250,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     orig_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
+    assert len(orig_ssp.system_implementation.components) == 2
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
@@ -261,7 +265,24 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
-    assert orig_ssp == repeat_ssp
+    assert orig_ssp.control_implementation == repeat_ssp.control_implementation
+    assert orig_ssp.system_implementation == repeat_ssp.system_implementation
+    assert len(repeat_ssp.system_implementation.components) == 2
+
+    found_it = False
+    for imp_req in repeat_ssp.control_implementation.implemented_requirements:
+        if imp_req.control_id == 'ac-1':
+            statements = imp_req.statements
+            assert len(statements) == 3
+            for statement in statements:
+                for by_component in statement.by_components:
+                    if by_component.description == acme_string:
+                        found_it = True
+                        assert len(statement.by_components) == 2
+                        break
+        if found_it:
+            break
+    assert found_it
 
     # assemble it again but regen uuid's
     args = argparse.Namespace(
@@ -382,3 +403,30 @@ def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
     )
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 1
+
+
+def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test parsing of metadata from yaml header."""
+    catalog = test_utils.generate_complex_catalog()
+    fs.save_top_level_model(catalog, tmp_trestle_dir, 'complex_cat', fs.FileContentType.JSON)
+    prof_name = 'test_profile_c'
+    ssp_name = 'my_ssp'
+    profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / f'{prof_name}.json')
+    fs.save_top_level_model(profile, tmp_trestle_dir, prof_name, fs.FileContentType.JSON)
+    header_path = test_utils.YAML_TEST_DATA_PATH / 'header_with_metadata.yaml'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=False,
+        sections=None,
+        yaml_header=header_path,
+        header_dont_merge=False
+    )
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    # create ssp from the markdown
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=False)
+    assert ssp_assemble._run(args) == 0
