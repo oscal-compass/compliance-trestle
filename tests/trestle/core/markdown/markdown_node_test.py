@@ -173,6 +173,8 @@ def test_modify_subtree(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Pat
     md_api = MarkdownAPI()
     _, tree = md_api.processor.process_markdown(markdown_file)
 
+    assert tree.get_node_header_lvl() is None
+
     subtree = tree.get_node_for_key('## Header root child 2')
 
     subtree.change_header_level_by(-1)
