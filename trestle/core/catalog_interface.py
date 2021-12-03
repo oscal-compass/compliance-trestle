@@ -348,11 +348,13 @@ class CatalogInterface():
         control_map = {}
         for control_path in control_paths:
             control_id = control_path.stem
+            # set the label to be the control_id at start
+            # if the id doesn't fit the expected pattern it will just be sorted alphabetically based on the id string
             label = control_id
             digits = 0
             frac = 0
             extra = ''
-            # first break off ac from ac-11.21
+            # now try to break off ac as label from ac-11.21xy
             if '-' in control_id:
                 dash_split = control_id.split('-', 1)
                 label = dash_split[0]
@@ -371,6 +373,7 @@ class CatalogInterface():
                     if matches:
                         tup = matches.groups()
                         digits = int(tup[0])
+                        # extra will now contain xy
                         extra = tup[1]
                     else:
                         extra = remainder

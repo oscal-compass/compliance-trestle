@@ -66,13 +66,10 @@ ______________________________________________________________________
 
 Text for default component
 
+More text for default component
 ### Trestle Component
 
 Text for trestle comp
-
-### This System
-
-More text for default component
 
 <!-- a comment stuck in here. -->
 

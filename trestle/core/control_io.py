@@ -216,11 +216,10 @@ class ControlIOWriter():
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
 
-        # need to add text per component
-
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
         # Note that parts corresponding to sections don't get written out here so a check is needed
+        # If we have responses per component then enter them in separate ### sections
         did_write_part = False
         if control.parts:
             for part in control.parts:
@@ -772,13 +771,31 @@ class ControlIOReader():
 
     @staticmethod
     def _add_node_to_dict(
-        comp_name: str, label: str, comp_dict: Dict[str, Dict[str, List[str]]], node: MarkdownNode
+        comp_name: str,
+        label: str,
+        comp_dict: Dict[str, Dict[str, List[str]]],
+        node: MarkdownNode,
+        control_id: str,
+        comp_list: List[str]
     ) -> None:
         prose = ControlIOReader._clean_prose(node.content.text)
         if node.key.startswith('### '):
             if len(node.key.split()) <= 1:
-                raise TrestleError('Line in control markdown starts with ### but has no component name.')
+                raise TrestleError(f'Line in control {control_id} markdown starts with ### but has no component name.')
             comp_name = node.key.split(' ', 1)[1].strip()
+            simp_comp_name = ControlIOReader._simplify_name(comp_name)
+            if simp_comp_name == ControlIOReader._simplify_name(const.SSP_MAIN_COMP_NAME):
+                raise TrestleError(
+                    f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.'
+                    'Instead, place all response prose for the default component at the top of th section, '
+                    'with no ### component specified.  It will be entered as prose for the default system component.'
+                )
+            if simp_comp_name in comp_list:
+                raise TrestleError(
+                    f'Control {control_id} has a section with two ### component headings for {comp_name}.  '
+                    'Please combine the sections so there is only one heading for each component in a statement.'
+                )
+            comp_list.append(simp_comp_name)
             comp_name = ControlIOReader._comp_name_in_dict(comp_name, comp_dict)
         if comp_name in comp_dict:
             if label in comp_dict[comp_name]:
@@ -788,7 +805,7 @@ class ControlIOReader():
         else:
             comp_dict[comp_name] = {label: prose}
         for subnode in node.subnodes:
-            ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode)
+            ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
 
     @staticmethod
     def read_all_implementation_prose_and_header(
@@ -809,6 +826,7 @@ class ControlIOReader():
         yaml_header = {}
         # this level only adds for top level component but add_node_to_dict can add for other components
         comp_name = const.SSP_MAIN_COMP_NAME
+        control_id = control_file.stem
         try:
             if not control_file.exists():
                 return comp_dict, yaml_header
@@ -823,14 +841,14 @@ class ControlIOReader():
                 # should be only one header
                 for header in headers:
                     node = control.get_node_for_key(header)
-                    ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node)
+                    ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node, control_id, [])
             else:
                 for header in headers:
                     tokens = header.split(' ', 2)
                     if tokens[0] == '##' and tokens[1] == imp_string:
                         label = tokens[2].strip()
                         node = control.get_node_for_key(header)
-                        ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node)
+                        ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
 
         except TrestleError as e:
             logger.error(f'Error occurred reading {control_file}')
@@ -838,7 +856,7 @@ class ControlIOReader():
         return comp_dict, yaml_header
 
     @staticmethod
-    def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any]) -> None:
+    def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
         """Insert yaml header content into the imp_req and its by_comps."""
         dict_ = header.get(const.SSP_FEDRAMP_TAG, {})
         control_orig = dict_.get(const.CONTROL_ORIGINATION, [])
@@ -859,9 +877,9 @@ class ControlIOReader():
                         )
                     )
                 else:
-                    raise TrestleError(f'Unexpected dict in control yaml header: {co}')
+                    raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
             else:
-                raise TrestleError(f'Unexpected structure in control yaml header: {co}')
+                raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
         for status in imp_status:
             if isinstance(status, str):
                 props.append(
@@ -871,7 +889,8 @@ class ControlIOReader():
                 if const.PLANNED in status:
                     if const.COMPLETION_DATE not in status:
                         raise TrestleError(
-                            f'Planned status in control yaml header must specify completion date: {status}'
+                            f'Planned status in the control {control_id} yaml header must '
+                            f'specify completion date: {status}'
                         )
                     props.append(
                         common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED, value=status[const.PLANNED])
@@ -884,7 +903,7 @@ class ControlIOReader():
                     )
                 else:
                     if len(status) != 1:
-                        raise TrestleError(f'Unexpected deep dictionary in control yaml header: {status}')
+                        raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
                     value = list(status.keys())[0]
                     remark = list(status.values())[0]
                     props.append(
@@ -896,7 +915,7 @@ class ControlIOReader():
                         )
                     )
             else:
-                raise TrestleError(f'Unexpected structure in control yaml header: {status}')
+                raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
         for role in roles:
             if isinstance(role, dict) and len(role) == 1:
                 key = list(role.keys())[0]
@@ -965,7 +984,7 @@ class ControlIOReader():
                 statement.by_components.append(by_comp)
 
         imp_req.statements = list(statement_map.values())
-        ControlIOReader._insert_header_content(imp_req, header)
+        ControlIOReader._insert_header_content(imp_req, header, control_id)
         return imp_req
 
     @staticmethod
