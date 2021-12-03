@@ -121,7 +121,7 @@ class AssembleCmd(CommandPlusDocs):
             logger.debug(traceback.format_exc())
             logger.error(f'Error while assembling OSCAL model: {e}')
             return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.debug(traceback.format_exc())
             logger.error(f'Unexpected error while assembling OSCAL model: {e}')
             return CmdReturnCodes.UNKNOWN_ERROR.value

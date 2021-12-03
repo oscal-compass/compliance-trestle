@@ -120,7 +120,7 @@ class Docs(AuthorCommonCommand):
             logger.error(f'Error occurred when running trestle author docs: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.debug(traceback.format_exc())
             logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
             logger.error('Exiting')

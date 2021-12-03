@@ -119,7 +119,7 @@ class Headers(AuthorCommonCommand):
             logger.error(f'Error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.error(f'Unexpected error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.COMMAND_ERROR.value

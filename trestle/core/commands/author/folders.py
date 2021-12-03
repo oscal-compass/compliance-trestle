@@ -112,7 +112,7 @@ class Folders(AuthorCommonCommand):
             logger.error(f'Error occurred when running trestle author folders: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.error(f'Unexpected error occurred when running trestle author folders: {e}')
             logger.error('Exiting')
             return CmdReturnCodes.COMMAND_ERROR.value

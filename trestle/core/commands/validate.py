@@ -51,7 +51,7 @@ class ValidateCmd(CommandPlusDocs):
             logger.debug(traceback.format_exc())
             logger.error(f'Error while validating contents of a trestle model: {e}')
             return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.debug(traceback.format_exc())
             logger.error(f'Unexpected error while validating contents of a trestle model: {e}')
             return CmdReturnCodes.UNKNOWN_ERROR.value
