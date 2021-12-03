@@ -1,0 +1,27 @@
+# Each control must have a header describing its implementation requirements and status.
+# This header represents the the FedRAMP required content.
+#
+# For control origination include all that apply and delete those that do not apply.
+# Controls ending in '-1' only allow sp-corporate and sp-system as options.
+# If the control origination is inherited, the uuid of the leveraged authorization must be provided.
+#
+# Similarly, for implementation status select all that apply and delete those that don't.
+# Any option shown with an associated value must have that value provided
+#
+# Each control must have at least one responsible role.  If more than one, enter as separate list items.
+x-trestle-fedramp-props:
+  control-origination:
+    - sp-corporate
+    - sp-system
+    - customer-configured
+    - customer-provided
+    - inherited: uuid of leveraged authorization
+  implementation-status:
+    - implemented
+    - partial: describe gap
+    - planned: describe plan
+      completion-date: date_string
+    - alternative: describe alternative
+    - not-applicable: provide justification
+  responsible-roles:
+    - id: role-id

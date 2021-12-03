@@ -76,7 +76,7 @@ from trestle.utils import fs
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_6',
@@ -94,7 +94,7 @@ from trestle.utils import fs
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_8',
@@ -103,7 +103,7 @@ from trestle.utils import fs
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_9',
@@ -348,7 +348,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_6',
@@ -366,7 +366,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_8',
@@ -375,7 +375,7 @@ def test_exclude_global(
             False,
             0,
             0,
-            1
+            3
         ),
         (
             'test_tasks_9',
@@ -503,3 +503,57 @@ def test_e2e_backward_compatibility(
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = Trestle().run()
     assert rc == validate_rc
+
+
+def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that ignored files are not validated. Validation will fail if attempted."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/headers/good_templates'
+    test_instances_folder = testdata_dir / 'author/headers/ignored_files'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+
+    shutil.copytree(test_template_folder, task_template_folder)
+
+    # copy all files
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author headers validate -tn test_task -ig ^_.*'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 0
+
+    # test recursive validation
+    command_string_validate_content = 'trestle author headers validate -tn test_task -ig ^_.* -r'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 0
+
+
+def test_instance_no_header(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating instance with no header."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/headers/good_templates'
+    test_instances_folder = testdata_dir / 'author/headers/empty_headers'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+
+    shutil.copytree(test_template_folder, task_template_folder)
+
+    # copy all files
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    command_string_validate_content = 'trestle author headers validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 3
+
+    command_string_validate_content = 'trestle author headers validate -tn test_task -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 3
+
+    command_string_validate_content = 'trestle author headers validate -tv 0.0.1'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 1

@@ -233,7 +233,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path, monkeypatch: Monke
     i = importcmd.ImportCmd()
     monkeypatch.setattr(fs, 'get_trestle_project_root', get_trestle_project_root_mock)
     rc = i._run(args)
-    assert rc == 1
+    assert rc == 5
 
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:
@@ -430,3 +430,13 @@ def test_import_load_profile(tmp_trestle_dir: pathlib.Path) -> None:
 
     loaded_profile, _ = fs.load_top_level_model(tmp_trestle_dir, 'my_prof', Profile)
     assert len(loaded_profile.modify.set_parameters[1].constraints) == 1
+
+
+def test_import_wrong_oscal_version(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test import of the wrong OSCAL version."""
+    catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_bad_oscal_version.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(catalog_path), output='my_catalog', verbose=True, regenerate=False
+    )
+    i = importcmd.ImportCmd()
+    assert i._run(args) == 1

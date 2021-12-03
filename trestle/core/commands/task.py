@@ -21,12 +21,15 @@ import logging
 import pathlib
 import pkgutil
 import sys
+import traceback
 from typing import Dict, Optional, Type
 
 import trestle.core.const as const
 import trestle.tasks
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.err import TrestleError
 from trestle.tasks.base_task import TaskBase, TaskOutcome
 from trestle.utils import fs
 
@@ -52,44 +55,45 @@ class TaskCmd(CommandPlusDocs):
         self.add_argument('-i', '--info', action='store_true', help='Print information about a particular task.')
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.debug('Entering trestle task.')
-        log.set_log_level_from_args(args)
-        # Initial logic for conflicting args
-        if args.task and args.list:
-            logger.error('Incorrect use of trestle tasks')
-            logger.error('task name or -l can be provided not both.')
-            return 1
-        if not args.task and not args.list:
-            logger.error('Insufficient arguments passed to trestle task')
-            logger.error('Either a trestle task or "-l/--list" should be passed as input arguments.')
-            return 1
-        # Ensure trestle directory (must be true)
-        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
-            logger.error(f'Given directory: {trestle_root} is not a trestle project.')
-            return 1
-        config_path = trestle_root / const.TRESTLE_CONFIG_DIR / const.TRESTLE_CONFIG_FILE
 
-        if args.config:
-            config_path = pathlib.Path(args.config)
-        if not config_path.exists():
-            logger.error(f'Config file at {config_path} does not exist.')
-            return 1
-        global_config = configparser.ConfigParser()
-        global_config.read_file(config_path.open('r', encoding=const.FILE_ENCODING))
-        # run setup
-        task_index = self._build_task_index()
-
-        # Clean to run
-        if args.list:
-            self._list_tasks(task_index)
-            return 0
-        # run the task
-        if args.task not in task_index.keys():
-            logger.error(f'Unknown trestle task: {args.task}')
-            return 1
-        # Generic try catch around execution
         try:
+            logger.debug('Entering trestle task.')
+            log.set_log_level_from_args(args)
+            # Initial logic for conflicting args
+            if args.task and args.list:
+                logger.error('Incorrect use of trestle tasks')
+                logger.error('task name or -l can be provided not both.')
+                return CmdReturnCodes.INCORRECT_ARGS.value
+            if not args.task and not args.list:
+                logger.error('Insufficient arguments passed to trestle task')
+                logger.error('Either a trestle task or "-l/--list" shoudl be passed as input arguments.')
+                return CmdReturnCodes.INCORRECT_ARGS.value
+            # Ensure trestle directory (must be true)
+            trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
+            if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
+                logger.error(f'Given directory: {trestle_root} is not a trestle project.')
+                return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
+            config_path = trestle_root / const.TRESTLE_CONFIG_DIR / const.TRESTLE_CONFIG_FILE
+
+            if args.config:
+                config_path = pathlib.Path(args.config)
+            if not config_path.exists():
+                logger.error(f'Config file at {config_path} does not exist.')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            global_config = configparser.ConfigParser()
+            global_config.read_file(config_path.open('r', encoding=const.FILE_ENCODING))
+            # run setup
+            task_index = self._build_task_index()
+
+            # Clean to run
+            if args.list:
+                self._list_tasks(task_index)
+                return CmdReturnCodes.SUCCESS.value
+            # run the task
+            if args.task not in task_index.keys():
+                logger.error(f'Unknown trestle task: {args.task}')
+                return CmdReturnCodes.INCORRECT_ARGS.value
+
             logger.debug(f'Loading task: {args.task}')
             section_label = 'task.' + args.task
             config_section: Optional[configparser.SectionProxy] = None
@@ -103,21 +107,25 @@ class TaskCmd(CommandPlusDocs):
             task = task_index[args.task](config_section)
             if args.info:
                 task.print_info()
-                return 0
+                return CmdReturnCodes.SUCCESS.value
             simulate_result = task.simulate()
             if not (simulate_result == TaskOutcome.SIM_SUCCESS):
                 logger.error(f'Task {args.task} reported a {simulate_result}')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             actual_result = task.execute()
             if not (actual_result == TaskOutcome.SUCCESS):
                 logger.error(f'Task {args.task} reported a {actual_result}')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             logger.info(f'Task: {args.task} executed successfully.')
-            return 0
-        except Exception as e:
-            logger.error(f'Trestle task {args.task} failed unexpectedly')
-            logger.debug(e)
-            return 1
+            return CmdReturnCodes.SUCCESS.value
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error Trestle task {args.task} failed: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error Trestle task {args.task} failed: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     def _build_task_index(self) -> Dict[str, Type[TaskBase]]:
         """Build an index of all classes in which are tasks and present as a dictionary."""

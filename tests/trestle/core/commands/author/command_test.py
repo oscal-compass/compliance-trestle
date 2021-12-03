@@ -56,4 +56,4 @@ def test_failure_not_trestle(command_string, tmp_path: pathlib.Path, monkeypatch
         trestle.cli.run()
         # FIXME: Needs to be changed once implemented.
     assert wrapped_error.type == SystemExit
-    assert wrapped_error.value.code == 1
+    assert wrapped_error.value.code == 5

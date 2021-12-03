@@ -19,8 +19,10 @@ import logging
 import pathlib
 
 import trestle.core.commands.validate as validatecmd
+from trestle.core import const
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -46,9 +48,7 @@ class ImportCmd(CommandPlusDocs):
 
         self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
 
-        self.add_argument(
-            '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
-        )
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
     def _run(self, args: argparse.Namespace) -> int:
         """Top level import run command."""
@@ -59,26 +59,29 @@ class ImportCmd(CommandPlusDocs):
         trestle_root = args.trestle_root
         if not fs.is_valid_project_root(trestle_root):
             logger.warning(f'Attempt to import from non-valid trestle project root {trestle_root}')
-            return 1
+            return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
 
         input_uri = args.file
         if cache.FetcherFactory.in_trestle_directory(trestle_root, input_uri):
             logger.warning(f'Imported file {input_uri} cannot be from current trestle project. Use duplicate instead.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         try:
             content_type = FileContentType.to_content_type('.' + input_uri.split('.')[-1])
         except TrestleError as err:
             logger.debug(f'FileContentType.to_content_type() failed: {err}')
             logger.warning(f'Import failed, could not work out content type from file suffix: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_uri))
         try:
             model_read, parent_alias = fetcher.get_oscal(True)
         except TrestleError as err:
             logger.warning(f'Error importing file: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:
+            logger.warning(f'Error importing file: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         plural_path = fs.model_type_to_model_dir(parent_alias)
 
@@ -90,7 +93,7 @@ class ImportCmd(CommandPlusDocs):
 
         if desired_model_path.exists():
             logger.warning(f'Cannot import because file to be imported here: {desired_model_path} already exists.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         if args.regenerate:
             logger.debug(f'regenerating uuids in imported file {input_uri}')
@@ -111,14 +114,14 @@ class ImportCmd(CommandPlusDocs):
         except TrestleError as err:
             logger.debug(f'import_plan.simulate() failed: {err}')
             logger.error(f'Import failed, error in simulating import operation: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         try:
             import_plan.execute()
         except TrestleError as err:
             logger.debug(f'import_plan.execute() failed: {err}')
             logger.error(f'Import plan execution failed with error: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         args = argparse.Namespace(file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root)
         rollback = False
@@ -142,7 +145,7 @@ class ImportCmd(CommandPlusDocs):
             except TrestleError as err:
                 logger.debug(f'Failed rollback attempt with error: {err}')
                 logger.error(f'Import failed in plan rollback: {err}. Manually remove {desired_model_path} to recover.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         logger.debug(f'Successful rollback of import to {desired_model_path}')
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value

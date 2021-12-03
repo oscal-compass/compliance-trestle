@@ -3,6 +3,23 @@
 
 <!--next-version-placeholder-->
 
+## v0.31.0 (2021-12-01)
+### Feature
+* Added trestle-fedramp project discovery and command ([#899](https://github.com/IBM/compliance-trestle/issues/899)) ([`f0cc836`](https://github.com/IBM/compliance-trestle/commit/f0cc8367a9001749a81c1a069f02ea00e49a7cec))
+* Ignore files from the validation ([#898](https://github.com/IBM/compliance-trestle/issues/898)) ([`c2af814`](https://github.com/IBM/compliance-trestle/commit/c2af8148cd7698bc75803bec0c4d6b181e11cd64))
+* Enforce OSCAL version and notify user ([#895](https://github.com/IBM/compliance-trestle/issues/895)) ([`246875c`](https://github.com/IBM/compliance-trestle/commit/246875ce0c7d42f931072739ae340b39bbb0399e))
+* Sample generic oscal transform to filter ssp by profile ([#820](https://github.com/IBM/compliance-trestle/issues/820)) ([`afe243f`](https://github.com/IBM/compliance-trestle/commit/afe243f6ece6fb9b361870e69b32d8d84a2e9335))
+
+### Fix
+* Remove empty folders ([#904](https://github.com/IBM/compliance-trestle/issues/904)) ([`552fb36`](https://github.com/IBM/compliance-trestle/commit/552fb36a53198d9d1fcc06a0a3eb3cfe59b753b2))
+* Tmp req init ([#894](https://github.com/IBM/compliance-trestle/issues/894)) ([`e2d3ed0`](https://github.com/IBM/compliance-trestle/commit/e2d3ed0f98a281ac5ef77edf5f4e90a0a09f53d8))
+* Bad control causes uncaught exception in ssp-generate ([#893](https://github.com/IBM/compliance-trestle/issues/893)) ([`c50515a`](https://github.com/IBM/compliance-trestle/commit/c50515a55452b776ed9397b62e658fb5d5b1d5b0))
+* Ignore subfolders in folders validation ([#889](https://github.com/IBM/compliance-trestle/issues/889)) ([`727265a`](https://github.com/IBM/compliance-trestle/commit/727265aebbcbdeffce5575c5907ba1fd000bdea3))
+
+## v0.30.0 (2021-11-22)
+### Feature
+* OSCO transformer support for OpenScap 1.3.5 ([#876](https://github.com/IBM/compliance-trestle/issues/876)) ([`dcfb34a`](https://github.com/IBM/compliance-trestle/commit/dcfb34ae67ce0bf057d224a6eb4065e25d616a42))
+
 ## v0.29.0 (2021-11-19)
 ### Feature
 * Tutorial for task cis-to-component-definition ([#870](https://github.com/IBM/compliance-trestle/issues/870)) ([`4e4d6b4`](https://github.com/IBM/compliance-trestle/commit/4e4d6b4ba600792ce5a6dfd3606fb730099cbdef))

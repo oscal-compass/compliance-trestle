@@ -1,0 +1,28 @@
+{
+  "catalog": {
+    "uuid": "4ea13065-8cae-4dac-a0f2-a7f5e8f54c64",
+    "sss": "ss",
+    "metadata": {
+      "title": "Minimal Catalog",
+      "last-modified": "2020-10-22T09:46:21.745+00:00",
+      "version": "2.0",
+      "oscal-version": "1.0.0",
+      "a_wrong_field": [],
+      "roles": [
+        {
+          "id": "organization",
+           "title": "a_role"
+         }
+      ],
+      "responsible-parties":
+        {
+          "role_id": "organization",
+          "party-uuids": [
+            "A0000000-0000-4000-8000-000000000000"
+          ]
+        }
+      ,
+      "wrong_field_after": []
+    }
+  }
+}

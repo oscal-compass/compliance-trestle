@@ -26,6 +26,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.utils.load_distributed import load_distributed
 
@@ -56,7 +57,7 @@ class CatalogGenerate(AuthorCommonCommand):
         trestle_root = args.trestle_root
         if not fs.allowed_task_name(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         yaml_header: dict = {}
         if 'yaml_header' in args and args.yaml_header is not None:
@@ -66,7 +67,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
                 logging.warning(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
         catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
 
@@ -91,10 +92,10 @@ class CatalogGenerate(AuthorCommonCommand):
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Catalog {catalog_path} not found for load {e}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:
             raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 class CatalogAssemble(AuthorCommonCommand):
@@ -130,7 +131,7 @@ class CatalogAssemble(AuthorCommonCommand):
         md_dir = trestle_root / md_name
         if not md_dir.exists():
             logger.warning(f'Markdown directory {md_name} does not exist.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         catalog_interface = CatalogInterface()
         try:
             catalog = catalog_interface.read_catalog_from_markdown(md_dir)
@@ -138,7 +139,7 @@ class CatalogAssemble(AuthorCommonCommand):
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
         if catalog_interface.get_count_of_controls_in_catalog(True) == 0:
             logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
             logger.info('Creating catalog from markdown and destination catalog directory exists, so updating.')
@@ -151,4 +152,4 @@ class CatalogAssemble(AuthorCommonCommand):
             catalog.oscal_write(new_cat_dir / 'catalog.json')
         except OSError as e:
             raise TrestleError(f'OSError writing catalog from markdown to {new_cat_dir}: {e}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value

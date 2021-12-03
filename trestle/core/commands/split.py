@@ -17,27 +17,28 @@
 import argparse
 import logging
 import pathlib
+import traceback
 from typing import Dict, List, Tuple
-
-from pydantic import BaseModel
 
 import trestle.utils.log as log
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.commands import cmd_utils
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common import cmd_utils
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
 
 
-class AliasTracker(BaseModel):
+class AliasTracker(TrestleBaseModel):
     """Convenience class to track writing out of models."""
 
     # This tracks the parts that need to be split from each element
@@ -82,21 +83,30 @@ class SplitCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Split an OSCAL file into elements."""
-        log.set_log_level_from_args(args)
-        logger.debug('Entering trestle split.')
-        # get the Model
-        args_raw: Dict[str, str] = args.__dict__
+        try:
+            log.set_log_level_from_args(args)
+            logger.debug('Entering trestle split.')
+            # get the Model
+            args_raw: Dict[str, str] = args.__dict__
 
-        # remove any quotes passed in as on windows platforms
-        elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
+            # remove any quotes passed in as on windows platforms
+            elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
-        file_name = ''
-        file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
-            const.ARG_FILE]
-        # cwd must be in the model directory if file to split is not specified
-        effective_cwd = pathlib.Path.cwd()
+            file_name = ''
+            file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
+                const.ARG_FILE]
+            # cwd must be in the model directory if file to split is not specified
+            effective_cwd = pathlib.Path.cwd()
 
-        return self.perform_split(effective_cwd, file_name, elements_clean, args.trestle_root)
+            return self.perform_split(effective_cwd, file_name, elements_clean, args.trestle_root)
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while performing a split operation: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while performing a split operation: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def perform_split(
@@ -122,7 +132,7 @@ class SplitCmd(CommandPlusDocs):
             model_dir = fs.get_project_model_path(effective_cwd)
             if model_dir is None:
                 logger.warning('Current directory must be within a model directory if file is not specified')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             content_type: FileContentType = FileContentType.dir_to_content_type(model_dir)
 
@@ -136,7 +146,7 @@ class SplitCmd(CommandPlusDocs):
                 # now make the element path relative to the model file to be loaded
                 if file_path is None or element_path.make_relative(file_path.relative_to(model_dir)) != 0:
                     logger.warning(f'Unable to match element path with files in model directory {element_path}')
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
                 file_path_list.append((file_path, element_path.to_string()))
 
         # match paths to corresponding files since several paths may be split from the same file
@@ -155,7 +165,7 @@ class SplitCmd(CommandPlusDocs):
             # this makes assumptions that the path is relative.
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             content_type = FileContentType.to_content_type(file_path.suffix)
 
             # find the base directory of the file
@@ -166,7 +176,7 @@ class SplitCmd(CommandPlusDocs):
 
             if cmd_utils.split_is_too_fine(element_path, model):
                 logger.warning('Cannot split the model to the level of uuids, strings, etc.')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             # use the model itself to resolve any wildcards and create list of element paths
             logger.debug(f'split calling parse_element_args on {element_path}')
@@ -196,7 +206,7 @@ class SplitCmd(CommandPlusDocs):
 
             # execute the plan
             split_plan.execute()
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     @classmethod
     def prepare_sub_model_split_actions(

@@ -21,6 +21,8 @@ import pathlib
 
 import ilcli
 
+from trestle.core.commands.common.return_codes import CmdReturnCodes
+
 logger = logging.getLogger(__name__)
 
 
@@ -37,11 +39,11 @@ class Utf8me(ilcli.Command):
         if args.output:
             if args.inplace:
                 logger.error('Output file cannot be named when attempting inplace write.')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             outfile = args.output
         elif not args.inplace:
             logger.error('Either an output file or inplace replacement must be specified.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         input_path = pathlib.Path(args.input[0])
         if not input_path.is_file():
@@ -55,7 +57,7 @@ class Utf8me(ilcli.Command):
         output_file.write(content)
         output_file.flush()
         output_file.close()
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 if __name__ == '__main__':

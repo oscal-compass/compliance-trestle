@@ -30,11 +30,11 @@ benchmark_args = ['sample_file', 'element_path', 'rc']
 benchmark_values = [
     (pathlib.Path('json/minimal_catalog.json'), 'catalog',
      0), (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata',
-          1), (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
+          4), (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
     (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0),
-    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 1),
-    (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 1),
-    (pathlib.Path('json/minimal_catalog.json'), 'catalogs', 1)
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 4),
+    (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 4),
+    (pathlib.Path('json/minimal_catalog.json'), 'catalogs', 4)
 ]
 
 

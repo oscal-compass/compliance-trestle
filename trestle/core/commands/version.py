@@ -18,13 +18,14 @@ import argparse
 import logging
 
 from trestle import __version__
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.command_docs import CommandBase
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
 
-class VersionCmd(CommandPlusDocs):
+class VersionCmd(CommandBase):
     """Output version info for trestle and OSCAL."""
 
     name = 'version'
@@ -32,4 +33,4 @@ class VersionCmd(CommandPlusDocs):
     def _run(self, args: argparse.Namespace) -> int:
         version_string = f'Trestle version v{__version__} based on OSCAL version {OSCAL_VERSION}'
         self.out(version_string)
-        return 0
+        return CmdReturnCodes.SUCCESS.value
