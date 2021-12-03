@@ -245,7 +245,7 @@ class CisToCatalog(TaskBase):
                 continue
             text = f'Unexpected value: {name}'
             logger.error(text)
-            raise Exception(text)
+            raise RuntimeError(text)
         return depth
 
     def _add_controls(self, group: Group, prefix: str, depth: int):
