@@ -153,7 +153,7 @@ class Folders(AuthorCommonCommand):
             logger.error(
                 f'Template directory {self.rel_dir(self.template_dir)} for task {self.task_name} does not exist.'
             )
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         # get list of files:
         template_files = self.template_dir.rglob('*')
 

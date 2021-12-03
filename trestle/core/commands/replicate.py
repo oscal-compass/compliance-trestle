@@ -114,7 +114,7 @@ class ReplicateCmd(CommandPlusDocs):
         if rep_model_path.exists():
             logger.error(f'OSCAL file to be replicated here: {rep_model_path} exists.')
             logger.error('Aborting trestle replicate.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         if args.regenerate:
             logger.debug(f'regenerating uuids for model {input_file}')
@@ -136,13 +136,13 @@ class ReplicateCmd(CommandPlusDocs):
         except TrestleError as err:
             logger.debug(f'replicate_plan.simulate() failed: {err}')
             logger.error(f'Replicate failed, error in simulating replicate operation: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         try:
             replicate_plan.execute()
         except TrestleError as err:
             logger.debug(f'replicate_plan.execute() failed: {err}')
             logger.error(f'Replicate failed, error in executing replication operation: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
