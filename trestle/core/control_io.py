@@ -17,6 +17,7 @@ import logging
 import pathlib
 import re
 import string
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
@@ -27,8 +28,9 @@ from trestle.core import const
 from trestle.core import generators as gens
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.core.utils import spaces_and_caps_to_snake
+from trestle.core.utils import as_list, spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -36,13 +38,11 @@ logger = logging.getLogger(__name__)
 
 
 class ControlIOWriter():
-    """Class write controls as markdown."""
+    """Class to write controls as markdown."""
 
     def __init__(self):
         """Initialize the class."""
         self._md_file: Optional[MDWriter] = None
-
-    # Start of section to write controls to markdown
 
     @staticmethod
     def _wrap_label(label: str):
@@ -211,7 +211,7 @@ class ControlIOWriter():
             for line in existing_text[part_label]:
                 self._md_file.new_line(line)
 
-    def _add_response(self, control: cat.Control, existing_text: Dict[str, List[str]]) -> None:
+    def _add_response(self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]]) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
@@ -220,6 +220,7 @@ class ControlIOWriter():
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
         # Note that parts corresponding to sections don't get written out here so a check is needed
+        # If we have responses per component then enter them in separate ### sections
         did_write_part = False
         if control.parts:
             for part in control.parts:
@@ -232,18 +233,23 @@ class ControlIOWriter():
                                 self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
                                 # insert extra line to make mdformat happy
                                 self._md_file._add_line_raw('')
-                                did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
                             # if no label guess the label from the sub-part id
                             if not part_label:
                                 part_label = prt.id.split('.')[-1]
                             self._md_file.new_header(level=2, title=f'Implementation {part_label}')
-                            # don't write out the prompt for text if there is some already there
-                            if part_label not in existing_text:
-                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
-                            self._insert_existing_text(part_label, existing_text)
+                            added_content = False
+                            for comp_name, prose_dict in comp_dict.items():
+                                if part_label in prose_dict:
+                                    if comp_name != const.SSP_MAIN_COMP_NAME:
+                                        self._md_file.new_header(level=3, title=comp_name)
+                                    self._insert_existing_text(part_label, prose_dict)
+                                    added_content = True
                             self._md_file.new_paragraph()
+                            if not added_content:
+                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
+                            did_write_part = True
         if not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
         self._md_file.new_hr()
@@ -404,9 +410,6 @@ class ControlIOWriter():
         self._md_file.write_out()
 
 
-# Start of section to read controls from markdown
-
-
 class ControlIOReader():
     """Class to read controls from markdown."""
 
@@ -428,79 +431,6 @@ class ControlIOReader():
         if not match:
             raise TrestleError(f'Unable to convert label {orig_label} to NCNAME format.')
         return new_label
-
-    @staticmethod
-    def _trim_prose_lines(lines: List[str]) -> List[str]:
-        """
-        Trim empty lines at start and end of list of lines in prose.
-
-        Also need to exclude the line requesting implementation prose
-        """
-        ii = 0
-        n_lines = len(lines)
-        while ii < n_lines and (lines[ii].strip(' \r\n') == ''
-                                or lines[ii].find(const.SSP_ADD_IMPLEMENTATION_PREFIX) >= 0):
-            ii += 1
-        jj = n_lines - 1
-        while jj >= 0 and lines[jj].strip(' \r\n') == '':
-            jj -= 1
-        if jj < ii:
-            return ''
-        return lines[ii:(jj + 1)]
-
-    @staticmethod
-    def _read_label_prose(ii: int, lines: List[str]) -> Tuple[int, str, List[str]]:
-        r"""
-        Return the found label and its corresponding list of prose lines.
-
-        ii should point to start of file or directly at a new Part or control
-        This looks for two types of reference lines:
-        _______\n## Control label
-        _______\n# label
-        If a section is meant to be left blank it goes ahead and reads the comment text
-        """
-        nlines = len(lines)
-        prose_lines: List[str] = []
-        item_label = ''
-        tld_prose_lines = []
-        if ii == 0:
-            # read the entire control to validate contents
-            ii, _ = ControlIOReader._read_control_statement(0, lines, 'dummy_id')
-            ii, _ = ControlIOReader._read_sections(ii, lines, 'xx', [])
-            # go back to beginning and seek the implementation question
-            ii = 0
-            while ii < nlines and not lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
-                ii += 1
-            # skip over the question
-            ii += 1
-        while -1 < ii < nlines:
-            # start of new part
-            if lines[ii].startswith('## Implementation'):
-                split = lines[ii].strip().split()
-                if len(split) < 3:
-                    raise TrestleError('Implementation line must include label')
-                item_label = split[-1]
-                ii += 1
-                if ii < nlines and lines[ii] and ControlIOReader._indent(lines[ii]) <= 0:
-                    msg = f'Implementation line for control appears broken by newline: {lines[ii]}'
-                    raise TrestleError(msg)
-                # collect until next hrule
-                while ii < nlines:
-                    if lines[ii].startswith(const.SSP_MD_HRULE_LINE) or lines[ii].startswith('## Implementation'):
-                        return ii, item_label, ControlIOReader._trim_prose_lines(prose_lines)
-                    prose_lines.append(lines[ii].strip())
-                    ii += 1
-            elif lines[ii].startswith('# ') or lines[ii].startswith('## '):
-                raise TrestleError(f'Improper heading level in control statement: {lines[ii]}')
-            else:
-                tld_prose = lines[ii].strip()
-                if tld_prose and not tld_prose.startswith(const.SSP_ADD_IMPLEMENTATION_PREFIX):
-                    tld_prose_lines.append(tld_prose)
-            ii += 1
-        # if we did not find normal labelled prose regard any found prose as top_level_description
-        if not item_label and tld_prose_lines:
-            return nlines, 'top_level_description', tld_prose_lines
-        return -1, item_label, prose_lines
 
     @staticmethod
     def _load_control_lines(control_file: pathlib.Path) -> List[str]:
@@ -808,9 +738,80 @@ class ControlIOReader():
         return ii, control_parts
 
     @staticmethod
+    def _clean_prose(prose: List[str]) -> List[str]:
+        new_prose = []
+        # remove all known bad lines
+        for line in prose:
+            if not line.startswith(const.SSP_ADD_IMPLEMENTATION_PREFIX) and not line.startswith('___'):
+                new_prose.append(line)
+        # remove empty lines at start and end
+        for _ii, line in enumerate(new_prose):
+            if line.strip():
+                break
+        prose = new_prose[_ii:]
+        for _ii, line in enumerate(reversed(prose)):
+            if line.strip():
+                break
+        clean_prose = prose[:len(prose) - _ii]
+        # if there is no useful prose this will return [''] and allow generation of a statement with empty prose
+        return clean_prose
+
+    @staticmethod
+    def _simplify_name(name: str) -> str:
+        name = name.lower().strip()
+        return re.sub(' +', ' ', name)
+
+    @staticmethod
+    def _comp_name_in_dict(comp_name: str, comp_dict: Dict[str, List[Dict[str, str]]]) -> str:
+        """If the name is already in the dict in a similar form, stick to that form."""
+        simple_name = ControlIOReader._simplify_name(comp_name)
+        for name in comp_dict.keys():
+            if simple_name == ControlIOReader._simplify_name(name):
+                return name
+        return comp_name
+
+    @staticmethod
+    def _add_node_to_dict(
+        comp_name: str,
+        label: str,
+        comp_dict: Dict[str, Dict[str, List[str]]],
+        node: MarkdownNode,
+        control_id: str,
+        comp_list: List[str]
+    ) -> None:
+        prose = ControlIOReader._clean_prose(node.content.text)
+        if node.key.startswith('### '):
+            if len(node.key.split()) <= 1:
+                raise TrestleError(f'Line in control {control_id} markdown starts with ### but has no component name.')
+            comp_name = node.key.split(' ', 1)[1].strip()
+            simp_comp_name = ControlIOReader._simplify_name(comp_name)
+            if simp_comp_name == ControlIOReader._simplify_name(const.SSP_MAIN_COMP_NAME):
+                raise TrestleError(
+                    f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
+                    'Instead, place all response prose for the default component at the top of th section, '
+                    'with no ### component specified.  It will be entered as prose for the default system component.'
+                )
+            if simp_comp_name in comp_list:
+                raise TrestleError(
+                    f'Control {control_id} has a section with two ### component headings for {comp_name}.  '
+                    'Please combine the sections so there is only one heading for each component in a statement.'
+                )
+            comp_list.append(simp_comp_name)
+            comp_name = ControlIOReader._comp_name_in_dict(comp_name, comp_dict)
+        if comp_name in comp_dict:
+            if label in comp_dict[comp_name]:
+                comp_dict[comp_name][label].extend(prose)
+            else:
+                comp_dict[comp_name][label] = prose
+        else:
+            comp_dict[comp_name] = {label: prose}
+        for subnode in node.subnodes:
+            ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
+
+    @staticmethod
     def read_all_implementation_prose_and_header(
         control_file: pathlib.Path
-    ) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
+    ) -> Tuple[Dict[str, Dict[str, List[str]]], Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.
 
@@ -818,60 +819,176 @@ class ControlIOReader():
             control_file: path to the control markdown file
 
         Returns:
-            Dictionary of part labels and corresponding prose read from the markdown file.
+            Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
+            Also returns the yaml header as dict in second part of tuple.
+            This does not generate components - it only tracks component names and associated responses.
         """
+        comp_dict = {}
+        yaml_header = {}
+        # this level only adds for top level component but add_node_to_dict can add for other components
+        comp_name = const.SSP_MAIN_COMP_NAME
+        control_id = control_file.stem
         try:
             if not control_file.exists():
-                return {}, {}
+                return comp_dict, yaml_header
             md_api = MarkdownAPI()
-            header, _ = md_api.processor.process_markdown(control_file)
+            yaml_header, control = md_api.processor.process_markdown(control_file)
 
-            lines = ControlIOReader._load_control_lines(control_file)
-            ii = 0
-            # keep moving down through the file picking up labels and prose
-            responses: Dict[str, List[str]] = {}
-            while True:
-                ii, part_label, prose_lines = ControlIOReader._read_label_prose(ii, lines)
-                while prose_lines and not prose_lines[0].strip(' \r\n'):
-                    del prose_lines[0]
-                while prose_lines and not prose_lines[-1].strip(' \r\n'):
-                    del prose_lines[-1]
-                if part_label and prose_lines:
-                    responses[part_label] = prose_lines
-                if ii < 0:
-                    break
+            imp_string = 'Implementation'
+            headers = control.get_all_headers_for_key(imp_string, False)
+            if not headers:
+                # if statement has no parts there is only one response for entire control
+                headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
+                # should be only one header
+                for header in headers:
+                    node = control.get_node_for_key(header)
+                    ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node, control_id, [])
+            else:
+                for header in headers:
+                    tokens = header.split(' ', 2)
+                    if tokens[0] == '##' and tokens[1] == imp_string:
+                        label = tokens[2].strip()
+                        node = control.get_node_for_key(header)
+                        ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
+
         except TrestleError as e:
             logger.error(f'Error occurred reading {control_file}')
             raise e
-        return responses, header
+        return comp_dict, yaml_header
 
     @staticmethod
-    def read_implementations(control_file: pathlib.Path,
-                             component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
-        """Get implementation requirements associated with given control and link to the one component we created."""
-        control_id = control_file.stem
-        imp_reqs: List[ossp.ImplementedRequirement] = []
-        responses, _ = ControlIOReader.read_all_implementation_prose_and_header(control_file)
+    def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
+        """Insert yaml header content into the imp_req and its by_comps."""
+        dict_ = header.get(const.SSP_FEDRAMP_TAG, {})
+        control_orig = dict_.get(const.CONTROL_ORIGINATION, [])
+        imp_status = dict_.get(const.IMPLEMENTATION_STATUS, [])
+        roles = dict_.get(const.RESPONSIBLE_ROLES, [])
+        props = []
+        responsible_roles = []
+        for co in control_orig:
+            if isinstance(co, str):
+                props.append(common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=co))
+            elif isinstance(co, dict):
+                if const.INHERITED in co:
+                    uuid = co[const.INHERITED]
+                    props.append(common.Property(name=const.LEV_AUTH_UUID, value=uuid))
+                    props.append(
+                        common.Property(
+                            ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=const.INHERITED
+                        )
+                    )
+                else:
+                    raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
+            else:
+                raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
+        for status in imp_status:
+            if isinstance(status, str):
+                props.append(
+                    common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.IMPLEMENTATION_STATUS, value=status)
+                )
+            elif isinstance(status, dict):
+                if const.PLANNED in status:
+                    if const.COMPLETION_DATE not in status:
+                        raise TrestleError(
+                            f'Planned status in the control {control_id} yaml header must '
+                            f'specify completion date: {status}'
+                        )
+                    props.append(
+                        common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED, value=status[const.PLANNED])
+                    )
+                    datestr = status[const.COMPLETION_DATE]
+                    if isinstance(datestr, datetime):
+                        datestr = datestr.strftime('%Y-%m-%d')
+                    else:
+                        datestr = str(datestr)
+                    props.append(
+                        common.Property(ns=const.NAMESPACE_FEDRAMP, name='planned-completion-date', value=datestr)
+                    )
+                else:
+                    if len(status) != 1:
+                        raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
+                    value = list(status.keys())[0]
+                    remark = list(status.values())[0]
+                    props.append(
+                        common.Property(
+                            ns=const.NAMESPACE_FEDRAMP,
+                            name=const.IMPLEMENTATION_STATUS,
+                            value=value,
+                            remarks=common.Remarks(__root__=remark)
+                        )
+                    )
+            else:
+                raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
+        for role in roles:
+            if isinstance(role, dict) and len(role) == 1:
+                key = list(role.keys())[0]
+                value = list(role.values())[0]
+                if key != 'id':
+                    raise TrestleError(f'Role in control yaml header must have id as key value: {role}')
+                responsible_roles.append(common.ResponsibleRole(role_id=value))
+        if props:
+            imp_req.props = as_list(imp_req.props)
+            imp_req.props.extend(props)
+        if responsible_roles:
+            imp_req.responsible_roles = as_list(imp_req.responsible_roles)
+            imp_req.responsible_roles.extend(responsible_roles)
 
-        for response in responses.items():
-            label = response[0]
-            prose_lines = response[1]
-            # create a new by-component to hold this statement
-            by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
-            # link it to the one dummy component uuid
-            by_comp.component_uuid = component.uuid
-            # add the response prose to the description
-            by_comp.description = '\n'.join(prose_lines)
-            # create a statement to hold the by-component and assign the statement id
-            statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-            statement.statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
-            statement.by_components = [by_comp]
-            # create a new implemented requirement linked to the control id to hold the statement
-            imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
-            imp_req.control_id = control_id
-            imp_req.statements = [statement]
-            imp_reqs.append(imp_req)
-        return imp_reqs
+    @staticmethod
+    def read_implemented_requirement(
+        control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent]
+    ) -> ossp.ImplementedRequirement:
+        """
+        Get the implementated requirement associated with given control and link to existing components or new ones.
+
+        Args:
+            control_file: path of the control markdown file
+            avail_comps: dictionary of known components keyed by component name
+
+        Returns:
+            The one implemented requirement for this control.
+
+        Notes:
+            Each statement may have several responses, with each response in a by_component for a specific component.
+            statement_map keeps track of statements that may have several by_component responses.
+        """
+        control_id = control_file.stem
+        comp_dict, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
+
+        statement_map: Dict[str, ossp.Statement] = {}
+        # create a new implemented requirement linked to the control id to hold the statements
+        imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+        imp_req.control_id = control_id
+
+        # the comp_dict captures all component names referenced by the control
+        for comp_name in comp_dict.keys():
+            if comp_name in avail_comps:
+                component = avail_comps[comp_name]
+            else:
+                # here is where we create a new component on the fly as needed
+                component = gens.generate_sample_model(ossp.SystemComponent)
+                component.title = comp_name
+                avail_comps[comp_name] = component
+            for label, prose_lines in comp_dict[comp_name].items():
+                # create a statement to hold the by-components and assign the statement id
+                statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
+                if statement_id in statement_map:
+                    statement = statement_map[statement_id]
+                else:
+                    statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
+                    statement.statement_id = statement_id
+                    statement.by_components = []
+                    statement_map[statement_id] = statement
+                # create a new by-component to add to this statement
+                by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+                # link it to the component uuid
+                by_comp.component_uuid = component.uuid
+                # add the response prose to the description
+                by_comp.description = '\n'.join(prose_lines)
+                statement.by_components.append(by_comp)
+
+        imp_req.statements = list(statement_map.values())
+        ControlIOReader._insert_header_content(imp_req, header, control_id)
+        return imp_req
 
     @staticmethod
     def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
