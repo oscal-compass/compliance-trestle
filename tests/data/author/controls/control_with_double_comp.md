@@ -73,6 +73,10 @@ Text for trestle comp
 
 Text for fancy thing component
 
+### tresTle  comPonent
+
+More text in illegal repeat of component
+
 ______________________________________________________________________
 
 ## Implementation b.

@@ -60,7 +60,9 @@ ______________________________________________________________________
 
 ## Implementation a.
 
-Text for default component
+###   this   SyStem  
+
+Text for default component with illegal header for This System
 
 More text for default component
 ### Trestle Component

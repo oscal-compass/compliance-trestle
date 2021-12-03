@@ -17,6 +17,7 @@ import logging
 import pathlib
 import re
 import string
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
@@ -786,7 +787,7 @@ class ControlIOReader():
             simp_comp_name = ControlIOReader._simplify_name(comp_name)
             if simp_comp_name == ControlIOReader._simplify_name(const.SSP_MAIN_COMP_NAME):
                 raise TrestleError(
-                    f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.'
+                    f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
                     'Instead, place all response prose for the default component at the top of th section, '
                     'with no ### component specified.  It will be entered as prose for the default system component.'
                 )
@@ -896,8 +897,10 @@ class ControlIOReader():
                         common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED, value=status[const.PLANNED])
                     )
                     datestr = status[const.COMPLETION_DATE]
-                    if not isinstance(datestr, str):
-                        datestr = datestr.strftime('%m-%d-%Y')
+                    if isinstance(datestr, datetime):
+                        datestr = datestr.strftime('%Y-%m-%d')
+                    else:
+                        datestr = str(datestr)
                     props.append(
                         common.Property(ns=const.NAMESPACE_FEDRAMP, name='planned-completion-date', value=datestr)
                     )
