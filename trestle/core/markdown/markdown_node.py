@@ -95,22 +95,22 @@ class MarkdownNode:
         """Return current node header level."""
         return self._get_header_level_if_valid(self.key)
 
-    def change_header_level_by(self, level: int) -> None:
+    def change_header_level_by(self, delta_level: int) -> None:
         """
-        Change all headers in the tree by specified level.
+        Change all headers in the tree by specified level up or down.
 
         All children nodes will be modified by specified level as well.
 
         Args:
-            level: each header will be modified by this number, can be negative.
+            delta_level: each header will be modified by this number, can be negative.
         """
         # construct a map
         header_map = {}
         if self.key != 'root':
-            new_key = self._modify_header_level(self.key, level)
+            new_key = self._modify_header_level(self.key, delta_level)
             header_map[self.key] = new_key
         for key in self.content.subnodes_keys:
-            new_key = self._modify_header_level(key, level)
+            new_key = self._modify_header_level(key, delta_level)
             header_map[key] = new_key
 
         # go through all contents and modify headers
@@ -188,25 +188,25 @@ class MarkdownNode:
         md_node.subnodes = node_children
         return (md_node, i)
 
-    def _modify_header_level(self, header: str, level: int) -> str:
+    def _modify_header_level(self, header: str, delta_level: int) -> str:
         """Modify header level by specified level."""
-        if level == 0:
+        if delta_level == 0:
             logger.debug('Nothing to modify in header, level 0 is given.')
             return header
 
         current_level = self._get_header_level_if_valid(header)
         if current_level is None:
             current_level = 0
-        if current_level + level < 0:
+        if current_level + delta_level < 0:
             logger.warning(
-                f'Cannot substract {level} as level of the header {header} is {current_level}. All `#` will be removed.'
+                f'Cannot substract {delta_level} as level of {header} is {current_level}. All `#` will be removed.'
             )
-            level = current_level * -1
+            delta_level = current_level * -1
 
-        if current_level + level == 0:
+        if current_level + delta_level == 0:
             replacement = ''
         else:
-            replacement = '#' * (current_level + level)
+            replacement = '#' * (current_level + delta_level)
         header = header.replace('#' * current_level, replacement)
 
         return header.strip(' ')
