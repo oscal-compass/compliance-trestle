@@ -20,7 +20,7 @@ import logging
 import pathlib
 import traceback
 import uuid
-from typing import List, Optional
+from typing import List, Optional, ValuesView
 
 import trestle
 from trestle.core import const
@@ -222,7 +222,7 @@ class CisToCatalog(TaskBase):
             key = 1000000 * int(parts[0]) + 1000 * int(parts[1]) + int(parts[2])
         return key
 
-    def _get_root_nodes(self) -> List[Node]:
+    def _get_root_nodes(self) -> ValuesView[Node]:
         """Get root nodes."""
         root_nodes = {}
         for node in self._node_map.values():
