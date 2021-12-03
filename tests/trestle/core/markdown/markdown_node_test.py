@@ -125,6 +125,7 @@ def test_modify_md_node_header_lvl(testdata_dir: pathlib.Path, tmp_trestle_dir: 
         assert node is not None
         expected_node = tree_expected.get_node_for_key(key)
         assert node.content.raw_text == expected_node.content.raw_text
+        assert len(node.subnodes) == len(expected_node.subnodes)
 
     tree.change_header_level_by(-1)
 
@@ -144,6 +145,7 @@ def test_modify_md_node_header_lvl(testdata_dir: pathlib.Path, tmp_trestle_dir: 
         assert node is not None
         expected_node = tree_expected.get_node_for_key(key)
         assert node.content.raw_text == expected_node.content.raw_text
+        assert len(node.subnodes) == len(expected_node.subnodes)
 
 
 def test_modify_md_node_remove_restore_headers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
