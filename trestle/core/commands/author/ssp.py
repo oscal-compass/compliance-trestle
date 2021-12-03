@@ -18,7 +18,7 @@ import copy
 import logging
 import pathlib
 import traceback
-from typing import List, Set
+from typing import Dict, List, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -26,7 +26,7 @@ from ruamel.yaml.error import YAMLError
 import trestle.core.generators as gens
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.core import const
+from trestle.core import const, err
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -55,8 +55,26 @@ class SSPGenerate(AuthorCommonCommand):
             action='store_true',
             default=False
         )
-        sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
+        sections_help_str = (
+            'Comma separated list of section:alias pairs for sections to output.' + ' Otherwises defaults to all.'
+        )
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
+
+    @staticmethod
+    def _sections_from_args(args: argparse.Namespace) -> Dict[str, str]:
+        sections = {}
+        if args.sections is not None:
+            section_tuples = args.sections.strip("'").split(',')
+            for section in section_tuples:
+                if ':' in section:
+                    s = section.split(':')
+                    sections[s[0].strip()] = s[1].strip()
+                else:
+
+                    sections[section] = section
+            if 'statement' in sections.keys():
+                raise err.TrestleError('"statement" sections are not allowed ')
+        return sections
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -79,23 +97,6 @@ class SSPGenerate(AuthorCommonCommand):
 
         markdown_path = trestle_root / args.output
 
-        sections = None
-        if args.sections is not None:
-            section_tuples = args.sections.strip("'").split(',')
-            sections = {}
-            for section in section_tuples:
-                if ':' in section:
-                    s = section.split(':')
-                    sections[s[0].strip()] = s[1].strip()
-                else:
-
-                    sections[section] = section
-            if 'statement' in sections.keys():
-                logger.warning('Section label "statement" is not allowed.')
-                return CmdReturnCodes.COMMAND_ERROR.value
-
-        logger.debug(f'ssp sections: {sections}')
-
         profile_resolver = ProfileResolver()
         try:
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
@@ -104,6 +105,18 @@ class SSPGenerate(AuthorCommonCommand):
             logger.error(f'Error creating the resolved profile catalog: {e}')
             logger.debug(traceback.format_exc())
             return CmdReturnCodes.COMMAND_ERROR.value
+
+        try:
+            sections = SSPGenerate._sections_from_args(args)
+            if sections == {}:
+                s_list = catalog_interface.get_sections()
+                for item in s_list:
+                    sections[item] = item
+            logger.debug(f'ssp sections: {sections}')
+        except err.TrestleError:
+            logger.warning('"statement" section is not allowed.')
+            return CmdReturnCodes.COMMAND_ERROR.value
+
         try:
             catalog_interface.write_catalog_as_markdown(
                 markdown_path, yaml_header, sections, True, False, None, header_dont_merge=args.header_dont_merge
@@ -208,7 +221,7 @@ class SSPAssemble(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         # write out the ssp as json
         try:
@@ -216,9 +229,9 @@ class SSPAssemble(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPFilter(AuthorCommonCommand):
@@ -285,7 +298,7 @@ class SSPFilter(AuthorCommonCommand):
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
                 logger.warning('Unable to filter the ssp because the profile references controls not in it.')
                 logger.debug(traceback.format_exc())
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             ssp.control_implementation = control_imp
             if regenerate:
@@ -294,6 +307,6 @@ class SSPFilter(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value

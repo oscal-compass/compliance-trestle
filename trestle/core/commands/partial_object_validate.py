@@ -22,7 +22,7 @@ import traceback
 
 import trestle.core.const as const
 import trestle.core.models.elements as elements
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.utils import log
@@ -30,7 +30,7 @@ from trestle.utils import log
 logger = logging.getLogger(__name__)
 
 
-class PartialObjectValidate(CommandPlusDocs):
+class PartialObjectValidate(CommandBase):
     """Direct validation any oscal object in a file, including list objects."""
 
     name = 'partial-object-validate'

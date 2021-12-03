@@ -1,0 +1,40 @@
+{
+  "catalog": {
+    "uuid": "4ea13065-8cae-4dac-a0f2-a7f5e8f54c64",
+    "metadata": {
+      "title": "Minimal Catalog",
+      "last-modified": "2020-10-22T09:46:21.745+00:00",
+      "version": "2.0",
+      "oscal-version": "1.0.0",
+      "roles": [
+        {
+          "id": "organization",
+           "title": "a_role"
+         }
+      ],
+      "responsible-parties": [
+        {
+          "role_id": "organization",
+          "party-uuids": [
+            "A0000000-0000-4000-8000-000000000000"
+          ]
+        }
+      ]
+    },
+    "groups": [
+      {
+        "id": "ac",
+        "class": "family",
+        "title": "Access Control"
+      }
+    ],
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "91f992fb-f668-4c91-a50f-0f05b95ccee3",
+          "title": "Title"
+        }
+      ]
+    }
+  }
+}
