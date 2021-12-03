@@ -21,6 +21,7 @@ import frontmatter
 import pytest
 
 import trestle.core.const as const
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 
@@ -95,3 +96,90 @@ def test_md_headers_in_html_blocks_are_ignored(md_path: pathlib.Path) -> None:
     assert tricky_node.key == '## 1.3 MD Subheader 1.3 HTML'
     assert len(tricky_node.content.subnodes_keys) == 4
     assert len(tricky_node.content.html_lines) == 36
+
+
+def test_modify_md_node_header_lvl(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that header modification works."""
+    markdown_file = testdata_dir / 'markdown/valid_levels_no_text.md'
+    expected_file = testdata_dir / 'markdown/valid_levels_no_text_increased_level.md'
+    md_api = MarkdownAPI()
+    _, tree = md_api.processor.process_markdown(markdown_file)
+
+    tree.change_header_level_by(1)
+
+    _, tree_expected = md_api.processor.process_markdown(expected_file)
+    assert tree_expected.content.raw_text == tree.content.raw_text
+    assert tree_expected.content.text == tree.content.text
+    assert len(list(tree.get_all_headers_for_level(1))) == len(list(tree_expected.get_all_headers_for_level(1)))
+    assert len(list(tree.get_all_headers_for_level(2))) == len(list(tree_expected.get_all_headers_for_level(2)))
+    assert len(list(tree.get_all_headers_for_level(3))) == len(list(tree_expected.get_all_headers_for_level(3)))
+    assert tree.get_node_for_key('####### Header 3.2.1.1.1.1').content.raw_text == tree_expected.get_node_for_key(
+        '####### Header 3.2.1.1.1.1'
+    ).content.raw_text
+    assert len(tree.get_node_for_key('## Header 3 a deeper tree').subnodes) == len(
+        tree_expected.get_node_for_key('## Header 3 a deeper tree').subnodes
+    )
+
+    for key in tree_expected.content.subnodes_keys:
+        node = tree.get_node_for_key(key)
+        assert node is not None
+        expected_node = tree_expected.get_node_for_key(key)
+        assert node.content.raw_text == expected_node.content.raw_text
+
+    tree.change_header_level_by(-1)
+
+    _, tree_expected = md_api.processor.process_markdown(markdown_file)
+
+    assert tree_expected.content.raw_text == tree.content.raw_text
+    assert tree_expected.content.text == tree.content.text
+    assert len(list(tree.get_all_headers_for_level(1))) == len(list(tree_expected.get_all_headers_for_level(1)))
+    assert len(list(tree.get_all_headers_for_level(2))) == len(list(tree_expected.get_all_headers_for_level(2)))
+    assert len(list(tree.get_all_headers_for_level(3))) == len(list(tree_expected.get_all_headers_for_level(3)))
+    assert len(tree.get_node_for_key('# Header 3 a deeper tree').subnodes) == len(
+        tree_expected.get_node_for_key('# Header 3 a deeper tree').subnodes
+    )
+
+    for key in tree_expected.content.subnodes_keys:
+        node = tree.get_node_for_key(key)
+        assert node is not None
+        expected_node = tree_expected.get_node_for_key(key)
+        assert node.content.raw_text == expected_node.content.raw_text
+
+
+def test_modify_md_node_remove_restore_headers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that header modification works."""
+    markdown_file = testdata_dir / 'markdown/valid_no_lvl1_headers.md'
+    expected_file = testdata_dir / 'markdown/valid_no_headers.md'
+    md_api = MarkdownAPI()
+    _, tree = md_api.processor.process_markdown(markdown_file)
+
+    tree.change_header_level_by(-99)
+
+    _, tree_expected = md_api.processor.process_markdown(expected_file)
+
+    assert tree_expected.content.raw_text == tree.content.raw_text
+    assert len(list(tree.get_all_headers_for_level(1))) == len(list(tree_expected.get_all_headers_for_level(1)))
+    assert len(list(tree.get_all_headers_for_level(2))) == len(list(tree_expected.get_all_headers_for_level(2)))
+    assert len(list(tree.get_all_headers_for_level(3))) == len(list(tree_expected.get_all_headers_for_level(3)))
+
+    tree.change_header_level_by(4)
+
+    assert len(list(tree.get_all_headers_for_level(4))) == 14
+
+
+def test_modify_subtree(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test modification of the subtree."""
+    markdown_file = testdata_dir / 'markdown/valid_no_lvl1_headers.md'
+    md_api = MarkdownAPI()
+    _, tree = md_api.processor.process_markdown(markdown_file)
+
+    subtree = tree.get_node_for_key('## Header root child 2')
+
+    subtree.change_header_level_by(-1)
+
+    assert len(subtree.content.subnodes_keys) == 10
+    assert subtree.key == '# Header root child 2'
+    assert len(list(subtree.get_all_headers_for_level(2))) == 2
+    assert len(list(subtree.get_all_headers_for_level(3))) == 4
+    assert len(list(subtree.get_all_headers_for_level(4))) == 4
+    assert subtree.get_node_header_lvl() == 1

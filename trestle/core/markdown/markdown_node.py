@@ -16,11 +16,15 @@
 """A markdown node."""
 from __future__ import annotations
 
+import logging
+import math
 import re
-from typing import Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import trestle.core.markdown.markdown_const as md_const
 from trestle.core.err import TrestleError
+
+logger = logging.getLogger(__name__)
 
 
 class SectionContent:
@@ -33,7 +37,7 @@ class SectionContent:
         self.code_lines = []
         self.html_lines = []
         self.blockquotes = []
-        self.raw_text = []
+        self.raw_text = ''
         self.subnodes_keys = []
         self.governed_document = []
 
@@ -60,7 +64,8 @@ class MarkdownNode:
     def build_tree_from_markdown(cls, lines: List[str], governed_header: Optional[str] = None):
         """Construct a tree out of the given markdown."""
         ob = cls.__new__(cls)
-        ob, _ = ob._build_tree(lines, 'root', 0, 0, governed_header)
+        start_level = ob._get_max_header_lvl(lines)
+        ob, _ = ob._build_tree(lines, 'root', 0, start_level, governed_header)
         return ob
 
     def get_all_headers_for_level(self, level: int) -> Iterable[str]:
@@ -85,6 +90,31 @@ class MarkdownNode:
             return list(filter(lambda header: key == header, self.content.subnodes_keys)).__iter__()
         else:
             return list(filter(lambda header: key in header, self.content.subnodes_keys)).__iter__()
+
+    def get_node_header_lvl(self) -> Optional[int]:
+        """Return current node header level."""
+        return self._get_header_level_if_valid(self.key)
+
+    def change_header_level_by(self, level: int) -> None:
+        """
+        Change all headers in the tree by specified level.
+
+        All children nodes will be modified by specified level as well.
+
+        Args:
+            level: each header will be modified by this number, can be negative.
+        """
+        # construct a map
+        header_map = {}
+        if self.key != 'root':
+            new_key = self._modify_header_level(self.key, level)
+            header_map[self.key] = new_key
+        for key in self.content.subnodes_keys:
+            new_key = self._modify_header_level(key, level)
+            header_map[key] = new_key
+
+        # go through all contents and modify headers
+        self._rec_traverse_header_update(self, header_map)
 
     def _build_tree(
         self,
@@ -157,6 +187,29 @@ class MarkdownNode:
         md_node = MarkdownNode(key=root_key, content=content)
         md_node.subnodes = node_children
         return (md_node, i)
+
+    def _modify_header_level(self, header: str, level: int) -> str:
+        """Modify header level by specified level."""
+        if level == 0:
+            logger.debug('Nothing to modify in header, level 0 is given.')
+            return header
+
+        current_level = self._get_header_level_if_valid(header)
+        if current_level is None:
+            current_level = 0
+        if current_level + level < 0:
+            logger.warning(
+                f'Cannot substract {level} as level of the header {header} is {current_level}. All `#` will be removed.'
+            )
+            level = current_level * -1
+
+        if current_level + level == 0:
+            replacement = ''
+        else:
+            replacement = '#' * (current_level + level)
+        header = header.replace('#' * current_level, replacement)
+
+        return header.strip(' ')
 
     def _get_header_level_if_valid(self, line: str) -> Optional[int]:
         """
@@ -244,3 +297,48 @@ class MarkdownNode:
                     return matched_node
 
         return None
+
+    def _rec_traverse_header_update(self, node: MarkdownNode, header_map: Dict[str, str]) -> None:
+        """Recursively traverse tree and update the contents."""
+        if node:
+            if node.key != 'root':
+                new_key = header_map[node.key]
+                node.key = new_key
+
+            # update text
+            lines = node.content.raw_text.split('\n')
+            if lines:
+                for i in range(0, len(lines)):
+                    line = lines[i]
+                    if line in header_map.keys():
+                        new_key = header_map[line]
+                        lines[i] = new_key
+                    elif line.strip(' ') in header_map.keys():
+                        # keep spaces if any
+                        new_key = header_map[line.strip(' ')]
+                        lines[i] = line.replace(line.strip(' '), new_key)
+
+                node.content.raw_text = '\n'.join(lines)
+
+            # update subnodes
+            if node.content.subnodes_keys:
+                for i in range(0, len(node.content.subnodes_keys)):
+                    subnode_key = node.content.subnodes_keys[i]
+                    if subnode_key in header_map.keys():
+                        new_key = header_map[subnode_key]
+                        node.content.subnodes_keys[i] = new_key
+
+        for subnode in node.subnodes:
+            self._rec_traverse_header_update(subnode, header_map)
+
+    def _get_max_header_lvl(self, lines: List[str]):
+        """Go through all lines to determine highest header level. Less # means higher."""
+        min_lvl = math.inf
+        for line in lines:
+            line = line.strip(' ')
+            header_lvl = self._get_header_level_if_valid(line)
+
+            if header_lvl is not None and header_lvl < min_lvl:
+                min_lvl = header_lvl
+
+        return min_lvl - 1
