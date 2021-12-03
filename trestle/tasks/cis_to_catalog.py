@@ -16,12 +16,11 @@
 
 import configparser
 import datetime
-import json
 import logging
 import pathlib
 import traceback
 import uuid
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional
 
 import trestle
 from trestle.core import const
@@ -31,7 +30,6 @@ from trestle.oscal.catalog import Control
 from trestle.oscal.catalog import Group
 from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Part
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 
@@ -40,17 +38,17 @@ logger = logging.getLogger(__name__)
 
 class Node():
     """Representation of CIS profile entry."""
-    
+
     def __init__(self, name=None, description=None):
         """Initialize node."""
         self._name = name
         self._description = description
-        
+
     @property
     def name(self) -> str:
         """Node name."""
         return self._name
-    
+
     @property
     def description(self) -> str:
         """Node description."""
@@ -75,7 +73,8 @@ class CisToCatalog(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
-        self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc                                                                            ).isoformat()
+        self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
+                                                                                    ).isoformat()
 
     def print_info(self) -> None:
         """Print the help string."""
@@ -93,7 +92,7 @@ class CisToCatalog(TaskBase):
         text1 = '  output-overwrite       = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
-        
+
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
         return TaskOutcome('simulated-success')
@@ -107,7 +106,7 @@ class CisToCatalog(TaskBase):
             return TaskOutcome('failure')
 
     def _execute(self) -> TaskOutcome:
-        """Wrapped mainline logic."""
+        """Wrap the execute for exception handling."""
         if not self._config:
             logger.error('config missing')
             return TaskOutcome('failure')
@@ -158,10 +157,7 @@ class CisToCatalog(TaskBase):
                 self._add_controls(group, node.name, depth)
         # metadata
         metadata = Metadata(
-            title=self._title,
-            last_modified=self._timestamp,
-            oscal_version=OSCAL_VERSION,
-            version=trestle.__version__
+            title=self._title, last_modified=self._timestamp, oscal_version=OSCAL_VERSION, version=trestle.__version__
         )
         # metadata links
         if metadata_links is not None:
@@ -170,21 +166,17 @@ class CisToCatalog(TaskBase):
                 link = Link(href=item)
                 metadata.links.append(link)
         # catalog
-        catalog = Catalog(
-            uuid=_uuid(),
-            metadata=metadata,
-            groups=root.groups
-        )
+        catalog = Catalog(uuid=_uuid(), metadata=metadata, groups=root.groups)
         # write OSCAL ComponentDefinition to file
         if verbose:
             logger.info(f'output: {ofile}')
         catalog.oscal_write(pathlib.Path(ofile))
         return TaskOutcome('success')
-    
+
     def _get_filelist(self, idir: str) -> List[pathlib.Path]:
         """Get filelist."""
         return [x for x in pathlib.Path(idir).iterdir() if x.is_file() and x.suffix == '.profile']
-    
+
     def _get_content(self, fp: pathlib.Path) -> List[str]:
         """Fetch content from file."""
         content = None
@@ -196,7 +188,7 @@ class CisToCatalog(TaskBase):
         except Exception as e:
             logger.error(f'unable to process {fp.name}')
             raise e
-    
+
     def _parse(self, lines: List[str]) -> None:
         """Parse lines to build data structure."""
         for line in lines:
@@ -217,19 +209,19 @@ class CisToCatalog(TaskBase):
             # derive desired sortable key from name
             key = self._get_key(name)
             self._node_map[key] = Node(name=name, description=description)
-    
+
     def _get_key(self, name: str) -> int:
         """Convert name to desired sortable key."""
         key = 0
         parts = name.split('.')
         if len(parts) == 1:
-            key = 1000000*int(parts[0])
+            key = 1000000 * int(parts[0])
         elif len(parts) == 2:
-            key = 1000000*int(parts[0]) + 1000*int(parts[1])
+            key = 1000000 * int(parts[0]) + 1000 * int(parts[1])
         elif len(parts) == 3:
-            key = 1000000*int(parts[0]) + 1000*int(parts[1]) + int(parts[2])
+            key = 1000000 * int(parts[0]) + 1000 * int(parts[1]) + int(parts[2])
         return key
-    
+
     def _get_root_nodes(self) -> List[Node]:
         """Get root nodes."""
         root_nodes = {}
@@ -249,13 +241,13 @@ class CisToCatalog(TaskBase):
             if len(dots) <= depth:
                 continue
             depth = len(dots)
-            if depth in [ 1, 2, 3 ]:
+            if depth in [1, 2, 3]:
                 continue
             text = f'Unexpected value: {name}'
             logger.error(text)
             raise Exception(text)
         return depth
-            
+
     def _add_controls(self, group: Group, prefix: str, depth: int):
         """Add controls to group."""
         controls = []
@@ -265,9 +257,9 @@ class CisToCatalog(TaskBase):
             if name.startswith(prefix):
                 dots = name.split('.')
                 if len(dots) == depth:
-                    id = f'CIS-{node.name}'
+                    id_ = f'CIS-{node.name}'
                     title = f'{node.name} {node.description}'
-                    control = Control(id=id, title=title)
+                    control = Control(id=id_, title=title)
                     controls.append(control)
         if len(controls) > 0:
             group.controls = controls
@@ -291,11 +283,9 @@ class CisToCatalog(TaskBase):
             sub_prefix = node.name
             self._add_controls(sub_group, sub_prefix, depth)
         if len(groups) > 0:
-            group.groups = groups   
+            group.groups = groups
 
 
 def _uuid() -> str:
     """Create uuid."""
     return str(uuid.uuid4())
-
-    

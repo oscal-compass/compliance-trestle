@@ -20,7 +20,6 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import trestle
 import trestle.tasks.cis_to_catalog as cis_to_catalog
 from trestle.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
@@ -55,7 +54,7 @@ def test_cis_to_catalog_simulate(tmp_path: pathlib.Path):
     config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
     config.read(config_path)
     section = config['task.cis-to-catalog']
-    section['output-dir'] = str(tmp_path) 
+    section['output-dir'] = str(tmp_path)
     tgt = cis_to_catalog.CisToCatalog(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
@@ -73,8 +72,8 @@ def test_cis_to_catalog_execute(tmp_path: pathlib.Path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     _validate(tmp_path)
-    
-    
+
+
 def _validate(tmp_path: pathlib.Path):
     # read catalog
     file_path = tmp_path / 'catalog.json'
@@ -92,14 +91,15 @@ def _validate(tmp_path: pathlib.Path):
     assert group.groups[0].controls[2].title == '1.2.3 Ensure that the --token-auth-file parameter is not set'
     assert group.groups[1].title == '1.3 Controller Manager'
     assert len(group.groups[1].controls) == 1
-    assert group.groups[1].controls[0].title == '1.3.2 Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)'
+    assert group.groups[1].controls[
+        0].title == '1.3.2 Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)'
     # group 1
     group = catalog.groups[1]
     assert group.title == '2 etcd'
     assert len(group.controls) == 2
     assert group.controls[0].title == '2.1 Ensure that the --cert-file and --key-file arguments are set as appropriate'
     assert group.controls[1].title == '2.2 Ensure that the --client-cert-auth argument is set to true'
-    
+
 
 def test_cis_to_catalog_config_missing(tmp_path: pathlib.Path):
     """Test config missing."""
@@ -133,7 +133,7 @@ def test_cis_to_catalog_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPat
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
-  
+
 def test_cis_to_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test no overwrite."""
     config = configparser.ConfigParser()
@@ -147,7 +147,7 @@ def test_cis_to_catalog_no_overwrite(tmp_path: pathlib.Path):
     section['output-overwrite'] = 'false'
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
-        
+
 
 def test_cis_to_catalog_no_input(tmp_path: pathlib.Path):
     """Test no input."""
@@ -186,4 +186,3 @@ def test_cis_to_catalog_input_bogus(tmp_path: pathlib.Path):
     tgt = cis_to_catalog.CisToCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
-    
