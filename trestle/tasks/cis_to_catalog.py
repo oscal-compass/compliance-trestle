@@ -22,11 +22,10 @@ import traceback
 import uuid
 from typing import List, Optional, ValuesView
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 import trestle
 from trestle.core import const
-from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
@@ -39,7 +38,7 @@ from trestle.tasks.base_task import TaskOutcome
 logger = logging.getLogger(__name__)
 
 
-class Node(OscalBaseModel):
+class Node(BaseModel):
     """Representation of CIS profile entry."""
 
     name: Optional[str] = Field(None)
