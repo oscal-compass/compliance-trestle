@@ -137,3 +137,11 @@ class MDWriter():
         except IOError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
             raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')
+
+    def get_lines(self) -> List[str]:
+        """Return the current lines in the file."""
+        return self._lines
+
+    def get_text(self) -> str:
+        """Get the text as currently written."""
+        return '\n'.join(self._lines)

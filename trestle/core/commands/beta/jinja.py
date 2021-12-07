@@ -19,9 +19,12 @@ import logging
 import operator
 import pathlib
 import traceback
-from typing import List, Optional
+import uuid
+from typing import Any, Dict, Optional
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader
+
+from ruamel.yaml import YAML
 
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
@@ -38,13 +41,24 @@ logger = logging.getLogger(__name__)
 class JinjaCmd(CommandPlusDocs):
     """Transform an input template to an output document using jinja templating."""
 
+    max_recursion_depth = 100
+
     name = 'jinja'
 
     def _init_arguments(self):
         self.add_argument('-i', '--input', help='Input jinja template, relative to trestle root', required=True)
         self.add_argument('-o', '--output', help='Output template, relative to trestle root.', required=True)
         self.add_argument(
-            '-jt', '--jinja-true', help='A jinja boolean var which needs to be passed as true', nargs='*', default=[]
+            '-lut',
+            '--look-up-table',
+            help='Key-value pair table, stored as yaml, to be passed to jinja as variables',
+            required=False
+        )
+        self.add_argument(
+            '-elp',
+            '--external-lut-prefix',
+            help='Prefix paths for LUT, to maintain compatibility with other templating systems',
+            required=False
         )
         self.add_argument(
             '-ssp', '--system-security-plan', help='An optional SSP to be passed', default=None, required=False
@@ -57,18 +71,26 @@ class JinjaCmd(CommandPlusDocs):
         input_path = pathlib.Path(args.input)
         output_path = pathlib.Path(args.output)
         cwd = pathlib.Path.cwd()
-
+        if args.look_up_table:
+            lut = JinjaCmd.load_LUT(pathlib.Path(args.look_up_table), args.external_lut_prefix)
         status = JinjaCmd.jinja_ify(
-            cwd,
-            pathlib.Path(args.trestle_root),
-            input_path,
-            output_path,
-            args.jinja_true,
-            args.system_security_plan,
-            args.profile
+            cwd, pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, lut
         )
         logger.debug(f'Done {self.name} command')
         return status
+
+    @staticmethod
+    def load_LUT(path: pathlib.Path, prefix: Optional[str]) -> Dict[str, Any]:  # noqa: N802
+        """Load a Yaml lookup table from file."""
+        yaml = YAML()
+        lut = yaml.load(path.open('r', encoding=const.FILE_ENCODING))
+        if prefix:
+            prefixes = prefix.split('.')
+            while prefixes:
+                old_lut = lut
+                lut[prefixes.pop(-1)] = old_lut
+
+        return lut
 
     @staticmethod
     def jinja_ify(
@@ -76,38 +98,57 @@ class JinjaCmd(CommandPlusDocs):
         trestle_root: pathlib.Path,
         r_input_file: pathlib.Path,
         r_output_file: pathlib.Path,
-        jinja_true: List[str],
         ssp: Optional[str],
         profile: Optional[str],
+        lut: Optional[Dict[str, Any]] = None
     ) -> int:
         """Run jinja over an input file with additional booleans."""
         try:
+            if lut is None:
+                lut = {}
             jinja_env = Environment(
-                loader=FileSystemLoader(cwd), extensions=[MDCleanInclude, MDSectionInclude], autoescape=True
+                loader=FileSystemLoader(cwd),
+                extensions=[MDCleanInclude, MDSectionInclude],
+                autoescape=True,
+                trim_blocks=True
             )
             template = jinja_env.get_template(str(r_input_file))
             # create boolean dict
-            truths = {}
             if operator.xor(bool(ssp), bool(profile)):
                 logger.error('Both SSP and profile should be provided or not at all')
                 return 2
             if ssp:
                 # name lookup
                 ssp_data, _ = fs.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
-                truths['ssp'] = ssp_data
+                lut['ssp'] = ssp_data
 
             if profile:
                 profile_data, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-                truths['catalog'] = resolved_catalog
-                truths['catalog_interface'] = CatalogInterface(resolved_catalog)
+                lut['catalog'] = resolved_catalog
+                lut['catalog_interface'] = CatalogInterface(resolved_catalog)
 
-            for truth in jinja_true:
-                truths[truth] = True
-            output_content = template.render(**truths)
+            new_output = template.render(**lut)
+            output = ''
+            # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
+            error_countdown = JinjaCmd.max_recursion_depth
+            while new_output != output and error_countdown > 0:
+                error_countdown = error_countdown - 1
+                output = new_output
+                random_name = uuid.uuid4()  # Should be random and not used.
+                dict_loader = DictLoader({str(random_name): new_output})
+                jinja_env = Environment(
+                    loader=ChoiceLoader([dict_loader, FileSystemLoader(cwd)]),
+                    extensions=[MDCleanInclude, MDSectionInclude],
+                    autoescape=True,
+                    trim_blocks=True
+                )
+                template = jinja_env.get_template(str(random_name))
+                new_output = template.render(**lut)
+
             output_file = trestle_root / r_output_file
-            output_file.open('w', encoding=const.FILE_ENCODING).write(output_content)
+            output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         except Exception as e:
             logger.error(f'Unknown exception {str(e)} occured.')

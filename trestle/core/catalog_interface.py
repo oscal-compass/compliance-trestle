@@ -19,6 +19,7 @@ from typing import Dict, Iterator, List, Optional, Tuple
 
 from pydantic import BaseModel
 
+import trestle.core.base_model as bm
 import trestle.core.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
@@ -129,9 +130,6 @@ class CatalogInterface():
                 new_path.append(sub_group.id)
                 self._add_group_controls(sub_group, control_dict, new_path)
 
-    def _create_group_dict(self) -> Dict[str, cat.Group]:
-        pass
-
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
         control_dict: Dict[str, CatalogInterface.ControlHandle] = {}
         # add controls by group
@@ -165,7 +163,7 @@ class CatalogInterface():
                 new_list.extend(self._get_all_controls_in_list(control.controls, recurse))
         return new_list
 
-    def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> cat.Control:
+    def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> List[cat.Control]:
         """Create a list of all controls in this group."""
         controls: List[cat.Control] = []
         if group.controls:
@@ -231,6 +229,32 @@ class CatalogInterface():
     def get_group_ids(self) -> List[str]:
         """Get all the group id's as a string."""
         return list({control.group_id for control in self._control_dict.values()})
+
+    def get_all_groups_from_catalog(self) -> Iterator[cat.Group]:
+        """Retrieve all groups in the catalog."""
+        if self._catalog.groups:
+            for my_group in self._catalog.groups:
+                for res in CatalogInterface._get_groups_from_group(my_group):
+                    yield res
+
+    @staticmethod
+    def _get_groups_from_group(group: cat.Group) -> Iterator[cat.Group]:
+        yield group
+        if group.groups:
+            for new_group in group.groups:
+                for res in CatalogInterface._get_groups_from_group(new_group):
+                    yield res
+
+    @staticmethod
+    def get_label(object_with_props: bm.OscalBaseModel) -> Optional[str]:
+        """Get the label from an object with properties (such as a control)."""
+        label = None
+        if object_with_props.props:
+            for prop in object_with_props.props:
+                if prop.name == 'label':
+                    label = prop.value
+                    break
+        return label
 
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""

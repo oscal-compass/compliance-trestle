@@ -82,9 +82,12 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 
 @pytest.mark.parametrize('import_cat', [False, True])
-def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('sections', [False, True])
+def test_ssp_generate(import_cat, sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, import_cat)
+    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, import_cat)
+    if not sections:
+        args.sections = None
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0

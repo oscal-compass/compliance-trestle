@@ -403,6 +403,20 @@ class ControlIOWriter():
 
         self._md_file.write_out()
 
+    def get_formatted_control(
+        self,
+        control: cat.Control,
+        group_title: str,
+        sections: Optional[Dict[str, str]],
+        profile: Optional[prof.Profile],
+        header_dont_merge: bool
+    ) -> str:
+        """Get back the formatted control from a catalog."""
+        # This is to use existing methods
+        self._md_file = MDWriter(None)
+        self._add_control_statement(control, group_title)
+        self
+
 
 # Start of section to read controls from markdown
 
