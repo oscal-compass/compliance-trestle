@@ -208,7 +208,7 @@ class ProfileResolver():
             for control_id in final_control_ids:
                 control = self._catalog_interface.get_control(control_id)
                 group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
-                if group_id == 'catalog':
+                if not group_id:
                     cat_controls.append(control)
                     continue
                 group = group_dict.get(group_id)
@@ -718,13 +718,13 @@ class ProfileResolver():
             for import_ in self._profile.imports:
                 links.append(common.Link(**{'href': import_.href, 'rel': 'resolution-source'}))
             new_metadata.links = links
-            # move catalog controls from dummy group 'catalog' into the catalog
-            if catalog.groups:
-                for group in catalog.groups:
-                    if group.id == const.MODEL_TYPE_CATALOG:
-                        catalog.controls = group.controls
-                        catalog.groups = [group for group in catalog.groups if group.id != const.MODEL_TYPE_CATALOG]
-                        break
+
+            # move catalog controls from dummy group '' into the catalog
+            for group in as_list(catalog.groups):
+                if not group.id:
+                    catalog.controls = group.controls
+                    catalog.groups.remove(group)
+                    break
 
             catalog.metadata = new_metadata
 

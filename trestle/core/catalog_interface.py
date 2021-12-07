@@ -52,7 +52,7 @@ class CatalogInterface():
     class ControlHandle(TrestleBaseModel):
         """Convenience class for handling controls as members of a group.
 
-        group_id: id of parent group or 'catalog' if not in a group
+        group_id: id of parent group or '' if not in a group
         group_title: title of the group
         group_class: class of the group
         path: path of parent controls leading to this child control
@@ -137,12 +137,12 @@ class CatalogInterface():
                 self._add_group_controls(group, control_dict, [])
         # now add controls not in a group, if any
         if self._catalog.controls is not None:
-            group_path = [const.MODEL_TYPE_CATALOG]
+            group_path = ['']
             for control in self._catalog.controls:
                 new_path = group_path[:]
                 new_path.append(control.id)
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=const.MODEL_TYPE_CATALOG,
+                    group_id='',
                     group_title=const.MODEL_TYPE_CATALOG,
                     group_class=const.MODEL_TYPE_CATALOG,
                     control=control,
@@ -315,7 +315,8 @@ class CatalogInterface():
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            group_dir = md_path if group_id == const.MODEL_TYPE_CATALOG else md_path / group_id
+            # this works also for the catalog controls with group_id=''
+            group_dir = md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             writer.write_control(
