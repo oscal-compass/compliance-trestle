@@ -107,13 +107,6 @@ class RemoveCmd(CommandPlusDocs):
             add_plan.add_action(write_action)
 
             try:
-                add_plan.simulate()
-            except TrestleError as err:
-                logger.debug(f'Remove failed at simulate(): {err}')
-                logger.error(f'Remove failed (simulate()): {err}')
-                return CmdReturnCodes.COMMAND_ERROR.value
-
-            try:
                 add_plan.execute()
             except TrestleError as err:
                 logger.debug(f'Remove failed at execute(): {err}')

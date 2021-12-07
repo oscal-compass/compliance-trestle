@@ -104,7 +104,6 @@ class CreateCmd(CommandPlusDocs):
             create_plan = Plan()
             create_plan.add_action(create_action)
             create_plan.add_action(write_action)
-            create_plan.simulate()
             create_plan.execute()
             return CmdReturnCodes.SUCCESS.value
         except Exception as e:

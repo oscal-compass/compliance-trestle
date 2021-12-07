@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Plan of action of a command."""
-
+import logging
 from io import UnsupportedOperation
 from typing import List
 
 from .actions import Action
+
+logger = logging.getLogger(__name__)
 
 
 class Plan:
@@ -56,24 +58,16 @@ class Plan:
         """Clear all actions."""
         self._actions = []
 
-    def simulate(self) -> None:
-        """Simulate execution of the plan."""
-        # Check if all of the actions support rollback or not
-        for action in self._actions:
-            if action.has_rollback() is False:
-                raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
-
-        try:
-            self.execute()
-        except Exception as ex:
-            raise ex
-        finally:
-            self.rollback()
-
     def execute(self) -> None:
         """Execute the actions in the plan."""
         for action in self._actions:
-            action.execute()
+            try:
+                action.execute()
+            except Exception as e:
+                logger.error(f'Failed to execute action {action} for the plan: {e}.')
+                if action.has_rollback():
+                    logger.error('Rolling back the action...')
+                    self.rollback()
 
     def rollback(self) -> None:
         """Rollback the actions in the plan."""
