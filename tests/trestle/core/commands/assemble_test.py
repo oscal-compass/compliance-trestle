@@ -89,8 +89,8 @@ def test_assemble_execution_failure(
 ) -> None:
     """Test execution of assemble plan fails."""
 
-    def simulate_mock(*args, **kwargs):
-        raise err.TrestleError('simulate_fail')
+    def execute_mock(*args, **kwargs):
+        raise err.TrestleError('execution failed')
 
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = pathlib.Path('catalogs/')
@@ -98,7 +98,7 @@ def test_assemble_execution_failure(
     shutil.rmtree(catalogs_dir)
     shutil.rmtree(pathlib.Path('dist'))
     shutil.copytree(test_data_source, catalogs_dir)
-    monkeypatch.setattr(Plan, 'simulate', simulate_mock)
+    monkeypatch.setattr(Plan, 'execute', execute_mock)
     rc = AssembleCmd().assemble_model(
         'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
     )
