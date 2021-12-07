@@ -26,6 +26,7 @@ import trestle.oscal.profile as prof
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.common_types import OBT
 from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
+from trestle.core.control_io import ControlIOReader
 from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
@@ -651,19 +652,10 @@ class ProfileResolver():
         def _change_prose_with_param_values(self):
             """Go through all controls and change prose based on param values."""
             param_dict: Dict[str, str] = {}
+            # build the full mapping of params to values
             for control in self._catalog_interface.get_all_controls_from_dict():
-                params = as_list(control.params)
-                for param in params:
-                    value_str = 'No value found'
-                    if param.label:
-                        value_str = param.label
-                    if param.values:
-                        values = [val.__root__ for val in param.values]
-                        if len(values) == 1:
-                            value_str = values[0]
-                        else:
-                            value_str = f"[{', '.join(value for value in values)}]"
-                    param_dict[param.id] = value_str
+                param_dict.update(ControlIOReader.get_control_param_dict(control))
+            # insert param values into prose of all controls
             for control in self._catalog_interface.get_all_controls_from_dict():
                 self._replace_control_prose(control, param_dict)
 
@@ -716,8 +708,7 @@ class ProfileResolver():
                 # go through all controls and fix the prose based on param values
                 self._change_prose_with_param_values()
 
-            self._catalog_interface.update_catalog_controls()
-            catalog = self._catalog_interface._catalog
+            catalog = self._catalog_interface.get_catalog()
 
             # update the original profile metadata with new contents
             # roles and responsible-parties will be pulled in with new uuid's

@@ -1047,6 +1047,24 @@ class ControlIOReader():
         return new_alters
 
     @staticmethod
+    def get_control_param_dict(control: cat.Control) -> Dict[str, str]:
+        """Get a dict of the parameters in a control and their values."""
+        param_dict: Dict[str, str] = {}
+        params: List[common.Parameter] = as_list(control.params)
+        for param in params:
+            value_str = 'No value found'
+            if param.label:
+                value_str = param.label
+            if param.values:
+                values = [val.__root__ for val in param.values]
+                if len(values) == 1:
+                    value_str = values[0]
+                else:
+                    value_str = f"[{', '.join(value for value in values)}]"
+            param_dict[param.id] = value_str
+        return param_dict
+
+    @staticmethod
     def read_control(control_path: pathlib.Path) -> cat.Control:
         """Read the control markdown file."""
         control = gens.generate_sample_model(cat.Control)

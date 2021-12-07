@@ -24,6 +24,7 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
+from trestle.core.utils import as_list
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -72,13 +73,12 @@ class CatalogInterface():
 
     def _add_params_to_dict(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
-        if control.params is not None:
-            for param in control.params:
-                if param.id in self._param_dict:
-                    logger.warning(
-                        f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
-                    )
-                self._param_dict[param.id] = control.id
+        for param in as_list(control.params):
+            if param.id in self._param_dict:
+                logger.warning(
+                    f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
+                )
+            self._param_dict[param.id] = control.id
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
