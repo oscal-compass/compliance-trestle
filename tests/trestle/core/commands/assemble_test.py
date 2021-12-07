@@ -132,7 +132,8 @@ def test_assemble_catalog_all(
     catalogs_dir = tmp_trestle_dir / 'catalogs'
     my_names = ['mycatalog1', 'mycatalog2', 'mycatalog3']
     for my_name in my_names:
-        test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs/mycatalog'
+#        test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs/mycatalog'
+        test_data_source = testdata_dir / 'split_merge/simplified_split_merge/catalogs/shortened_usnist_catalog_rev4'
         shutil.copytree(test_data_source, catalogs_dir / my_name)
 
     testargs = ['trestle', 'assemble', 'catalog', '-t', '-x', 'json']

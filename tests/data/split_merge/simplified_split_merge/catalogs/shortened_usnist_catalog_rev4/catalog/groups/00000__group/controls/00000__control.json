@@ -1,0 +1,127 @@
+{
+  "control": {
+    "id": "ac-1",
+    "class": "SP800-53",
+    "title": "Access Control Policy and Procedures",
+    "params": [
+      {
+        "id": "ac-1_prm_1",
+        "label": "organization-defined personnel or roles"
+      },
+      {
+        "id": "ac-1_prm_2",
+        "label": "organization-defined frequency"
+      }
+    ],
+    "props": [
+      {
+        "name": "label",
+        "value": "AC-1"
+      },
+      {
+        "name": "sort-id",
+        "value": "ac-01"
+      }
+    ],
+    "links": [
+      {
+        "href": "#5c201b63-0768-417b-ac22-3f014e3941b2",
+        "rel": "reference"
+      },
+      {
+        "href": "#9cb3d8fe-2127-48ba-821e-cdd2d7aee921",
+        "rel": "reference"
+      }
+    ],
+    "parts": [
+      {
+        "id": "ac-1_smt",
+        "name": "statement",
+        "prose": "The organization:",
+        "parts": [
+          {
+            "id": "ac-1_smt.a",
+            "name": "item",
+            "props": [
+              {
+                "name": "label",
+                "value": "a."
+              }
+            ],
+            "prose": "Develops, documents, and disseminates to {{ insert: param, ac-1_prm_1 }}:",
+            "parts": [
+              {
+                "id": "ac-1_smt.a.1",
+                "name": "item",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "1."
+                  }
+                ],
+                "prose": "An access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and"
+              },
+              {
+                "id": "ac-1_smt.a.2",
+                "name": "item",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "2."
+                  }
+                ],
+                "prose": "Procedures to facilitate the implementation of the access control policy and associated access controls; and"
+              }
+            ]
+          },
+          {
+            "id": "ac-1_smt.b",
+            "name": "item",
+            "props": [
+              {
+                "name": "label",
+                "value": "b."
+              }
+            ],
+            "prose": "Reviews and updates the current:",
+            "parts": [
+              {
+                "id": "ac-1_smt.b.1",
+                "name": "item",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "1."
+                  }
+                ],
+                "prose": "Access control policy {{ insert: param, ac-1_prm_2 }}; and"
+              },
+              {
+                "id": "ac-1_smt.b.2",
+                "name": "item",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "2."
+                  }
+                ],
+                "prose": "Access control procedures {{ insert: param, ac-1_prm_3 }}."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ac-1_gdn",
+        "name": "guidance",
+        "prose": "This control addresses the establishment of policy and procedures for the effective implementation of selected security controls and control enhancements in the AC family. Policy and procedures reflect applicable federal laws, Executive Orders, directives, regulations, policies, standards, and guidance. Security program policies and procedures at the organization level may make the need for system-specific policies and procedures unnecessary. The policy can be included as part of the general information security policy for organizations or conversely, can be represented by multiple policies reflecting the complex nature of certain organizations. The procedures can be established for the security program in general and for particular information systems, if needed. The organizational risk management strategy is a key factor in establishing policy and procedures.",
+        "links": [
+          {
+            "href": "#pm-9",
+            "rel": "related"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "catalog": {
+    "uuid": "b954d3b7-d2c7-453b-8eb2-459e8d3b8462",
+    "metadata": {
+      "title": "NIST Special Publication 800-53 Revision 4: Security and Privacy Controls for Federal Information Systems and Organizations",
+      "last-modified": "2021-06-08T17:57:28.917000+00:00",
+      "version": "2015-01-22",
+      "oscal-version": "1.0.0",
+      "props": [
+        {
+          "name": "keywords",
+          "value": "Assurance, computer security, FISMA, Privacy Act, Risk Management Framework, security controls, security requirements"
+        }
+      ],
+      "links": [
+        {
+          "href": "#16b3b234-3406-44dc-8645-7da61b6e81f1",
+          "rel": "alternate"
+        },
+        {
+          "href": "#fb81fb1c-165e-43a4-8264-1dfd3182b630",
+          "rel": "canonical"
+        }
+      ],
+      "roles": [
+        {
+          "id": "creator",
+          "title": "Document creator"
+        },
+        {
+          "id": "contact",
+          "title": "Contact"
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "93122cb0-95bc-4fdb-8b48-85ff60f9509b",
+          "type": "organization",
+          "name": "Joint Task Force, Transformation Initiative",
+          "email-addresses": [
+            "sec-cert@nist.gov"
+          ],
+          "addresses": [
+            {
+              "addr-lines": [
+                "National Institute of Standards and Technology",
+                "Attn: Computer Security Division"
+              ],
+              "city": "Gaithersburg",
+              "state": "MD",
+              "postal-code": "20899-8930"
+            }
+          ]
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "creator",
+          "party-uuids": [
+            "c6d77a50-e52e-4399-8a57-896d4807952f"
+          ]
+        },
+        {
+          "role-id": "contact",
+          "party-uuids": [
+            "c6d77a50-e52e-4399-8a57-896d4807952f"
+          ]
+        }
+      ]
+    },
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "0c97e60b-325a-4efa-ba2b-90f20ccd5abc",
+          "title": "5 C.F.R. 731.106",
+          "citation": {
+            "text": "Code of Federal Regulations, Title 5, Administrative Personnel, Section 731.106, Designation of Public Trust Positions and Investigative Requirements (5 C.F.R. 731.106)."
+          },
+          "rlinks": [
+            {
+              "href": "http://www.gpo.gov/fdsys/granule/CFR-2012-title5-vol2/CFR-2012-title5-vol2-sec731-106/content-detail.html"
+            }
+          ]
+        },
+        {
+          "uuid": "bb61234b-46c3-4211-8c2b-9869222a720d",
+          "title": "C.F.R. Part 5 Subpart C (5 C.F.R. 930.301)",
+          "citation": {
+            "text": "C.F.R. Part 5 Subpart C (5 C.F.R. 930.301)"
+          },
+          "rlinks": [
+            {
+              "href": "http://www.gpo.gov/fdsys/granule/CFR-2009-title5-vol2/CFR-2009-title5-vol2-sec930-301/content-detail.html"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
