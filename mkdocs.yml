@@ -27,7 +27,7 @@ nav:
   - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
   - Task - cis-to-component-definition: tutorials/task.cis-to-component-definition/transformation.md
   - Task - tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
-  - Work with authoring versions: work_with_authoring_versions.md
+  - Work with authoring versions: tutorials/work_with_authoring_versions.md
 - Trestle command-line interface (CLI):
   - CLI for OSCAL documents: cli.md
   - CLI for authoring governed content: trestle_author.md
