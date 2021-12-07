@@ -497,7 +497,6 @@ def test_split_merge_out_of_context(
     else:
         os.chdir(full_path_to_model_dir)
         plan = MergeCmd.merge(pathlib.Path.cwd(), ElementPath(merge_elem), trestle_root=tmp_trestle_dir)
-    plan.simulate()
     plan.execute()
 
     # Check both the catalogs are the same.

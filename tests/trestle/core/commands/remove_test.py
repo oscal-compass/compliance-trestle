@@ -60,7 +60,6 @@ def test_remove(tmp_path: pathlib.Path):
 
     add_plan = Plan()
     add_plan.add_action(actual_remove_action)
-    add_plan.simulate()
     add_plan.execute()
 
     # 1.2 Assertion about resulting element after removal
@@ -87,7 +86,6 @@ def test_remove(tmp_path: pathlib.Path):
 
     add_plan = Plan()
     add_plan.add_action(actual_remove_action)
-    add_plan.simulate()
     add_plan.execute()
 
     # 2.2 Assertion about resulting element after removal
@@ -254,10 +252,6 @@ def test_run_failure_plan_execute(
     # Plant this specific logged error for failing execution in mock_execute:
     logged_error = 'fail_execute'
 
-    # Mock a successful simulate(), to avoid the actual simulate() call invoking an execute() call:
-    def mock_simulate(*args, **kwargs):
-        return
-
     def mock_execute(*args, **kwargs):
         raise err.TrestleError(logged_error)
 
@@ -276,7 +270,6 @@ def test_run_failure_plan_execute(
     Trestle().run()
     # .. then attempt to remove it here, but mocking a failed execute:
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.remarks']
-    monkeypatch.setattr(Plan, 'simulate', mock_simulate)
     monkeypatch.setattr(Plan, 'execute', mock_execute)
     monkeypatch.setattr(sys, 'argv', testargs)
     caplog.clear()

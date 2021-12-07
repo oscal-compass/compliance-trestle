@@ -102,7 +102,6 @@ class AddCmd(CommandPlusDocs):
             add_plan.add_action(create_action)
             add_plan.add_action(write_action)
 
-            add_plan.simulate()
             add_plan.execute()
             return CmdReturnCodes.SUCCESS.value
         except err.TrestleError as e:
