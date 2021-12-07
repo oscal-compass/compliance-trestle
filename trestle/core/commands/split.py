@@ -195,13 +195,15 @@ class SplitCmd(CommandPlusDocs):
             split_plan = cls.split_model(
                 model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip
             )
-
-            # If we are here then simulation passed
-            # so move the original file to the trash
             trash.store(file_path, True)
 
-            # execute the plan
-            split_plan.execute()
+            try:
+                split_plan.execute()
+            except Exception as e:
+                logger.error(f'Split has failed with error: {e}.')
+                trash.recover(file_path, True)
+                return CmdReturnCodes.COMMAND_ERROR.value
+
         return CmdReturnCodes.SUCCESS.value
 
     @classmethod

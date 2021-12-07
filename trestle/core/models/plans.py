@@ -64,10 +64,9 @@ class Plan:
             try:
                 action.execute()
             except Exception as e:
-                logger.error(f'Failed to execute action {action} for the plan: {e}.')
-                if action.has_rollback():
-                    logger.error('Rolling back the action...')
-                    self.rollback()
+                logger.error(f'Failed to execute action {action} for the plan: {e}. Rolling back.')
+                self.rollback()
+                raise e
 
     def rollback(self) -> None:
         """Rollback the actions in the plan."""
