@@ -21,7 +21,9 @@ import pytest
 
 import tests.test_utils as test_utils
 
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.err import TrestleError
 from trestle.oscal import common
@@ -262,31 +264,33 @@ def test_merge_dicts_deep() -> None:
     assert dest['q'] == 99
 
 
-def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:
-    """Test read_label_prose failures."""
-    lines = ['', '## Implementation my_label', 'bad line']
+def test_control_with_components() -> None:
+    """Test loading and parsing of implementated reqs with components."""
+    control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
+    comp_prose_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
+    assert len(comp_prose_dict.keys()) == 3
+    assert len(comp_prose_dict['This System'].keys()) == 3
+    assert len(comp_prose_dict['Trestle Component'].keys()) == 1
+    assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
+    assert comp_prose_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']
+
+    # need to build the needed components so they can be referenced
+    comp_dict = {}
+    for comp_name in comp_prose_dict.keys():
+        comp = gens.generate_sample_model(ossp.SystemComponent)
+        comp.title = comp_name
+        comp_dict[comp_name] = comp
+
+    # confirm that the header content was inserted into the props of the imp_req
+    imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
+    assert len(imp_req.props) == 12
+    assert len(imp_req.statements) == 3
+    assert len(imp_req.statements[0].by_components) == 3
+
+
+@pytest.mark.parametrize('md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md'])
+def test_control_bad_components(md_file: str) -> None:
+    """Test loading of imp reqs for control with bad components."""
+    control_path = pathlib.Path('tests/data/author/controls/') / md_file
     with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, lines)
-
-    bad_header = ['', '# bad header']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, bad_header)
-
-    no_label = ['', '## Implementation']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, no_label)
-
-
-def test_read_label_prose_special_cases(tmp_path: pathlib.Path) -> None:
-    """Test special cases for read label prose."""
-    added_text = """
-# What is the solution and how is it implemented?
-
-Top level description text
-
-"""
-    full_control_text = control_text + added_text
-    lines = full_control_text.split('\n')
-    _, label, prose_lines = ControlIOReader._read_label_prose(0, lines)
-    assert label == 'top_level_description'
-    assert prose_lines[0] == 'Top level description text'
+        ControlIOReader.read_all_implementation_prose_and_header(control_path)

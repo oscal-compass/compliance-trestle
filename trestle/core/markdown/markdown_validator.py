@@ -161,6 +161,7 @@ class MarkdownValidator:
             return False
 
         if len(template.keys()) != len(candidate.keys()):
+            logger.info(f'Number of keys does not match in template {template} and instance {candidate}')
             return False
         for key in template.keys():
             if key in candidate.keys():
@@ -170,8 +171,10 @@ class MarkdownValidator:
                         if not status:
                             return status
                     else:
+                        logger.info(f'Value under {key} must be dictionary in candidate {candidate}')
                         return False
             else:
+                logger.info(f'Key {key} is not in candidate {candidate}')
                 return False
         return True
 

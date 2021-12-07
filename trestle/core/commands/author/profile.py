@@ -29,6 +29,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.utils.load_distributed import load_distributed
@@ -61,7 +62,7 @@ class ProfileGenerate(AuthorCommonCommand):
             trestle_root = args.trestle_root
             if not fs.allowed_task_name(args.output):
                 logger.warning(f'{args.output} is not an allowed directory name')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             yaml_header: dict = {}
             if 'yaml_header' in args and args.yaml_header is not None:
@@ -71,7 +72,7 @@ class ProfileGenerate(AuthorCommonCommand):
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
                     logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
 
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
@@ -83,7 +84,7 @@ class ProfileGenerate(AuthorCommonCommand):
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     def generate_markdown(
         self,
@@ -112,11 +113,11 @@ class ProfileGenerate(AuthorCommonCommand):
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Profile {profile_path} not found, error {e}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         except TrestleError as e:
             logger.warning(f'Error generating the catalog as markdown: {e}')
-            return 1
-        return 0
+            return CmdReturnCodes.COMMAND_ERROR.value
+        return CmdReturnCodes.SUCCESS.value
 
 
 class ProfileAssemble(AuthorCommonCommand):
@@ -140,7 +141,7 @@ class ProfileAssemble(AuthorCommonCommand):
         except Exception as e:
             logger.error(f'Assembly of markdown to profile failed with error: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     @staticmethod
     def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> prof.Profile:
@@ -212,4 +213,4 @@ class ProfileAssemble(AuthorCommonCommand):
             orig_profile.oscal_write(new_prof_dir / 'profile.json')
         except OSError as e:
             raise TrestleError(f'OSError writing profile from markdown to {new_prof_dir}: {e}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value

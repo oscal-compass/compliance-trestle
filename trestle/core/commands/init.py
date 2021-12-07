@@ -24,13 +24,14 @@ from pkg_resources import resource_filename
 
 import trestle.core.const as const
 import trestle.utils.log as log
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.command_docs import CommandBase
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
 
-class InitCmd(CommandPlusDocs):
+class InitCmd(CommandBase):
     """Initialize a trestle working directory."""
 
     name = 'init'
@@ -41,7 +42,7 @@ class InitCmd(CommandPlusDocs):
         dir_path: pathlib.Path = args.trestle_root
         if not dir_path.exists() or not dir_path.is_dir():
             logger.error(f'Initialization failed. Given directory {dir_path} does not exist or is not a directory.')
-            return 1
+            return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
 
         try:
             # Create directories
@@ -54,8 +55,8 @@ class InitCmd(CommandPlusDocs):
 
         except TrestleError as err:
             logger.warning(f'Initialization failed: {err}')
-            return 1
-        return 0
+            return CmdReturnCodes.COMMAND_ERROR.value
+        return CmdReturnCodes.SUCCESS.value
 
     def _create_directories(self, root: pathlib.Path) -> None:
         """Create the directory tree if it does not exist."""

@@ -17,11 +17,13 @@
 import argparse
 import logging
 import pathlib
+import traceback
 from typing import List, Tuple
 
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -59,65 +61,75 @@ class RemoveCmd(CommandPlusDocs):
         The method first finds the parent model from the file and loads the file into the model.
         Then the method executes 'remove' for each of the element paths specified.
         """
-        log.set_log_level_from_args(args)
-        args_dict = args.__dict__
-
-        file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
         try:
-            relative_path = file_path.relative_to(args.trestle_root)
-        # Get parent model and then load json into parent model
-        except Exception:
-            logger.error(f'{file_path} is not part of the trestle project {args.trestle_root}')
-            return 1
-        try:
-            parent_model, parent_alias = fs.get_relative_model_type(relative_path)
-        except Exception as err:
-            logger.error(f'Remove failed (fs.get_relative_model_type()): {err}')
-            return 1
+            log.set_log_level_from_args(args)
+            args_dict = args.__dict__
 
-        try:
-            parent_object = parent_model.oscal_read(file_path)
-        except Exception as err:
-            logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
-            return 1
-
-        parent_element = Element(parent_object, parent_alias)
-
-        add_plan = Plan()
-
-        # Do _remove for each element_path specified in args
-        element_paths: List[str] = str(args_dict[const.ARG_ELEMENT]).split(',')
-        for elm_path_str in element_paths:
-            element_path = ElementPath(elm_path_str)
+            file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
             try:
-                remove_action, parent_element = self.remove(element_path, parent_element)
-            except TrestleError as err:
-                logger.debug(f'self.remove() failed: {err}')
-                logger.error(f'Remove failed (self.remove()): {err}')
-                return 1
+                relative_path = file_path.relative_to(args.trestle_root)
+            # Get parent model and then load json into parent model
+            except Exception:
+                logger.error(f'{file_path} is not part of the trestle project {args.trestle_root}')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            try:
+                parent_model, parent_alias = fs.get_relative_model_type(relative_path)
+            except Exception as err:
+                logger.error(f'Remove failed (fs.get_relative_model_type()): {err}')
+                return CmdReturnCodes.COMMAND_ERROR.value
+
+            try:
+                parent_object = parent_model.oscal_read(file_path)
+            except Exception as err:
+                logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
+                return CmdReturnCodes.COMMAND_ERROR.value
+
+            parent_element = Element(parent_object, parent_alias)
+
+            add_plan = Plan()
+
+            # Do _remove for each element_path specified in args
+            element_paths: List[str] = str(args_dict[const.ARG_ELEMENT]).split(',')
+            for elm_path_str in element_paths:
+                element_path = ElementPath(elm_path_str)
+                try:
+                    remove_action, parent_element = self.remove(element_path, parent_element)
+                except TrestleError as err:
+                    logger.debug(f'self.remove() failed: {err}')
+                    logger.error(f'Remove failed (self.remove()): {err}')
+                    return CmdReturnCodes.COMMAND_ERROR.value
+                add_plan.add_action(remove_action)
+
+            create_action = CreatePathAction(file_path, True)
+            write_action = WriteFileAction(file_path, parent_element, FileContentType.to_content_type(file_path.suffix))
             add_plan.add_action(remove_action)
+            add_plan.add_action(create_action)
+            add_plan.add_action(write_action)
 
-        create_action = CreatePathAction(file_path, True)
-        write_action = WriteFileAction(file_path, parent_element, FileContentType.to_content_type(file_path.suffix))
-        add_plan.add_action(remove_action)
-        add_plan.add_action(create_action)
-        add_plan.add_action(write_action)
+            try:
+                add_plan.simulate()
+            except TrestleError as err:
+                logger.debug(f'Remove failed at simulate(): {err}')
+                logger.error(f'Remove failed (simulate()): {err}')
+                return CmdReturnCodes.COMMAND_ERROR.value
 
-        try:
-            add_plan.simulate()
-        except TrestleError as err:
-            logger.debug(f'Remove failed at simulate(): {err}')
-            logger.error(f'Remove failed (simulate()): {err}')
-            return 1
+            try:
+                add_plan.execute()
+            except TrestleError as err:
+                logger.debug(f'Remove failed at execute(): {err}')
+                logger.error(f'Remove failed (execute()): {err}')
+                return CmdReturnCodes.COMMAND_ERROR.value
 
-        try:
-            add_plan.execute()
-        except TrestleError as err:
-            logger.debug(f'Remove failed at execute(): {err}')
-            logger.error(f'Remove failed (execute()): {err}')
-            return 1
+            return CmdReturnCodes.SUCCESS.value
 
-        return 0
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while removing OSCAL component: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while removing OSCAL component: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def remove(cls, element_path: ElementPath, parent_element: Element) -> Tuple[RemoveAction, Element]:

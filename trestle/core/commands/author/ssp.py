@@ -14,11 +14,10 @@
 """Create ssp from catalog and profile."""
 
 import argparse
-import copy
 import logging
 import pathlib
 import traceback
-from typing import List, Set
+from typing import Dict, List, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -26,9 +25,10 @@ from ruamel.yaml.error import YAMLError
 import trestle.core.generators as gens
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.core import const
+from trestle.core import const, err
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.validator_helper import regenerate_uuids
 from trestle.utils import fs, log
@@ -54,15 +54,33 @@ class SSPGenerate(AuthorCommonCommand):
             action='store_true',
             default=False
         )
-        sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
+        sections_help_str = (
+            'Comma separated list of section:alias pairs for sections to output.' + ' Otherwises defaults to all.'
+        )
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
+
+    @staticmethod
+    def _sections_from_args(args: argparse.Namespace) -> Dict[str, str]:
+        sections = {}
+        if args.sections is not None:
+            section_tuples = args.sections.strip("'").split(',')
+            for section in section_tuples:
+                if ':' in section:
+                    s = section.split(':')
+                    sections[s[0].strip()] = s[1].strip()
+                else:
+
+                    sections[section] = section
+            if 'statement' in sections.keys():
+                raise err.TrestleError('"statement" sections are not allowed ')
+        return sections
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root
         if not fs.allowed_task_name(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 
@@ -74,26 +92,9 @@ class SSPGenerate(AuthorCommonCommand):
                 yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
             except YAMLError as e:
                 logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
         markdown_path = trestle_root / args.output
-
-        sections = None
-        if args.sections is not None:
-            section_tuples = args.sections.strip("'").split(',')
-            sections = {}
-            for section in section_tuples:
-                if ':' in section:
-                    s = section.split(':')
-                    sections[s[0].strip()] = s[1].strip()
-                else:
-
-                    sections[section] = section
-            if 'statement' in sections.keys():
-                logger.warning('Section label "statement" is not allowed.')
-                return 1
-
-        logger.debug(f'ssp sections: {sections}')
 
         profile_resolver = ProfileResolver()
         try:
@@ -102,7 +103,19 @@ class SSPGenerate(AuthorCommonCommand):
         except Exception as e:
             logger.error(f'Error creating the resolved profile catalog: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
+
+        try:
+            sections = SSPGenerate._sections_from_args(args)
+            if sections == {}:
+                s_list = catalog_interface.get_sections()
+                for item in s_list:
+                    sections[item] = item
+            logger.debug(f'ssp sections: {sections}')
+        except err.TrestleError:
+            logger.warning('"statement" section is not allowed.')
+            return CmdReturnCodes.COMMAND_ERROR.value
+
         try:
             catalog_interface.write_catalog_as_markdown(
                 markdown_path, yaml_header, sections, True, False, None, header_dont_merge=args.header_dont_merge
@@ -110,9 +123,9 @@ class SSPGenerate(AuthorCommonCommand):
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -127,33 +140,46 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
-    def _imp_reqs_equivalent(
-        self, imp_reqs: List[ossp.ImplementedRequirement], orig_imp_reqs: List[ossp.ImplementedRequirement]
-    ) -> bool:
+    def _merge_imp_reqs(
+        self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement], regenerate: bool
+    ) -> None:
         """
-        Check if imp_reqs are the same except for internal uuids.
+        Merge the new imp_reqs into the ssp and optionally regenerate uuids.
 
-        Create copy of each imp_req and set the uuids within it to match the original - then check equality.
-        TODO: trigger new uuid only if new imp_reqs are added
+        If a statement has same id and same by_comp uuid as ssp, use the ssp version with new description.
+        Otherwise just insert the statement.
+        When the statement was loaded it had access to the current components so the uuids should match.
         """
-        if len(imp_reqs) == len(orig_imp_reqs):
-            for reqs in zip(imp_reqs, orig_imp_reqs):
-                # make a copy of the new imp req
-                tmp_req = copy.deepcopy(reqs[0])
-                if tmp_req.statements is not None and reqs[1].statements is not None:
-                    if len(tmp_req.statements) != len(reqs[1].statements):
-                        return False
-                    tmp_req.uuid = reqs[1].uuid
-                    for stats in zip(tmp_req.statements, reqs[1].statements):
-                        if stats[0].by_components is not None and stats[1].by_components is not None:
-                            if len(stats[0].by_components) != len(stats[1].by_components):
-                                return False
-                            stats[0].uuid = stats[1].uuid
-                            for by_comps in zip(stats[0].by_components, stats[1].by_components):
-                                by_comps[0].uuid = by_comps[1].uuid
-                if tmp_req != reqs[1]:
-                    return False
-        return True
+        id_map: Dict[str, Dict[str, ossp.Statement]] = {}
+        control_map: Dict[str, ossp.ImplementedRequirement] = {}
+        for imp_req in ssp.control_implementation.implemented_requirements:
+            control_map[imp_req.control_id] = imp_req
+            for statement in imp_req.statements:
+                for by_comp in statement.by_components:
+                    id_ = statement.statement_id
+                    if id_ not in id_map:
+                        id_map[id_] = {}
+                    id_map[id_][by_comp.component_uuid] = statement
+
+        for imp_req in imp_reqs:
+            if imp_req.control_id in control_map:
+                imp_req.uuid = control_map[imp_req.control_id].uuid
+            for statement in imp_req.statements:
+                id_ = statement.statement_id
+                # for each statement id match the statement per component to the original
+                if id_ in id_map:
+                    comp_dict = id_map[id_]
+                    for by_comp in statement.by_components:
+                        if by_comp.component_uuid in comp_dict:
+                            statement.uuid = comp_dict[by_comp.component_uuid].uuid
+                            for orig_by_comp in comp_dict[by_comp.component_uuid].by_components:
+                                if orig_by_comp.component_uuid == by_comp.component_uuid:
+                                    by_comp.uuid = orig_by_comp.uuid
+                                    break
+
+        ssp.control_implementation.implemented_requirements = imp_reqs
+        if regenerate:
+            regenerate_uuids(ssp)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -166,32 +192,29 @@ class SSPAssemble(AuthorCommonCommand):
             trestle_root, args.output, ossp.SystemSecurityPlan, fs.FileContentType.JSON
         )
         ssp: ossp.SystemSecurityPlan
+        comp_dict: Dict[str, ossp.SystemComponent] = {}
 
         try:
             # need to load imp_reqs from markdown but need component first
             if ssp_path.exists():
+                # load the existing json ssp
                 _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
-                # use first component
-                component = ssp.system_implementation.components[0]
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
-                orig_imp_reqs = ssp.control_implementation.implemented_requirements
-                if not args.regenerate and not self._imp_reqs_equivalent(imp_reqs, orig_imp_reqs):
-                    ssp.control_implementation.implemented_requirements = imp_reqs
-                if args.regenerate:
-                    regenerate_uuids(ssp)
+                for component in ssp.system_implementation.components:
+                    comp_dict[component.title] = component
+                # read the new imp reqs from markdown and have them reference existing components
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
+                self._merge_imp_reqs(ssp, imp_reqs, args.regenerate)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
-                # generate the one dummy component that implementations will refer to in by_components
-                component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
-                component.description = 'The System'
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
+                # load the imp_reqs from markdown and create components as needed, referenced by ### headers
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
 
-                # create system implementation to hold the dummy component
+                # create system implementation
                 system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
-                system_imp.components = [component]
+                ssp.system_implementation = system_imp
 
-                # create a control implementation to hold the implementation requirements
+                # create a control implementation to hold the implementated requirements
                 control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
                 control_imp.implemented_requirements = imp_reqs
                 control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
@@ -200,14 +223,21 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.control_implementation = control_imp
                 ssp.system_implementation = system_imp
 
+                # we don't have access to the original profile so we don't know the href
                 import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
                 import_profile.href = 'REPLACE_ME'
                 ssp.import_profile = import_profile
 
+            # now that we know the complete list of needed components, add them to the sys_imp
+            # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
+            ssp.system_implementation.components = []
+            for comp in comp_dict.values():
+                ssp.system_implementation.components.append(comp)
+
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         # write out the ssp as json
         try:
@@ -215,9 +245,9 @@ class SSPAssemble(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPFilter(AuthorCommonCommand):
@@ -284,7 +314,7 @@ class SSPFilter(AuthorCommonCommand):
             if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
                 logger.warning('Unable to filter the ssp because the profile references controls not in it.')
                 logger.debug(traceback.format_exc())
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             ssp.control_implementation = control_imp
             if regenerate:
@@ -293,6 +323,6 @@ class SSPFilter(AuthorCommonCommand):
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value

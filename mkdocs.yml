@@ -80,6 +80,7 @@ nav:
       - all_validator: api_reference/trestle.core.all_validator.md
       - utils: api_reference/trestle.core.utils.md
       - pipeline: api_reference/trestle.core.pipeline.md
+      - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - ssp_io: api_reference/trestle.core.ssp_io.md
       - commands:
         - beta:
@@ -87,7 +88,6 @@ nav:
         - describe: api_reference/trestle.core.commands.describe.md
         - task: api_reference/trestle.core.commands.task.md
         - merge: api_reference/trestle.core.commands.merge.md
-        - cmd_utils: api_reference/trestle.core.commands.cmd_utils.md
         - version: api_reference/trestle.core.commands.version.md
         - add: api_reference/trestle.core.commands.add.md
         - create: api_reference/trestle.core.commands.create.md
@@ -110,6 +110,9 @@ nav:
         - assemble: api_reference/trestle.core.commands.assemble.md
         - href: api_reference/trestle.core.commands.href.md
         - validate: api_reference/trestle.core.commands.validate.md
+        - common:
+          - return_codes: api_reference/trestle.core.commands.common.return_codes.md
+          - cmd_utils: api_reference/trestle.core.commands.common.cmd_utils.md
         - split: api_reference/trestle.core.commands.split.md
         - import_: api_reference/trestle.core.commands.import_.md
         - init: api_reference/trestle.core.commands.init.md

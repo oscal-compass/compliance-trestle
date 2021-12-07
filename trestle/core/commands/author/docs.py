@@ -17,13 +17,16 @@
 import argparse
 import logging
 import pathlib
+import re
 import shutil
+import traceback
 from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
@@ -55,6 +58,9 @@ class Docs(AuthorCommonCommand):
         )
         self.add_argument(
             author_const.HOV_SHORT, author_const.HOV_LONG, help=author_const.HOV_HELP, action='store_true'
+        )
+        self.add_argument(
+            author_const.SHORT_IGNORE, author_const.LONG_IGNORE, help=author_const.IGNORE_HELP, default=None, type=str
         )
         self.add_argument(
             author_const.RECURSE_SHORT, author_const.RECURSE_LONG, help=author_const.RECURSE_HELP, action='store_true'
@@ -104,18 +110,21 @@ class Docs(AuthorCommonCommand):
                     args.header_only_validate,
                     args.recurse,
                     args.readme_validate,
-                    args.template_version
+                    args.template_version,
+                    args.ignore
                 )
 
             return status
         except TrestleError as e:
+            logger.debug(traceback.format_exc())
             logger.error(f'Error occurred when running trestle author docs: {e}')
             logger.error('Exiting')
-            return 1
-        except Exception as e:
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
             logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
             logger.error('Exiting')
-            return 1
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     def setup_template_governed_docs(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement.
@@ -127,23 +136,23 @@ class Docs(AuthorCommonCommand):
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
             logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         elif self.template_dir.is_file():
             logger.error(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         logger.debug(self.template_dir)
         if not self._validate_template_dir():
             logger.error('Aborting setup')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         template_file = self.template_dir / self.template_name
         if template_file.is_file():
-            return 0
+            return CmdReturnCodes.SUCCESS.value
         TemplateVersioning.write_versioned_template('template.md', self.template_dir, template_file, template_version)
         logger.info(f'Template file setup for task {self.task_name} at {self.rel_dir(template_file)}')
         logger.info(f'Task directory is {self.rel_dir(self.task_path)}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def create_sample(self) -> int:
         """Presuming the template exists, copy into a sample markdown file with an index."""
@@ -151,10 +160,10 @@ class Docs(AuthorCommonCommand):
 
         if not self._validate_template_dir():
             logger.error('Aborting setup')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         if not template_file.is_file():
             logger.error('No template file ... exiting.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         index = 0
         while True:
@@ -164,25 +173,25 @@ class Docs(AuthorCommonCommand):
             else:
                 shutil.copy(str(template_file), str(candidate_task))
                 break
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def template_validate(self, heading: str, validate_header: bool, validate_only_header: bool) -> int:
         """Validate that the template is acceptable markdown."""
         template_file = self.template_dir / self.template_name
         if not self._validate_template_dir():
             logger.error('Aborting setup')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         if not template_file.is_file():
             logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         try:
             md_api = MarkdownAPI()
             md_api.load_validator_with_template(template_file, validate_header, validate_only_header, heading)
         except Exception as ex:
             logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         logger.info(f'TEMPLATES VALID: {self.task_name}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def _validate_template_dir(self) -> bool:
         """Template directory should only have template file."""
@@ -201,7 +210,8 @@ class Docs(AuthorCommonCommand):
         validate_only_header: bool,
         recurse: bool,
         readme_validate: bool,
-        template_version: Optional[str] = None
+        template_version: Optional[str] = None,
+        ignore: Optional[str] = None
     ) -> int:
         """
         Validate md files in a directory with option to recurse.
@@ -218,9 +228,16 @@ class Docs(AuthorCommonCommand):
                             f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
                         )
                         continue
-                    if not readme_validate:
-                        if item_path.name.lower() == 'readme.md':
+                    if not readme_validate and item_path.name.lower() == 'readme.md':
+                        continue
+
+                    if ignore:
+                        p = re.compile(ignore)
+                        matched = p.match(item_path.parts[-1])
+                        if matched is not None:
+                            logger.info(f'Ignoring file {item_path} from validation.')
                             continue
+
                     md_api = MarkdownAPI()
                     if template_version != '':
                         template_file = self.template_dir / self.template_name
@@ -236,7 +253,7 @@ class Docs(AuthorCommonCommand):
                         template_file = versione_template_dir / self.template_name
                     if not template_file.is_file():
                         logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
-                        return 1
+                        return CmdReturnCodes.COMMAND_ERROR.value
                     md_api.load_validator_with_template(
                         template_file, validate_header, not validate_only_header, governed_heading
                     )
@@ -246,14 +263,24 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
-                    if not self._validate_dir(governed_heading,
-                                              item_path,
-                                              validate_header,
-                                              validate_only_header,
-                                              recurse,
-                                              readme_validate,
-                                              template_version):
-                        status = 1
+                    if ignore:
+                        p = re.compile(ignore)
+                        if len(list(filter(p.match, str(item_path.relative_to(md_dir)).split('/')))) > 0:
+                            logger.info(f'Ignoring directory {item_path} from validation.')
+                            continue
+                    rc = self._validate_dir(
+                        governed_heading,
+                        item_path,
+                        validate_header,
+                        validate_only_header,
+                        recurse,
+                        readme_validate,
+                        template_version,
+                        ignore
+                    )
+                    if rc != 0:
+                        status = rc
+
         return status
 
     def validate(
@@ -263,7 +290,8 @@ class Docs(AuthorCommonCommand):
         validate_only_header: bool,
         recurse: bool,
         readme_validate: bool,
-        template_version: str
+        template_version: str,
+        ignore: str
     ) -> int:
         """
         Validate task.
@@ -280,6 +308,7 @@ class Docs(AuthorCommonCommand):
         """
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+            return CmdReturnCodes.COMMAND_ERROR.value
         return self._validate_dir(
             governed_heading,
             self.task_path,
@@ -287,5 +316,6 @@ class Docs(AuthorCommonCommand):
             validate_only_header,
             recurse,
             readme_validate,
-            template_version
+            template_version,
+            ignore
         )

@@ -81,7 +81,7 @@ def test_href_failures(
     # not in trestle project so fail
     monkeypatch.setattr(sys, 'argv', cmd_string.split())
     rc = Trestle().run()
-    assert rc == 1
+    assert rc == 5
 
     os.chdir(models_path)
 

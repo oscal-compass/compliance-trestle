@@ -22,13 +22,15 @@ import traceback
 
 import trestle.core.const as const
 import trestle.core.models.elements as elements
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.command_docs import CommandBase
+from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.err import TrestleError
 from trestle.utils import log
 
 logger = logging.getLogger(__name__)
 
 
-class PartialObjectValidate(CommandPlusDocs):
+class PartialObjectValidate(CommandBase):
     """Direct validation any oscal object in a file, including list objects."""
 
     name = 'partial-object-validate'
@@ -54,21 +56,25 @@ class PartialObjectValidate(CommandPlusDocs):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-
-        log.set_log_level_from_args(args)
-        file_path: pathlib.Path = args.file.resolve()
-        if not file_path.exists() or not file_path.is_file():
-            logger.error('File path provided does not exist or is a directory')
-            return 1
-        element_str: str = args.element
-        if ',' in element_str:
-            logger.error('Only a single element path is allowed.')
         try:
+            log.set_log_level_from_args(args)
+            file_path: pathlib.Path = args.file.resolve()
+            if not file_path.exists() or not file_path.is_file():
+                logger.error('File path provided does not exist or is a directory')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            element_str: str = args.element
+            if ',' in element_str:
+                logger.error('Only a single element path is allowed.')
+
             return self.partial_object_validate(file_path, element_str)
-        except Exception:
-            logger.critical('Unexpected error occurred')
-            logger.critical(traceback.format_exc())
-            return 1
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while validating OSCAL file: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while validating OSCAL file: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def partial_object_validate(cls, file_path: pathlib.Path, element_string: str) -> int:
@@ -82,12 +88,12 @@ class PartialObjectValidate(CommandPlusDocs):
 
         except Exception:
             logger.error('Invalid element type. Please see documentation on element type.')
-            return 1
+            return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
         try:
             obm_type.oscal_read(file_path)
         except Exception as e:
             logger.error('Failure reading partial OSCAL file')
             logger.error(str(e))
-            return 1
+            return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
         logger.info(f'VALID: {file_path} for {element_string}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value

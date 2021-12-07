@@ -22,6 +22,7 @@ import pathlib
 import ilcli
 
 import trestle.cli
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.oscal import catalog as oscatalog
 
 logger = logging.getLogger(__name__)
@@ -55,18 +56,18 @@ class SimplifyCatalog(ilcli.Command):
             catalog = oscatalog.Catalog.oscal_read(catalog_file)
         except Exception as e:
             logger.error(f'Failure in oscal_read({catalog_file}): {e}\n')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         if not catalog:
             logger.error('No data in input or input read failed.\n')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         list_cap = args.cap if args.cap else 2
         try:
             prune_lists(input_model=catalog, list_cap=list_cap)
         except Exception as e:
             logger.error(f'Problem with prune_lists(): {e}\n')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         simplified_catalog_file = pathlib.Path(args.output[0])
 
@@ -74,9 +75,9 @@ class SimplifyCatalog(ilcli.Command):
             catalog.oscal_write(simplified_catalog_file)
         except Exception as e:
             logger.error(f'Problem with oscal_write: {e}\n')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 if __name__ == '__main__':
