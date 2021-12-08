@@ -85,7 +85,6 @@ output-dir = catalogs/cis
 
 </details>
 
-
 - Perform and validate the transform.
 
 ```
