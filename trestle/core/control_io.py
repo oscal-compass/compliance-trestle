@@ -30,7 +30,7 @@ from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.core.utils import as_list, spaces_and_caps_to_snake
+from trestle.core.utils import as_list, none_if_empty, spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -902,7 +902,7 @@ class ControlIOReader():
                     else:
                         datestr = str(datestr)
                     props.append(
-                        common.Property(ns=const.NAMESPACE_FEDRAMP, name='planned-completion-date', value=datestr)
+                        common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED_COMPLETION_DATE, value=datestr)
                     )
                 else:
                     if len(status) != 1:
@@ -932,6 +932,10 @@ class ControlIOReader():
         if responsible_roles:
             imp_req.responsible_roles = as_list(imp_req.responsible_roles)
             imp_req.responsible_roles.extend(responsible_roles)
+            imp_req.responsible_roles = none_if_empty(imp_req.responsible_roles)
+            # enforce single list of resp. roles for control and each by_comp
+            for by_comp in as_list(imp_req.by_components):
+                by_comp.responsible_roles = imp_req.responsible_roles
 
     @staticmethod
     def read_implemented_requirement(
