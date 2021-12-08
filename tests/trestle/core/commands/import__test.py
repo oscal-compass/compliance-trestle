@@ -348,30 +348,8 @@ def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     assert rc == 0
 
 
-def test_import_failure_simulate_plan(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test model failures throw errors and exit badly."""
-
-    def simulate_plan_mock(*args, **kwargs):
-        raise err.TrestleError('stuff')
-
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    catalog_data = generators.generate_sample_model(Catalog)
-    catalog_data.oscal_write(pathlib.Path(catalog_file))
-    monkeypatch.setattr(Plan, 'simulate', simulate_plan_mock)
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=catalog_file, output='imported', verbose=True, regenerate=False
-    )
-    i = importcmd.ImportCmd()
-    rc = i._run(args)
-    assert rc == 1
-
-
 def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test model failures throw errors and exit badly."""
-
-    def simulate_mock(*args, **kwargs):
-        return
 
     def execute_plan_mock(*args, **kwargs):
         raise err.TrestleError('stuff')
@@ -380,7 +358,6 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch:
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
-    monkeypatch.setattr(Plan, 'simulate', simulate_mock)
     monkeypatch.setattr(Plan, 'execute', execute_plan_mock)
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, file=catalog_file, output='imported', verbose=True, regenerate=False

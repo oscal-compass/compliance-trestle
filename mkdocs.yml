@@ -63,8 +63,10 @@ nav:
           - ssp: api_reference/trestle.core.commands.author.ssp.md
           - versioning:
             - template_versioning: api_reference/trestle.core.commands.author.versioning.template_versioning.md
-        - cmd_utils: api_reference/trestle.core.commands.cmd_utils.md
         - command_docs: api_reference/trestle.core.commands.command_docs.md
+        - common:
+          - cmd_utils: api_reference/trestle.core.commands.common.cmd_utils.md
+          - return_codes: api_reference/trestle.core.commands.common.return_codes.md
         - create: api_reference/trestle.core.commands.create.md
         - describe: api_reference/trestle.core.commands.describe.md
         - href: api_reference/trestle.core.commands.href.md
@@ -122,15 +124,6 @@ nav:
       - poam: api_reference/trestle.oscal.poam.md
       - profile: api_reference/trestle.oscal.profile.md
       - ssp: api_reference/trestle.oscal.ssp.md
-      - tmp:
-        - assessment_plan: api_reference/trestle.oscal.tmp.assessment_plan.md
-        - assessment_results: api_reference/trestle.oscal.tmp.assessment_results.md
-        - catalog: api_reference/trestle.oscal.tmp.catalog.md
-        - complete: api_reference/trestle.oscal.tmp.complete.md
-        - component: api_reference/trestle.oscal.tmp.component.md
-        - poam: api_reference/trestle.oscal.tmp.poam.md
-        - profile: api_reference/trestle.oscal.tmp.profile.md
-        - ssp: api_reference/trestle.oscal.tmp.ssp.md
     - tasks:
       - base_task: api_reference/trestle.tasks.base_task.md
       - cis_to_component_definition: api_reference/trestle.tasks.cis_to_component_definition.md

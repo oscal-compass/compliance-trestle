@@ -132,13 +132,6 @@ class ReplicateCmd(CommandPlusDocs):
         replicate_plan.add_action(write_action)
 
         try:
-            replicate_plan.simulate()
-        except TrestleError as err:
-            logger.debug(f'replicate_plan.simulate() failed: {err}')
-            logger.error(f'Replicate failed, error in simulating replicate operation: {err}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-
-        try:
             replicate_plan.execute()
         except TrestleError as err:
             logger.debug(f'replicate_plan.execute() failed: {err}')

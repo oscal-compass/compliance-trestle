@@ -110,7 +110,6 @@ class AssembleCmd(CommandPlusDocs):
                 )
 
                 try:
-                    plan.simulate()
                     plan.execute()
                 except Exception as e:
                     logger.error('Unknown error executing trestle create operations. Rolling back.')
