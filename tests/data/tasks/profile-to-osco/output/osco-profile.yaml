@@ -7,13 +7,13 @@ spec:
   description: customized-tailored-profile
   extends: ocp4-cis-node
   setValues:
-  - name: myco_minimum_password_length
+  - name: ocp4-myco-minimum-password-length
     rationale: not determinable from specification
     value: '12'
-  - name: myco_password_reuse_prevention
+  - name: ocp4-myco-password-reuse-prevention
     rationale: not determinable from specification
     value: '24'
-  - name: allowed_service_ids_admins_per_account
+  - name: ocp4-allowed-service-ids-admins-per-account
     rationale: not determinable from specification
     value: '10'
   title: Best Practices NIST CONTROLS Profile

@@ -6,42 +6,42 @@ metadata:
 spec:
   description: roks-cis-node
   disableRules:
-  - name: xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver
+  - name: ocp4-file-permissions-kube-apiserver
     rationale: not determinable from specification
-  - name: xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver
+  - name: ocp4-file-owner-kube-apiserver
     rationale: not determinable from specification
-  - name: xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager
+  - name: ocp4-file-permissions-kube-controller-manager
     rationale: not determinable from specification
   extends: ocp4-cis-node
   setValues:
-  - name: kubelet_eviction_thresholds_set_soft_memory_available
+  - name: ocp4-kubelet-eviction-thresholds-set-soft-memory-available
     rationale: not determinable from specification
     value: 500Mi
-  - name: kubelet_eviction_thresholds_set_soft_nodefs_available
+  - name: ocp4-kubelet-eviction-thresholds-set-soft-nodefs-available
     rationale: not determinable from specification
     value: 10%
-  - name: kubelet_eviction_thresholds_set_soft_nodefs_inodesfree
+  - name: ocp4-kubelet-eviction-thresholds-set-soft-nodefs-inodesfree
     rationale: not determinable from specification
     value: 5%
-  - name: kubelet_eviction_thresholds_set_soft_imagefs_available
+  - name: ocp4-kubelet-eviction-thresholds-set-soft-imagefs-available
     rationale: not determinable from specification
     value: 15%
-  - name: kubelet_eviction_thresholds_set_soft_imagefs_inodesfree
+  - name: ocp4-kubelet-eviction-thresholds-set-soft-imagefs-inodesfree
     rationale: not determinable from specification
     value: 10%
-  - name: kubelet_eviction_thresholds_set_hard_memory_available
+  - name: ocp4-kubelet-eviction-thresholds-set-hard-memory-available
     rationale: not determinable from specification
     value: 200Mi
-  - name: kubelet_eviction_thresholds_set_hard_nodefs_available
+  - name: ocp4-kubelet-eviction-thresholds-set-hard-nodefs-available
     rationale: not determinable from specification
     value: 5%
-  - name: kubelet_eviction_thresholds_set_hard_nodefs_inodesfree
+  - name: ocp4-kubelet-eviction-thresholds-set-hard-nodefs-inodesfree
     rationale: not determinable from specification
     value: 4%
-  - name: kubelet_eviction_thresholds_set_hard_imagefs_available
+  - name: ocp4-kubelet-eviction-thresholds-set-hard-imagefs-available
     rationale: not determinable from specification
     value: 10%
-  - name: kubelet_eviction_thresholds_set_hard_imagefs_inodesfree
+  - name: ocp4-kubelet-eviction-thresholds-set-hard-imagefs-inodesfree
     rationale: not determinable from specification
     value: 5%
   title: Tailored Profile

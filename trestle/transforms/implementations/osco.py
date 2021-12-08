@@ -605,13 +605,22 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         """Extract set_paramater name/value pairs from profile."""
         set_values = []
         for set_parameter in profile.modify.set_parameters:
-            name = set_parameter.param_id
+            name = self._format_osco_rule_name(set_parameter.param_id)
             parameter_value = set_parameter.values[0]
             value = parameter_value.__root__
             rationale = self._get_rationale_for_set_value()
             set_value = {'name': name, 'value': value, 'rationale': rationale}
             set_values.append(set_value)
         return set_values
+
+    def _format_osco_rule_name(self, name):
+        """Format for OSCO.
+
+        1. remove prefix xccdf_org.ssgproject.content_rule_
+        2. change underscores to dashes
+        3. add prefix ocp4-
+        """
+        return 'ocp4-' + (name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-'))
 
     def _get_metadata_prop_value(self, profile, name, default_) -> str:
         """Extract metadata prop or else default if not present."""
@@ -631,7 +640,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
                     for control in item.exclude_controls:
                         if control.with_ids is not None:
                             for with_id in control.with_ids:
-                                name = with_id.__root__
+                                name = self._format_osco_rule_name(with_id.__root__)
                                 rationale = self._get_rationale_for_disable_rule()
                                 entry = {'name': name, 'rationale': rationale}
                                 value.append(entry)
