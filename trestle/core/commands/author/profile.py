@@ -47,6 +47,7 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument(
             '-hdm',
             '--header-dont-merge',
@@ -79,7 +80,7 @@ class ProfileGenerate(AuthorCommonCommand):
             markdown_path = trestle_root / args.output
 
             return self.generate_markdown(
-                trestle_root, profile_path, markdown_path, yaml_header, args.header_dont_merge
+                trestle_root, profile_path, markdown_path, yaml_header, args.header_dont_merge, args.set_parameters
             )
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
@@ -92,7 +93,8 @@ class ProfileGenerate(AuthorCommonCommand):
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        header_dont_merge: bool
+        header_dont_merge: bool,
+        set_parameters: bool
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -100,6 +102,7 @@ class ProfileGenerate(AuthorCommonCommand):
             trestle_root: Root directory of the trestle workspace
             profile_path: Path of the profile json file
             markdown_path: Path to the directory into which the markdown will be written
+            set_parameters: Generate list of control parameters in yaml headers, with values if set by this profile
 
         Returns:
             0 on success, 1 on error
@@ -109,7 +112,7 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, None, False, True, profile, header_dont_merge
+                markdown_path, yaml_header, None, False, True, profile, header_dont_merge, set_parameters
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Profile {profile_path} not found, error {e}')
@@ -132,6 +135,7 @@ class ProfileAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Profile (ok to overwrite original)'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:

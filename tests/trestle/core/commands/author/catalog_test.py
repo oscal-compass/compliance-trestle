@@ -27,8 +27,11 @@ from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
+from trestle.oscal import profile as prof
 from trestle.oscal.common import Part, Property
+from trestle.utils import fs
 
 markdown_name = 'my_md'
 
@@ -136,3 +139,23 @@ def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
     (tmp_trestle_dir / 'foo').mkdir()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
+
+
+def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test get profile param dict for control."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    profile, profile_path = fs.load_top_level_model(
+        tmp_trestle_dir,
+        'test_profile_a',
+        prof.Profile,
+        fs.FileContentType.JSON
+    )
+    profile_resolver = ProfileResolver()
+    catalog = profile_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+    catalog_interface = CatalogInterface(catalog)
+    control = catalog_interface.get_control('ac-1')
+
+    full_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
+    control_param_dict = CatalogInterface.get_profile_param_dict(control, full_param_dict)
+    assert control_param_dict['ac-1_prm_1'] == 'all alert personell'
+    assert control_param_dict['ac-1_prm_7'] == ''

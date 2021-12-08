@@ -119,7 +119,7 @@ def test_profile_generate_assemble(
         if add_header:
             yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, False)
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, False)
         assert ac1_path.exists()
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         if dir_exists:
@@ -144,7 +144,9 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path,
     assert Trestle().run() == 1
 
     # no trestle root specified direct command
-    test_args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='my_prof', output='new_prof', verbose=0)
+    test_args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='my_prof', output='new_prof', verbose=0, set_parameters=False
+    )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
@@ -156,7 +158,12 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path,
     bad_yaml_path = str(test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml')
     trestle_root = str(tmp_trestle_dir)
     test_args = argparse.Namespace(
-        trestle_root=trestle_root, name='my_prof', output='new_prof', yaml_header=bad_yaml_path, verbose=0
+        trestle_root=trestle_root,
+        name='my_prof',
+        output='new_prof',
+        yaml_header=bad_yaml_path,
+        verbose=0,
+        set_parameters=False
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1

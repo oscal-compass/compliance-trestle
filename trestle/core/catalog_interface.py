@@ -296,6 +296,25 @@ class CatalogInterface():
                 hits.extend(self._find_string_in_part(control.id, part, seek_str))
         return hits
 
+    @staticmethod
+    def get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
+        """Get the full mapping of param_id to modified value for this profile."""
+        set_param_dict: Dict[str, str] = {}
+        for set_param in as_list(profile.modify.set_parameters):
+            value_str = 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
+            set_param_dict[set_param.param_id] = value_str
+        return set_param_dict
+
+    @staticmethod
+    def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
+        """Get the list of params for this control and any set by the profile."""
+        # get full set of control params and current values
+        param_dict = ControlIOReader.get_control_param_dict(control)
+        param_ids = as_list(param_dict.keys())
+        for param_id in param_ids:
+            param_dict[param_id] = profile_param_dict.get(param_id, '')
+        return param_dict
+
     def write_catalog_as_markdown(
         self,
         md_path: pathlib.Path,
@@ -304,7 +323,8 @@ class CatalogInterface():
         responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        header_dont_merge: bool = False
+        header_dont_merge: bool = False,
+        set_parameters: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -312,8 +332,14 @@ class CatalogInterface():
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
+        if set_parameters:
+            full_profile_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
+            new_header = yaml_header
+            if set_parameters:
+                param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
+                new_header[const.SET_PARAMS_TAG] = param_dict
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             # this works also for the catalog controls with group_id=''
             group_dir = md_path / group_id
@@ -323,7 +349,7 @@ class CatalogInterface():
                 group_dir,
                 control,
                 group_title,
-                yaml_header,
+                new_header,
                 sections,
                 additional_content,
                 responses,

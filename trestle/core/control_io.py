@@ -372,13 +372,14 @@ class ControlIOWriter():
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
+            header_dont_merge: Don't merge markdown header content with content in the provided header
 
         Returns:
             None
 
         Notes:
             The filename is constructed from the control's id, so only the markdown directory is required.
-            If a yaml header is present in the file it is merged with the optional provided header.
+            If a yaml header is present in the file new items in provided header will optionally be added to markdown.
             The header in the file takes precedence over the provided one.
         """
         control_file = dest_path / (control.id + '.md')
@@ -386,13 +387,36 @@ class ControlIOWriter():
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
-        # Need to merge any existing header info with the new one.  Either could be empty.
-        if header_dont_merge and not header == {}:
+        # Need to merge any existing markdown header info with the new header.  Either could be empty.
+        # But x-trestle- content in the new header should always replace content in the new header.
+
+        # Remove any special trestle content from the read markdown header because the new header replaces
+        for key in header.keys():
+            if key.startswith(const.TRESTLE_TAG):
+                header.pop(key)
+
+        generic_dict = {}
+        trestle_dict = {}
+        if yaml_header:
+            for key, value in yaml_header.items():
+                if key.startswith(const.TRESTLE_TAG):
+                    trestle_dict[key] = value
+                else:
+                    generic_dict[key] = value
+
+        # If header_dont_merge then ignore generic yaml_header content
+        if header_dont_merge:
             merged_header = {}
+        # otherwise initialize merged header to the generic content
         else:
-            merged_header = copy.deepcopy(yaml_header) if yaml_header else {}
+            merged_header = copy.deepcopy(generic_dict) if generic_dict else {}
+
         if header:
             ControlIOWriter.merge_dicts_deep(merged_header, header)
+
+        # now insert the trestle content from the yaml header
+        merged_header.update(trestle_dict)
+
         self._add_yaml_header(merged_header)
 
         self._add_control_statement(control, group_title)

@@ -268,6 +268,8 @@ TRANSFORM_TYPES = [FILTER_BY_PROFILE, FILTER_BY_COMPONENTS, FILTER_EXCLUDE_COMPO
 
 SSP_MAIN_COMP_NAME = 'This System'
 
+TRESTLE_TAG = 'x-trestle-'
+
 SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
@@ -289,3 +291,7 @@ PLANNED = 'planned'
 PLANNED_COMPLETION_DATE = 'planned-completion-date'
 
 COMPLETION_DATE = 'completion-date'
+
+HELP_SET_PARAMS = 'set profile parameter values based on the yaml header in control markdown'
+
+SET_PARAMS_TAG = 'x-trestle-set-params'
