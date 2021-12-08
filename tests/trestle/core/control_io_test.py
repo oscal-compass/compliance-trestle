@@ -23,10 +23,14 @@ import tests.test_utils as test_utils
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.err import TrestleError
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import common
+from trestle.utils import fs
 
 case_1 = 'indent_normal'
 case_2 = 'indent jump back 2'
@@ -294,3 +298,17 @@ def test_control_bad_components(md_file: str) -> None:
     control_path = pathlib.Path('tests/data/author/controls/') / md_file
     with pytest.raises(TrestleError):
         ControlIOReader.read_all_implementation_prose_and_header(control_path)
+
+
+def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test getting the param dict of a control."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    catalog_interface = CatalogInterface(catalog)
+    control = catalog_interface.get_control('ac-1')
+    param_dict = ControlIOReader.get_control_param_dict(control)
+    # confirm profile value is used
+    assert param_dict['ac-1_prm_1'] == 'all alert personell'
+    # confirm original param label is used since no value was assigned
+    assert param_dict['ac-1_prm_7'] == 'organization-defined events'
