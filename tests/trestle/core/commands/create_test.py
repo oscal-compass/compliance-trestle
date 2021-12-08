@@ -116,6 +116,6 @@ def test_execute_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, extension='json', output='my_catalog', verbose=0, include_optional_fields=False
     )
-    monkeypatch.setattr('trestle.core.models.plans.Plan.simulate', test_utils.patch_raise_exception)
+    monkeypatch.setattr('trestle.core.models.plans.Plan.execute', test_utils.patch_raise_exception)
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     assert rc == 1

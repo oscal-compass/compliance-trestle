@@ -110,13 +110,6 @@ class ImportCmd(CommandPlusDocs):
         import_plan.add_action(write_action)
 
         try:
-            import_plan.simulate()
-        except TrestleError as err:
-            logger.debug(f'import_plan.simulate() failed: {err}')
-            logger.error(f'Import failed, error in simulating import operation: {err}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-
-        try:
             import_plan.execute()
         except TrestleError as err:
             logger.debug(f'import_plan.execute() failed: {err}')

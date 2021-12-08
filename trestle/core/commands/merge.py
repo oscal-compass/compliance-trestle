@@ -77,7 +77,6 @@ class MergeCmd(CommandPlusDocs):
             for element_path in element_paths:
                 logger.debug(f'merge {element_path}')
                 plan = cls.merge(effective_cwd, ElementPath(element_path), trestle_root)
-                plan.simulate()
                 plan.execute()
         except TrestleError as err:
             logger.error(f'Merge failed: {err}')
