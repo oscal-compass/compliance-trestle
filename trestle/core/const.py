@@ -286,4 +286,6 @@ LEV_AUTH_UUID = 'leveraged-authorization-uuid'
 
 PLANNED = 'planned'
 
+PLANNED_COMPLETION_DATE = 'planned-completion-date'
+
 COMPLETION_DATE = 'completion-date'

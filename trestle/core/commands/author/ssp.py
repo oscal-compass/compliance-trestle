@@ -23,6 +23,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
+import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.core import const, err
@@ -30,6 +31,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.utils import as_list, none_if_empty
 from trestle.core.validator_helper import regenerate_uuids
 from trestle.utils import fs, log
 
@@ -181,6 +183,20 @@ class SSPAssemble(AuthorCommonCommand):
         if regenerate:
             regenerate_uuids(ssp)
 
+    def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> None:
+        """Find all roles referenced by imp reqs and create role in metadata as needed."""
+        metadata = ssp.metadata
+        metadata.roles = as_list(metadata.roles)
+        known_role_ids = [role.id for role in metadata.roles]
+        for imp_req in ssp.control_implementation.implemented_requirements:
+            role_ids = [resp_role.role_id for resp_role in as_list(imp_req.responsible_roles)]
+            for role_id in role_ids:
+                if role_id not in known_role_ids:
+                    role = com.Role(id=role_id, title=role_id)
+                    metadata.roles.append(role)
+                    known_role_ids.append(role_id)
+        metadata.roles = none_if_empty(metadata.roles)
+
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
@@ -233,6 +249,7 @@ class SSPAssemble(AuthorCommonCommand):
             ssp.system_implementation.components = []
             for comp in comp_dict.values():
                 ssp.system_implementation.components.append(comp)
+            self._generate_roles_in_metadata(ssp)
 
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')

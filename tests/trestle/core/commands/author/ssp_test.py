@@ -423,6 +423,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
         yaml_header=header_path,
         header_dont_merge=False
     )
+    # generate the markdown with header content
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
@@ -430,3 +431,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=False)
     assert ssp_assemble._run(args) == 0
+
+    # read the assembled ssp and confirm roles are in metadata
+    ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+    assert len(ssp.metadata.roles) == 2
