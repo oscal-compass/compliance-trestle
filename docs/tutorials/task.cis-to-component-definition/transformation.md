@@ -33,13 +33,13 @@ Make these changes:
 
 - Navigate to trestle workspace.
 
-```
+```shell
 (venv.trestle)$ cd trestle.workspace
 ```
 
 - View configuration information.
 
-```
+```shell
 (venv.trestle)$ trestle task cis-to-component-definition -i
 trestle.core.commands.task:99 WARNING: Config file was not configured with the appropriate section for the task: "[task.cis-to-component-definition]"
 Help information for cis-to-component-definition task.
@@ -74,14 +74,14 @@ Notes:
 
 - Create data folders.
 
-```
+```shell
 (venv.trestle)$ mkdir -p adjunct-data/cis-benchmarks
 (venv.trestle)$ mkdir -p adjunct-data/trestle-configs
 ```
 
 - Fetch ComplianceAsCode profile data.
 
-```
+```shell
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile' > adjunct-data/cis-benchmarks/cis-node.profile
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile' > adjunct-data/cis-benchmarks/cis.profile
 
@@ -89,7 +89,7 @@ Notes:
 
 - Fetch trestle task files.
 
-```
+```shell
 (venv.trestle)$ curl 'https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/demo-cis-to-component-definition.config' > adjunct-data/task-files/demo-cis-to-component-definition.config
 (venv.trestle)$ curl 'https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/selected_rules.json' > adjunct-data/task-files/selected_rules.json
 (venv.trestle)$ curl 'https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/enabled_rules.json' > adjunct-data/task-files/enabled_rules.json
@@ -98,7 +98,7 @@ Notes:
 <details>
 <summary>demo-cis-to-component-definition.config</summary>
 
-```
+```shell
 [task.cis-to-component-definition]
 
 output-dir = component-definitions/cis
@@ -134,7 +134,7 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 <details>
 <summary>selected_rules.json</summary>
 
-```
+```json
 {
   "selected": [
     "file_permissions_kube_apiserver",
@@ -149,7 +149,6 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
     "file_permissions_etcd_member"
   ]
 }
-
 ```
 
 </details>
@@ -157,7 +156,7 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 <details>
 <summary>enabled_rules.json</summary>
 
-```
+```json
 {
   "enabled": [
     "file_permissions_kube_apiserver",
@@ -178,7 +177,7 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 
 - Perform and validate the transform.
 
-```
+```shell
 (venv.trestle)$ trestle task cis-to-component-definition -c adjunct-data/task-files/demo-cis-to-component-definition.config
 output: component-definitions/cis/component-definition.json
 Task: cis-to-component-definition executed successfully.
@@ -190,14 +189,14 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
 
 - View the generated OSCAL.
 
-```
+```shell
 (venv.trestle)$ cat component-definitions/cis/component-definition.json
 ```
 
 <details>
 <summary>component-definition.json</summary>
 
-```
+```json
 {
   "component-definition": {
     "uuid": "c08f1c4d-fc9e-4fa9-a6bd-8b4e20422ae0",
@@ -217,7 +216,7 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
         },
         {
           "id": "content-approver",
-          "title": "Indicates the organization responsible for all content represented in the \"document\"."
+          "title": "Indicates the organization responsible for all content represented in the 'document'."
         }
       ],
       "parties": [
