@@ -104,7 +104,6 @@ class ManagedOSCAL:
         import_plan.add_action(create_action)
         import_plan.add_action(write_action)
 
-        import_plan.simulate()
         import_plan.execute()
 
         logger.debug(f'Model {self.model_name} written to repository')
@@ -162,7 +161,6 @@ class ManagedOSCAL:
         try:
             for elem in elements:
                 plan = mergecmd.MergeCmd.merge(effective_cwd, ElementPath(elem), self.root_dir)
-                plan.simulate()
                 plan.execute()
 
         except Exception as e:
@@ -224,8 +222,6 @@ class Repository:
         import_plan = Plan()
         import_plan.add_action(create_action)
         import_plan.add_action(write_action)
-
-        import_plan.simulate()
         import_plan.execute()
 
         # Validate the imported file, rollback if unsuccessful

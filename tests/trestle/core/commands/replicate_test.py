@@ -111,9 +111,6 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
     def execute_trestle_error(*args, **kwargs):
         raise err.TrestleError('execute_trestle_error')
 
-    def simulate_trestle_error(*args, **kwargs):
-        raise err.TrestleError('simulate_trestle_error')
-
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
     source_name = 'minimal_catalog'
@@ -152,7 +149,6 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
     assert rc == 1
 
     monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_return)
-    monkeypatch.setattr('trestle.core.commands.replicate.Plan.simulate', mock_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.rollback', mock_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
     rc = ReplicateCmd.replicate_object('catalog', args)
@@ -160,7 +156,7 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
 
     # Force TrestleError in simulate:
     monkeypatch.setattr('trestle.core.commands.replicate.load_distributed', load_distributed_return)
-    monkeypatch.setattr('trestle.core.commands.replicate.Plan.simulate', simulate_trestle_error)
+    monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1
 
