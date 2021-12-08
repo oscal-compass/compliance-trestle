@@ -99,4 +99,4 @@ pylint-test:
 	pylint tests --rcfile=.pylintrc_tests
 
 check-for-changes:
-	python scripts/have_files_changed.py
+	python scripts/have_files_changed.py -u
