@@ -32,8 +32,7 @@ from ruamel.yaml import YAML
 
 def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     """Update the mkdocs.yml structure file to represent the latest trestle modules."""
-    yaml = YAML(typ='safe')
-    yaml.default_flow_style = False
+    yaml = YAML()
     fh_read = path.open('r', encoding='utf8')
     yaml_structure = yaml.load(fh_read)
     fh_read.close()
