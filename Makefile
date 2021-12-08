@@ -98,5 +98,5 @@ pylint:
 pylint-test:
 	pylint tests --rcfile=.pylintrc_tests
 
-check-for-changes-md:
+check-for-changes:
 	python scripts/have_files_changed.py
