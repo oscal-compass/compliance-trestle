@@ -35,30 +35,43 @@ class FilesChanged(Command):
         self.add_argument('exclude', help='Extensions to exclude.', nargs='*')
         self.add_argument('-v', '--verbose', action='store_true')
         self.add_argument('-C', help='Repository root', type=pathlib.Path, default=pathlib.Path.cwd())
+        self.add_argument('-u', '--untracked', help='Error on untracked files.', action='store_true')
 
     def _run(self, args):
         if args.verbose:
             logger.setLevel(logging.INFO)
         try:
+            pretty_exclude = args.exclude if len(args.exclude) > 0 else ''
             if FilesChanged.has_changed(args.C, args.exclude):
-                logger.info(f'Files excluding types: {args.exclude} have changed.')
+                logger.info(f'Files excluding types: {pretty_exclude} have changed.')
                 return 1
-            else:
-                logger.info(f'No files have changed (excluding the following extensions  {args.exclude}.')
-                return 0
+            if args.untracked:
+                if FilesChanged.untracked(args.C):
+                    logger.info('Untracked files in the repo.')
+                    return 1
+            logger.info(f'No files have changed (excluding the following extensions: {pretty_exclude}.')
+            return 0
         except Exception as e:
             logger.error(f'Unexpected error {e}')
             logger.debug(traceback.format_exc())
             return 2
 
     @staticmethod
+    def untracked(repo_root: pathlib.Path) -> bool:
+        """Determine if there are untracked files in the repo, respecting .gitignore."""
+        repo = Repo(repo_root)
+        if len(repo.untracked_files) > 0:
+            for untracked in repo.untracked_files:
+                logger.info(f'Untracked: {untracked}')
+            return True
+        return False
+
+    @staticmethod
     def has_changed(repo_root: pathlib.Path, excludes: List[str]) -> bool:
         """Determine if files have changed."""
         # Ensure no periods are passed.
         excludes = list(map(lambda x: x.lstrip('.'), excludes))
-        logger.info(excludes)
         repo = Repo(repo_root)
-
         if repo.bare:
             raise Exception('Cannot operate on a bare git repository.')
         if not repo.is_dirty():
