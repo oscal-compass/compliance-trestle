@@ -40,6 +40,7 @@ nav:
   - Developer Certificate of Originality: contributing/DCO.md
 - Known limitations: errors.md
 - Demos: demonstrations-content.md
+- License: license.md
 - Reference:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
   - trestle API reference:
