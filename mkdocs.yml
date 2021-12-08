@@ -25,6 +25,7 @@ nav:
   - Compliance posture: tutorials/continuous-compliance/continuous-compliance.md
   - SSP, Catalog, and Profile Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
   - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
+  - Task - cis-to-catalog: tutorials/task.cis-to-catalog/transformation.md
   - Task - cis-to-component-definition: tutorials/task.cis-to-component-definition/transformation.md
   - Task - tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
 - Trestle command-line interface (CLI):
