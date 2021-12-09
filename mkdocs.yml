@@ -41,112 +41,113 @@ nav:
   - Developer Certificate of Originality: contributing/DCO.md
 - Known limitations: errors.md
 - Demos: demonstrations-content.md
+- License: license.md
 - Reference:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
   - trestle API reference:
-    - tasks:
-      - cis_to_component_definition: api_reference/trestle.tasks.cis_to_component_definition.md
-      - cis_to_catalog: api_reference/trestle.tasks.cis_to_catalog.md
-      - xlsx_to_oscal_component_definition: api_reference/trestle.tasks.xlsx_to_oscal_component_definition.md
-      - base_task: api_reference/trestle.tasks.base_task.md
-      - transform: api_reference/trestle.tasks.transform.md
-      - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
-      - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
-      - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
+    - cli: api_reference/trestle.cli.md
     - core:
-      - validator: api_reference/trestle.core.validator.md
-      - oscal_version_validator: api_reference/trestle.core.oscal_version_validator.md
-      - common_types: api_reference/trestle.core.common_types.md
-      - profile_resolver: api_reference/trestle.core.profile_resolver.md
-      - validator_helper: api_reference/trestle.core.validator_helper.md
-      - markdown:
-        - md_writer: api_reference/trestle.core.markdown.md_writer.md
-        - markdown_processor: api_reference/trestle.core.markdown.markdown_processor.md
-        - markdown_api: api_reference/trestle.core.markdown.markdown_api.md
-        - markdown_node: api_reference/trestle.core.markdown.markdown_node.md
-        - markdown_const: api_reference/trestle.core.markdown.markdown_const.md
-        - markdown_validator: api_reference/trestle.core.markdown.markdown_validator.md
-      - control_io: api_reference/trestle.core.control_io.md
-      - models:
-        - interfaces: api_reference/trestle.core.models.interfaces.md
-        - elements: api_reference/trestle.core.models.elements.md
-        - actions: api_reference/trestle.core.models.actions.md
-        - plans: api_reference/trestle.core.models.plans.md
-        - file_content_type: api_reference/trestle.core.models.file_content_type.md
+      - all_validator: api_reference/trestle.core.all_validator.md
       - base_model: api_reference/trestle.core.base_model.md
       - catalog_interface: api_reference/trestle.core.catalog_interface.md
-      - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
-      - generators: api_reference/trestle.core.generators.md
-      - parser: api_reference/trestle.core.parser.md
-      - all_validator: api_reference/trestle.core.all_validator.md
-      - utils: api_reference/trestle.core.utils.md
-      - pipeline: api_reference/trestle.core.pipeline.md
-      - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - commands:
-        - describe: api_reference/trestle.core.commands.describe.md
-        - task: api_reference/trestle.core.commands.task.md
-        - merge: api_reference/trestle.core.commands.merge.md
-        - version: api_reference/trestle.core.commands.version.md
         - add: api_reference/trestle.core.commands.add.md
-        - create: api_reference/trestle.core.commands.create.md
-        - transform_oscal: api_reference/trestle.core.commands.transform_oscal.md
+        - assemble: api_reference/trestle.core.commands.assemble.md
         - author:
           - catalog: api_reference/trestle.core.commands.author.catalog.md
           - command: api_reference/trestle.core.commands.author.command.md
-          - profile: api_reference/trestle.core.commands.author.profile.md
-          - docs: api_reference/trestle.core.commands.author.docs.md
-          - consts: api_reference/trestle.core.commands.author.consts.md
           - common: api_reference/trestle.core.commands.author.common.md
-          - ssp: api_reference/trestle.core.commands.author.ssp.md
-          - headers: api_reference/trestle.core.commands.author.headers.md
+          - consts: api_reference/trestle.core.commands.author.consts.md
+          - docs: api_reference/trestle.core.commands.author.docs.md
           - folders: api_reference/trestle.core.commands.author.folders.md
+          - headers: api_reference/trestle.core.commands.author.headers.md
+          - profile: api_reference/trestle.core.commands.author.profile.md
+          - ssp: api_reference/trestle.core.commands.author.ssp.md
           - versioning:
             - template_versioning: api_reference/trestle.core.commands.author.versioning.template_versioning.md
-        - replicate: api_reference/trestle.core.commands.replicate.md
-        - remove: api_reference/trestle.core.commands.remove.md
         - command_docs: api_reference/trestle.core.commands.command_docs.md
-        - assemble: api_reference/trestle.core.commands.assemble.md
-        - href: api_reference/trestle.core.commands.href.md
-        - validate: api_reference/trestle.core.commands.validate.md
         - common:
-          - return_codes: api_reference/trestle.core.commands.common.return_codes.md
           - cmd_utils: api_reference/trestle.core.commands.common.cmd_utils.md
-        - split: api_reference/trestle.core.commands.split.md
+          - return_codes: api_reference/trestle.core.commands.common.return_codes.md
+        - create: api_reference/trestle.core.commands.create.md
+        - describe: api_reference/trestle.core.commands.describe.md
+        - href: api_reference/trestle.core.commands.href.md
         - import_: api_reference/trestle.core.commands.import_.md
         - init: api_reference/trestle.core.commands.init.md
+        - merge: api_reference/trestle.core.commands.merge.md
         - partial_object_validate: api_reference/trestle.core.commands.partial_object_validate.md
-      - object_factory: api_reference/trestle.core.object_factory.md
-      - repository: api_reference/trestle.core.repository.md
-      - err: api_reference/trestle.core.err.md
+        - remove: api_reference/trestle.core.commands.remove.md
+        - replicate: api_reference/trestle.core.commands.replicate.md
+        - split: api_reference/trestle.core.commands.split.md
+        - task: api_reference/trestle.core.commands.task.md
+        - transform_oscal: api_reference/trestle.core.commands.transform_oscal.md
+        - validate: api_reference/trestle.core.commands.validate.md
+        - version: api_reference/trestle.core.commands.version.md
+      - common_types: api_reference/trestle.core.common_types.md
       - const: api_reference/trestle.core.const.md
+      - control_io: api_reference/trestle.core.control_io.md
       - draw_io: api_reference/trestle.core.draw_io.md
+      - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
+      - err: api_reference/trestle.core.err.md
+      - generators: api_reference/trestle.core.generators.md
+      - markdown:
+        - markdown_api: api_reference/trestle.core.markdown.markdown_api.md
+        - markdown_const: api_reference/trestle.core.markdown.markdown_const.md
+        - markdown_node: api_reference/trestle.core.markdown.markdown_node.md
+        - markdown_processor: api_reference/trestle.core.markdown.markdown_processor.md
+        - markdown_validator: api_reference/trestle.core.markdown.markdown_validator.md
+        - md_writer: api_reference/trestle.core.markdown.md_writer.md
+      - models:
+        - actions: api_reference/trestle.core.models.actions.md
+        - elements: api_reference/trestle.core.models.elements.md
+        - file_content_type: api_reference/trestle.core.models.file_content_type.md
+        - interfaces: api_reference/trestle.core.models.interfaces.md
+        - plans: api_reference/trestle.core.models.plans.md
+      - object_factory: api_reference/trestle.core.object_factory.md
+      - oscal_version_validator: api_reference/trestle.core.oscal_version_validator.md
+      - parser: api_reference/trestle.core.parser.md
+      - pipeline: api_reference/trestle.core.pipeline.md
+      - profile_resolver: api_reference/trestle.core.profile_resolver.md
       - refs_validator: api_reference/trestle.core.refs_validator.md
-      - validator_factory: api_reference/trestle.core.validator_factory.md
       - remote:
         - cache: api_reference/trestle.core.remote.cache.md
-    - utils:
-      - log: api_reference/trestle.utils.log.md
-      - load_distributed: api_reference/trestle.utils.load_distributed.md
-      - trash: api_reference/trestle.utils.trash.md
-      - fs: api_reference/trestle.utils.fs.md
-      - oscal_helper: api_reference/trestle.utils.oscal_helper.md
+      - repository: api_reference/trestle.core.repository.md
+      - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
+      - utils: api_reference/trestle.core.utils.md
+      - validator: api_reference/trestle.core.validator.md
+      - validator_factory: api_reference/trestle.core.validator_factory.md
+      - validator_helper: api_reference/trestle.core.validator_helper.md
     - oscal:
+      - assessment_plan: api_reference/trestle.oscal.assessment_plan.md
+      - assessment_results: api_reference/trestle.oscal.assessment_results.md
       - catalog: api_reference/trestle.oscal.catalog.md
+      - common: api_reference/trestle.oscal.common.md
+      - component: api_reference/trestle.oscal.component.md
       - poam: api_reference/trestle.oscal.poam.md
       - profile: api_reference/trestle.oscal.profile.md
-      - common: api_reference/trestle.oscal.common.md
-      - assessment_results: api_reference/trestle.oscal.assessment_results.md
       - ssp: api_reference/trestle.oscal.ssp.md
-      - component: api_reference/trestle.oscal.component.md
-      - assessment_plan: api_reference/trestle.oscal.assessment_plan.md
+    - tasks:
+      - base_task: api_reference/trestle.tasks.base_task.md
+      - cis_to_catalog: api_reference/trestle.tasks.cis_to_catalog.md
+      - cis_to_component_definition: api_reference/trestle.tasks.cis_to_component_definition.md
+      - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
+      - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
+      - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
+      - transform: api_reference/trestle.tasks.transform.md
+      - xlsx_to_oscal_component_definition: api_reference/trestle.tasks.xlsx_to_oscal_component_definition.md
     - transforms:
-      - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
-      - results: api_reference/trestle.transforms.results.md
-      - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
       - implementations:
-        - tanium: api_reference/trestle.transforms.implementations.tanium.md
         - osco: api_reference/trestle.transforms.implementations.osco.md
-    - cli: api_reference/trestle.cli.md
+        - tanium: api_reference/trestle.transforms.implementations.tanium.md
+      - results: api_reference/trestle.transforms.results.md
+      - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
+      - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
+    - utils:
+      - fs: api_reference/trestle.utils.fs.md
+      - load_distributed: api_reference/trestle.utils.load_distributed.md
+      - log: api_reference/trestle.utils.log.md
+      - oscal_helper: api_reference/trestle.utils.oscal_helper.md
+      - trash: api_reference/trestle.utils.trash.md
 plugins:
 - search
 - mkdocstrings:
