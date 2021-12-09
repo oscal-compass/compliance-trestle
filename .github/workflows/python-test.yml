@@ -57,6 +57,9 @@ jobs:
     - name: Validate website content (mkdocs)
       run: |
         make docs-validate
+    - name: Check if dirty (mkdocs)
+      run: |
+        make check-for-changes
 
 # This test simulates what it is like for a user to install trestle today.
 # Coverage cannot be calculated as part of
