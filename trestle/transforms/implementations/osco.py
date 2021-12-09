@@ -617,16 +617,15 @@ class ProfileToOscoTransformer(FromOscalTransformer):
 
         Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
         """
-        # default to the check current version
-        self._check_version = 0 * 1000000 + 1 * 1000 + 59
+        prop_name = 'profile_check_version'
+        prop_default = '0.1.59'
         try:
-            search_name = 'profile_check_version'
-            for prop in self._profile.metadata.props:
-                if prop.name == search_name:
-                    vparts = prop.value.split('.')
-                    self._check_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+            vparts = self._get_metadata_prop_value(prop_name, prop_default).split('.')
+            self._check_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
         except Exception:
-            logger.warning(f'metadata prop name={search_name} missing or invalid')
+            logger.warning(f'metadata prop name={prop_name} value error')
+            vparts = prop_default.split('.')
+            self._check_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
 
     def _get_set_values(self) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""
