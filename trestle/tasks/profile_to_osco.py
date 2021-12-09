@@ -71,6 +71,13 @@ class ProfileToOsco(TaskBase):
         )
         logger.info('')
         logger.info('Operation: The specified input profile is transformed into OSCO .yaml.')
+        logger.info('')
+        note01 = 'Notes: [1] The input-file OSCAL profile should specify a metadata property with'
+        note02 = 'name "profile_check_version" and value of the form "0.1.59".'
+        note03 = 'The value corresponds with the  CIS Benchmarks checks version supported by the Compliance Operator'
+        note04 = 'and affects the format of the emitted yaml.'
+        note05 = 'If not specified, the default is "0.1.59".'
+        logger.info(f'{note01} {note02} {note03} {note04} {note05}')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
