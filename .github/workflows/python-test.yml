@@ -141,7 +141,7 @@ jobs:
         path: coverage.xml
 
   sonar:
-    if: github.repository == 'IBM/compliance-trestle'
+    if: ${{ github.event.pull_request.base.repo.url == github.event.pull_request.head.repo.url }}
     runs-on: ubuntu-latest
     needs: test
     steps:
