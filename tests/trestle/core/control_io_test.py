@@ -247,14 +247,14 @@ def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     with open(bad_file, 'wb') as f:
         f.write(b'\x81')
     with pytest.raises(TrestleError):
-        ControlIOReader._load_control_lines(bad_file)
+        ControlIOReader._load_control_lines_and_header(bad_file)
 
 
 def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
     """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
     with pytest.raises(TrestleError):
-        ControlIOReader._load_control_lines(bad_file)
+        ControlIOReader._load_control_lines_and_header(bad_file)
 
 
 def test_merge_dicts_deep() -> None:

@@ -18,20 +18,23 @@ import logging
 import pathlib
 import shutil
 import traceback
-from typing import List
+from typing import Dict, List
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.core.const as const
+import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.control_io import ControlIOReader
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.utils import as_list
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -141,14 +144,14 @@ class ProfileAssemble(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
-            return self.assemble_profile(trestle_root, args.name, args.markdown, args.output)
+            return self.assemble_profile(trestle_root, args.name, args.markdown, args.output, args.set_parameters)
         except Exception as e:
             logger.error(f'Assembly of markdown to profile failed with error: {e}')
             logger.debug(traceback.format_exc())
             return CmdReturnCodes.COMMAND_ERROR.value
 
     @staticmethod
-    def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> prof.Profile:
+    def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> None:
         """Replace the alter adds in the orig_profile with the new ones."""
         if not profile.modify:
             profile.modify = prof.Modify(alters=alters)
@@ -176,11 +179,25 @@ class ProfileAssemble(AuthorCommonCommand):
             # get the new list of alters from the dict and update profile
             new_alters = list(alter_dict.values())
             profile.modify.alters = new_alters
-        return profile
+
+    @staticmethod
+    def _replace_modify_set_params(profile: prof.Profile, param_dict: Dict[str, str]) -> None:
+        if param_dict:
+            if not profile.modify:
+                profile.modify = prof.Modify()
+            profile.modify.set_parameters = as_list(profile.modify.set_parameters)
+            orig_param_dict = {}
+            for set_param in profile.modify.set_parameters:
+                orig_param_dict[set_param.param_id] = ControlIOReader.param_values_as_string(set_param)
+            orig_param_dict.update(param_dict)
+            new_set_params = []
+            for key, value in orig_param_dict.items():
+                new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
+            profile.modify.set_parameters = new_set_params
 
     @staticmethod
     def assemble_profile(
-        trestle_root: pathlib.Path, orig_profile_name: str, md_name: str, new_profile_name: str
+        trestle_root: pathlib.Path, orig_profile_name: str, md_name: str, new_profile_name: str, set_parameters: bool
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
@@ -190,6 +207,7 @@ class ProfileAssemble(AuthorCommonCommand):
             orig_profile_name: The output name of the profile json file to be created from the assembly
             md_name: The name of the directory containing the markdown control files for the ssp
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
+            set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile
 
         Returns:
             0 on success, 1 otherwise
@@ -200,9 +218,10 @@ class ProfileAssemble(AuthorCommonCommand):
         _, _, orig_profile = load_distributed(profile_path, trestle_root, prof.Profile)
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
-        found_alters = CatalogInterface.read_additional_content(md_dir)
-        if found_alters:
-            orig_profile = ProfileAssemble._replace_alter_adds(orig_profile, found_alters)
+        found_alters, param_dict = CatalogInterface.read_additional_content(md_dir)
+        ProfileAssemble._replace_alter_adds(orig_profile, found_alters)
+        if set_parameters:
+            ProfileAssemble._replace_modify_set_params(orig_profile, param_dict)
 
         new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
 

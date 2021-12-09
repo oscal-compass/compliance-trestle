@@ -301,7 +301,7 @@ class CatalogInterface():
         """Get the full mapping of param_id to modified value for this profile."""
         set_param_dict: Dict[str, str] = {}
         for set_param in as_list(profile.modify.set_parameters):
-            value_str = 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
+            value_str = ControlIOReader.param_values_as_string(set_param)
             set_param_dict[set_param.param_id] = value_str
         return set_param_dict
 
@@ -461,16 +461,19 @@ class CatalogInterface():
         return imp_reqs
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path) -> List[prof.Alter]:
+    def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Read all markdown controls and return list of alters."""
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         new_alters: List[prof.Alter] = []
+        param_dict: Dict[str, str] = {}
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                new_alters.extend(ControlIOReader.read_new_alters(control_file))
-        return new_alters
+                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(control_file)
+                new_alters.extend(control_alters)
+                param_dict.update(control_param_dict)
+        return new_alters, param_dict
 
     @staticmethod
     def part_equivalent(a: common.Part, b: common.Part) -> bool:

@@ -457,7 +457,12 @@ class ControlIOReader():
         return new_label
 
     @staticmethod
-    def _load_control_lines(control_file: pathlib.Path) -> List[str]:
+    def param_values_as_string(set_param: prof.SetParameter) -> str:
+        """Convert param values to single string."""
+        return 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
+
+    @staticmethod
+    def _load_control_lines_and_header(control_file: pathlib.Path) -> List[str]:
         lines: List[str] = []
         try:
             content = control_file.open('r', encoding=const.FILE_ENCODING).read()
@@ -474,6 +479,7 @@ class ControlIOReader():
             logger.debug(f'Underlying error: {str(e)}')
             raise TrestleError(f'Failure parsing yaml header on file {control_file}')
         raw_lines = fm.content.split('\n')
+        header = fm.metadata
         # Any fully blank lines will be retained but as empty strings
         lines = [line.strip('\r\n').rstrip() for line in raw_lines]
         clean_lines = []
@@ -482,7 +488,7 @@ class ControlIOReader():
             if line.startswith('<!--') or line.startswith('__________________'):
                 continue
             clean_lines.append(line)
-        return clean_lines
+        return clean_lines, header
 
     @staticmethod
     def _read_id_group_id_title(line: str) -> Tuple[int, str, str]:
@@ -1051,11 +1057,12 @@ class ControlIOReader():
         return -1, None
 
     @staticmethod
-    def read_new_alters(control_path: pathlib.Path) -> List[prof.Alter]:
+    def read_new_alters_and_params(control_path: pathlib.Path) -> List[prof.Alter]:
         """Get parts for the markdown control corresponding to Editable Content - if any."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
-        lines = ControlIOReader._load_control_lines(control_path)
+        param_dict: Dict[str, str] = {}
+        lines, header = ControlIOReader._load_control_lines_and_header(control_path)
         ii = 0
         while 0 <= ii < len(lines):
             line = lines[ii]
@@ -1072,7 +1079,11 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
-        return new_alters
+        param_content = header.get(const.SET_PARAMS_TAG, {})
+        for key, value in param_content.items():
+            if value:
+                param_dict[key] = value
+        return new_alters, param_dict
 
     @staticmethod
     def get_control_param_dict(control: cat.Control) -> Dict[str, str]:

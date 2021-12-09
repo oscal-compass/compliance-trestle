@@ -72,11 +72,13 @@ multi_guidance_dict = {
 @pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
+@pytest.mark.parametrize('set_parameters', [True, False])
 def test_profile_generate_assemble(
     add_header: bool,
     guid_dict: Dict,
     use_cli: bool,
     dir_exists: bool,
+    set_parameters: bool,
     tmp_trestle_dir: pathlib.Path,
     monkeypatch: MonkeyPatch
 ) -> None:
@@ -103,6 +105,8 @@ def test_profile_generate_assemble(
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
+        if set_parameters:
+            test_args.append('-sp')
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
@@ -119,12 +123,16 @@ def test_profile_generate_assemble(
         if add_header:
             yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, False)
+        profile_generate.generate_markdown(
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, set_parameters
+        )
         assert ac1_path.exists()
         assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
         if dir_exists:
             assembled_prof_dir.mkdir()
-        assert ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name) == 0
+        assert ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters
+        ) == 0
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
