@@ -6,14 +6,5 @@ metadata:
 spec:
   description: name
   extends: extends
-  setValues:
-  - name: ocp4-myco-minimum-password-length
-    rationale: not determinable from specification
-    value: '12'
-  - name: ocp4-myco-password-reuse-prevention
-    rationale: not determinable from specification
-    value: '24'
-  - name: ocp4-allowed-service-ids-admins-per-account
-    rationale: not determinable from specification
-    value: '10'
+  setValues: []
   title: Best Practices NIST CONTROLS Profile

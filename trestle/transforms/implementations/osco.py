@@ -562,11 +562,11 @@ class ProfileToOscoTransformer(FromOscalTransformer):
 
     def __init__(
         self,
-        extends='ocp4-cis-node',
-        api_version='compliance.openshift.io/v1alpha1',
-        kind='TailoredProfile',
-        name='customized-tailored-profile',
-        namespace='openshift-compliance',
+        extends: str = 'ocp4-cis-node',
+        api_version: str = 'compliance.openshift.io/v1alpha1',
+        kind: str = 'TailoredProfile',
+        name: str = 'customized-tailored-profile',
+        namespace: str = 'openshift-compliance',
     ) -> None:
         """Initialize."""
         self._extends = extends
@@ -577,16 +577,27 @@ class ProfileToOscoTransformer(FromOscalTransformer):
 
     def transform(self, profile: Profile) -> str:
         """Transform the Profile into a OSCO yaml."""
+        self._profile = profile
+        self._extract_check_version()
         # set values
-        set_values = self._get_set_values(profile)
+        set_values = self._get_set_values()
         # spec
-        spec = {
-            'description': self._get_metadata_prop_value(profile, 'profile_mnemonic', self._name),
-            'extends': self._get_metadata_prop_value(profile, 'base_profile_mnemonic', self._extends),
-            'title': profile.metadata.title,
-            'setValues': set_values,
-        }
-        disable_rules = self._get_disable_rules(profile)
+        if self._check_version < 1059:
+            # for versions prior to 0.1.59, exclude 'description'
+            spec = {
+                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
+                'title': self._profile.metadata.title,
+                'setValues': set_values,
+            }
+        else:
+            # for versions 0.1.59 and beyond, include 'description'
+            spec = {
+                'description': self._get_metadata_prop_value('profile_mnemonic', self._name),
+                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
+                'title': self._profile.metadata.title,
+                'setValues': set_values,
+            }
+        disable_rules = self._get_disable_rules()
         if len(disable_rules) > 0:
             spec['disableRules'] = disable_rules
         # yaml data
@@ -594,26 +605,44 @@ class ProfileToOscoTransformer(FromOscalTransformer):
             'apiVersion': self._api_version,
             'kind': self._kind,
             'metadata': {
-                'name': self._get_metadata_prop_value(profile, 'profile_mnemonic', self._name),
+                'name': self._get_metadata_prop_value('profile_mnemonic', self._name),
                 'namespace': self._namespace,
             },
             'spec': spec,
         }
         return json.dumps(ydata)
 
-    def _get_set_values(self, profile) -> List[Dict]:
+    def _extract_check_version(self) -> None:
+        """Extract profile check version.
+
+        Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
+        """
+        # default to the check current version
+        self._check_version = 0 * 1000000 + 1 * 1000 + 59
+        try:
+            search_name = 'profile_check_version'
+            for prop in self._profile.metadata.props:
+                if prop.name == search_name:
+                    vparts = prop.value.split('.')
+                    self._check_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+        except Exception:
+            logger.warning(f'metadata prop name={search_name} missing or invalid')
+
+    def _get_set_values(self) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""
         set_values = []
-        for set_parameter in profile.modify.set_parameters:
-            name = self._format_osco_rule_name(set_parameter.param_id)
-            parameter_value = set_parameter.values[0]
-            value = parameter_value.__root__
-            rationale = self._get_rationale_for_set_value()
-            set_value = {'name': name, 'value': value, 'rationale': rationale}
-            set_values.append(set_value)
+        # for versions prior to 0.1.59 include parameters
+        if self._check_version < 1059:
+            for set_parameter in self._profile.modify.set_parameters:
+                name = self._format_osco_rule_name(set_parameter.param_id)
+                parameter_value = set_parameter.values[0]
+                value = parameter_value.__root__
+                rationale = self._get_rationale_for_set_value()
+                set_value = {'name': name, 'value': value, 'rationale': rationale}
+                set_values.append(set_value)
         return set_values
 
-    def _format_osco_rule_name(self, name):
+    def _format_osco_rule_name(self, name: str) -> str:
         """Format for OSCO.
 
         1. remove prefix xccdf_org.ssgproject.content_rule_
@@ -622,20 +651,20 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         """
         return 'ocp4-' + (name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-'))
 
-    def _get_metadata_prop_value(self, profile, name, default_) -> str:
+    def _get_metadata_prop_value(self, name: str, default_: str) -> str:
         """Extract metadata prop or else default if not present."""
-        if profile.metadata.props is not None:
-            for prop in profile.metadata.props:
+        if self._profile.metadata.props is not None:
+            for prop in self._profile.metadata.props:
                 if prop.name == name:
                     return prop.value
         logger.info(f'using default: {name} = {default_}')
         return default_
 
-    def _get_disable_rules(self, profile) -> List[str]:
+    def _get_disable_rules(self) -> List[str]:
         """Extract disabled rules."""
         value = []
-        if profile.imports is not None:
-            for item in profile.imports:
+        if self._profile.imports is not None:
+            for item in self._profile.imports:
                 if item.exclude_controls is not None:
                     for control in item.exclude_controls:
                         if control.with_ids is not None:
