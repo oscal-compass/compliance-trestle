@@ -25,6 +25,7 @@ nav:
   - Compliance posture: tutorials/continuous-compliance/continuous-compliance.md
   - SSP, Catalog, and Profile Authoring: tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring.md
   - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
+  - Task - cis-to-catalog: tutorials/task.cis-to-catalog/transformation.md
   - Task - cis-to-component-definition: tutorials/task.cis-to-component-definition/transformation.md
   - Task - tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
   - Work with authoring versions: tutorials/work_with_authoring_versions.md
@@ -41,6 +42,7 @@ nav:
   - Developer Certificate of Originality: contributing/DCO.md
 - Known limitations: errors.md
 - Demos: demonstrations-content.md
+- License: license.md
 - Reference:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
   - trestle API reference:
@@ -127,6 +129,7 @@ nav:
       - ssp: api_reference/trestle.oscal.ssp.md
     - tasks:
       - base_task: api_reference/trestle.tasks.base_task.md
+      - cis_to_catalog: api_reference/trestle.tasks.cis_to_catalog.md
       - cis_to_component_definition: api_reference/trestle.tasks.cis_to_component_definition.md
       - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
       - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
