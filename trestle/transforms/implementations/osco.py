@@ -666,13 +666,17 @@ class ProfileToOscoTransformer(FromOscalTransformer):
             for item in self._profile.imports:
                 if item.exclude_controls is not None:
                     for control in item.exclude_controls:
-                        if control.with_ids is not None:
-                            for with_id in control.with_ids:
-                                name = self._format_osco_rule_name(with_id.__root__)
-                                rationale = self._get_rationale_for_disable_rule()
-                                entry = {'name': name, 'rationale': rationale}
-                                value.append(entry)
+                        self._add_disable_rules_for_control(value, control)
         return value
+
+    def _add_disable_rules_for_control(self, value, control):
+        """Extract disabled rules for control."""
+        if control.with_ids is not None:
+            for with_id in control.with_ids:
+                name = self._format_osco_rule_name(with_id.__root__)
+                rationale = self._get_rationale_for_disable_rule()
+                entry = {'name': name, 'rationale': rationale}
+                value.append(entry)
 
     def _get_rationale_for_set_value(self) -> str:
         """Rationale for set value."""
