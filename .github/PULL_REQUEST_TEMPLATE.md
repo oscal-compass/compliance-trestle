@@ -27,4 +27,4 @@
 
 - Ensure it is a 'squash commit' if not a release.
 - Ensure CI is currently passing
-- Check sonar
+- Check sonar. If you are working for a fork a maintainer will reach out, if required.
