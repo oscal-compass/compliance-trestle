@@ -1067,7 +1067,7 @@ class ControlIOReader():
         return -1, None
 
     @staticmethod
-    def read_new_alters_and_params(control_path: pathlib.Path) -> List[prof.Alter]:
+    def read_new_alters_and_params(control_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Get parts for the markdown control corresponding to Editable Content - if any."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []

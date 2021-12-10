@@ -455,13 +455,15 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
         yaml_header=None,
         preserve_header_values=False
     )
-    # generate the markdown with header content
+    # generate the markdown with no implementation response text
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
+    # insert implementation text into the high level statement of a control that has no sub-parts
     control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
     test_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
 
     assert ssp_cmd._run(args) == 0
 
+    # confirm the added text is still there
     assert test_utils.confirm_text_in_file(control_path, 'control test-1', 'Hello there')
