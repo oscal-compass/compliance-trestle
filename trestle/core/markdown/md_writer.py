@@ -115,6 +115,14 @@ class MDWriter():
                 self.new_list(item)
             self._add_indent_level(-1)
 
+    def new_table(self, table_list: List[List[str]]):
+        """Add table to the markdown. All rows must be of equal lenght."""
+        for row in table_list:
+            row_str = '| ' + ' | '.join(row) + ' |'
+            sep_str = '|---' * len(row) + '|'
+            self.new_line(row_str)
+            self.new_line(sep_str)
+
     def _check_header(self) -> None:
         while len(self._lines) > 0 and self._lines[0] == '':
             self._lines = self._lines[1:]
