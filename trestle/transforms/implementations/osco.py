@@ -578,19 +578,20 @@ class ProfileToOscoTransformer(FromOscalTransformer):
     def transform(self, profile: Profile) -> str:
         """Transform the Profile into a OSCO yaml."""
         self._profile = profile
-        self._extract_check_version()
+        self._check_version = self._get_normalized_version('profile_check_version', '0.1.59')
+        self._osco_version = self._get_normalized_version('profile_osco_version', '0.1.46')
         # set values
         set_values = self._get_set_values()
         # spec
-        if self._check_version < 1059:
-            # for versions prior to 0.1.59, exclude 'description'
+        if self._osco_version < 1046:
+            # for versions prior to 0.1.46, exclude 'description'
             spec = {
                 'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
                 'title': self._profile.metadata.title,
                 'setValues': set_values,
             }
         else:
-            # for versions 0.1.59 and beyond, include 'description'
+            # for versions 0.1.46 and beyond, include 'description'
             spec = {
                 'description': self._get_metadata_prop_value('profile_mnemonic', self._name),
                 'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
@@ -612,20 +613,19 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         }
         return json.dumps(ydata)
 
-    def _extract_check_version(self) -> None:
-        """Extract profile check version.
+    def _get_normalized_version(self, prop_name, prop_default) -> None:
+        """Get normalized version.
 
         Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
         """
-        prop_name = 'profile_check_version'
-        prop_default = '0.1.59'
         try:
             vparts = self._get_metadata_prop_value(prop_name, prop_default).split('.')
-            self._check_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+            normalized_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
         except Exception:
             logger.warning(f'metadata prop name={prop_name} value error')
             vparts = prop_default.split('.')
-            self._check_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+            normalized_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+        return normalized_version
 
     def _get_set_values(self) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""

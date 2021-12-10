@@ -102,6 +102,14 @@ def test_profile_to_osco_execute_disable_0_1_58(tmp_path):
     _test_profile_to_osco_execute_common(tmp_path, config)
 
 
+def test_profile_to_osco_execute_disable_osco_0_1_45(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-disable-osco-0.1.45.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
 def _test_profile_to_osco_execute_common(tmp_path, config):
     """Test execute call."""
     section = config['task.profile-to-osco']
