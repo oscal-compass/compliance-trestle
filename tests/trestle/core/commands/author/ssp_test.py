@@ -438,7 +438,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test repeat assemble with various controls."""
+    """Test repeat generate with various controls including statement with no parts."""
     cat_name = 'complex_cat'
     prof_name = 'my_prof'
     ssp_name = 'my_ssp'
