@@ -57,7 +57,7 @@ def setup_for_ssp(include_header: bool,
             output=ssp_name,
             verbose=True,
             sections=sections,
-            header_dont_merge=False
+            preserve_header_values=False
         )
     return args, sections, yaml_path
 

@@ -247,9 +247,10 @@ DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
 
 HELP_YAML_PATH = 'Path to the optional yaml header file'
 
-HELP_HEADER_MERGE = (
-    'Flag to disable merging of the headers.'
-    + ' If provided, if a header currently exists the new header, passed with -y, will not be applied.'
+HELP_PRESERVE_HEADER_VALUES = (
+    'Flag to preserve values in a markdown control header.'
+    + ' If provided, if a header currently exists the new header, passed with -y, will not change any existing'
+    + ' values set in the header.  But new items passed in will always be added to the header read in.'
 )
 
 HELP_REGENERATE = 'Flag to force generation of new uuids in the model'

@@ -358,7 +358,7 @@ class ControlIOWriter():
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
-        header_dont_merge: bool
+        preserve_header_values: bool,
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -372,7 +372,7 @@ class ControlIOWriter():
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
-            header_dont_merge: Retain existing values in markdown header content but add new content
+            preserve_header_values: Retain existing values in markdown header content but add new content
 
         Returns:
             None
@@ -380,7 +380,7 @@ class ControlIOWriter():
         Notes:
             The filename is constructed from the control's id, so only the markdown directory is required.
             If a yaml header is present in the file, new values in provided header replace those in the markdown header.
-            But if header_dont_merge then don't change any existing values, but allow addition of new content.
+            But if preserve_header_values then don't change any existing values, but allow addition of new content.
             The above only applies to generic header content and not sections of type x-trestle-
         """
         control_file = dest_path / (control.id + '.md')
@@ -392,9 +392,12 @@ class ControlIOWriter():
         # But x-trestle- content in the new header should always replace content in the markdown header.
 
         # Remove any special trestle content from the read markdown header
+        keys_to_delete = []
         for key in header.keys():
             if key.startswith(const.TRESTLE_TAG):
-                header.pop(key)
+                keys_to_delete.append(key)
+        for key in keys_to_delete:
+            header.pop(key)
 
         # Split the provided yaml into generic and trestle parts
         generic_dict = {}
@@ -407,7 +410,7 @@ class ControlIOWriter():
                 else:
                     generic_dict[key] = value
 
-        if header_dont_merge:
+        if preserve_header_values:
             merged_header = copy.deepcopy(header)
             ControlIOWriter.merge_dicts_deep(merged_header, generic_dict)
         else:

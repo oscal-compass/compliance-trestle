@@ -51,7 +51,7 @@ def setup_for_ssp(include_header: bool,
         output=ssp_name,
         verbose=True,
         sections=sections,
-        header_dont_merge=False
+        preserve_header_values=False
     )
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -126,7 +126,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=True,
         sections=None,
         yaml_header=str(yaml_path),
-        header_dont_merge=False
+        preserve_header_values=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -137,7 +137,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         sections=None,
         verbose=True,
-        header_dont_merge=False
+        preserve_header_values=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -421,7 +421,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=False,
         sections=None,
         yaml_header=header_path,
-        header_dont_merge=False
+        preserve_header_values=False
     )
     # generate the markdown with header content
     ssp_cmd = SSPGenerate()

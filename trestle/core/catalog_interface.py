@@ -323,7 +323,7 @@ class CatalogInterface():
         responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        header_dont_merge: bool = False,
+        preserve_header_values: bool = False,
         set_parameters: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
@@ -354,7 +354,7 @@ class CatalogInterface():
                 additional_content,
                 responses,
                 profile,
-                header_dont_merge
+                preserve_header_values
             )
 
     @staticmethod

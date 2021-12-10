@@ -16,6 +16,7 @@
 """Tests for control_io module."""
 
 import pathlib
+import shutil
 
 import pytest
 
@@ -25,9 +26,11 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
+from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.err import TrestleError
+from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import common
 from trestle.utils import fs
@@ -312,3 +315,37 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     assert param_dict['ac-1_prm_1'] == 'all alert personell'
     # confirm original param label is used since no value was assigned
     assert param_dict['ac-1_prm_7'] == 'organization-defined events'
+
+
+@pytest.mark.parametrize('preserve_header_values', [True, False])
+def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.Path) -> None:
+    """Test write/read of control header params."""
+    src_control_path = pathlib.Path('tests/data/author/controls/control_with_components_and_params.md')
+    header = {
+        const.SET_PARAMS_TAG: {
+            'ac-1_prm_3': 'new prm_3 val from input header', 'ac-1_prm_4': 'new prm_4 val from input header'
+        },
+        'foo': 'new bar',
+        'new_reviewer': 'James'
+    }
+    control_path = tmp_path / 'ac-1.md'
+    shutil.copyfile(src_control_path, control_path)
+    markdown_processor = MarkdownProcessor()
+    header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
+    assert len(header_1.keys()) == 6
+    orig_control_read = ControlIOReader.read_control(control_path)
+    control_writer = ControlIOWriter()
+    control_writer.write_control(
+        tmp_path, orig_control_read, '', header, None, False, False, None, preserve_header_values
+    )
+    header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
+    assert len(header_2.keys()) == 4
+    assert header_2['new_reviewer'] == 'James'
+    assert len(header_2[const.SET_PARAMS_TAG]) == 2
+    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+    if preserve_header_values:
+        assert header_2['foo'] == 'bar'
+    else:
+        assert header_2['foo'] == 'new bar'
+    new_control_read = ControlIOReader.read_control(control_path)
+    assert new_control_read == orig_control_read
