@@ -435,3 +435,33 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     # read the assembled ssp and confirm roles are in metadata
     ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
     assert len(ssp.metadata.roles) == 2
+
+
+def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test repeat assemble with various controls."""
+    cat_name = 'complex_cat'
+    prof_name = 'my_prof'
+    ssp_name = 'my_ssp'
+    catalog = test_utils.generate_complex_catalog()
+    fs.save_top_level_model(catalog, tmp_trestle_dir, cat_name, fs.FileContentType.JSON)
+    test_utils.create_profile_in_trestle_dir(tmp_trestle_dir, cat_name, prof_name)
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=False,
+        sections=None,
+        yaml_header=None,
+        preserve_header_values=False
+    )
+    # generate the markdown with header content
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
+    test_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
+
+    assert ssp_cmd._run(args) == 0
+
+    assert test_utils.confirm_text_in_file(control_path, 'control test-1', 'Hello there')

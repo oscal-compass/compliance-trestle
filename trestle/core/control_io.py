@@ -252,6 +252,12 @@ class ControlIOWriter():
                             did_write_part = True
         if not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
+            part_label = 'Statement'
+            for comp_name, prose_dict in comp_dict.items():
+                if part_label in prose_dict:
+                    if comp_name != const.SSP_MAIN_COMP_NAME:
+                        self._md_file.new_header(level=3, title=comp_name)
+                    self._insert_existing_text(part_label, prose_dict)
         self._md_file.new_hr()
 
     @staticmethod
@@ -869,7 +875,8 @@ class ControlIOReader():
 
             imp_string = 'Implementation'
             headers = control.get_all_headers_for_key(imp_string, False)
-            if not headers:
+            header_list = list(headers)
+            if not header_list:
                 # if statement has no parts there is only one response for entire control
                 headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
                 # should be only one header
@@ -877,7 +884,7 @@ class ControlIOReader():
                     node = control.get_node_for_key(header)
                     ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node, control_id, [])
             else:
-                for header in headers:
+                for header in header_list:
                     tokens = header.split(' ', 2)
                     if tokens[0] == '##' and tokens[1] == imp_string:
                         label = tokens[2].strip()

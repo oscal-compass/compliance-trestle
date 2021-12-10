@@ -63,8 +63,9 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     assert interface.get_dependent_control_ids('ac-3') == ['ac-3.3']
 
-    assert interface.get_control('a-1').parts[0].parts[0].parts[0].id == 'a-1_deep'
-    assert interface.get_control('a-1').parts[0].parts[0].parts[0].prose == 'Extra added part in subpart'
+    control = interface.get_control('a-1')
+    assert control.parts[0].parts[0].id == 'a-1_deep'
+    assert control.parts[0].parts[0].prose == 'Extra added part in subpart'
 
 
 def test_deep_catalog() -> None:
