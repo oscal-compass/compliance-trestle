@@ -471,7 +471,7 @@ class ControlIOReader():
         return 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
 
     @staticmethod
-    def _load_control_lines_and_header(control_file: pathlib.Path) -> List[str]:
+    def _load_control_lines_and_header(control_file: pathlib.Path) -> Tuple[List[str], Dict[str, Any]]:
         lines: List[str] = []
         try:
             content = control_file.open('r', encoding=const.FILE_ENCODING).read()
