@@ -31,6 +31,18 @@ from trestle.core.markdown import markdown_node
 logger = logging.getLogger(__name__)
 
 
+def adjust_header_level(input_md: str, expected: int) -> str:
+    """Adjust the header level of a markdown string such that the most significant header matches the expected #'s."""
+    output_md = input_md
+    mdn = markdown_node.MarkdownNode.build_tree_from_markdown(input_md.split('\n'))
+    mdn_top_header = mdn.get_node_header_lvl()
+    delta = int(expected) - mdn_top_header
+    if not delta == 0:
+        mdn.change_header_level_by(delta)
+        output_md = mdn.content.raw_text
+    return output_md
+
+
 class OSCALTags(Extension):
     """
     This adds a pre-proccessing step to eliminate badly behaving OSCAL statements.
@@ -67,7 +79,7 @@ class MDSectionInclude(Extension):
 
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
-        kwargs = None
+        kwargs = {}
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
             token = parser.stream.current
             if token.test('name:mdsection_include'):
@@ -85,6 +97,13 @@ class MDSectionInclude(Extension):
             logger.warning('Non zero metadata on MD section include - ignoring')
         full_md = markdown_node.MarkdownNode.build_tree_from_markdown(fm.content.split('\n'))
         md_section = full_md.get_node_for_key(section_title.value, strict_matching=True)
+        # adjust
+        expected_header_level = kwargs.get('header_level')
+        if expected_header_level:
+            level = md_section.get_node_header_lvl()
+            delta = int(expected_header_level) - level
+            if not delta == 0:
+                md_section.change_header_level_by(delta)
         if not md_section:
             raise err.TrestleError(
                 f'Unable to retrieve section "{section_title.value}"" from {markdown_source.value} jinja template.'
@@ -106,12 +125,24 @@ class MDCleanInclude(Extension):
 
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
-        parser.stream.expect('name:md_clean_include')
-        component = parser.parse_expression()
-        # Use the established environment to source the file
-        md_content, _, _ = self.environment.loader.get_source(self.environment, component.value)
+        kwargs = {}
+        while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
+            token = parser.stream.current
+            if token.test('name:md_clean_include'):
+                parser.stream.expect(lexer.TOKEN_NAME)
+                markdown_source = parser.stream.expect(lexer.TOKEN_STRING)
+            elif kwargs is not None:
+                kwargs.append(self.parse_expression(parser))
+            elif parser.stream.look().type == lexer.TOKEN_ASSIGN:
+                kwargs = {}
+        md_content, _, _ = self.environment.loader.get_source(self.environment, markdown_source.value)
         fm = frontmatter.loads(md_content)
-        local_parser = Parser(self.environment, fm.content)
+        content = fm.content
+        expected_header_level = kwargs.get('header_level')
+        if expected_header_level:
+            content = adjust_header_level(content, expected_header_level)
+
+        local_parser = Parser(self.environment, content)
         top_level_output = local_parser.parse()
 
         return top_level_output.body
