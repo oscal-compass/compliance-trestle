@@ -26,6 +26,7 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
+from trestle.core.utils import as_list
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
@@ -652,31 +653,27 @@ class ProfileToOscoTransformer(FromOscalTransformer):
 
     def _get_metadata_prop_value(self, name: str, default_: str) -> str:
         """Extract metadata prop or else default if not present."""
-        if self._profile.metadata.props is not None:
-            for prop in self._profile.metadata.props:
-                if prop.name == name:
-                    return prop.value
+        for prop in as_list(self._profile.metadata.props):
+            if prop.name == name:
+                return prop.value
         logger.info(f'using default: {name} = {default_}')
         return default_
 
     def _get_disable_rules(self) -> List[str]:
         """Extract disabled rules."""
         value = []
-        if self._profile.imports is not None:
-            for item in self._profile.imports:
-                if item.exclude_controls is not None:
-                    for control in item.exclude_controls:
-                        self._add_disable_rules_for_control(value, control)
+        for item in as_list(self._profile.imports):
+            for control in as_list(item.exclude_controls):
+                self._add_disable_rules_for_control(value, control)
         return value
 
     def _add_disable_rules_for_control(self, value, control):
         """Extract disabled rules for control."""
-        if control.with_ids is not None:
-            for with_id in control.with_ids:
-                name = self._format_osco_rule_name(with_id.__root__)
-                rationale = self._get_rationale_for_disable_rule()
-                entry = {'name': name, 'rationale': rationale}
-                value.append(entry)
+        for with_id in as_list(control.with_ids):
+            name = self._format_osco_rule_name(with_id.__root__)
+            rationale = self._get_rationale_for_disable_rule()
+            entry = {'name': name, 'rationale': rationale}
+            value.append(entry)
 
     def _get_rationale_for_set_value(self) -> str:
         """Rationale for set value."""
