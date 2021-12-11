@@ -562,11 +562,11 @@ class ProfileToOscoTransformer(FromOscalTransformer):
 
     def __init__(
         self,
-        extends: str = 'ocp4-cis-node',
-        api_version: str = 'compliance.openshift.io/v1alpha1',
-        kind: str = 'TailoredProfile',
-        name: str = 'customized-tailored-profile',
-        namespace: str = 'openshift-compliance',
+        extends='ocp4-cis-node',
+        api_version='compliance.openshift.io/v1alpha1',
+        kind='TailoredProfile',
+        name='customized-tailored-profile',
+        namespace='openshift-compliance',
     ) -> None:
         """Initialize."""
         self._extends = extends
