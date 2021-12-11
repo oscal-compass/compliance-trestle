@@ -584,7 +584,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         # set values
         set_values = self._get_set_values()
         # spec
-        if self._osco_version < 1046:
+        if self._osco_version < (0, 1, 46):
             # for versions prior to 0.1.46, exclude 'description'
             spec = {
                 'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
@@ -614,25 +614,25 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         }
         return json.dumps(ydata)
 
-    def _get_normalized_version(self, prop_name, prop_default) -> None:
+    def _get_normalized_version(self, prop_name, prop_default) -> (int, int, int):
         """Get normalized version.
 
         Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
         """
         try:
             vparts = self._get_metadata_prop_value(prop_name, prop_default).split('.')
-            normalized_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
         except Exception:
             logger.warning(f'metadata prop name={prop_name} value error')
             vparts = prop_default.split('.')
-            normalized_version = int(vparts[0]) * 1000000 + int(vparts[1]) * 1000 + int(vparts[2])
+            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
         return normalized_version
 
     def _get_set_values(self) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""
         set_values = []
         # for versions prior to 0.1.59 include parameters
-        if self._check_version < 1059:
+        if self._check_version < (0, 1, 59):
             for set_parameter in self._profile.modify.set_parameters:
                 name = self._format_osco_rule_name(set_parameter.param_id)
                 parameter_value = set_parameter.values[0]
