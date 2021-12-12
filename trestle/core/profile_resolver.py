@@ -626,7 +626,9 @@ class ProfileResolver():
             """
             control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
             if control is None:
-                raise TrestleError(f'Cannot find control referenced by SetParameter {set_param.param_id}')
+                raise TrestleError(
+                    f'Set parameter object in profile does not have a corresponding param-id: "{set_param.param_id}"'
+                )  # noqa:
             control.params = as_list(control.params)
             param_ids = [param.id for param in control.params]
             index = param_ids.index(set_param.param_id)
