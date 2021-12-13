@@ -18,10 +18,6 @@
           "ns": "https://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
           "value": "ocp4-cis-node",
           "class": "scc_base_profile_mnemonic"
-        },
-        {
-          "name": "profile_check_version",
-          "value": "0.1.58"
         }            
       ]
     },

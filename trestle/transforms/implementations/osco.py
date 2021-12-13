@@ -579,7 +579,6 @@ class ProfileToOscoTransformer(FromOscalTransformer):
     def transform(self, profile: Profile) -> str:
         """Transform the Profile into a OSCO yaml."""
         self._profile = profile
-        self._check_version = self._get_normalized_version('profile_check_version', '0.1.59')
         self._osco_version = self._get_normalized_version('profile_osco_version', '0.1.46')
         # set values
         set_values = self._get_set_values()
@@ -631,9 +630,10 @@ class ProfileToOscoTransformer(FromOscalTransformer):
     def _get_set_values(self) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""
         set_values = []
-        # for versions prior to 0.1.59 include parameters
-        if self._check_version < (0, 1, 59):
-            for set_parameter in self._profile.modify.set_parameters:
+        # for check versions prior to 0.1.59 include parameters
+        # for later versions parameters should not be specified, caveat emptor
+        if self._profile.modify is not None:
+            for set_parameter in as_list(self._profile.modify.set_parameters):
                 name = self._format_osco_rule_name(set_parameter.param_id)
                 parameter_value = set_parameter.values[0]
                 value = parameter_value.__root__
@@ -649,7 +649,10 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         2. change underscores to dashes
         3. add prefix ocp4-
         """
-        return 'ocp4-' + (name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-'))
+        normalized_name = name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-')
+        if not normalized_name.startswith('ocp4-'):
+            normalized_name = f'ocp4-{normalized_name}'
+        return normalized_name
 
     def _get_metadata_prop_value(self, name: str, default_: str) -> str:
         """Extract metadata prop or else default if not present."""

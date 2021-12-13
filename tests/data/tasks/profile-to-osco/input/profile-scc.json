@@ -1,0 +1,87 @@
+{
+    "profile": {
+        "uuid": "3840ac8c-19c4-4490-b50e-2b8cd56f2d11",
+        "metadata": {
+            "title": "ROKS OCP4 Tailored Profile v1.0",
+            "version": "1.0",
+            "last-modified": "2021-08-06T13:25:50.741+00:00",
+            "oscal-version": "1.0.0",
+            "props": [
+                {
+                    "name": "profile_mnemonic",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "value": "roks-ocp4-v1-0-e2123484",
+                    "class": "scc_profile_mnemonic"
+                },
+                {
+                    "name": "base_profile_mnemonic",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "value": "ocp4-cis-node",
+                    "class": "scc_base_profile_mnemonic"
+                }
+            ]
+        },
+        "imports": [
+            {
+                "href": "",
+                "exclude-controls": [
+                    {
+                        "with-ids": [
+                            "ocp4-file-groupowner-kube-apiserver",
+                            "ocp4-file-groupowner-openshift-pki-cert-files",
+                            "ocp4-file-permissions-controller-manager-kubeconfig",
+                            "ocp4-file-groupowner-openshift-pki-key-files",
+                            "ocp4-file-groupowner-etcd-pki-cert-files",
+                            "ocp4-file-owner-etcd-member",
+                            "ocp4-kubelet-authorization-mode",
+                            "ocp4-file-groupowner-etcd-data-files",
+                            "ocp4-file-groupowner-etcd-member",
+                            "ocp4-file-permissions-kube-apiserver",
+                            "ocp4-file-owner-kube-scheduler",
+                            "ocp4-file-groupowner-master-admin-kubeconfigs",
+                            "ocp4-kubelet-enable-cert-rotation",
+                            "ocp4-file-permissions-etcd-member",
+                            "ocp4-file-owner-etcd-pki-cert-files",
+                            "ocp4-file-owner-openshift-pki-cert-files",
+                            "ocp4-file-groupowner-kube-controller-manager",
+                            "ocp4-file-permissions-etcd-pki-cert-files",
+                            "ocp4-file-permissions-worker-service",
+                            "ocp4-file-permissions-scheduler-kubeconfig",
+                            "ocp4-file-permissions-etcd-data-dir",
+                            "ocp4-file-permissions-etcd-data-files",
+                            "ocp4-kubelet-enable-protect-kernel-defaults",
+                            "ocp4-file-owner-controller-manager-kubeconfig",
+                            "ocp4-file-owner-kube-controller-manager",
+                            "ocp4-file-owner-openshift-pki-key-files",
+                            "ocp4-file-permissions-scheduler",
+                            "ocp4-file-groupowner-controller-manager-kubeconfig",
+                            "ocp4-file-owner-etcd-data-dir",
+                            "ocp4-file-owner-worker-kubeconfig",
+                            "ocp4-file-permissions-worker-kubeconfig",
+                            "ocp4-file-owner-master-admin-kubeconfigs",
+                            "ocp4-kubelet-enable-server-cert-rotation",
+                            "ocp4-file-groupowner-worker-kubeconfig",
+                            "ocp4-file-groupowner-worker-service",
+                            "ocp4-file-groupowner-scheduler-kubeconfig",
+                            "ocp4-file-owner-kube-apiserver",
+                            "ocp4-file-owner-worker-service",
+                            "ocp4-etcd-unique-ca",
+                            "ocp4-kubelet-enable-client-cert-rotation",
+                            "ocp4-file-permissions-openshift-pki-cert-files",
+                            "ocp4-file-owner-etcd-data-files",
+                            "ocp4-file-permissions-openshift-pki-key-files",
+                            "ocp4-file-permissions-kube-controller-manager",
+                            "ocp4-file-groupowner-kube-scheduler",
+                            "ocp4-file-owner-scheduler-kubeconfig",
+                            "ocp4-file-permissions-master-admin-kubeconfigs",
+                            "ocp4-file-groupowner-etcd-data-dir"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "modify": {
+            "set-parameters": []
+        }
+    }
+}

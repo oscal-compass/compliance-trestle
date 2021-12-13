@@ -20,8 +20,8 @@
           "class": "scc_base_profile_mnemonic"
         },
         {
-          "name": "profile_check_version",
-          "value": "0.2.0"
+          "name": "profile_osco_version",
+          "value": "0.1.39"
         }            
       ]
     },
