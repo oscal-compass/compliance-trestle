@@ -262,13 +262,25 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
 
 def test_merge_dicts_deep() -> None:
     """Test deep merge of dicts."""
-    dest = {'a': {'b': 1}, 'x': [5, 6], 'q': 99}
-    src = {'a': {'b': [2, 3]}, 'x': 7, 'z': 'foo', 'q': 88}
+    dest = {'a': {'b': 1}, 'x': [5, 6], 'q': 99, 'killed': None}
+    src = {'a': {'b': [2, 3]}, 'x': 7, 'z': 'foo', 'q': 88, 'killed': 'alive'}
     ControlIOWriter.merge_dicts_deep(dest, src)
     assert dest['a'] == {'b': [1, 2, 3]}
     assert dest['x'] == [5, 6, 7]
     assert dest['z'] == 'foo'
     assert dest['q'] == 99
+    assert dest['killed'] is None
+
+
+def test_merge_dicts_deep_empty() -> None:
+    """Test that empty items are left alone."""
+    dest = {'foo': ''}
+    src = {'foo': 'fancy value'}
+    ControlIOWriter.merge_dicts_deep(dest, src)
+    assert dest['foo'] == ''
+    dest['foo'] = None
+    ControlIOWriter.merge_dicts_deep(dest, src)
+    assert dest['foo'] is None
 
 
 def test_control_with_components() -> None:
@@ -326,26 +338,32 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
             'ac-1_prm_3': 'new prm_3 val from input header', 'ac-1_prm_4': 'new prm_4 val from input header'
         },
         'foo': 'new bar',
-        'new_reviewer': 'James'
+        'new-reviewer': 'James',
+        'special': 'new value to ignore',
+        'none-thing': 'none value to ignore'
     }
     control_path = tmp_path / 'ac-1.md'
     shutil.copyfile(src_control_path, control_path)
     markdown_processor = MarkdownProcessor()
     header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
-    assert len(header_1.keys()) == 6
+    assert len(header_1.keys()) == 8
     orig_control_read = ControlIOReader.read_control(control_path)
     control_writer = ControlIOWriter()
     control_writer.write_control(
         tmp_path, orig_control_read, '', header, None, False, False, None, preserve_header_values
     )
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
-    assert len(header_2.keys()) == 4
-    assert header_2['new_reviewer'] == 'James'
+    assert len(header_2.keys()) == 6
+    assert header_2['new-reviewer'] == 'James'
     assert len(header_2[const.SET_PARAMS_TAG]) == 2
     assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
     if preserve_header_values:
         assert header_2['foo'] == 'bar'
+        assert header_2['special'] == ''
+        assert header_2['none-thing'] is None
     else:
         assert header_2['foo'] == 'new bar'
+        assert header_2['special'] == 'new value to ignore'
+        assert header_2['none-thing'] == 'none value to ignore'
     new_control_read = ControlIOReader.read_control(control_path)
     assert new_control_read == orig_control_read

@@ -20,6 +20,8 @@ reviewed-by:
   - named: john smith
     date: 2030/01/30
 foo: bar
+special: ''
+none-thing:
 ---
 
 # ac-1 - \[Access Control\] Policy and Procedures
