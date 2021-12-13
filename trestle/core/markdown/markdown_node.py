@@ -56,7 +56,7 @@ class MarkdownNode:
 
     def __init__(self, key: str, content: SectionContent):
         """Initialize markdown node."""
-        self.subnodes = []
+        self.subnodes: List[MarkdownNode] = []
         self.key = key
         self.content = content
 

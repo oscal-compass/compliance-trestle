@@ -20,7 +20,7 @@ import typing as t
 
 import frontmatter
 
-from jinja2 import lexer
+from jinja2 import lexer, nodes
 from jinja2.environment import Environment
 from jinja2.ext import Extension
 from jinja2.parser import Parser
@@ -35,7 +35,7 @@ def adjust_header_level(input_md: str, expected: int) -> str:
     """Adjust the header level of a markdown string such that the most significant header matches the expected #'s."""
     output_md = input_md
     mdn = markdown_node.MarkdownNode.build_tree_from_markdown(input_md.split('\n'))
-    mdn_top_header = mdn.get_node_header_lvl()
+    mdn_top_header = mdn.subnodes[0].get_node_header_lvl()
     delta = int(expected) - mdn_top_header
     if not delta == 0:
         mdn.change_header_level_by(delta)
@@ -43,7 +43,34 @@ def adjust_header_level(input_md: str, expected: int) -> str:
     return output_md
 
 
-class OSCALTags(Extension):
+class TrestleJinjaExtension(Extension):
+    """Class to define common methods to be inherited from for use in trestle."""
+
+    def __init__(self, environment: Environment) -> None:
+        """Ensure enviroment is set and carried into class vars."""
+        super().__init__(environment)
+
+    @staticmethod
+    def parse_expression(parser):
+        """Safely parse jinja expression."""
+        # Licensed under MIT from:
+        # https://github.com/MoritzS/jinja2-django-tags/blob/master/jdj_tags/extensions.py#L424
+        # Due to how the jinja2 parser works, it treats "foo" "bar" as a single
+        # string literal as it is the case in python.
+        # But the url tag in django supports multiple string arguments, e.g.
+        # "{% url 'my_view' 'arg1' 'arg2' %}".
+        # That's why we have to check if it's a string literal first.
+        token = parser.stream.current
+        if token.test(lexer.TOKEN_STRING):
+            expr = nodes.Const(token.value, lineno=token.lineno)
+            next(parser.stream)
+        else:
+            expr = parser.parse_expression(False)
+
+        return expr
+
+
+class OSCALTags(TrestleJinjaExtension):
     """
     This adds a pre-proccessing step to eliminate badly behaving OSCAL statements.
 
@@ -68,7 +95,7 @@ class OSCALTags(Extension):
         return source
 
 
-class MDSectionInclude(Extension):
+class MDSectionInclude(TrestleJinjaExtension):
     """Inject the parameter of the tag as the resulting content."""
 
     tags = {'mdsection_include'}
@@ -79,7 +106,8 @@ class MDSectionInclude(Extension):
 
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
-        kwargs = {}
+        kwargs = None
+        expected_header_level = None
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
             token = parser.stream.current
             if token.test('name:mdsection_include'):
@@ -87,9 +115,16 @@ class MDSectionInclude(Extension):
                 markdown_source = parser.stream.expect(lexer.TOKEN_STRING)
                 section_title = parser.stream.expect(lexer.TOKEN_STRING)
             elif kwargs is not None:
-                kwargs.append(self.parse_expression(parser))
-            elif parser.stream.look().type == lexer.TOKEN_ASSIGN:
-                kwargs = {}
+                arg = token.value
+                next(parser.stream)
+                parser.stream.expect(lexer.TOKEN_ASSIGN)
+                token = parser.stream.current
+                exp = self.parse_expression(parser)
+                kwargs[arg] = exp.value
+            else:
+                if parser.stream.look().type == lexer.TOKEN_ASSIGN:
+                    kwargs = {}
+                continue
         # Use the established environment to source the file
         md_content, _, _ = self.environment.loader.get_source(self.environment, markdown_source.value)
         fm = frontmatter.loads(md_content)
@@ -98,8 +133,9 @@ class MDSectionInclude(Extension):
         full_md = markdown_node.MarkdownNode.build_tree_from_markdown(fm.content.split('\n'))
         md_section = full_md.get_node_for_key(section_title.value, strict_matching=True)
         # adjust
-        expected_header_level = kwargs.get('header_level')
-        if expected_header_level:
+        if kwargs is not None:
+            expected_header_level = kwargs.get('header_level')
+        if expected_header_level is not None:
             level = md_section.get_node_header_lvl()
             delta = int(expected_header_level) - level
             if not delta == 0:
@@ -114,7 +150,7 @@ class MDSectionInclude(Extension):
         return top_level_output.body
 
 
-class MDCleanInclude(Extension):
+class MDCleanInclude(TrestleJinjaExtension):
     """Inject the parameter of the tag as the resulting content."""
 
     tags = {'md_clean_include'}
@@ -125,21 +161,30 @@ class MDCleanInclude(Extension):
 
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
-        kwargs = {}
+        kwargs = None
+        expected_header_level = None
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
             token = parser.stream.current
             if token.test('name:md_clean_include'):
                 parser.stream.expect(lexer.TOKEN_NAME)
                 markdown_source = parser.stream.expect(lexer.TOKEN_STRING)
             elif kwargs is not None:
-                kwargs.append(self.parse_expression(parser))
-            elif parser.stream.look().type == lexer.TOKEN_ASSIGN:
-                kwargs = {}
+                arg = token.value
+                next(parser.stream)
+                parser.stream.expect(lexer.TOKEN_ASSIGN)
+                token = parser.stream.current
+                exp = self.parse_expression(parser)
+                kwargs[arg] = exp.value
+            else:
+                if parser.stream.look().type == lexer.TOKEN_ASSIGN:
+                    kwargs = {}
+                continue
         md_content, _, _ = self.environment.loader.get_source(self.environment, markdown_source.value)
         fm = frontmatter.loads(md_content)
         content = fm.content
-        expected_header_level = kwargs.get('header_level')
-        if expected_header_level:
+        if kwargs is not None:
+            expected_header_level = kwargs.get('header_level')
+        if expected_header_level is not None:
             content = adjust_header_level(content, expected_header_level)
 
         local_parser = Parser(self.environment, content)

@@ -31,6 +31,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.jinja import MDCleanInclude, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
 from trestle.utils import fs, log
@@ -73,9 +74,19 @@ class JinjaCmd(CommandPlusDocs):
         cwd = pathlib.Path.cwd()
         if args.look_up_table:
             lut = JinjaCmd.load_LUT(pathlib.Path(args.look_up_table), args.external_lut_prefix)
-        status = JinjaCmd.jinja_ify(
-            cwd, pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, lut
-        )
+            status = JinjaCmd.jinja_ify(
+                cwd,
+                pathlib.Path(args.trestle_root),
+                input_path,
+                output_path,
+                args.system_security_plan,
+                args.profile,
+                lut
+            )
+        else:
+            status = JinjaCmd.jinja_ify(
+                cwd, pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile
+            )
         logger.debug(f'Done {self.name} command')
         return status
 
@@ -121,13 +132,16 @@ class JinjaCmd(CommandPlusDocs):
                 # name lookup
                 ssp_data, _ = fs.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
                 lut['ssp'] = ssp_data
-
-            if profile:
                 profile_data, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+
+                ssp_writer = SSPMarkdownWriter(trestle_root)
+                ssp_writer.set_ssp(ssp)
+                ssp_writer.set_profile(profile_data)
                 lut['catalog'] = resolved_catalog
                 lut['catalog_interface'] = CatalogInterface(resolved_catalog)
+                lut['ssp_md_writer'] = ssp_writer
 
             new_output = template.render(**lut)
             output = ''
