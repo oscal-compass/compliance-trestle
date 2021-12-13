@@ -584,15 +584,15 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         # set values
         set_values = self._get_set_values()
         # spec
-        if self._osco_version < (0, 1, 46):
-            # for versions prior to 0.1.46, exclude 'description'
+        if self._osco_version < (0, 1, 40):
+            # for versions prior to 0.1.40, exclude 'description'
             spec = {
                 'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
                 'title': self._profile.metadata.title,
                 'setValues': set_values,
             }
         else:
-            # for versions 0.1.46 and beyond, include 'description'
+            # for versions 0.1.40 and beyond, include 'description'
             spec = {
                 'description': self._get_metadata_prop_value('profile_mnemonic', self._name),
                 'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
