@@ -63,6 +63,13 @@ In trestle's CI environment this results in the following rules:
 1. Merge's into any branch excluding main and develop are at the developers choice.
 1. Use of autocommit is encouraged to ensure commit messages and squash vs merge commit are completed properly.
 
+### Working from a fork
+
+1. In order not to break Github Actions security model SonarCloud will not run on a fork.
+1. Given this a maintainer MAY determine that sonar needs to be run and ask you to first merge your branch to a
+   staging branch, after reviewing for security risks in the CI pipeline.
+1. From this staging branch sonar would be run and then the code merged.
+
 ## Typing, docstrings and documentation
 
 `trestle` has a goal of using [PEP 484](https://www.python.org/dev/peps/pep-0484/) type annotations where possible / practical.
