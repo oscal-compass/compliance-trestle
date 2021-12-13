@@ -16,7 +16,7 @@
 import logging
 import pathlib
 import re
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
 
 from pydantic import BaseModel
 
@@ -237,6 +237,46 @@ class CatalogInterface():
             for my_group in self._catalog.groups:
                 for res in CatalogInterface._get_groups_from_group(my_group):
                     yield res
+
+    def get_statement_label_if_exists(self, control_id: str, statement_id: str) -> Optional[str]:
+        """Get statement label if given."""
+        # TODO: workaround when statement ids contain additional dot at the end
+        # remove this after this is fixed
+        if statement_id[-1] == '.':
+            statement_id = statement_id[0:-1]
+
+        def does_part_exists(part: common.Part) -> bool:
+            does_match = False
+            if part.name and part.name in {'statement', 'item'} and part.id == statement_id:
+                does_match = True
+            return does_match
+
+        control = self.get_control(control_id)
+        label = None
+        if control.parts:
+            for part in control.parts:
+                # Performance OSCAL assumption, ids are nested so recurse only if prefix
+                if part.id and statement_id.startswith(part.id):
+                    part = self.find_part_with_condition(part, does_part_exists)
+                    if part:
+                        label = self.get_label(part)
+                        break
+
+        return label
+
+    def find_part_with_condition(self, part: common.Part, condition: Callable) -> Optional[common.Part]:
+        """Traverse part and find subpart that satisfies given condition."""
+        if condition(part):
+            # Part that satisfies the condition is found.
+            return part
+        else:
+            if part.parts:
+                for subpart in part.parts:
+                    found_part = self.find_part_with_condition(subpart, condition)
+                    if found_part:
+                        return found_part
+
+        return None
 
     @staticmethod
     def _get_groups_from_group(group: cat.Group) -> Iterator[cat.Group]:

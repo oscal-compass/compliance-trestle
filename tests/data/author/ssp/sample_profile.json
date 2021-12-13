@@ -1,0 +1,89 @@
+{
+  "profile": {
+    "uuid": "8742196d-86ba-4e72-a411-28867dab43bb",
+    "metadata": {
+      "title": "NIST Special Publication 800-53 Rev 5 Test",
+      "last-modified": "2021-06-08T13:57:33.97549-04:00",
+      "version": "Final",
+      "oscal-version": "1.0.0",
+      "roles": [
+        {
+          "id": "creator",
+          "title": "Document Creator"
+        },
+        {
+          "id": "contact",
+          "title": "Contact"
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "984e6c07-b5b6-4ab6-b22b-283609c325e6",
+          "type": "organization",
+          "name": "Joint Task Force, Transformation Initiative",
+          "email-addresses": [
+            "sec-cert@nist.gov"
+          ],
+          "addresses": [
+            {
+              "addr-lines": [
+                "National Institute of Standards and Technology",
+                "Attn: Computer Security Division",
+                "Information Technology Laboratory",
+                "100 Bureau Drive (Mail Stop 8930)"
+              ],
+              "city": "Gaithersburg",
+              "state": "MD",
+              "postal-code": "20899-8930"
+            }
+          ]
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "creator",
+          "party-uuids": [
+            "984e6c07-b5b6-4ab6-b22b-283609c325e6"
+          ]
+        },
+        {
+          "role-id": "contact",
+          "party-uuids": [
+            "984e6c07-b5b6-4ab6-b22b-283609c325e6"
+          ]
+        }
+      ]
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/sample_nist_catalog/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2",
+              "at-1"
+            ]
+          }
+        ]
+      },
+      {
+        "href": "trestle://catalogs/sample_security_catalog/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "s1.1.1",
+              "s2.1.2"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "combine": {
+        "method": "merge"
+      },
+      "as-is": true
+    }
+  }
+}

@@ -19,7 +19,7 @@ from typing import List, Optional
 from trestle.core import catalog_interface
 from trestle.core import profile_resolver
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS
+from trestle.core.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
 from trestle.core.control_io import ControlIOWriter
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
@@ -78,10 +78,10 @@ class SSPMarkdownWriter():
         """Get control part with given name."""
         control_part = self._catalog_interface.get_control_part_prose(control_id, part_name)
 
-        md_list = self._write_text_with_header(
+        md_list = self._write_str_with_header(
             f'Control Part: {part_name} for control: {control_id}', control_part, level
         )
-        return md_list
+        return self._build_tree_and_adjust(md_list.split('\n'), level)
 
     def get_fedramp_control_tables(self, control_id: str, level: int) -> str:
         """Get the fedramp metadata as markdown tables.
@@ -150,6 +150,9 @@ class SSPMarkdownWriter():
 
     def _parameter_table(self, control_id: str, level: int) -> str:
         """Print Param_id | Default (aka label) | Value or set to 'none'."""
+        if not self._ssp:
+            raise TrestleError('Cannot get parameter table, set SSP first.')
+
         writer = ControlIOWriter()
         control = self._catalog_interface.get_control(control_id)
 
@@ -203,8 +206,7 @@ class SSPMarkdownWriter():
         )
         return md_list
 
-    def get_control_response(self, control_id: str, level: int) -> str:
-        # Adjust the header levels
+    def get_control_response(self, control_id: str, level: int, write_empty_responses: bool = False) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
 
@@ -213,14 +215,53 @@ class SSPMarkdownWriter():
         'The System' is the default response, and all other components are treated as sub-headings per response item.
         """
         if not self._profile_path:
-            raise TrestleError('Cannot get control statement, set profile first.')
+            raise TrestleError('Cannot get control response, set profile first.')
 
-        writer = ControlIOWriter()
         control = self._catalog_interface.get_control(control_id)
-        group_id, group_title, _ = self._catalog_interface.get_group_info_by_control(control.id)
-        response_lines = writer.get_response(control)
+        control_impl_req = self._control_implemented_req(control_id)
 
-        tree = MarkdownNode.build_tree_from_markdown(response_lines)
+        md_writer = MDWriter(None)
+        if control_impl_req.statements:
+            for statement in control_impl_req.statements:
+                statement_id = statement.statement_id
+                label = statement_id
+                # look up label for this statement
+                if control.parts:
+                    found_label = self._catalog_interface.get_statement_label_if_exists(control_id, statement_id)
+                    if found_label:
+                        label = found_label
+
+                header = f'Implementation {label}'
+                response_per_component = {}
+                if statement.by_components:
+                    for idx, component in enumerate(statement.by_components):
+                        # look up component title
+                        subheader = component.uuid
+                        response = ''
+                        if self._ssp.system_implementation.components:
+                            for comp in self._ssp.system_implementation.components:
+                                title = comp.title
+                                if title == SSP_MAIN_COMP_NAME and idx == 0:
+                                    # special case dont print first "This system"
+                                    continue
+                                subheader = title
+                        if component.description:
+                            response = component.description
+
+                        if response or (not response and write_empty_responses):
+                            response_per_component[subheader] = response
+
+                if response_per_component or (not response_per_component and write_empty_responses):
+                    md_writer.new_header(level=level, title=header)
+                    for component_key in response_per_component:
+                        md_writer.new_header(level=level + 1, title=component_key)
+                        md_writer.set_indent_level(-1)
+                        md_writer.new_line(response_per_component[component_key])
+                        md_writer.set_indent_level(-1)
+
+        lines = md_writer.get_lines()
+
+        tree = MarkdownNode.build_tree_from_markdown(lines)
         tree.change_header_level_by(level)
 
         return tree.content.raw_text
@@ -248,7 +289,7 @@ class SSPMarkdownWriter():
             if requirement.control_id == control_id:
                 return requirement
 
-    def _write_list_with_header(self, header: str, lines: List[str], level: int):
+    def _write_list_with_header(self, header: str, lines: List[str], level: int) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
         md_writer.new_header(level=level, title=header)
@@ -258,7 +299,7 @@ class SSPMarkdownWriter():
 
         return self._build_tree_and_adjust(md_writer.get_lines(), level)
 
-    def _write_table_with_header(self, header: str, values: List[List[str]], level: int):
+    def _write_table_with_header(self, header: str, values: List[List[str]], level: int) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
         md_writer.new_header(level=level, title=header)
@@ -268,7 +309,7 @@ class SSPMarkdownWriter():
 
         return self._build_tree_and_adjust(md_writer.get_lines(), level)
 
-    def _write_text_with_header(self, header: str, text: str, level: int):
+    def _write_str_with_header(self, header: str, text: str, level: int) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
         md_writer.new_header(level=level, title=header)
