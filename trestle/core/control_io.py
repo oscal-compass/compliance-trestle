@@ -1072,6 +1072,8 @@ class ControlIOReader():
                     break
                 if have_content:
                     prose = '\n'.join(prose_lines)
+                    # strip leading / trailing new lines.
+                    prose = prose.strip('\n')
                     id_ = f'{control_id}_{part_name}'
                     part = common.Part(id=id_, name=part_name, prose=prose)
                     return ii, part
