@@ -339,7 +339,8 @@ class CatalogInterface():
             new_header = yaml_header
             if set_parameters:
                 param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
-                new_header[const.SET_PARAMS_TAG] = param_dict
+                if param_dict:
+                    new_header[const.SET_PARAMS_TAG] = param_dict
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             # this works also for the catalog controls with group_id=''
             group_dir = md_path / group_id

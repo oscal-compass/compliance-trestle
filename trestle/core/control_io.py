@@ -250,14 +250,15 @@ class ControlIOWriter():
                             if not added_content:
                                 self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             did_write_part = True
-        if not did_write_part:
+        # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
+        if not comp_dict and not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
-            part_label = 'Statement'
-            for comp_name, prose_dict in comp_dict.items():
-                if part_label in prose_dict:
-                    if comp_name != const.SSP_MAIN_COMP_NAME:
-                        self._md_file.new_header(level=3, title=comp_name)
-                    self._insert_existing_text(part_label, prose_dict)
+        part_label = 'Statement'
+        for comp_name, prose_dict in comp_dict.items():
+            if part_label in prose_dict:
+                if comp_name != const.SSP_MAIN_COMP_NAME:
+                    self._md_file.new_header(level=3, title=comp_name)
+                self._insert_existing_text(part_label, prose_dict)
         self._md_file.new_hr()
 
     @staticmethod
@@ -778,20 +779,20 @@ class ControlIOReader():
 
     @staticmethod
     def _clean_prose(prose: List[str]) -> List[str]:
-        new_prose = []
-        # remove all known bad lines
+        # remove empty and horizontal rule lines at start and end of list of prose lines
+        forward_index = 0
         for line in prose:
-            if not line.startswith(const.SSP_ADD_IMPLEMENTATION_PREFIX) and not line.startswith('___'):
-                new_prose.append(line)
-        # remove empty lines at start and end
-        for _ii, line in enumerate(new_prose):
-            if line.strip():
+            if line.strip() and not line.startswith('____'):
                 break
-        prose = new_prose[_ii:]
-        for _ii, line in enumerate(reversed(prose)):
-            if line.strip():
+            forward_index += 1
+        new_prose = prose[forward_index:]
+        reverse_index = 0
+        for line in reversed(new_prose):
+            if line.strip() and not line.startswith('____'):
                 break
-        clean_prose = prose[:len(prose) - _ii]
+            reverse_index += 1
+        clean_prose = new_prose[:len(new_prose) - reverse_index]
+        clean_prose = clean_prose if clean_prose else ['']
         # if there is no useful prose this will return [''] and allow generation of a statement with empty prose
         return clean_prose
 
@@ -879,10 +880,17 @@ class ControlIOReader():
             if not header_list:
                 # if statement has no parts there is only one response for entire control
                 headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
-                # should be only one header
+                # should be only one header, so warn if others found
+                n_headers = 0
                 for header in headers:
                     node = control.get_node_for_key(header)
                     ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node, control_id, [])
+                    n_headers += 1
+                    if n_headers > 1:
+                        logger.warning(
+                            f'Control {control_id} has single statement with extra response #{n_headers}'
+                            ' when it should only have one.'
+                        )
             else:
                 for header in header_list:
                     tokens = header.split(' ', 2)
@@ -1014,7 +1022,11 @@ class ControlIOReader():
                 avail_comps[comp_name] = component
             for label, prose_lines in comp_dict[comp_name].items():
                 # create a statement to hold the by-components and assign the statement id
-                statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
+                if label == 'Statement':
+                    statement_id = f'{control_id}_smt'
+                else:
+                    clean_label = label.strip('.')
+                    statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{clean_label}')
                 if statement_id in statement_map:
                     statement = statement_map[statement_id]
                 else:
@@ -1089,10 +1101,11 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
-        param_content = header.get(const.SET_PARAMS_TAG, {})
-        for key, value in param_content.items():
-            if value:
-                param_dict[key] = value
+        param_content = header.get(const.SET_PARAMS_TAG, None)
+        if param_content:
+            for key, value in param_content.items():
+                if value:
+                    param_dict[key] = value
         return new_alters, param_dict
 
     @staticmethod

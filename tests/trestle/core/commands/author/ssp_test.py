@@ -463,7 +463,17 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
     control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
     test_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
 
+    control_a1_path = tmp_trestle_dir / ssp_name / 'a-1.md'
+    test_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
+    test_utils.delete_line_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX)
+
     assert ssp_cmd._run(args) == 0
 
     # confirm the added text is still there
     assert test_utils.confirm_text_in_file(control_path, 'control test-1', 'Hello there')
+    # confirm added text in a1 is there
+    assert test_utils.confirm_text_in_file(control_a1_path, '## Implementation', 'Text with prompt removed')
+    # confirm prompt is not there
+    assert not test_utils.confirm_text_in_file(
+        control_a1_path, '## Implementation', const.SSP_ADD_IMPLEMENTATION_PREFIX
+    )
