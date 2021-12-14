@@ -44,9 +44,9 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-hdm',
-            '--header-dont-merge',
-            help=const.HELP_HEADER_MERGE,
+            '-phv',
+            '--preserve-header-values',
+            help=const.HELP_PRESERVE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -73,7 +73,9 @@ class CatalogGenerate(AuthorCommonCommand):
 
         markdown_path = trestle_root / args.output
 
-        return self.generate_markdown(trestle_root, catalog_path, markdown_path, yaml_header, args.header_dont_merge)
+        return self.generate_markdown(
+            trestle_root, catalog_path, markdown_path, yaml_header, args.preserve_header_values
+        )
 
     def generate_markdown(
         self,
@@ -81,14 +83,20 @@ class CatalogGenerate(AuthorCommonCommand):
         catalog_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        header_dont_merge: bool
+        preserve_header_values: bool
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
             _, _, catalog = load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, None, False, True, None, header_dont_merge=header_dont_merge
+                markdown_path,
+                yaml_header,
+                sections=None,
+                responses=False,
+                additional_content=True,
+                profile=None,
+                preserve_header_values=preserve_header_values
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Catalog {catalog_path} not found for load {e}')

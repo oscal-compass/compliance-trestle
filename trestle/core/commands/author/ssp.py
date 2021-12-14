@@ -49,9 +49,9 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-hdm',
-            '--header-dont-merge',
-            help=const.HELP_HEADER_MERGE,
+            '-phv',
+            '--preserve-header-values',
+            help=const.HELP_PRESERVE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -120,7 +120,13 @@ class SSPGenerate(AuthorCommonCommand):
 
         try:
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, sections, True, False, None, header_dont_merge=args.header_dont_merge
+                markdown_path,
+                yaml_header,
+                sections,
+                True,
+                False,
+                None,
+                preserve_header_values=args.preserve_header_values
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
