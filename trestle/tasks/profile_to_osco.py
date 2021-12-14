@@ -74,7 +74,7 @@ class ProfileToOsco(TaskBase):
         logger.info('')
         logger.info('Notes:')
         note11 = '[1] The input-file OSCAL profile should specify a metadata property with'
-        note12 = 'name "profile_osco_version" and value of the form "0.1.46".'
+        note12 = 'name "osco_version" and value of the form "0.1.46".'
         note13 = 'The value corresponds with the OpenShift Compliance Operator (OSCO) version'
         note14 = 'and affects the format of the emitted yaml.'
         note15 = 'If not specified, the default is "0.1.46".'

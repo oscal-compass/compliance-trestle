@@ -579,7 +579,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
     def transform(self, profile: Profile) -> str:
         """Transform the Profile into a OSCO yaml."""
         self._profile = profile
-        self._osco_version = self._get_normalized_version('profile_osco_version', '0.1.46')
+        self._osco_version = self._get_normalized_version('osco_version', '0.1.46')
         # set values
         set_values = self._get_set_values()
         # spec
