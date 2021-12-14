@@ -25,15 +25,14 @@ handler: python
 """
 import pathlib
 import shutil
-from typing import Any, List
+from typing import Any, Dict, List
 
 from ruamel.yaml import YAML
 
 
 def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     """Update the mkdocs.yml structure file to represent the latest trestle modules."""
-    yaml = YAML(typ='safe')
-    yaml.default_flow_style = False
+    yaml = YAML()
     fh_read = path.open('r', encoding='utf8')
     yaml_structure = yaml.load(fh_read)
     fh_read.close()
@@ -59,6 +58,12 @@ def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> 
     fh.close()
 
 
+def get_key(var: Dict[str, Any]) -> str:
+    """Get the first key from a dict."""
+    # Dict has only one key
+    return list(var.keys())[0]
+
+
 def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_location: pathlib.Path) -> List[Any]:
     """Create markdown files for running mkdocstrings and return the desired structure for use in the ToC."""
     # First clean the directory
@@ -74,6 +79,7 @@ def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_loca
             struct = dump_location.stem + '/' + module_full_name + '.md'
             write_module_doc_metafile(dump_location, module_full_name)
             module_arr.append({path.stem: struct})
+    module_arr.sort(key=get_key)
     return module_arr
 
 
