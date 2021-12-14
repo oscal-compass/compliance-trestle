@@ -1103,15 +1103,11 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
-        param_content = header.get(const.SET_PARAMS_TAG, None)
-        if param_content:
-            for key, value in param_content.items():
-                if value:
-                    param_dict[key] = value
+        param_dict.update(header.get(const.SET_PARAMS_TAG, {}))
         return new_alters, param_dict
 
     @staticmethod
-    def get_control_param_dict(control: cat.Control) -> Dict[str, str]:
+    def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, str]:
         """Get a dict of the parameters in a control and their values."""
         param_dict: Dict[str, str] = {}
         params: List[common.Parameter] = as_list(control.params)
@@ -1125,6 +1121,9 @@ class ControlIOReader():
                     value_str = values[0]
                 else:
                     value_str = f"[{', '.join(value for value in values)}]"
+            # if there isn't an actual value then ignore this param
+            elif values_only:
+                continue
             param_dict[param.id] = value_str
         return param_dict
 

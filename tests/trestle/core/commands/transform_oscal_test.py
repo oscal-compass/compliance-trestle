@@ -133,4 +133,4 @@ def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
     resolved_catalog, _ = fs.load_top_level_model(tmp_trestle_dir, resolved_cat_name, Catalog)
     catalog_interface = CatalogInterface(resolved_catalog)
     n_controls = catalog_interface.get_count_of_controls_in_dict()
-    assert n_controls == 2
+    assert n_controls == 3

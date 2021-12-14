@@ -656,7 +656,7 @@ class ProfileResolver():
             param_dict: Dict[str, str] = {}
             # build the full mapping of params to values
             for control in self._catalog_interface.get_all_controls_from_dict():
-                param_dict.update(ControlIOReader.get_control_param_dict(control))
+                param_dict.update(ControlIOReader.get_control_param_dict(control, False))
             # insert param values into prose of all controls
             for control in self._catalog_interface.get_all_controls_from_dict():
                 self._replace_control_prose(control, param_dict)

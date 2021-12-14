@@ -27,10 +27,12 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
+import trestle.oscal.profile as prof
 from trestle.cli import Trestle
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.utils import fs
 
 # test dicts are of form {'name_exp': [(name, exp_str)...], 'ref': ref_str, 'text': prose}
 # the text is inserted on the line after ref appears
@@ -66,6 +68,17 @@ multi_guidance_dict = {
     'ref': 'logs.',
     'text': multi_guidance_text
 }
+
+
+def edit_files(ac1_path: pathlib.Path, set_parameters: bool, add_header: bool, guid_dict: Dict[str, str]) -> None:
+    """Edit the files to show assemble worked."""
+    assert ac1_path.exists()
+    assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
+    if set_parameters and add_header:
+        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_2')
+        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_3')
+        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_1', '  ac-1_prm_2:\n')
+        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_2', '  ac-1_prm_3: new value\n')
 
 
 @pytest.mark.parametrize('add_header', [True, False])
@@ -109,10 +122,12 @@ def test_profile_generate_assemble(
             test_args.append('-sp')
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
-        assert ac1_path.exists()
-        # insert text in the control after the found ref text in the control
-        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
+
+        edit_files(ac1_path, set_parameters, add_header, guid_dict)
+
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
+        if set_parameters:
+            test_args.append('-sp')
         if dir_exists:
             assembled_prof_dir.mkdir()
         monkeypatch.setattr(sys, 'argv', test_args)
@@ -126,13 +141,30 @@ def test_profile_generate_assemble(
         profile_generate.generate_markdown(
             tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, set_parameters
         )
-        assert ac1_path.exists()
-        assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
+
+        edit_files(ac1_path, set_parameters, add_header, guid_dict)
+
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
             tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters
         ) == 0
+
+    # check the assembled profile is as expected
+    profile: prof.Profile
+    profile, _ = fs.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile, fs.FileContentType.JSON)
+    set_params = profile.modify.set_parameters
+    sp_dict = {}
+    for set_param in set_params:
+        sp_dict[set_param.param_id] = set_param.values[0].__root__
+    assert sp_dict
+    assert sp_dict['ac-1_prm_1'] == 'all personell'
+    if set_parameters and add_header:
+        assert 'ac-1_prm_2' not in sp_dict
+        assert sp_dict['ac-1_prm_3'] == 'new value'
+    else:
+        assert sp_dict['ac-1_prm_2'] == 'A thorough'
+        assert sp_dict['ac-1_prm_3'] == 'officer'
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 

@@ -13,6 +13,7 @@
 # limitations under the License.
 """Provide interface to catalog allowing queries and operations at control level."""
 
+import copy
 import logging
 import pathlib
 import re
@@ -308,11 +309,10 @@ class CatalogInterface():
     @staticmethod
     def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
         """Get the list of params for this control and any set by the profile."""
-        # get full set of control params and current values
-        param_dict = ControlIOReader.get_control_param_dict(control)
-        param_ids = as_list(param_dict.keys())
-        for param_id in param_ids:
-            param_dict[param_id] = profile_param_dict.get(param_id, '')
+        param_dict = ControlIOReader.get_control_param_dict(control, True)
+        for key in param_dict.keys():
+            if key in profile_param_dict:
+                param_dict[key] = profile_param_dict[key]
         return param_dict
 
     def write_catalog_as_markdown(
@@ -336,7 +336,7 @@ class CatalogInterface():
             full_profile_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
-            new_header = yaml_header
+            new_header = copy.deepcopy(yaml_header)
             if set_parameters:
                 param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
                 if param_dict:

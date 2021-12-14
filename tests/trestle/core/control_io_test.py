@@ -322,7 +322,7 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     catalog_interface = CatalogInterface(catalog)
     control = catalog_interface.get_control('ac-1')
-    param_dict = ControlIOReader.get_control_param_dict(control)
+    param_dict = ControlIOReader.get_control_param_dict(control, False)
     # confirm profile value is used
     assert param_dict['ac-1_prm_1'] == 'all alert personell'
     # confirm original param label is used since no value was assigned

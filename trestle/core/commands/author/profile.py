@@ -197,7 +197,8 @@ class ProfileAssemble(AuthorCommonCommand):
             orig_param_dict.update(param_dict)
             new_set_params = []
             for key, value in orig_param_dict.items():
-                new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
+                if value:
+                    new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
             profile.modify.set_parameters = new_set_params
 
     @staticmethod
