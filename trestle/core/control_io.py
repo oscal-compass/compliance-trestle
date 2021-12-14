@@ -250,8 +250,15 @@ class ControlIOWriter():
                             if not added_content:
                                 self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                             did_write_part = True
-        if not did_write_part:
+        # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
+        if not comp_dict and not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
+        part_label = 'Statement'
+        for comp_name, prose_dict in comp_dict.items():
+            if part_label in prose_dict:
+                if comp_name != const.SSP_MAIN_COMP_NAME:
+                    self._md_file.new_header(level=3, title=comp_name)
+                self._insert_existing_text(part_label, prose_dict)
         self._md_file.new_hr()
 
     @staticmethod
@@ -358,7 +365,7 @@ class ControlIOWriter():
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
-        header_dont_merge: bool
+        preserve_header_values: bool,
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -372,27 +379,54 @@ class ControlIOWriter():
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
+            preserve_header_values: Retain existing values in markdown header content but add new content
 
         Returns:
             None
 
         Notes:
             The filename is constructed from the control's id, so only the markdown directory is required.
-            If a yaml header is present in the file it is merged with the optional provided header.
-            The header in the file takes precedence over the provided one.
+            If a yaml header is present in the file, new values in provided header replace those in the markdown header.
+            But if preserve_header_values then don't change any existing values, but allow addition of new content.
+            The above only applies to generic header content and not sections of type x-trestle-
         """
         control_file = dest_path / (control.id + '.md')
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
-        # Need to merge any existing header info with the new one.  Either could be empty.
-        if header_dont_merge and not header == {}:
-            merged_header = {}
+        # Need to merge any existing markdown header info with the new header.  Either could be empty.
+        # But x-trestle- content in the new header should always replace content in the markdown header.
+
+        # Remove any special trestle content from the read markdown header
+        keys_to_delete = []
+        for key in header.keys():
+            if key.startswith(const.TRESTLE_TAG):
+                keys_to_delete.append(key)
+        for key in keys_to_delete:
+            header.pop(key)
+
+        # Split the provided yaml into generic and trestle parts
+        generic_dict = {}
+        trestle_dict = {}
+        merged_header = {}
+        if yaml_header:
+            for key, value in yaml_header.items():
+                if key.startswith(const.TRESTLE_TAG):
+                    trestle_dict[key] = value
+                else:
+                    generic_dict[key] = value
+
+        if preserve_header_values:
+            merged_header = copy.deepcopy(header)
+            ControlIOWriter.merge_dicts_deep(merged_header, generic_dict)
         else:
-            merged_header = copy.deepcopy(yaml_header) if yaml_header else {}
-        if header:
+            merged_header = copy.deepcopy(generic_dict)
             ControlIOWriter.merge_dicts_deep(merged_header, header)
+
+        # now insert the trestle content from the yaml header
+        merged_header.update(trestle_dict)
+
         self._add_yaml_header(merged_header)
 
         self._add_control_statement(control, group_title)
@@ -433,7 +467,12 @@ class ControlIOReader():
         return new_label
 
     @staticmethod
-    def _load_control_lines(control_file: pathlib.Path) -> List[str]:
+    def param_values_as_string(set_param: prof.SetParameter) -> str:
+        """Convert param values to single string."""
+        return 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
+
+    @staticmethod
+    def _load_control_lines_and_header(control_file: pathlib.Path) -> Tuple[List[str], Dict[str, Any]]:
         lines: List[str] = []
         try:
             content = control_file.open('r', encoding=const.FILE_ENCODING).read()
@@ -450,6 +489,7 @@ class ControlIOReader():
             logger.debug(f'Underlying error: {str(e)}')
             raise TrestleError(f'Failure parsing yaml header on file {control_file}')
         raw_lines = fm.content.split('\n')
+        header = fm.metadata
         # Any fully blank lines will be retained but as empty strings
         lines = [line.strip('\r\n').rstrip() for line in raw_lines]
         clean_lines = []
@@ -458,7 +498,7 @@ class ControlIOReader():
             if line.startswith('<!--') or line.startswith('__________________'):
                 continue
             clean_lines.append(line)
-        return clean_lines
+        return clean_lines, header
 
     @staticmethod
     def _read_id_group_id_title(line: str) -> Tuple[int, str, str]:
@@ -739,20 +779,20 @@ class ControlIOReader():
 
     @staticmethod
     def _clean_prose(prose: List[str]) -> List[str]:
-        new_prose = []
-        # remove all known bad lines
+        # remove empty and horizontal rule lines at start and end of list of prose lines
+        forward_index = 0
         for line in prose:
-            if not line.startswith(const.SSP_ADD_IMPLEMENTATION_PREFIX) and not line.startswith('___'):
-                new_prose.append(line)
-        # remove empty lines at start and end
-        for _ii, line in enumerate(new_prose):
-            if line.strip():
+            if line.strip() and not line.startswith('____'):
                 break
-        prose = new_prose[_ii:]
-        for _ii, line in enumerate(reversed(prose)):
-            if line.strip():
+            forward_index += 1
+        new_prose = prose[forward_index:]
+        reverse_index = 0
+        for line in reversed(new_prose):
+            if line.strip() and not line.startswith('____'):
                 break
-        clean_prose = prose[:len(prose) - _ii]
+            reverse_index += 1
+        clean_prose = new_prose[:len(new_prose) - reverse_index]
+        clean_prose = clean_prose if clean_prose else ['']
         # if there is no useful prose this will return [''] and allow generation of a statement with empty prose
         return clean_prose
 
@@ -836,15 +876,23 @@ class ControlIOReader():
 
             imp_string = 'Implementation'
             headers = control.get_all_headers_for_key(imp_string, False)
-            if not headers:
+            header_list = list(headers)
+            if not header_list:
                 # if statement has no parts there is only one response for entire control
                 headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
-                # should be only one header
+                # should be only one header, so warn if others found
+                n_headers = 0
                 for header in headers:
                     node = control.get_node_for_key(header)
                     ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node, control_id, [])
+                    n_headers += 1
+                    if n_headers > 1:
+                        logger.warning(
+                            f'Control {control_id} has single statement with extra response #{n_headers}'
+                            ' when it should only have one.'
+                        )
             else:
-                for header in headers:
+                for header in header_list:
                     tokens = header.split(' ', 2)
                     if tokens[0] == '##' and tokens[1] == imp_string:
                         label = tokens[2].strip()
@@ -974,7 +1022,11 @@ class ControlIOReader():
                 avail_comps[comp_name] = component
             for label, prose_lines in comp_dict[comp_name].items():
                 # create a statement to hold the by-components and assign the statement id
-                statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{label}')
+                if label == 'Statement':
+                    statement_id = f'{control_id}_smt'
+                else:
+                    clean_label = label.strip('.')
+                    statement_id = ControlIOReader._strip_to_make_ncname(f'{control_id}_smt.{clean_label}')
                 if statement_id in statement_map:
                     statement = statement_map[statement_id]
                 else:
@@ -1020,6 +1072,8 @@ class ControlIOReader():
                     break
                 if have_content:
                     prose = '\n'.join(prose_lines)
+                    # strip leading / trailing new lines.
+                    prose = prose.strip('\n')
                     id_ = f'{control_id}_{part_name}'
                     part = common.Part(id=id_, name=part_name, prose=prose)
                     return ii, part
@@ -1027,11 +1081,12 @@ class ControlIOReader():
         return -1, None
 
     @staticmethod
-    def read_new_alters(control_path: pathlib.Path) -> List[prof.Alter]:
+    def read_new_alters_and_params(control_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Get parts for the markdown control corresponding to Editable Content - if any."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
-        lines = ControlIOReader._load_control_lines(control_path)
+        param_dict: Dict[str, str] = {}
+        lines, header = ControlIOReader._load_control_lines_and_header(control_path)
         ii = 0
         while 0 <= ii < len(lines):
             line = lines[ii]
@@ -1048,10 +1103,11 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
-        return new_alters
+        param_dict.update(header.get(const.SET_PARAMS_TAG, {}))
+        return new_alters, param_dict
 
     @staticmethod
-    def get_control_param_dict(control: cat.Control) -> Dict[str, str]:
+    def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, str]:
         """Get a dict of the parameters in a control and their values."""
         param_dict: Dict[str, str] = {}
         params: List[common.Parameter] = as_list(control.params)
@@ -1065,6 +1121,9 @@ class ControlIOReader():
                     value_str = values[0]
                 else:
                     value_str = f"[{', '.join(value for value in values)}]"
+            # if there isn't an actual value then ignore this param
+            elif values_only:
+                continue
             param_dict[param.id] = value_str
         return param_dict
 

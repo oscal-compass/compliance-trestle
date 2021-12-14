@@ -13,6 +13,7 @@
 # limitations under the License.
 """Provide interface to catalog allowing queries and operations at control level."""
 
+import copy
 import logging
 import pathlib
 import re
@@ -296,6 +297,24 @@ class CatalogInterface():
                 hits.extend(self._find_string_in_part(control.id, part, seek_str))
         return hits
 
+    @staticmethod
+    def get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
+        """Get the full mapping of param_id to modified value for this profile."""
+        set_param_dict: Dict[str, str] = {}
+        for set_param in as_list(profile.modify.set_parameters):
+            value_str = ControlIOReader.param_values_as_string(set_param)
+            set_param_dict[set_param.param_id] = value_str
+        return set_param_dict
+
+    @staticmethod
+    def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
+        """Get the list of params for this control and any set by the profile."""
+        param_dict = ControlIOReader.get_control_param_dict(control, True)
+        for key in param_dict.keys():
+            if key in profile_param_dict:
+                param_dict[key] = profile_param_dict[key]
+        return param_dict
+
     def write_catalog_as_markdown(
         self,
         md_path: pathlib.Path,
@@ -304,7 +323,8 @@ class CatalogInterface():
         responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        header_dont_merge: bool = False
+        preserve_header_values: bool = False,
+        set_parameters: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -312,8 +332,15 @@ class CatalogInterface():
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
+        if set_parameters:
+            full_profile_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
+            new_header = copy.deepcopy(yaml_header)
+            if set_parameters:
+                param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
+                if param_dict:
+                    new_header[const.SET_PARAMS_TAG] = param_dict
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             # this works also for the catalog controls with group_id=''
             group_dir = md_path / group_id
@@ -323,12 +350,12 @@ class CatalogInterface():
                 group_dir,
                 control,
                 group_title,
-                yaml_header,
+                new_header,
                 sections,
                 additional_content,
                 responses,
                 profile,
-                header_dont_merge
+                preserve_header_values
             )
 
     @staticmethod
@@ -435,16 +462,19 @@ class CatalogInterface():
         return imp_reqs
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path) -> List[prof.Alter]:
+    def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Read all markdown controls and return list of alters."""
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         new_alters: List[prof.Alter] = []
+        param_dict: Dict[str, str] = {}
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                new_alters.extend(ControlIOReader.read_new_alters(control_file))
-        return new_alters
+                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(control_file)
+                new_alters.extend(control_alters)
+                param_dict.update(control_param_dict)
+        return new_alters, param_dict
 
     @staticmethod
     def part_equivalent(a: common.Part, b: common.Part) -> bool:
