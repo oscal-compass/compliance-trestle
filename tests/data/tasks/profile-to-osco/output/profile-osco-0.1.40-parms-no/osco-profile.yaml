@@ -1,0 +1,17 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: TailoredProfile
+metadata:
+  name: roks-cis-node
+  namespace: openshift-compliance
+spec:
+  description: roks-cis-node
+  disableRules:
+  - name: ocp4-file-permissions-kube-apiserver
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-kube-apiserver
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-kube-controller-manager
+    rationale: not determinable from specification
+  extends: ocp4-cis-node
+  setValues: []
+  title: Tailored Profile
