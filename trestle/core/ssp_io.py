@@ -131,8 +131,8 @@ class SSPMarkdownWriter():
 
                     # dictionary to md table
                     md_list = self._write_table_with_header(
-                        f'Responsible Roles for control: {control_id}',
-                        [[key, role_titles[key]] for key in role_titles.keys()],
+                        'Responsible Roles.', [[key, role_titles[key]] for key in role_titles.keys()],
+                        ['Role ID', 'Title'],
                         level
                     )
                     return md_list
@@ -175,9 +175,7 @@ class SSPMarkdownWriter():
                 if prop.name == IMPLEMENTATION_STATUS:
                     implementation_statuses.append(prop.value)
 
-        md_list = self._write_list_with_header(
-            f'FedRamp Implementation Status: {control_id}', implementation_statuses, level
-        )
+        md_list = self._write_list_with_header('FedRamp Implementation Status.', implementation_statuses, level)
         return md_list
 
     def get_fedramp_control_origination(self, control_id: str, level: int) -> str:
@@ -197,9 +195,7 @@ class SSPMarkdownWriter():
                 if prop.name == CONTROL_ORIGINATION:
                     control_origination.append(prop.value)
 
-        md_list = self._write_list_with_header(
-            f'FedRamp control origination for control: {control_id}', control_origination, level
-        )
+        md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
     def get_control_response(self, control_id: str, level: int, write_empty_responses: bool = False) -> str:
@@ -304,21 +300,26 @@ class SSPMarkdownWriter():
                 return requirement
 
     def _write_list_with_header(self, header: str, lines: List[str], level: int) -> str:
+        if lines:
+            md_writer = MDWriter(None)
+            md_writer.new_paragraph()
+            md_writer.new_header(level=1, title=header)
+            md_writer.set_indent_level(-1)
+            md_writer.new_list(lines)
+            md_writer.set_indent_level(-1)
+
+            return self._build_tree_and_adjust(md_writer.get_lines(), level)
+
+        return ''
+
+    def _write_table_with_header(
+        self, header: str, values: List[List[str]], table_header: List[str], level: int
+    ) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
         md_writer.new_header(level=1, title=header)
         md_writer.set_indent_level(-1)
-        md_writer.new_list(lines)
-        md_writer.set_indent_level(-1)
-
-        return self._build_tree_and_adjust(md_writer.get_lines(), level)
-
-    def _write_table_with_header(self, header: str, values: List[List[str]], level: int) -> str:
-        md_writer = MDWriter(None)
-        md_writer.new_paragraph()
-        md_writer.new_header(level=1, title=header)
-        md_writer.set_indent_level(-1)
-        md_writer.new_table(values)
+        md_writer.new_table(values, table_header)
         md_writer.set_indent_level(-1)
 
         return self._build_tree_and_adjust(md_writer.get_lines(), level)
