@@ -3,6 +3,25 @@
 
 <!--next-version-placeholder-->
 
+## v0.32.0 (2021-12-14)
+### Feature
+* Added documentation for fedramp plugin ([#936](https://github.com/IBM/compliance-trestle/issues/936)) ([`3deff2c`](https://github.com/IBM/compliance-trestle/commit/3deff2c857c55348242e06a74f2647224517506c))
+* Params in header for profile generate and assemble ([#935](https://github.com/IBM/compliance-trestle/issues/935)) ([`a1b293f`](https://github.com/IBM/compliance-trestle/commit/a1b293f8cac65d32b1cf21a22f49e02967f4e184))
+* Tutorial cis-to-catalog ([#931](https://github.com/IBM/compliance-trestle/issues/931)) ([`e2842a8`](https://github.com/IBM/compliance-trestle/commit/e2842a8d66a261c98e973a7edf1bdddb2a342d06))
+* Task cis-to-catalog ([#911](https://github.com/IBM/compliance-trestle/issues/911)) ([`0a492d0`](https://github.com/IBM/compliance-trestle/commit/0a492d01977467fb6839fbc83322149f5474bbe4))
+* Roles in metadata ([#926](https://github.com/IBM/compliance-trestle/issues/926)) ([`ddc1e66`](https://github.com/IBM/compliance-trestle/commit/ddc1e662ef345eaecf5b5584964d5739f1c3ab43))
+* Allow components in markdown and ssp assemble ([#902](https://github.com/IBM/compliance-trestle/issues/902)) ([`b03a236`](https://github.com/IBM/compliance-trestle/commit/b03a236ad2928b384677e5777b1880d3386a4fe0))
+* Add ability to modify headers in the tree ([#909](https://github.com/IBM/compliance-trestle/issues/909)) ([`b455c18`](https://github.com/IBM/compliance-trestle/commit/b455c18c3492b7e4a4fced8b701780d109bed55e))
+* Altering ssp-generate to add all sections by default ([#905](https://github.com/IBM/compliance-trestle/issues/905)) ([`55a399b`](https://github.com/IBM/compliance-trestle/commit/55a399bf129aa39e42e83e93e8b1b69aec20d9bb))
+
+### Fix
+* Fire off sonar only on local PRs. ([#934](https://github.com/IBM/compliance-trestle/issues/934)) ([`26f4f0a`](https://github.com/IBM/compliance-trestle/commit/26f4f0ab08af2d37c05130e3189bfa74f79b5a57))
+* Ensuring that mkdocs yaml both remains stable an is up to date. ([#927](https://github.com/IBM/compliance-trestle/issues/927)) ([`ee48763`](https://github.com/IBM/compliance-trestle/commit/ee487634cbf80b3aeac12a7f103c19730b18e2da))
+
+### Documentation
+* Clear edit_uri to remove edit pencil ([#937](https://github.com/IBM/compliance-trestle/issues/937)) ([`e32c7ce`](https://github.com/IBM/compliance-trestle/commit/e32c7ce46df3ff905e115ab315c36005f8e0e246))
+* Add versioning tutorial ([#917](https://github.com/IBM/compliance-trestle/issues/917)) ([`b682806`](https://github.com/IBM/compliance-trestle/commit/b682806f25783a8cc4df18647ac96973d365012d))
+
 ## v0.31.0 (2021-12-01)
 ### Feature
 * Added trestle-fedramp project discovery and command ([#899](https://github.com/IBM/compliance-trestle/issues/899)) ([`f0cc836`](https://github.com/IBM/compliance-trestle/commit/f0cc8367a9001749a81c1a069f02ea00e49a7cec))
