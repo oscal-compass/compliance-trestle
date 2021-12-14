@@ -51,7 +51,7 @@ def setup_for_ssp(include_header: bool,
         output=ssp_name,
         verbose=True,
         sections=sections,
-        header_dont_merge=False
+        preserve_header_values=False
     )
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -126,7 +126,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=True,
         sections=None,
         yaml_header=str(yaml_path),
-        header_dont_merge=False
+        preserve_header_values=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -137,7 +137,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         sections=None,
         verbose=True,
-        header_dont_merge=False
+        preserve_header_values=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -421,7 +421,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=False,
         sections=None,
         yaml_header=header_path,
-        header_dont_merge=False
+        preserve_header_values=False
     )
     # generate the markdown with header content
     ssp_cmd = SSPGenerate()
@@ -435,3 +435,45 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     # read the assembled ssp and confirm roles are in metadata
     ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
     assert len(ssp.metadata.roles) == 2
+
+
+def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test repeat generate with various controls including statement with no parts."""
+    cat_name = 'complex_cat'
+    prof_name = 'my_prof'
+    ssp_name = 'my_ssp'
+    catalog = test_utils.generate_complex_catalog()
+    fs.save_top_level_model(catalog, tmp_trestle_dir, cat_name, fs.FileContentType.JSON)
+    test_utils.create_profile_in_trestle_dir(tmp_trestle_dir, cat_name, prof_name)
+
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=False,
+        sections=None,
+        yaml_header=None,
+        preserve_header_values=False
+    )
+    # generate the markdown with no implementation response text
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    # insert implementation text into the high level statement of a control that has no sub-parts
+    control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
+    test_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
+
+    control_a1_path = tmp_trestle_dir / ssp_name / 'a-1.md'
+    test_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
+    test_utils.delete_line_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX)
+
+    assert ssp_cmd._run(args) == 0
+
+    # confirm the added text is still there
+    assert test_utils.confirm_text_in_file(control_path, 'control test-1', 'Hello there')
+    # confirm added text in a1 is there
+    assert test_utils.confirm_text_in_file(control_a1_path, '## Implementation', 'Text with prompt removed')
+    # confirm prompt is not there
+    assert not test_utils.confirm_text_in_file(
+        control_a1_path, '## Implementation', const.SSP_ADD_IMPLEMENTATION_PREFIX
+    )

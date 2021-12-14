@@ -39,8 +39,11 @@ nav:
   - Documentation website: contributing/website.md
   - Trestle's object model: contributing/trestle_oscal_object_model.md
   - Developer Certificate of Originality: contributing/DCO.md
+  - Trestle plugin mechanism: contributing/plugins.md
 - Known limitations: errors.md
 - Demos: demonstrations-content.md
+- Plugins:
+  - FedRAMP validation: plugins/compliance-trestle-fedramp.md
 - License: license.md
 - Reference:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
