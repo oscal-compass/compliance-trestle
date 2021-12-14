@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 class JinjaCmd(CommandPlusDocs):
     """Transform an input template to an output document using jinja templating."""
 
-    max_recursion_depth = 100
+    max_recursion_depth = 2
 
     name = 'jinja'
 
@@ -119,9 +119,9 @@ class JinjaCmd(CommandPlusDocs):
                 lut = {}
             jinja_env = Environment(
                 loader=FileSystemLoader(cwd),
-                extensions=[MDCleanInclude, MDSectionInclude],
-                autoescape=True,
-                trim_blocks=True
+                extensions=[MDSectionInclude, MDCleanInclude],
+                trim_blocks=True,
+                autoescape=True
             )
             template = jinja_env.get_template(str(r_input_file))
             # create boolean dict
@@ -137,8 +137,8 @@ class JinjaCmd(CommandPlusDocs):
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
 
                 ssp_writer = SSPMarkdownWriter(trestle_root)
-                ssp_writer.set_ssp(ssp)
-                ssp_writer.set_profile(profile_data)
+                ssp_writer.set_ssp(ssp_data)
+                ssp_writer.set_profile(profile_path)
                 lut['catalog'] = resolved_catalog
                 lut['catalog_interface'] = CatalogInterface(resolved_catalog)
                 lut['ssp_md_writer'] = ssp_writer

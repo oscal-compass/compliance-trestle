@@ -34,7 +34,8 @@ JINJA_MD = 'jinja_markdown_include'
         ('MDSection_include_nested.jinja.md', 'MDSection_include_nested.md', False),
         ('env_nested_c_c.jinja.md', 'env_nested_c_c.md', False),
         ('env_nested_c_n.jinja.md', 'env_nested_c_n.md', False), ('env_include.jinja.md', 'env_include.md', False),
-        ('env_include_adjusted.jinja.md', 'env_include_adjusted.md', False)
+        ('env_include_adjusted.jinja.md', 'env_include_adjusted.md', False),
+        ('env_nested_c_c_double.jinja.md', 'env_nested_c_c_double.md', False)
     ]
 )
 def test_jinja_md(testdata_dir: pathlib.Path, template: str, expected: str, expect_exception: bool) -> None:

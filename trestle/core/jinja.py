@@ -35,16 +35,20 @@ def adjust_header_level(input_md: str, expected: int) -> str:
     """Adjust the header level of a markdown string such that the most significant header matches the expected #'s."""
     output_md = input_md
     mdn = markdown_node.MarkdownNode.build_tree_from_markdown(input_md.split('\n'))
-    mdn_top_header = mdn.subnodes[0].get_node_header_lvl()
-    delta = int(expected) - mdn_top_header
-    if not delta == 0:
-        mdn.change_header_level_by(delta)
-        output_md = mdn.content.raw_text
+    if mdn.subnodes:
+        mdn_top_header = mdn.subnodes[0].get_node_header_lvl()
+        delta = int(expected) - mdn_top_header
+        if not delta == 0:
+            mdn.change_header_level_by(delta)
+            output_md = mdn.content.raw_text
     return output_md
 
 
 class TrestleJinjaExtension(Extension):
     """Class to define common methods to be inherited from for use in trestle."""
+
+    # This
+    max_tag_parse = 20
 
     def __init__(self, environment: Environment) -> None:
         """Ensure enviroment is set and carried into class vars."""
@@ -108,7 +112,11 @@ class MDSectionInclude(TrestleJinjaExtension):
         """Execute parsing of md token and return nodes."""
         kwargs = None
         expected_header_level = None
+        count = 0
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
+            count = count + 1
+            if count > self.max_tag_parse:
+                raise err.TrestleError('Unexpected Jinja tag structure provided, please review docs.')
             token = parser.stream.current
             if token.test('name:mdsection_include'):
                 parser.stream.expect(lexer.TOKEN_NAME)
@@ -163,7 +171,11 @@ class MDCleanInclude(TrestleJinjaExtension):
         """Execute parsing of md token and return nodes."""
         kwargs = None
         expected_header_level = None
+        count = 0
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
+            count = count + 1
+            if count > self.max_tag_parse:
+                raise err.TrestleError('Unexpected Jinja tag structure provided, please review docs.')
             token = parser.stream.current
             if token.test('name:md_clean_include'):
                 parser.stream.expect(lexer.TOKEN_NAME)
