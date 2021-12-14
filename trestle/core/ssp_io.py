@@ -14,7 +14,7 @@
 """Handle direct IO for writing SSP responses as markdown."""
 import logging
 import pathlib
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from trestle.core import catalog_interface
 from trestle.core import profile_resolver
@@ -26,6 +26,7 @@ from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.ssp import Statement
 
 logger = logging.getLogger(__name__)
 
@@ -237,25 +238,7 @@ class SSPMarkdownWriter():
                         label = found_label
                         part_name = part.name
 
-                response_per_component = {}
-                if statement.by_components:
-                    for idx, component in enumerate(statement.by_components):
-                        # look up component title
-                        subheader = component.uuid
-                        response = ''
-                        if self._ssp.system_implementation.components:
-                            for comp in self._ssp.system_implementation.components:
-                                if comp.uuid == component.uuid:
-                                    title = comp.title
-                                    if title == SSP_MAIN_COMP_NAME and idx == 0:
-                                        # special case dont print first "This system"
-                                        continue
-                                    subheader = title
-                        if component.description:
-                            response = component.description
-
-                        if response or (not response and write_empty_responses):
-                            response_per_component[subheader] = response
+                response_per_component = self._get_responses_by_components(statement, write_empty_responses)
 
                 if response_per_component or (not response_per_component and write_empty_responses):
                     if part_name and part_name == 'item':
@@ -290,6 +273,31 @@ class SSPMarkdownWriter():
             if component.title == title:
                 return component.uuid
         return None
+
+    def _get_responses_by_components(self, statement: Statement, write_empty_responses: bool) -> Dict[str, str]:
+        """Get response per component, substitute component id with title if possible."""
+        response_per_component = {}
+        if statement.by_components:
+            for idx, component in enumerate(statement.by_components):
+                # look up component title
+                subheader = component.uuid
+                response = ''
+                if self._ssp.system_implementation.components:
+                    for comp in self._ssp.system_implementation.components:
+                        if comp.uuid == component.uuid:
+                            title = comp.title
+                            if title == SSP_MAIN_COMP_NAME and idx == 0:
+                                # special case ignore first "This system"
+                                continue
+                            subheader = title
+                if component.description:
+                    response = component.description
+
+                if response or (not response and write_empty_responses):
+                    if subheader:
+                        response_per_component[subheader] = response
+
+        return response_per_component
 
     def _control_implemented_req(self, control_id: str) -> ssp.ImplementedRequirement:
         """Retrieve control implemented requirement by control-id."""
