@@ -20,6 +20,8 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
+from trestle.core.commands.author.ssp import SSPGenerate
+from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.remote import cache
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.ssp import SystemSecurityPlan
@@ -72,25 +74,12 @@ def test_ssp_from_samples_e2e(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test generating SSP from the sample profile and generate markdown representation of it."""
-    profile_path = testdata_dir / 'author/ssp/sample_profile.json'
-    catalog_1_path = testdata_dir / 'author/ssp/sample_nist_catalog.json'
-    catalog_2_path = testdata_dir / 'author/ssp/sample_security_catalog.json'
-
-    command_import_catalog = f'trestle import -f {catalog_1_path} -o sample_nist_catalog'
-    execute_command_and_assert(command_import_catalog, 0, monkeypatch)
-
-    command_import_catalog = f'trestle import -f {catalog_2_path} -o sample_security_catalog'
-    execute_command_and_assert(command_import_catalog, 0, monkeypatch)
-
-    command_import_profile = f'trestle import -f {profile_path} -o test_profile'
-    execute_command_and_assert(command_import_profile, 0, monkeypatch)
-
-    # generate SSP from the profile
-    command_ssp_gen = 'trestle author ssp-generate -p test_profile -o my_ssp'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
+    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
 
     # set responses
-    assert insert_prose(tmp_trestle_dir, 'at-1_smt.b', 'This is a response')
+    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', 'This is a response')
     assert insert_prose(tmp_trestle_dir, 'at-1_smt.c', 'This is also a response.')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
 
@@ -98,6 +87,7 @@ def test_ssp_from_samples_e2e(
     execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
 
     ssp_json_path = tmp_trestle_dir / 'system-security-plans/ssp_json/system-security-plan.json'
+    profile_path = tmp_trestle_dir / 'profiles/main_profile/profile.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, str(ssp_json_path))
     ssp_obj, parent_alias = fetcher.get_oscal(True)
 
@@ -107,3 +97,15 @@ def test_ssp_from_samples_e2e(
 
     md_text = ssp_io.get_control_response('at-1', 1, True)
     assert md_text
+    tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
+
+    assert tree.get_node_for_key('## Part a.')
+    assert tree.get_node_for_key('## Part c.')
+    assert len(list(tree.get_all_headers_for_level(3))) == 3
+
+    md_text = ssp_io.get_control_response('ac-1', 2, False)
+    tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
+
+    assert tree.get_node_for_key('### Part a.')
+    assert not tree.get_node_for_key('### Part c.')
+    assert len(list(tree.get_all_headers_for_level(4))) == 2

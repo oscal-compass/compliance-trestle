@@ -219,19 +219,24 @@ class SSPMarkdownWriter():
 
         control = self._catalog_interface.get_control(control_id)
         control_impl_req = self._control_implemented_req(control_id)
+        if not control_impl_req:
+            logger.info(f'No implemented requirements found for the control {control_id}')
+            return ''
 
         md_writer = MDWriter(None)
         if control_impl_req.statements:
             for statement in control_impl_req.statements:
                 statement_id = statement.statement_id
                 label = statement_id
+                part_name = None
+
                 # look up label for this statement
                 if control.parts:
-                    found_label = self._catalog_interface.get_statement_label_if_exists(control_id, statement_id)
+                    found_label, part = self._catalog_interface.get_statement_label_if_exists(control_id, statement_id)
                     if found_label:
                         label = found_label
+                        part_name = part.name
 
-                header = f'Implementation {label}'
                 response_per_component = {}
                 if statement.by_components:
                     for idx, component in enumerate(statement.by_components):
@@ -240,11 +245,12 @@ class SSPMarkdownWriter():
                         response = ''
                         if self._ssp.system_implementation.components:
                             for comp in self._ssp.system_implementation.components:
-                                title = comp.title
-                                if title == SSP_MAIN_COMP_NAME and idx == 0:
-                                    # special case dont print first "This system"
-                                    continue
-                                subheader = title
+                                if comp.uuid == component.uuid:
+                                    title = comp.title
+                                    if title == SSP_MAIN_COMP_NAME and idx == 0:
+                                        # special case dont print first "This system"
+                                        continue
+                                    subheader = title
                         if component.description:
                             response = component.description
 
@@ -252,9 +258,12 @@ class SSPMarkdownWriter():
                             response_per_component[subheader] = response
 
                 if response_per_component or (not response_per_component and write_empty_responses):
-                    md_writer.new_header(level=level, title=header)
+                    if part_name and part_name == 'item':
+                        # print part header only if subitem
+                        header = f'Part {label}'
+                        md_writer.new_header(level=1, title=header)
                     for component_key in response_per_component:
-                        md_writer.new_header(level=level + 1, title=component_key)
+                        md_writer.new_header(level=2, title=component_key)
                         md_writer.set_indent_level(-1)
                         md_writer.new_line(response_per_component[component_key])
                         md_writer.set_indent_level(-1)
@@ -292,7 +301,7 @@ class SSPMarkdownWriter():
     def _write_list_with_header(self, header: str, lines: List[str], level: int) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
-        md_writer.new_header(level=level, title=header)
+        md_writer.new_header(level=1, title=header)
         md_writer.set_indent_level(-1)
         md_writer.new_list(lines)
         md_writer.set_indent_level(-1)
@@ -302,7 +311,7 @@ class SSPMarkdownWriter():
     def _write_table_with_header(self, header: str, values: List[List[str]], level: int) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
-        md_writer.new_header(level=level, title=header)
+        md_writer.new_header(level=1, title=header)
         md_writer.set_indent_level(-1)
         md_writer.new_table(values)
         md_writer.set_indent_level(-1)
@@ -312,7 +321,7 @@ class SSPMarkdownWriter():
     def _write_str_with_header(self, header: str, text: str, level: int) -> str:
         md_writer = MDWriter(None)
         md_writer.new_paragraph()
-        md_writer.new_header(level=level, title=header)
+        md_writer.new_header(level=1, title=header)
         md_writer.set_indent_level(-1)
         md_writer.new_line(text)
         md_writer.set_indent_level(-1)

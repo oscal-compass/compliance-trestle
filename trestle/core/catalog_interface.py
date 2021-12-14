@@ -238,7 +238,8 @@ class CatalogInterface():
                 for res in CatalogInterface._get_groups_from_group(my_group):
                     yield res
 
-    def get_statement_label_if_exists(self, control_id: str, statement_id: str) -> Optional[str]:
+    def get_statement_label_if_exists(self, control_id: str,
+                                      statement_id: str) -> Tuple[Optional[str], Optional[common.Part]]:
         """Get statement label if given."""
         # TODO: workaround when statement ids contain additional dot at the end
         # remove this after this is fixed
@@ -253,6 +254,7 @@ class CatalogInterface():
 
         control = self.get_control(control_id)
         label = None
+        found_part = None
         if control.parts:
             for part in control.parts:
                 # Performance OSCAL assumption, ids are nested so recurse only if prefix
@@ -260,9 +262,10 @@ class CatalogInterface():
                     part = self.find_part_with_condition(part, does_part_exists)
                     if part:
                         label = self.get_label(part)
+                        found_part = part
                         break
 
-        return label
+        return label, found_part
 
     def find_part_with_condition(self, part: common.Part, condition: Callable) -> Optional[common.Part]:
         """Traverse part and find subpart that satisfies given condition."""
