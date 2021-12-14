@@ -132,13 +132,13 @@ class JinjaCmd(CommandPlusDocs):
                 # name lookup
                 ssp_data, _ = fs.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
                 lut['ssp'] = ssp_data
-                profile_data, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
+                _, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
 
                 ssp_writer = SSPMarkdownWriter(trestle_root)
                 ssp_writer.set_ssp(ssp_data)
-                ssp_writer.set_profile(profile_path)
+                ssp_writer.set_catalog(resolved_catalog)
                 lut['catalog'] = resolved_catalog
                 lut['catalog_interface'] = CatalogInterface(resolved_catalog)
                 lut['ssp_md_writer'] = ssp_writer

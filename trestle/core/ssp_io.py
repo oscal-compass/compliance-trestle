@@ -279,11 +279,11 @@ class SSPMarkdownWriter():
         if statement.by_components:
             for component in statement.by_components:
                 # look up component title
-                subheader = component.uuid
+                subheader = component.component_uuid
                 response = ''
                 if self._ssp.system_implementation.components:
                     for comp in self._ssp.system_implementation.components:
-                        if comp.uuid == component.uuid:
+                        if comp.uuid == component.component_uuid:
                             title = comp.title
                             if title:
                                 subheader = title
