@@ -20,6 +20,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
+from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.remote import cache
@@ -51,8 +52,10 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
     gen_args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
 
     profile_path, ssp_obj = setup_test(tmp_trestle_dir, testdata_dir, gen_args.trestle_root)
+
+    resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     ssp_writer = SSPMarkdownWriter(gen_args.trestle_root)
-    ssp_writer.set_profile(profile_path)
+    ssp_writer.set_catalog(resolved_catalog)
     md_text = ssp_writer.get_control_statement('au-8', 1)
     assert md_text is not None
 
@@ -91,8 +94,10 @@ def test_ssp_get_control_response(
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, str(ssp_json_path))
     ssp_obj, parent_alias = fetcher.get_oscal(True)
 
+    resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+
     ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
-    ssp_io.set_profile(profile_path)
+    ssp_io.set_catalog(resolved_catalog)
     ssp_io.set_ssp(ssp_obj)
 
     md_text = ssp_io.get_control_response('at-1', 1, True)

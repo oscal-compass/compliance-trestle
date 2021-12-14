@@ -17,7 +17,6 @@ import pathlib
 from typing import Dict, List, Optional
 
 from trestle.core import catalog_interface
-from trestle.core import profile_resolver
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
 from trestle.core.control_io import ControlIOWriter
@@ -38,21 +37,17 @@ class SSPMarkdownWriter():
         """Initialize the class."""
         self._trestle_root = trestle_root
         self._ssp: ssp.SystemSecurityPlan = None
-        self._profile_path: pathlib.Path = None
-        self._resolve_catalog: Catalog = None
+        self._resolved_catalog: Catalog = None
         self._catalog_interface: CatalogInterface = None
 
     def set_ssp(self, ssp: ssp.SystemSecurityPlan):
         """Set ssp."""
         self._ssp = ssp
 
-    def set_profile(self, profile_path: pathlib.Path):
-        """Set profile."""
-        self._profile_path = profile_path
-        self._resolve_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(
-            self._trestle_root, self._profile_path
-        )
-        self._catalog_interface = catalog_interface.CatalogInterface(self._resolve_catalog)
+    def set_catalog(self, resolved_catalog: Catalog):
+        """Set catalog."""
+        self._resolved_catalog = resolved_catalog
+        self._catalog_interface = catalog_interface.CatalogInterface(self._resolved_catalog)
 
     def get_control_statement(self, control_id: str, level: int) -> str:
         """
@@ -64,8 +59,8 @@ class SSPMarkdownWriter():
         Returns:
             A markdown blob as a string.
         """
-        if not self._profile_path:
-            raise TrestleError('Cannot get control statement, set profile first.')
+        if not self._resolved_catalog:
+            raise TrestleError('Cannot get control statement, set resolved catalog first.')
 
         writer = ControlIOWriter()
         control = self._catalog_interface.get_control(control_id)
@@ -215,8 +210,8 @@ class SSPMarkdownWriter():
 
         'The System' is the default response, and all other components are treated as sub-headings per response item.
         """
-        if not self._profile_path:
-            raise TrestleError('Cannot get control response, set profile first.')
+        if not self._resolved_catalog:
+            raise TrestleError('Cannot get control response, set resolved catalog first.')
 
         control = self._catalog_interface.get_control(control_id)
         control_impl_req = self._control_implemented_req(control_id)
@@ -245,8 +240,12 @@ class SSPMarkdownWriter():
                         # print part header only if subitem
                         header = f'Part {label}'
                         md_writer.new_header(level=1, title=header)
-                    for component_key in response_per_component:
-                        md_writer.new_header(level=2, title=component_key)
+                    for idx, component_key in enumerate(response_per_component):
+                        if component_key == SSP_MAIN_COMP_NAME and idx == 0:
+                            # special case ignore header but print contents
+                            md_writer.new_paragraph()
+                        else:
+                            md_writer.new_header(level=2, title=component_key)
                         md_writer.set_indent_level(-1)
                         md_writer.new_line(response_per_component[component_key])
                         md_writer.set_indent_level(-1)
@@ -278,7 +277,7 @@ class SSPMarkdownWriter():
         """Get response per component, substitute component id with title if possible."""
         response_per_component = {}
         if statement.by_components:
-            for idx, component in enumerate(statement.by_components):
+            for component in statement.by_components:
                 # look up component title
                 subheader = component.uuid
                 response = ''
@@ -286,10 +285,8 @@ class SSPMarkdownWriter():
                     for comp in self._ssp.system_implementation.components:
                         if comp.uuid == component.uuid:
                             title = comp.title
-                            if title == SSP_MAIN_COMP_NAME and idx == 0:
-                                # special case ignore first "This system"
-                                continue
-                            subheader = title
+                            if title:
+                                subheader = title
                 if component.description:
                     response = component.description
 
