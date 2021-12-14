@@ -1,0 +1,3356 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/task.cis-to-catalog/transformation/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.1">
+    
+    
+      
+        <title>Task - cis-to-catalog - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.23b6d78a.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-catalog-transformer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Compliance Trestle" class="md-header__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Task - cis-to-catalog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Trestle overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../python_trestle_setup/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trestle_sample_workflow/" class="md-nav__link">
+        Intro to trestle workflow
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../continuous-compliance/continuous-compliance/" class="md-nav__link">
+        Compliance posture
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
+        SSP, Catalog, and Profile Authoring
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../task.transformer-construction/transformer-construction/" class="md-nav__link">
+        Transformer construction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Task - cis-to-catalog
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Task - cis-to-catalog
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    Objective
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-install-trestle-in-a-python-virtual-environment" class="md-nav__link">
+    Step 1: Install trestle in a Python virtual environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-transform-profile-data-cis-benchmarks" class="md-nav__link">
+    Step 2: Transform profile data (CIS benchmarks)
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../task.cis-to-component-definition/transformation/" class="md-nav__link">
+        Task - cis-to-component-definition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../task.tanuim-to-oscal/transformation/" class="md-nav__link">
+        Task - tanium-to-oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../work_with_authoring_versions/" class="md-nav__link">
+        Work with authoring versions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Trestle command-line interface (CLI)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Trestle command-line interface (CLI)
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/" class="md-nav__link">
+        CLI for OSCAL documents
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../trestle_author/" class="md-nav__link">
+        CLI for authoring governed content
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Contributing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Contributing overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/trestle_oscal_object_model/" class="md-nav__link">
+        Trestle's object model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/plugins/" class="md-nav__link">
+        Trestle plugin mechanism
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../errors/" class="md-nav__link">
+        Known limitations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../demonstrations-content/" class="md-nav__link">
+        Demos
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Plugins
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Plugins
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../plugins/compliance-trestle-fedramp/" class="md-nav__link">
+        FedRAMP validation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/third-party-result-schema-SCC/" class="md-nav__link">
+        Integrating with IBM SCC
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2" type="checkbox" id="__nav_10_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2">
+          trestle API reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle API reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2" type="checkbox" id="__nav_10_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2">
+          core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.all_validator/" class="md-nav__link">
+        all_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.catalog_interface/" class="md-nav__link">
+        catalog_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_4" type="checkbox" id="__nav_10_2_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_4">
+          commands
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_4_3" type="checkbox" id="__nav_10_2_2_4_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_4_3">
+          author
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="author" data-md-level="5">
+        <label class="md-nav__title" for="__nav_10_2_2_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          author
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.command/" class="md-nav__link">
+        command
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.consts/" class="md-nav__link">
+        consts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.docs/" class="md-nav__link">
+        docs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.folders/" class="md-nav__link">
+        folders
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.headers/" class="md-nav__link">
+        headers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_4_3_10" type="checkbox" id="__nav_10_2_2_4_3_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_4_3_10">
+          versioning
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+        <label class="md-nav__title" for="__nav_10_2_2_4_3_10">
+          <span class="md-nav__icon md-icon"></span>
+          versioning
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.author.versioning.template_versioning/" class="md-nav__link">
+        template_versioning
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_4_5" type="checkbox" id="__nav_10_2_2_4_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_4_5">
+          common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="common" data-md-level="5">
+        <label class="md-nav__title" for="__nav_10_2_2_4_5">
+          <span class="md-nav__icon md-icon"></span>
+          common
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.common.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.common.return_codes/" class="md-nav__link">
+        return_codes
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.describe/" class="md-nav__link">
+        describe
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.href/" class="md-nav__link">
+        href
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.partial_object_validate/" class="md-nav__link">
+        partial_object_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.transform_oscal/" class="md-nav__link">
+        transform_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.common_types/" class="md-nav__link">
+        common_types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.control_io/" class="md-nav__link">
+        control_io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.draw_io/" class="md-nav__link">
+        draw_io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_12" type="checkbox" id="__nav_10_2_2_12" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_12">
+          markdown
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_2_12">
+          <span class="md-nav__icon md-icon"></span>
+          markdown
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.markdown_api/" class="md-nav__link">
+        markdown_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.markdown_const/" class="md-nav__link">
+        markdown_const
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.markdown_node/" class="md-nav__link">
+        markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.markdown_processor/" class="md-nav__link">
+        markdown_processor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.markdown_validator/" class="md-nav__link">
+        markdown_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.markdown.md_writer/" class="md-nav__link">
+        md_writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_13" type="checkbox" id="__nav_10_2_2_13" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_13">
+          models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_2_13">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.oscal_version_validator/" class="md-nav__link">
+        oscal_version_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.pipeline/" class="md-nav__link">
+        pipeline
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.profile_resolver/" class="md-nav__link">
+        profile_resolver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.refs_validator/" class="md-nav__link">
+        refs_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2_20" type="checkbox" id="__nav_10_2_2_20" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2_20">
+          remote
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="remote" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_2_20">
+          <span class="md-nav__icon md-icon"></span>
+          remote
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.remote.cache/" class="md-nav__link">
+        cache
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.repository/" class="md-nav__link">
+        repository
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.trestle_base_model/" class="md-nav__link">
+        trestle_base_model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.validator/" class="md-nav__link">
+        validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3" type="checkbox" id="__nav_10_2_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3">
+          oscal
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_4" type="checkbox" id="__nav_10_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_4">
+          tasks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.cis_to_catalog/" class="md-nav__link">
+        cis_to_catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.cis_to_component_definition/" class="md-nav__link">
+        cis_to_component_definition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.profile_to_osco/" class="md-nav__link">
+        profile_to_osco
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_5" type="checkbox" id="__nav_10_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_5">
+          transforms
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          transforms
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_5_1" type="checkbox" id="__nav_10_2_5_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_5_1">
+          implementations
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          implementations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.transforms.implementations.osco/" class="md-nav__link">
+        osco
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.transforms.implementations.tanium/" class="md-nav__link">
+        tanium
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.transforms.results/" class="md-nav__link">
+        results
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.transforms.transformer_factory/" class="md-nav__link">
+        transformer_factory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.transforms.transformer_singleton/" class="md-nav__link">
+        transformer_singleton
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_6" type="checkbox" id="__nav_10_2_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_6">
+          utils
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    Objective
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-install-trestle-in-a-python-virtual-environment" class="md-nav__link">
+    Step 1: Install trestle in a Python virtual environment
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-transform-profile-data-cis-benchmarks" class="md-nav__link">
+    Step 2: Transform profile data (CIS benchmarks)
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-catalog-transformer">Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Catalog transformer<a class="headerlink" href="#tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-catalog-transformer" title="Permanent link">¤</a></h1>
+<p>Here are step by step instructions for setup and transformation of <a href="https://github.com/ComplianceAsCode/content">ComplianceAsCode</a> profile data files into <a href="https://www.nist.gov/">NIST</a> standard <a href="https://pages.nist.gov/OSCAL/">OSCAL</a> <a href="https://pages.nist.gov/OSCAL/reference/latest/catalog/json-outline/">Catalog</a> using the <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a> tool.</p>
+<h2 id="objective"><em>Objective</em><a class="headerlink" href="#objective" title="Permanent link">¤</a></h2>
+<p>How to transform one or more <code>.profile</code> compliance files into a standardized <code>OSCAL.json</code> file.</p>
+<p>There are 2 short steps shown below.
+The first is a one-time check/set-up of your environment.
+The second is a one-command transformation from <code>.profile</code> to <code>OSCAL.json</code>.</p>
+<h2 id="step-1-install-trestle-in-a-python-virtual-environment"><em>Step 1: Install trestle in a Python virtual environment</em><a class="headerlink" href="#step-1-install-trestle-in-a-python-virtual-environment" title="Permanent link">¤</a></h2>
+<p>Follow the instructions <a href="https://ibm.github.io/compliance-trestle/python_trestle_setup/">here</a> to install trestle in a virtual environment.</p>
+<h2 id="step-2-transform-profile-data-cis-benchmarks"><em>Step 2: Transform profile data (CIS benchmarks)</em><a class="headerlink" href="#step-2-transform-profile-data-cis-benchmarks" title="Permanent link">¤</a></h2>
+<p>Linux, Mac</p>
+<details>
+<summary>Windows</summary>
+
+Make these changes:
+
+<ul>
+<li>use backslashes `\` for file paths
+<li>use `md` instead of mkdir -p
+<li>put the url in double quotes for `curl`
+<li>use `more` instead of cat
+</ul>
+</details>
+
+<ul>
+<li>Navigate to trestle workspace.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ cd trestle.workspace
+</code></pre></div>
+<ul>
+<li>View configuration information.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ trestle task cis-to-catalog -i
+trestle.core.commands.task:102 WARNING: Config file was not configured with the appropriate section for the task: &quot;[task.cis-to-catalog]&quot;
+Help information for cis-to-catalog task.
+
+Purpose: Create catalog from from standard (e.g. CIS benchmark).
+
+Configuration flags sit under [task.cis-to-catalog]:
+  input-dir              = (required) location to read the compliance-as-code profile files.
+  output-dir             = (required) location to write the generated catalog.json file.
+  output-overwrite       = (optional) true [default] or false; replace existing output when true.
+</code></pre></div>
+<ul>
+<li>Create data folders.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ mkdir -p adjunct-data/cis-benchmarks
+(venv.trestle)$ mkdir -p adjunct-data/trestle-configs
+</code></pre></div>
+<ul>
+<li>Fetch ComplianceAsCode profile data.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile&#39; &gt; adjunct-data/cis-benchmarks/cis-node.profile
+(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile&#39; &gt; adjunct-data/cis-benchmarks/cis.profile
+</code></pre></div>
+<ul>
+<li>Fetch trestle task file.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-catalog/demo-cis-to-catalog.config&#39; &gt; adjunct-data/task-files/demo-cis-to-catalog.config
+</code></pre></div>
+<details>
+<summary>demo-cis-to-catalog.config</summary>
+
+<div class="highlight"><pre><span></span><code>[task.cis-to-catalog]
+
+input-dir = adjunct-data/cis-benchmarks
+output-dir = catalogs/cis
+</code></pre></div>
+
+</details>
+
+<ul>
+<li>Perform and validate the transform.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ trestle task cis-to-catalog -c adjunct-data/task-files/demo-cis-to-catalog.config
+output: catalogs/cis/catalog.json
+Task: cis-to-catalog executed successfully.
+
+(venv.trestle)$ trestle validate --all
+VALID: Model /home/&lt;user&gt;/trestle.workspace/catalog/cis/catalog.json passed the Validator to confirm the model passes all registered validation tests.
+</code></pre></div>
+<ul>
+<li>View the generated OSCAL.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ cat catlog/cis/catalog.json
+</code></pre></div>
+<details>
+<summary>catalog.json</summary>
+
+<div class="highlight"><pre><span></span><code>{
+  &quot;catalog&quot;: {
+    &quot;uuid&quot;: &quot;19543ebf-4667-48b7-be47-d51154f16fda&quot;,
+    &quot;metadata&quot;: {
+      &quot;title&quot;: &quot;CIS Red Hat OpenShift Container Platform 4 Benchmark&quot;,
+      &quot;last-modified&quot;: &quot;2021-12-03T13:52:21+00:00&quot;,
+      &quot;version&quot;: &quot;0.29.0&quot;,
+      &quot;oscal-version&quot;: &quot;1.0.0&quot;,
+      &quot;links&quot;: [
+        {
+          &quot;href&quot;: &quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile&quot;
+        },
+        {
+          &quot;href&quot;: &quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile&quot;
+        }
+      ]
+    },
+    &quot;groups&quot;: [
+      {
+        &quot;title&quot;: &quot;1 Control Plane Components&quot;,
+        &quot;groups&quot;: [
+          {
+            &quot;title&quot;: &quot;1.1 Master Node Configuration Files&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-1.1.1&quot;,
+                &quot;title&quot;: &quot;1.1.1 Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.2&quot;,
+                &quot;title&quot;: &quot;1.1.2 Ensure that the API server pod specification file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.3&quot;,
+                &quot;title&quot;: &quot;1.1.3 Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.4&quot;,
+                &quot;title&quot;: &quot;1.1.4 Ensure that the controller manager pod specification file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.5&quot;,
+                &quot;title&quot;: &quot;1.1.5 Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.6&quot;,
+                &quot;title&quot;: &quot;1.1.6 Ensure that the scheduler pod specification file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.7&quot;,
+                &quot;title&quot;: &quot;1.1.7 Ensure that the etcd pod specification file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.8&quot;,
+                &quot;title&quot;: &quot;1.1.8 Ensure that the etcd pod specification file ownership is set to root:root (Automated)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.9&quot;,
+                &quot;title&quot;: &quot;1.1.9 Ensure that the Container Network Interface file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.10&quot;,
+                &quot;title&quot;: &quot;1.1.10 Ensure that the Container Network Interface file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.11&quot;,
+                &quot;title&quot;: &quot;1.1.11 Ensure that the etcd data directory permissions are set to 700 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.12&quot;,
+                &quot;title&quot;: &quot;1.1.12 Ensure that the etcd data directory ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.13&quot;,
+                &quot;title&quot;: &quot;1.1.13 Ensure that the admin.conf file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.14&quot;,
+                &quot;title&quot;: &quot;1.1.14 Ensure that the admin.conf file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.15&quot;,
+                &quot;title&quot;: &quot;1.1.15 Ensure that the scheduler.conf file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.16&quot;,
+                &quot;title&quot;: &quot;1.1.16 Ensure that the scheduler.conf file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.17&quot;,
+                &quot;title&quot;: &quot;1.1.17 Ensure that the controller-manager.conf file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.18&quot;,
+                &quot;title&quot;: &quot;1.1.18 Ensure that the controller-manager.conf file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.19&quot;,
+                &quot;title&quot;: &quot;1.1.19 Ensure that the OpenShift PKI directory and file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.20&quot;,
+                &quot;title&quot;: &quot;1.1.20 Ensure that the OpenShift PKI certificate file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.1.21&quot;,
+                &quot;title&quot;: &quot;1.1.21 Ensure that the OpenShift PKI key file permissions are set to 600&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;1.2 API Server&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-1.2.1&quot;,
+                &quot;title&quot;: &quot;1.2.1 Ensure that the --anonymous-auth argument is set to false&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.2&quot;,
+                &quot;title&quot;: &quot;1.2.2 Ensure that the --basic-auth-file argument is not set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.3&quot;,
+                &quot;title&quot;: &quot;1.2.3 Ensure that the --token-auth-file parameter is not set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.4&quot;,
+                &quot;title&quot;: &quot;1.2.4 Ensure that the --kubelet-https argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.5&quot;,
+                &quot;title&quot;: &quot;1.2.5 Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.6&quot;,
+                &quot;title&quot;: &quot;1.2.6 Ensure that the --kubelet-certificate-authority argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.7&quot;,
+                &quot;title&quot;: &quot;1.2.7 Ensure that the --authorization-mode argument is not set to AlwaysAllow&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.8&quot;,
+                &quot;title&quot;: &quot;1.2.8 Ensure that the --authorization-mode argument includes Node&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.9&quot;,
+                &quot;title&quot;: &quot;1.2.9 Ensure that the --authorization-mode argument includes RBAC&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.10&quot;,
+                &quot;title&quot;: &quot;1.2.10 Ensure that the admission control plugin EventRateLimit is set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.11&quot;,
+                &quot;title&quot;: &quot;1.2.11 Ensure that the admission control plugin AlwaysAdmit is not set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.12&quot;,
+                &quot;title&quot;: &quot;1.2.12 Ensure that the admission control plugin AlwaysPullImages is set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.13&quot;,
+                &quot;title&quot;: &quot;1.2.13 Ensure that the admission control plugin SecurityContextDeny is not set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.14&quot;,
+                &quot;title&quot;: &quot;1.2.14 Ensure that the admission control plugin ServiceAccount is set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.15&quot;,
+                &quot;title&quot;: &quot;1.2.15 Ensure that the admission control plugin NamespaceLifecycle is set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.16&quot;,
+                &quot;title&quot;: &quot;1.2.16 Ensure that the admission control plugin PodSecurityPolicy is set (Automated)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.17&quot;,
+                &quot;title&quot;: &quot;1.2.17 Ensure that the admission control plugin NodeRestriction is set (Automated)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.18&quot;,
+                &quot;title&quot;: &quot;1.2.18 Ensure that the --insecure-bind-address argument is not set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.19&quot;,
+                &quot;title&quot;: &quot;1.2.19 Ensure that the --insecure-port argument is set to 0&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.20&quot;,
+                &quot;title&quot;: &quot;1.2.20 Ensure that the --secure-port argument is not set to 0&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.21&quot;,
+                &quot;title&quot;: &quot;1.2.21 Ensure that the --profiling argument is set to false&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.22&quot;,
+                &quot;title&quot;: &quot;1.2.22 Ensure that the --audit-log-path argument is set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.23&quot;,
+                &quot;title&quot;: &quot;1.2.23 Ensure that the audit logs are forwarded off the cluster for retention&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.24&quot;,
+                &quot;title&quot;: &quot;1.2.24 Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.25&quot;,
+                &quot;title&quot;: &quot;1.2.25 Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.26&quot;,
+                &quot;title&quot;: &quot;1.2.26 Ensure that the --request-timeout argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.27&quot;,
+                &quot;title&quot;: &quot;1.2.27 Ensure that the --service-account-lookup argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.28&quot;,
+                &quot;title&quot;: &quot;1.2.28 Ensure that the --service-account-key-file argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.29&quot;,
+                &quot;title&quot;: &quot;1.2.29 Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.30&quot;,
+                &quot;title&quot;: &quot;1.2.30 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.31&quot;,
+                &quot;title&quot;: &quot;1.2.31 Ensure that the --client-ca-file argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.32&quot;,
+                &quot;title&quot;: &quot;1.2.32 Ensure that the --etcd-cafile argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.33&quot;,
+                &quot;title&quot;: &quot;1.2.33 Ensure that the --encryption-provider-config argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.34&quot;,
+                &quot;title&quot;: &quot;1.2.34 Ensure that encryption providers are appropriately configured&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.2.35&quot;,
+                &quot;title&quot;: &quot;1.2.35 Ensure that the API Server only makes use of Strong Cryptographic Ciphers&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;1.3 Controller Manager&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-1.3.1&quot;,
+                &quot;title&quot;: &quot;1.3.1 Ensure that garbage collection is configured as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.3.2&quot;,
+                &quot;title&quot;: &quot;1.3.2 Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.3.3&quot;,
+                &quot;title&quot;: &quot;1.3.3 Ensure that the --use-service-account-credentials argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.3.4&quot;,
+                &quot;title&quot;: &quot;1.3.4 Ensure that the --service-account-private-key-file argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.3.5&quot;,
+                &quot;title&quot;: &quot;1.3.5 Ensure that the --root-ca-file argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.3.6&quot;,
+                &quot;title&quot;: &quot;1.3.6 Ensure that the RotateKubeletServerCertificate argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.3.7&quot;,
+                &quot;title&quot;: &quot;1.3.7 Ensure that the --bind-address argument is set to 127.0.0.1&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;1.4 Scheduler&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-1.4.1&quot;,
+                &quot;title&quot;: &quot;1.4.1 Ensure that the --profiling argument is set to false  (info only)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-1.4.2&quot;,
+                &quot;title&quot;: &quot;1.4.2 Ensure that the --bind-address argument is set to 127.0.0.1&quot;
+              }
+            ]
+          }
+        ]
+      },
+      {
+        &quot;title&quot;: &quot;2 etcd&quot;,
+        &quot;controls&quot;: [
+          {
+            &quot;id&quot;: &quot;CIS-2.1&quot;,
+            &quot;title&quot;: &quot;2.1 Ensure that the --cert-file and --key-file arguments are set as appropriate&quot;
+          },
+          {
+            &quot;id&quot;: &quot;CIS-2.2&quot;,
+            &quot;title&quot;: &quot;2.2 Ensure that the --client-cert-auth argument is set to true&quot;
+          },
+          {
+            &quot;id&quot;: &quot;CIS-2.3&quot;,
+            &quot;title&quot;: &quot;2.3 Ensure that the --auto-tls argument is not set to true&quot;
+          },
+          {
+            &quot;id&quot;: &quot;CIS-2.4&quot;,
+            &quot;title&quot;: &quot;2.4 Ensure that the --peer-cert-file and --peer-key-file arguments are set as appropriate&quot;
+          },
+          {
+            &quot;id&quot;: &quot;CIS-2.5&quot;,
+            &quot;title&quot;: &quot;2.5 Ensure that the --peer-client-cert-auth argument is set to true&quot;
+          },
+          {
+            &quot;id&quot;: &quot;CIS-2.6&quot;,
+            &quot;title&quot;: &quot;2.6 Ensure that the --peer-auto-tls argument is not set to true&quot;
+          },
+          {
+            &quot;id&quot;: &quot;CIS-2.7&quot;,
+            &quot;title&quot;: &quot;2.7 Ensure that a unique Certificate Authority is used for etcd&quot;
+          }
+        ]
+      },
+      {
+        &quot;title&quot;: &quot;3 Control Plane Configuration&quot;,
+        &quot;groups&quot;: [
+          {
+            &quot;title&quot;: &quot;3.1 Authentication and Authorization&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-3.1.1&quot;,
+                &quot;title&quot;: &quot;3.1.1 Client certificate authentication should not be used for users&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;3.2 Logging&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-3.2.1&quot;,
+                &quot;title&quot;: &quot;3.2.1 Ensure that a minimal audit policy is created&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-3.2.2&quot;,
+                &quot;title&quot;: &quot;3.2.2 Ensure that the audit policy covers key security concerns&quot;
+              }
+            ]
+          }
+        ]
+      },
+      {
+        &quot;title&quot;: &quot;4 Worker Nodes&quot;,
+        &quot;groups&quot;: [
+          {
+            &quot;title&quot;: &quot;4.1 Worker node configuration&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-4.1.1&quot;,
+                &quot;title&quot;: &quot;4.1.1 Ensure that the kubelet service file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.2&quot;,
+                &quot;title&quot;: &quot;4.1.2 Ensure that the kubelet service file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.3&quot;,
+                &quot;title&quot;: &quot;4.1.3 If proxy kubeconfig file exists ensure permissions are set to 644 or more restrictive (Automated)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.4&quot;,
+                &quot;title&quot;: &quot;4.1.4 If proxy kubeconfig file exists ensure ownership is set to root:root (Manual)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.5&quot;,
+                &quot;title&quot;: &quot;4.1.5 Ensure that the --kubeconfig kubelet.conf file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.6&quot;,
+                &quot;title&quot;: &quot;4.1.6 Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.7&quot;,
+                &quot;title&quot;: &quot;4.1.7 Ensure that the certificate authorities file permissions are set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.8&quot;,
+                &quot;title&quot;: &quot;4.1.8 Ensure that the client certificate authorities file ownership is set to root:root&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.9&quot;,
+                &quot;title&quot;: &quot;4.1.9 Ensure that the kubelet --config configuration file has permissions set to 644 or more restrictive&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.1.10&quot;,
+                &quot;title&quot;: &quot;4.1.10 Ensure that the kubelet configuration file ownership is set to root:root&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;4.2 Kubelet&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-4.2.1&quot;,
+                &quot;title&quot;: &quot;4.2.1 Ensure that the --anonymous-auth argument is set to false&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.2&quot;,
+                &quot;title&quot;: &quot;4.2.2 Ensure that the --authorization-mode argument is not set to AlwaysAllow&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.3&quot;,
+                &quot;title&quot;: &quot;4.2.3 Ensure that the --client-ca-file argument is set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.4&quot;,
+                &quot;title&quot;: &quot;4.2.4 Ensure that the --read-only-port argument is set to 0&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.5&quot;,
+                &quot;title&quot;: &quot;4.2.5 Ensure that the --streaming-connection-idle-timeout argument is not set to 0&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.6&quot;,
+                &quot;title&quot;: &quot;4.2.6 Ensure that the --protect-kernel-defaults argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.7&quot;,
+                &quot;title&quot;: &quot;4.2.7 Ensure that the --make-iptables-util-chains argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.8&quot;,
+                &quot;title&quot;: &quot;4.2.8 Ensure that the --hostname-override argument is not set&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.9&quot;,
+                &quot;title&quot;: &quot;4.2.9 Ensure that the --event-qps argument is set to 0 or a level which ensures appropriate event capture&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.10&quot;,
+                &quot;title&quot;: &quot;4.2.10 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.11&quot;,
+                &quot;title&quot;: &quot;4.2.11 Ensure that the --rotate-certificates argument is not set to false&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.12&quot;,
+                &quot;title&quot;: &quot;4.2.12 Verify that the RotateKubeletServerCertificate argument is set to true&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-4.2.13&quot;,
+                &quot;title&quot;: &quot;4.2.13 Ensure that the Kubelet only makes use of Strong Cryptographic Ciphers&quot;
+              }
+            ]
+          }
+        ]
+      },
+      {
+        &quot;title&quot;: &quot;5 Policies&quot;,
+        &quot;groups&quot;: [
+          {
+            &quot;title&quot;: &quot;5.1 RBAC and Service Accounts&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-5.1.1&quot;,
+                &quot;title&quot;: &quot;5.1.1 Ensure that the cluster-admin role is only used where required&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.1.2&quot;,
+                &quot;title&quot;: &quot;5.1.2 Minimize access to secrets (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.1.3&quot;,
+                &quot;title&quot;: &quot;5.1.3 Minimize wildcard use in Roles and ClusterRoles (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.1.4&quot;,
+                &quot;title&quot;: &quot;5.1.4 Minimize access to create pods (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.1.5&quot;,
+                &quot;title&quot;: &quot;5.1.5 Ensure that default service accounts are not actively used. (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.1.6&quot;,
+                &quot;title&quot;: &quot;5.1.6 Ensure that Service Account Tokens are only mounted where necessary (info)&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;5.2 Pod Security Policies / Security Context Constraints&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-5.2.1&quot;,
+                &quot;title&quot;: &quot;5.2.1 Minimize the admission of privileged containers (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.2&quot;,
+                &quot;title&quot;: &quot;5.2.2 Minimize the admission of containers wishing to share the host process ID namespace (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.3&quot;,
+                &quot;title&quot;: &quot;5.2.3 Minimize the admission of containers wishing to share the host IPC namespace (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.4&quot;,
+                &quot;title&quot;: &quot;5.2.4 Minimize the admission of containers wishing to share the host network namespace (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.5&quot;,
+                &quot;title&quot;: &quot;5.2.5 Minimize the admission of containers with allowPrivilegeEscalation (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.6&quot;,
+                &quot;title&quot;: &quot;5.2.6 Minimize the admission of root containers (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.7&quot;,
+                &quot;title&quot;: &quot;5.2.7 Minimize the admission of containers with the NET_RAW capability (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.8&quot;,
+                &quot;title&quot;: &quot;5.2.8 Minimize the admission of containers with added capabilities (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.2.9&quot;,
+                &quot;title&quot;: &quot;5.2.9 Minimize the admission of containers with capabilities assigned (info)&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;5.3 Network Policies and CNI&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-5.3.1&quot;,
+                &quot;title&quot;: &quot;5.3.1 Ensure that the CNI in use supports Network Policies (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.3.2&quot;,
+                &quot;title&quot;: &quot;5.3.2 Ensure that all Namespaces have Network Policies defined&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;5.4 Secrets Management&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-5.4.1&quot;,
+                &quot;title&quot;: &quot;5.4.1 Prefer using secrets as files over secrets as environment variables (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.4.2&quot;,
+                &quot;title&quot;: &quot;5.4.2 Consider external secret storage (info)&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;5.5 Extensible Admission Control&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-5.5.1&quot;,
+                &quot;title&quot;: &quot;5.5.1 Configure Image Provenance using ImagePolicyWebhook admission controller&quot;
+              }
+            ]
+          },
+          {
+            &quot;title&quot;: &quot;5.6 General Policies&quot;,
+            &quot;controls&quot;: [
+              {
+                &quot;id&quot;: &quot;CIS-5.6.1&quot;,
+                &quot;title&quot;: &quot;5.6.1 Create administrative boundaries between resources using namespaces (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.6.2&quot;,
+                &quot;title&quot;: &quot;5.6.2 Ensure Seccomp Profile Pod Definitions (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.6.3&quot;,
+                &quot;title&quot;: &quot;5.6.3 Apply Security Context to your Pods and Containers (info)&quot;
+              },
+              {
+                &quot;id&quot;: &quot;CIS-5.6.4&quot;,
+                &quot;title&quot;: &quot;5.6.4 The Default Namespace should not be used (info)&quot;
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre></div>
+
+</details>
+
+<p><br>
+<br></p>
+<p><span style="color:green">
+Congratulations! You have completed this tutorial.
+</span></p>
+<p><br>
+<br></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../../task.transformer-construction/transformer-construction/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Transformer construction" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Transformer construction
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../task.cis-to-component-definition/transformation/" class="md-footer__link md-footer__link--next" aria-label="Next: Task - cis-to-component-definition" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Task - cis-to-component-definition
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.c7dec7e7.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.da79ceb7.min.js"></script>
+      
+    
+  </body>
+</html>
