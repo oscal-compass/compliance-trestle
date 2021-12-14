@@ -22,6 +22,8 @@ from typing import Any, Dict, List
 
 from ilcli import Command
 
+from trestle.core.commands.common.return_codes import CmdReturnCodes
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,11 +61,11 @@ class IntegrityCmd(Command):
                     if (id_ex not in refs) and (id_ex[0] == '#'):
                         self.out(f'id {id_ex} not in use')
 
-            return 0
+            return CmdReturnCodes.SUCCESS.value
         except Exception:
             self.err('Failure of script')
             self.err(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     def recursive_ref(self, ref_key: str, dict_of_interest: Dict[str, Any]) -> List[str]:
         """Return all values for keys where you look recursively.

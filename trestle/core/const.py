@@ -247,9 +247,10 @@ DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
 
 HELP_YAML_PATH = 'Path to the optional yaml header file'
 
-HELP_HEADER_MERGE = (
-    'Flag to disable merging of the headers.'
-    + ' If provided, if a header currently exists the new header, passed with -y, will not be applied.'
+HELP_PRESERVE_HEADER_VALUES = (
+    'Flag to preserve values in a markdown control header.'
+    + ' If provided, if a header currently exists the new header, passed with -y, will not change any existing'
+    + ' values set in the header.  But new items passed in will always be added to the header read in.'
 )
 
 HELP_REGENERATE = 'Flag to force generation of new uuids in the model'
@@ -265,3 +266,33 @@ FILTER_EXCLUDE_COMPONENTS = 'filter-exclude-components'
 GENERATE_RESOLVED_CATALOG = 'generate-resolved-catalog'
 
 TRANSFORM_TYPES = [FILTER_BY_PROFILE, FILTER_BY_COMPONENTS, FILTER_EXCLUDE_COMPONENTS, GENERATE_RESOLVED_CATALOG]
+
+SSP_MAIN_COMP_NAME = 'This System'
+
+TRESTLE_TAG = 'x-trestle-'
+
+SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
+
+NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
+
+CONTROL_ORIGINATION = 'control-origination'
+
+IMPLEMENTATION_STATUS = 'implementation-status'
+
+RESPONSIBLE_ROLE = 'responsible-role'
+
+RESPONSIBLE_ROLES = 'responsible-roles'
+
+INHERITED = 'inherited'
+
+LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+
+PLANNED = 'planned'
+
+PLANNED_COMPLETION_DATE = 'planned-completion-date'
+
+COMPLETION_DATE = 'completion-date'
+
+HELP_SET_PARAMS = 'set profile parameter values based on the yaml header in control markdown'
+
+SET_PARAMS_TAG = 'x-trestle-set-params'

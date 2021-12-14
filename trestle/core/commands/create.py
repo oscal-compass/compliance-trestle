@@ -17,6 +17,7 @@
 
 import argparse
 import logging
+import traceback
 from datetime import datetime
 from typing import Type
 
@@ -24,7 +25,9 @@ import trestle.oscal
 from trestle.core import const
 from trestle.core import generators
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.common_types import TopLevelOscalModel
+from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -50,8 +53,17 @@ class CreateCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Execute."""
-        object_type = ElementPath(args.model).get_type()
-        return self.create_object(args.model, object_type, args)
+        try:
+            object_type = ElementPath(args.model).get_type()
+            return self.create_object(args.model, object_type, args)
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while creating a sample OSCAL model: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while creating a sample OSCAL model: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def create_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
@@ -60,7 +72,7 @@ class CreateCmd(CommandPlusDocs):
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
             logger.error(f'Given directory {trestle_root} is not a trestle project.')
-            return 1
+            return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         plural_path = fs.model_type_to_model_dir(model_alias)
 
         desired_model_dir = trestle_root / plural_path / args.output
@@ -70,7 +82,7 @@ class CreateCmd(CommandPlusDocs):
         if desired_model_path.exists():
             logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
             logger.error('Aborting trestle create.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         # Create sample model.
         sample_model = generators.generate_sample_model(object_type, include_optional=args.include_optional_fields)
@@ -92,10 +104,9 @@ class CreateCmd(CommandPlusDocs):
             create_plan = Plan()
             create_plan.add_action(create_action)
             create_plan.add_action(write_action)
-            create_plan.simulate()
             create_plan.execute()
-            return 0
+            return CmdReturnCodes.SUCCESS.value
         except Exception as e:
             logger.error('Unknown error executing trestle create operations. Rolling back.')
             logger.debug(e)
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value

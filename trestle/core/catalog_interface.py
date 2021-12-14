@@ -13,8 +13,10 @@
 # limitations under the License.
 """Provide interface to catalog allowing queries and operations at control level."""
 
+import copy
 import logging
 import pathlib
+import re
 from typing import Dict, Iterator, List, Optional, Tuple
 
 import trestle.core.const as const
@@ -23,6 +25,7 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
+from trestle.core.utils import as_list
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -50,7 +53,7 @@ class CatalogInterface():
     class ControlHandle(TrestleBaseModel):
         """Convenience class for handling controls as members of a group.
 
-        group_id: id of parent group or 'catalog' if not in a group
+        group_id: id of parent group or '' if not in a group
         group_title: title of the group
         group_class: class of the group
         path: path of parent controls leading to this child control
@@ -71,13 +74,12 @@ class CatalogInterface():
 
     def _add_params_to_dict(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
-        if control.params is not None:
-            for param in control.params:
-                if param.id in self._param_dict:
-                    logger.warning(
-                        f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
-                    )
-                self._param_dict[param.id] = control.id
+        for param in as_list(control.params):
+            if param.id in self._param_dict:
+                logger.warning(
+                    f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
+                )
+            self._param_dict[param.id] = control.id
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
@@ -136,12 +138,12 @@ class CatalogInterface():
                 self._add_group_controls(group, control_dict, [])
         # now add controls not in a group, if any
         if self._catalog.controls is not None:
-            group_path = [const.MODEL_TYPE_CATALOG]
+            group_path = ['']
             for control in self._catalog.controls:
                 new_path = group_path[:]
                 new_path.append(control.id)
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=const.MODEL_TYPE_CATALOG,
+                    group_id='',
                     group_title=const.MODEL_TYPE_CATALOG,
                     group_class=const.MODEL_TYPE_CATALOG,
                     control=control,
@@ -295,6 +297,24 @@ class CatalogInterface():
                 hits.extend(self._find_string_in_part(control.id, part, seek_str))
         return hits
 
+    @staticmethod
+    def get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
+        """Get the full mapping of param_id to modified value for this profile."""
+        set_param_dict: Dict[str, str] = {}
+        for set_param in as_list(profile.modify.set_parameters):
+            value_str = ControlIOReader.param_values_as_string(set_param)
+            set_param_dict[set_param.param_id] = value_str
+        return set_param_dict
+
+    @staticmethod
+    def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
+        """Get the list of params for this control and any set by the profile."""
+        param_dict = ControlIOReader.get_control_param_dict(control, True)
+        for key in param_dict.keys():
+            if key in profile_param_dict:
+                param_dict[key] = profile_param_dict[key]
+        return param_dict
+
     def write_catalog_as_markdown(
         self,
         md_path: pathlib.Path,
@@ -303,7 +323,8 @@ class CatalogInterface():
         responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        header_dont_merge: bool = False
+        preserve_header_values: bool = False,
+        set_parameters: bool = False
     ) -> None:
         """Write out the catalog controls from dict as markdown to the given directory."""
         writer = ControlIOWriter()
@@ -311,32 +332,83 @@ class CatalogInterface():
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
+        if set_parameters:
+            full_profile_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
+            new_header = copy.deepcopy(yaml_header)
+            if set_parameters:
+                param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
+                if param_dict:
+                    new_header[const.SET_PARAMS_TAG] = param_dict
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            group_dir = md_path if group_id == const.MODEL_TYPE_CATALOG else md_path / group_id
+            # this works also for the catalog controls with group_id=''
+            group_dir = md_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             writer.write_control(
                 group_dir,
                 control,
                 group_title,
-                yaml_header,
+                new_header,
                 sections,
                 additional_content,
                 responses,
                 profile,
-                header_dont_merge
+                preserve_header_values
             )
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
         """Get the list of group ids from the directories in the markdown path."""
-        group_ids: List[str] = []
+        # need to start with empty list to find controls not in group
+        group_ids: List[str] = ['']
 
         for gdir in md_path.glob('*/'):
-            group_ids.append(str(gdir.stem))
-        return group_ids
+            if gdir.is_dir():
+                group_ids.append(str(gdir.stem))
+        return sorted(group_ids)
+
+    @staticmethod
+    def _get_control_paths(group_path: pathlib.Path) -> List[pathlib.Path]:
+        """Need to parse control id and sort based on internals."""
+        control_paths = list(group_path.glob('*.md'))
+        control_map = {}
+        for control_path in control_paths:
+            control_id = control_path.stem
+            # set the label to be the control_id at start
+            # if the id doesn't fit the expected pattern it will just be sorted alphabetically based on the id string
+            label = control_id
+            digits = 0
+            frac = 0
+            extra = ''
+            # now try to break off ac as label from ac-11.21xy
+            if '-' in control_id:
+                dash_split = control_id.split('-', 1)
+                label = dash_split[0]
+                remainder = dash_split[1]
+                # now try to extract 11 and 21
+                matches = re.search(r'([0-9]+)\.([0-9]+)(.*)', remainder)
+                if matches:
+                    tup = matches.groups()
+                    digits = int(tup[0])
+                    frac = int(tup[1])
+                    extra = tup[2]
+                else:
+                    # look for 11 with no decimal
+                    # this is needed so ac-2 comes before ac-11
+                    matches = re.search(r'([0-9]+)(.*)', remainder)
+                    if matches:
+                        tup = matches.groups()
+                        digits = int(tup[0])
+                        # extra will now contain xy
+                        extra = tup[1]
+                    else:
+                        extra = remainder
+            # create the 4 keys used for sorting
+            control_map[control_path] = (label, digits, frac, extra)
+
+        return sorted(control_paths, key=lambda x: control_map[x])
 
     def read_catalog_from_markdown(self, md_path: pathlib.Path) -> cat.Catalog:
         """
@@ -350,55 +422,59 @@ class CatalogInterface():
         groups: List[cat.Group] = []
         # read each group dir
         for group_id in group_ids:
-            new_group = cat.Group(id=group_id, title='')
             group_dir = md_path / group_id
-            for control_path in group_dir.glob('*.md'):
+            control_list = []
+            for control_path in CatalogInterface._get_control_paths(group_dir):
                 control = ControlIOReader.read_control(control_path)
-                if not new_group.controls:
-                    new_group.controls = []
-                new_group.controls.append(control)
-            groups.append(new_group)
+                control_list.append(control)
+            if group_id:
+                new_group = cat.Group(id=group_id, title='')
+                new_group.controls = control_list
+                groups.append(new_group)
+            else:
+                self._catalog.controls = control_list
         self._catalog.groups = groups if groups else None
-        # now read any controls that aren't in a group
-        controls: List[cat.Control] = []
-        for control_path in md_path.glob('*.md'):
-            control = ControlIOReader.read_control(control_path)
-            controls.append(control)
-        self._catalog.controls = controls if controls else None
         return self._catalog
 
     @staticmethod
     def read_catalog_imp_reqs(md_path: pathlib.Path,
-                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+                              avail_comps: Dict[str, ossp.SystemComponent]) -> List[ossp.ImplementedRequirement]:
         """Read the full set of control implemented requirements from markdown.
 
         Args:
             md_path: Path to the markdown control files, with directories for each group
-            component: The single system component that the implemented requirements will refer to by uuid
+            avail_comps: Dict mapping component names to known components
 
         Returns:
-            list of implemented requirements gathered from each control
+            List of implemented requirements gathered from each control
+
+        Notes:
+            As the controls are read into the catalog the needed components are added if not already available.
+            avail_comps provides the mapping of component name to the actual component.
         """
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         imp_reqs: List[ossp.ImplementedRequirement] = []
         for group_id in group_ids:
             group_path = md_path / group_id
-            for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(ControlIOReader.read_implementations(control_file, component))
+            for control_file in CatalogInterface._get_control_paths(group_path):
+                imp_reqs.append(ControlIOReader.read_implemented_requirement(control_file, avail_comps))
         return imp_reqs
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path) -> List[prof.Alter]:
+    def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Read all markdown controls and return list of alters."""
         group_ids = CatalogInterface._get_group_ids(md_path)
 
         new_alters: List[prof.Alter] = []
+        param_dict: Dict[str, str] = {}
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                new_alters.extend(ControlIOReader.read_new_alters(control_file))
-        return new_alters
+                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(control_file)
+                new_alters.extend(control_alters)
+                param_dict.update(control_param_dict)
+        return new_alters, param_dict
 
     @staticmethod
     def part_equivalent(a: common.Part, b: common.Part) -> bool:
@@ -460,3 +536,15 @@ class CatalogInterface():
                 logging.error(f'controls differ: {a.id}')
                 return False
         return True
+
+    def get_sections(self) -> List[str]:
+        """Get the available sections by a full index of all controls."""
+        sections: List[str] = []
+
+        for control in self._control_dict.values():
+            if not control.control.parts:
+                continue
+            for part in control.control.parts:
+                if part.name not in sections:
+                    sections.append(part.name)
+        return sections

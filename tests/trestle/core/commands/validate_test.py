@@ -29,8 +29,8 @@ from tests import test_utils
 import trestle.core.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
+from trestle.cli import Trestle
 from trestle.core.commands.split import SplitCmd
-from trestle.core.err import TrestleError
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
@@ -83,16 +83,15 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path, mon
 
 
 @pytest.mark.parametrize(
-    'name, mode, parent, exception',
+    'name, mode, parent, status',
     [
-        ('my_test_model', '-f', False, TrestleError), ('my_test_model', '-n', False, SystemExit),
-        ('my_test_model', '-f', True, TrestleError), ('my_test_model', '-t', False, TrestleError),
-        ('my_test_model', '-a', False, TrestleError), ('foo', '-n', False, SystemExit),
-        ('my_test_model', '-x', False, SystemExit)
+        ('my_test_model', '-f', False, 1), ('my_test_model', '-n', False, 4), ('my_test_model', '-f', True, 1),
+        ('my_test_model', '-t', False, 1), ('my_test_model', '-a', False, 1), ('foo', '-n', False, 4),
+        ('my_test_model', '-x', False, 4)
     ]
 )
 def test_validation_unhappy(
-    name, mode, parent, exception, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    name, mode, parent, status, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test failure modes of validation."""
     (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
@@ -121,18 +120,17 @@ def test_validation_unhappy(
         testcmd = 'trestle validate -a'
 
     monkeypatch.setattr(sys, 'argv', testcmd.split())
-    with pytest.raises(exception):
-        rc = cli.run()
-        assert rc == 1
+    rc = Trestle().run()
+    assert rc == status
 
 
 @pytest.mark.parametrize(
     'name, mode, parent, test_id, code',
     [
         ('my_ap', '-f', False, 'id1', 0), ('my_ap', '-n', False, 'id1', 0), ('my_ap', '-f', True, 'id1', 0),
-        ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 1),
-        ('my_ap', '-n', False, 'foo', 1), ('my_ap', '-f', True, 'foo', 1), ('my_ap', '-t', False, 'foo', 1),
-        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1)
+        ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 4),
+        ('my_ap', '-n', False, 'foo', 4), ('my_ap', '-f', True, 'foo', 4), ('my_ap', '-t', False, 'foo', 4),
+        ('my_ap', '-a', False, 'foo', 4), ('foo', '-n', False, 'id1', 4)
     ]
 )
 def test_role_refs_validator(
@@ -195,8 +193,8 @@ def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkey
     shutil.copyfile(catalog_path, catalog)
     testcmd = f'trestle validate -f {catalog}'
     monkeypatch.setattr(sys, 'argv', testcmd.split())
-    with pytest.raises(TrestleError):
-        cli.run()
+    rc = Trestle().run()
+    assert rc == 1
 
 
 def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -209,8 +207,8 @@ def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeyp
     shutil.copyfile(catalog_path, catalog)
     testcmd = f'trestle validate -f {catalog}'
     monkeypatch.setattr(sys, 'argv', testcmd.split())
-    with pytest.raises(TrestleError):
-        cli.run()
+    rc = Trestle().run()
+    assert rc == 1
 
 
 def test_validate_direct(sample_catalog_minimal: Catalog) -> None:

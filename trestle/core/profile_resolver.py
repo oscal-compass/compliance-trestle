@@ -26,6 +26,7 @@ import trestle.oscal.profile as prof
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.common_types import OBT
 from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
+from trestle.core.control_io import ControlIOReader
 from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
@@ -207,7 +208,7 @@ class ProfileResolver():
             for control_id in final_control_ids:
                 control = self._catalog_interface.get_control(control_id)
                 group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
-                if group_id == 'catalog':
+                if not group_id:
                     cat_controls.append(control)
                     continue
                 group = group_dict.get(group_id)
@@ -625,7 +626,9 @@ class ProfileResolver():
             """
             control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
             if control is None:
-                raise TrestleError(f'Cannot find control referenced by SetParameter {set_param.param_id}')
+                raise TrestleError(
+                    f'Set parameter object in profile does not have a corresponding param-id: "{set_param.param_id}"'
+                )  # noqa:
             control.params = as_list(control.params)
             param_ids = [param.id for param in control.params]
             index = param_ids.index(set_param.param_id)
@@ -651,19 +654,10 @@ class ProfileResolver():
         def _change_prose_with_param_values(self):
             """Go through all controls and change prose based on param values."""
             param_dict: Dict[str, str] = {}
+            # build the full mapping of params to values
             for control in self._catalog_interface.get_all_controls_from_dict():
-                params = as_list(control.params)
-                for param in params:
-                    value_str = 'No value found'
-                    if param.label:
-                        value_str = param.label
-                    if param.values:
-                        values = [val.__root__ for val in param.values]
-                        if len(values) == 1:
-                            value_str = values[0]
-                        else:
-                            value_str = f"[{', '.join(value for value in values)}]"
-                    param_dict[param.id] = value_str
+                param_dict.update(ControlIOReader.get_control_param_dict(control, False))
+            # insert param values into prose of all controls
             for control in self._catalog_interface.get_all_controls_from_dict():
                 self._replace_control_prose(control, param_dict)
 
@@ -716,8 +710,7 @@ class ProfileResolver():
                 # go through all controls and fix the prose based on param values
                 self._change_prose_with_param_values()
 
-            self._catalog_interface.update_catalog_controls()
-            catalog = self._catalog_interface._catalog
+            catalog = self._catalog_interface.get_catalog()
 
             # update the original profile metadata with new contents
             # roles and responsible-parties will be pulled in with new uuid's
@@ -727,13 +720,13 @@ class ProfileResolver():
             for import_ in self._profile.imports:
                 links.append(common.Link(**{'href': import_.href, 'rel': 'resolution-source'}))
             new_metadata.links = links
-            # move catalog controls from dummy group 'catalog' into the catalog
-            if catalog.groups:
-                for group in catalog.groups:
-                    if group.id == const.MODEL_TYPE_CATALOG:
-                        catalog.controls = group.controls
-                        catalog.groups = [group for group in catalog.groups if group.id != const.MODEL_TYPE_CATALOG]
-                        break
+
+            # move catalog controls from dummy group '' into the catalog
+            for group in as_list(catalog.groups):
+                if not group.id:
+                    catalog.controls = group.controls
+                    catalog.groups.remove(group)
+                    break
 
             catalog.metadata = new_metadata
 

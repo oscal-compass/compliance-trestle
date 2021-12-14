@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import traceback
 from typing import List
 
 import trestle.core.const as const
@@ -24,6 +25,7 @@ import trestle.core.err as err
 import trestle.core.generators as gens
 from trestle.core import utils
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -100,13 +102,16 @@ class AddCmd(CommandPlusDocs):
             add_plan.add_action(create_action)
             add_plan.add_action(write_action)
 
-            add_plan.simulate()
             add_plan.execute()
-
+            return CmdReturnCodes.SUCCESS.value
         except err.TrestleError as e:
-            logger.error(f'Add failed: {e}')
-            return 1
-        return 0
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while adding OSCAL object: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while adding OSCAL object: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def add(cls, element_path: ElementPath, parent_element: Element, include_optional: bool):

@@ -16,15 +16,24 @@
 """Tests for control_io module."""
 
 import pathlib
+import shutil
 
 import pytest
 
 import tests.test_utils as test_utils
 
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.profile as prof
+import trestle.oscal.ssp as ossp
+from trestle.core import const
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.err import TrestleError
+from trestle.core.markdown.markdown_processor import MarkdownProcessor
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import common
+from trestle.utils import fs
 
 case_1 = 'indent_normal'
 case_2 = 'indent jump back 2'
@@ -241,52 +250,120 @@ def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     with open(bad_file, 'wb') as f:
         f.write(b'\x81')
     with pytest.raises(TrestleError):
-        ControlIOReader._load_control_lines(bad_file)
+        ControlIOReader._load_control_lines_and_header(bad_file)
 
 
 def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
     """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
     with pytest.raises(TrestleError):
-        ControlIOReader._load_control_lines(bad_file)
+        ControlIOReader._load_control_lines_and_header(bad_file)
 
 
 def test_merge_dicts_deep() -> None:
     """Test deep merge of dicts."""
-    dest = {'a': {'b': 1}, 'x': [5, 6], 'q': 99}
-    src = {'a': {'b': [2, 3]}, 'x': 7, 'z': 'foo', 'q': 88}
+    dest = {'a': {'b': 1}, 'x': [5, 6], 'q': 99, 'killed': None}
+    src = {'a': {'b': [2, 3]}, 'x': 7, 'z': 'foo', 'q': 88, 'killed': 'alive'}
     ControlIOWriter.merge_dicts_deep(dest, src)
     assert dest['a'] == {'b': [1, 2, 3]}
     assert dest['x'] == [5, 6, 7]
     assert dest['z'] == 'foo'
     assert dest['q'] == 99
+    assert dest['killed'] is None
 
 
-def test_read_label_prose_failures(tmp_path: pathlib.Path) -> None:
-    """Test read_label_prose failures."""
-    lines = ['', '## Implementation my_label', 'bad line']
+def test_merge_dicts_deep_empty() -> None:
+    """Test that empty items are left alone."""
+    dest = {'foo': ''}
+    src = {'foo': 'fancy value'}
+    ControlIOWriter.merge_dicts_deep(dest, src)
+    assert dest['foo'] == ''
+    dest['foo'] = None
+    ControlIOWriter.merge_dicts_deep(dest, src)
+    assert dest['foo'] is None
+
+
+def test_control_with_components() -> None:
+    """Test loading and parsing of implementated reqs with components."""
+    control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
+    comp_prose_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
+    assert len(comp_prose_dict.keys()) == 3
+    assert len(comp_prose_dict['This System'].keys()) == 3
+    assert len(comp_prose_dict['Trestle Component'].keys()) == 1
+    assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
+    assert comp_prose_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']
+
+    # need to build the needed components so they can be referenced
+    comp_dict = {}
+    for comp_name in comp_prose_dict.keys():
+        comp = gens.generate_sample_model(ossp.SystemComponent)
+        comp.title = comp_name
+        comp_dict[comp_name] = comp
+
+    # confirm that the header content was inserted into the props of the imp_req
+    imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
+    assert len(imp_req.props) == 12
+    assert len(imp_req.statements) == 3
+    assert len(imp_req.statements[0].by_components) == 3
+
+
+@pytest.mark.parametrize('md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md'])
+def test_control_bad_components(md_file: str) -> None:
+    """Test loading of imp reqs for control with bad components."""
+    control_path = pathlib.Path('tests/data/author/controls/') / md_file
     with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, lines)
-
-    bad_header = ['', '# bad header']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, bad_header)
-
-    no_label = ['', '## Implementation']
-    with pytest.raises(TrestleError):
-        ControlIOReader._read_label_prose(1, no_label)
+        ControlIOReader.read_all_implementation_prose_and_header(control_path)
 
 
-def test_read_label_prose_special_cases(tmp_path: pathlib.Path) -> None:
-    """Test special cases for read label prose."""
-    added_text = """
-# What is the solution and how is it implemented?
+def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test getting the param dict of a control."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    catalog_interface = CatalogInterface(catalog)
+    control = catalog_interface.get_control('ac-1')
+    param_dict = ControlIOReader.get_control_param_dict(control, False)
+    # confirm profile value is used
+    assert param_dict['ac-1_prm_1'] == 'all alert personell'
+    # confirm original param label is used since no value was assigned
+    assert param_dict['ac-1_prm_7'] == 'organization-defined events'
 
-Top level description text
 
-"""
-    full_control_text = control_text + added_text
-    lines = full_control_text.split('\n')
-    _, label, prose_lines = ControlIOReader._read_label_prose(0, lines)
-    assert label == 'top_level_description'
-    assert prose_lines[0] == 'Top level description text'
+@pytest.mark.parametrize('preserve_header_values', [True, False])
+def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.Path) -> None:
+    """Test write/read of control header params."""
+    src_control_path = pathlib.Path('tests/data/author/controls/control_with_components_and_params.md')
+    header = {
+        const.SET_PARAMS_TAG: {
+            'ac-1_prm_3': 'new prm_3 val from input header', 'ac-1_prm_4': 'new prm_4 val from input header'
+        },
+        'foo': 'new bar',
+        'new-reviewer': 'James',
+        'special': 'new value to ignore',
+        'none-thing': 'none value to ignore'
+    }
+    control_path = tmp_path / 'ac-1.md'
+    shutil.copyfile(src_control_path, control_path)
+    markdown_processor = MarkdownProcessor()
+    header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
+    assert len(header_1.keys()) == 8
+    orig_control_read = ControlIOReader.read_control(control_path)
+    control_writer = ControlIOWriter()
+    control_writer.write_control(
+        tmp_path, orig_control_read, '', header, None, False, False, None, preserve_header_values
+    )
+    header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
+    assert len(header_2.keys()) == 6
+    assert header_2['new-reviewer'] == 'James'
+    assert len(header_2[const.SET_PARAMS_TAG]) == 2
+    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+    if preserve_header_values:
+        assert header_2['foo'] == 'bar'
+        assert header_2['special'] == ''
+        assert header_2['none-thing'] is None
+    else:
+        assert header_2['foo'] == 'new bar'
+        assert header_2['special'] == 'new value to ignore'
+        assert header_2['none-thing'] == 'none value to ignore'
+    new_control_read = ControlIOReader.read_control(control_path)
+    assert new_control_read == orig_control_read

@@ -26,6 +26,7 @@ import trestle.core.draw_io as draw_io
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
@@ -83,7 +84,7 @@ class Folders(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             if self._initialize(args):
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
@@ -103,15 +104,18 @@ class Folders(AuthorCommonCommand):
                     args.template_version,
                     args.ignore
                 )
+            else:
+                logger.error(f'Unsupported mode: {args.mode} for folders command.')
+                return CmdReturnCodes.INCORRECT_ARGS.value
             return status
         except TrestleError as e:
             logger.error(f'Error occurred when running trestle author folders: {e}')
             logger.error('Exiting')
-            return 1
-        except Exception as e:
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
             logger.error(f'Unexpected error occurred when running trestle author folders: {e}')
             logger.error('Exiting')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     def setup_template(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement."""
@@ -119,12 +123,12 @@ class Folders(AuthorCommonCommand):
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
             logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         elif self.template_dir.is_file():
             logger.error(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         template_file_a_md = self.template_dir / 'a_template.md'
         template_file_another_md = self.template_dir / 'another_template.md'
@@ -139,7 +143,7 @@ class Folders(AuthorCommonCommand):
             'template.drawio', self.template_dir, template_file_drawio, template_version
         )
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def template_validate(
         self, validate_header: bool, validate_only_header: bool, heading: str, readme_validate: bool
@@ -149,7 +153,7 @@ class Folders(AuthorCommonCommand):
             logger.error(
                 f'Template directory {self.rel_dir(self.template_dir)} for task {self.task_name} does not exist.'
             )
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         # get list of files:
         template_files = self.template_dir.rglob('*')
 
@@ -161,7 +165,7 @@ class Folders(AuthorCommonCommand):
             elif template_file.suffix.lower() == '.md':
                 if not readme_validate and template_file.name == 'readme.md':
                     logger.error('Template directory contains a readme.md file and readme validation is off.')
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
                 try:
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(
@@ -172,7 +176,7 @@ class Folders(AuthorCommonCommand):
                         f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
                         + f' failed to validate due to {ex}'
                     )
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
             elif template_file.suffix.lower().lstrip('.') == 'drawio':
                 try:
                     _ = draw_io.DrawIOMetadataValidator(template_file)
@@ -181,14 +185,14 @@ class Folders(AuthorCommonCommand):
                         f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
                         + f' failed to validate due to {ex}'
                     )
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
             else:
                 logger.info(
                     f'File: {self.rel_dir(template_file)} within the template directory was ignored'
                     + 'as it is not markdown.'
                 )
         logger.info(f'TEMPLATES VALID: {self.task_name}.')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def _measure_template_folder(
         self,
@@ -335,7 +339,7 @@ class Folders(AuthorCommonCommand):
                 ii = ii + 1
                 continue
             shutil.copytree(str(self.template_dir), str(sample_path))
-            return 0
+            return CmdReturnCodes.SUCCESS.value
 
     def validate(
         self,
@@ -349,7 +353,7 @@ class Folders(AuthorCommonCommand):
         """Validate task."""
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         for task_instance in self.task_path.iterdir():
             if task_instance.is_dir():
@@ -369,10 +373,10 @@ class Folders(AuthorCommonCommand):
                         'Governed-folder validation failed for task'
                         + f'{self.task_name} on directory {self.rel_dir(task_instance)}'
                     )
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
             else:
                 logger.warning(
                     f'Unexpected file {self.rel_dir(task_instance)} identified in {self.task_name}'
                     + ' directory, ignoring.'
                 )
-        return 0
+        return CmdReturnCodes.SUCCESS.value

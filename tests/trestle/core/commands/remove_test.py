@@ -60,7 +60,6 @@ def test_remove(tmp_path: pathlib.Path):
 
     add_plan = Plan()
     add_plan.add_action(actual_remove_action)
-    add_plan.simulate()
     add_plan.execute()
 
     # 1.2 Assertion about resulting element after removal
@@ -87,7 +86,6 @@ def test_remove(tmp_path: pathlib.Path):
 
     add_plan = Plan()
     add_plan.add_action(actual_remove_action)
-    add_plan.simulate()
     add_plan.execute()
 
     # 2.2 Assertion about resulting element after removal
@@ -159,7 +157,7 @@ def test_run_failure_nonexistent_element(
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.blah']
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 1
+    assert exitcode == 5
 
     # 2. Corrupt json file
     source_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'bad_simple.json')
@@ -167,7 +165,7 @@ def test_run_failure_nonexistent_element(
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.roles']
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 1
+    assert exitcode == 5
 
 
 def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
@@ -183,7 +181,7 @@ def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Ca
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.*']
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 1
+    assert exitcode == 5
 
 
 def test_run_failure_required_element(
@@ -222,7 +220,7 @@ def test_run_failure_project_not_found(
     testargs = ['trestle', 'remove', '-f', '/dev/null', '-e', 'catalog.metadata']
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 1
+    assert exitcode == 5
 
 
 def test_run_failure_filenotfounderror(
@@ -244,7 +242,7 @@ def test_run_failure_filenotfounderror(
     ]
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
-    assert exitcode == 1
+    assert exitcode == 5
 
 
 def test_run_failure_plan_execute(
@@ -253,10 +251,6 @@ def test_run_failure_plan_execute(
     """Test failure plan execute() in _run on RemoveCmd."""
     # Plant this specific logged error for failing execution in mock_execute:
     logged_error = 'fail_execute'
-
-    # Mock a successful simulate(), to avoid the actual simulate() call invoking an execute() call:
-    def mock_simulate(*args, **kwargs):
-        return
 
     def mock_execute(*args, **kwargs):
         raise err.TrestleError(logged_error)
@@ -276,7 +270,6 @@ def test_run_failure_plan_execute(
     Trestle().run()
     # .. then attempt to remove it here, but mocking a failed execute:
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.remarks']
-    monkeypatch.setattr(Plan, 'simulate', mock_simulate)
     monkeypatch.setattr(Plan, 'execute', mock_execute)
     monkeypatch.setattr(sys, 'argv', testargs)
     caplog.clear()

@@ -16,10 +16,12 @@
 """Trestle Replicate Command."""
 import argparse
 import logging
+import traceback
 
 from trestle.core import const
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -49,8 +51,17 @@ class ReplicateCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Execute and process the args."""
-        log.set_log_level_from_args(args)
-        return self.replicate_object(args.model, args)
+        try:
+            log.set_log_level_from_args(args)
+            return self.replicate_object(args.model, args)
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while replicating model: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while replicating model: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def replicate_object(cls, model_alias: str, args: argparse.Namespace) -> int:
@@ -69,7 +80,7 @@ class ReplicateCmd(CommandPlusDocs):
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if not trestle_root or not fs.is_valid_project_root(trestle_root):
             logger.error(f'Given directory: {trestle_root} is not a trestle project.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         plural_path = fs.model_type_to_model_dir(model_alias)
 
@@ -79,7 +90,7 @@ class ReplicateCmd(CommandPlusDocs):
         content_type = FileContentType.path_to_content_type(input_file_stem)
         if content_type == FileContentType.UNKNOWN:
             logger.error(f'Input file {args.name} has no json or yaml file at expected location {input_file_stem}.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         input_file = input_file_stem.with_suffix(FileContentType.to_file_extension(content_type))
 
@@ -90,11 +101,11 @@ class ReplicateCmd(CommandPlusDocs):
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, error loading file: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         except PermissionError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, access permission error loading file: {err}')
-            return 1
+            return CmdReturnCodes.AUTH_ERROR.value
 
         rep_model_path = trestle_root / plural_path / args.output / (
             model_alias + FileContentType.to_file_extension(content_type)
@@ -103,7 +114,7 @@ class ReplicateCmd(CommandPlusDocs):
         if rep_model_path.exists():
             logger.error(f'OSCAL file to be replicated here: {rep_model_path} exists.')
             logger.error('Aborting trestle replicate.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
         if args.regenerate:
             logger.debug(f'regenerating uuids for model {input_file}')
@@ -121,17 +132,10 @@ class ReplicateCmd(CommandPlusDocs):
         replicate_plan.add_action(write_action)
 
         try:
-            replicate_plan.simulate()
-        except TrestleError as err:
-            logger.debug(f'replicate_plan.simulate() failed: {err}')
-            logger.error(f'Replicate failed, error in simulating replicate operation: {err}')
-            return 1
-
-        try:
             replicate_plan.execute()
         except TrestleError as err:
             logger.debug(f'replicate_plan.execute() failed: {err}')
             logger.error(f'Replicate failed, error in executing replication operation: {err}')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return 0
+        return CmdReturnCodes.SUCCESS.value

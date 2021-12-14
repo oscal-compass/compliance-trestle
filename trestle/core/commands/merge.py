@@ -16,12 +16,14 @@
 """Trestle Merge Command."""
 import argparse
 import logging
+import traceback
 from pathlib import Path
 from typing import List
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -48,16 +50,25 @@ class MergeCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Merge elements into the parent oscal model."""
-        log.set_log_level_from_args(args)
+        try:
+            log.set_log_level_from_args(args)
 
-        # remove any quotes passed in as on windows platforms
-        elements_clean = args.element.strip("'")
+            # remove any quotes passed in as on windows platforms
+            elements_clean = args.element.strip("'")
 
-        element_paths = elements_clean.split(',')
-        logger.debug(f'merge _run element paths {element_paths}')
-        cwd = Path.cwd()
-        rc = self.perform_all_merges(element_paths, cwd, args.trestle_root)
-        return rc
+            element_paths = elements_clean.split(',')
+            logger.debug(f'merge _run element paths {element_paths}')
+            cwd = Path.cwd()
+            rc = self.perform_all_merges(element_paths, cwd, args.trestle_root)
+            return rc
+        except TrestleError as e:
+            logger.debug(traceback.format_exc())
+            logger.error(f'Error while merging subcomponents on a trestle model: {e}')
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            logger.debug(traceback.format_exc())
+            logger.error(f'Unexpected error while merging subcomponents on a trestle model: {e}')
+            return CmdReturnCodes.UNKNOWN_ERROR.value
 
     @classmethod
     def perform_all_merges(cls, element_paths: List[str], effective_cwd: Path, trestle_root: Path) -> int:
@@ -66,12 +77,11 @@ class MergeCmd(CommandPlusDocs):
             for element_path in element_paths:
                 logger.debug(f'merge {element_path}')
                 plan = cls.merge(effective_cwd, ElementPath(element_path), trestle_root)
-                plan.simulate()
                 plan.execute()
         except TrestleError as err:
             logger.error(f'Merge failed: {err}')
-            return 1
-        return 0
+            return CmdReturnCodes.COMMAND_ERROR.value
+        return CmdReturnCodes.SUCCESS.value
 
     @classmethod
     def merge(cls, effective_cwd: Path, element_path: ElementPath, trestle_root: Path) -> Plan:

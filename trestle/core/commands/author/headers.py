@@ -25,6 +25,7 @@ import trestle.utils.fs as fs
 from trestle.core import const
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -117,17 +118,17 @@ class Headers(AuthorCommonCommand):
         except TrestleError as e:
             logger.error(f'Error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
-            return 1
-        except Exception as e:
+            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
             logger.error(f'Unexpected error occurred when running trestle author headers: {e}')
             logger.error('Exiting')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     def create_sample(self) -> int:
         """Create sample object, this always defaults to markdown."""
         logger.info('Header only validation does not support sample creation.')
         logger.info('Exiting')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def setup(self, template_version: str) -> int:
         """Create template directory and templates."""
@@ -137,7 +138,7 @@ class Headers(AuthorCommonCommand):
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_name and self.task_path.is_file():
             logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         logger.info(f'Populating template files to {self.rel_dir(self.template_dir)}')
@@ -146,7 +147,7 @@ class Headers(AuthorCommonCommand):
             TemplateVersioning.write_versioned_template(template, self.template_dir, destination_path, template_version)
 
             logger.info(f'Template directory populated {self.rel_dir(destination_path)}')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def template_validate(self) -> int:
         """Validate the integrity of the template files."""
@@ -156,22 +157,22 @@ class Headers(AuthorCommonCommand):
                     and template_file.name.lower() != 'readme.md'):
                 logger.error(f'Unexpected template file {self.rel_dir(template_file)}')
                 logger.error('Exiting')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             if template_file.suffix == '.md':
                 try:
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(template_file, True, False)
                 except Exception as ex:
                     logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
             elif template_file.suffix == '.drawio':
                 try:
                     _ = DrawIOMetadataValidator(template_file)
                 except Exception as ex:
                     logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
         logger.info('Templates validated')
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
     def _validate_dir(
         self,
@@ -307,7 +308,7 @@ class Headers(AuthorCommonCommand):
         if self.task_name:
             if not self.task_path.is_dir():
                 logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
-                return 1
+                return CmdReturnCodes.COMMAND_ERROR.value
             paths = [self.task_path]
         else:
             for path in self.trestle_root.iterdir():
@@ -329,9 +330,9 @@ class Headers(AuthorCommonCommand):
                 valid = self._validate_dir(path, recurse, readme_validate, relative_excludes, template_version, ignore)
                 if not valid:
                     logger.info(f'validation failed on {path}')
-                    return 1
+                    return CmdReturnCodes.DOCUMENTS_VALIDATION_ERROR.value
             except Exception as e:
                 logger.error(f'Error during header validation on {path} {e}')
                 logger.error('Aborting')
-                return 1
-        return 0
+                return CmdReturnCodes.COMMAND_ERROR.value
+        return CmdReturnCodes.SUCCESS.value

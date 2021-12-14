@@ -23,6 +23,7 @@ import trestle.core.const as const
 import trestle.utils.log as log
 from trestle.core.commands.author.ssp import SSPFilter
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal.profile import Profile
 from trestle.utils import fs
@@ -62,7 +63,7 @@ class TransformCmd(CommandPlusDocs):
         except Exception as e:
             logger.error(f'The transform operation failed with error: {e}')
             logger.debug(traceback.format_exc())
-            return 1
+            return CmdReturnCodes.COMMAND_ERROR.value
 
     def transform(
         self,
@@ -80,7 +81,7 @@ class TransformCmd(CommandPlusDocs):
             if transform == const.FILTER_BY_PROFILE:
                 if not transform_by:
                     logger.warning('A profile name must be provided for transform-by in the command.')
-                    return 1
+                    return CmdReturnCodes.COMMAND_ERROR.value
                 ssp_filter = SSPFilter()
                 return ssp_filter.filter_ssp(trestle_root, input_name, transform_by, output_name, regenerate)
         elif model_type == const.MODEL_TYPE_PROFILE:
@@ -90,6 +91,6 @@ class TransformCmd(CommandPlusDocs):
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_path)
                 file_type = fs.FileContentType.path_to_content_type(profile_path)
                 fs.save_top_level_model(resolved_catalog, trestle_root, output_name, file_type)
-                return 0
+                return CmdReturnCodes.SUCCESS.value
         logger.warning(f'Transform operation not available for transform type {transform} and model type {model_type}')
-        return 1
+        return CmdReturnCodes.COMMAND_ERROR.value
