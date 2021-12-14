@@ -64,6 +64,7 @@ nav:
           - docs: api_reference/trestle.core.commands.author.docs.md
           - folders: api_reference/trestle.core.commands.author.folders.md
           - headers: api_reference/trestle.core.commands.author.headers.md
+          - jinja: api_reference/trestle.core.commands.author.jinja.md
           - profile: api_reference/trestle.core.commands.author.profile.md
           - ssp: api_reference/trestle.core.commands.author.ssp.md
           - versioning:
@@ -93,6 +94,7 @@ nav:
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - err: api_reference/trestle.core.err.md
       - generators: api_reference/trestle.core.generators.md
+      - jinja: api_reference/trestle.core.jinja.md
       - markdown:
         - markdown_api: api_reference/trestle.core.markdown.markdown_api.md
         - markdown_const: api_reference/trestle.core.markdown.markdown_const.md
@@ -115,6 +117,7 @@ nav:
       - remote:
         - cache: api_reference/trestle.core.remote.cache.md
       - repository: api_reference/trestle.core.repository.md
+      - ssp_io: api_reference/trestle.core.ssp_io.md
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - utils: api_reference/trestle.core.utils.md
       - validator: api_reference/trestle.core.validator.md
