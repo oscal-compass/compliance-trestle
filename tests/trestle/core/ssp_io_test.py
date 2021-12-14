@@ -70,7 +70,7 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
     assert md_text4
 
 
-def test_ssp_from_samples_e2e(
+def test_ssp_get_control_response(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test generating SSP from the sample profile and generate markdown representation of it."""
