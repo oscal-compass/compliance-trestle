@@ -466,7 +466,7 @@ class ControlIOWriter():
         self._md_file.new_paragraph()
         self._md_file.new_header(level=1, title=f'Parameters for control: {control.id}')
         self._md_file.set_indent_level(-1)
-        self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()])
+        self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
         self._md_file.set_indent_level(-1)
         return self._md_file.get_lines()
 
