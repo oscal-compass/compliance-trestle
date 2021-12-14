@@ -36,6 +36,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
+from trestle.oscal import profile as prof
 from trestle.utils import fs
 
 if os.name == 'nt':  # pragma: no cover
@@ -196,6 +197,21 @@ def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     return False
 
 
+def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
+    """Confirm the expected text is in the file after the tag."""
+    lines: List[str] = []
+    with file_path.open('r') as f:
+        lines = f.readlines()
+    found_tag = False
+    for line in lines:
+        if line.find(tag) >= 0:
+            found_tag = True
+            continue
+        if found_tag and line.find(text) >= 0:
+            return True
+    return False
+
+
 def delete_line_in_file(file_path: pathlib.Path, tag: str) -> bool:
     """Delete a line in a file containing tag."""
     lines: List[str] = []
@@ -217,6 +233,20 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
         control = generators.generate_sample_model(cat.Control, True)
         control.id = f'{label}-{ii + 1}'
         control.params[0].id = f'{control.id}.param'
+        sub_part = common.Part(
+            id=f'{control.id}_smt.a',
+            name='item',
+            props=[common.Property(name='label', value='a.')],
+            prose=f'Prose for item a. of control {control.id}'
+        )
+        control.parts = [
+            common.Part(
+                id=f'{control.id}_smt',
+                name='statement',
+                prose=f'Prose for the statement part of control {control.id}',
+                parts=[sub_part]
+            ),
+        ]
         controls.append(control)
     return controls
 
@@ -240,11 +270,6 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     group_a = generators.generate_sample_model(cat.Group, True)
     group_a.id = f'{stem}a'
     group_a.controls = generate_control_list(group_a.id, 4)
-    part = generators.generate_sample_model(common.Part)
-    part.id = f'{stem}a-1_smt'
-    part.parts = None
-    group_a.controls[0].parts[0].id = f'{stem}_part_with_subpart'
-    group_a.controls[0].parts[0].parts = [part]
     group_b = generators.generate_sample_model(cat.Group, True)
     group_b.id = f'{stem}b'
     group_b.controls = generate_control_list(group_b.id, 3)
@@ -263,7 +288,9 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     test_control.params = [common.Parameter(id=f'{test_control.id}_prm_1', values=['Default', 'Values'])]
     test_control.parts = [
         common.Part(
-            id=f'{test_control.id}-stmt', prose='The prose with {{ insert: param, test-1_prm_1 }}', name='statement'
+            id=f'{test_control.id}_smt',
+            name='statement',
+            prose='Statement with no parts.  Prose with param value {{ insert: param, test-1_prm_1 }}'
         )
     ]
     catalog.controls.append(test_control)
@@ -324,7 +351,7 @@ def setup_for_ssp(
         output=output_name,
         verbose=True,
         sections=sections,
-        header_dont_merge=False
+        preserve_header_values=False
     )
 
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -393,3 +420,11 @@ def execute_command_and_assert(command: str, return_code: int, monkeypatch: Monk
     monkeypatch.setattr(sys, 'argv', command.split())
     rc = Trestle().run()
     assert rc == return_code
+
+
+def create_profile_in_trestle_dir(trestle_root: pathlib.Path, catalog_name: str, profile_name: str) -> None:
+    """Create a profile in the trestle dir with href to load all from specified catalog."""
+    profile = generators.generate_sample_model(prof.Profile)
+    import_ = prof.Import(href=f'{const.TRESTLE_HREF_HEADING}catalogs/{catalog_name}/catalog.json', include_all={})
+    profile.imports = [import_]
+    fs.save_top_level_model(profile, trestle_root, profile_name, fs.FileContentType.JSON)
