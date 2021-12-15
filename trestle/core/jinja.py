@@ -31,13 +31,13 @@ from trestle.core.markdown import markdown_node
 logger = logging.getLogger(__name__)
 
 
-def adjust_header_level(input_md: str, expected: int) -> str:
+def adjust_heading_level(input_md: str, expected: int) -> str:
     """Adjust the header level of a markdown string such that the most significant header matches the expected #'s."""
     output_md = input_md
     mdn = markdown_node.MarkdownNode.build_tree_from_markdown(input_md.split('\n'))
     if mdn.subnodes:
-        mdn_top_header = mdn.subnodes[0].get_node_header_lvl()
-        delta = int(expected) - mdn_top_header
+        mdn_top_heading = mdn.subnodes[0].get_node_header_lvl()
+        delta = int(expected) - mdn_top_heading
         if not delta == 0:
             mdn.change_header_level_by(delta)
             output_md = mdn.content.raw_text
@@ -111,7 +111,7 @@ class MDSectionInclude(TrestleJinjaExtension):
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
         kwargs = None
-        expected_header_level = None
+        expected_heading_level = None
         count = 0
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
             count = count + 1
@@ -142,10 +142,10 @@ class MDSectionInclude(TrestleJinjaExtension):
         md_section = full_md.get_node_for_key(section_title.value, strict_matching=True)
         # adjust
         if kwargs is not None:
-            expected_header_level = kwargs.get('header_level')
-        if expected_header_level is not None:
+            expected_heading_level = kwargs.get('heading_level')
+        if expected_heading_level is not None:
             level = md_section.get_node_header_lvl()
-            delta = int(expected_header_level) - level
+            delta = int(expected_heading_level) - level
             if not delta == 0:
                 md_section.change_header_level_by(delta)
         if not md_section:
@@ -170,7 +170,7 @@ class MDCleanInclude(TrestleJinjaExtension):
     def parse(self, parser):
         """Execute parsing of md token and return nodes."""
         kwargs = None
-        expected_header_level = None
+        expected_heading_level = None
         count = 0
         while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
             count = count + 1
@@ -195,9 +195,9 @@ class MDCleanInclude(TrestleJinjaExtension):
         fm = frontmatter.loads(md_content)
         content = fm.content
         if kwargs is not None:
-            expected_header_level = kwargs.get('header_level')
-        if expected_header_level is not None:
-            content = adjust_header_level(content, expected_header_level)
+            expected_heading_level = kwargs.get('heading_level')
+        if expected_heading_level is not None:
+            content = adjust_heading_level(content, expected_heading_level)
 
         local_parser = Parser(self.environment, content)
         top_level_output = local_parser.parse()

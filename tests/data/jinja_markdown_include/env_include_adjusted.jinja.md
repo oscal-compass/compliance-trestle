@@ -2,4 +2,4 @@
 
 
 # This should pull content in only if the var is correct
-{% md_clean_include 'test_markdown.md' header_level=2 %}
+{% md_clean_include 'test_markdown.md' heading_level=2 %}

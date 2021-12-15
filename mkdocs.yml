@@ -31,6 +31,7 @@ nav:
 - Trestle command-line interface (CLI):
   - CLI for OSCAL documents: cli.md
   - CLI for authoring governed content: trestle_author.md
+  - CLI for jinja template processing: trestle_author_jinja.md
 - Contributing:
   - Code of Conduct: mkdocs_code_of_conduct.md
   - Contributing overview: contributing/mkdocs_contributing.md
