@@ -74,6 +74,7 @@ class MarkdownAPI:
     def write_markdown_with_header(self, path, header, md_body) -> None:
         """Write markdown with the YAML header."""
         try:
+            # use encoding to handle character sets as well as possible
             with open(path, 'w', encoding=const.FILE_ENCODING, errors='replace') as md_file:
                 md_file.write('---\n')
                 yaml.safe_dump(header, md_file, sort_keys=False)
