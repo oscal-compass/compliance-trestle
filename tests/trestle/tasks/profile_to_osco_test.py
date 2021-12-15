@@ -126,6 +126,14 @@ def test_profile_to_osco_execute_osco_parms_yes(tmp_path):
     _test_profile_to_osco_execute_common(tmp_path, config)
 
 
+def test_profile_to_osco_execute_osco_parms_yes_var(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-parms-yes-var.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
 def test_profile_to_osco_execute_osco_scc(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()

@@ -646,10 +646,11 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         """Format for OSCO.
 
         1. remove prefix xccdf_org.ssgproject.content_rule_
-        2. change underscores to dashes
-        3. add prefix ocp4-
+        2. remove prefix var_
+        3. change underscores to dashes
+        4. add prefix ocp4-
         """
-        normalized_name = name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-')
+        normalized_name = name.replace('xccdf_org.ssgproject.content_rule_', '').replace('var_', '').replace('_', '-')
         if not normalized_name.startswith('ocp4-'):
             normalized_name = f'ocp4-{normalized_name}'
         return normalized_name
