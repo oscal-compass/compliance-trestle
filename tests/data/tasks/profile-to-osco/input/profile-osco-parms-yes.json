@@ -18,12 +18,12 @@
           "ns": "https://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
           "value": "ocp4-cis-node",
           "class": "scc_base_profile_mnemonic"
-        }        
+        }            
       ]
     },
     "imports": [
       {
-        "href": "",
+        "href": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
         "exclude-controls": [
           {
             "with-ids": [

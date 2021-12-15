@@ -59,31 +59,83 @@ def test_profile_to_osco_execute(tmp_path):
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco.config')
     config.read(config_path)
-    section = config['task.profile-to-osco']
-    d_expected = pathlib.Path(section['output-dir'])
-    d_produced = tmp_path
-    section['output-dir'] = str(d_produced)
-    tgt = profile_to_osco.ProfileToOsco(section)
-    retval = tgt.simulate()
-    assert retval == TaskOutcome.SIM_SUCCESS
-    assert len(os.listdir(str(tmp_path))) == 0
-    retval = tgt.execute()
-    assert retval == TaskOutcome.SUCCESS
-    list_dir = os.listdir(d_produced)
-    assert len(list_dir) == 1
-    assert d_expected != d_produced
-    for fn in list_dir:
-        f_expected = d_expected / fn
-        f_produced = d_produced / fn
-        result = text_files_equal(f_expected, f_produced)
-        assert (result)
+    _test_profile_to_osco_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_disable(tmp_path):
+def test_profile_to_osco_execute_osco_0_1_39_parms_no(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-disable.config')
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.39-parms-no.config')
     config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_0_1_39_parms_yes(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.39-parms-yes.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_0_1_40_parms_no(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.40-parms-no.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_0_1_40_parms_yes(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.40-parms-yes.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_0_2_0_parms_no(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.2.0-parms-no.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_1_0_0_parms_yes(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-1.0.0-parms-yes.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_parms_no(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-parms-no.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_parms_yes(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-parms-yes.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def test_profile_to_osco_execute_osco_scc(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-scc.config')
+    config.read(config_path)
+    _test_profile_to_osco_execute_common(tmp_path, config)
+
+
+def _test_profile_to_osco_execute_common(tmp_path, config):
+    """Test execute call."""
     section = config['task.profile-to-osco']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path

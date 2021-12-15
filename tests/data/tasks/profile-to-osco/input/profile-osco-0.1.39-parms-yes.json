@@ -1,0 +1,107 @@
+{
+  "profile": {
+    "uuid": "31182b1c-32b3-422d-a366-62b39272058c",
+    "metadata": {
+      "title": "Tailored Profile",
+      "last-modified": "2021-08-06T13:25:50.741+00:00",
+      "version": "1.0",
+      "oscal-version": "1.0.0",
+      "props": [
+        {
+          "name": "profile_mnemonic",
+          "ns": "https://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
+          "value": "roks-cis-node",
+          "class": "scc_profile_mnemonic"
+        },              
+        {
+          "name": "base_profile_mnemonic",
+          "ns": "https://my.github.io/compliance-trestle/schemas/oscal/my-cloud",
+          "value": "ocp4-cis-node",
+          "class": "scc_base_profile_mnemonic"
+        },
+        {
+          "name": "osco_version",
+          "value": "0.1.39"
+        }            
+      ]
+    },
+    "imports": [
+      {
+        "href": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+        "exclude-controls": [
+          {
+            "with-ids": [
+              "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
+              "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
+              "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "kubelet_eviction_thresholds_set_soft_memory_available",
+          "values": [
+            "500Mi"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_soft_nodefs_available",
+          "values": [
+            "10%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
+          "values": [
+            "5%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_soft_imagefs_available",
+          "values": [
+            "15%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
+          "values": [
+            "10%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_hard_memory_available",
+          "values": [
+            "200Mi"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_hard_nodefs_available",
+          "values": [
+            "5%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
+          "values": [
+            "4%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_hard_imagefs_available",
+          "values": [
+            "10%"
+          ]
+        },
+        {
+          "param-id": "kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
+          "values": [
+            "5%"
+          ]
+        }
+      ]
+    }
+  }
+}

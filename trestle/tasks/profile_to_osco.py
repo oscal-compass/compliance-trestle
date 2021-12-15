@@ -71,6 +71,16 @@ class ProfileToOsco(TaskBase):
         )
         logger.info('')
         logger.info('Operation: The specified input profile is transformed into OSCO .yaml.')
+        logger.info('')
+        logger.info('Notes:')
+        note11 = '[1] The input-file OSCAL profile should specify a metadata property with'
+        note12 = 'name "osco_version" and value of the form "0.1.46".'
+        note13 = 'The value corresponds with the OpenShift Compliance Operator (OSCO) version'
+        note14 = 'and affects the format of the emitted yaml.'
+        note15 = 'If not specified, the default is "0.1.46".'
+        logger.info(f'{note11} {note12} {note13} {note14} {note15}')
+        note21 = '[2] For OSCO version "0.1.39" and prior no "description" is emitted for "spec".'
+        logger.info(f'{note21}')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""

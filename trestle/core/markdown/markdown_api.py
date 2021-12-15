@@ -18,6 +18,7 @@ import logging
 import pathlib
 from typing import Optional
 
+from trestle.core import const
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.markdown.markdown_validator import MarkdownValidator
@@ -73,7 +74,8 @@ class MarkdownAPI:
     def write_markdown_with_header(self, path, header, md_body) -> None:
         """Write markdown with the YAML header."""
         try:
-            with open(path, 'w') as md_file:
+            # use encoding to handle character sets as well as possible
+            with open(path, 'w', encoding=const.FILE_ENCODING, errors='replace') as md_file:
                 md_file.write('---\n')
                 yaml.safe_dump(header, md_file, sort_keys=False)
                 md_file.write('---\n\n')
