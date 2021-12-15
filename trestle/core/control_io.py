@@ -446,14 +446,13 @@ class ControlIOWriter():
     def get_control_statement(self, control: cat.Control, group_title: str) -> List[str]:
         """Get back the formatted control from a catalog."""
         self._md_file = MDWriter(None)
-        self._md_file.new_header(level=1, title=f'Control statement for control: {control.id}')
         self._add_control_statement(control, group_title)
         return self._md_file.get_lines()
 
     def get_response(self, control: cat.Control) -> List[str]:
         """Get back the formatted response from a catalog."""
         self._md_file = MDWriter(None)
-        self._md_file.new_header(level=1, title=f'Response for control: {control.id}')
+        self._md_file.new_header(level=1, title='Response.')
         self._add_response(control, {})
         return self._md_file.get_lines()
 
@@ -462,13 +461,15 @@ class ControlIOWriter():
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
-        self._md_file = MDWriter(None)
-        self._md_file.new_paragraph()
-        self._md_file.new_header(level=1, title=f'Parameters for control: {control.id}')
-        self._md_file.set_indent_level(-1)
-        self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
-        self._md_file.set_indent_level(-1)
-        return self._md_file.get_lines()
+        if param_dict:
+            self._md_file = MDWriter(None)
+            self._md_file.new_paragraph()
+            self._md_file.set_indent_level(-1)
+            self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
+            self._md_file.set_indent_level(-1)
+            return self._md_file.get_lines()
+
+        return []
 
 
 class ControlIOReader():

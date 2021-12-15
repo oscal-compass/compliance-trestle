@@ -106,11 +106,11 @@ def test_ssp_get_control_response(
 
     assert tree.get_node_for_key('## Part a.')
     assert tree.get_node_for_key('## Part c.')
-    assert len(list(tree.get_all_headers_for_level(3))) == 3
+    assert len(list(tree.get_all_headers_for_level(2))) == 3
 
     md_text = ssp_io.get_control_response('ac-1', 2, False)
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
     assert tree.get_node_for_key('### Part a.')
-    assert not tree.get_node_for_key('### Part c.')
-    assert len(list(tree.get_all_headers_for_level(4))) == 2
+    assert tree.get_node_for_key('### Part c.')
+    assert len(list(tree.get_all_headers_for_level(3))) == 3
