@@ -253,13 +253,6 @@ class SSPMarkdownWriter():
 
         return tree.content.raw_text
 
-    def does_have_control_part(self, control_id: str, part_name: str) -> bool:
-        """Check if control have a part with given name."""
-        if self.get_control_part(control_id, part_name, 0):
-            return True
-        else:
-            return False
-
     def _get_responses_by_components(self, statement: Statement, write_empty_responses: bool) -> Dict[str, str]:
         """Get response per component, substitute component id with title if possible."""
         response_per_component = {}
