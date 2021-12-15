@@ -114,3 +114,35 @@ def test_ssp_get_control_response(
     assert tree.get_node_for_key('### Part a.')
     assert tree.get_node_for_key('### Part c.')
     assert len(list(tree.get_all_headers_for_level(3))) == 3
+
+
+def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test individual writers."""
+    ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
+    output = ssp_io._write_list_with_header('Empty body', [], 2)
+    assert not output
+
+    output = ssp_io._write_list_with_header('Sample list', ['1', '2', '3'], 2)
+    tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+    node = tree.get_node_for_key('### Sample list')
+    assert node
+    assert node.content.text == ['', '- 1', '', '- 2', '', '- 3']
+
+    output = ssp_io._write_table_with_header('Empty table', [[]], ['c1', 'c2', 'c3'], 0)
+    assert not output
+
+    output = ssp_io._write_table_with_header('Sample table', [['1', '2', '3'], ['4', '5', '6']], ['c1', 'c2', 'c3'], 0)
+    tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+    node = tree.get_node_for_key('# Sample table')
+    assert node
+    assert node.content.tables[0] == '| c1 | c2 | c3 |'
+    assert node.content.tables[3] == '| 4 | 5 | 6 |'
+
+    output = ssp_io._write_str_with_header('Empty text', '', 0)
+    assert not output
+
+    output = ssp_io._write_str_with_header('Some text', 'this is a text.', 5)
+    tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+    node = tree.get_node_for_key('###### Some text')
+    assert node
+    assert node.content.raw_text == '###### Some text\n\nthis is a text.'

@@ -14,7 +14,7 @@
 """Handle direct IO for writing SSP responses as markdown."""
 import logging
 import pathlib
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from trestle.core import catalog_interface
 from trestle.core.catalog_interface import CatalogInterface
@@ -260,15 +260,6 @@ class SSPMarkdownWriter():
         else:
             return False
 
-    def _component_uuid_by_title(self, title: str) -> Optional[str]:
-        """Get component uuid from the component title."""
-        components = self._ssp.system_implementation.components
-
-        for component in components:
-            if component.title == title:
-                return component.uuid
-        return None
-
     def _get_responses_by_components(self, statement: Statement, write_empty_responses: bool) -> Dict[str, str]:
         """Get response per component, substitute component id with title if possible."""
         response_per_component = {}
@@ -315,24 +306,28 @@ class SSPMarkdownWriter():
     def _write_table_with_header(
         self, header: str, values: List[List[str]], table_header: List[str], level: int
     ) -> str:
-        md_writer = MDWriter(None)
-        md_writer.new_paragraph()
-        md_writer.new_header(level=1, title=header)
-        md_writer.set_indent_level(-1)
-        md_writer.new_table(values, table_header)
-        md_writer.set_indent_level(-1)
+        if values and values[0]:
+            md_writer = MDWriter(None)
+            md_writer.new_paragraph()
+            md_writer.new_header(level=1, title=header)
+            md_writer.set_indent_level(-1)
+            md_writer.new_table(values, table_header)
+            md_writer.set_indent_level(-1)
 
-        return self._build_tree_and_adjust(md_writer.get_lines(), level)
+            return self._build_tree_and_adjust(md_writer.get_lines(), level)
+        return ''
 
     def _write_str_with_header(self, header: str, text: str, level: int) -> str:
-        md_writer = MDWriter(None)
-        md_writer.new_paragraph()
-        md_writer.new_header(level=1, title=header)
-        md_writer.set_indent_level(-1)
-        md_writer.new_line(text)
-        md_writer.set_indent_level(-1)
+        if text:
+            md_writer = MDWriter(None)
+            md_writer.new_paragraph()
+            md_writer.new_header(level=1, title=header)
+            md_writer.set_indent_level(-1)
+            md_writer.new_line(text)
+            md_writer.set_indent_level(-1)
 
-        return self._build_tree_and_adjust(md_writer.get_lines(), level)
+            return self._build_tree_and_adjust(md_writer.get_lines(), level)
+        return ''
 
     def _build_tree_and_adjust(self, lines: List[str], level: int) -> str:
         tree = MarkdownNode.build_tree_from_markdown(lines)
