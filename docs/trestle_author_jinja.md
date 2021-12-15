@@ -4,7 +4,7 @@ Unfortunately OSCAL documents are not yet universally accepted. Therefore to sup
 
 ## Jinja and jinja extensions provided by trestle.
 
-[Jinja](https://jinja.palletsprojects.com/en/3.0.x/) is a powerful templating engine that is both more flexible that pure 'Moustache' approaches, and not coupled to a particular web application server. (as an example Django templates). Users are encouraged to review the [template designer documentation](https://jinja.palletsprojects.com/en/3.0.x/templates/) for jinja as all core functionality is exposed.
+[Jinja](https://jinja.palletsprojects.com/en/3.0.x/) is a powerful templating engine that is both more flexible that pure 'Moustache' approaches, and not coupled to a particular web application server (as an example Django templates). Users are encouraged to review the [template designer documentation](https://jinja.palletsprojects.com/en/3.0.x/templates/) for jinja as all core functionality is exposed.
 
 Trestle's implementation of the Jinja command works in the following way:
 
@@ -23,10 +23,18 @@ Note the examples here use markdown, however, jinja can quite easily target xml 
 
 - `-i` input file path, relative to cwd. Users are encouraged to use the `file_name.target_extension.jinja` best practice as it helps mitigate issues, however is not required.
 - `-o` final output path, relative to cwd.
-- `-ssp` (optional) ssp name (in the trestle project). When used a interface will be made available to the jinja template.
-- `-p` (optional) profile name (in the trestle project). When used a interface to the resolved catalog will be made available to the jinja template.
+- `-ssp` (optional) ssp name (in the trestle project). When used the jinja template will have a `ssp_md_writer` variable exposed to use.
+- `-p` (optional) profile name (in the trestle project). When used the jinja template will have `resolved_catalog` and `catalog_interface` variables to use.
 - `-lut` (optional) loads yaml into a dictionary in python for which each (top level) variable is available in jinja.
 - `-elp` (optional) a period separated prefix for the variables in the lookup table. E.g. if the lut contained `banana: yellow` and the prefix was `fruit.tropical` using `{{ fruit.tropical.banana }}` would print out `yellow` in the jinja template.
+
+## Sample jinja templates
+
+Note in addition to these templates some testing examples are available [here](https://github.com/IBM/develop)
+
+| template                                          | Description                                                                                          | Optional args required                                                                                          |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [Simple SSP template](assets/sample_ssp.md.jinja) | Sample ssp jinja template which prints out all control responses and includes a front-matter section | `-ssp` and `-p` for the ssp json and corresponding profile, respectively. Also requires a `frontmatter.md` file |
 
 ## Variable availability in the jinja template.
 
