@@ -226,7 +226,7 @@ class CatalogInterface():
         """Get count of controls from the actual catalog."""
         return len(list(self.get_all_controls_from_catalog(recurse)))
 
-    def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
+    def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
         return (
             self._control_dict[control_id].group_id,
@@ -341,7 +341,7 @@ class CatalogInterface():
                 param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
                 if param_dict:
                     new_header[const.SET_PARAMS_TAG] = param_dict
-            group_id, group_title, _ = catalog_interface.get_group_info(control.id)
+            group_id, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # this works also for the catalog controls with group_id=''
             group_dir = md_path / group_id
             if not group_dir.exists():
