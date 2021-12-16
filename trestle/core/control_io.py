@@ -322,35 +322,21 @@ class ControlIOWriter():
         return prose.strip()
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], preserve_dest_values: bool) -> None:
         """
-        Merge dict src into dest in a deep manner and handle lists.
+        Merge dict src into dest.
 
-        All contents of dest are retained and new values from src do not change dest.
-        But any new items in src are added to dest.
-        This changes dest in place.
+        New items are always added from src to dest.
+        Items present in both will not override dest if preserve_dest_values is True.
         """
         for key in src.keys():
             if key in dest:
+                # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlIOWriter.merge_dicts_deep(dest[key], src[key])
-                elif isinstance(dest[key], list):
-                    # grow dest list for the key by adding new items from src
-                    if isinstance(src[key], list):
-                        try:
-                            # Simple types (e.g. lists of strings) will get merged neatly
-                            missing = set(src[key]) - set(dest[key])
-                            dest[key].extend(missing)
-                        except TypeError:
-                            # This is a complex type - use simplistic safe behaviour
-                            logger.debug('Ignoring complex types within lists when merging dictionaries.')
-                    else:
-                        if src[key] not in dest[key]:
-                            dest[key].append(src[key])
-                elif isinstance(src[key], list):
-                    dest[key] = [dest[key]]
-                    dest[key].extend(src[key])
-                # if the item is in both, leave dest as-is and ignore the src value
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], preserve_dest_values)
+                # otherwise override dest if needed
+                elif not preserve_dest_values:
+                    dest[key] = src[key]
             else:
                 # if the item was not already in dest, add it from src
                 dest[key] = src[key]
@@ -395,37 +381,9 @@ class ControlIOWriter():
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
-        # Need to merge any existing markdown header info with the new header.  Either could be empty.
-        # But x-trestle- content in the new header should always replace content in the markdown header.
-
-        # Remove any special trestle content from the read markdown header
-        keys_to_delete = []
-        for key in header.keys():
-            if key.startswith(const.TRESTLE_TAG):
-                keys_to_delete.append(key)
-        for key in keys_to_delete:
-            header.pop(key)
-
-        # Split the provided yaml into generic and trestle parts
-        generic_dict = {}
-        trestle_dict = {}
-        merged_header = {}
+        merged_header = copy.deepcopy(header)
         if yaml_header:
-            for key, value in yaml_header.items():
-                if key.startswith(const.TRESTLE_TAG):
-                    trestle_dict[key] = value
-                else:
-                    generic_dict[key] = value
-
-        if preserve_header_values:
-            merged_header = copy.deepcopy(header)
-            ControlIOWriter.merge_dicts_deep(merged_header, generic_dict)
-        else:
-            merged_header = copy.deepcopy(generic_dict)
-            ControlIOWriter.merge_dicts_deep(merged_header, header)
-
-        # now insert the trestle content from the yaml header
-        merged_header.update(trestle_dict)
+            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, preserve_header_values)
 
         self._add_yaml_header(merged_header)
 
