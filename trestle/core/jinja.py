@@ -194,6 +194,7 @@ class MDCleanInclude(TrestleJinjaExtension):
         md_content, _, _ = self.environment.loader.get_source(self.environment, markdown_source.value)
         fm = frontmatter.loads(md_content)
         content = fm.content
+        content +="\n\n"
         if kwargs is not None:
             expected_heading_level = kwargs.get('heading_level')
         if expected_heading_level is not None:
