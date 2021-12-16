@@ -230,7 +230,7 @@ class CatalogInterface():
 
     def get_group_ids(self) -> List[str]:
         """Get all the group id's as a string."""
-        return list({control.group_id for control in self._control_dict.values()})
+        return list(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
 
     def get_all_groups_from_catalog(self) -> Iterator[cat.Group]:
         """Retrieve all groups in the catalog."""
@@ -242,10 +242,6 @@ class CatalogInterface():
     def get_statement_label_if_exists(self, control_id: str,
                                       statement_id: str) -> Tuple[Optional[str], Optional[common.Part]]:
         """Get statement label if given."""
-        # TODO: workaround when statement ids contain additional dot at the end
-        # remove this after this is fixed
-        if statement_id[-1] == '.':
-            statement_id = statement_id[0:-1]
 
         def does_part_exists(part: common.Part) -> bool:
             does_match = False
@@ -291,9 +287,9 @@ class CatalogInterface():
                     yield res
 
     @staticmethod
-    def get_label(object_with_props: BaseModel) -> Optional[str]:
+    def get_label(object_with_props: BaseModel) -> str:
         """Get the label from an object with properties (such as a control)."""
-        label = None
+        label = ''
         if object_with_props.props:
             for prop in object_with_props.props:
                 if prop.name == 'label':
@@ -309,7 +305,7 @@ class CatalogInterface():
             self._control_dict[control_id].group_class
         )
 
-    def get_path(self, control_id: str) -> List[str]:
+    def get_control_path(self, control_id: str) -> List[str]:
         """Return the path into the catalog for this control."""
         return self._control_dict[control_id].path
 

@@ -449,13 +449,6 @@ class ControlIOWriter():
         self._add_control_statement(control, group_title)
         return self._md_file.get_lines()
 
-    def get_response(self, control: cat.Control) -> List[str]:
-        """Get back the formatted response from a catalog."""
-        self._md_file = MDWriter(None)
-        self._md_file.new_header(level=1, title='Response.')
-        self._add_response(control, {})
-        return self._md_file.get_lines()
-
     def get_params(self, control: cat.Control) -> List[str]:
         """Get parameters for control."""
         reader = ControlIOReader()

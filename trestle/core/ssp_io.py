@@ -96,15 +96,16 @@ class SSPMarkdownWriter():
         impl_status = self.get_fedramp_implementation_status(control_id, level)
         control_orig = self.get_fedramp_control_origination(control_id, level)
 
-        return resp_roles_table + params_values + impl_status + control_orig
-
-    # TODO: Ensure
-    # 1 Get parameters from catalog
-    # 2 update param with set parameter if required at
-    # a. the control implementation level
-    # b. The implemented requirement level
-    # 3. Get responsible role ID's from implememented_requirement.roles
-    # 4. Resolve responsible role-id to a human readable name.
+        final_output = ''
+        if resp_roles_table:
+            final_output += resp_roles_table
+        if params_values:
+            final_output += '\n' + params_values
+        if impl_status:
+            final_output += '\n' + impl_status
+        if control_orig:
+            final_output += '\n' + control_orig
+        return final_output
 
     def get_responsible_roles_table(self, control_id: str, level: int) -> str:
         """

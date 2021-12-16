@@ -293,3 +293,29 @@ def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
     prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
     _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
+
+
+def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test get all groups from the catalog."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    cat_interface = CatalogInterface(catalog)
+
+    all_groups_top = cat_interface.get_all_controls_from_catalog(recurse=False)
+    assert len(list(all_groups_top)) == 6
+
+    all_groups_rec = cat_interface.get_all_controls_from_catalog(recurse=True)
+    assert len(list(all_groups_rec)) == 7
+
+    all_group_ids = cat_interface.get_group_ids()
+    assert len(all_group_ids) == 1
+
+    statement_label, part = cat_interface.get_statement_label_if_exists('ac-1', 'ac-1_smt.c.2')
+    assert statement_label == '2.'
+    assert part.id == 'ac-1_smt.c.2'
+
+    cat_path = cat_interface.get_control_path('ac-2')
+    assert cat_path[0] == 'ac'
+    assert cat_path[1] == 'ac-2'
