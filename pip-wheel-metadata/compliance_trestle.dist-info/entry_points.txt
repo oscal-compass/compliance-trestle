@@ -1,0 +1,3 @@
+[console_scripts]
+trestle = trestle.cli:run
+
