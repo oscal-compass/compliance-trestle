@@ -80,7 +80,7 @@ def test_split_model_plans(tmp_path: pathlib.Path, sample_nist_component_def: co
 
 
 def test_split_chained_sub_model_plans(
-    tmp_path: pathlib.Path, sample_catalog: oscatalog.Catalog, keep_cwd: pathlib.Path
+    tmp_path: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog, keep_cwd: pathlib.Path
 ) -> None:
     """Test for split_model method with chained sum models like catalog.metadata.parties.*."""
     # Assume we are running a command like below
@@ -92,7 +92,7 @@ def test_split_chained_sub_model_plans(
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
-        sample_catalog,
+        simplified_nist_catalog,
         test_utils.CATALOGS_DIR)
 
     # read the model from file
@@ -392,7 +392,7 @@ def test_split_run_failures(
     assert rc == 1
 
 
-def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.Catalog) -> None:
+def test_split_model_at_path_chain_failures(tmp_path, simplified_nist_catalog: oscatalog.Catalog) -> None:
     """Test for split_model_at_path_chain method failure scenarios."""
     content_type = FileContentType.JSON
 
@@ -400,7 +400,7 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
-        sample_catalog,
+        simplified_nist_catalog,
         test_utils.CATALOGS_DIR)
 
     split_plan = Plan()
@@ -409,19 +409,19 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
     # no plan should error
     with pytest.raises(TrestleError):
         SplitCmd.split_model_at_path_chain(
-            sample_catalog, element_paths, catalog_dir, content_type, 0, None, False, '', None
+            simplified_nist_catalog, element_paths, catalog_dir, content_type, 0, None, False, '', None
         )
 
     # negative path index should error
     with pytest.raises(TrestleError):
         SplitCmd.split_model_at_path_chain(
-            sample_catalog, element_paths, catalog_dir, content_type, -1, split_plan, False, '', None
+            simplified_nist_catalog, element_paths, catalog_dir, content_type, -1, split_plan, False, '', None
         )
 
     # too large path index should return the path index
     cur_path_index = len(element_paths) + 1
     SplitCmd.split_model_at_path_chain(
-        sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False, '', None
+        simplified_nist_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False, '', None
     )
 
     # FIXME All tests to strip parts that don't exist will currently pass unless that behavior is changed
@@ -485,13 +485,15 @@ def test_split_comp_def(
 
 
 def test_split_stop_at_string(
-    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+    tmp_path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
 ) -> None:
     """Test prevention of split at string level."""
     # prepare trestle project dir with the file
 
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, simplified_nist_catalog, cat_name, monkeypatch
+    )
     catalog_dir = trestle_root / 'catalogs' / cat_name
 
     os.chdir(catalog_dir)
@@ -506,12 +508,14 @@ def test_split_stop_at_string(
 
 
 def test_split_tutorial_workflow(
-    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+    tmp_path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
 ) -> None:
     """Test split operations and final re-merge in workflow tutorial."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, simplified_nist_catalog, cat_name, monkeypatch
+    )
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
@@ -569,14 +573,16 @@ def test_split_catalog_star(
     split_path: str,
     tmp_path: pathlib.Path,
     keep_cwd: pathlib.Path,
-    sample_catalog: oscatalog.Catalog,
+    simplified_nist_catalog: oscatalog.Catalog,
     monkeypatch: MonkeyPatch
 ) -> None:
     """Test extended depth split operations and split of dicts."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
-    orig_model = sample_catalog
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, simplified_nist_catalog, cat_name, monkeypatch
+    )
+    orig_model = simplified_nist_catalog
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
@@ -592,14 +598,16 @@ def test_split_catalog_star(
 
 
 def test_split_deep(
-    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+    tmp_path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
 ) -> None:
     """Test deep split of model."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, simplified_nist_catalog, cat_name, monkeypatch
+    )
 
-    orig_model: oscatalog.Catalog = sample_catalog
+    orig_model: oscatalog.Catalog = simplified_nist_catalog
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
@@ -618,14 +626,16 @@ def test_split_deep(
 
 
 def test_split_relative_path(
-    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+    tmp_path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
 ) -> None:
     """Test split with relative path."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, simplified_nist_catalog, cat_name, monkeypatch
+    )
 
-    orig_model: oscatalog.Catalog = sample_catalog
+    orig_model: oscatalog.Catalog = simplified_nist_catalog
 
     os.chdir(trestle_root)
     catalog_dir = trestle_root / 'catalogs' / cat_name
@@ -647,14 +657,16 @@ def test_split_relative_path(
 
 
 def test_no_file_given(
-    tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
+    tmp_path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog, monkeypatch: MonkeyPatch
 ) -> None:
     """Test split with no file specified."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
-    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name, monkeypatch)
+    trestle_root = test_utils.create_trestle_project_with_model(
+        tmp_path, simplified_nist_catalog, cat_name, monkeypatch
+    )
 
-    orig_model: oscatalog.Catalog = sample_catalog
+    orig_model: oscatalog.Catalog = simplified_nist_catalog
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'

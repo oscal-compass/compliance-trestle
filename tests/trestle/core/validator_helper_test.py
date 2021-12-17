@@ -30,7 +30,7 @@ import trestle.oscal.component as component
 import trestle.oscal.ssp as ssp
 
 ssp_path = pathlib.Path('nist-content/src/examples/ssp/json/ssp-example.json')
-catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
 
 
 def test_has_no_duplicate_values_generic() -> None:

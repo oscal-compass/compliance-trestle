@@ -111,6 +111,22 @@ def sample_profile():
 
 
 @pytest.fixture(scope='function')
+def simplified_nist_catalog():
+    """Return a simplified nist catalog."""
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
+    catalog_obj = cat.Catalog.oscal_read(file_path)
+    return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def simplified_nist_profile():
+    """Return a simplified nist profile."""
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / test_utils.SIMPLIFIED_NIST_PROFILE_NAME
+    profile_obj = Profile.oscal_read(file_path)
+    return profile_obj
+
+
+@pytest.fixture(scope='function')
 def sample_catalog_minimal():
     """Return a valid catalog object with minimum fields necessary."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog.json'
