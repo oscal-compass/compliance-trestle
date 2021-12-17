@@ -866,9 +866,10 @@ class ControlIOReader():
     def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
         """Insert yaml header content into the imp_req and its by_comps."""
         dict_ = header.get(const.SSP_FEDRAMP_TAG, {})
-        control_orig = dict_.get(const.CONTROL_ORIGINATION, [])
-        imp_status = dict_.get(const.IMPLEMENTATION_STATUS, [])
-        roles = dict_.get(const.RESPONSIBLE_ROLES, [])
+        # if an attribute is in the dict but it is None, need to make sure we get empty list anyway
+        control_orig = as_list(dict_.get(const.CONTROL_ORIGINATION, []))
+        imp_status = as_list(dict_.get(const.IMPLEMENTATION_STATUS, []))
+        roles = as_list(dict_.get(const.RESPONSIBLE_ROLES, []))
         props = []
         responsible_roles = []
         for co in control_orig:
@@ -926,12 +927,13 @@ class ControlIOReader():
             else:
                 raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
         for role in roles:
-            if isinstance(role, dict) and len(role) == 1:
-                key = list(role.keys())[0]
-                value = list(role.values())[0]
-                if key != 'id':
-                    raise TrestleError(f'Role in control yaml header must have id as key value: {role}')
-                responsible_roles.append(common.ResponsibleRole(role_id=value))
+            if isinstance(role, str):
+                # role_id must conform to NCNAME regex
+                role = role.strip().replace(' ', '_')
+                if role:
+                    responsible_roles.append(common.ResponsibleRole(role_id=role))
+            else:
+                logger.warning(f'Role in header for control {control_id} not recognized: {role}')
         if props:
             imp_req.props = as_list(imp_req.props)
             imp_req.props.extend(props)
@@ -1061,7 +1063,9 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
-        param_dict.update(header.get(const.SET_PARAMS_TAG, {}))
+        header_params = header.get(const.SET_PARAMS_TAG, {})
+        if header_params:
+            param_dict.update(header_params)
         return new_alters, param_dict
 
     @staticmethod
