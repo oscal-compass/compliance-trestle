@@ -27,34 +27,6 @@
           }
         ]
       }
-    ],
-    "modify": {
-      "set-parameters": [
-        {
-          "param-id": "myco_minimum_password_length",
-          "label": "Minimum Password Length",
-          "usage": "Check whether id password policy requires minimum length of 12 characters",
-          "values": [
-            "12"
-          ]
-        },
-        {
-          "param-id": "myco_password_reuse_prevention",
-          "label": "Password Reuse Prevention",
-          "usage": "Check whether id password policy prevents password reuse below the minimum of #",
-          "values": [
-            "24"
-          ]
-        },
-        {
-          "param-id": "allowed_service_ids_admins_per_account",
-          "label": "Maximum allowed service ID with admin privilege per account",
-          "usage": "Check whether account has no more than # service IDs with admin privileges",
-          "values": [
-            "10"
-          ]
-        }
-      ]
-    }
+    ]
   }
 }

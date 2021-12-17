@@ -26,6 +26,7 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
+from trestle.core.utils import as_list
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
@@ -577,16 +578,27 @@ class ProfileToOscoTransformer(FromOscalTransformer):
 
     def transform(self, profile: Profile) -> str:
         """Transform the Profile into a OSCO yaml."""
+        self._profile = profile
+        self._osco_version = self._get_normalized_version('osco_version', '0.1.46')
         # set values
-        set_values = self._get_set_values(profile)
+        set_values = self._get_set_values()
         # spec
-        spec = {
-            'description': self._get_metadata_prop_value(profile, 'profile_mnemonic', self._name),
-            'extends': self._get_metadata_prop_value(profile, 'base_profile_mnemonic', self._extends),
-            'title': profile.metadata.title,
-            'setValues': set_values,
-        }
-        disable_rules = self._get_disable_rules(profile)
+        if self._osco_version < (0, 1, 40):
+            # for versions prior to 0.1.40, exclude 'description'
+            spec = {
+                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
+                'title': self._profile.metadata.title,
+                'setValues': set_values,
+            }
+        else:
+            # for versions 0.1.40 and beyond, include 'description'
+            spec = {
+                'description': self._get_metadata_prop_value('profile_mnemonic', self._name),
+                'extends': self._get_metadata_prop_value('base_profile_mnemonic', self._extends),
+                'title': self._profile.metadata.title,
+                'setValues': set_values,
+            }
+        disable_rules = self._get_disable_rules()
         if len(disable_rules) > 0:
             spec['disableRules'] = disable_rules
         # yaml data
@@ -594,48 +606,77 @@ class ProfileToOscoTransformer(FromOscalTransformer):
             'apiVersion': self._api_version,
             'kind': self._kind,
             'metadata': {
-                'name': self._get_metadata_prop_value(profile, 'profile_mnemonic', self._name),
+                'name': self._get_metadata_prop_value('profile_mnemonic', self._name),
                 'namespace': self._namespace,
             },
             'spec': spec,
         }
         return json.dumps(ydata)
 
-    def _get_set_values(self, profile) -> List[Dict]:
+    def _get_normalized_version(self, prop_name, prop_default) -> (int, int, int):
+        """Get normalized version.
+
+        Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
+        """
+        try:
+            vparts = self._get_metadata_prop_value(prop_name, prop_default).split('.')
+            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
+        except Exception:
+            logger.warning(f'metadata prop name={prop_name} value error')
+            vparts = prop_default.split('.')
+            normalized_version = (int(vparts[0]), int(vparts[1]), int(vparts[2]))
+        return normalized_version
+
+    def _get_set_values(self) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""
         set_values = []
-        for set_parameter in profile.modify.set_parameters:
-            name = set_parameter.param_id
-            parameter_value = set_parameter.values[0]
-            value = parameter_value.__root__
-            rationale = self._get_rationale_for_set_value()
-            set_value = {'name': name, 'value': value, 'rationale': rationale}
-            set_values.append(set_value)
+        # for check versions prior to 0.1.59 include parameters
+        # for later versions parameters should not be specified, caveat emptor
+        if self._profile.modify is not None:
+            for set_parameter in as_list(self._profile.modify.set_parameters):
+                name = self._format_osco_rule_name(set_parameter.param_id)
+                parameter_value = set_parameter.values[0]
+                value = parameter_value.__root__
+                rationale = self._get_rationale_for_set_value()
+                set_value = {'name': name, 'value': value, 'rationale': rationale}
+                set_values.append(set_value)
         return set_values
 
-    def _get_metadata_prop_value(self, profile, name, default_) -> str:
+    def _format_osco_rule_name(self, name: str) -> str:
+        """Format for OSCO.
+
+        1. remove prefix xccdf_org.ssgproject.content_rule_
+        2. change underscores to dashes
+        3. add prefix ocp4-
+        """
+        normalized_name = name.replace('xccdf_org.ssgproject.content_rule_', '').replace('_', '-')
+        if not normalized_name.startswith('ocp4-'):
+            normalized_name = f'ocp4-{normalized_name}'
+        return normalized_name
+
+    def _get_metadata_prop_value(self, name: str, default_: str) -> str:
         """Extract metadata prop or else default if not present."""
-        if profile.metadata.props is not None:
-            for prop in profile.metadata.props:
-                if prop.name == name:
-                    return prop.value
+        for prop in as_list(self._profile.metadata.props):
+            if prop.name == name:
+                return prop.value
         logger.info(f'using default: {name} = {default_}')
         return default_
 
-    def _get_disable_rules(self, profile) -> List[str]:
+    def _get_disable_rules(self) -> List[str]:
         """Extract disabled rules."""
         value = []
-        if profile.imports is not None:
-            for item in profile.imports:
-                if item.exclude_controls is not None:
-                    for control in item.exclude_controls:
-                        if control.with_ids is not None:
-                            for with_id in control.with_ids:
-                                name = with_id.__root__
-                                rationale = self._get_rationale_for_disable_rule()
-                                entry = {'name': name, 'rationale': rationale}
-                                value.append(entry)
+        for item in as_list(self._profile.imports):
+            for control in as_list(item.exclude_controls):
+                self._add_disable_rules_for_control(value, control)
         return value
+
+    def _add_disable_rules_for_control(self, value, control):
+        """Extract disabled rules for control."""
+        for with_id in as_list(control.with_ids):
+            name = self._format_osco_rule_name(with_id.__root__)
+            rationale = self._get_rationale_for_disable_rule()
+            entry = {'name': name, 'rationale': rationale}
+            value.append(entry)
 
     def _get_rationale_for_set_value(self) -> str:
         """Rationale for set value."""

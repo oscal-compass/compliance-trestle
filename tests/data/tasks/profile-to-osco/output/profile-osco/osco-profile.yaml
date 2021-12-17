@@ -1,0 +1,10 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: TailoredProfile
+metadata:
+  name: customized-tailored-profile
+  namespace: openshift-compliance
+spec:
+  description: customized-tailored-profile
+  extends: ocp4-cis-node
+  setValues: []
+  title: Best Practices NIST CONTROLS Profile

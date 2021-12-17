@@ -1,0 +1,107 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: TailoredProfile
+metadata:
+  name: roks-ocp4-v1-0-e2123484
+  namespace: openshift-compliance
+spec:
+  description: roks-ocp4-v1-0-e2123484
+  disableRules:
+  - name: ocp4-file-groupowner-kube-apiserver
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-openshift-pki-cert-files
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-controller-manager-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-openshift-pki-key-files
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-etcd-pki-cert-files
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-etcd-member
+    rationale: not determinable from specification
+  - name: ocp4-kubelet-authorization-mode
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-etcd-data-files
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-etcd-member
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-kube-apiserver
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-kube-scheduler
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-master-admin-kubeconfigs
+    rationale: not determinable from specification
+  - name: ocp4-kubelet-enable-cert-rotation
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-etcd-member
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-etcd-pki-cert-files
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-openshift-pki-cert-files
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-kube-controller-manager
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-etcd-pki-cert-files
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-worker-service
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-scheduler-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-etcd-data-dir
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-etcd-data-files
+    rationale: not determinable from specification
+  - name: ocp4-kubelet-enable-protect-kernel-defaults
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-controller-manager-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-kube-controller-manager
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-openshift-pki-key-files
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-scheduler
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-controller-manager-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-etcd-data-dir
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-worker-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-worker-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-master-admin-kubeconfigs
+    rationale: not determinable from specification
+  - name: ocp4-kubelet-enable-server-cert-rotation
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-worker-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-worker-service
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-scheduler-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-kube-apiserver
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-worker-service
+    rationale: not determinable from specification
+  - name: ocp4-etcd-unique-ca
+    rationale: not determinable from specification
+  - name: ocp4-kubelet-enable-client-cert-rotation
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-openshift-pki-cert-files
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-etcd-data-files
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-openshift-pki-key-files
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-kube-controller-manager
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-kube-scheduler
+    rationale: not determinable from specification
+  - name: ocp4-file-owner-scheduler-kubeconfig
+    rationale: not determinable from specification
+  - name: ocp4-file-permissions-master-admin-kubeconfigs
+    rationale: not determinable from specification
+  - name: ocp4-file-groupowner-etcd-data-dir
+    rationale: not determinable from specification
+  extends: ocp4-cis-node
+  setValues: []
+  title: ROKS OCP4 Tailored Profile v1.0

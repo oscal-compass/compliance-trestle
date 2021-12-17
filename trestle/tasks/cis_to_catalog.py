@@ -200,16 +200,16 @@ class CisToCatalog(TaskBase):
             key = self._get_key(name)
             self._node_map[key] = Node(name=name, description=description)
 
-    def _get_key(self, name: str) -> int:
+    def _get_key(self, name: str) -> (int, int, int):
         """Convert name to desired sortable key."""
         key = 0
         parts = name.split('.')
         if len(parts) == 1:
-            key = 1000000 * int(parts[0])
+            key = (int(parts[0]), 0, 0)
         elif len(parts) == 2:
-            key = 1000000 * int(parts[0]) + 1000 * int(parts[1])
+            key = (int(parts[0]), int(parts[1]), 0)
         elif len(parts) == 3:
-            key = 1000000 * int(parts[0]) + 1000 * int(parts[1]) + int(parts[2])
+            key = (int(parts[0]), int(parts[1]), int(parts[2]))
         return key
 
     def _get_root_nodes(self) -> ValuesView[Node]:
