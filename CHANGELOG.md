@@ -3,6 +3,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.32.1 (2021-12-17)
+### Fix
+* Cidd issues ([#949](https://github.com/IBM/compliance-trestle/issues/949)) ([`038ca2e`](https://github.com/IBM/compliance-trestle/commit/038ca2ec96a6d85aa891d0cf36e9f9c03e0733d7))
+* OSCO rules with prefix ocp- and dashes ([#932](https://github.com/IBM/compliance-trestle/issues/932)) ([`64f7a97`](https://github.com/IBM/compliance-trestle/commit/64f7a973f5bb7c7946b789770034da186dbcd77e))
+
 ## v0.32.0 (2021-12-14)
 ### Feature
 * Added documentation for fedramp plugin ([#936](https://github.com/IBM/compliance-trestle/issues/936)) ([`3deff2c`](https://github.com/IBM/compliance-trestle/commit/3deff2c857c55348242e06a74f2647224517506c))
