@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.catalog_interface/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.1">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.2">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.23b6d78a.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f7951f6f.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1032,8 +1032,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.catalog_interface.CatalogInterface.get_group_info" class="md-nav__link">
-    get_group_info()
+  <a href="#trestle.core.catalog_interface.CatalogInterface.get_group_info_by_control" class="md-nav__link">
+    get_group_info_by_control()
   </a>
   
 </li>
@@ -2953,8 +2953,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.catalog_interface.CatalogInterface.get_group_info" class="md-nav__link">
-    get_group_info()
+  <a href="#trestle.core.catalog_interface.CatalogInterface.get_group_info_by_control" class="md-nav__link">
+    get_group_info_by_control()
   </a>
   
 </li>
@@ -3779,11 +3779,11 @@ control: the control itself</p>
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.catalog_interface.CatalogInterface.get_group_info">
-<code class="highlight language-python"><span class="n">get_group_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">)</span></code>
+<h6 class="doc doc-heading" id="trestle.core.catalog_interface.CatalogInterface.get_group_info_by_control">
+<code class="highlight language-python"><span class="n">get_group_info_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.core.catalog_interface.CatalogInterface.get_group_info" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.core.catalog_interface.CatalogInterface.get_group_info_by_control" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3791,7 +3791,7 @@ control: the control itself</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/catalog_interface.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_group_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_group_info_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the group_id, title, class for this control from the dict.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
@@ -4271,7 +4271,7 @@ avail_comps provides the mapping of component name to the actual component.</p>
             <span class="n">param_dict</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">get_profile_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">full_profile_param_dict</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">param_dict</span><span class="p">:</span>
                 <span class="n">new_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_dict</span>
-        <span class="n">group_id</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_group_info</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">group_id</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_group_info_by_control</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="c1"># this works also for the catalog controls with group_id=&#39;&#39;</span>
         <span class="n">group_dir</span> <span class="o">=</span> <span class="n">md_path</span> <span class="o">/</span> <span class="n">group_id</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">group_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -4381,10 +4381,10 @@ avail_comps provides the mapping of component name to the actual component.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.c7dec7e7.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.da79ceb7.min.js"></script>
+      <script src="../../assets/javascripts/bundle.649a939e.min.js"></script>
       
     
   </body>
