@@ -1,0 +1,6 @@
+names:
+  OSCAL: Open Security Compliance Assessment Language
+  trestle_pip: compliance-trestle
+  trestle_module: trestle
+variables:
+  mac_os: true

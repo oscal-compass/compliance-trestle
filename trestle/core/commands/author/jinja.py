@@ -71,21 +71,20 @@ class JinjaCmd(CommandPlusDocs):
         logger.debug(f'Starting {self.name} command')
         input_path = pathlib.Path(args.input)
         output_path = pathlib.Path(args.output)
-        cwd = pathlib.Path.cwd()
+
         if args.look_up_table:
-            lut = JinjaCmd.load_LUT(pathlib.Path(args.look_up_table), args.external_lut_prefix)
+            lut_table = pathlib.Path(args.look_up_table)
+            lookup_table_path = pathlib.Path.cwd() / lut_table
+            if len(lut_table.parts) > 1:
+                lookup_table_path = '/'.join(lut_table.parts[0:-1]).replace('//', '/') / lut_table
+
+            lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
             status = JinjaCmd.jinja_ify(
-                cwd,
-                pathlib.Path(args.trestle_root),
-                input_path,
-                output_path,
-                args.system_security_plan,
-                args.profile,
-                lut
+                pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, lut
             )
         else:
             status = JinjaCmd.jinja_ify(
-                cwd, pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile
+                pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile
             )
         logger.debug(f'Done {self.name} command')
         return status
@@ -105,7 +104,6 @@ class JinjaCmd(CommandPlusDocs):
 
     @staticmethod
     def jinja_ify(
-        cwd: pathlib.Path,
         trestle_root: pathlib.Path,
         r_input_file: pathlib.Path,
         r_output_file: pathlib.Path,
@@ -117,13 +115,16 @@ class JinjaCmd(CommandPlusDocs):
         try:
             if lut is None:
                 lut = {}
+            template_folder = pathlib.Path.cwd()
+            if len(r_input_file.parts) > 1:
+                template_folder = '/'.join(r_input_file.parts[0:-1]).replace('//', '/')
             jinja_env = Environment(
-                loader=FileSystemLoader(cwd),
+                loader=FileSystemLoader(template_folder),
                 extensions=[MDSectionInclude, MDCleanInclude],
                 trim_blocks=True,
                 autoescape=True
             )
-            template = jinja_env.get_template(str(r_input_file))
+            template = jinja_env.get_template(str(r_input_file.parts[-1]))
             # create boolean dict
             if operator.xor(bool(ssp), bool(profile)):
                 logger.error('Both SSP and profile should be provided or not at all')
@@ -153,7 +154,7 @@ class JinjaCmd(CommandPlusDocs):
                 random_name = uuid.uuid4()  # Should be random and not used.
                 dict_loader = DictLoader({str(random_name): new_output})
                 jinja_env = Environment(
-                    loader=ChoiceLoader([dict_loader, FileSystemLoader(cwd)]),
+                    loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
                     extensions=[MDCleanInclude, MDSectionInclude],
                     autoescape=True,
                     trim_blocks=True
@@ -164,7 +165,7 @@ class JinjaCmd(CommandPlusDocs):
             output_file = trestle_root / r_output_file
             output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.error(f'Unknown exception {str(e)} occured.')
             logger.debug(traceback.format_exc())
             return 1
