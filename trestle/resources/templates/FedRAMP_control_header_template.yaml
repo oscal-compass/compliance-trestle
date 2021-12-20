@@ -24,4 +24,4 @@ x-trestle-fedramp-props:
     - alternative: describe alternative
     - not-applicable: provide justification
   responsible-roles:
-    - id: role-id
+    - role-id

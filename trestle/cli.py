@@ -37,7 +37,6 @@ from trestle.core.commands.remove import RemoveCmd
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.commands.task import TaskCmd
-from trestle.core.commands.transform_oscal import TransformCmd
 from trestle.core.commands.validate import ValidateCmd
 from trestle.core.commands.version import VersionCmd
 from trestle.utils import log
@@ -63,7 +62,6 @@ class Trestle(CommandBase):
         ReplicateCmd,
         SplitCmd,
         TaskCmd,
-        TransformCmd,
         ValidateCmd,
         VersionCmd
     ]
