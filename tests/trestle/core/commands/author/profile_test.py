@@ -96,7 +96,7 @@ def test_profile_generate_assemble(
     monkeypatch: MonkeyPatch
 ) -> None:
     """Test the profile markdown generator."""
-    nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     trestle_cat_dir = tmp_trestle_dir / 'catalogs/nist_cat'
     trestle_cat_dir.mkdir(exist_ok=True, parents=True)
     shutil.copy(nist_catalog_path, trestle_cat_dir / 'catalog.json')

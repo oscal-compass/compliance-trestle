@@ -52,6 +52,8 @@ ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
+SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'
@@ -310,7 +312,7 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     main_profile_name = 'main_profile'
 
     if big_profile:
-        prof_path = JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+        prof_path = JSON_TEST_DATA_PATH / SIMPLIFIED_NIST_PROFILE_NAME
     else:
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
@@ -324,7 +326,7 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
     repo.import_model(complex_cat, 'complex_cat')
 
     cat_name = 'nist_cat'
-    cat_path = JSON_NIST_DATA_PATH / JSON_NIST_CATALOG_NAME
+    cat_path = JSON_TEST_DATA_PATH / SIMPLIFIED_NIST_CATALOG_NAME
     if import_nist_cat:
         repo.load_and_import_model(cat_path, cat_name)
         new_href = f'trestle://catalogs/{cat_name}/catalog.json'

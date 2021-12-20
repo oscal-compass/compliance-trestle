@@ -320,7 +320,8 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     profile_resolver = ProfileResolver()
     resolved_catalog = profile_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     assert resolved_catalog
-    assert len(resolved_catalog.groups) == 18
+    # FIXME this should test with a more complex catalog
+    assert len(resolved_catalog.groups) == 1
 
     resolved_catalog.oscal_write(new_catalog_path)
 
