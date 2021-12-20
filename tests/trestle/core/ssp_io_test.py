@@ -63,13 +63,13 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
     roles_md = ssp_writer.get_responsible_roles_table('ac-2', 1)
     assert roles_md
 
-    md_text1 = ssp_writer._parameter_table('au-8', 1)
+    md_text1 = ssp_writer._parameter_table('ac-2', 1)
     assert md_text1
 
     md_text3 = ssp_writer.get_fedramp_control_tables('ac-2', 1)
     assert md_text3
 
-    md_text4 = ssp_writer.get_control_part('au-8', 'item', 1)
+    md_text4 = ssp_writer.get_control_part('ac-2', 'item', 1)
     assert md_text4
 
 
@@ -83,7 +83,7 @@ def test_ssp_get_control_response(
 
     # set responses
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', 'This is a response')
-    assert insert_prose(tmp_trestle_dir, 'at-1_smt.c', 'This is also a response.')
+    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.c', 'This is also a response.')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
 
     command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
@@ -100,7 +100,7 @@ def test_ssp_get_control_response(
     ssp_io.set_catalog(resolved_catalog)
     ssp_io.set_ssp(ssp_obj)
 
-    md_text = ssp_io.get_control_response('at-1', 1, True)
+    md_text = ssp_io.get_control_response('ac-1', 1, True)
     assert md_text
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
