@@ -250,10 +250,12 @@ class CatalogInterface():
             return does_match
 
         control = self.get_control(control_id)
+        if not control:
+            return '', None
         label = None
         found_part = None
         if control.parts:
-            for part in control.parts:
+            for part in as_list(control.parts):
                 # Performance OSCAL assumption, ids are nested so recurse only if prefix
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
@@ -291,7 +293,7 @@ class CatalogInterface():
         """Get the label from an object with properties (such as a control)."""
         label = ''
         if object_with_props.props:
-            for prop in object_with_props.props:
+            for prop in as_list(object_with_props.props):
                 if prop.name == 'label':
                     label = prop.value
                     break

@@ -152,7 +152,8 @@ class SSPMarkdownWriter():
 
         writer = ControlIOWriter()
         control = self._catalog_interface.get_control(control_id)
-
+        if not control:
+            return ''
         params_lines = writer.get_params(control)
 
         tree = MarkdownNode.build_tree_from_markdown(params_lines)
