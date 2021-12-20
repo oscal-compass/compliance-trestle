@@ -122,7 +122,8 @@ class ControlIOWriter():
     def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
-        title = f'{control.id} - \[{group_title}\] {control.title}'
+        label = self._get_label(control) if self._get_label(control) != '' else control.id.upper()
+        title = f'{label} - {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
