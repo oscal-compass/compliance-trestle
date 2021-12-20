@@ -182,6 +182,13 @@ def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> N
 def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     # always start by creating the markdown with the yaml header
+    # yaml loaded is good_simple.yaml:
+    # control-origination:
+    # - Service Provider Corporate
+    # - Service Provider System Specific
+    # responsible-roles:
+    # - Customer
+
     args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
@@ -191,19 +198,20 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
 
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML()
-        expected_header = yaml.load(f)
+        yaml_header = yaml.load(f)
 
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    assert expected_header == header
+    assert yaml_header == header
 
+    # edit the header by adding a list item and removing a value
     assert test_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
     assert test_utils.delete_line_in_file(ac_1, 'Corporate')
 
     # if the yaml header is not written out, the new header should be the one currently in the control
     # if the yaml header is written out, it is merged with the current header giving priority to current header
-    # so if not written out, the header should have one item added and another deleted
+    # so if not written out, the header should have one item added and another deleted due to edits in this test
     # if written out, it should just have the one added item because the deleted one will be put back in
 
     # tell it not to add the yaml header
@@ -213,12 +221,12 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    new_expected_header = expected_header
-    new_expected_header['control-origination'].append('My new edits')
 
+    assert len(header['control-origination']) == 2
     if not yaml_header:
-        new_expected_header['control-origination'] = new_expected_header['control-origination'][1:]
-    assert new_expected_header == header
+        assert 'new' in header['control-origination'][0]
+    else:
+        assert 'new' not in header['control-origination'][0]
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:

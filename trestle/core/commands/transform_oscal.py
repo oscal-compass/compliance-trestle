@@ -32,7 +32,13 @@ logger = logging.getLogger(__name__)
 
 
 class TransformCmd(CommandPlusDocs):
-    """Transform an oscal model or models by filtering or aggregation."""
+    """
+    Transform an oscal model or models by filtering or aggregation.
+
+    This is a prototype class for basic transform operations.  It is currently not included in the command
+    line interface.  But if a number of transforms are needed in the future, this class can host the additional
+    transforms in an extensible manner.
+    """
 
     name = 'transform'
 
