@@ -260,27 +260,35 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
         ControlIOReader._load_control_lines_and_header(bad_file)
 
 
-def test_merge_dicts_deep() -> None:
+@pytest.mark.parametrize('preserve_dest_values', [True, False])
+def test_merge_dicts_deep(preserve_dest_values) -> None:
     """Test deep merge of dicts."""
-    dest = {'a': {'b': 1}, 'x': [5, 6], 'q': 99, 'killed': None}
-    src = {'a': {'b': [2, 3]}, 'x': 7, 'z': 'foo', 'q': 88, 'killed': 'alive'}
-    ControlIOWriter.merge_dicts_deep(dest, src)
-    assert dest['a'] == {'b': [1, 2, 3]}
-    assert dest['x'] == [5, 6, 7]
-    assert dest['z'] == 'foo'
-    assert dest['q'] == 99
-    assert dest['killed'] is None
+    dest = {'trestle': {'foo': {'hello': 1}}, 'fedramp': {'roles': [5, 6], 'values': 8}, 'orig': 11}
+    src = {'trestle': {'foo': {'hello': 3}, 'bar': 4}, 'fedramp': {'roles': 7, 'values': 10}, 'extra': 12}
+    ControlIOWriter.merge_dicts_deep(dest, src, preserve_dest_values)
+    if preserve_dest_values:
+        assert dest['trestle'] == {'foo': {'hello': 1}, 'bar': 4}
+        assert dest['fedramp'] == {'roles': [5, 6], 'values': 8}
+        assert dest['orig'] == 11
+        assert dest['extra'] == 12
+    else:
+        assert dest['trestle'] == {'foo': {'hello': 3}, 'bar': 4}
+        assert dest['fedramp'] == {'roles': 7, 'values': 10}
+        assert dest['orig'] == 11
+        assert dest['extra'] == 12
 
 
 def test_merge_dicts_deep_empty() -> None:
     """Test that empty items are left alone."""
     dest = {'foo': ''}
     src = {'foo': 'fancy value'}
-    ControlIOWriter.merge_dicts_deep(dest, src)
+    ControlIOWriter.merge_dicts_deep(dest, src, True)
     assert dest['foo'] == ''
     dest['foo'] = None
-    ControlIOWriter.merge_dicts_deep(dest, src)
+    ControlIOWriter.merge_dicts_deep(dest, src, True)
     assert dest['foo'] is None
+    ControlIOWriter.merge_dicts_deep(dest, src, False)
+    assert dest['foo'] == 'fancy value'
 
 
 def test_control_with_components() -> None:
@@ -349,19 +357,22 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
     assert len(header_1.keys()) == 8
     orig_control_read = ControlIOReader.read_control(control_path)
     control_writer = ControlIOWriter()
+    # write the control back out with the test header
     control_writer.write_control(
         tmp_path, orig_control_read, '', header, None, False, False, None, preserve_header_values
     )
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
-    assert len(header_2.keys()) == 6
+    assert len(header_2.keys()) == 9
     assert header_2['new-reviewer'] == 'James'
     assert len(header_2[const.SET_PARAMS_TAG]) == 2
-    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_4']
     if preserve_header_values:
+        assert 'orig' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
         assert header_2['foo'] == 'bar'
         assert header_2['special'] == ''
         assert header_2['none-thing'] is None
     else:
+        assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'

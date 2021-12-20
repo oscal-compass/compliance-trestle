@@ -10,7 +10,7 @@ Trestle has authoring tools that allow conversion of OSCAL documents to markdown
 
 In summary, the `catalog` tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The `profile` tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  Finally, the `ssp` tools allow the addition of implementation prose to a resolved profile catalog, then combine that prose with the Catalog into an OSCAL System Security Plan.
 
-If a yaml header has been added to any of the controls, it will be retained if catalog-generate is run with currently existing markdown for controls.
+If a yaml header has been added to any of the controls, it will be retained if catalog-generate is run with currently existing markdown for controls.  The yaml header can add parameters to the control's implemented requirements when an SSP is assembled from the markdown.
 
 ## Background on underlying concepts
 

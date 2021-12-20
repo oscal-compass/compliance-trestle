@@ -385,7 +385,7 @@ def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_import_from_nist(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import via url from nist."""
-    uri = 'https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json'  # noqa: E501
+    uri = 'https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_HIGH-baseline_profile-min.json'  # noqa: E501
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, file=uri, output='my_catalog', verbose=True, regenerate=False
     )
