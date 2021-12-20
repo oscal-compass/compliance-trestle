@@ -23,6 +23,7 @@ from trestle.core.control_io import ControlIOWriter
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.core.utils import as_list
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.ssp import Statement
@@ -152,7 +153,8 @@ class SSPMarkdownWriter():
 
         writer = ControlIOWriter()
         control = self._catalog_interface.get_control(control_id)
-
+        if not control:
+            return ''
         params_lines = writer.get_params(control)
 
         tree = MarkdownNode.build_tree_from_markdown(params_lines)
@@ -218,7 +220,7 @@ class SSPMarkdownWriter():
 
         md_writer = MDWriter(None)
         if control_impl_req.statements:
-            for statement in control_impl_req.statements:
+            for statement in as_list(control_impl_req.statements):
                 statement_id = statement.statement_id
                 label = statement_id
                 part_name = None
