@@ -15,8 +15,6 @@
 # limitations under the License.
 """Trestle utilities to customize ."""
 import logging
-import re
-import typing as t
 
 import frontmatter
 
@@ -72,31 +70,6 @@ class TrestleJinjaExtension(Extension):
             expr = parser.parse_expression(False)
 
         return expr
-
-
-class OSCALTags(TrestleJinjaExtension):
-    """
-    This adds a pre-proccessing step to eliminate badly behaving OSCAL statements.
-
-    Currently covering:
-    {{ insert: param, param_id }} -> {{ param_id }}
-    """
-
-    priority = 1
-
-    def preprocess(self, source: str, name: t.Optional[str], filename: t.Optional[str] = None) -> str:
-        """Preprocess files with jinja eliminating OSCAL substitution structures."""
-        staches = re.findall(r'{{.*?}}', source)
-        if not staches:
-            return source
-        new_staches = []
-        # clean the staches so they just have the param text
-        for stache in staches:
-            stache = stache.replace('insert: param,', '').strip()
-            new_staches.append(stache)
-        for i, _ in enumerate(staches):
-            source = source.replace(staches[i], new_staches[i], 1)
-        return source
 
 
 class MDSectionInclude(TrestleJinjaExtension):
@@ -194,6 +167,7 @@ class MDCleanInclude(TrestleJinjaExtension):
         md_content, _, _ = self.environment.loader.get_source(self.environment, markdown_source.value)
         fm = frontmatter.loads(md_content)
         content = fm.content
+        content +="\n\n"
         if kwargs is not None:
             expected_heading_level = kwargs.get('heading_level')
         if expected_heading_level is not None:
