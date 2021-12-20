@@ -119,7 +119,7 @@ class JinjaCmd(CommandPlusDocs):
                 trim_blocks=True,
                 autoescape=True
             )
-            template = jinja_env.get_template(str(r_input_file.parts[-1]))
+            template = jinja_env.get_template(str(r_input_file))
             # create boolean dict
             if operator.xor(bool(ssp), bool(profile)):
                 logger.error('Both SSP and profile should be provided or not at all')
