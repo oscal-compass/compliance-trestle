@@ -75,9 +75,6 @@ class JinjaCmd(CommandPlusDocs):
         if args.look_up_table:
             lut_table = pathlib.Path(args.look_up_table)
             lookup_table_path = pathlib.Path.cwd() / lut_table
-            if len(lut_table.parts) > 1:
-                lookup_table_path = '/'.join(lut_table.parts[0:-1]).replace('//', '/') / lut_table
-
             lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
             status = JinjaCmd.jinja_ify(
                 pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, lut
@@ -116,8 +113,6 @@ class JinjaCmd(CommandPlusDocs):
             if lut is None:
                 lut = {}
             template_folder = pathlib.Path.cwd()
-            if len(r_input_file.parts) > 1:
-                template_folder = '/'.join(r_input_file.parts[0:-1]).replace('//', '/')
             jinja_env = Environment(
                 loader=FileSystemLoader(template_folder),
                 extensions=[MDSectionInclude, MDCleanInclude],

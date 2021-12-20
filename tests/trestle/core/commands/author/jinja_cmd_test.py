@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for Jinja command."""
+import os
 import pathlib
+import shutil
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -24,7 +26,7 @@ from trestle.core.markdown.markdown_node import MarkdownNode
 
 def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test Jinja SSP output."""
-    input_template = testdata_dir / 'jinja/ssp_template.md.jinja'
+    input_template = 'ssp_template.md.jinja'
 
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
     ssp_cmd = SSPGenerate()
@@ -32,6 +34,11 @@ def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
 
     command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
     execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
+
+    for file_name in os.listdir(testdata_dir / 'jinja'):
+        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, tmp_trestle_dir)
 
     command_import = f'trestle author jinja -i {input_template} -o output_file.md -ssp ssp_json -p main_profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
@@ -50,9 +57,8 @@ def test_jinja_lookup_table(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test Jinja lookup table substitions."""
-    input_template = testdata_dir / 'jinja/use_lookup_table.md.jinja'
-    luk_table = testdata_dir / 'jinja/lookup_table.yaml'
-
+    input_template = 'use_lookup_table.md.jinja'
+    luk_table = 'lookup_table.yaml'
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
@@ -60,6 +66,10 @@ def test_jinja_lookup_table(
     command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
     execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
 
+    for file_name in os.listdir(testdata_dir / 'jinja'):
+        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, tmp_trestle_dir)
     command_import = f'trestle author jinja -i {input_template} -o output_file.md ' \
                      f'-lut {luk_table} -ssp ssp_json -p main_profile -elp lut.prefix'  # noqa: N400
     execute_command_and_assert(command_import, 0, monkeypatch)
