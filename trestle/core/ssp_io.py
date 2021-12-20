@@ -123,7 +123,7 @@ class SSPMarkdownWriter():
                 if impl_requirement.responsible_roles:
                     role_ids = []
                     for resp_role in impl_requirement.responsible_roles:
-                        role_ids.append(resp_role.role_id)
+                        role_ids.append(resp_role.role_id.replace('_', ' '))
 
                     # now check if this role exists in the metadata
                     role_titles = dict(zip(role_ids, role_ids))
