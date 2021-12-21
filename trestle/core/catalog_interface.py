@@ -17,7 +17,9 @@ import copy
 import logging
 import pathlib
 import re
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
+
+from pydantic import BaseModel
 
 import trestle.core.const as const
 import trestle.core.generators as gens
@@ -163,7 +165,7 @@ class CatalogInterface():
                 new_list.extend(self._get_all_controls_in_list(control.controls, recurse))
         return new_list
 
-    def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> cat.Control:
+    def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> List[cat.Control]:
         """Create a list of all controls in this group."""
         controls: List[cat.Control] = []
         if group.controls:
@@ -226,6 +228,77 @@ class CatalogInterface():
         """Get count of controls from the actual catalog."""
         return len(list(self.get_all_controls_from_catalog(recurse)))
 
+    def get_group_ids(self) -> List[str]:
+        """Get all the group id's as a string."""
+        return list(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
+
+    def get_all_groups_from_catalog(self) -> Iterator[cat.Group]:
+        """Retrieve all groups in the catalog."""
+        if self._catalog.groups:
+            for my_group in self._catalog.groups:
+                for res in CatalogInterface._get_groups_from_group(my_group):
+                    yield res
+
+    def get_statement_label_if_exists(self, control_id: str,
+                                      statement_id: str) -> Tuple[Optional[str], Optional[common.Part]]:
+        """Get statement label if given."""
+
+        def does_part_exists(part: common.Part) -> bool:
+            does_match = False
+            if part.name and part.name in {'statement', 'item'} and part.id == statement_id:
+                does_match = True
+            return does_match
+
+        control = self.get_control(control_id)
+        if not control:
+            return '', None
+        label = None
+        found_part = None
+        if control.parts:
+            for part in as_list(control.parts):
+                # Performance OSCAL assumption, ids are nested so recurse only if prefix
+                if part.id and statement_id.startswith(part.id):
+                    part = self.find_part_with_condition(part, does_part_exists)
+                    if part:
+                        label = self.get_label(part)
+                        found_part = part
+                        break
+
+        return label, found_part
+
+    def find_part_with_condition(self, part: common.Part, condition: Callable) -> Optional[common.Part]:
+        """Traverse part and find subpart that satisfies given condition."""
+        if condition(part):
+            # Part that satisfies the condition is found.
+            return part
+        else:
+            if part.parts:
+                for subpart in part.parts:
+                    found_part = self.find_part_with_condition(subpart, condition)
+                    if found_part:
+                        return found_part
+
+        return None
+
+    @staticmethod
+    def _get_groups_from_group(group: cat.Group) -> Iterator[cat.Group]:
+        yield group
+        if group.groups:
+            for new_group in group.groups:
+                for res in CatalogInterface._get_groups_from_group(new_group):
+                    yield res
+
+    @staticmethod
+    def get_label(object_with_props: BaseModel) -> str:
+        """Get the label from an object with properties (such as a control)."""
+        label = ''
+        if object_with_props.props:
+            for prop in as_list(object_with_props.props):
+                if prop.name == 'label':
+                    label = prop.value
+                    break
+        return label
+
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
         return (
@@ -234,7 +307,7 @@ class CatalogInterface():
             self._control_dict[control_id].group_class
         )
 
-    def get_path(self, control_id: str) -> List[str]:
+    def get_control_path(self, control_id: str) -> List[str]:
         """Return the path into the catalog for this control."""
         return self._control_dict[control_id].path
 

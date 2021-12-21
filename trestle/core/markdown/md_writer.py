@@ -115,6 +115,16 @@ class MDWriter():
                 self.new_list(item)
             self._add_indent_level(-1)
 
+    def new_table(self, table_list: List[List[str]], header: List[str]):
+        """Add table to the markdown. All rows must be of equal length."""
+        header_str = '| ' + ' | '.join(header) + ' |'
+        sep_str = '|---' * len(header) + '|'
+        self.new_line(header_str)
+        self.new_line(sep_str)
+        for row in table_list:
+            row_str = '| ' + ' | '.join(row) + ' |'
+            self.new_line(row_str)
+
     def _check_header(self) -> None:
         while len(self._lines) > 0 and self._lines[0] == '':
             self._lines = self._lines[1:]
@@ -137,3 +147,11 @@ class MDWriter():
         except IOError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
             raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')
+
+    def get_lines(self) -> List[str]:
+        """Return the current lines in the file."""
+        return self._lines
+
+    def get_text(self) -> str:
+        """Get the text as currently written."""
+        return '\n'.join(self._lines)

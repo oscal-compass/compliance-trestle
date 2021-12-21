@@ -78,7 +78,7 @@ def test_deep_catalog() -> None:
 
 def test_ok_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: pathlib.Path) -> None:
     """Test when by_id is not given and position is set to after or before it fails."""
-    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    cat_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
     repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_incorrect_alter.json'
@@ -91,7 +91,7 @@ def test_ok_when_reference_id_is_not_given_after_or_before(tmp_trestle_dir: path
 
 def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
     """Test when by_id is not given and position is set to after or before it defaults to after."""
-    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    cat_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
     repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_with_alter_props.json'
@@ -103,7 +103,7 @@ def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_profile_missing_position(tmp_trestle_dir: pathlib.Path) -> None:
     """Test when alter adds parts is missing position it defaults to after."""
-    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    cat_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
     repo.load_and_import_model(cat_path, 'nist_cat')
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'profile_missing_position.json'
@@ -115,7 +115,7 @@ def test_profile_missing_position(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_all_positions_for_alter_can_be_resolved(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that all alter adds positions can be resolved."""
-    cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    cat_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     repo = Repository(tmp_trestle_dir)
     repo.load_and_import_model(cat_path, 'nist_cat')
 
@@ -293,3 +293,29 @@ def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
     prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
     _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
+
+
+def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test get all groups from the catalog."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    cat_interface = CatalogInterface(catalog)
+
+    all_groups_top = cat_interface.get_all_controls_from_catalog(recurse=False)
+    assert len(list(all_groups_top)) == 6
+
+    all_groups_rec = cat_interface.get_all_controls_from_catalog(recurse=True)
+    assert len(list(all_groups_rec)) == 7
+
+    all_group_ids = cat_interface.get_group_ids()
+    assert len(all_group_ids) == 1
+
+    statement_label, part = cat_interface.get_statement_label_if_exists('ac-1', 'ac-1_smt.c.2')
+    assert statement_label == '2.'
+    assert part.id == 'ac-1_smt.c.2'
+
+    cat_path = cat_interface.get_control_path('ac-2')
+    assert cat_path[0] == 'ac'
+    assert cat_path[1] == 'ac-2'

@@ -43,7 +43,7 @@ def test_catalog_generate_assemble(
     add_header: bool, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test the catalog markdown generator."""
-    nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
     cat_name = 'my_cat'
     md_name = 'my_md'
     assembled_cat_name = 'my_assembled_cat'

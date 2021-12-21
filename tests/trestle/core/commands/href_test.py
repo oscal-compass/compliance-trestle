@@ -28,14 +28,14 @@ from trestle.utils.fs import FileContentType
 
 
 def test_href_cmd(
-    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile, monkeypatch: MonkeyPatch
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, simplified_nist_profile: profile.Profile, monkeypatch: MonkeyPatch
 ) -> None:
     """Test basic cmd invocation of href."""
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
         tmp_path,
         FileContentType.JSON,
-        sample_profile,
+        simplified_nist_profile,
         test_utils.PROFILES_DIR)
 
     os.chdir(models_path)
@@ -46,7 +46,7 @@ def test_href_cmd(
     rc = Trestle().run()
     assert rc == 0
 
-    orig_href = sample_profile.imports[0].href
+    orig_href = simplified_nist_profile.imports[0].href
 
     new_href = 'trestle://catalogs/my_catalog/catalog.json'
 
@@ -62,18 +62,18 @@ def test_href_cmd(
     # restore orig href to confirm models are otherwise equivalent
     # only thing different should be last-modified
     new_profile.imports[0].href = orig_href
-    assert test_utils.models_are_equivalent(new_profile, sample_profile)
+    assert test_utils.models_are_equivalent(new_profile, simplified_nist_profile)
 
 
 def test_href_failures(
-    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile, monkeypatch: MonkeyPatch
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, simplified_nist_profile: profile.Profile, monkeypatch: MonkeyPatch
 ) -> None:
     """Test href failure modes."""
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
         tmp_path,
         FileContentType.JSON,
-        sample_profile,
+        simplified_nist_profile,
         test_utils.PROFILES_DIR)
 
     cmd_string = 'trestle href -n my_test_model -hr foobar'
@@ -88,8 +88,8 @@ def test_href_failures(
     cmd_string = 'trestle href -n my_test_model -hr foobar -i 2'
 
     # add extra import to the profile and ask for import number 2
-    sample_profile.imports.append(sample_profile.imports[0])
-    sample_profile.oscal_write(profile_path)
+    simplified_nist_profile.imports.append(simplified_nist_profile.imports[0])
+    simplified_nist_profile.oscal_write(profile_path)
     monkeypatch.setattr(sys, 'argv', cmd_string.split())
     rc = Trestle().run()
     assert rc == 1

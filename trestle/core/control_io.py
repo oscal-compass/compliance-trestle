@@ -129,6 +129,17 @@ class ControlIOWriter():
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
 
+    def _add_control_statement_ssp(self, control: cat.Control) -> None:
+        """Add the control statement and items to the markdown SSP."""
+        self._md_file.new_paragraph()
+        label = self._get_label(control) if self._get_label(control) != '' else control.id.upper()
+        title = f'{label} - {control.title}'
+        self._md_file.new_header(level=1, title=title)
+        self._md_file.new_header(level=2, title='Control Statement')
+        self._md_file.set_indent_level(-1)
+        self._add_part_and_its_items(control, 'statement', 'item')
+        self._md_file.set_indent_level(-1)
+
     def _add_control_objective(self, control: cat.Control) -> None:
         if control.parts:
             for part in control.parts:
@@ -322,35 +333,21 @@ class ControlIOWriter():
         return prose.strip()
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any]) -> None:
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], preserve_dest_values: bool) -> None:
         """
-        Merge dict src into dest in a deep manner and handle lists.
+        Merge dict src into dest.
 
-        All contents of dest are retained and new values from src do not change dest.
-        But any new items in src are added to dest.
-        This changes dest in place.
+        New items are always added from src to dest.
+        Items present in both will not override dest if preserve_dest_values is True.
         """
         for key in src.keys():
             if key in dest:
+                # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlIOWriter.merge_dicts_deep(dest[key], src[key])
-                elif isinstance(dest[key], list):
-                    # grow dest list for the key by adding new items from src
-                    if isinstance(src[key], list):
-                        try:
-                            # Simple types (e.g. lists of strings) will get merged neatly
-                            missing = set(src[key]) - set(dest[key])
-                            dest[key].extend(missing)
-                        except TypeError:
-                            # This is a complex type - use simplistic safe behaviour
-                            logger.debug('Ignoring complex types within lists when merging dictionaries.')
-                    else:
-                        if src[key] not in dest[key]:
-                            dest[key].append(src[key])
-                elif isinstance(src[key], list):
-                    dest[key] = [dest[key]]
-                    dest[key].extend(src[key])
-                # if the item is in both, leave dest as-is and ignore the src value
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], preserve_dest_values)
+                # otherwise override dest if needed
+                elif not preserve_dest_values:
+                    dest[key] = src[key]
             else:
                 # if the item was not already in dest, add it from src
                 dest[key] = src[key]
@@ -395,37 +392,9 @@ class ControlIOWriter():
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
-        # Need to merge any existing markdown header info with the new header.  Either could be empty.
-        # But x-trestle- content in the new header should always replace content in the markdown header.
-
-        # Remove any special trestle content from the read markdown header
-        keys_to_delete = []
-        for key in header.keys():
-            if key.startswith(const.TRESTLE_TAG):
-                keys_to_delete.append(key)
-        for key in keys_to_delete:
-            header.pop(key)
-
-        # Split the provided yaml into generic and trestle parts
-        generic_dict = {}
-        trestle_dict = {}
-        merged_header = {}
+        merged_header = copy.deepcopy(header)
         if yaml_header:
-            for key, value in yaml_header.items():
-                if key.startswith(const.TRESTLE_TAG):
-                    trestle_dict[key] = value
-                else:
-                    generic_dict[key] = value
-
-        if preserve_header_values:
-            merged_header = copy.deepcopy(header)
-            ControlIOWriter.merge_dicts_deep(merged_header, generic_dict)
-        else:
-            merged_header = copy.deepcopy(generic_dict)
-            ControlIOWriter.merge_dicts_deep(merged_header, header)
-
-        # now insert the trestle content from the yaml header
-        merged_header.update(trestle_dict)
+            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, preserve_header_values)
 
         self._add_yaml_header(merged_header)
 
@@ -442,6 +411,27 @@ class ControlIOWriter():
             self._add_additional_content(control, profile)
 
         self._md_file.write_out()
+
+    def get_control_statement(self, control: cat.Control) -> List[str]:
+        """Get back the formatted control from a catalog."""
+        self._md_file = MDWriter(None)
+        self._add_control_statement_ssp(control)
+        return self._md_file.get_lines()
+
+    def get_params(self, control: cat.Control) -> List[str]:
+        """Get parameters for control."""
+        reader = ControlIOReader()
+        param_dict = reader.get_control_param_dict(control, False)
+
+        if param_dict:
+            self._md_file = MDWriter(None)
+            self._md_file.new_paragraph()
+            self._md_file.set_indent_level(-1)
+            self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
+            self._md_file.set_indent_level(-1)
+            return self._md_file.get_lines()
+
+        return []
 
 
 class ControlIOReader():
@@ -908,9 +898,10 @@ class ControlIOReader():
     def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
         """Insert yaml header content into the imp_req and its by_comps."""
         dict_ = header.get(const.SSP_FEDRAMP_TAG, {})
-        control_orig = dict_.get(const.CONTROL_ORIGINATION, [])
-        imp_status = dict_.get(const.IMPLEMENTATION_STATUS, [])
-        roles = dict_.get(const.RESPONSIBLE_ROLES, [])
+        # if an attribute is in the dict but it is None, need to make sure we get empty list anyway
+        control_orig = as_list(dict_.get(const.CONTROL_ORIGINATION, []))
+        imp_status = as_list(dict_.get(const.IMPLEMENTATION_STATUS, []))
+        roles = as_list(dict_.get(const.RESPONSIBLE_ROLES, []))
         props = []
         responsible_roles = []
         for co in control_orig:
@@ -968,12 +959,13 @@ class ControlIOReader():
             else:
                 raise TrestleError(f'Unexpected content in control {control_id} yaml header: {status}')
         for role in roles:
-            if isinstance(role, dict) and len(role) == 1:
-                key = list(role.keys())[0]
-                value = list(role.values())[0]
-                if key != 'id':
-                    raise TrestleError(f'Role in control yaml header must have id as key value: {role}')
-                responsible_roles.append(common.ResponsibleRole(role_id=value))
+            if isinstance(role, str):
+                # role_id must conform to NCNAME regex
+                role = role.strip().replace(' ', '_')
+                if role:
+                    responsible_roles.append(common.ResponsibleRole(role_id=role))
+            else:
+                logger.warning(f'Role in header for control {control_id} not recognized: {role}')
         if props:
             imp_req.props = as_list(imp_req.props)
             imp_req.props.extend(props)
@@ -1103,7 +1095,9 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
-        param_dict.update(header.get(const.SET_PARAMS_TAG, {}))
+        header_params = header.get(const.SET_PARAMS_TAG, {})
+        if header_params:
+            param_dict.update(header_params)
         return new_alters, param_dict
 
     @staticmethod

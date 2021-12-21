@@ -30,14 +30,14 @@ from trestle.oscal.component import ComponentDefinition
 
 @pytest.mark.parametrize('element_path', ['', 'catalog.metadata.roles', 'catalog.metadata'])
 def test_describe_functionality(
-    element_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog
+    element_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, simplified_nist_catalog: oscatalog.Catalog
 ) -> None:
     """Test basic functionality of describe."""
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         FileContentType.JSON,
-        sample_catalog,
+        simplified_nist_catalog,
         test_utils.CATALOGS_DIR)
 
     os.chdir(catalog_dir)
