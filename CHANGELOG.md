@@ -3,6 +3,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.33.0 (2021-12-21)
+### Feature
+* Support for SSP writing with jinja templating. ([#787](https://github.com/IBM/compliance-trestle/issues/787)) ([`e47fc77`](https://github.com/IBM/compliance-trestle/commit/e47fc778ab66a8997b689753ce5ead1849543e52))
+
+### Fix
+* Merge dicts and remove transform command from CLI until mature.(#954) ([`82e484b`](https://github.com/IBM/compliance-trestle/commit/82e484b59a4415c2ece1fda55b2b7e9f1a46ab68))
+
 ## v0.32.1 (2021-12-17)
 ### Fix
 * Cidd issues ([#949](https://github.com/IBM/compliance-trestle/issues/949)) ([`038ca2e`](https://github.com/IBM/compliance-trestle/commit/038ca2ec96a6d85aa891d0cf36e9f9c03e0733d7))
