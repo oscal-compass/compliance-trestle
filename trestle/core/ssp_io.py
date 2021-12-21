@@ -66,9 +66,8 @@ class SSPMarkdownWriter():
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
-        group_id, group_title, _ = self._catalog_interface.get_group_info_by_control(control.id)
 
-        control_lines = writer.get_control_statement(control, group_title)
+        control_lines = writer.get_control_statement(control)
 
         return self._build_tree_and_adjust(control_lines, level)
 

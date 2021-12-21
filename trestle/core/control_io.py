@@ -122,6 +122,16 @@ class ControlIOWriter():
     def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
+        title = f'{control.id} - \[{group_title}\] {control.title}'
+        self._md_file.new_header(level=1, title=title)
+        self._md_file.new_header(level=2, title='Control Statement')
+        self._md_file.set_indent_level(-1)
+        self._add_part_and_its_items(control, 'statement', 'item')
+        self._md_file.set_indent_level(-1)
+
+    def _add_control_statement_ssp(self, control: cat.Control) -> None:
+        """Add the control statement and items to the markdown SSP."""
+        self._md_file.new_paragraph()
         label = self._get_label(control) if self._get_label(control) != '' else control.id.upper()
         title = f'{label} - {control.title}'
         self._md_file.new_header(level=1, title=title)
@@ -402,10 +412,10 @@ class ControlIOWriter():
 
         self._md_file.write_out()
 
-    def get_control_statement(self, control: cat.Control, group_title: str) -> List[str]:
+    def get_control_statement(self, control: cat.Control) -> List[str]:
         """Get back the formatted control from a catalog."""
         self._md_file = MDWriter(None)
-        self._add_control_statement(control, group_title)
+        self._add_control_statement_ssp(control)
         return self._md_file.get_lines()
 
     def get_params(self, control: cat.Control) -> List[str]:

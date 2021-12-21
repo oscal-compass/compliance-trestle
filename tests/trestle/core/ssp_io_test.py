@@ -56,7 +56,7 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     ssp_writer = SSPMarkdownWriter(gen_args.trestle_root)
     ssp_writer.set_catalog(resolved_catalog)
-    md_text = ssp_writer.get_control_statement('au-8', 1)
+    md_text = ssp_writer.get_control_statement('ac-2', 1)
     assert md_text is not None
 
     ssp_writer.set_ssp(ssp_obj)
