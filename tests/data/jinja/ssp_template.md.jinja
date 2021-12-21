@@ -1,0 +1,39 @@
+Test SSP
+<!--
+1. Adjust md_clean_include (or make it md_adjust_include) to adjust max header level
+2. (CB) - Add ssp_renderer to jinja.py vars
+-->
+
+# A
+{% md_clean_include 'sub_content.md' heading_level=2 %}
+
+# B
+{% md_clean_include 'sub_content.md' heading_level=2 %}
+
+# C
+{% md_clean_include 'sub_content.md' heading_level=2 %}
+
+# Control Response
+{% for group in catalog_interface.get_all_groups_from_catalog() +%}
+{% if group.class != '' %}
+## {{ group.title }} {{ group.class }} \({{ group.id|upper }}\)
+{% else %}
+## {{ group.title }} \({{ group.id|upper }}\)
+{% endif %}
+
+{% for control in catalog_interface._control_dict.values() %}
+{% if control.group_id ==  group.id %}
+{# ### {{ catalog_interface.get_label(control.control) }}: {{ control.control.title}}
+
+#### Control Statement #}
+{{ ssp_md_writer.get_control_statement(control.control.id, 2) }}
+
+#### {{ catalog_interface.get_label(control.control) }} Summary information
+{{ ssp_md_writer.get_fedramp_control_tables(control.control.id, 4) }}
+
+#### Implementation
+{{ ssp_md_writer.get_control_response(control.control.id, 4)}}
+
+{% endif %}
+{% endfor %}
+{% endfor %}

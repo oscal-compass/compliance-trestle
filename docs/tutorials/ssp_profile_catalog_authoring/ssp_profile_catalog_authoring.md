@@ -173,7 +173,7 @@ Example usage for creation of the markdown:
 
 In this example the profile has previously been imported into the trestle project directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
 
-The `-s --section` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  Each colon-separated pair refers to the actual part name first, followed by the form that should be used in the heading for that section.  This is done because the name itself may be abbreviated and lack needed spaces between words.
+The `-s --section` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  Each colon-separated pair refers to the actual part name first, followed by the form that should be used in the heading for that section.  This is done because the name itself may be abbreviated and lack needed spaces between words. If no section labels are provided all parts are included using the default 'name' as specified in the underlying OSCAL.
 
 (Note that the single quotes are required on Unix-like systems, but on Windows they are only needed if the contained string includes spaces, in which case *double* quotes should be used.)
 

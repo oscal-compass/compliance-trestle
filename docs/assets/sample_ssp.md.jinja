@@ -1,0 +1,37 @@
+# SSP template 
+<!--
+This produces an SSP analog. 
+-->
+
+# Frontmatter
+<!-- This includes frontmatter.md showing how arbitrary prose can be inserted into a document --> 
+{% md_clean_include 'frontmatter.md' heading_level=2 %}
+
+
+
+
+
+
+<!-- This iterates over the controls in a resolved catalog and prints out the control statement, summary table,
+and implemented requirements in a format similar to a FedRAMP .docx
+
+Note that the catalog interface has controls properly sorted so is useful to present the controls how they are organised
+in the original catalog 
+-->
+# Control responses and guidance
+{% for group in catalog_interface.get_all_groups_from_catalog() +%}
+## {{ group.title }} {{ group.class }} \({{ group.id|upper }}\)
+
+{% for control in catalog_interface._control_dict.values() %}
+{% if control.group_id ==  group.id %}
+{{ ssp_md_writer.get_control_statement(control.control.id, 2) }}
+
+
+#### {{ catalog_interface.get_label(control.control) }} Summary information
+{{ ssp_md_writer.get_fedramp_control_tables(control.control.id, 4) }}
+
+#### What is the solution and how is it implemented?
+{{ ssp_md_writer.get_control_response(control.control.id, 4)}}
+{% endif %}
+{% endfor %}
+{% endfor %}

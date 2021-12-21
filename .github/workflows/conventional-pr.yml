@@ -1,4 +1,4 @@
-name: "Lint PR"
+name: "Lint PR title"
 
 on:
   pull_request_target:
@@ -8,6 +8,7 @@ on:
       - synchronize
     branches:
       - 'develop'
+      - 'main'
 jobs:
   lint:
     if: ${{ github.head_ref != 'develop' }}

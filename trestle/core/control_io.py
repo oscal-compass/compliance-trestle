@@ -129,6 +129,17 @@ class ControlIOWriter():
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
 
+    def _add_control_statement_ssp(self, control: cat.Control) -> None:
+        """Add the control statement and items to the markdown SSP."""
+        self._md_file.new_paragraph()
+        label = self._get_label(control) if self._get_label(control) != '' else control.id.upper()
+        title = f'{label} - {control.title}'
+        self._md_file.new_header(level=1, title=title)
+        self._md_file.new_header(level=2, title='Control Statement')
+        self._md_file.set_indent_level(-1)
+        self._add_part_and_its_items(control, 'statement', 'item')
+        self._md_file.set_indent_level(-1)
+
     def _add_control_objective(self, control: cat.Control) -> None:
         if control.parts:
             for part in control.parts:
@@ -400,6 +411,27 @@ class ControlIOWriter():
             self._add_additional_content(control, profile)
 
         self._md_file.write_out()
+
+    def get_control_statement(self, control: cat.Control) -> List[str]:
+        """Get back the formatted control from a catalog."""
+        self._md_file = MDWriter(None)
+        self._add_control_statement_ssp(control)
+        return self._md_file.get_lines()
+
+    def get_params(self, control: cat.Control) -> List[str]:
+        """Get parameters for control."""
+        reader = ControlIOReader()
+        param_dict = reader.get_control_param_dict(control, False)
+
+        if param_dict:
+            self._md_file = MDWriter(None)
+            self._md_file.new_paragraph()
+            self._md_file.set_indent_level(-1)
+            self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
+            self._md_file.set_indent_level(-1)
+            return self._md_file.get_lines()
+
+        return []
 
 
 class ControlIOReader():

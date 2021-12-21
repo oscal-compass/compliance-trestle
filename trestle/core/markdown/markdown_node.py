@@ -56,7 +56,7 @@ class MarkdownNode:
 
     def __init__(self, key: str, content: SectionContent):
         """Initialize markdown node."""
-        self.subnodes = []
+        self.subnodes: List[MarkdownNode] = []
         self.key = key
         self.content = content
 
@@ -219,7 +219,7 @@ class MarkdownNode:
         """
         header_symbols = re.match(md_const.HEADER_REGEX, line)
         # Header is valid only if it line starts with header
-        if (header_symbols is not None and header_symbols.regs[0][0] == 0):
+        if header_symbols is not None and header_symbols.regs[0][0] == 0:
             return header_symbols.regs[0][1]
         return None
 

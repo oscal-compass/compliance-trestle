@@ -15,14 +15,19 @@
 # This script is designed to test whether the bdist is behaving correctly.
 # Note that it encodes the stanndard testing protocol and should be updated.
 
+# Build trestle as a wheel
+python setup.py bdist_wheel
+# Create an isolated venv with fresh packages
 mkdir tmp_bin_test
 python -m venv tmp_bin_test/venv
-python setup.py bdist_wheel
 source tmp_bin_test/venv/bin/activate
+# Install in the compliance-trestle wheel away from the source repo
 python -m pip install dist/*.whl
+# install required test libraries
 python -m pip install pytest-xdist
 # this is required to get away from the damn base directory
 cd tmp_bin_test
+# link in the tests.
 ln -s ../tests
 # Ensure nist content is accessible (requires submodules to be checked out.)
 ln -s ../nist-content

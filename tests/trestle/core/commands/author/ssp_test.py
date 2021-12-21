@@ -15,13 +15,13 @@
 
 import argparse
 import pathlib
-from typing import Tuple
 
 import pytest
 
 from ruamel.yaml import YAML
 
 from tests import test_utils
+from tests.test_utils import setup_for_ssp
 
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
@@ -35,30 +35,6 @@ from trestle.utils import fs
 prof_name = 'main_profile'
 ssp_name = 'my_ssp'
 cat_name = 'nist_cat'
-
-
-def setup_for_ssp(include_header: bool,
-                  big_profile: bool,
-                  tmp_trestle_dir: pathlib.Path,
-                  import_nist_cat: bool = True) -> Tuple[argparse.Namespace, str]:
-    """Create the markdown ssp content from catalog and profile."""
-    test_utils.setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
-
-    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        profile=prof_name,
-        output=ssp_name,
-        verbose=True,
-        sections=sections,
-        preserve_header_values=False
-    )
-
-    yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    if include_header:
-        args.yaml_header = str(yaml_path)
-
-    return args, sections, yaml_path
 
 
 def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> bool:
@@ -87,7 +63,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 @pytest.mark.parametrize('sections', [False, True])
 def test_ssp_generate(import_cat, sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, import_cat)
+    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
     if not sections:
         args.sections = None
     ssp_cmd = SSPGenerate()
@@ -144,7 +120,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
-    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir)
+    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
@@ -171,7 +147,7 @@ def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> N
 
     Also checking code where not label is provided.
     """
-    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir)
+    args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
     args.sections = 'statement'
     ssp_cmd = SSPGenerate()
     # run the command for happy path
@@ -182,14 +158,7 @@ def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> N
 def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     # always start by creating the markdown with the yaml header
-    # yaml loaded is good_simple.yaml:
-    # control-origination:
-    # - Service Provider Corporate
-    # - Service Provider System Specific
-    # responsible-roles:
-    # - Customer
-
-    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir)
+    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
@@ -231,7 +200,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble from cli."""
-    gen_args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir)
+    gen_args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
 
     # first create the markdown
     ssp_gen = SSPGenerate()
@@ -311,7 +280,7 @@ def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
-    _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
+    _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir, prof_name, ssp_name)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
     new_catalog_dir = tmp_trestle_dir / f'catalogs/{prof_name}_resolved_catalog'
     new_catalog_dir.mkdir(parents=True, exist_ok=True)
@@ -329,7 +298,7 @@ def test_ssp_generate_resolved_catalog(tmp_trestle_dir: pathlib.Path) -> None:
 def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp filter."""
     # install the catalog and profiles
-    gen_args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, True)
+    gen_args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name, True)
     # create markdown with profile a
     gen_args.profile = 'test_profile_a'
     ssp_gen = SSPGenerate()
