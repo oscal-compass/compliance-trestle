@@ -374,6 +374,8 @@ class CatalogInterface():
     def get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
         """Get the full mapping of param_id to modified value for this profile."""
         set_param_dict: Dict[str, str] = {}
+        if not profile.modify:
+            return set_param_dict
         for set_param in as_list(profile.modify.set_parameters):
             value_str = ControlIOReader.param_values_as_string(set_param)
             set_param_dict[set_param.param_id] = value_str
