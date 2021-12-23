@@ -79,7 +79,7 @@ Compliance trestle is currently beta. The expectation is that in ongoing work th
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [contributing](contributing/overview) to get started.
+Our project welcomes external contributions. Please consult [contributing](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
 
 ## License & Authors
 
