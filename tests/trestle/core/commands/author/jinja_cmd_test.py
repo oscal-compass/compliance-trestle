@@ -20,6 +20,7 @@ from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
+from trestle.core.commands.author.jinja import _number_captions
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
 
@@ -82,3 +83,15 @@ def test_jinja_lookup_table(
         node2 = tree.get_node_for_key('# B')
         assert node1.content.text[1] == 'This word: compliance-trestle, was substituted.'
         assert node2.content.text
+
+
+def test_number_captions(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test numbering of captions in markdown."""
+    with open(testdata_dir / 'jinja_cmd/number_captions_data.md', 'r') as fp:
+        test_data = fp.read()
+
+    with open(testdata_dir / 'jinja_cmd/number_captions_expected_output.md', 'r') as fp:
+        expected_output = fp.read().splitlines()
+
+    for idx, row in enumerate(_number_captions(test_data).splitlines()):
+        assert row == expected_output[idx]

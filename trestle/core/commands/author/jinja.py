@@ -198,11 +198,11 @@ def _number_captions(md_body: str) -> str:
     for index, line in enumerate(output):
         if re.match('!\[.+\]\(.+\)', line):
             images[index] = line
-        if 'table: ' in output[index].lower():
+        if output[index].lower().startswith('table: '):
             tables[index] = line
 
     for index, row in enumerate(tables):
-        output[row] = f'Table: Table {index + 1} - {tables[row].split("Table: ")[1]}'
+        output[row] = f'Table: Table {index + 1} - {tables[row].split(": ")[1]}'
 
     for index, row in enumerate(images):
         output[row] = images[row].replace('![', f'![Figure {index + 1} - ')
