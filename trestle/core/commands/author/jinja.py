@@ -84,11 +84,22 @@ class JinjaCmd(CommandPlusDocs):
             lookup_table_path = pathlib.Path.cwd() / lut_table
             lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
             status = JinjaCmd.jinja_ify(
-                pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, lut, number_captions=args.number_captions
+                pathlib.Path(args.trestle_root),
+                input_path,
+                output_path,
+                args.system_security_plan,
+                args.profile,
+                lut,
+                number_captions=args.number_captions
             )
         else:
             status = JinjaCmd.jinja_ify(
-                pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, number_captions=args.number_captions
+                pathlib.Path(args.trestle_root),
+                input_path,
+                output_path,
+                args.system_security_plan,
+                args.profile,
+                number_captions=args.number_captions
             )
         logger.debug(f'Done {self.name} command')
         return status
@@ -176,23 +187,24 @@ class JinjaCmd(CommandPlusDocs):
             logger.debug(traceback.format_exc())
             return 1
         return 0
-    
-def _number_captions(md_body) -> str:
-    """Incrementally number tables and image captions"""
+
+
+def _number_captions(md_body: str) -> str:
+    """Incrementally number tables and image captions."""
     images = {}
     tables = {}
     output = md_body.splitlines()
-    
-    for n, line in enumerate(output):
-        if re.match('^!\[.+\]\(.+\)', line):
-            images[n] = line
-        if "table: " in output[n].lower():
-            tables[n] = line
-    
-    for n, row in enumerate(tables):
-        output[row] = f'Table: Table {n + 1} - {tables[row].split("Table: ")[1]}'
 
-    for n, row in enumerate(images):
-        output[row] = images[row].replace('![',f'![Figure {n + 1} - ')
-    
-    return "\n".join(output)
+    for index, line in enumerate(output):
+        if re.match('!\[.+\]\(.+\)', line):
+            images[index] = line
+        if 'table: ' in output[index].lower():
+            tables[index] = line
+
+    for index, row in enumerate(tables):
+        output[row] = f'Table: Table {index + 1} - {tables[row].split("Table: ")[1]}'
+
+    for index, row in enumerate(images):
+        output[row] = images[row].replace('![', f'![Figure {index + 1} - ')
+
+    return '\n'.join(output)
