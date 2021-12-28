@@ -30,7 +30,7 @@ from ruamel.yaml import YAML
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.jinja import MDCleanInclude, MDSectionInclude
+from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
@@ -134,7 +134,7 @@ class JinjaCmd(CommandPlusDocs):
             template_folder = pathlib.Path.cwd()
             jinja_env = Environment(
                 loader=FileSystemLoader(template_folder),
-                extensions=[MDSectionInclude, MDCleanInclude],
+                extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
                 trim_blocks=True,
                 autoescape=True
             )
@@ -169,7 +169,7 @@ class JinjaCmd(CommandPlusDocs):
                 dict_loader = DictLoader({str(random_name): new_output})
                 jinja_env = Environment(
                     loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                    extensions=[MDCleanInclude, MDSectionInclude],
+                    extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
                     autoescape=True,
                     trim_blocks=True
                 )
