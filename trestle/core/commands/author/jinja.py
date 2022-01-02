@@ -196,7 +196,7 @@ def _number_captions(md_body: str) -> str:
     output = md_body.splitlines()
 
     for index, line in enumerate(output):
-        if re.match('!\[.+\]\(.+\)', line):
+        if re.match(r'!\[.+\]\(.+\)', line):
             images[index] = line
         if output[index].lower().startswith('table: '):
             tables[index] = line
