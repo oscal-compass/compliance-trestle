@@ -139,7 +139,7 @@ class ProfileAssemble(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = (
             'Optional name of the profile model in the trestle workspace that is being modified.  '
-            'If not provided the output name is used. '
+            'If not provided the output name is used.'
         )
         self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
         file_help_str = 'Name of the source markdown file directory'
