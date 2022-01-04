@@ -84,3 +84,11 @@ def test_jinja_datestamp_format(testdata_dir: pathlib.Path) -> None:
     output_str = template.render()
     expected_content = date.today().strftime('%B %d, %Y') + '\n\n\n# Heading'
     assert output_str == expected_content
+
+
+def test_jinja_datestamp_invalid(testdata_dir: pathlib.Path) -> None:
+    """Test jinja datestamp generation, with format string."""
+    jinja_md_dir = testdata_dir / JINJA_MD
+    jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
+    with pytest.raises(Exception):
+        _ = jinja_env.get_template('MDDatestamp_invalid.jinja.md')
