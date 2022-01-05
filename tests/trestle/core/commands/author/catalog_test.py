@@ -168,4 +168,4 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     full_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface.get_profile_param_dict(control, full_param_dict)
     assert control_param_dict['ac-1_prm_1'] == 'all alert personell'
-    assert 'ac-1_prm_7' not in control_param_dict
+    assert control_param_dict['ac-1_prm_7'] == 'organization-defined events'
