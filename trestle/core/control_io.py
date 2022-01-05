@@ -491,8 +491,8 @@ class ControlIOReader():
         return clean_lines, header
 
     @staticmethod
-    def _read_id_group_title_title(line: str) -> Tuple[int, str, str]:
-        """Process the line and find the control id, group title (in brackets) and control title."""
+    def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
+        """Process the title line and extract the control id, group title (in brackets) and control title."""
         if line.count('-') < 2:
             raise TrestleError(f'Markdown control title format error: {line}')
         control_id = line.split()[1]
@@ -1123,7 +1123,7 @@ class ControlIOReader():
 
     @staticmethod
     def read_control(control_path: pathlib.Path) -> Tuple[cat.Control, str]:
-        """Read the control markdown file."""
+        """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
         _, control_tree = md_api.processor.process_markdown(control_path)
@@ -1131,7 +1131,7 @@ class ControlIOReader():
         if len(control_titles) == 0:
             raise TrestleError(f'Control markdown: {control_path} contains no control title.')
 
-        control.id, group_title, control.title = ControlIOReader._read_id_group_title_title(control_titles[0])
+        control.id, group_title, control.title = ControlIOReader._parse_control_title_line(control_titles[0])
 
         control_headers = list(control_tree.get_all_headers_for_level(2))
         if len(control_headers) == 0:

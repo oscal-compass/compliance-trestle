@@ -500,9 +500,11 @@ class CatalogInterface():
             group_dir = md_path / group_id
             control_list = []
             group_title = ''
-            # Need to get group title from one control
+            # Need to get group title from at least one control in this directory
             # All controls in dir should have same group title
-            # Set group title to the first one found and warn if different title appears
+            # Set group title to the first one found and warn if different non-empty title appears
+            # Controls with empty group titles are tolerated but at least one title must be present or warning given
+            # The special group with no name that has the catalog as parent is just a list and has no title
             for control_path in CatalogInterface._get_control_paths(group_dir):
                 control, control_group_title = ControlIOReader.read_control(control_path)
                 if control_group_title:
@@ -522,6 +524,7 @@ class CatalogInterface():
                 new_group.controls = control_list
                 groups.append(new_group)
             else:
+                # if the list of controls has no group id it also has no title and is just the controls of the catalog
                 self._catalog.controls = control_list
         self._catalog.groups = groups if groups else None
         return self._catalog
