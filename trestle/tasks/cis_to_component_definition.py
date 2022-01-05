@@ -18,6 +18,7 @@ import configparser
 import datetime
 import json
 import logging
+import os
 import pathlib
 import traceback
 import uuid
@@ -70,10 +71,9 @@ class CisToComponentDefinition(TaskBase):
 
     def print_info(self) -> None:
         """Print the help string."""
-        root_trestle = '/home/degenaro/git/shared-trestle-workspace.oscal-for-osco'
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Create component definition from from standard (e.g. CIS benchmark).')
+        logger.info('Purpose: Create component definition from standard (e.g. CIS benchmark).')
         logger.info('')
         logger.info('Configuration flags sit under [task.cis-to-component-definition]:')
         text1 = '  component-name         = '
@@ -84,6 +84,9 @@ class CisToComponentDefinition(TaskBase):
         logger.info(text1 + text2)
         text1 = '  org-remarks            = '
         text2 = 'organization remarks, e.g. IBM.'
+        logger.info(text1 + text2)
+        text1 = '  folder-cac             = '
+        text2 = 'folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.'
         logger.info(text1 + text2)
         text1 = '  output-dir             = '
         text2 = 'location to write the generated component-definition.json file.'
@@ -96,7 +99,7 @@ class CisToComponentDefinition(TaskBase):
         text2 = 'profile mnemonic, e.g. ocp4-cis-node.'
         logger.info(text1 + text2)
         text1 = '  profile-ns             = '
-        text2 = 'profile ns, e.g. https://github.com/ComplianceAsCode/content/tree/master/ocp4.'
+        text2 = 'profile ns, e.g. https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud.'
         logger.info(text1 + text2)
         text1 = '  profile-version        = '
         text2 = 'profile version, e.g. 1.1.'
@@ -116,7 +119,7 @@ class CisToComponentDefinition(TaskBase):
         logger.info(text1 + text2)
         text1 = '  profile-file.<suffix>  = '
         text2 = 'path of the profile file to ingest'
-        text3 = ', e.g. /home/degenaro/git/compliance-as-code.content/products/ocp4/profiles/cis-node.profile.'
+        text3 = ', e.g. ${folder-cac}/products/ocp4/profiles/cis-node.profile.'  # noqa
         logger.info(text1 + text2 + text3)
         text1 = '  profile-title.<suffix> = '
         text2 = 'title of the profile'
@@ -128,15 +131,15 @@ class CisToComponentDefinition(TaskBase):
         logger.info(text1 + text2 + text3)
         text1 = '  rule-to-parameters-map = '
         text2 = 'map file for set-parameters, e.g. '
-        text3 = root_trestle + '/component-definitions/osco/rule2var.json.'
+        text3 = 'adjunct-data/task-files/rule2var.json.'
         logger.info(text1 + text2 + text3)
         text1 = '  selected-rules         = '
         text2 = 'file with list of selected rules, e.g. '
-        text3 = root_trestle + '/component-definitions/osco/selected_rules.json.'
+        text3 = 'adjunct-data/task-files/selected_rules.json.'
         logger.info(text1 + text2 + text3)
         text1 = '  enabled-rules          = '
         text2 = 'file with list of enabled rules, e.g. '
-        text3 = root_trestle + '/component-definitions/osco/enabled_rules.json.'
+        text3 = 'adjunct-data/task-files/enabled_rules.json.'
         logger.info(text1 + text2 + text3)
         #
         text = ''
@@ -170,6 +173,7 @@ class CisToComponentDefinition(TaskBase):
             component_name = self._config['component-name']
             org_name = self._config['org-name']
             org_remarks = self._config['org-remarks']
+            self._folder_cac = self._config['folder-cac']
             profile_check_version = self._config['profile-check-version']
             profile_type = self._config['profile-type']
             profile_mnemonic = self._config['profile-mnemonic']
@@ -475,6 +479,29 @@ class CisToComponentDefinition(TaskBase):
             )
         return control_implementation
 
+    def _get_title(self, atom, root):
+        """Extract rule title from compliance-as-code rule.yml."""
+        title = None
+        for path, dirs, _files in os.walk(root):
+            if atom in dirs:
+                folder = os.path.join(path, atom)
+                tpath = pathlib.Path(folder) / 'rule.yml'
+                fp = pathlib.Path(tpath)
+                f = fp.open('r', encoding=const.FILE_ENCODING)
+                content = f.readlines()
+                f.close()
+                for line in content:
+                    if line.startswith('title:'):
+                        title = line.split('title:')[1]
+                        break
+        if title is None:
+            msg = f'unable to find "{atom}"'
+            logger.error(msg)
+            raise RuntimeError(msg)
+        title = title.strip().strip("'").strip('"')
+        logger.debug(f'{title}')
+        return title
+
     def _build_implemented_requirements(self, profile_set: Dict[str, str],
                                         responsible_roles: List[ResponsibleRole]) -> List[ImplementedRequirement]:
         """Build implemented requirements."""
@@ -483,15 +510,17 @@ class CisToComponentDefinition(TaskBase):
         rules = self._get_cis_rules(profile_file)
         controls = self._get_controls(rules)
         rule_prefix = 'xccdf_org.ssgproject.content_rule_'
+        cac_openshift = f'{self._folder_cac}/applications/openshift'
         for rule in rules:
             if self._is_excluded(rule, rules[rule][1], controls):
                 continue
+            remarks = self._get_title(rule, cac_openshift)
             prop = Property(
                 class_='scc_goal_name_id',
                 ns=profile_set['profile-ns'],
                 name='XCCDF_rule',
                 value=f'{rule_prefix}{rule}',
-                remarks=f'{rules[rule][2]}'
+                remarks=f'{remarks}'
             )
             props = [prop]
             implemented_requirement = ImplementedRequirement(
