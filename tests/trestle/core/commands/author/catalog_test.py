@@ -111,6 +111,16 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     assert interface._catalog.controls[1].controls[0].title == new_title
 
 
+def test_catalog_interface_control_naming(tmp_path: pathlib.Path) -> None:
+    """Test determination of control name from file path."""
+    control_id = 's.1.1.1'
+    md_file = tmp_path / (control_id + '.md')
+    md_file.touch()
+    paths = CatalogInterface._get_control_paths(tmp_path)
+    assert len(paths) == 1
+    assert paths[0] == md_file
+
+
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
     # disallowed output name
