@@ -137,8 +137,11 @@ class ProfileAssemble(AuthorCommonCommand):
     name = 'profile-assemble'
 
     def _init_arguments(self) -> None:
-        name_help_str = 'Name of the profile model in the trestle workspace that is being modified'
-        self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
+        name_help_str = (
+            'Optional name of the profile model in the trestle workspace that is being modified.  '
+            'If not provided the output name is used.'
+        )
+        self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
         file_help_str = 'Name of the source markdown file directory'
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Profile (ok to overwrite original)'
@@ -149,7 +152,8 @@ class ProfileAssemble(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
-            return self.assemble_profile(trestle_root, args.name, args.markdown, args.output, args.set_parameters)
+            prof_name = args.output if not args.name else args.name
+            return self.assemble_profile(trestle_root, prof_name, args.markdown, args.output, args.set_parameters)
         except Exception as e:
             logger.error(f'Assembly of markdown to profile failed with error: {e}')
             logger.debug(traceback.format_exc())
@@ -210,8 +214,8 @@ class ProfileAssemble(AuthorCommonCommand):
 
         Args:
             trestle_root: The trestle root directory
-            orig_profile_name: The output name of the profile json file to be created from the assembly
-            md_name: The name of the directory containing the markdown control files for the ssp
+            orig_profile_name: The name of the original profile json file used to generate the markdown
+            md_name: The name of the directory containing the markdown control files for the profile
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
             set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile
 

@@ -16,12 +16,14 @@
 """Tests for trestle custom jinja functionality."""
 
 import pathlib
+from datetime import date
 
 from jinja2 import Environment, FileSystemLoader
 
 import pytest
 
 import trestle.core.jinja as tres_jinja
+from trestle.core.markdown import markdown_const
 
 JINJA_MD = 'jinja_markdown_include'
 
@@ -53,3 +55,43 @@ def test_jinja_md(testdata_dir: pathlib.Path, template: str, expected: str, expe
     expected_f = jinja_md_dir / expected
     expected_content = expected_f.open('r').read()
     assert output_str == expected_content
+
+
+def test_jinja_datestamp_default(testdata_dir: pathlib.Path) -> None:
+    """Test jinja datestamp generation, default case."""
+    jinja_md_dir = testdata_dir / JINJA_MD
+    jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
+    template = jinja_env.get_template('MDDatestamp_default.jinja.md')
+    output_str = template.render()
+    expected_content = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + '\n\n\n# Heading'
+    assert output_str == expected_content
+
+
+def test_jinja_datestamp_newline(testdata_dir: pathlib.Path) -> None:
+    """Test jinja datestamp generation, with newline true and false."""
+    jinja_md_dir = testdata_dir / JINJA_MD
+    jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
+    template = jinja_env.get_template('MDDatestamp_newline.jinja.md')
+    output_str = template.render()
+    expected_content = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + date.today().strftime(
+        markdown_const.JINJA_DATESTAMP_FORMAT
+    ) + '\n\n\n# Heading'
+    assert output_str == expected_content
+
+
+def test_jinja_datestamp_format(testdata_dir: pathlib.Path) -> None:
+    """Test jinja datestamp generation, with format string."""
+    jinja_md_dir = testdata_dir / JINJA_MD
+    jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
+    template = jinja_env.get_template('MDDatestamp_format.jinja.md')
+    output_str = template.render()
+    expected_content = date.today().strftime('%B %d, %Y') + '\n\n\n# Heading'
+    assert output_str == expected_content
+
+
+def test_jinja_datestamp_invalid(testdata_dir: pathlib.Path) -> None:
+    """Test jinja datestamp generation, with format string."""
+    jinja_md_dir = testdata_dir / JINJA_MD
+    jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
+    with pytest.raises(Exception):
+        _ = jinja_env.get_template('MDDatestamp_invalid.jinja.md')
