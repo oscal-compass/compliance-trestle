@@ -25,6 +25,7 @@ from jinja2.ext import Extension
 from jinja2.parser import Parser
 
 from trestle.core import err
+from trestle.core.markdown import markdown_const
 from trestle.core.markdown import markdown_node
 
 logger = logging.getLogger(__name__)
@@ -216,13 +217,13 @@ class MDDatestamp(TrestleJinjaExtension):
             if 'format' in kwargs and type(kwargs['format'] is str):
                 date_string = date.today().strftime(kwargs['format'])
             else:
-                date_string = date.today().strftime('%m/%d/%Y')
+                date_string = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT)
             if 'newline' in kwargs and kwargs['newline'] is False:
                 pass
             else:
                 date_string += '\n\n'
         else:
-            date_string = date.today().strftime('%m/%d/%Y') + '\n\n'
+            date_string = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + '\n\n'
 
         local_parser = Parser(self.environment, date_string)
         datestamp_output = local_parser.parse()

@@ -23,6 +23,7 @@ from jinja2 import Environment, FileSystemLoader
 import pytest
 
 import trestle.core.jinja as tres_jinja
+from trestle.core.markdown import markdown_const
 
 JINJA_MD = 'jinja_markdown_include'
 
@@ -62,7 +63,7 @@ def test_jinja_datestamp_default(testdata_dir: pathlib.Path) -> None:
     jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
     template = jinja_env.get_template('MDDatestamp_default.jinja.md')
     output_str = template.render()
-    expected_content = date.today().strftime('%m/%d/%Y') + '\n\n\n# Heading'
+    expected_content = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + '\n\n\n# Heading'
     assert output_str == expected_content
 
 
@@ -72,7 +73,9 @@ def test_jinja_datestamp_newline(testdata_dir: pathlib.Path) -> None:
     jinja_env = Environment(loader=FileSystemLoader(jinja_md_dir), extensions=[tres_jinja.MDDatestamp])
     template = jinja_env.get_template('MDDatestamp_newline.jinja.md')
     output_str = template.render()
-    expected_content = date.today().strftime('%m/%d/%Y') + date.today().strftime('%m/%d/%Y') + '\n\n\n# Heading'
+    expected_content = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + date.today().strftime(
+        markdown_const.JINJA_DATESTAMP_FORMAT
+    ) + '\n\n\n# Heading'
     assert output_str == expected_content
 
 
