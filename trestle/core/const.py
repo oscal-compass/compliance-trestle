@@ -296,3 +296,5 @@ COMPLETION_DATE = 'completion-date'
 HELP_SET_PARAMS = 'set profile parameter values based on the yaml header in control markdown'
 
 SET_PARAMS_TAG = 'x-trestle-set-params'
+
+EDITABLE_CONTENT = 'Editable Content'

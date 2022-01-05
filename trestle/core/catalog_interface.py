@@ -384,7 +384,7 @@ class CatalogInterface():
     @staticmethod
     def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
         """Get the list of params for this control and any set by the profile."""
-        param_dict = ControlIOReader.get_control_param_dict(control, True)
+        param_dict = ControlIOReader.get_control_param_dict(control, False)
         for key in param_dict.keys():
             if key in profile_param_dict:
                 param_dict[key] = profile_param_dict[key]
@@ -499,14 +499,32 @@ class CatalogInterface():
         for group_id in group_ids:
             group_dir = md_path / group_id
             control_list = []
+            group_title = ''
+            # Need to get group title from at least one control in this directory
+            # All controls in dir should have same group title
+            # Set group title to the first one found and warn if different non-empty title appears
+            # Controls with empty group titles are tolerated but at least one title must be present or warning given
+            # The special group with no name that has the catalog as parent is just a list and has no title
             for control_path in CatalogInterface._get_control_paths(group_dir):
-                control = ControlIOReader.read_control(control_path)
+                control, control_group_title = ControlIOReader.read_control(control_path)
+                if control_group_title:
+                    if group_title:
+                        if control_group_title != group_title:
+                            logger.warning(
+                                f'Control {control.id} group title {control_group_title} differs from {group_title}'
+                            )
+                    else:
+                        group_title = control_group_title
+
                 control_list.append(control)
             if group_id:
-                new_group = cat.Group(id=group_id, title='')
+                if not group_title:
+                    logger.warning(f'No group title found in controls for group {group_id}')
+                new_group = cat.Group(id=group_id, title=group_title)
                 new_group.controls = control_list
                 groups.append(new_group)
             else:
+                # if the list of controls has no group id it also has no title and is just the controls of the catalog
                 self._catalog.controls = control_list
         self._catalog.groups = groups if groups else None
         return self._catalog
