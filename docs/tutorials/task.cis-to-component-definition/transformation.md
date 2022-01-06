@@ -213,10 +213,10 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
 ```json
 {
   "component-definition": {
-    "uuid": "5d2444de-b9f7-4f85-8df0-102fcb76ffb4",
+    "uuid": "d1b961ee-188b-42b9-943d-e11dc260f9dc",
     "metadata": {
       "title": "Component definition for OCP4 profiles",
-      "last-modified": "2022-01-06T14:11:50+00:00",
+      "last-modified": "2022-01-06T22:43:59+00:00",
       "version": "0.33.0",
       "oscal-version": "1.0.0",
       "roles": [
@@ -235,19 +235,19 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
       ],
       "parties": [
         {
-          "uuid": "11f46a09-9cbe-4ba7-bdb3-9f38698aca64",
+          "uuid": "d00dff65-e4ae-4344-a206-1e298eff9066",
           "type": "organization",
           "name": "International Business Machines",
           "remarks": "IBM"
         },
         {
-          "uuid": "4eae0c2a-fdf1-421b-91ad-ac75948c16a5",
+          "uuid": "851b55f0-5ba6-4684-8a48-5dad22ba2625",
           "type": "organization",
           "name": "Customer",
           "remarks": "organization to be customized at account creation only for their Component Definition"
         },
         {
-          "uuid": "ece0a019-2ef3-40dd-9758-fb9d528b0d24",
+          "uuid": "150f9eb7-7fa5-4989-b9be-bc3cba220354",
           "type": "organization",
           "name": "ISV",
           "remarks": "organization to be customized at ISV subscription only for their Component Definition"
@@ -257,51 +257,51 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
         {
           "role-id": "prepared-by",
           "party-uuids": [
-            "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+            "d00dff65-e4ae-4344-a206-1e298eff9066"
           ]
         },
         {
           "role-id": "prepared-for",
           "party-uuids": [
-            "4eae0c2a-fdf1-421b-91ad-ac75948c16a5",
-            "ece0a019-2ef3-40dd-9758-fb9d528b0d24"
+            "851b55f0-5ba6-4684-8a48-5dad22ba2625",
+            "150f9eb7-7fa5-4989-b9be-bc3cba220354"
           ]
         },
         {
           "role-id": "content-approver",
           "party-uuids": [
-            "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+            "d00dff65-e4ae-4344-a206-1e298eff9066"
           ]
         }
       ]
     },
     "components": [
       {
-        "uuid": "fb7dc50e-f72f-42fe-a939-933ba991c54a",
+        "uuid": "e2ee2b93-6103-42de-b615-65b0b3ff2dc4",
         "type": "Service",
         "title": "OSCO",
         "description": "OSCO",
         "control-implementations": [
           {
-            "uuid": "87920440-2e40-4363-81f1-d9f787b973f9",
+            "uuid": "f9c2699a-2d2c-4ee2-87f3-042d1a9b3a79",
             "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
             "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
             "props": [
               {
                 "name": "profile_name",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                 "value": "OCP4 CIS-benchmark v4",
                 "class": "scc_profile_name"
               },
               {
                 "name": "profile_mnemonic",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                 "value": "ocp4-cis-node",
                 "class": "scc_profile_mnemonic"
               },
               {
                 "name": "profile_version",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                 "value": "1.1",
                 "class": "scc_profile_version"
               },
@@ -312,13 +312,13 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
             ],
             "implemented-requirements": [
               {
-                "uuid": "ed526b37-5d14-455e-8300-6dbcc2aa40df",
+                "uuid": "97142b13-bc30-4e72-be7f-36de9149a679",
                 "control-id": "CIS-1.1.1",
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
                     "name": "XCCDF_rule",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify Permissions on the Kubernetes API Server Pod Specification File"
@@ -328,32 +328,32 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+                      "d00dff65-e4ae-4344-a206-1e298eff9066"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "4eae0c2a-fdf1-421b-91ad-ac75948c16a5",
-                      "ece0a019-2ef3-40dd-9758-fb9d528b0d24"
+                      "851b55f0-5ba6-4684-8a48-5dad22ba2625",
+                      "150f9eb7-7fa5-4989-b9be-bc3cba220354"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+                      "d00dff65-e4ae-4344-a206-1e298eff9066"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "8e22cdbf-e921-415d-a4fb-08ac89bc3d33",
+                "uuid": "0690e2a7-b228-4954-93fe-c1d55936cfa8",
                 "control-id": "CIS-1.1.2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
                   {
                     "name": "XCCDF_rule",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify User Who Owns The Kubernetes API Server Pod Specification File"
@@ -363,32 +363,32 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+                      "d00dff65-e4ae-4344-a206-1e298eff9066"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "4eae0c2a-fdf1-421b-91ad-ac75948c16a5",
-                      "ece0a019-2ef3-40dd-9758-fb9d528b0d24"
+                      "851b55f0-5ba6-4684-8a48-5dad22ba2625",
+                      "150f9eb7-7fa5-4989-b9be-bc3cba220354"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+                      "d00dff65-e4ae-4344-a206-1e298eff9066"
                     ]
                   }
                 ]
               },
               {
-                "uuid": "9a9bdc67-95df-49a8-94f9-da9dafc82dfe",
+                "uuid": "18c61fb2-8603-440d-9d9a-8d6d1e232cd3",
                 "control-id": "CIS-1.1.2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
                   {
                     "name": "XCCDF_rule",
-                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud",
                     "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify Group Who Owns The Kubernetes API Server Pod Specification File"
@@ -398,20 +398,20 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-
                   {
                     "role-id": "prepared-by",
                     "party-uuids": [
-                      "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+                      "d00dff65-e4ae-4344-a206-1e298eff9066"
                     ]
                   },
                   {
                     "role-id": "prepared-for",
                     "party-uuids": [
-                      "4eae0c2a-fdf1-421b-91ad-ac75948c16a5",
-                      "ece0a019-2ef3-40dd-9758-fb9d528b0d24"
+                      "851b55f0-5ba6-4684-8a48-5dad22ba2625",
+                      "150f9eb7-7fa5-4989-b9be-bc3cba220354"
                     ]
                   },
                   {
                     "role-id": "content-approver",
                     "party-uuids": [
-                      "11f46a09-9cbe-4ba7-bdb3-9f38698aca64"
+                      "d00dff65-e4ae-4344-a206-1e298eff9066"
                     ]
                   }
                 ]
