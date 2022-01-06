@@ -485,7 +485,11 @@ class ProfileResolver():
 
             # now replace original stache text with param values
             for i, _ in enumerate(staches):
-                text = text.replace(staches[i], param_dict[param_ids[i]], 1)
+                # A moustache may refer to a param_id not listed in the control's params
+                if param_ids[i] in param_dict:
+                    text = text.replace(staches[i], param_dict[param_ids[i]], 1)
+                else:
+                    logger.warning(f'Control prose references param {param_ids[i]} not found in the catalog.')
             return text
 
         @staticmethod

@@ -116,7 +116,7 @@ def test_catalog_interface_control_naming(tmp_path: pathlib.Path) -> None:
     control_id = 's.1.1.1'
     md_file = tmp_path / (control_id + '.md')
     md_file.touch()
-    paths = CatalogInterface._get_control_paths(tmp_path)
+    paths = CatalogInterface._get_sorted_control_paths(tmp_path)
     assert len(paths) == 1
     assert paths[0] == md_file
 

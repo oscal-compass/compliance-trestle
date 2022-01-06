@@ -318,4 +318,4 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
 
     cat_path = cat_interface.get_control_path('ac-2')
     assert cat_path[0] == 'ac'
-    assert cat_path[1] == 'ac-2'
+    assert len(cat_path) == 1
