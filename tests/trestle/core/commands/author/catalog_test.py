@@ -121,6 +121,15 @@ def test_catalog_interface_control_naming(tmp_path: pathlib.Path) -> None:
     assert paths[0] == md_file
 
 
+def test_catalog_interface_groups() -> None:
+    """Test handling of groups of groups in CatalogInterface."""
+    catalog: cat.Catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
+    interface = CatalogInterface(catalog)
+    interface.update_catalog_controls()
+    assert interface.get_count_of_controls_in_catalog(True) == 4
+    assert interface.get_count_of_controls_in_catalog(False) == 0
+
+
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
     # disallowed output name
