@@ -481,6 +481,18 @@ class CisToComponentDefinition(TaskBase):
 
     def _get_title(self, dir_name: str, root: str) -> str:
         """Extract rule title from compliance-as-code rule.yml."""
+        """
+        Operation:
+        Given is a dir_name and a root directory. We walk the
+        directory tree looking for a directory named dir_name.
+        Once found, we read the content of the rule.yml file in
+        that directory. It is likely that we read each rule.yml
+        file exactly once, since each rule appears exactly once
+        in the one or more profiles, e.g. cis-node.profile, which
+        drive the search. From the content, we find the title and
+        return its corresponding value.
+        """
+
         title = None
         for path, dirs, _files in os.walk(root):
             if dir_name in dirs:
