@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle utilities to customize ."""
 import logging
+from datetime import date
 
 import frontmatter
 
@@ -24,6 +25,7 @@ from jinja2.ext import Extension
 from jinja2.parser import Parser
 
 from trestle.core import err
+from trestle.core.markdown import markdown_const
 from trestle.core.markdown import markdown_node
 
 logger = logging.getLogger(__name__)
@@ -177,3 +179,53 @@ class MDCleanInclude(TrestleJinjaExtension):
         top_level_output = local_parser.parse()
 
         return top_level_output.body
+
+
+class MDDatestamp(TrestleJinjaExtension):
+    """Inject the parameter of the tag as the resulting content."""
+
+    tags = {'md_datestamp'}
+
+    def __init__(self, environment: Environment) -> None:
+        """Ensure enviroment is set and carried into class vars."""
+        super().__init__(environment)
+
+    def parse(self, parser):
+        """Execute parsing of md token and return nodes."""
+        kwargs = None
+        count = 0
+        while parser.stream.current.type != lexer.TOKEN_BLOCK_END:
+            count = count + 1
+            token = parser.stream.current
+            if count > self.max_tag_parse:
+                raise err.TrestleError(f'Unexpected Jinja tag structure provided at token {token.value}')
+            if token.test('name:md_datestamp'):
+                parser.stream.expect(lexer.TOKEN_NAME)
+            elif kwargs is not None:
+                arg = token.value
+                next(parser.stream)
+                parser.stream.expect(lexer.TOKEN_ASSIGN)
+                token = parser.stream.current
+                exp = self.parse_expression(parser)
+                kwargs[arg] = exp.value
+            else:
+                if parser.stream.look().type == lexer.TOKEN_ASSIGN or parser.stream.look().type == lexer.TOKEN_STRING:
+                    kwargs = {}
+                continue
+
+        if kwargs is not None:
+            if 'format' in kwargs and type(kwargs['format'] is str):
+                date_string = date.today().strftime(kwargs['format'])
+            else:
+                date_string = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT)
+            if 'newline' in kwargs and kwargs['newline'] is False:
+                pass
+            else:
+                date_string += '\n\n'
+        else:
+            date_string = date.today().strftime(markdown_const.JINJA_DATESTAMP_FORMAT) + '\n\n'
+
+        local_parser = Parser(self.environment, date_string)
+        datestamp_output = local_parser.parse()
+
+        return datestamp_output.body
