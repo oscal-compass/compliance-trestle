@@ -94,7 +94,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 yaml_header,
                 sections=None,
                 responses=False,
-                additional_content=True,
+                additional_content=False,
                 profile=None,
                 preserve_header_values=preserve_header_values
             )

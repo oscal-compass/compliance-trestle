@@ -1,4 +1,4 @@
-# xy-1 - \[zz\]  Fancy Control
+# xy-1 - \[My Group Title\]  Fancy Control
 
 ## Control statement
 The organisation:

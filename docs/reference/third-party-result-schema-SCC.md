@@ -58,52 +58,53 @@ The inventory should be included in *local-definitions* if observations are bein
 1. Inventory is captured under *local-definitions* in result object. local-definitions can be used to represent inventory items, components, users, etc. For our purposes only components and inventory-items will be used. Components should be used to represent software, services, etc. whereas inventory-items represent specific machines, VMs, network devices, etc. The inventory items should be associated to a component through *implemented-components* as shown below.
 
    ```json
-   "local-definitions": {
+   {
+     "local-definitions": {
        "components": {
-           "b3e243a1-4660-4f5a-aa85-159b4b2d69ce": {
-               "type": "Operating System",
-               "title": "Windows 10",
-               "description": "Windows 10",
-               "status": {
-                   "state": "operational"
-               }
+         "b3e243a1-4660-4f5a-aa85-159b4b2d69ce": {
+           "type": "Operating System",
+           "title": "Windows 10",
+           "description": "Windows 10",
+           "status": {
+             "state": "operational"
            }
+         }
        },
        "inventory-items": [
-           {
-               "uuid": "c9fb63cf-d21e-4584-88f8-44d67ea33ba0",
-               "description": "inventory",
-               "props": [
-                   {
-                       "name": "Computer Name",
-                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "cmp-wn-2106.demo.tanium.local"
-                   },
-                   {
-                       "name": "Tanium Client IP Address",
-                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "192.168.0.120",
-                       "class": "scc_inventory_item_id"
-                   },
-                   {
-                       "name": "IP Address",
-                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "['fe80::cd44:4154:61e8:53ae', '192.168.0.120']"
-                   },
-                   {
-                       "name": "Count",
-                       "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "1"
-                   }
-               ],
-               "implemented-components": [
-                   {
-                       "component-uuid": "b3e243a1-4660-4f5a-aa85-159b4b2d69ce"
-                   }
-               ]
-           },
-           ...
+         {
+           "uuid": "c9fb63cf-d21e-4584-88f8-44d67ea33ba0",
+           "description": "inventory",
+           "props": [
+             {
+               "name": "Computer Name",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "cmp-wn-2106.demo.tanium.local"
+             },
+             {
+               "name": "Tanium Client IP Address",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "192.168.0.120",
+               "class": "scc_inventory_item_id"
+             },
+             {
+               "name": "IP Address",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "['fe80::cd44:4154:61e8:53ae', '192.168.0.120']"
+             },
+             {
+               "name": "Count",
+               "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "1"
+             }
+           ],
+           "implemented-components": [
+             {
+               "component-uuid": "b3e243a1-4660-4f5a-aa85-159b4b2d69ce"
+             }
+           ]
+         }
        ]
+     }
    }
    ```
 
@@ -117,9 +118,8 @@ The inventory should be included in *local-definitions* if observations are bein
 
    ```json
    {
-       "uuid" : "00000000-0000-4000-9999-000000000016",
-       "description" : "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
-       ...
+     "uuid": "00000000-0000-4000-9999-000000000016",
+     "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
    }
    ```
 
@@ -212,41 +212,41 @@ The inventory should be included in *local-definitions* if observations are bein
 
    ```json
    {
-       "uuid": "cde35fad-3922-4046-8ef8-830e77ffd75a",
-       "title": "800-53: IA-5",
-       "description": "800-53: IA-5",
-       "target": {
-           "type": "statement-id",
-           "id-ref": "800-53: IA-5",
-           "props": [
-               {
-                   "name": "Profile",
-                   "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                   "value": "Windows 10 - NIST 800-53",
-                   "class": "scc_predefined_profile"
-               },
-               {
-                   "name": "Version",
-                   "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                   "value": "version: 1",
-                   "class": "scc_predefined_profile_version"
-               },
-               {
-                   "name": "Custom ID",
-                   "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                   "value": "800-53: IA-5",
-               }
-           ],
-           "status": "not-satisfied"
+     "uuid": "cde35fad-3922-4046-8ef8-830e77ffd75a",
+     "title": "800-53: IA-5",
+     "description": "800-53: IA-5",
+     "target": {
+       "type": "statement-id",
+       "id-ref": "800-53: IA-5",
+       "props": [
+         {
+           "name": "Profile",
+           "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+           "value": "Windows 10 - NIST 800-53",
+           "class": "scc_predefined_profile"
+         },
+         {
+           "name": "Version",
+           "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+           "value": "version: 1",
+           "class": "scc_predefined_profile_version"
+         },
+         {
+           "name": "Custom ID",
+           "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+           "value": "800-53: IA-5"
+         }
+       ],
+       "status": "not-satisfied"
+     },
+     "related-observations": [
+       {
+         "observation-uuid": "d8bd1785-b95f-45c9-9fa8-32a362845102"
        },
-       "related-observations": [
-           {
-               "observation-uuid": "d8bd1785-b95f-45c9-9fa8-32a362845102"
-           },
-           {
-               "observation-uuid": "d06c6f13-5006-4e2d-b3f3-5cdb577473b1"
-           }
-       ]
+       {
+         "observation-uuid": "d06c6f13-5006-4e2d-b3f3-5cdb577473b1"
+       }
+     ]
    }
    ```
 
