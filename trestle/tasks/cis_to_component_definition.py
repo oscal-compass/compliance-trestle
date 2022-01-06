@@ -479,12 +479,12 @@ class CisToComponentDefinition(TaskBase):
             )
         return control_implementation
 
-    def _get_title(self, atom, root):
+    def _get_title(self, dir_name: str, root: str) -> str:
         """Extract rule title from compliance-as-code rule.yml."""
         title = None
         for path, dirs, _files in os.walk(root):
-            if atom in dirs:
-                folder = os.path.join(path, atom)
+            if dir_name in dirs:
+                folder = os.path.join(path, dir_name)
                 tpath = pathlib.Path(folder) / 'rule.yml'
                 fp = pathlib.Path(tpath)
                 f = fp.open('r', encoding=const.FILE_ENCODING)
@@ -495,7 +495,7 @@ class CisToComponentDefinition(TaskBase):
                         title = line.split('title:')[1]
                         break
         if title is None:
-            msg = f'unable to find "{atom}"'
+            msg = f'unable to find "{dir_name}"'
             logger.error(msg)
             raise RuntimeError(msg)
         title = title.strip().strip("'").strip('"')
