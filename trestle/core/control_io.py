@@ -1101,7 +1101,9 @@ class ControlIOReader():
         return new_alters, param_dict
 
     @staticmethod
-    def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, str]:
+    def get_control_param_dict(control: cat.Control,
+                               values_only: bool,
+                               params_format: Optional[str] = None) -> Dict[str, str]:
         """Get a dict of the parameters in a control and their values."""
         param_dict: Dict[str, str] = {}
         params: List[common.Parameter] = as_list(control.params)
@@ -1118,6 +1120,8 @@ class ControlIOReader():
             # if there isn't an actual value then ignore this param
             elif values_only:
                 continue
+            if params_format:
+                value_str = params_format.replace('.', value_str)
             param_dict[param.id] = value_str
         return param_dict
 

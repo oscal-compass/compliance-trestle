@@ -69,6 +69,12 @@ class JinjaCmd(CommandPlusDocs):
             action='store_true'
         )
         self.add_argument(
+            '-pf',
+            '--param-formatting',
+            help='Add given text to each parameter, use dot to specify location of param relative to text. i.e. [ . ].',
+            required=False
+        )
+        self.add_argument(
             '-ssp', '--system-security-plan', help='An optional SSP to be passed', default=None, required=False
         )
         self.add_argument('-p', '--profile', help='An optional profile to be passed', default=None, required=False)
@@ -90,7 +96,8 @@ class JinjaCmd(CommandPlusDocs):
                 args.system_security_plan,
                 args.profile,
                 lut,
-                number_captions=args.number_captions
+                number_captions=args.number_captions,
+                parameters_formatting=args.param_formatting
             )
         else:
             status = JinjaCmd.jinja_ify(
@@ -99,7 +106,8 @@ class JinjaCmd(CommandPlusDocs):
                 output_path,
                 args.system_security_plan,
                 args.profile,
-                number_captions=args.number_captions
+                number_captions=args.number_captions,
+                parameters_formatting=args.param_formatting
             )
         logger.debug(f'Done {self.name} command')
         return status
@@ -125,7 +133,8 @@ class JinjaCmd(CommandPlusDocs):
         ssp: Optional[str],
         profile: Optional[str],
         lut: Optional[Dict[str, Any]] = None,
-        number_captions: Optional[bool] = False
+        number_captions: Optional[bool] = False,
+        parameters_formatting: Optional[str] = None
     ) -> int:
         """Run jinja over an input file with additional booleans."""
         try:
@@ -149,7 +158,9 @@ class JinjaCmd(CommandPlusDocs):
                 lut['ssp'] = ssp_data
                 _, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
-                resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+                resolved_catalog = profile_resolver.get_resolved_profile_catalog(
+                    trestle_root, profile_path, False, parameters_formatting
+                )
 
                 ssp_writer = SSPMarkdownWriter(trestle_root)
                 ssp_writer.set_ssp(ssp_data)

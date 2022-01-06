@@ -420,12 +420,19 @@ class ProfileResolver():
     class Modify(Pipeline.Filter):
         """Modify the controls based on the profile."""
 
-        def __init__(self, profile: prof.Profile, change_prose=False, block_adds=False) -> None:
+        def __init__(
+            self,
+            profile: prof.Profile,
+            change_prose: bool = False,
+            block_adds: bool = False,
+            params_format: str = None
+        ) -> None:
             """Initialize the filter."""
             self._profile = profile
             self._catalog_interface: Optional[CatalogInterface] = None
             self._block_adds = block_adds
             self._change_prose = change_prose
+            self._params_format = params_format
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
         @staticmethod
@@ -656,7 +663,7 @@ class ProfileResolver():
             param_dict: Dict[str, str] = {}
             # build the full mapping of params to values
             for control in self._catalog_interface.get_all_controls_from_dict():
-                param_dict.update(ControlIOReader.get_control_param_dict(control, False))
+                param_dict.update(ControlIOReader.get_control_param_dict(control, False, self._params_format))
             # insert param values into prose of all controls
             for control in self._catalog_interface.get_all_controls_from_dict():
                 self._replace_control_prose(control, param_dict)
@@ -748,13 +755,15 @@ class ProfileResolver():
             trestle_root: pathlib.Path,
             import_: prof.Import,
             change_prose=False,
-            block_adds: bool = False
+            block_adds: bool = False,
+            params_format: str = None
         ) -> None:
             """Initialize and store trestle root for cache access."""
             self._trestle_root = trestle_root
             self._import = import_
             self._block_adds = block_adds
             self._change_prose = change_prose
+            self._params_format = params_format
 
         def process(self, input_=None) -> Iterator[cat.Catalog]:
             """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
@@ -785,18 +794,23 @@ class ProfileResolver():
                         f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}'
                     )
                 merge_filter = ProfileResolver.Merge(profile)
-                modify_filter = ProfileResolver.Modify(profile, self._change_prose, self._block_adds)
+                modify_filter = ProfileResolver.Modify(
+                    profile, self._change_prose, self._block_adds, self._params_format
+                )
                 final_pipeline = Pipeline([merge_filter, modify_filter])
                 yield next(final_pipeline.process(pipelines))
 
     @staticmethod
     def get_resolved_profile_catalog(
-        trestle_root: pathlib.Path, profile_path: pathlib.Path, block_adds: bool = False
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
+        block_adds: bool = False,
+        params_format: str = None
     ) -> cat.Catalog:
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
-        import_filter = ProfileResolver.Import(trestle_root, import_, True, block_adds)
+        import_filter = ProfileResolver.Import(trestle_root, import_, True, block_adds, params_format)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result
