@@ -127,7 +127,9 @@ def test_catalog_interface_groups() -> None:
     interface = CatalogInterface(catalog)
     interface.update_catalog_controls()
     assert interface.get_count_of_controls_in_catalog(True) == 4
-    assert interface.get_count_of_controls_in_catalog(False) == 0
+    assert interface.get_count_of_controls_in_catalog(False) == 4
+    groups = list(interface.get_all_groups_from_catalog())
+    assert len(groups) == 4
 
 
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

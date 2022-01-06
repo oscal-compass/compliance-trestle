@@ -154,14 +154,17 @@ class CatalogInterface():
         return new_list
 
     def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> List[cat.Control]:
-        """Create a list of all controls in this group."""
+        """
+        Create a list of all controls in this group.
+
+        recurse specifies to recurse within controls, but groups are always recursed
+        """
         controls: List[cat.Control] = []
         if group.controls:
             controls.extend(self._get_all_controls_in_list(group.controls, recurse))
-        if recurse and group.groups:
-            for group in group.groups:
-                if group.controls:
-                    controls.extend(self._get_all_controls_in_group(group, recurse))
+        for group in as_list(group.groups):
+            if group.controls:
+                controls.extend(self._get_all_controls_in_group(group, recurse))
         return controls
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
@@ -193,7 +196,15 @@ class CatalogInterface():
         return ControlIOWriter.get_part_prose(control, part_name)
 
     def get_all_controls_from_catalog(self, recurse: bool) -> Iterator[cat.Control]:
-        """Yield all deep and individual controls from the actual catalog by group."""
+        """
+        Yield all deep and individual controls from the actual catalog by group.
+
+        Args:
+            recurse: Whether to recurse within controls, but groups are always recursed
+
+        Returns:
+            iterator of the controls in the catalog
+        """
         if self._catalog.groups:
             for group in self._catalog.groups:
                 controls = self._get_all_controls_in_group(group, recurse)

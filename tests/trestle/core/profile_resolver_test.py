@@ -72,7 +72,7 @@ def test_deep_catalog() -> None:
     """Test ssp generation with deep catalog."""
     catalog = test_utils.generate_complex_catalog()
     interface = CatalogInterface(catalog)
-    assert interface.get_count_of_controls_in_catalog(False) == 11
+    assert interface.get_count_of_controls_in_catalog(False) == 13
     assert interface.get_count_of_controls_in_catalog(True) == 16
 
 
