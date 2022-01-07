@@ -34,7 +34,9 @@ From the diagram it's clear that the profile is performing many tasks under the 
 
 ![What a profile does](profile_does.png)
 
-It's important to note that each profile is importing a selection of controls from each source, then making its own *suggested* modifications to parameters and other content in those controls.  They are suggested in the sense that downstream profiles may override those settings - with priority given to the later profiles in the pipeline.  This way the catalogs themselves can remain relatively static, and individual use cases can effectively create a custom catalog based on the original controls plus modifications.  The authoring tools here provide ways to make those modifications, both to the catalog controls and to the profiles, and to enter the implementation responses that are needed in a System Security Plan.
+It's important to note that each profile is importing a selection of controls from each source, then making its own *suggested* modifications to parameters and other content in those controls.  They are suggested in the sense that downstream profiles may override those settings - with priority given to the later profiles in the pipeline.  The changes made by upstream profiles may be accepted, or overridden by better choices for a given need.  This way the catalogs themselves can remain relatively static, and individual use cases can effectively create a custom catalog based on the original controls plus modifications by  other static profiles, and/or the user's custom profile.  The authoring tools here provide ways to make those modifications, both to the catalog controls and to the profiles, and to enter the implementation responses that are needed in a System Security Plan.
+
+The tools are designed to be used in a continuous `generate-edit-assemble` cycle, with previous edits retained in each cycle.  Each new edit phase can add or modify the current content, allowing a new `generate` of an OSCAL json document capturing those edits.
 
 ## `trestle author catalog-generate` and `trestle author catalog-assemble`
 
