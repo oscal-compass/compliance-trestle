@@ -146,15 +146,14 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
         parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
         child1 = parent.get_node_for_key('#### AC-1 Summary information')
         child2 = parent.get_node_for_key('#### Control Statement')
-        for i in range(0, len(child1.content.tables)):
-            if i >= 2:
-                cells = child1.content.tables[i].split('|')
-                if len(cells) < 2:
-                    continue
-                value = cells[2].strip()
-                is_found = False
-                for line in child2.content.text:
-                    if 'Prefix:' + value in line:
-                        is_found = True
-                        break
-                assert is_found
+        for i in range(2, len(child1.content.tables)):
+            cells = child1.content.tables[i].split('|')
+            if len(cells) < 2:
+                continue
+            value = cells[2].strip()
+            is_found = False
+            for line in child2.content.text:
+                if 'Prefix:' + value in line:
+                    is_found = True
+                    break
+            assert is_found

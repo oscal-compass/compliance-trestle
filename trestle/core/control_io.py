@@ -1121,6 +1121,11 @@ class ControlIOReader():
             elif values_only:
                 continue
             if params_format:
+                if params_format.count('.') > 1:
+                    raise TrestleError(
+                        f'Additional text {params_format} '
+                        f'for the parameters cannot contain multiple dots (.)'
+                    )
                 value_str = params_format.replace('.', value_str)
             param_dict[param.id] = value_str
         return param_dict

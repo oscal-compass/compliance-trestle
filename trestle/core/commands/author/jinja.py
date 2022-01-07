@@ -71,7 +71,8 @@ class JinjaCmd(CommandPlusDocs):
         self.add_argument(
             '-pf',
             '--param-formatting',
-            help='Add given text to each parameter, use dot to specify location of param relative to text. i.e. [ . ].',
+            help='Add given text to each parameter, '
+            'use dot to specify location of parameter (i.e. foo.bar will wrap param with foo and bar)',
             required=False
         )
         self.add_argument(
