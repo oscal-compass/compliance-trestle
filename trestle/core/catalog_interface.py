@@ -58,7 +58,7 @@ class CatalogInterface():
         group_id: id of parent group or '' if not in a group
         group_title: title of the group
         group_class: class of the group
-        path: path of parent controls leading to this child control
+        path: path of parent groups leading to this control - without the final control_id, or [''] if in cat list
         control: the control itself
         """
 
@@ -90,40 +90,34 @@ class CatalogInterface():
         Get all controls contained in this control and add it to the growing dict.
 
         Add all its sub-controls to the dict recursively.
+        The path does not change because only groups are in the path, and controls cannot contain groups.
         """
         if control_handle.control.controls:
             group_id = control_handle.group_id
             group_title = control_handle.group_title
             group_class = control_handle.group_class
             for sub_control in control_handle.control.controls:
-                new_path = path[:]
-                new_path.append(sub_control.id)
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=group_id,
-                    group_title=group_title,
-                    group_class=group_class,
-                    path=new_path,
-                    control=sub_control
+                    group_id=group_id, group_title=group_title, group_class=group_class, path=path, control=sub_control
                 )
                 control_dict[sub_control.id] = control_handle
-                self._add_sub_controls(control_handle, control_dict, new_path)
+                self._add_sub_controls(control_handle, control_dict, path)
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
         if group.controls is not None:
             group_path = path[:]
-            group_path.append(group.id)
+            if not group_path or group_path[-1] != group.id:
+                group_path.append(group.id)
             for control in group.controls:
-                new_path = group_path[:]
-                new_path.append(control.id)
                 control_handle = CatalogInterface.ControlHandle(
                     group_id=group.id,
                     group_title=group.title,
                     group_class=group.class_,
                     control=control,
-                    path=new_path
+                    path=group_path
                 )
                 control_dict[control.id] = control_handle
-                self._add_sub_controls(control_handle, control_dict, new_path)
+                self._add_sub_controls(control_handle, control_dict, group_path)
         if group.groups is not None:
             group_path = path[:]
             group_path.append(group.id)
@@ -142,17 +136,11 @@ class CatalogInterface():
         if self._catalog.controls is not None:
             group_path = ['']
             for control in self._catalog.controls:
-                new_path = group_path[:]
-                new_path.append(control.id)
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id='',
-                    group_title=const.MODEL_TYPE_CATALOG,
-                    group_class=const.MODEL_TYPE_CATALOG,
-                    control=control,
-                    path=new_path
+                    group_id='', group_title='', group_class=const.MODEL_TYPE_CATALOG, control=control, path=group_path
                 )
                 control_dict[control.id] = control_handle
-                self._add_sub_controls(control_handle, control_dict, new_path)
+                self._add_sub_controls(control_handle, control_dict, group_path)
         for handle in control_dict.values():
             self._add_params_to_dict(handle.control)
         return control_dict
@@ -166,14 +154,17 @@ class CatalogInterface():
         return new_list
 
     def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> List[cat.Control]:
-        """Create a list of all controls in this group."""
+        """
+        Create a list of all controls in this group.
+
+        recurse specifies to recurse within controls, but groups are always recursed
+        """
         controls: List[cat.Control] = []
         if group.controls:
             controls.extend(self._get_all_controls_in_list(group.controls, recurse))
-        if recurse and group.groups:
-            for group in group.groups:
-                if group.controls:
-                    controls.extend(self._get_all_controls_in_group(group, recurse))
+        for group in as_list(group.groups):
+            if group.controls:
+                controls.extend(self._get_all_controls_in_group(group, recurse))
         return controls
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
@@ -205,7 +196,15 @@ class CatalogInterface():
         return ControlIOWriter.get_part_prose(control, part_name)
 
     def get_all_controls_from_catalog(self, recurse: bool) -> Iterator[cat.Control]:
-        """Yield all deep and individual controls from the actual catalog by group."""
+        """
+        Yield all deep and individual controls from the actual catalog by group.
+
+        Args:
+            recurse: Whether to recurse within controls, but groups are always recursed
+
+        Returns:
+            iterator of the controls in the catalog
+        """
         if self._catalog.groups:
             for group in self._catalog.groups:
                 controls = self._get_all_controls_in_group(group, recurse)
@@ -229,7 +228,7 @@ class CatalogInterface():
         return len(list(self.get_all_controls_from_catalog(recurse)))
 
     def get_group_ids(self) -> List[str]:
-        """Get all the group id's as a string."""
+        """Get all the group id's as strings in a list."""
         return list(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
 
     def get_all_groups_from_catalog(self) -> Iterator[cat.Group]:
@@ -416,11 +415,14 @@ class CatalogInterface():
                 param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
                 if param_dict:
                     new_header[const.SET_PARAMS_TAG] = param_dict
-            group_id, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
-            # this works also for the catalog controls with group_id=''
-            group_dir = md_path / group_id
-            if not group_dir.exists():
-                group_dir.mkdir(parents=True, exist_ok=True)
+            _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
+            # control could be in sub-group of group so build path to it
+            group_dir = md_path
+            control_path = catalog_interface.get_control_path(control.id)
+            for sub_dir in control_path:
+                group_dir = group_dir / sub_dir
+                if not group_dir.exists():
+                    group_dir.mkdir(parents=True, exist_ok=True)
             writer.write_control(
                 group_dir,
                 control,
@@ -434,19 +436,32 @@ class CatalogInterface():
             )
 
     @staticmethod
-    def _get_group_ids(md_path: pathlib.Path) -> List[str]:
-        """Get the list of group ids from the directories in the markdown path."""
-        # need to start with empty list to find controls not in group
-        group_ids: List[str] = ['']
+    def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:
+        """
+        Create a sorted map of group id to group dir that is ordered by group id.
 
+        This includes '' as the root group id.
+        """
+        # manually insert the top dir as group ''
+        id_map: Dict[str, pathlib.Path] = {'': md_path}
         for gdir in md_path.glob('*/'):
             if gdir.is_dir():
-                group_ids.append(str(gdir.stem))
-        return sorted(group_ids)
+                id_map[gdir.stem] = gdir
+        # rebuild the dict by inserting items in manner sorted by key
+        sorted_id_map: Dict[str, pathlib.Path] = {}
+        for key in sorted(id_map):
+            sorted_id_map[key] = id_map[key]
+        return sorted_id_map
 
     @staticmethod
-    def _get_control_paths(group_path: pathlib.Path) -> List[pathlib.Path]:
-        """Need to parse control id and sort based on internals."""
+    def _get_sorted_control_paths(group_path: pathlib.Path) -> List[pathlib.Path]:
+        """
+        Find sorted list of paths to control md files in this group dir.
+
+        Parse control id and sort based on assumed pattern label-digits.frac.extra
+        The extra part is treated as an arbitrary string.
+        In the worst case this results in ordinary string sorting.
+        """
         control_paths = list(group_path.glob('*.md'))
         control_map = {}
         for control_path in control_paths:
@@ -493,11 +508,10 @@ class CatalogInterface():
         """
         if not self._catalog:
             self._catalog = gens.generate_sample_model(cat.Catalog)
-        group_ids = self._get_group_ids(md_path)
+        id_map = CatalogInterface._get_group_ids_and_dirs(md_path)
         groups: List[cat.Group] = []
         # read each group dir
-        for group_id in group_ids:
-            group_dir = md_path / group_id
+        for group_id, group_dir in id_map.items():
             control_list = []
             group_title = ''
             # Need to get group title from at least one control in this directory
@@ -505,7 +519,7 @@ class CatalogInterface():
             # Set group title to the first one found and warn if different non-empty title appears
             # Controls with empty group titles are tolerated but at least one title must be present or warning given
             # The special group with no name that has the catalog as parent is just a list and has no title
-            for control_path in CatalogInterface._get_control_paths(group_dir):
+            for control_path in CatalogInterface._get_sorted_control_paths(group_dir):
                 control, control_group_title = ControlIOReader.read_control(control_path)
                 if control_group_title:
                     if group_title:
@@ -515,7 +529,6 @@ class CatalogInterface():
                             )
                     else:
                         group_title = control_group_title
-
                 control_list.append(control)
             if group_id:
                 if not group_title:
@@ -545,25 +558,19 @@ class CatalogInterface():
             As the controls are read into the catalog the needed components are added if not already available.
             avail_comps provides the mapping of component name to the actual component.
         """
-        group_ids = CatalogInterface._get_group_ids(md_path)
-
         imp_reqs: List[ossp.ImplementedRequirement] = []
-        for group_id in group_ids:
-            group_path = md_path / group_id
-            for control_file in CatalogInterface._get_control_paths(group_path):
+        for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
+            for control_file in CatalogInterface._get_sorted_control_paths(group_path):
                 imp_reqs.append(ControlIOReader.read_implemented_requirement(control_file, avail_comps))
         return imp_reqs
 
     @staticmethod
     def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Read all markdown controls and return list of alters."""
-        group_ids = CatalogInterface._get_group_ids(md_path)
-
         new_alters: List[prof.Alter] = []
         param_dict: Dict[str, str] = {}
-        for group_id in group_ids:
-            group_path = md_path / group_id
-            for control_file in group_path.glob('*.md'):
+        for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
+            for control_file in CatalogInterface._get_sorted_control_paths(group_path):
                 control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(control_file)
                 new_alters.extend(control_alters)
                 param_dict.update(control_param_dict)
