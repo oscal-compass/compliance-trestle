@@ -214,7 +214,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
         Args:
             trestle_root: The trestle root directory
-            orig_profile_name: The name of the original profile json file used to generate the markdown
+            orig_profile_name: Optional name of original profile used to generate the markdown (default is md_name)
             md_name: The name of the directory containing the markdown control files for the profile
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
             set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile

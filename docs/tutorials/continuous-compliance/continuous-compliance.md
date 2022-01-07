@@ -2,12 +2,18 @@
 
 #### Introduction
 
-The cloud with continuous integration and continuous deployment is the modern computing paradigm. There are a plethora of cloud environments: public, private, on-premise, hybrid-cloud, multi-cloud, etc. and a contingent of vendors. The cloud offers great flexibility where you can choose the right one or use some combination for the each application. But as is demonstrated from time to time, the cloud can be a dangerous place. Hackers, bots, malware, and more are out to find and exploit weakness in your computing solution. To combat them there are strategies for avoiding embarrassment and financial ruin from security breeches. Educating your workforce is of paramount importance. Moreover, employing a trust-but-verify strategy will go a long way toward deflecting trouble.
+The cloud with its continuous integration and continuous deployment is the modern computing paradigm. There is a plethora of cloud environments: public, private, on-premise, hybrid-cloud, multi-cloud, etc. along with a corresponding contingent of vendors. The cloud offers great flexibility where you can choose just one or some combination optimal for each application. But, as demonstrated from time to time, the cloud can be a dangerous place. Hackers, bots, malware, and more are constant threats seeking to find and exploit weakness in your computing solution. To combat them there are strategies to avoid embarrassment and financial ruin from security breeches. Educating your workforce is of paramount importance. Moreover, employing a trust-but-verify strategy will go a long way toward deflecting trouble.
 
-The time has come for continuous auditing, giving stakeholders such as account owners, application owners, system owners and compliance officers a current picture of their compliance posture.
-Are password rules being followed? Are deployed applications using compromised encryption algorithms? Has a user gotten elevated privileges? Are unauthorized open source projects wrongfully part of your application stack?  Getting answers to these questions quarterly or annually is leaving you exposed.
+The time has come for continuous auditing, and giving stakeholders (such as account owners, application owners, system owners and compliance officers) a current picture of their compliance posture:
 
-Moreover, assuring continuous compliance across multiple cloud vendors can complicate matters. If each has its own compliance regime, then one must become expert in each domain’s compliance solution space, or else be wedded to a single or few providers. Not an ideal prospect.
+- Are password rules being followed?
+- Are deployed applications using compromised encryption algorithms?
+- Has a user gotten elevated privileges?
+- Are unauthorized open source projects wrongfully part of your application stack?
+
+Getting answers to these questions only quarterly or annually is leaving you exposed.
+
+Moreover, assuring continuous compliance across multiple cloud vendors can complicate matters. If each has its own compliance regime, then one must become expert in each domain’s compliance solution space, or else be wedded to a single or few providers. That is not an ideal prospect.
 
 Common sense dictates that standardization would simplify matters. The National Institute of Standards and Technologies (NIST) is developing the Open Security Controls Assessment Language ([OSCAL](https://pages.nist.gov/OSCAL)).
 
@@ -27,9 +33,9 @@ The bad news is that a transformer to [OSCAL](https://pages.nist.gov/OSCAL) is n
 
 However, there is plenty of good news:
 
-- a transformer for your Cloud Service type may already exist: [Tanium to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py), [OpenShift Compliance Operator to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py)
+- a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py), [OpenShift Compliance Operator to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py)
 - once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
-- writing a transformer is pretty easy, just a few lines of Python code using [trestle](https://ibm.github.io/compliance-trestle/) as a foundation
+- writing a transformer is fairly easy: just a few lines of Python code using [trestle](https://ibm.github.io/compliance-trestle/) as a foundation
 
 In the case of Tanium, the [OSCAL](https://pages.nist.gov/OSCAL) compliance data document is a *System Assessment Results* fragment with *Findings* and *Observations*, while in the case of OpenShift Compliance Operator there are *Observations* only.
 
