@@ -3,6 +3,24 @@
 
 <!--next-version-placeholder-->
 
+## v0.34.0 (2022-01-07)
+### Feature
+* Add custom parameter wrapping to jinja ([#976](https://github.com/IBM/compliance-trestle/issues/976)) ([`4289ca0`](https://github.com/IBM/compliance-trestle/commit/4289ca0bd1cac83146a4f9080e0eb7f766d78db3))
+* Add jinja datestamp output ([#970](https://github.com/IBM/compliance-trestle/issues/970)) ([`2b92da1`](https://github.com/IBM/compliance-trestle/commit/2b92da100f0646dabf3a56a6544dd72bc66c4958))
+* Add optional numbering of figures and tables when generating md… ([#964](https://github.com/IBM/compliance-trestle/issues/964)) ([`89bafe7`](https://github.com/IBM/compliance-trestle/commit/89bafe7f1fcfe3fe1db4900be483f8416fb824b7))
+
+### Fix
+* OCP4 CIS Component Definition rules should have unique descriptions ([#975](https://github.com/IBM/compliance-trestle/issues/975)) ([`299db5a`](https://github.com/IBM/compliance-trestle/commit/299db5acffe3f247cba86382a873cc1029b45ded))
+* Better handling of groups containing groups in ssp gen and assemble ([#977](https://github.com/IBM/compliance-trestle/issues/977)) ([`5fa1820`](https://github.com/IBM/compliance-trestle/commit/5fa18203d89ff353f8500f892b85b957385ebb11))
+* Several issues in profile assemble and catalog generate ([#974](https://github.com/IBM/compliance-trestle/issues/974)) ([`0435c84`](https://github.com/IBM/compliance-trestle/commit/0435c8405e4ff1b6608ec93fb3baafb61356d1d8))
+* Fix json blocks in md so mdformat doesnt raise cannot format warning ([#973](https://github.com/IBM/compliance-trestle/issues/973)) ([`73b0612`](https://github.com/IBM/compliance-trestle/commit/73b061275e101c19e34a45fa5ab959b1f29f6293))
+* Add toml as yapf pre-commit dependency ([#972](https://github.com/IBM/compliance-trestle/issues/972)) ([`d026282`](https://github.com/IBM/compliance-trestle/commit/d0262826f30e0c7f89f8a3551b93142669fa2c66))
+* Fix blind link in readme ([#969](https://github.com/IBM/compliance-trestle/issues/969)) ([`3f054bd`](https://github.com/IBM/compliance-trestle/commit/3f054bd8d82032371955627023ceb257e2f3d4f6))
+* Handle error when dealing with profiles with no modify object. ([#963](https://github.com/IBM/compliance-trestle/issues/963)) ([`7ad3c82`](https://github.com/IBM/compliance-trestle/commit/7ad3c82058991507808580e800f0bc9df16d2071))
+
+### Documentation
+* Update ssp workflow and minor changes to other docs ([#985](https://github.com/IBM/compliance-trestle/issues/985)) ([`45be184`](https://github.com/IBM/compliance-trestle/commit/45be1842d1fdc634d8ae9b5b404da4e59ea13d18))
+
 ## v0.33.0 (2021-12-21)
 ### Feature
 * Support for SSP writing with jinja templating. ([#787](https://github.com/IBM/compliance-trestle/issues/787)) ([`e47fc77`](https://github.com/IBM/compliance-trestle/commit/e47fc778ab66a8997b689753ce5ead1849543e52))
