@@ -72,7 +72,7 @@ def test_deep_catalog() -> None:
     """Test ssp generation with deep catalog."""
     catalog = test_utils.generate_complex_catalog()
     interface = CatalogInterface(catalog)
-    assert interface.get_count_of_controls_in_catalog(False) == 11
+    assert interface.get_count_of_controls_in_catalog(False) == 13
     assert interface.get_count_of_controls_in_catalog(True) == 16
 
 
@@ -318,4 +318,4 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
 
     cat_path = cat_interface.get_control_path('ac-2')
     assert cat_path[0] == 'ac'
-    assert cat_path[1] == 'ac-2'
+    assert len(cat_path) == 1

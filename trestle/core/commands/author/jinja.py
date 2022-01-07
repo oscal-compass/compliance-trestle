@@ -18,6 +18,7 @@ import argparse
 import logging
 import operator
 import pathlib
+import re
 import traceback
 import uuid
 from typing import Any, Dict, Optional
@@ -29,7 +30,7 @@ from ruamel.yaml import YAML
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.jinja import MDCleanInclude, MDSectionInclude
+from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
@@ -62,6 +63,19 @@ class JinjaCmd(CommandPlusDocs):
             required=False
         )
         self.add_argument(
+            '-nc',
+            '--number-captions',
+            help='Add incremental numbering to table and image captions, in the form Table n - ... and Figure n - ...',
+            action='store_true'
+        )
+        self.add_argument(
+            '-pf',
+            '--param-formatting',
+            help='Add given text to each parameter, '
+            'use dot to specify location of parameter (i.e. foo.bar will wrap param with foo and bar)',
+            required=False
+        )
+        self.add_argument(
             '-ssp', '--system-security-plan', help='An optional SSP to be passed', default=None, required=False
         )
         self.add_argument('-p', '--profile', help='An optional profile to be passed', default=None, required=False)
@@ -77,11 +91,24 @@ class JinjaCmd(CommandPlusDocs):
             lookup_table_path = pathlib.Path.cwd() / lut_table
             lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
             status = JinjaCmd.jinja_ify(
-                pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile, lut
+                pathlib.Path(args.trestle_root),
+                input_path,
+                output_path,
+                args.system_security_plan,
+                args.profile,
+                lut,
+                number_captions=args.number_captions,
+                parameters_formatting=args.param_formatting
             )
         else:
             status = JinjaCmd.jinja_ify(
-                pathlib.Path(args.trestle_root), input_path, output_path, args.system_security_plan, args.profile
+                pathlib.Path(args.trestle_root),
+                input_path,
+                output_path,
+                args.system_security_plan,
+                args.profile,
+                number_captions=args.number_captions,
+                parameters_formatting=args.param_formatting
             )
         logger.debug(f'Done {self.name} command')
         return status
@@ -106,7 +133,9 @@ class JinjaCmd(CommandPlusDocs):
         r_output_file: pathlib.Path,
         ssp: Optional[str],
         profile: Optional[str],
-        lut: Optional[Dict[str, Any]] = None
+        lut: Optional[Dict[str, Any]] = None,
+        number_captions: Optional[bool] = False,
+        parameters_formatting: Optional[str] = None
     ) -> int:
         """Run jinja over an input file with additional booleans."""
         try:
@@ -115,7 +144,7 @@ class JinjaCmd(CommandPlusDocs):
             template_folder = pathlib.Path.cwd()
             jinja_env = Environment(
                 loader=FileSystemLoader(template_folder),
-                extensions=[MDSectionInclude, MDCleanInclude],
+                extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
                 trim_blocks=True,
                 autoescape=True
             )
@@ -130,7 +159,9 @@ class JinjaCmd(CommandPlusDocs):
                 lut['ssp'] = ssp_data
                 _, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
-                resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+                resolved_catalog = profile_resolver.get_resolved_profile_catalog(
+                    trestle_root, profile_path, False, parameters_formatting
+                )
 
                 ssp_writer = SSPMarkdownWriter(trestle_root)
                 ssp_writer.set_ssp(ssp_data)
@@ -150,7 +181,7 @@ class JinjaCmd(CommandPlusDocs):
                 dict_loader = DictLoader({str(random_name): new_output})
                 jinja_env = Environment(
                     loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                    extensions=[MDCleanInclude, MDSectionInclude],
+                    extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
                     autoescape=True,
                     trim_blocks=True
                 )
@@ -158,10 +189,34 @@ class JinjaCmd(CommandPlusDocs):
                 new_output = template.render(**lut)
 
             output_file = trestle_root / r_output_file
-            output_file.open('w', encoding=const.FILE_ENCODING).write(output)
+            if number_captions:
+                output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
+            else:
+                output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         except Exception as e:  # pragma: no cover
             logger.error(f'Unknown exception {str(e)} occured.')
             logger.debug(traceback.format_exc())
             return 1
         return 0
+
+
+def _number_captions(md_body: str) -> str:
+    """Incrementally number tables and image captions."""
+    images = {}
+    tables = {}
+    output = md_body.splitlines()
+
+    for index, line in enumerate(output):
+        if re.match(r'!\[.+\]\(.+\)', line):
+            images[index] = line
+        if output[index].lower().startswith('table: '):
+            tables[index] = line
+
+    for index, row in enumerate(tables):
+        output[row] = f'Table: Table {index + 1} - {tables[row].split(": ")[1]}'
+
+    for index, row in enumerate(images):
+        output[row] = images[row].replace('![', f'![Figure {index + 1} - ')
+
+    return '\n'.join(output)

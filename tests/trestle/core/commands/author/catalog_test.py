@@ -111,6 +111,27 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     assert interface._catalog.controls[1].controls[0].title == new_title
 
 
+def test_catalog_interface_control_naming(tmp_path: pathlib.Path) -> None:
+    """Test determination of control name from file path."""
+    control_id = 's.1.1.1'
+    md_file = tmp_path / (control_id + '.md')
+    md_file.touch()
+    paths = CatalogInterface._get_sorted_control_paths(tmp_path)
+    assert len(paths) == 1
+    assert paths[0] == md_file
+
+
+def test_catalog_interface_groups() -> None:
+    """Test handling of groups of groups in CatalogInterface."""
+    catalog: cat.Catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
+    interface = CatalogInterface(catalog)
+    interface.update_catalog_controls()
+    assert interface.get_count_of_controls_in_catalog(True) == 4
+    assert interface.get_count_of_controls_in_catalog(False) == 4
+    groups = list(interface.get_all_groups_from_catalog())
+    assert len(groups) == 4
+
+
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failures of author catalog."""
     # disallowed output name
@@ -158,4 +179,4 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     full_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface.get_profile_param_dict(control, full_param_dict)
     assert control_param_dict['ac-1_prm_1'] == 'all alert personell'
-    assert 'ac-1_prm_7' not in control_param_dict
+    assert control_param_dict['ac-1_prm_7'] == 'organization-defined events'

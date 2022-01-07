@@ -104,7 +104,7 @@ def test_cis_to_component_definition_execute_selected_rules2(tmp_path: pathlib.P
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['selected-rules'] = 'tests/data/tasks/cis-to-component-definition/selected_rules2.json'
+    section['selected-rules'] = 'tests/data/tasks/cis-to-component-definition/extras/selected_rules2.json'
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -130,7 +130,7 @@ def test_cis_to_component_definition_execute_enabled_rules2(tmp_path: pathlib.Pa
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['enabled-rules'] = 'tests/data/tasks/cis-to-component-definition/enabled_rules2.json'
+    section['enabled-rules'] = 'tests/data/tasks/cis-to-component-definition/extras/enabled_rules2.json'
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -156,7 +156,7 @@ def test_cis_to_component_definition_execute_enabled_rules3(tmp_path: pathlib.Pa
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['enabled-rules'] = 'tests/data/tasks/cis-to-component-definition/enabled_rules3.json'
+    section['enabled-rules'] = 'tests/data/tasks/cis-to-component-definition/extras/enabled_rules3.json'
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
@@ -392,6 +392,18 @@ def test_cis_to_component_definition_missing_parameters_file(tmp_path: pathlib.P
     section = config['task.cis-to-component-definition']
     section['output-dir'] = str(tmp_path)
     section['rule-to-parameters-map'] = '/foobar'
+    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_cis_to_component_definition_bogus_rules_file(tmp_path: pathlib.Path):
+    """Test bogus rules."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition3.config')
+    config.read(config_path)
+    section = config['task.cis-to-component-definition']
+    section['output-dir'] = str(tmp_path)
     tgt = cis_to_component_definition.CisToComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

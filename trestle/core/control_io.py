@@ -289,7 +289,7 @@ class ControlIOWriter():
         adds = ControlIOWriter._get_adds(control.id, profile)
         has_content = len(adds) > 0
 
-        self._md_file.new_header(level=1, title='Editable Content')
+        self._md_file.new_header(level=1, title=const.EDITABLE_CONTENT)
         self._md_file.new_line('<!-- Make additions and edits below -->')
         self._md_file.new_line(
             '<!-- The above represents the contents of the control as received by the profile, prior to additions. -->'  # noqa E501
@@ -491,20 +491,20 @@ class ControlIOReader():
         return clean_lines, header
 
     @staticmethod
-    def _read_id_group_id_title(line: str) -> Tuple[int, str, str]:
-        """Process the line and find the control id, group id and control title."""
+    def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
+        """Process the title line and extract the control id, group title (in brackets) and control title."""
         if line.count('-') < 2:
             raise TrestleError(f'Markdown control title format error: {line}')
         control_id = line.split()[1]
         first_dash = line.find('-')
         title_line = line[first_dash + 1:]
-        group_start = title_line.find('\[')
-        group_end = title_line.find('\]')
-        if group_start < 0 or group_end < 0 or group_start > group_end:
-            raise TrestleError(f'unable to read group and title for control {control_id}')
-        group_id = title_line[group_start + 2:group_end].strip()
-        control_title = title_line[group_end + 2:].strip()
-        return control_id, group_id, control_title
+        group_title_start = title_line.find('\[')
+        group_title_end = title_line.find('\]')
+        if group_title_start < 0 or group_title_end < 0 or group_title_start > group_title_end:
+            raise TrestleError(f'unable to read group title for control {control_id}')
+        group_title = title_line[group_title_start + 2:group_title_end].strip()
+        control_title = title_line[group_title_end + 2:].strip()
+        return control_id, group_title, control_title
 
     @staticmethod
     def _indent(line: str) -> int:
@@ -738,7 +738,7 @@ class ControlIOReader():
         prefix = '## Control '
         while 0 <= ii < len(lines):
             line = lines[ii]
-            if line.startswith('## What is the solution') or line.startswith('# Editable Content'):
+            if line.startswith('## What is the solution') or line.startswith(f'# {const.EDITABLE_CONTENT}'):
                 ii += 1
                 continue
             if not line:
@@ -751,7 +751,7 @@ class ControlIOReader():
             prose = ''
             ii += 1
             while 0 <= ii < len(lines) and not lines[ii].startswith(prefix) and not lines[ii].startswith(
-                    '# Editable Content'):
+                    f'# {const.EDITABLE_CONTENT}'):
                 prose = '\n'.join([prose, lines[ii]])
                 ii += 1
             if prose:
@@ -1047,7 +1047,7 @@ class ControlIOReader():
             prefix = '## Control '
             if line:
                 if not line.startswith(prefix):
-                    raise TrestleError(f'Unexpected line in Editable Content for control {control_id}: {line}')
+                    raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
                 part_name_raw = line[len(prefix):]
                 part_name = spaces_and_caps_to_snake(part_name_raw)
                 prose_lines = []
@@ -1082,7 +1082,7 @@ class ControlIOReader():
         ii = 0
         while 0 <= ii < len(lines):
             line = lines[ii]
-            if line.startswith('# Editable Content'):
+            if line.startswith(f'# {const.EDITABLE_CONTENT}'):
                 ii += 1
                 while 0 <= ii < len(lines):
                     ii, part = ControlIOReader._read_added_part(ii, lines, control_id)
@@ -1101,7 +1101,9 @@ class ControlIOReader():
         return new_alters, param_dict
 
     @staticmethod
-    def get_control_param_dict(control: cat.Control, values_only: bool) -> Dict[str, str]:
+    def get_control_param_dict(control: cat.Control,
+                               values_only: bool,
+                               params_format: Optional[str] = None) -> Dict[str, str]:
         """Get a dict of the parameters in a control and their values."""
         param_dict: Dict[str, str] = {}
         params: List[common.Parameter] = as_list(control.params)
@@ -1118,12 +1120,19 @@ class ControlIOReader():
             # if there isn't an actual value then ignore this param
             elif values_only:
                 continue
+            if params_format:
+                if params_format.count('.') > 1:
+                    raise TrestleError(
+                        f'Additional text {params_format} '
+                        f'for the parameters cannot contain multiple dots (.)'
+                    )
+                value_str = params_format.replace('.', value_str)
             param_dict[param.id] = value_str
         return param_dict
 
     @staticmethod
-    def read_control(control_path: pathlib.Path) -> cat.Control:
-        """Read the control markdown file."""
+    def read_control(control_path: pathlib.Path) -> Tuple[cat.Control, str]:
+        """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
         _, control_tree = md_api.processor.process_markdown(control_path)
@@ -1131,7 +1140,7 @@ class ControlIOReader():
         if len(control_titles) == 0:
             raise TrestleError(f'Control markdown: {control_path} contains no control title.')
 
-        control.id, _, control.title = ControlIOReader._read_id_group_id_title(control_titles[0])
+        control.id, group_title, control.title = ControlIOReader._parse_control_title_line(control_titles[0])
 
         control_headers = list(control_tree.get_all_headers_for_level(2))
         if len(control_headers) == 0:
@@ -1142,7 +1151,7 @@ class ControlIOReader():
             0, control_statement.content.raw_text.split('\n'), control.id
         )
         if rc < 0:
-            return control
+            return control, group_title
         control.parts = [statement_part] if statement_part else None
         control_objective = control_tree.get_node_for_key('## Control Objective')
         if control_objective is not None:
@@ -1160,4 +1169,4 @@ class ControlIOReader():
                 _, control.parts = ControlIOReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
-        return control
+        return control, group_title

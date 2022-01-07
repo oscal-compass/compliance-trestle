@@ -27,6 +27,7 @@ Note the examples here use markdown, however, jinja can quite easily target xml 
 - `-p` (optional) profile name (in the trestle project). When used the jinja template will have `resolved_catalog` and `catalog_interface` variables to use.
 - `-lut` (optional) loads yaml into a dictionary in python for which each (top level) variable is available in jinja.
 - `-elp` (optional) a period separated prefix for the variables in the lookup table. E.g. if the lut contained `banana: yellow` and the prefix was `fruit.tropical` using `{{ fruit.tropical.banana }}` would print out `yellow` in the jinja template.
+- `-pf` (optional) use to provide a custom formatting of the substituted parameters in the text. Use dot (.) to indicate where the parameter value will be written. E.g. `-pf *.*` to italicize all substituted parameters, `-pf Prefix:.` to add `Prefix:` to all parameters.
 
 ## Sample jinja templates
 
@@ -111,8 +112,16 @@ Trestle provides to custom jinja tags for use specifically with markdown: `mdsec
 
 `mdsection_include` is similar to the native `md_clean_include` except that.:
 
-1. `mdsection_include` requires an second positional argument which is the title of a heading, from a markdown file, which you want the cotent from.
+1. `mdsection_include` requires an second positional argument which is the title of a heading, from a markdown file, which you want the content from.
+
    1. E.g:  `{% mdsection_include 'test_markdown.md' '# Header we want' %}`
+
 1. `mdsection_include` can be used with an optional keyword argument `heading_level` argument similar to `md_clean_include`
+
    1. `{% mdsection_include 'test_markdown.md' '# Header we want' %}`
    1. The heading level argument adjusts to (based on the number of hashes) the most significant heading in the chosen section, if headings exist.
+
+`md_datestamp` inserts a date stamp into the output. By default the date is in the format '%Y-%m-%d', e.g. '2021-12-28' and is followed by a double newline to prevent subsequent headings failing to parse correctly. E.g: `{% md_datestamp %}` results in a date in the format '2021-12-28' being inserted. `md_datestamp` can be used with the following optional keyword arguments:
+
+1. `format` where a python [datetime strftime format string](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) is provided to format the output. E.g. `{% md_datestamp format='%B %d, %Y' %}` results in `December 28, 2021` being inserted.
+1. `newline` is a boolean to control the addition of a double newline after the inserted date string. For example `{% md_datestamp newline=false %}` inserts a date in the default format, without additional newlines.

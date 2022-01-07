@@ -20,6 +20,7 @@ from _pytest.monkeypatch import MonkeyPatch
 
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 
+from trestle.core.commands.author.jinja import _number_captions
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
 
@@ -82,3 +83,77 @@ def test_jinja_lookup_table(
         node2 = tree.get_node_for_key('# B')
         assert node1.content.text[1] == 'This word: compliance-trestle, was substituted.'
         assert node2.content.text
+
+
+def test_number_captions(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test numbering of captions in markdown."""
+    with open(testdata_dir / 'jinja_cmd/number_captions_data.md', 'r') as fp:
+        test_data = fp.read()
+
+    with open(testdata_dir / 'jinja_cmd/number_captions_expected_output.md', 'r') as fp:
+        expected_output = fp.read().splitlines()
+
+    for idx, row in enumerate(_number_captions(test_data).splitlines()):
+        assert row == expected_output[idx]
+
+
+def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test that parameters are substituted with the given formatting."""
+    input_template = 'ssp_template.md.jinja'
+
+    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
+    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
+
+    for file_name in os.listdir(testdata_dir / 'jinja'):
+        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, tmp_trestle_dir)
+
+    command_md_gen = f'trestle author jinja -pf *.* -i {input_template} -o output.md -ssp ssp_json -p main_profile'
+    execute_command_and_assert(command_md_gen, 0, monkeypatch)
+
+    with open('output.md') as test_output:
+        output = test_output.read()
+        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        assert tree
+        parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
+        child1 = parent.get_node_for_key('#### AC-1 Summary information')
+        child2 = parent.get_node_for_key('#### Control Statement')
+        for i in range(0, len(child1.content.tables)):
+            if i >= 2:
+                cells = child1.content.tables[i].split('|')
+                if len(cells) < 2:
+                    continue
+                value = cells[2].strip()
+                is_found = False
+                for line in child2.content.text:
+                    if '*' + value + '*' in line:
+                        is_found = True
+                        break
+                assert is_found
+
+    command_md_gen = f'trestle author jinja -pf Prefix:. -i {input_template} -o output.md -ssp ssp_json -p main_profile'
+    execute_command_and_assert(command_md_gen, 0, monkeypatch)
+
+    with open('output.md') as test_output:
+        output = test_output.read()
+        tree = MarkdownNode.build_tree_from_markdown(output.split('\n'))
+        assert tree
+        parent = tree.get_node_for_key('### AC-1 - Policy and Procedures')
+        child1 = parent.get_node_for_key('#### AC-1 Summary information')
+        child2 = parent.get_node_for_key('#### Control Statement')
+        for i in range(2, len(child1.content.tables)):
+            cells = child1.content.tables[i].split('|')
+            if len(cells) < 2:
+                continue
+            value = cells[2].strip()
+            is_found = False
+            for line in child2.content.text:
+                if 'Prefix:' + value in line:
+                    is_found = True
+                    break
+            assert is_found

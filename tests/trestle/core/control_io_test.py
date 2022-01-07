@@ -40,7 +40,7 @@ case_2 = 'indent jump back 2'
 case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
-control_text = """# xy-9 - \[XY\] Fancy Control
+control_text = """# xy-9 - \[My Group Title\] Fancy Control
 
 ## Control Statement
 
@@ -163,12 +163,13 @@ end of text
         control.parts.extend([sec_1, sec_2])
 
     writer = ControlIOWriter()
-    writer.write_control(tmp_path, control, '', None, None, additional_content, False, None, False)
+    writer.write_control(tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False)
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlIOReader()
-    new_control = reader.read_control(md_path)
+    new_control, group_title = reader.read_control(md_path)
     new_control.title = dummy_title
+    assert group_title == 'My Group Title'
     assert len(new_control.parts) == len(control.parts)
     assert control.parts[0].prose == new_control.parts[0].prose
     assert control.parts[0].parts == new_control.parts[0].parts
@@ -182,12 +183,13 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     with open(md_path, 'w') as f:
         f.write(control_text)
     # read it in as markdown to an OSCAL control in memory
-    control = ControlIOReader.read_control(md_path)
+    control, group_title = ControlIOReader.read_control(md_path)
+    assert group_title == 'My Group Title'
     sub_dir = tmp_path / 'sub_dir'
     sub_dir.mkdir(exist_ok=True)
     # write it out as markdown in a separate directory to avoid name clash
     control_writer = ControlIOWriter()
-    control_writer.write_control(sub_dir, control, 'XY', None, None, False, False, None, False)
+    control_writer.write_control(sub_dir, control, 'My Group Title', None, None, False, False, None, False)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -195,11 +197,13 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
 def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
     """Test reading a control that doesn't have a part label in statement."""
     md_file = testdata_dir / 'author/controls/control_no_labels.md'
-    control = ControlIOReader.read_control(md_file)
+    control, group_title = ControlIOReader.read_control(md_file)
+    assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'c'
     assert control.parts[0].parts[2].parts[0].props[0].value == '1'
     md_file = testdata_dir / 'author/controls/control_some_labels.md'
-    control = ControlIOReader.read_control(md_file)
+    control, group_title = ControlIOReader.read_control(md_file)
+    assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'aa'
     assert control.parts[0].parts[2].parts[1].props[0].value == 'abc13'
     assert control.parts[0].parts[3].props[0].value == 'ab'
@@ -355,11 +359,12 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
     markdown_processor = MarkdownProcessor()
     header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_1.keys()) == 8
-    orig_control_read = ControlIOReader.read_control(control_path)
+    orig_control_read, group_title = ControlIOReader.read_control(control_path)
+    assert group_title == 'Access Control'
     control_writer = ControlIOWriter()
     # write the control back out with the test header
     control_writer.write_control(
-        tmp_path, orig_control_read, '', header, None, False, False, None, preserve_header_values
+        tmp_path, orig_control_read, group_title, header, None, False, False, None, preserve_header_values
     )
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_2.keys()) == 9
@@ -376,5 +381,6 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
-    new_control_read = ControlIOReader.read_control(control_path)
+    new_control_read, group_title = ControlIOReader.read_control(control_path)
+    assert group_title == 'Access Control'
     assert new_control_read == orig_control_read

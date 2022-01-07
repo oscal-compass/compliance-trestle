@@ -433,11 +433,14 @@ This command allows users to add an OSCAL model to a subcomponent in source dire
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
 ```json
-"roles": [
-  {
-    "id": "REPLACE_ME",
-    "title": "REPLACE_ME"
-  }
+{
+  "roles": [
+    {
+      "id": "REPLACE_ME",
+      "title": "REPLACE_ME"
+    }
+  ]
+}
 ```
 
 Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
@@ -802,8 +805,9 @@ Example output OSCAL Observations file contents (snippet):
           ]
         }
       ]
-    },
-    ...
+    }
+  ]
+}
 ```
 
 </details>
@@ -855,12 +859,83 @@ Example input directory contents listing:
 <summary>display sample</summary>
 
 ```json
-{"IP Address":"fe80::3cd5:564b:940e:49ab","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
-{"IP Address":"10.8.69.11","Computer Name":"","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
-{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days","Result":"fail","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
-{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
+{
+  "IP Address": "fe80::3cd5:564b:940e:49ab",
+  "Computer Name": "cmp-wn-2106.demo.tanium.local",
+  "Comply - JovalCM Results[c2dc8749]": [
+    {
+      "Benchmark": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+      "Benchmark Version": "1.5.0.1",
+      "Profile": "Windows 10 - NIST 800-53",
+      "ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "Result": "pass",
+      "Custom ID": "800-53: IA-5",
+      "Version": "version: 1"
+    }
+  ],
+  "Count": "1",
+  "Age": "600"
+}
+```
 
+```json
+{
+  "IP Address": "10.8.69.11",
+  "Computer Name": "",
+  "Comply - JovalCM Results[c2dc8749]": [
+    {
+      "Benchmark": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+      "Benchmark Version": "1.5.0.1",
+      "Profile": "Windows 10 - NIST 800-53",
+      "ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "Result": "pass",
+      "Custom ID": "800-53: IA-5",
+      "Version": "version: 1"
+    }
+  ],
+  "Count": "1",
+  "Age": "600"
+}
+```
 
+```json
+{
+  "IP Address": "10.8.69.11",
+  "Computer Name": "cmp-wn-2106.demo.tanium.local",
+  "Comply - JovalCM Results[c2dc8749]": [
+    {
+      "Benchmark": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+      "Benchmark Version": "1.5.0.1",
+      "Profile": "Windows 10 - NIST 800-53",
+      "ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "Result": "fail",
+      "Custom ID": "800-53: IA-5",
+      "Version": "version: 1"
+    }
+  ],
+  "Count": "1",
+  "Age": "600"
+}
+```
+
+```json
+{
+  "IP Address": "10.8.69.11",
+  "Computer Name": "cmp-wn-2106.demo.tanium.local",
+  "Comply - JovalCM Results[c2dc8749]": [
+    {
+      "Benchmark": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+      "Benchmark Version": "1.5.0.1",
+      "Profile": "Windows 10 - NIST 800-53",
+      "ID": "xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters",
+      "Result": "pass",
+      "Custom ID": "800-53: IA-5",
+      "Version": "version: 1"
+    }
+  ],
+  "Count": "1",
+  "Age": "600"
+}
 ```
 
 </details>
