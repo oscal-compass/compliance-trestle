@@ -51,7 +51,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 
 `trestle` supports OSCAL version `1.0.0` only at this stage.
 
-## Supported file formats for OSCAL objects.
+## Supported file formats for OSCAL objects
 
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
