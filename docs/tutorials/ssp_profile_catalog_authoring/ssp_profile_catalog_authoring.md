@@ -34,9 +34,13 @@ From the diagram it's clear that the profile is performing many tasks under the 
 
 ![What a profile does](profile_does.png)
 
-It's important to note that each profile is importing a selection of controls from each source, then making its own modifications to parameters and other content in those controls.  This way the catalogs themselves can remain relatively static, and individual use cases can effectively create a custom catalog based on the original controls plus modifications.  The authoring tools here provide ways to make those modifications, both to the controls and to the profile, and to enter the implementation responses that are needed in a System Security Plan.
+It's important to note that each profile is importing a selection of controls from each source, then making its own *suggested* modifications to parameters and other content in those controls.  They are suggested in the sense that downstream profiles may override those settings - with priority given to the later profiles in the pipeline.  This way the catalogs themselves can remain relatively static, and individual use cases can effectively create a custom catalog based on the original controls plus modifications.  The authoring tools here provide ways to make those modifications, both to the catalog controls and to the profiles, and to enter the implementation responses that are needed in a System Security Plan.
 
 ## `trestle author catalog-generate` and `trestle author catalog-assemble`
+
+`catalog-generate` will take an existing json catalog and write it out as markdown files for each control in a user-specified directory.  That directory will contain subdirectories for each group in the catalog, and those directories may contain subdirectories for groups within groups.  But controls containing controls are always split out into a series of controls in the same directory - and each control markdown file corresponds to a single control.
+
+We now look at the contents of a typical control markdown file.
 
 A Control may contain many parts, but only one of them is a Statement, which describes the function of the control.  The statement itself is broken down into separate items, each of which may contain parameter id's in "moustache" (`{{}}`) brackets.  Below is an example of a control statement as generated in markdown form by the `catalog-generate` command.
 
@@ -65,11 +69,17 @@ A Control may contain many parts, but only one of them is a Statement, which des
 
 ```
 
-A profile can then provide values for the parameters so that the final resolved profile catalog is complete and all the parameters have been specified for the needs of a specific use case.  But `catalog-generate` lets you add or edit items in the control statement.
+The control markdown files rely on brackets around key items that are important in defining the control's properties and structure.  `\[Access Control\]` at the top indicates the title of the group containing the control.  The name of the control is already known from the name of the markdown file (`ac-1.md`) and the name of the group is already known from the name of the directory containing the group's controls (`ac`) - but the group title must be indicated in the control in a special manner, hence the brackets.  The text following the group title is the title of the control itself.  All controls in a group should have the same group title or a warning will be indicated in certain trestle operations.  The text following the group title is the title of the control itself.
+
+In addition, each part label corresponds to the label used in the OSCAL structure for the control statement, and so must be maintained in a special manner -  hence the need for brackets on `\[a\]`.  These brackets will not be rendered by markdown viewers, so they will not impact the final formatted presentation of the control.
+
+The items in moustaches (`{{}}`) provide powerful automated editing of parameters and prose both by profiles and by editors of markdown because the values can be set in a variety of ways without editing the markdown statement itself.  For example, a profile can provide values for the parameters so that the final resolved profile catalog is complete and all the parameters have been specified for the needs of a specific use case.
 
 `catalog-generate` is run with the command `trestle author catalog-generate --name catalog_name --output markdown_dir`, where `catalog_name` is the name of a catalog already loaded into the trestle workspace, and `markdown_dir` is the directory into which the markdown files for the controls will be written.  A separate directory is created for each group in the catalog.
 
 A user then may edit the control statement for the control and add or change the contents.  In this case an added item, `My added item` is shown as item `d`.  You can then assemble the edited controls into a new catalog with the command `trestle author catalog-assemble --markdown markdown_dir --output new_catalog`.  This will load the updated control statements for each control into a new json or yaml catalog named `new_catalog`.
+
+As with ssp generation described below, a yaml header may be provided that is inserted into the top of each control file.  If a control file already exists, as is expected in a continuous cycle of generate-edit-assemble, then the provided header will be merged with the existing header in each control.  If a given item in the header is already present in the control, by default the provided header will override, but if the `--preserve-header-values` or `-phv` flag is provided, then existing values will not be overwritten.  Thus with `-phv` any edits to the control markdown header will not be overwritten by the provided header, and the provided header acts as a default if not specified specifically for a control.
 
 ## `trestle author profile-generate` and `trestle author profile-assemble`
 
@@ -117,7 +127,11 @@ Detailed logs.
 
 In the above markdown example, the fixed, uneditable parts of the control are output first, follwed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
 
+In a cyclic operation of `generate-edit-assemble` you would simply be re-writing from and to the same json profile, in which case the `--name` is optional and you can just use `trestle author profile-assemble --profile_md --output my_profile`.  This will assemble the markdown profile contents in directory `profile_md` into a json profile named `my_profile` but it will first use the existing `my_profile` json file as the parent profile and incorporate changes (due to user edits) in the markdown version of the profile.
+
 It's important to note that these operations only apply to the `Adds` in the profile itself - and nothing upstream of the profile is affected.  Nor is anything else in the original profile lost or altered.  In the example above, the section, `## Control my_guidance` was added by editing the generated control - and after `profile-assemble` it ended up as new guidance in the assembled profile.
+
+As in the other commands, `profile-generate` allows specification of a yaml header, and support of the `--preserve-header-values` flag.  In addition, there is a `--set-parameters` flag that will set parameter values in the control based on the markdown header in the control along with any modifications specified by the profile for that control.  Similarly, during assembly with `profile-assemble` the `--set-parameters` flag will set parameter values in the profile for the control based on the header in the control markdown file.
 
 ## Markdown Specifications for Editable Content.
 
@@ -184,6 +198,8 @@ for each control group.
 If the imported catalogs or profiles are not at the URI pointed to by the Import href of the profile then the href should be changed using the `trestle href` command.
 
 The optional yaml header file can be anywhere in the file system.
+
+Similar to `catalog-generate`, the `--preserve-header-values` flag may be specified to avoid changing values already specified in the yaml header of the control markdown file.
 
 <br>
 <details>
@@ -263,7 +279,7 @@ _______________________________________________________________________________
 </details>
 <br>
 
-Each label in the ssp is wrapped in \\\[ \\\] to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the \\\[ \\\] removed.
+Each label in the ssp is wrapped in `\[ \]` to indicate it comes directly from the label in the control and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the `\[ \]` removed.
 
 Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.
 
