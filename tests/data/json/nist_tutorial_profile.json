@@ -1,0 +1,27 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000002",
+    "metadata": {
+      "title": "nist tutorial profile",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/nist_tutorial_catalog/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "s1.1.1",
+              "s2.1.2"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "as-is": true
+    }
+  }
+}
