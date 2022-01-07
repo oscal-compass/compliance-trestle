@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.poam/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -6265,6 +6265,42 @@ Activity            (<a title="trestle.core.base_model.OscalBaseModel" href="../
 
       <p>Identifies an assessment or related process that can be performed. In the assessment plan, this is an intended activity which may be associated with an assessment task. In the assessment results, this an activity that was actually performed as part of an assessment.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Activity</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies an assessment or related process that can be performed. In the assessment plan, this is an intended activity which may be associated with an assessment task. In the assessment results, this an activity that was actually performed as part of an assessment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Assessment Activity Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this included activity.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Included Activity Title&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of this included activity.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Included Activity Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Step</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">related_controls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReviewedControls</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;related-controls&#39;</span><span class="p">)</span>
+    <span class="n">responsible_roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ResponsibleRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;responsible-roles&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -6485,6 +6521,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -6525,6 +6567,20 @@ AssessmentAssets            (<a title="trestle.core.base_model.OscalBaseModel" h
 
       <p>Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AssessmentAssets</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SystemComponent</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">assessment_platforms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">AssessmentPlatform</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;assessment-platforms&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -6594,6 +6650,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -6634,6 +6696,22 @@ Characterization            (<a title="trestle.core.base_model.OscalBaseModel" h
 
       <p>A collection of descriptive data about the containing object from a specific origin.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Characterization</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A collection of descriptive data about the containing object from a specific origin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">origin</span><span class="p">:</span> <span class="n">Origin1</span>
+    <span class="n">facets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Facet</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -6746,6 +6824,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -6786,6 +6870,34 @@ ControlSelection            (<a title="trestle.core.base_model.OscalBaseModel" h
 
       <p>Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlSelection</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies the controls being assessed. In the assessment plan, these are the planned controls. In the assessment results, these are the actual controls, and reflects any changes from the plan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of in-scope controls specified for assessment.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Assessed Controls Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">include_all</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;include-all&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A key word to indicate all.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">include_controls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;include-controls&#39;</span><span class="p">)</span>
+    <span class="n">exclude_controls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;exclude-controls&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -6961,6 +7073,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -7001,6 +7119,49 @@ Entry            (<a title="trestle.core.base_model.OscalBaseModel" href="../tre
 
       <p>Identifies an individual risk response that occurred as part of managing an identified risk.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Entry</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies an individual risk response that occurred as part of managing an identified risk.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies a risk log entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Log Entry Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this risk log entry.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of what was done regarding the risk.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Task Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Identifies the start date and time of the event.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Identifies the end date and time of the event. If the event is a point in time, the start and end will be the same date and time.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;End&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">logged_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">LoggedBy</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;logged-by&#39;</span><span class="p">)</span>
+    <span class="n">status_change</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RiskStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;status-change&#39;</span><span class="p">)</span>
+    <span class="n">related_responses</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RelatedResponse</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;related-responses&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -7265,6 +7426,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -7305,6 +7472,52 @@ FindingTarget            (<a title="trestle.core.base_model.OscalBaseModel" href
 
       <p>Captures an assessor's conclusions regarding the degree to which an objective is satisfied.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">FindingTarget</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Captures an assessor&#39;s conclusions regarding the degree to which an objective is satisfied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Type1</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Identifies the type of the target.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Finding Target Type&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">target_id</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span>
+        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;target-id&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Identifies the specific target qualified by the type.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Finding Target Identifier Reference&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this objective status.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Objective Status Title&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s2">&quot;A human-readable description of the assessor&#39;s conclusions regarding the degree to which an objective is satisfied.&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Objective Status Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status1</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A determination of if the objective is satisfied or not within a given system.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Objective Status&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">implementation_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ImplementationStatus</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;implementation-status&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -7528,6 +7741,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -7568,6 +7787,21 @@ LocalDefinitions            (<a title="trestle.core.base_model.OscalBaseModel" h
 
       <p>Allows components, and inventory-items to be defined within the POA&amp;M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&amp;M.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LocalDefinitions</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allows components, and inventory-items to be defined within the POA&amp;M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&amp;M.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SystemComponent</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">inventory_items</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">InventoryItem</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;inventory-items&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -7657,6 +7891,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -7696,6 +7936,16 @@ Method            (<a title="trestle.core.base_model.OscalBaseModel" href="../tr
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Method</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="n">__root__</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^\S(.*\S)?$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Identifies how the observation was made.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Method&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -7762,6 +8012,12 @@ Model            (<a title="trestle.core.base_model.OscalBaseModel" href="../tre
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="n">plan_of_action_and_milestones</span><span class="p">:</span> <span class="n">PlanOfActionAndMilestones</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;plan-of-action-and-milestones&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -7827,6 +8083,51 @@ Observation            (<a title="trestle.core.base_model.OscalBaseModel" href="
 
       <p>Describes an individual observation.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Observation</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes an individual observation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given observation across revisions.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this observation.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Title&#39;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of this assessment observation.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">methods</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Method</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="n">types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Type2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">origins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Origin1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">subjects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">SubjectReference</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">relevant_evidence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RelevantEvidence</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;relevant-evidence&#39;</span><span class="p">)</span>
+    <span class="n">collected</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Date/time stamp identifying when the finding information was collected.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;collected field&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">expires</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;expires field&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -8135,6 +8436,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -8175,6 +8482,19 @@ Origin            (<a title="trestle.core.base_model.OscalBaseModel" href="../tr
 
       <p>Identifies the source of the finding, such as a tool or person.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Origin</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies the source of the finding, such as a tool or person.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">actors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">OriginActor</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -8223,6 +8543,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -8263,6 +8589,20 @@ Origin1            (<a title="trestle.core.base_model.OscalBaseModel" href="../t
 
       <p>Identifies the source of the finding, such as a tool, interviewed person, or activity.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Origin1</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies the source of the finding, such as a tool, interviewed person, or activity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">actors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">OriginActor</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="n">related_tasks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RelatedTask</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;related-tasks&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -8332,6 +8672,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -8372,6 +8718,34 @@ PlanOfActionAndMilestones            (<a title="trestle.core.base_model.OscalBas
 
       <p>A plan of action and milestones which identifies initial and residual risks, deviations, and disposition, such as those required by FedRAMP.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PlanOfActionAndMilestones</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A plan of action and milestones which identifies initial and residual risks, deviations, and disposition, such as those required by FedRAMP.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies this POA&amp;M. This UUID must be changed each time the content of the POA&amp;M changes.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;POA&amp;M Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Metadata</span>
+    <span class="n">import_ssp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ImportSsp</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;import-ssp&#39;</span><span class="p">)</span>
+    <span class="n">system_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">SystemId</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;system-id&#39;</span><span class="p">)</span>
+    <span class="n">local_definitions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LocalDefinitions</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;local-definitions&#39;</span><span class="p">)</span>
+    <span class="n">observations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Observation</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">risks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Risk</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">poam_items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PoamItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;poam-items&#39;</span><span class="p">)</span>
+    <span class="n">back_matter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">BackMatter</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;back-matter&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -8591,6 +8965,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -8631,6 +9011,42 @@ PoamItem            (<a title="trestle.core.base_model.OscalBaseModel" href="../
 
       <p>Describes an individual POA&amp;M item.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">PoamItem</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes an individual POA&amp;M item.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies the POA&amp;M entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given POA&amp;M item across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;POA&amp;M Item Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title or name for this POA&amp;M item .&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;POA&amp;M Item Title&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of POA&amp;M item.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;POA&amp;M Item Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">origins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Origin</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">related_observations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">RelatedObservation</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;related-observations&#39;</span><span class="p">)</span>
+    <span class="n">related_risks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RelatedRisk</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;related-risks&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -8851,6 +9267,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -8891,6 +9313,26 @@ RelatedObservation            (<a title="trestle.core.base_model.OscalBaseModel"
 
       <p>Relates the poam-item to a set of referenced observations that were used to determine the finding.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RelatedObservation</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Relates the poam-item to a set of referenced observations that were used to determine the finding.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">observation_uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;observation-uuid&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;References an observation defined in the list of observations.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Universally Unique Identifier Reference&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -8940,6 +9382,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -8980,6 +9428,47 @@ Response            (<a title="trestle.core.base_model.OscalBaseModel" href="../
 
       <p>Describes either recommended or an actual plan for addressing the risk.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Response</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes either recommended or an actual plan for addressing the risk.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given remediation across revisions.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Remediation Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">lifecycle</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span>
+        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Remediation Intent&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this response activity.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Response Title&#39;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of this response plan.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Response Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">origins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Origin1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">required_assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RequiredAsset</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;required-assets&#39;</span><span class="p">)</span>
+    <span class="n">tasks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Task</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -9224,6 +9713,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -9264,6 +9759,30 @@ ReviewedControls            (<a title="trestle.core.base_model.OscalBaseModel" h
 
       <p>Identifies the controls being assessed and their control objectives.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ReviewedControls</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies the controls being assessed and their control objectives.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of control objectives.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Control Objective Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">control_selections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ControlSelection</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;control-selections&#39;</span><span class="p">)</span>
+    <span class="n">control_objective_selections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ControlObjectiveSelection</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;control-objective-selections&#39;</span>
+    <span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -9418,6 +9937,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -9458,6 +9983,61 @@ Risk            (<a title="trestle.core.base_model.OscalBaseModel" href="../tres
 
       <p>An identified risk.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Risk</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An identified risk.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies this risk. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given risk across revisions.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this risk.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Title&#39;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">statement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;An summary of impact for how the risk affects the system.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Statement&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span>
+        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Describes the status of the associated risk.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Status&#39;</span><span class="p">)</span>
+    <span class="n">origins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Origin1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">threat_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ThreatId</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;threat-ids&#39;</span><span class="p">)</span>
+    <span class="n">characterizations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Characterization</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">mitigating_factors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">MitigatingFactor</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;mitigating-factors&#39;</span><span class="p">)</span>
+    <span class="n">deadline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The date/time by which the risk must be resolved.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Resolution Deadline&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">remediations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Response</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">risk_log</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RiskLog</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;risk-log&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A log of all risk-related tasks taken.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Log&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">related_observations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">RelatedObservation1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;related-observations&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -9811,6 +10391,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -9851,6 +10437,19 @@ RiskLog            (<a title="trestle.core.base_model.OscalBaseModel" href="../t
 
       <p>A log of all risk-related tasks taken.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RiskLog</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A log of all risk-related tasks taken.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Entry</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -9899,6 +10498,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -9939,6 +10544,28 @@ SelectControlById            (<a title="trestle.core.base_model.OscalBaseModel" 
 
       <p>Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SelectControlById</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">control_id</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span>
+        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;control-id&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A reference to a control with a corresponding id value.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Control Identifier Reference&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">statement_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">StatementId</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;statement-ids&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10009,6 +10636,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -10049,6 +10682,30 @@ SetParameter            (<a title="trestle.core.base_model.OscalBaseModel" href=
 
       <p>Identifies the parameter that will be set by the enclosed value.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SetParameter</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies the parameter that will be set by the enclosed value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">param_id</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span>
+        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;param-id&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s2">&quot;A reference to a parameter within a control, who&#39;s catalog has been imported into the current implementation context.&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Parameter ID&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10141,6 +10798,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -10178,6 +10841,19 @@ State            (<span title="enum.Enum">Enum</span>)
 
       <p>The operational status.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The operational status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">under_development</span> <span class="o">=</span> <span class="s1">&#39;under-development&#39;</span>
+    <span class="n">operational</span> <span class="o">=</span> <span class="s1">&#39;operational&#39;</span>
+    <span class="n">disposition</span> <span class="o">=</span> <span class="s1">&#39;disposition&#39;</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="s1">&#39;other&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10290,6 +10966,17 @@ State1            (<span title="enum.Enum">Enum</span>)
 
       <p>An indication as to whether the objective is satisfied or not.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">State1</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An indication as to whether the objective is satisfied or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">satisfied</span> <span class="o">=</span> <span class="s1">&#39;satisfied&#39;</span>
+    <span class="n">not_satisfied</span> <span class="o">=</span> <span class="s1">&#39;not-satisfied&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10369,6 +11056,20 @@ Status            (<a title="trestle.core.base_model.OscalBaseModel" href="../tr
 
       <p>Describes the operational status of the system component.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Status</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes the operational status of the system component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">state</span><span class="p">:</span> <span class="n">State</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The operational status.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;State&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10439,6 +11140,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -10479,6 +11186,32 @@ Status1            (<a title="trestle.core.base_model.OscalBaseModel" href="../t
 
       <p>A determination of if the objective is satisfied or not within a given system.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Status1</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A determination of if the objective is satisfied or not within a given system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">state</span><span class="p">:</span> <span class="n">State1</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;An indication as to whether the objective is satisfied or not.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Objective Status State&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span>
+        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
+    <span class="p">)]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The reason the objective was given it&#39;s status.&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Objective Status Reason&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10571,6 +11304,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -10611,6 +11350,37 @@ Step            (<a title="trestle.core.base_model.OscalBaseModel" href="../tres
 
       <p>Identifies an individual step in a series of steps related to an activity, such as an assessment test or examination procedure.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Step</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identifies an individual step in a series of steps related to an activity, such as an assessment test or examination procedure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Step Universally Unique Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this step.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Step Title&#39;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human-readable description of this step.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Step Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">reviewed_controls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReviewedControls</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;reviewed-controls&#39;</span><span class="p">)</span>
+    <span class="n">responsible_roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ResponsibleRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;responsible-roles&#39;</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -10810,6 +11580,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -10850,6 +11626,54 @@ SystemComponent            (<a title="trestle.core.base_model.OscalBaseModel" hr
 
       <p>A defined component that can be part of an implemented system.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SystemComponent</span><span class="p">(</span><span class="n">OscalBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A defined component that can be part of an implemented system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+                 <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+                     <span class="o">...</span><span class="p">,</span>
+                     <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The unique identifier for the component.&#39;</span><span class="p">,</span>
+                     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Identifier&#39;</span><span class="p">,</span>
+                 <span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^\S(.*\S)?$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A category describing the purpose of the component.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Type&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A human readable name for the system component.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Title&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A description of the component, including information about its function.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Description&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">purpose</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A summary of the technological or business purpose of the component.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Purpose&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Describes the operational status of the system component.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">responsible_roles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ResponsibleRole</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;responsible-roles&#39;</span><span class="p">)</span>
+    <span class="n">protocols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Protocol</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -11118,6 +11942,12 @@ Config        </code>
     <div class="doc doc-contents ">
 
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/oscal/poam.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+</code></pre></div>
+        </details>
 
 
     </div>
@@ -11214,10 +12044,10 @@ Config        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

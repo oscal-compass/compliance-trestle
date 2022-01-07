@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.actions/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3669,6 +3669,61 @@ Action            (<span title="abc.ABC">ABC</span>)
 
       <p>Action wrapper of a command.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Action</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Action wrapper of a command.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action_type</span><span class="p">:</span> <span class="n">ActionType</span><span class="p">,</span> <span class="n">has_rollback</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an base action.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">:</span> <span class="n">ActionType</span> <span class="o">=</span> <span class="n">action_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_rollback</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">has_rollback</span>
+
+        <span class="c1"># child class must set this flag once it executes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_executed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the action type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span>
+
+    <span class="k">def</span> <span class="nf">_mark_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set flag that the action has been executed.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_executed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">has_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return if the action has been executed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_executed</span>
+
+    <span class="k">def</span> <span class="nf">_mark_rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set flag that the action has been rollbacked.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_executed</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">has_rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return if rollback of the action is possible.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_rollback</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check that two actions are equal.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Action</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">other</span><span class="o">.</span><span class="n">get_type</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">is_eq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span>
+        <span class="k">return</span> <span class="n">is_eq</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3942,6 +3997,31 @@ ActionType            (<span title="enum.Enum">Enum</span>)
 <p>File system related actions have code like 1<em>
 Model processing related actions have code like 2</em></p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ActionType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Action type enum for different action type.</span>
+
+<span class="sd">    File system related actions have code like 1*</span>
+<span class="sd">    Model processing related actions have code like 2*</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># create a file or directory path</span>
+    <span class="n">CREATE_PATH</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="c1"># remove a file or directory path</span>
+    <span class="n">REMOVE_PATH</span> <span class="o">=</span> <span class="mi">12</span>
+
+    <span class="c1"># write element to a destination file or stream</span>
+    <span class="n">WRITE</span> <span class="o">=</span> <span class="mi">11</span>
+
+    <span class="c1"># update or add the element at the path</span>
+    <span class="n">UPDATE</span> <span class="o">=</span> <span class="mi">20</span>
+
+    <span class="c1"># remove the element at the path</span>
+    <span class="n">REMOVE</span> <span class="o">=</span> <span class="mi">21</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4072,6 +4152,114 @@ CreatePathAction            (<a title="trestle.core.models.actions.Action" href=
 
       <p>Create a file or directory path.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CreatePathAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a file or directory path.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">clear_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a create path action.</span>
+
+<span class="sd">        It creates all the missing directories in the path.</span>
+<span class="sd">        If it is a file, then it also creates an empty file with the name provided</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            sub_path: this is the desired file or directory path that needs to be created under the project root</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sub_path</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">sub_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sub path &quot;</span><span class="si">{</span><span class="n">sub_path</span><span class="si">}</span><span class="s1">&quot; should be child of a valid trestle project&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span> <span class="o">=</span> <span class="n">sub_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># variables for handling with file content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span> <span class="o">=</span> <span class="n">clear_content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_file_content</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ActionType</span><span class="o">.</span><span class="n">CREATE_PATH</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_trestle_project_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the trestle project root path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span>
+
+    <span class="k">def</span> <span class="nf">get_created_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the list of paths that were created after being executed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+        <span class="c1"># find the start of the sub_path relative to trestle project root</span>
+        <span class="n">cur_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span>
+
+        <span class="c1"># loop through the sub_path parts and create as necessary</span>
+        <span class="n">cur_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span>
+        <span class="k">while</span> <span class="n">cur_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+            <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="n">cur_index</span><span class="p">]</span>
+
+            <span class="c1"># create a path relative to the current</span>
+            <span class="c1"># it starts with the project root, so we shall always create</span>
+            <span class="c1"># sub directories or files relative to the project root</span>
+            <span class="n">cur_path</span> <span class="o">=</span> <span class="n">cur_path</span> <span class="o">/</span> <span class="n">part</span>
+
+            <span class="c1"># create the sub_path file or directory if it does not exists already</span>
+            <span class="k">if</span> <span class="n">cur_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>  <span class="c1"># suffix will denote a file</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">cur_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="c1"># create file</span>
+                    <span class="n">cur_path</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+
+                    <span class="c1"># add in the list for rollback</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span><span class="p">:</span>
+                    <span class="c1"># read file content for rollback</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cur_path</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                        <span class="c1"># read all content</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_old_file_content</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+                        <span class="c1"># clear file content</span>
+                        <span class="n">fp</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">cur_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="c1"># create directory</span>
+                    <span class="n">cur_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+
+                    <span class="c1"># add in the list for rollback</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_path</span><span class="p">)</span>
+
+            <span class="c1"># move to the next part of the sub_path parts</span>
+            <span class="n">cur_index</span> <span class="o">=</span> <span class="n">cur_index</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_executed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_executed</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">cur_path</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">cur_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">cur_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                            <span class="n">cur_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">cur_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                            <span class="n">cur_path</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_created_paths</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+            <span class="c1"># rollback the content of a file if required</span>
+            <span class="c1"># we should be here only if there were no path created and the sub_part already existed</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_file_content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_old_file_content</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_rollback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="si">}</span><span class="s1">&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4379,6 +4567,36 @@ RemoveAction            (<a title="trestle.core.models.actions.Action" href="#tr
 
       <p>Remove sub element at the element path in the source element.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RemoveAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove sub element at the element path in the source element.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">sub_element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a remove element action.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ActionType</span><span class="o">.</span><span class="n">REMOVE</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src_element</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">src_element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">:</span> <span class="n">ElementPath</span> <span class="o">=</span> <span class="n">sub_element_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_sub_element</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_sub_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src_element</span><span class="o">.</span><span class="n">get_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_src_element</span><span class="o">.</span><span class="n">set_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_executed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_executed</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_src_element</span><span class="o">.</span><span class="n">set_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_sub_element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_rollback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="si">}</span><span class="s1"> element at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_src_element</span><span class="si">}</span><span class="s1">&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4541,6 +4759,64 @@ RemovePathAction            (<a title="trestle.core.models.actions.Action" href=
 
       <p>Remove a file or directory path.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RemovePathAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove a file or directory path.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a remove path action.</span>
+
+<span class="sd">        It removes the file or directory recursively into trash.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            sub_path: this is the desired file or directory path that needs to be removed under the project root</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_path</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Sub path must be of type pathlib.Path&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">sub_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sub path &quot;</span><span class="si">{</span><span class="n">sub_path</span><span class="si">}</span><span class="s1">&quot; should be child of a valid trestle project.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span> <span class="o">=</span> <span class="n">sub_path</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ActionType</span><span class="o">.</span><span class="n">REMOVE_PATH</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_trestle_project_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the trestle project root path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;path </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="si">}</span><span class="s1"> does not exist in remove path action - ignoring.&#39;</span><span class="p">)</span>
+
+        <span class="n">trash</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># check if parent folder is empty and if so delete</span>
+        <span class="n">parent_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="p">))</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parent_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">trash</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">parent_dir</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_executed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_executed</span><span class="p">():</span>
+            <span class="n">trash_path</span> <span class="o">=</span> <span class="n">trash</span><span class="o">.</span><span class="n">to_trash_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">trash_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">trash_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="c1"># FIXME suppress file contents not found message til trash/rollback behavior is fixed.  # issue 412</span>
+                <span class="k">return</span>
+            <span class="n">trash</span><span class="o">.</span><span class="n">recover</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_rollback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_path</span><span class="si">}</span><span class="s1">&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4774,6 +5050,46 @@ UpdateAction            (<a title="trestle.core.models.actions.Action" href="#tr
 
       <p>Update element at the element path in the destination element with the source element.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">UpdateAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update element at the element path in the destination element with the source element.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_element</span><span class="p">,</span> <span class="n">dest_element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">sub_element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an add element action.</span>
+
+<span class="sd">        Sub element can be OscalBaseModel, Element, list or None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ActionType</span><span class="o">.</span><span class="n">UPDATE</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Element</span><span class="o">.</span><span class="n">is_allowed_sub_element_type</span><span class="p">(</span><span class="n">sub_element</span><span class="p">):</span>
+            <span class="n">allowed_types</span> <span class="o">=</span> <span class="n">Element</span><span class="o">.</span><span class="n">get_allowed_sub_element_types</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Sub element &quot;</span><span class="si">{</span><span class="n">sub_element</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> is not a allowed sub element types in &quot;</span><span class="si">{</span><span class="n">allowed_types</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_element</span> <span class="o">=</span> <span class="n">sub_element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_element</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">dest_element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">:</span> <span class="n">ElementPath</span> <span class="o">=</span> <span class="n">sub_element_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_sub_element</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_sub_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest_element</span><span class="o">.</span><span class="n">get_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dest_element</span><span class="o">.</span><span class="n">set_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_executed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_executed</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dest_element</span><span class="o">.</span><span class="n">set_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_sub_element</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_rollback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_dest_element</span><span class="si">}</span><span class="s1"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub_element_path</span><span class="si">}</span><span class="s1">&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4947,6 +5263,71 @@ WriteAction            (<a title="trestle.core.models.actions.Action" href="#tre
 
       <p>Write the element to a destination stream.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WriteAction</span><span class="p">(</span><span class="n">Action</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write the element to a destination stream.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">],</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="n">FileContentType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an write file action.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ActionType</span><span class="o">.</span><span class="n">WRITE</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">writer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">,</span> <span class="n">writer</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Writer must be of io.TextIOWrapper, given f</span><span class="si">{</span><span class="n">writer</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">]</span> <span class="o">=</span> <span class="n">writer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_element</span><span class="p">:</span> <span class="n">Element</span> <span class="o">=</span> <span class="n">element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span><span class="p">:</span> <span class="n">FileContentType</span> <span class="o">=</span> <span class="n">content_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_is_writer_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Encode the element to appropriate content type.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">YAML</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid content type </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_content_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Element is empty and cannot write&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_writer_valid</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Writer is not provided or closed&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_executed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rollback the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_writer_valid</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Writer is not provided or closed&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Last stream position is not available to rollback to&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_executed</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">truncate</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mark_rollback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_element</span><span class="si">}</span><span class="s1">&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -5129,6 +5510,57 @@ WriteFileAction            (<a title="trestle.core.models.actions.WriteAction" h
 
       <p>Write the element to a destination file.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/actions.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WriteFileAction</span><span class="p">(</span><span class="n">WriteAction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write the element to a destination file.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="n">FileContentType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a write file action.</span>
+
+<span class="sd">        It opens the file in append mode. Therefore the file needs to exist even if it is a new file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;file_path should be of type pathlib.Path&#39;</span><span class="p">)</span>
+
+        <span class="n">inferred_content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inferred_content_type</span> <span class="o">!=</span> <span class="n">content_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch between stated content type </span><span class="si">{</span><span class="n">content_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> and file path </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span> <span class="o">=</span> <span class="n">file_path</span>
+
+        <span class="c1"># initialize super without writer for now</span>
+        <span class="c1"># Note, execute and rollback sets the writer as appropriate</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">content_type</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="si">}</span><span class="s1"> does not exist&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lastStreamPos</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">writer</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute the rollback action.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="si">}</span><span class="s1"> does not exist&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="p">,</span> <span class="s1">&#39;a+&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">writer</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_element</span><span class="si">}</span><span class="s1"> to &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_path</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -5371,10 +5803,10 @@ WriteFileAction            (<a title="trestle.core.models.actions.WriteAction" h
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

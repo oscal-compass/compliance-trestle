@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/continuous-compliance/continuous-compliance/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2649,10 +2649,16 @@
 
 <h1 id="tutorial-whats-your-compliance-posture">Tutorial: What’s your compliance posture?<a class="headerlink" href="#tutorial-whats-your-compliance-posture" title="Permanent link">¤</a></h1>
 <h4 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">¤</a></h4>
-<p>The cloud with continuous integration and continuous deployment is the modern computing paradigm. There are a plethora of cloud environments: public, private, on-premise, hybrid-cloud, multi-cloud, etc. and a contingent of vendors. The cloud offers great flexibility where you can choose the right one or use some combination for the each application. But as is demonstrated from time to time, the cloud can be a dangerous place. Hackers, bots, malware, and more are out to find and exploit weakness in your computing solution. To combat them there are strategies for avoiding embarrassment and financial ruin from security breeches. Educating your workforce is of paramount importance. Moreover, employing a trust-but-verify strategy will go a long way toward deflecting trouble.</p>
-<p>The time has come for continuous auditing, giving stakeholders such as account owners, application owners, system owners and compliance officers a current picture of their compliance posture.
-Are password rules being followed? Are deployed applications using compromised encryption algorithms? Has a user gotten elevated privileges? Are unauthorized open source projects wrongfully part of your application stack?  Getting answers to these questions quarterly or annually is leaving you exposed.</p>
-<p>Moreover, assuring continuous compliance across multiple cloud vendors can complicate matters. If each has its own compliance regime, then one must become expert in each domain’s compliance solution space, or else be wedded to a single or few providers. Not an ideal prospect.</p>
+<p>The cloud with its continuous integration and continuous deployment is the modern computing paradigm. There is a plethora of cloud environments: public, private, on-premise, hybrid-cloud, multi-cloud, etc. along with a corresponding contingent of vendors. The cloud offers great flexibility where you can choose just one or some combination optimal for each application. But, as demonstrated from time to time, the cloud can be a dangerous place. Hackers, bots, malware, and more are constant threats seeking to find and exploit weakness in your computing solution. To combat them there are strategies to avoid embarrassment and financial ruin from security breeches. Educating your workforce is of paramount importance. Moreover, employing a trust-but-verify strategy will go a long way toward deflecting trouble.</p>
+<p>The time has come for continuous auditing, and giving stakeholders (such as account owners, application owners, system owners and compliance officers) a current picture of their compliance posture:</p>
+<ul>
+<li>Are password rules being followed?</li>
+<li>Are deployed applications using compromised encryption algorithms?</li>
+<li>Has a user gotten elevated privileges?</li>
+<li>Are unauthorized open source projects wrongfully part of your application stack?</li>
+</ul>
+<p>Getting answers to these questions only quarterly or annually is leaving you exposed.</p>
+<p>Moreover, assuring continuous compliance across multiple cloud vendors can complicate matters. If each has its own compliance regime, then one must become expert in each domain’s compliance solution space, or else be wedded to a single or few providers. That is not an ideal prospect.</p>
 <p>Common sense dictates that standardization would simplify matters. The National Institute of Standards and Technologies (NIST) is developing the Open Security Controls Assessment Language (<a href="https://pages.nist.gov/OSCAL">OSCAL</a>).</p>
 <p>The compliance-<a href="https://ibm.github.io/compliance-trestle/">trestle</a> open source github project is an effort to employ <a href="https://pages.nist.gov/OSCAL">OSCAL</a> for compliance standardization and automation. Of great utility is the <a href="https://ibm.github.io/compliance-trestle/">trestle</a> oscal module that facilitates transformation of data to/from Python object representations in accordance with the <a href="https://pages.nist.gov/OSCAL">OSCAL</a> schemas.</p>
 <h4 id="simple-continuous-compliance-architecture">Simple Continuous Compliance Architecture<a class="headerlink" href="#simple-continuous-compliance-architecture" title="Permanent link">¤</a></h4>
@@ -2663,9 +2669,9 @@ Are password rules being followed? Are deployed applications using compromised e
 <p>The bad news is that a transformer to <a href="https://pages.nist.gov/OSCAL">OSCAL</a> is needed for each Cloud Service type.</p>
 <p>However, there is plenty of good news:</p>
 <ul>
-<li>a transformer for your Cloud Service type may already exist: <a href="https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py">Tanium to OSCAL</a>, <a href="https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py">OpenShift Compliance Operator to OSCAL</a></li>
+<li>a transformer for your Cloud Service type may already exist, such as: <a href="https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py">Tanium to OSCAL</a>, <a href="https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py">OpenShift Compliance Operator to OSCAL</a></li>
 <li>once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used</li>
-<li>writing a transformer is pretty easy, just a few lines of Python code using <a href="https://ibm.github.io/compliance-trestle/">trestle</a> as a foundation</li>
+<li>writing a transformer is fairly easy: just a few lines of Python code using <a href="https://ibm.github.io/compliance-trestle/">trestle</a> as a foundation</li>
 </ul>
 <p>In the case of Tanium, the <a href="https://pages.nist.gov/OSCAL">OSCAL</a> compliance data document is a <em>System Assessment Results</em> fragment with <em>Findings</em> and <em>Observations</em>, while in the case of OpenShift Compliance Operator there are <em>Observations</em> only.</p>
 <p>Tutorials are available to show you: how to <a href="https://ibm.github.io/compliance-trestle/tutorials/task.tanuim-to-oscal/transformation/">run a transformer</a>, how to <a href="https://ibm.github.io/compliance-trestle/tutorials/task.transformer-construction/transformer-construction/">write a transformer</a>.</p>
@@ -2736,10 +2742,10 @@ Are password rules being followed? Are deployed applications using compromised e
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

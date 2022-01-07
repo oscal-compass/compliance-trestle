@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.jinja/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2829,6 +2829,169 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
 
       <p>Transform an input template to an output document using jinja templating.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">JinjaCmd</span><span class="p">(</span><span class="n">CommandPlusDocs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform an input template to an output document using jinja templating.&quot;&quot;&quot;</span>
+
+    <span class="n">max_recursion_depth</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;jinja&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="s1">&#39;--input&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Input jinja template, relative to trestle root&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Output template, relative to trestle root.&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-lut&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--look-up-table&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Key-value pair table, stored as yaml, to be passed to jinja as variables&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-elp&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--external-lut-prefix&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Prefix paths for LUT, to maintain compatibility with other templating systems&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-nc&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--number-captions&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Add incremental numbering to table and image captions, in the form Table n - ... and Figure n - ...&#39;</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-pf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--param-formatting&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Add given text to each parameter, &#39;</span>
+            <span class="s1">&#39;use dot to specify location of parameter (i.e. foo.bar will wrap param with foo and bar)&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-ssp&#39;</span><span class="p">,</span> <span class="s1">&#39;--system-security-plan&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;An optional SSP to be passed&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--profile&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;An optional profile to be passed&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> command&#39;</span><span class="p">)</span>
+        <span class="n">input_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">look_up_table</span><span class="p">:</span>
+            <span class="n">lut_table</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">look_up_table</span><span class="p">)</span>
+            <span class="n">lookup_table_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="n">lut_table</span>
+            <span class="n">lut</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">load_LUT</span><span class="p">(</span><span class="n">lookup_table_path</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">external_lut_prefix</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">jinja_ify</span><span class="p">(</span>
+                <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">),</span>
+                <span class="n">input_path</span><span class="p">,</span>
+                <span class="n">output_path</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">system_security_plan</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                <span class="n">lut</span><span class="p">,</span>
+                <span class="n">number_captions</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">number_captions</span><span class="p">,</span>
+                <span class="n">parameters_formatting</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">param_formatting</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">jinja_ify</span><span class="p">(</span>
+                <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">),</span>
+                <span class="n">input_path</span><span class="p">,</span>
+                <span class="n">output_path</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">system_security_plan</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                <span class="n">number_captions</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">number_captions</span><span class="p">,</span>
+                <span class="n">parameters_formatting</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">param_formatting</span>
+            <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Done </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> command&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_LUT</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>  <span class="c1"># noqa: N802</span>
+        <span class="sd">&quot;&quot;&quot;Load a Yaml lookup table from file.&quot;&quot;&quot;</span>
+        <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
+        <span class="n">lut</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
+            <span class="n">prefixes</span> <span class="o">=</span> <span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">prefixes</span><span class="p">:</span>
+                <span class="n">old_lut</span> <span class="o">=</span> <span class="n">lut</span>
+                <span class="n">lut</span><span class="p">[</span><span class="n">prefixes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">old_lut</span>
+
+        <span class="k">return</span> <span class="n">lut</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">jinja_ify</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">r_input_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">r_output_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">ssp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">profile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">lut</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">number_captions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">parameters_formatting</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run jinja over an input file with additional booleans.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lut</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lut</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">template_folder</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+            <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
+                <span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_folder</span><span class="p">),</span>
+                <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="n">MDSectionInclude</span><span class="p">,</span> <span class="n">MDCleanInclude</span><span class="p">,</span> <span class="n">MDDatestamp</span><span class="p">],</span>
+                <span class="n">trim_blocks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">autoescape</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r_input_file</span><span class="p">))</span>
+            <span class="c1"># create boolean dict</span>
+            <span class="k">if</span> <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">ssp</span><span class="p">),</span> <span class="nb">bool</span><span class="p">(</span><span class="n">profile</span><span class="p">)):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Both SSP and profile should be provided or not at all&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">ssp</span><span class="p">:</span>
+                <span class="c1"># name lookup</span>
+                <span class="n">ssp_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">SystemSecurityPlan</span><span class="p">)</span>
+                <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_data</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
+                <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
+                <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+                    <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span>
+                <span class="p">)</span>
+
+                <span class="n">ssp_writer</span> <span class="o">=</span> <span class="n">SSPMarkdownWriter</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">)</span>
+                <span class="n">ssp_writer</span><span class="o">.</span><span class="n">set_ssp</span><span class="p">(</span><span class="n">ssp_data</span><span class="p">)</span>
+                <span class="n">ssp_writer</span><span class="o">.</span><span class="n">set_catalog</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
+                <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_catalog</span>
+                <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
+                <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp_md_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_writer</span>
+
+            <span class="n">new_output</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">lut</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="c1"># This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).</span>
+            <span class="n">error_countdown</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">max_recursion_depth</span>
+            <span class="k">while</span> <span class="n">new_output</span> <span class="o">!=</span> <span class="n">output</span> <span class="ow">and</span> <span class="n">error_countdown</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">error_countdown</span> <span class="o">=</span> <span class="n">error_countdown</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">new_output</span>
+                <span class="n">random_name</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>  <span class="c1"># Should be random and not used.</span>
+                <span class="n">dict_loader</span> <span class="o">=</span> <span class="n">DictLoader</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">random_name</span><span class="p">):</span> <span class="n">new_output</span><span class="p">})</span>
+                <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
+                    <span class="n">loader</span><span class="o">=</span><span class="n">ChoiceLoader</span><span class="p">([</span><span class="n">dict_loader</span><span class="p">,</span> <span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_folder</span><span class="p">)]),</span>
+                    <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="n">MDCleanInclude</span><span class="p">,</span> <span class="n">MDSectionInclude</span><span class="p">,</span> <span class="n">MDDatestamp</span><span class="p">],</span>
+                    <span class="n">autoescape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">trim_blocks</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">template</span> <span class="o">=</span> <span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">random_name</span><span class="p">))</span>
+                <span class="n">new_output</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">lut</span><span class="p">)</span>
+
+            <span class="n">output_file</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">r_output_file</span>
+            <span class="k">if</span> <span class="n">number_captions</span><span class="p">:</span>
+                <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_number_captions</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown exception </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1"> occured.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">0</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2883,7 +3046,7 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
 
 
 <h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.jinja_ify">
-<code class="highlight language-python"><span class="n">jinja_ify</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">r_input_file</span><span class="p">,</span> <span class="n">r_output_file</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">lut</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">jinja_ify</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">r_input_file</span><span class="p">,</span> <span class="n">r_output_file</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">lut</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_captions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
@@ -2904,7 +3067,9 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
     <span class="n">r_output_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">ssp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">profile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">lut</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">lut</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">number_captions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">parameters_formatting</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Run jinja over an input file with additional booleans.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -2913,7 +3078,7 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
         <span class="n">template_folder</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
         <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
             <span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_folder</span><span class="p">),</span>
-            <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="n">MDSectionInclude</span><span class="p">,</span> <span class="n">MDCleanInclude</span><span class="p">],</span>
+            <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="n">MDSectionInclude</span><span class="p">,</span> <span class="n">MDCleanInclude</span><span class="p">,</span> <span class="n">MDDatestamp</span><span class="p">],</span>
             <span class="n">trim_blocks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">autoescape</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
@@ -2928,7 +3093,9 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_data</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
             <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
-            <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">)</span>
+            <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+                <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span>
+            <span class="p">)</span>
 
             <span class="n">ssp_writer</span> <span class="o">=</span> <span class="n">SSPMarkdownWriter</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">)</span>
             <span class="n">ssp_writer</span><span class="o">.</span><span class="n">set_ssp</span><span class="p">(</span><span class="n">ssp_data</span><span class="p">)</span>
@@ -2948,7 +3115,7 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
             <span class="n">dict_loader</span> <span class="o">=</span> <span class="n">DictLoader</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">random_name</span><span class="p">):</span> <span class="n">new_output</span><span class="p">})</span>
             <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
                 <span class="n">loader</span><span class="o">=</span><span class="n">ChoiceLoader</span><span class="p">([</span><span class="n">dict_loader</span><span class="p">,</span> <span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_folder</span><span class="p">)]),</span>
-                <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="n">MDCleanInclude</span><span class="p">,</span> <span class="n">MDSectionInclude</span><span class="p">],</span>
+                <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="n">MDCleanInclude</span><span class="p">,</span> <span class="n">MDSectionInclude</span><span class="p">,</span> <span class="n">MDDatestamp</span><span class="p">],</span>
                 <span class="n">autoescape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">trim_blocks</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
@@ -2956,7 +3123,10 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
             <span class="n">new_output</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">lut</span><span class="p">)</span>
 
         <span class="n">output_file</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">r_output_file</span>
-        <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_captions</span><span class="p">:</span>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_number_captions</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown exception </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1"> occured.&#39;</span><span class="p">)</span>
@@ -3096,10 +3266,10 @@ JinjaCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDoc
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

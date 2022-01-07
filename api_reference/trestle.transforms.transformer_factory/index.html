@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.transformer_factory/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3071,6 +3071,16 @@ FromOscalTransformer            (<a title="trestle.transforms.transformer_factor
 
       <p>Abstract interface for transformers from OSCAL.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">FromOscalTransformer</span><span class="p">(</span><span class="n">TransformerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract interface for transformers from OSCAL.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">OscalBaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform the from OSCAL.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3138,6 +3148,16 @@ ResultsTransformer            (<a title="trestle.transforms.transformer_factory.
 
       <p>Abstract interface for transformers that specifically return Results.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ResultsTransformer</span><span class="p">(</span><span class="n">TransformerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract interface for transformers that specifically return Results.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blob</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Results</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform the blob into Results.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3205,6 +3225,16 @@ ToOscalTransformer            (<a title="trestle.transforms.transformer_factory.
 
       <p>Abstract interface for transformers to OSCAL.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ToOscalTransformer</span><span class="p">(</span><span class="n">TransformerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract interface for transformers to OSCAL.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OscalBaseModel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform the to OSCAL.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3272,6 +3302,30 @@ TransformerBase            (<span title="abc.ABC">ABC</span>)
 
       <p>Abstract base interface for all transformers.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TransformerBase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract base interface for all transformers.&quot;&quot;&quot;</span>
+
+    <span class="c1"># the current time for consistent timestamping</span>
+    <span class="n">_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_timestamp</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set the default timestamp value.&quot;&quot;&quot;</span>
+        <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S%z&#39;</span><span class="p">)</span>
+        <span class="n">TransformerBase</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the default timestamp value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TransformerBase</span><span class="o">.</span><span class="n">_timestamp</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blob</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform the blob into a general OscalBaseModel.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3401,6 +3455,49 @@ TransformerFactory        </code>
 
       <p>Perform registration and creation of transformers.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TransformerFactory</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Perform registration and creation of transformers.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the transformers dictionary as empty.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transformers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">TransformerBase</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">register_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">transformer</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">TransformerBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register the transformer.</span>
+
+<span class="sd">        This registers transformers in the factory so they may be created by name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the transformer.</span>
+<span class="sd">            transformer (TransformerBase): The transformer class to be registered.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transformers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformer</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformerBase</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an instance of the desired transformer based its name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the transformer.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of the desired transformer.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TrestleError: if the name does not exist in the registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transformers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error getting non-registered transform </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3699,10 +3796,10 @@ TransformerFactory        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.xlsx_to_oscal_component_definition/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3978,6 +3978,60 @@ ParameterHelper        </code>
 
       <p>Parameter Helper class is a temporary hack because Component Definition does not support Parameters.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_component_definition.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ParameterHelper</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Parameter Helper class is a temporary hack because Component Definition does not support Parameters.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">t_values</span><span class="p">,</span> <span class="n">id_</span><span class="p">:</span> <span class="n">t_id</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">t_label</span><span class="p">,</span> <span class="n">href</span><span class="p">:</span> <span class="n">t_href</span><span class="p">,</span> <span class="n">usage</span><span class="p">:</span> <span class="n">t_usage</span><span class="p">,</span> <span class="n">guidelines</span><span class="p">:</span> <span class="n">t_guidelines</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_values</span> <span class="o">=</span> <span class="n">ParameterValue</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_links</span> <span class="o">=</span> <span class="p">[</span><span class="n">Link</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usage</span> <span class="o">=</span> <span class="n">usage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_guidelines</span> <span class="o">=</span> <span class="n">ParameterGuideline</span><span class="p">(</span><span class="n">prose</span><span class="o">=</span><span class="n">guidelines</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parameter</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter.&quot;&quot;&quot;</span>
+        <span class="n">parameter</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span>
+            <span class="n">links</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="p">,</span>
+            <span class="n">usage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_usage</span><span class="p">,</span>
+            <span class="n">guidelines</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_guidelines</span><span class="p">],</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameter_values</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">parameter</span>
+
+    <span class="k">def</span> <span class="nf">write_parameters_catalog</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="n">t_parameters</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="p">:</span> <span class="n">t_timestamp</span><span class="p">,</span>
+        <span class="n">oscal_version</span><span class="p">:</span> <span class="n">t_oscal_version</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="n">t_version</span><span class="p">,</span>
+        <span class="n">ofile</span><span class="p">:</span> <span class="n">t_ofile</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="n">t_verbose</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Write parameters catalog.&quot;&quot;&quot;</span>
+        <span class="n">parameter_metadata</span> <span class="o">=</span> <span class="n">Metadata</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Parameters&#39;</span><span class="p">,</span>
+            <span class="n">last_modified</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="n">oscal_version</span><span class="o">=</span><span class="n">oscal_version</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">parameter_catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="p">(</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">parameter_metadata</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">parameter_catalog</span><span class="o">.</span><span class="n">oscal_write</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">))</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4155,6 +4209,715 @@ XlsxToOscalComponentDefinition            (<a title="trestle.tasks.base_task.Tas
       </tr>
   </tbody>
 </table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/xlsx_to_oscal_component_definition.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">XlsxToOscalComponentDefinition</span><span class="p">(</span><span class="n">TaskBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Task to create OSCAL ComponentDefinition json.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: Name of the task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;xlsx-to-oscal-component-definition&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">configparser</span><span class="o">.</span><span class="n">SectionProxy</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize trestle task xlsx-to-oscal-component-definition.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_object: Config section associated with the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config_object</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+                                                                                    <span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set the timestamp.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+
+    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Help information for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> task.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Purpose: From spread sheet and catalog produce OSCAL component definition file.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.xlsx-to-oscal-component-definition]:&#39;</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  catalog-file      = &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) the path of the OSCAL catalog file.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  spread-sheet-file = &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) the path of the spread sheet file.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  work-sheet-name   = &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) the name of the work sheet in the spread sheet file.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;                      &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;column &quot;ControlId&quot; contains goal ID.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;column &quot;ControlText&quot; contains goal text.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;columns &quot;NIST Mappings&quot; contain controls.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;column &quot;ResourceTitle&quot; contains component name.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;column &quot;goal_name_id&quot; contains goal name.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;column &quot;Parameter [optional parameter]&quot; contains parameter name + description, separated by newline.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;column &quot;Values [alternatives]&quot; contains parameter values.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  output-dir        = &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) the path of the output directory for synthesized OSCAL .json files.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  output-overwrite  = &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(optional) true [default] or false; replace existing output when true.&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-success&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide an executed outcome.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config missing&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="c1"># process config</span>
+        <span class="n">catalog_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-file&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">catalog_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config missing &quot;catalog-file&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">catalog_helper</span> <span class="o">=</span> <span class="n">CatalogHelper</span><span class="p">(</span><span class="n">catalog_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalog_helper</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;&quot;catalog-file&quot; not found&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="n">spread_sheet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spread-sheet-file&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spread_sheet</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config missing &quot;spread-sheet&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">spread_sheet</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;&quot;spread-sheet&quot; not found&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="n">odir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output-dir&#39;</span><span class="p">)</span>
+        <span class="n">opth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">odir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;output-overwrite&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">quiet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">quiet</span>
+        <span class="c1"># insure output dir exists</span>
+        <span class="n">opth</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># announce spreadsheet</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">spread_sheet</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># calculate output file name &amp; check writability</span>
+        <span class="n">oname</span> <span class="o">=</span> <span class="s1">&#39;component-definition.json&#39;</span>
+        <span class="n">ofile</span> <span class="o">=</span> <span class="n">opth</span> <span class="o">/</span> <span class="n">oname</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overwrite</span> <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="c1"># initialize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defined_components</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_helper</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># load the .xlsx contents</span>
+        <span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">spread_sheet</span><span class="p">)</span>
+        <span class="n">sheet_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;work-sheet-name&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sheet_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config missing &quot;work-sheet-name&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="n">work_sheet</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet_name</span><span class="p">]</span>
+        <span class="c1"># map column headings to column letters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_map_columns</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">)</span>
+        <span class="c1"># accumulators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># roles, responsible_roles, parties, responsible parties</span>
+        <span class="n">party_uuid_01</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">party_uuid_02</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">party_uuid_03</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">roles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_roles</span><span class="p">()</span>
+        <span class="n">responsible_roles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_responsible_roles</span><span class="p">(</span><span class="n">party_uuid_01</span><span class="p">,</span> <span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">)</span>
+        <span class="n">parties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_parties</span><span class="p">(</span><span class="n">party_uuid_01</span><span class="p">,</span> <span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">)</span>
+        <span class="n">responsible_parties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_responsible_parties</span><span class="p">(</span><span class="n">party_uuid_01</span><span class="p">,</span> <span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">)</span>
+        <span class="c1"># process each row of spread sheet</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_generator</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">):</span>
+            <span class="c1"># quit when first row with no goal_id encountered</span>
+            <span class="n">goal_name_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_name_id</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controls</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">controls</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># component</span>
+            <span class="n">component_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_component_name</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="n">defined_component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_defined_component</span><span class="p">(</span><span class="n">component_name</span><span class="p">)</span>
+            <span class="c1"># parameter</span>
+            <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_name_and_description</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_parameter</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_description</span><span class="p">)</span>
+            <span class="c1"># implemented requirements</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_implemented_requirements</span><span class="p">(</span>
+                <span class="n">row</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">responsible_roles</span><span class="p">,</span> <span class="n">goal_name_id</span>
+            <span class="p">)</span>
+            <span class="c1"># control implementations</span>
+            <span class="n">control_implementation</span> <span class="o">=</span> <span class="n">ControlImplementation</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+                <span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_catalog_url</span><span class="p">(),</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">component_name</span> <span class="o">+</span> <span class="s1">&#39; implemented controls for &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_catalog_title</span><span class="p">()</span>
+                <span class="o">+</span> <span class="s1">&#39;. It includes assessment asset configuration for CICD.&quot;&#39;</span><span class="p">,</span>
+                <span class="n">implemented_requirements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">defined_component</span><span class="o">.</span><span class="n">control_implementations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">defined_component</span><span class="o">.</span><span class="n">control_implementations</span> <span class="o">=</span> <span class="p">[</span><span class="n">control_implementation</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">defined_component</span><span class="o">.</span><span class="n">control_implementations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control_implementation</span><span class="p">)</span>
+        <span class="c1"># create OSCAL ComponentDefinition</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">Metadata</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component definition for &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_catalog_title</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; profiles&#39;</span><span class="p">,</span>
+            <span class="n">last_modified</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span><span class="p">,</span>
+            <span class="n">oscal_version</span><span class="o">=</span><span class="n">OSCAL_VERSION</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">get_trestle_version</span><span class="p">(),</span>
+            <span class="n">roles</span><span class="o">=</span><span class="n">roles</span><span class="p">,</span>
+            <span class="n">parties</span><span class="o">=</span><span class="n">parties</span><span class="p">,</span>
+            <span class="n">responsible_parties</span><span class="o">=</span><span class="n">responsible_parties</span>
+        <span class="p">)</span>
+        <span class="n">component_definition</span> <span class="o">=</span> <span class="n">ComponentDefinition</span><span class="p">(</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">defined_components</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># write OSCAL ComponentDefinition to file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">component_definition</span><span class="o">.</span><span class="n">oscal_write</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">))</span>
+        <span class="c1"># issues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_issues</span><span class="p">()</span>
+        <span class="c1"># &lt;hack&gt;</span>
+        <span class="c1"># create a catalog containing the parameters,</span>
+        <span class="c1"># since parameters are not supported in OSCAL 1.0.0 component definition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_catalog</span><span class="p">()</span>
+        <span class="c1"># &lt;/hack&gt;</span>
+        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;success&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_map_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Map columns.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="o">.</span><span class="n">max_column</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">columns</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">cell_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_value</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
+            <span class="c1"># equal</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_equal</span><span class="p">(</span><span class="s1">&#39;ControlId&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;ControlId&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_equal</span><span class="p">(</span><span class="s1">&#39;ControlText&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;ControlText&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_equal</span><span class="p">(</span><span class="s1">&#39;Version&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;Version&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_equal</span><span class="p">(</span><span class="s1">&#39;goal_name_id&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;goal_name_id&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># in</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_in</span><span class="p">(</span><span class="s1">&#39;NIST Mappings&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;NIST Mappings&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_in</span><span class="p">(</span><span class="s1">&#39;ResourceTitle&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;ResourceTitle&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># in and in</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_in</span><span class="p">(</span><span class="s1">&#39;Parameter&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_in</span><span class="p">(</span><span class="s1">&#39;[optional parameter]&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;ParameterName&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_in</span><span class="p">(</span><span class="s1">&#39;Values&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fuzzy_in</span><span class="p">(</span><span class="s1">&#39;[alternatives]&#39;</span><span class="p">,</span> <span class="n">cell_value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="s1">&#39;ParameterValues&#39;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ControlId&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;ControlText&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;Version&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;goal_name_id&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;NIST Mappings&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;ResourceTitle&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;ParameterName&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;ParameterValues&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;missing column </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add column.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="o">==</span> <span class="n">limit</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;duplicate column </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">get_column_letter</span><span class="p">(</span><span class="n">column</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_column_letter</span><span class="p">(</span><span class="n">column</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get column letter.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_letters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_fuzzy_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fuzzy equal.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">v2</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_fuzzy_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fuzzy in.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">v2</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_cell_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get value for cell, adjusting for merged cells.&quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">MergedCell</span><span class="p">):</span>
+            <span class="c1"># cell is merged</span>
+            <span class="k">for</span> <span class="n">mc_range</span> <span class="ow">in</span> <span class="n">work_sheet</span><span class="o">.</span><span class="n">merged_cells</span><span class="o">.</span><span class="n">ranges</span><span class="p">:</span>
+                <span class="n">coord</span> <span class="o">=</span> <span class="n">get_column_letter</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">mc_range</span><span class="p">:</span>
+                    <span class="n">retval</span> <span class="o">=</span> <span class="n">mc_range</span><span class="o">.</span><span class="n">start_cell</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">def</span> <span class="nf">_add_implemented_requirements</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">responsible_roles</span><span class="p">,</span> <span class="n">goal_name_id</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add implemented requirements.&quot;&quot;&quot;</span>
+        <span class="n">goal_remarks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_remarks</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="n">parameter_value_default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_value_default</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">controls</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">control_uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+            <span class="n">prop1</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;goal_name_id&#39;</span><span class="p">,</span>
+                <span class="n">class_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_class_for_property_name</span><span class="p">(</span><span class="s1">&#39;goal_name_id&#39;</span><span class="p">),</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">goal_name_id</span><span class="p">,</span>
+                <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_namespace</span><span class="p">(),</span>
+                <span class="n">remarks</span><span class="o">=</span><span class="n">Remarks</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">goal_remarks</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">prop2</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;goal_version&#39;</span><span class="p">,</span>
+                <span class="n">class_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_class_for_property_name</span><span class="p">(</span><span class="s1">&#39;goal_version&#39;</span><span class="p">),</span>
+                <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_version</span><span class="p">(),</span>
+                <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_namespace</span><span class="p">(),</span>
+                <span class="n">remarks</span><span class="o">=</span><span class="n">Remarks</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">goal_name_id</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="p">[</span><span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">]</span>
+            <span class="n">control_id</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalog_helper</span><span class="o">.</span><span class="n">find_control_id</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">control_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> control </span><span class="si">{</span><span class="n">control</span><span class="si">}</span><span class="s1"> not found in catalog&#39;</span><span class="p">)</span>
+                <span class="n">control_id</span> <span class="o">=</span> <span class="n">control</span>
+            <span class="c1"># implemented_requirement</span>
+            <span class="n">implemented_requirement</span> <span class="o">=</span> <span class="n">ImplementedRequirement</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="n">control_uuid</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
+                <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span>
+                <span class="n">control_id</span><span class="o">=</span><span class="n">control_id</span><span class="p">,</span>
+                <span class="n">responsible_roles</span><span class="o">=</span><span class="n">responsible_roles</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># add statements</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_statements</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">implemented_requirement</span><span class="p">)</span>
+            <span class="c1"># add set_parameter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_set_parameter</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_value_default</span><span class="p">,</span> <span class="n">implemented_requirement</span><span class="p">)</span>
+            <span class="c1"># implemented_requirements</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">implemented_requirement</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_description</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add_parameter.&quot;&quot;&quot;</span>
+        <span class="n">usage</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_usage</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameter_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parameter_name</span> <span class="o">=</span> <span class="n">parameter_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39; &#39;</span> <span class="ow">in</span> <span class="n">parameter_name</span><span class="p">:</span>
+                <span class="n">parameter_name</span> <span class="o">=</span> <span class="n">parameter_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row=</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> edited </span><span class="si">{</span><span class="n">parameter_name</span><span class="si">}</span><span class="s1"> to remove whitespace&#39;</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter_values</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="n">guidelines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_guidelines</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">href</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_namespace</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">component_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;%20&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameter_helper</span> <span class="o">=</span> <span class="n">ParameterHelper</span><span class="p">(</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">id_</span><span class="o">=</span><span class="n">parameter_name</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">parameter_description</span><span class="p">,</span>
+                <span class="n">href</span><span class="o">=</span><span class="n">href</span><span class="p">,</span>
+                <span class="n">usage</span><span class="o">=</span><span class="n">usage</span><span class="p">,</span>
+                <span class="n">guidelines</span><span class="o">=</span><span class="n">guidelines</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_helper</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_add_statements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">controls</span><span class="p">,</span> <span class="n">component_name</span><span class="p">,</span> <span class="n">implemented_requirement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add statements.&quot;&quot;&quot;</span>
+        <span class="n">control_statements</span> <span class="o">=</span> <span class="n">controls</span><span class="p">[</span><span class="n">control</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_statements</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">statements</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">control_statement</span> <span class="ow">in</span> <span class="n">control_statements</span><span class="p">:</span>
+                <span class="n">statement_id</span> <span class="o">=</span> <span class="n">control</span> <span class="o">+</span> <span class="n">control_statement</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="ow">in</span> <span class="n">control</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s1">&#39;()&#39;</span><span class="p">):</span>
+                    <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                    <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> control </span><span class="si">{</span><span class="n">control</span><span class="si">}</span><span class="s1"> edited to remove parentheses&#39;</span><span class="p">)</span>
+                <span class="n">statement</span> <span class="o">=</span> <span class="n">Statement</span><span class="p">(</span>
+                    <span class="n">statement_id</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
+                    <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+                    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">component_name</span><span class="si">}</span><span class="s1"> implements </span><span class="si">{</span><span class="n">statement_id</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+                <span class="n">statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span>
+            <span class="n">implemented_requirement</span><span class="o">.</span><span class="n">statements</span> <span class="o">=</span> <span class="n">statements</span>
+
+    <span class="k">def</span> <span class="nf">_add_set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_value_default</span><span class="p">,</span> <span class="n">implemented_requirement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add set parameter.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parameter_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">row</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parameter_name</span> <span class="o">=</span> <span class="n">parameter_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parameter_value_default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">row</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters_values</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">parameter_value_default</span><span class="p">]</span>
+                <span class="n">set_parameter</span> <span class="o">=</span> <span class="n">SetParameter</span><span class="p">(</span><span class="n">param_id</span><span class="o">=</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+                <span class="n">set_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">set_parameter</span><span class="p">]</span>
+                <span class="n">implemented_requirement</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">set_parameters</span>
+
+    <span class="k">def</span> <span class="nf">_get_defined_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get defined component.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">component_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="p">:</span>
+            <span class="c1"># create new component</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component_name</span><span class="p">)</span>
+            <span class="n">component_title</span> <span class="o">=</span> <span class="n">component_name</span>
+            <span class="n">component_description</span> <span class="o">=</span> <span class="n">component_name</span>
+            <span class="n">defined_component</span> <span class="o">=</span> <span class="n">DefinedComponent</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">component_description</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">component_title</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;Service&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defined_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">defined_component</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># find existing component</span>
+            <span class="k">for</span> <span class="n">defined_component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defined_components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">component_name</span> <span class="o">==</span> <span class="n">defined_component</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">defined_component</span>
+
+    <span class="k">def</span> <span class="nf">_build_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build roles.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Role</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;prepared-by&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Indicates the organization that created this content.&#39;</span><span class="p">),</span>
+            <span class="n">Role</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;prepared-for&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Indicates the organization for which this content was created..&#39;</span><span class="p">),</span>
+            <span class="n">Role</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;content-approver&#39;</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Indicates the organization responsible for all content represented in the &quot;document&quot;.&#39;</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_build_responsible_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">party_uuid_01</span><span class="p">,</span> <span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build responsible roles.&quot;&quot;&quot;</span>
+        <span class="n">role_prepared_by</span> <span class="o">=</span> <span class="n">ResponsibleRole</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="s1">&#39;prepared-by&#39;</span><span class="p">,</span> <span class="n">party_uuids</span><span class="o">=</span><span class="p">[</span><span class="n">party_uuid_01</span><span class="p">])</span>
+        <span class="n">role_prepared_for</span> <span class="o">=</span> <span class="n">ResponsibleRole</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="s1">&#39;prepared-for&#39;</span><span class="p">,</span> <span class="n">party_uuids</span><span class="o">=</span><span class="p">[</span><span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">])</span>
+        <span class="n">role_content_approver</span> <span class="o">=</span> <span class="n">ResponsibleRole</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="s1">&#39;content-approver&#39;</span><span class="p">,</span> <span class="n">party_uuids</span><span class="o">=</span><span class="p">[</span><span class="n">party_uuid_01</span><span class="p">])</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">role_prepared_by</span><span class="p">,</span>
+            <span class="n">role_prepared_for</span><span class="p">,</span>
+            <span class="n">role_content_approver</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_build_parties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">party_uuid_01</span><span class="p">,</span> <span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build parties.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Party</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">party_uuid_01</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;organization&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_org_name</span><span class="p">(),</span> <span class="n">remarks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_org_remarks</span><span class="p">()),</span>
+            <span class="n">Party</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="n">party_uuid_02</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;organization&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Customer&#39;</span><span class="p">,</span>
+                <span class="n">remarks</span><span class="o">=</span><span class="s1">&#39;organization to be customized at account creation only for their Component Definition&#39;</span>
+            <span class="p">),</span>
+            <span class="n">Party</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="n">party_uuid_03</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;organization&#39;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ISV&#39;</span><span class="p">,</span>
+                <span class="n">remarks</span><span class="o">=</span><span class="s1">&#39;organization to be customized at ISV subscription only for their Component Definition&#39;</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_build_responsible_parties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">party_uuid_01</span><span class="p">,</span> <span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build responsible parties.&quot;&quot;&quot;</span>
+        <span class="n">prepared_by</span> <span class="o">=</span> <span class="n">ResponsibleParty</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="s1">&#39;prepared-by&#39;</span><span class="p">,</span> <span class="n">party_uuids</span><span class="o">=</span><span class="p">[</span><span class="n">party_uuid_01</span><span class="p">])</span>
+        <span class="n">prepared_for</span> <span class="o">=</span> <span class="n">ResponsibleParty</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="s1">&#39;prepared-for&#39;</span><span class="p">,</span> <span class="n">party_uuids</span><span class="o">=</span><span class="p">[</span><span class="n">party_uuid_02</span><span class="p">,</span> <span class="n">party_uuid_03</span><span class="p">])</span>
+        <span class="n">content_approver</span> <span class="o">=</span> <span class="n">ResponsibleParty</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="s1">&#39;content-approver&#39;</span><span class="p">,</span> <span class="n">party_uuids</span><span class="o">=</span><span class="p">[</span><span class="n">party_uuid_01</span><span class="p">])</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">prepared_by</span><span class="p">,</span>
+            <span class="n">prepared_for</span><span class="p">,</span>
+            <span class="n">content_approver</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_report_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Report issues.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing goal_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing controls: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing parameters: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing parameters values: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters_values</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_write_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a catalog containing the parameters.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_helper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output-dir&#39;</span><span class="p">)</span>
+            <span class="n">tdir</span> <span class="o">=</span> <span class="n">tdir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;component-definitions&#39;</span><span class="p">,</span> <span class="s1">&#39;catalogs&#39;</span><span class="p">)</span>
+            <span class="n">tpth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tdir</span><span class="p">)</span>
+            <span class="n">tname</span> <span class="o">=</span> <span class="s1">&#39;catalog.json&#39;</span>
+            <span class="n">tfile</span> <span class="o">=</span> <span class="n">tpth</span> <span class="o">/</span> <span class="n">tname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameter_helper</span><span class="o">.</span><span class="n">write_parameters_catalog</span><span class="p">(</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span><span class="p">,</span>
+                <span class="n">oscal_version</span><span class="o">=</span><span class="n">OSCAL_VERSION</span><span class="p">,</span>
+                <span class="n">version</span><span class="o">=</span><span class="n">get_trestle_version</span><span class="p">(),</span>
+                <span class="n">ofile</span><span class="o">=</span><span class="n">tfile</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_org_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get org-name from config.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;org-name&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;org-name: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_org_remarks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get org-remarks from config.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;org-remarks&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;org-remarks: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_class_for_property_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get class for property-name from config.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;property-name-to-class&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">parts</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">property_name</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">break</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;property-name-to-class: </span><span class="si">{</span><span class="n">property_name</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get namespace from config.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;namespace&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;namespace: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_catalog_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get catalog url from config.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-url&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalog-url: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_catalog_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get catalog title from config.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-title&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalog-title: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_row_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">t_row</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Generate rows until goal_id is None.&quot;&quot;&quot;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">goal_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_id</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">yield</span> <span class="n">row</span>
+
+    <span class="k">def</span> <span class="nf">_get_goal_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_goal_version</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fix goal_version at 1.0.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;1.0&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_get_goal_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_goal_id</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get goal_id from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;ControlId&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_goal_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_goal_text</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get goal_text from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;ControlText&#39;</span><span class="p">)</span>
+        <span class="n">goal_text</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># normalize &amp; tokenize</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">goal_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_controls</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Produce dict of controls mapped to statements.</span>
+
+<span class="sd">        Example: {&#39;au-2&#39;: [&#39;(a)&#39;, &#39;(d)&#39;], &#39;au-12&#39;: [], &#39;si-4&#39;: [&#39;(a)&#39;, &#39;(b)&#39;, &#39;(c)&#39;]}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;NIST Mappings&#39;</span><span class="p">):</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># remove blanks</span>
+                <span class="n">control</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="c1"># remove rhs of : inclusive</span>
+                    <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">control</span><span class="p">:</span>
+                        <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="c1"># remove alphabet parts of control &amp; accumulate in statements</span>
+                    <span class="n">statements</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">:</span>
+                        <span class="n">needle</span> <span class="o">=</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+                        <span class="k">if</span> <span class="n">needle</span> <span class="ow">in</span> <span class="n">control</span><span class="p">:</span>
+                            <span class="n">statements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">needle</span><span class="p">)</span>
+                            <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">needle</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="c1"># skip bogus control made up if dashes only</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">value</span><span class="p">[</span><span class="n">control</span><span class="p">]</span> <span class="o">=</span> <span class="n">statements</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> controls </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_goal_name_id</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get goal_name_id from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;goal_name_id&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_id</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_parameter_name_and_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">t_name</span><span class="p">,</span> <span class="n">t_description</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter_name and description from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;ParameterName&#39;</span><span class="p">)</span>
+        <span class="n">combined_values</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">combined_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">combined_values</span><span class="p">:</span>
+                <span class="n">parameter_parts</span> <span class="o">=</span> <span class="n">combined_values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39; &#39;</span> <span class="ow">in</span> <span class="n">combined_values</span><span class="p">:</span>
+                <span class="n">parameter_parts</span> <span class="o">=</span> <span class="n">combined_values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parameter_parts</span> <span class="o">=</span> <span class="n">combined_values</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameter_parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> col </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1"> unable to parse&#39;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">parameter_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">parameter_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_parameter_value_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_parameter_value</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter_value_default from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;ParameterValues&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_parameter_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_parameter_values</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter_values from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;ParameterValues&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> col </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1"> missing value&#39;</span><span class="p">)</span>
+        <span class="c1"># massage into comma separated list of values</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,[]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_guidelines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">t_values</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_guidelines</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get guidelines based on values.&quot;&quot;&quot;</span>
+        <span class="n">type_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;The first listed value option is set by default in the system &#39;</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="s1">&#39;unless set-parameter is used to satisfy a control requirements. &#39;</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;Type </span><span class="si">{</span><span class="n">type_</span><span class="si">}</span><span class="s1">.&#39;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">t_values</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_type</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get type based on values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_int</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;Integer&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_float</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;Float&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_is_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">t_values</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine if string represents list of int.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">retval</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">retval</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">def</span> <span class="nf">_is_float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">t_values</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine if string represents list of float.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">retval</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">retval</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">def</span> <span class="nf">_get_parameter_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_parameter_usage</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter_usage from work_sheet.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_remarks</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_goal_text_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_tokens</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get goal_text tokens from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">goal_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_text</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">goal_text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">tokens</span>
+
+    <span class="k">def</span> <span class="nf">_get_goal_remarks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_goal_remarks</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get goal_remarks from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_text_tokens</span><span class="p">(</span><span class="n">work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="c1"># replace &quot;Check whether&quot; with &quot;Ensure&quot;, if present</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Check&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;whether&#39;</span><span class="p">:</span>
+                        <span class="n">tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ensure&#39;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_get_component_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_sheet</span><span class="p">:</span> <span class="n">t_work_sheet</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">t_row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t_component_name</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get component_name from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="s1">&#39;ResourceTitle&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;row </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> col </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1"> missing component name&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4501,10 +5264,10 @@ XlsxToOscalComponentDefinition            (<a title="trestle.tasks.base_task.Tas
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

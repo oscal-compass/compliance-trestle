@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/task.cis-to-component-definition/transformation/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2669,27 +2669,28 @@ Make these changes:
 trestle.core.commands.task:99 WARNING: Config file was not configured with the appropriate section <span class="k">for</span> the task: <span class="s2">&quot;[task.cis-to-component-definition]&quot;</span>
 Help information <span class="k">for</span> cis-to-component-definition task.
 
-Purpose: Create component definition from from standard <span class="o">(</span>e.g. CIS benchmark<span class="o">)</span>.
+Purpose: Create component definition from standard <span class="o">(</span>e.g. CIS benchmark<span class="o">)</span>.
 
 Configuration flags sit under <span class="o">[</span>task.cis-to-component-definition<span class="o">]</span>:
   component-name         <span class="o">=</span> component name, e.g. OSCO.
   org-name               <span class="o">=</span> organization name, e.g. International Business Machines.
   org-remarks            <span class="o">=</span> organization remarks, e.g. IBM.
+  folder-cac             <span class="o">=</span> folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.
   output-dir             <span class="o">=</span> location to write the generated component-definition.json file.
   profile-name           <span class="o">=</span> profile name, e.g. OCP4 CIS-benchmark v4.
   profile-mnemonic       <span class="o">=</span> profile mnemonic, e.g. ocp4-cis-node.
-  profile-ns             <span class="o">=</span> profile ns, e.g. https://github.com/ComplianceAsCode/content/tree/master/ocp4.
+  profile-ns             <span class="o">=</span> profile ns, e.g. http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud.
   profile-version        <span class="o">=</span> profile version, e.g. <span class="m">1</span>.1.
   profile-check-version  <span class="o">=</span> profile check version, e.g. <span class="m">0</span>.1.58.
   profile-type           <span class="o">=</span> profile type, e.g. OCP4.
   profile-list           <span class="o">=</span> profile list is blank separated list of <span class="s2">&quot;&lt;suffix&gt;&quot;</span> <span class="k">for</span> config entries: 
                            profile-file.&lt;suffix&gt;, profile-title.&lt;suffix&gt;, profile-url.&lt;suffix&gt;, e.g. cis cis-node.
-  profile-file.&lt;suffix&gt;  <span class="o">=</span> path of the profile file to ingest, e.g. /home/degenaro/git/compliance-as-code.content/products/ocp4/profiles/cis-node.profile.
+  profile-file.&lt;suffix&gt;  <span class="o">=</span> path of the profile file to ingest, e.g. <span class="si">${</span><span class="nv">folder</span><span class="p">-cac</span><span class="si">}</span>/products/ocp4/profiles/cis-node.profile.
   profile-title.&lt;suffix&gt; <span class="o">=</span> title of the profile, e.g. CIS Red Hat OpenShift Container Platform <span class="m">4</span> Benchmark.
   profile-url.&lt;suffix&gt;   <span class="o">=</span> URL of the profile, e.g. https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile.
-  rule-to-parameters-map <span class="o">=</span> map file <span class="k">for</span> set-parameters, e.g. /home/degenaro/git/shared-trestle-workspace.oscal-for-osco/component-definitions/osco/rule2var.json.
-  selected-rules         <span class="o">=</span> file with list of selected rules, e.g. /home/degenaro/git/shared-trestle-workspace.oscal-for-osco/component-definitions/osco/selected_rules.json.
-  enabled-rules          <span class="o">=</span> file with list of enabled rules, e.g. /home/degenaro/git/shared-trestle-workspace.oscal-for-osco/component-definitions/osco/enabled_rules.json.
+  rule-to-parameters-map <span class="o">=</span> map file <span class="k">for</span> set-parameters, e.g. adjunct-data/task-files/rule2var.json.
+  selected-rules         <span class="o">=</span> file with list of selected rules, e.g. adjunct-data/task-files/selected_rules.json.
+  enabled-rules          <span class="o">=</span> file with list of enabled rules, e.g. adjunct-data/task-files/enabled_rules.json.
 
 Notes:
 <span class="m">1</span>. If a control has selected rules but no enabled rules, <span class="k">then</span> all those selected are included.
@@ -2700,47 +2701,51 @@ Notes:
 <li>Create data folders.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/cis-benchmarks
-<span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/trestle-configs
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/config-files
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/task-files
 </code></pre></div>
 <ul>
-<li>Fetch ComplianceAsCode profile data.</li>
+<li>Fetch ComplianceAsCode data.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile&#39;</span> &gt; adjunct-data/cis-benchmarks/cis-node.profile
-<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile&#39;</span> &gt; adjunct-data/cis-benchmarks/cis.profile
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> adjunct-data/cis-benchmarks/
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ git clone https://github.com/ComplianceAsCode/content.git
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> -
 </code></pre></div>
 <ul>
-<li>Fetch trestle task files.</li>
+<li>Fetch trestle config and task files.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/demo-cis-to-component-definition.config&#39;</span> &gt; adjunct-data/task-files/demo-cis-to-component-definition.config
-<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/selected_rules.json&#39;</span> &gt; adjunct-data/task-files/selected_rules.json
-<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/enabled_rules.json&#39;</span> &gt; adjunct-data/task-files/enabled_rules.json
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/demo-cis-to-component-definition.config&#39;</span> &gt; adjunct-data/config-files/demo-cis-to-component-definition.config
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.cis-to-component-definition/selected_rules.json&#39;</span> &gt; adjunct-data/task-files/selected_rules.json
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.cis-to-component-definition/enabled_rules.json&#39;</span> &gt; adjunct-data/task-files/enabled_rules.json
 </code></pre></div>
 <details>
 <summary>demo-cis-to-component-definition.config</summary>
 
 <div class="highlight"><pre><span></span><code><span class="o">[</span>task.cis-to-component-definition<span class="o">]</span>
 
-output-dir <span class="o">=</span> component-definitions/cis
+component-name <span class="o">=</span> OSCO
+
+folder-cac <span class="o">=</span> adjunct-data/cis-benchmarks/content
 
 org-name <span class="o">=</span> International Business Machines
 org-remarks <span class="o">=</span> IBM
 
-component-name <span class="o">=</span> OSCO
+output-dir <span class="o">=</span> component-definitions/cis
 
 profile-name <span class="o">=</span> OCP4 CIS-benchmark v4
 profile-mnemonic <span class="o">=</span> ocp4-cis-node
-profile-ns <span class="o">=</span> https://github.com/ComplianceAsCode/content/tree/master/ocp4
+profile-ns <span class="o">=</span> http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud
 profile-version <span class="o">=</span> <span class="m">1</span>.1
 profile-check-version <span class="o">=</span> <span class="m">0</span>.1.58
 
 profile-type <span class="o">=</span> OCP4
 profile-list <span class="o">=</span> cis-node cis
 
-profile-file.cis-node <span class="o">=</span> adjunct-data/cis-benchmarks/cis-node.profile
+profile-file.cis-node <span class="o">=</span> <span class="si">${</span><span class="nv">folder</span><span class="p">-cac</span><span class="si">}</span>/products/ocp4/profiles/cis-node.profile
 profile-url.cis-node <span class="o">=</span> https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile
 profile-title.cis-node <span class="o">=</span> CIS Red Hat OpenShift Container Platform <span class="m">4</span> Benchmark
 
-profile-file.cis <span class="o">=</span> adjunct-data/cis-benchmarks/cis.profile
+profile-file.cis <span class="o">=</span> <span class="si">${</span><span class="nv">folder</span><span class="p">-cac</span><span class="si">}</span>/products/ocp4/profiles/cis.profile
 profile-url.cis <span class="o">=</span> https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile
 profile-title.cis <span class="o">=</span> CIS Red Hat OpenShift Container Platform <span class="m">4</span> Benchmark
 
@@ -2753,20 +2758,11 @@ enabled-rules  <span class="o">=</span> adjunct-data/task-files/enabled_rules.js
 <details>
 <summary>selected_rules.json</summary>
 
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-  <span class="nt">&quot;selected&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;file_permissions_kube_apiserver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_owner_kube_apiserver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_groupowner_kube_apiserver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_permissions_kube_controller_manager&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_owner_kube_controller_manager&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_groupowner_kube_controller_manager&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_permissions_scheduler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_owner_kube_scheduler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_groupowner_kube_scheduler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_permissions_etcd_member&quot;</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_kube_apiserver&quot;</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 </details>
@@ -2774,20 +2770,38 @@ enabled-rules  <span class="o">=</span> adjunct-data/task-files/enabled_rules.js
 <details>
 <summary>enabled_rules.json</summary>
 
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-  <span class="nt">&quot;enabled&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;file_permissions_kube_apiserver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_owner_kube_apiserver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_groupowner_kube_apiserver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_permissions_kube_controller_manager&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_owner_kube_controller_manager&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_groupowner_kube_controller_manager&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_permissions_scheduler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_owner_kube_scheduler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_groupowner_kube_scheduler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;file_permissions_etcd_member&quot;</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_cni_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_multus_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_cni_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_cni_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_multus_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_multus_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_memory_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_nodefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_nodefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_imagefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_imagefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_memory_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_nodefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_nodefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_imagefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_imagefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;etcd_unique_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_kubelet_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_kubelet_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_kubelet_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_worker_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_worker_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_worker_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_anonymous_auth&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_configure_client_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_enable_streaming_connections&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_enable_iptables_util_chains&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_disable_hostname_override&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_configure_event_creation&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_configure_tls_cipher_suites&quot;</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 </details>
@@ -2795,7 +2809,7 @@ enabled-rules  <span class="o">=</span> adjunct-data/task-files/enabled_rules.js
 <ul>
 <li>Perform and validate the transform.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle task cis-to-component-definition -c adjunct-data/task-files/demo-cis-to-component-definition.config
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle task cis-to-component-definition -c adjunct-data/config-files/demo-cis-to-component-definition.config
 output: component-definitions/cis/component-definition.json
 Task: cis-to-component-definition executed successfully.
 
@@ -2810,844 +2824,218 @@ VALID: Model /home/&lt;user&gt;/trestle.workspace/component-definitions/cis/comp
 <details>
 <summary>component-definition.json</summary>
 
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-  <span class="nt">&quot;component-definition&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;c08f1c4d-fc9e-4fa9-a6bd-8b4e20422ae0&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Component definition for OCP4 profiles&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;last-modified&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-11-17T14:27:27+00:00&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.28.1&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;oscal-version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Indicates the organization that created this content.&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Indicates the organization for which this content was created..&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Indicates the organization responsible for all content represented in the &#39;document&#39;.&quot;</span>
-        <span class="p">}</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;parties&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;organization&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;International Business Machines&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;IBM&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;organization&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Customer&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;organization to be customized at account creation only for their Component Definition&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;organization&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ISV&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;organization to be customized at ISV subscription only for their Component Definition&quot;</span>
-        <span class="p">}</span>
-      <span class="p">],</span>
-      <span class="nt">&quot;responsible-parties&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-          <span class="p">]</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-          <span class="p">]</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-          <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-          <span class="p">]</span>
-        <span class="p">}</span>
-      <span class="p">]</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;components&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span>
-        <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;944e20f9-6a7d-4af0-9066-911cfbeb3d9a&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Service&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;OSCO&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;OSCO&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;control-implementations&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="p">{</span>
-            <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;51ce9ce9-c455-4124-a189-22f84301723d&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_name&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;OCP4 CIS-benchmark v4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_profile_name&quot;</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_mnemonic&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;ocp4-cis-node&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_profile_mnemonic&quot;</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_version&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.1&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_profile_version&quot;</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_check_version&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1.58&quot;</span>
-              <span class="p">}</span>
-            <span class="p">],</span>
-            <span class="nt">&quot;implemented-requirements&quot;</span><span class="p">:</span> <span class="p">[</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;fd024a93-cbc2-40da-b43b-8d972a089dfc&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.1&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;b64e6a80-2d6e-4c38-9c03-f479b782d406&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;966d4e45-f3bc-4abd-84a9-48a7351c3a15&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;82b8964f-b878-4e80-ae18-d0eb423dfdcf&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.3&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;9690ee49-11a9-4e31-93a0-f46a5f69c5dd&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;6f3b4689-0166-4d31-83ae-4d82ac6697eb&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;9d4f32ed-8305-4dbf-8ba1-7a82b7b5156f&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.5&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_scheduler&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;84210a78-491c-4c85-8587-df51ed67ca28&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.6&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;85bcd145-2d04-49bc-bc53-0aa7dc39c34b&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.6&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;6cf649b3-2fec-42a1-ada8-fb971648cfb6&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.7&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the etcd pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_etcd_member&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the etcd pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">}</span>
-            <span class="p">]</span>
-          <span class="p">},</span>
-          <span class="p">{</span>
-            <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;02798083-2376-4ab6-a1d7-846a82ed4ecb&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_name&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;OCP4 CIS-benchmark v4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_profile_name&quot;</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_mnemonic&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;ocp4-cis-node&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_profile_mnemonic&quot;</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_version&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.1&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_profile_version&quot;</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;profile_check_version&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1.58&quot;</span>
-              <span class="p">}</span>
-            <span class="p">],</span>
-            <span class="nt">&quot;implemented-requirements&quot;</span><span class="p">:</span> <span class="p">[</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;202478c7-e5a2-4aaf-a218-4485c4117e9c&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.1&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;287593de-8c05-4d50-9d30-1b078563a071&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;3e5dbc64-b426-4134-b9a1-33eba02633bb&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;aeb6f0a4-6ce8-4e13-a0d8-189309db535c&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.3&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;b736f9d5-69fe-4b73-9f27-bd3af16e375e&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;7442edce-c31a-42e6-a69c-9064f61954a9&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.4&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the controller manager pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;ed20fe11-158c-441f-aef8-5cb936f3e92a&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.5&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_scheduler&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;849a350c-020a-43ac-9204-46f28fe4b08c&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.6&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;1a4ff758-fe3f-4ebd-a7af-755e5ce35050&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.6&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the scheduler pod specification file ownership is set to root:root&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">},</span>
-              <span class="p">{</span>
-                <span class="nt">&quot;uuid&quot;</span><span class="p">:</span> <span class="s2">&quot;574a6c2c-6dc3-4251-9ed2-484784c827ec&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;control-id&quot;</span><span class="p">:</span> <span class="s2">&quot;CIS-1.1.7&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the etcd pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span>
-                <span class="nt">&quot;props&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/ComplianceAsCode/content/tree/master/ocp4&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_etcd_member&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;remarks&quot;</span><span class="p">:</span> <span class="s2">&quot;Ensure that the etcd pod specification file permissions are set to 644 or more restrictive&quot;</span>
-                  <span class="p">}</span>
-                <span class="p">],</span>
-                <span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span> <span class="p">[</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;8572bffc-8cd0-46f8-84aa-f4e9ff952a7f&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;813451c9-5265-447d-b39e-4fbcac440888&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">},</span>
-                  <span class="p">{</span>
-                    <span class="nt">&quot;role-id&quot;</span><span class="p">:</span> <span class="s2">&quot;content-approver&quot;</span><span class="p">,</span>
-                    <span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span> <span class="p">[</span>
-                      <span class="s2">&quot;741d5f7e-2296-4224-ad75-5a60bb30a826&quot;</span>
-                    <span class="p">]</span>
-                  <span class="p">}</span>
-                <span class="p">]</span>
-              <span class="p">}</span>
-            <span class="p">]</span>
-          <span class="p">}</span>
-        <span class="p">]</span>
-      <span class="p">}</span>
-    <span class="p">]</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;component-definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d1b961ee-188b-42b9-943d-e11dc260f9dc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Component definition for OCP4 profiles&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;last-modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2022-01-06T22:43:59+00:00&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.33.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;oscal-version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Indicates the organization that created this content.&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Indicates the organization for which this content was created..&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Indicates the organization responsible for all content represented in the \&quot;document\&quot;.&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;parties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;International Business Machines&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IBM&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Customer&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization to be customized at account creation only for their Component Definition&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ISV&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization to be customized at ISV subscription only for their Component Definition&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;responsible-parties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;components&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;e2ee2b93-6103-42de-b615-65b0b3ff2dc4&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Service&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OSCO&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OSCO&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;control-implementations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">          </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;f9c2699a-2d2c-4ee2-87f3-042d1a9b3a79&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OCP4 CIS-benchmark v4&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_profile_name&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_mnemonic&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ocp4-cis-node&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_profile_mnemonic&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_version&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_profile_version&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_check_version&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.58&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">],</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;implemented-requirements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;97142b13-bc30-4e72-be7f-36de9149a679&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CIS-1.1.1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify Permissions on the Kubernetes API Server Pod Specification File&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">],</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0690e2a7-b228-4954-93fe-c1d55936cfa8&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify User Who Owns The Kubernetes API Server Pod Specification File&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">],</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;18c61fb2-8603-440d-9d9a-8d6d1e232cd3&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify Group Who Owns The Kubernetes API Server Pod Specification File&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">],</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">              </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">]</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">]</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 </details>
@@ -3724,10 +3112,10 @@ Congratulations! You have completed this tutorial.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.catalog/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2881,6 +2881,65 @@ CatalogAssemble            (<a title="trestle.core.commands.author.common.Author
 
       <p>Assemble markdown files of controls into a Catalog json file.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/catalog.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CatalogAssemble</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Assemble markdown files of controls into a Catalog json file.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;catalog-assemble&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">file_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the input markdown file directory&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--markdown&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">file_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">output_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the output generated json Catalog&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">output_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CatalogAssemble</span><span class="o">.</span><span class="n">assemble_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">markdown</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">assemble_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">md_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">catalog_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assemble the markdown directory into a json catalog model file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trestle_root: The trestle root directory</span>
+<span class="sd">            md_name: The name of the directory containing the markdown control files for the ssp</span>
+<span class="sd">            catalog_name: The output name of the catalog json file to be created from the assembly</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            0 on success, 1 otherwise</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">md_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">md_name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">md_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Markdown directory </span><span class="si">{</span><span class="n">md_name</span><span class="si">}</span><span class="s1"> does not exist.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">catalog</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">read_catalog_from_markdown</span><span class="p">(</span><span class="n">md_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error reading catalog from markdown </span><span class="si">{</span><span class="n">md_dir</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_count_of_controls_in_catalog</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No controls were loaded from markdown </span><span class="si">{</span><span class="n">md_dir</span><span class="si">}</span><span class="s1">.  No catalog.json created.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">new_cat_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;catalogs/</span><span class="si">{</span><span class="n">catalog_name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">new_cat_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating catalog from markdown and destination catalog directory exists, so updating.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">new_cat_dir</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OSError deleting existing catalog directory with rmtree </span><span class="si">{</span><span class="n">new_cat_dir</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_cat_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+            <span class="n">catalog</span><span class="o">.</span><span class="n">oscal_write</span><span class="p">(</span><span class="n">new_cat_dir</span> <span class="o">/</span> <span class="s1">&#39;catalog.json&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OSError writing catalog from markdown to </span><span class="si">{</span><span class="n">new_cat_dir</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3051,6 +3110,81 @@ CatalogGenerate            (<a title="trestle.core.commands.author.common.Author
 
       <p>Generate Catalog controls in markdown form from a catalog in the trestle workspace.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/catalog.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CatalogGenerate</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate Catalog controls in markdown form from a catalog in the trestle workspace.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;catalog-generate&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the catalog model in the trestle workspace&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">name_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_MARKDOWN_NAME</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="s1">&#39;--yaml-header&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_YAML_PATH</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-phv&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--preserve-header-values&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_PRESERVE_HEADER_VALUES</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="o">.</span><span class="n">allowed_task_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s1"> is not an allowed directory name&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s1">&#39;yaml_header&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading yaml header file </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
+                <span class="n">yaml_header</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">YAMLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML error loading yaml header </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="si">}</span><span class="s1"> for ssp generation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">catalog_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;catalogs/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">/catalog.json&#39;</span>
+
+        <span class="n">markdown_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_markdown</span><span class="p">(</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">catalog_path</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">preserve_header_values</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_markdown</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">catalog_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">markdown_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">preserve_header_values</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate markdown for the controls in the catalog.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">catalog</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">catalog_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
+            <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+            <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span>
+                <span class="n">markdown_path</span><span class="p">,</span>
+                <span class="n">yaml_header</span><span class="p">,</span>
+                <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">responses</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">additional_content</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">preserve_header_values</span><span class="o">=</span><span class="n">preserve_header_values</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">TrestleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Catalog </span><span class="si">{</span><span class="n">catalog_path</span><span class="si">}</span><span class="s1"> not found for load </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error generating markdown for controls in </span><span class="si">{</span><span class="n">catalog_path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3115,7 +3249,7 @@ CatalogGenerate            (<a title="trestle.core.commands.author.common.Author
             <span class="n">yaml_header</span><span class="p">,</span>
             <span class="n">sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">responses</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">additional_content</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">additional_content</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">preserve_header_values</span><span class="o">=</span><span class="n">preserve_header_values</span>
         <span class="p">)</span>
@@ -3219,10 +3353,10 @@ CatalogGenerate            (<a title="trestle.core.commands.author.common.Author
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

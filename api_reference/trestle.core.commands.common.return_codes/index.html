@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.common.return_codes/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2850,6 +2850,34 @@ IO_ERROR - IO related errors, i.e. permission issue, non-existing file, etc
 AUTH_ERROR - Authenication error while accessing/storing cache
 UNKNOWN_ERROR - Unexpected error (unhandled by command)</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/common/return_codes.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CmdReturnCodes</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Trestle CLI return codes.</span>
+
+<span class="sd">    SUCCESS - Operation/validation completed successfully</span>
+<span class="sd">    COMMAND_ERROR - Generic expected error while executing command (handled by command)</span>
+<span class="sd">    INCORRECT_ARGS - Provided arguments were incorrect/incomplete</span>
+<span class="sd">    DOCUMENTS_VALIDATION_ERROR - Validation of the markdown or drawio files failed</span>
+<span class="sd">    MODEL_VALIDATION_ERROR - Validation of OSCAL model failed</span>
+<span class="sd">    TRESTLE_ROOT_ERROR - Trestle project setup has failed, the root is not trestle directory</span>
+<span class="sd">    IO_ERROR - IO related errors, i.e. permission issue, non-existing file, etc</span>
+<span class="sd">    AUTH_ERROR - Authenication error while accessing/storing cache</span>
+<span class="sd">    UNKNOWN_ERROR - Unexpected error (unhandled by command)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">COMMAND_ERROR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">INCORRECT_ARGS</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">DOCUMENTS_VALIDATION_ERROR</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">OSCAL_VALIDATION_ERROR</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">TRESTLE_ROOT_ERROR</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">IO_ERROR</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">AUTH_ERROR</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">UNKNOWN_ERROR</span> <span class="o">=</span> <span class="mi">8</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3111,10 +3139,10 @@ UNKNOWN_ERROR - Unexpected error (unhandled by command)</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

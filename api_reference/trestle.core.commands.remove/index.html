@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.remove/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2799,6 +2799,138 @@ RemoveCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDo
 
       <p>Remove a subcomponent to an existing model.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/remove.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RemoveCmd</span><span class="p">(</span><span class="n">CommandPlusDocs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove a subcomponent to an existing model.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;remove&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;-</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_FILE_SHORT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;--</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_FILE</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_DESC_FILE</span> <span class="o">+</span> <span class="s1">&#39; to remove component/subcomponent to.&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;-</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_ELEMENT_SHORT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;--</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_ELEMENT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_DESC_ELEMENT</span> <span class="o">+</span> <span class="s1">&#39; to remove.&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Remove an OSCAL component/subcomponent to the specified component.</span>
+
+<span class="sd">        This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.</span>
+<span class="sd">        The method first finds the parent model from the file and loads the file into the model.</span>
+<span class="sd">        Then the method executes &#39;remove&#39; for each of the element paths specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">args_dict</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="vm">__dict__</span>
+
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_FILE</span><span class="p">])</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">relative_path</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">)</span>
+            <span class="c1"># Get parent model and then load json into parent model</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1"> is not part of the trestle project </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">parent_model</span><span class="p">,</span> <span class="n">parent_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_relative_model_type</span><span class="p">(</span><span class="n">relative_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Remove failed (fs.get_relative_model_type()): </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">parent_object</span> <span class="o">=</span> <span class="n">parent_model</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Remove failed (parent_model.oscal_read()): </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="n">parent_element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">parent_object</span><span class="p">,</span> <span class="n">parent_alias</span><span class="p">)</span>
+
+            <span class="n">add_plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
+
+            <span class="c1"># Do _remove for each element_path specified in args</span>
+            <span class="n">element_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">args_dict</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_ELEMENT</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">elm_path_str</span> <span class="ow">in</span> <span class="n">element_paths</span><span class="p">:</span>
+                <span class="n">element_path</span> <span class="o">=</span> <span class="n">ElementPath</span><span class="p">(</span><span class="n">elm_path_str</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">remove_action</span><span class="p">,</span> <span class="n">parent_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">element_path</span><span class="p">,</span> <span class="n">parent_element</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;self.remove() failed: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Remove failed (self.remove()): </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">add_plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">remove_action</span><span class="p">)</span>
+
+            <span class="n">create_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">write_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">parent_element</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="p">))</span>
+            <span class="n">add_plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">remove_action</span><span class="p">)</span>
+            <span class="n">add_plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">create_action</span><span class="p">)</span>
+            <span class="n">add_plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">write_action</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">add_plan</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Remove failed at execute(): </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Remove failed (execute()): </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while removing OSCAL component: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error while removing OSCAL component: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">UNKNOWN_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">,</span> <span class="n">parent_element</span><span class="p">:</span> <span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">RemoveAction</span><span class="p">,</span> <span class="n">Element</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;For the element_path, remove a model from the parent_element of a given parent_model.</span>
+
+<span class="sd">        First we check if there is an existing element at that path</span>
+<span class="sd">        If not, we complain.</span>
+<span class="sd">        Then we set up an action plan to update the model (specified by file_path) in memory,</span>
+<span class="sd">        return the action and return the parent_element.</span>
+
+<span class="sd">        LIMITATIONS:</span>
+<span class="sd">        1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed.</span>
+<span class="sd">        2. This cannot remove arbitrarily named elements that are not specified in the schema.</span>
+<span class="sd">        For example, &quot;responsible-parties&quot; contains named elements, e.g., &quot;organisation&quot;. The tool will not</span>
+<span class="sd">        remove the &quot;organisation&quot; as it is not in the schema, but one can remove its elements, e.g., &quot;party-uuids&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">element_path_list</span> <span class="o">=</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_full_path_parts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;*&#39;</span> <span class="ow">in</span> <span class="n">element_path_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;trestle remove does not support Wildcard element path.&#39;</span><span class="p">)</span>
+
+        <span class="n">deleting_element</span> <span class="o">=</span> <span class="n">parent_element</span><span class="o">.</span><span class="n">get_at</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">deleting_element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># The element already exists</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">deleting_element</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;Warning: trestle remove does not support removing elements of a list: &#39;</span>
+                    <span class="s1">&#39;this removes the entire list&#39;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">deleting_element</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;Warning: trestle remove does not support removing dict elements: &#39;</span>
+                    <span class="s1">&#39;this removes the entire dict element&#39;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bad element path: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">remove_action</span> <span class="o">=</span> <span class="n">RemoveAction</span><span class="p">(</span><span class="n">parent_element</span><span class="p">,</span> <span class="n">element_path</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">remove_action</span><span class="p">,</span> <span class="n">parent_element</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2991,10 +3123,10 @@ remove the "organisation" as it is not in the schema, but one can remove its ele
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

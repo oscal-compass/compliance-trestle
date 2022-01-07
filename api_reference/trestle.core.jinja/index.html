@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.jinja/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -1623,6 +1623,60 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp" class="md-nav__link">
+    MDDatestamp
+  </a>
+  
+    <nav class="md-nav" aria-label="MDDatestamp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.identifier" class="md-nav__link">
+    identifier
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.tags" class="md-nav__link">
+    tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.parse" class="md-nav__link">
+    parse()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.jinja.MDSectionInclude" class="md-nav__link">
     MDSectionInclude
   </a>
@@ -2869,6 +2923,60 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp" class="md-nav__link">
+    MDDatestamp
+  </a>
+  
+    <nav class="md-nav" aria-label="MDDatestamp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.identifier" class="md-nav__link">
+    identifier
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.tags" class="md-nav__link">
+    tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.jinja.MDDatestamp.parse" class="md-nav__link">
+    parse()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.jinja.MDSectionInclude" class="md-nav__link">
     MDSectionInclude
   </a>
@@ -3081,6 +3189,56 @@ MDCleanInclude            (<a title="trestle.core.jinja.TrestleJinjaExtension" h
 
       <p>Inject the parameter of the tag as the resulting content.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MDCleanInclude</span><span class="p">(</span><span class="n">TrestleJinjaExtension</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inject the parameter of the tag as the resulting content.&quot;&quot;&quot;</span>
+
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;md_clean_include&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute parsing of md token and return nodes.&quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">expected_heading_level</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_BLOCK_END</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tag_parse</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unexpected Jinja tag structure provided, please review docs.&#39;</span><span class="p">)</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;name:md_clean_include&#39;</span><span class="p">):</span>
+                <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_NAME</span><span class="p">)</span>
+                <span class="n">markdown_source</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_STRING</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">value</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+                <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span><span class="p">)</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+                <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">look</span><span class="p">()</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span><span class="p">:</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">continue</span>
+        <span class="n">md_content</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">get_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">markdown_source</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">fm</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">md_content</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">content</span>
+        <span class="n">content</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">expected_heading_level</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;heading_level&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">expected_heading_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">adjust_heading_level</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">expected_heading_level</span><span class="p">)</span>
+
+        <span class="n">local_parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+        <span class="n">top_level_output</span> <span class="o">=</span> <span class="n">local_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">top_level_output</span><span class="o">.</span><span class="n">body</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3234,6 +3392,226 @@ MDCleanInclude            (<a title="trestle.core.jinja.TrestleJinjaExtension" h
 
 
 
+<h4 class="doc doc-heading" id="trestle.core.jinja.MDDatestamp">
+        <code>
+MDDatestamp            (<a title="trestle.core.jinja.TrestleJinjaExtension" href="#trestle.core.jinja.TrestleJinjaExtension">TrestleJinjaExtension</a>)
+        </code>
+
+
+
+<a class="headerlink" href="#trestle.core.jinja.MDDatestamp" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Inject the parameter of the tag as the resulting content.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MDDatestamp</span><span class="p">(</span><span class="n">TrestleJinjaExtension</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inject the parameter of the tag as the resulting content.&quot;&quot;&quot;</span>
+
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;md_datestamp&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute parsing of md token and return nodes.&quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_BLOCK_END</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tag_parse</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected Jinja tag structure provided at token </span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;name:md_datestamp&#39;</span><span class="p">):</span>
+                <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_NAME</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">value</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+                <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span><span class="p">)</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+                <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">look</span><span class="p">()</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span> <span class="ow">or</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">look</span><span class="p">()</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_STRING</span><span class="p">:</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;format&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">date_string</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">date_string</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">markdown_const</span><span class="o">.</span><span class="n">JINJA_DATESTAMP_FORMAT</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;newline&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;newline&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">date_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">date_string</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">markdown_const</span><span class="o">.</span><span class="n">JINJA_DATESTAMP_FORMAT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+        <span class="n">local_parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">date_string</span><span class="p">)</span>
+        <span class="n">datestamp_output</span> <span class="o">=</span> <span class="n">local_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">datestamp_output</span><span class="o">.</span><span class="n">body</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.jinja.MDDatestamp.identifier">
+<code class="highlight language-python"><span class="n">identifier</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></code>
+
+
+<a class="headerlink" href="#trestle.core.jinja.MDDatestamp.identifier" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.jinja.MDDatestamp.tags">
+<code class="highlight language-python"><span class="n">tags</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></code>
+
+
+<a class="headerlink" href="#trestle.core.jinja.MDDatestamp.tags" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
+<h5 id="trestle.core.jinja.MDDatestamp-methods">Methods<a class="headerlink" href="#trestle.core.jinja.MDDatestamp-methods" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.jinja.MDDatestamp.__init__">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.jinja.MDDatestamp.__init__" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.jinja.MDDatestamp.parse">
+<code class="highlight language-python"><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.jinja.MDDatestamp.parse" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Execute parsing of md token and return nodes.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Execute parsing of md token and return nodes.&quot;&quot;&quot;</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_BLOCK_END</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tag_parse</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected Jinja tag structure provided at token </span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;name:md_datestamp&#39;</span><span class="p">):</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_NAME</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">value</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+            <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span><span class="p">)</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">look</span><span class="p">()</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span> <span class="ow">or</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">look</span><span class="p">()</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_STRING</span><span class="p">:</span>
+                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">continue</span>
+
+    <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;format&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">date_string</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">date_string</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">markdown_const</span><span class="o">.</span><span class="n">JINJA_DATESTAMP_FORMAT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;newline&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;newline&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">date_string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">date_string</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">markdown_const</span><span class="o">.</span><span class="n">JINJA_DATESTAMP_FORMAT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+    <span class="n">local_parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">date_string</span><span class="p">)</span>
+    <span class="n">datestamp_output</span> <span class="o">=</span> <span class="n">local_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">datestamp_output</span><span class="o">.</span><span class="n">body</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
 <h4 class="doc doc-heading" id="trestle.core.jinja.MDSectionInclude">
         <code>
 MDSectionInclude            (<a title="trestle.core.jinja.TrestleJinjaExtension" href="#trestle.core.jinja.TrestleJinjaExtension">TrestleJinjaExtension</a>)
@@ -3247,6 +3625,67 @@ MDSectionInclude            (<a title="trestle.core.jinja.TrestleJinjaExtension"
 
       <p>Inject the parameter of the tag as the resulting content.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MDSectionInclude</span><span class="p">(</span><span class="n">TrestleJinjaExtension</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inject the parameter of the tag as the resulting content.&quot;&quot;&quot;</span>
+
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mdsection_include&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute parsing of md token and return nodes.&quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">expected_heading_level</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_BLOCK_END</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_tag_parse</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unexpected Jinja tag structure provided, please review docs.&#39;</span><span class="p">)</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;name:mdsection_include&#39;</span><span class="p">):</span>
+                <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_NAME</span><span class="p">)</span>
+                <span class="n">markdown_source</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_STRING</span><span class="p">)</span>
+                <span class="n">section_title</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_STRING</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">value</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+                <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span><span class="p">)</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+                <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">look</span><span class="p">()</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_ASSIGN</span><span class="p">:</span>
+                    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">continue</span>
+        <span class="c1"># Use the established environment to source the file</span>
+        <span class="n">md_content</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">get_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">markdown_source</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">fm</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">md_content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span> <span class="o">==</span> <span class="p">{}:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Non zero metadata on MD section include - ignoring&#39;</span><span class="p">)</span>
+        <span class="n">full_md</span> <span class="o">=</span> <span class="n">markdown_node</span><span class="o">.</span><span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+        <span class="n">md_section</span> <span class="o">=</span> <span class="n">full_md</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="n">section_title</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">strict_matching</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># adjust</span>
+        <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">expected_heading_level</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;heading_level&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">expected_heading_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">md_section</span><span class="o">.</span><span class="n">get_node_header_lvl</span><span class="p">()</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">expected_heading_level</span><span class="p">)</span> <span class="o">-</span> <span class="n">level</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">delta</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">md_section</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">md_section</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Unable to retrieve section &quot;</span><span class="si">{</span><span class="n">section_title</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&quot; from </span><span class="si">{</span><span class="n">markdown_source</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1"> jinja template.&#39;</span>
+            <span class="p">)</span>
+        <span class="n">local_parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="n">md_section</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="p">)</span>
+        <span class="n">top_level_output</span> <span class="o">=</span> <span class="n">local_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">top_level_output</span><span class="o">.</span><span class="n">body</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3424,6 +3863,38 @@ TrestleJinjaExtension            (<span title="jinja2.ext.Extension">Extension</
 
       <p>Class to define common methods to be inherited from for use in trestle.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/jinja.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TrestleJinjaExtension</span><span class="p">(</span><span class="n">Extension</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to define common methods to be inherited from for use in trestle.&quot;&quot;&quot;</span>
+
+    <span class="c1"># This</span>
+    <span class="n">max_tag_parse</span> <span class="o">=</span> <span class="mi">20</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">:</span> <span class="n">Environment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Ensure enviroment is set and carried into class vars.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">environment</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parse_expression</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Safely parse jinja expression.&quot;&quot;&quot;</span>
+        <span class="c1"># Licensed under MIT from:</span>
+        <span class="c1"># https://github.com/MoritzS/jinja2-django-tags/blob/master/jdj_tags/extensions.py#L424</span>
+        <span class="c1"># Due to how the jinja2 parser works, it treats &quot;foo&quot; &quot;bar&quot; as a single</span>
+        <span class="c1"># string literal as it is the case in python.</span>
+        <span class="c1"># But the url tag in django supports multiple string arguments, e.g.</span>
+        <span class="c1"># &quot;{% url &#39;my_view&#39; &#39;arg1&#39; &#39;arg2&#39; %}&quot;.</span>
+        <span class="c1"># That&#39;s why we have to check if it&#39;s a string literal first.</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">current</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">lexer</span><span class="o">.</span><span class="n">TOKEN_STRING</span><span class="p">):</span>
+            <span class="n">expr</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">Const</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">lineno</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">lineno</span><span class="p">)</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">stream</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">expr</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">expr</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3669,10 +4140,10 @@ TrestleJinjaExtension            (<span title="jinja2.ext.Extension">Extension</
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

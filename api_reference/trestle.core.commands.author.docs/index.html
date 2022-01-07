@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.docs/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2857,6 +2857,296 @@ Docs            (<a title="trestle.core.commands.author.common.AuthorCommonComma
 
       <p>Markdown governed documents - enforcing consistent markdown across a set of files.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/docs.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Docs</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Markdown governed documents - enforcing consistent markdown across a set of files.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;docs&#39;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;template.md&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">GH_SHORT</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">GH_LONG</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">GH_HELP</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">SHORT_HEADER_VALIDATE</span><span class="p">,</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">LONG_HEADER_VALIDATE</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">HEADER_VALIDATE_HELP</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">SHORT_TEMPLATE_VERSION</span><span class="p">,</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">LONG_TEMPLATE_VERSION</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_VERSION_HELP</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">HOV_SHORT</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">HOV_LONG</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">HOV_HELP</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">SHORT_IGNORE</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">LONG_IGNORE</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">IGNORE_HELP</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">RECURSE_SHORT</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">RECURSE_LONG</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">RECURSE_HELP</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">author_const</span><span class="o">.</span><span class="n">MODE_ARG_NAME</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">MODE_CHOICES</span><span class="p">)</span>
+        <span class="n">tn_help_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s1">&#39;The name of the the task to be governed.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;&#39;</span>
+                <span class="s1">&#39;The template file is at .trestle/author/[task-name]/template.md&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Note that by default this will automatically enforce the task.&#39;</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">TASK_NAME_SHORT</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">TASK_NAME_LONG</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">tn_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">SHORT_README_VALIDATE</span><span class="p">,</span>
+            <span class="n">author_const</span><span class="o">.</span><span class="n">LONG_README_VALIDATE</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">author_const</span><span class="o">.</span><span class="n">README_VALIDATE_HELP</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">status</span>
+
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;create-sample&#39;</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_sample</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;template-validate&#39;</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_validate</span><span class="p">(</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">governed_heading</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">header_validate</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">header_only_validate</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;setup&#39;</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_template_governed_docs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">template_version</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;validate&#39;</span><span class="p">:</span>
+                <span class="c1"># mode is validate</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">governed_heading</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">header_validate</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">header_only_validate</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">recurse</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">readme_validate</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">template_version</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">ignore</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">status</span>
+        <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error occurred when running trestle author docs: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exiting&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error occurred when running trestle author docs: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Exiting&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">UNKNOWN_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">setup_template_governed_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create structure to allow markdown template enforcement.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Unix return code.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Task path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="p">)</span><span class="si">}</span><span class="s1"> is a file not a directory.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Template path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">)</span><span class="si">}</span><span class="s1"> is a file not a directory.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_template_dir</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Aborting setup&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+        <span class="k">if</span> <span class="n">template_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">write_versioned_template</span><span class="p">(</span><span class="s1">&#39;template.md&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">,</span> <span class="n">template_file</span><span class="p">,</span> <span class="n">template_version</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Template file setup for task </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Task directory is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">create_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Presuming the template exists, copy into a sample markdown file with an index.&quot;&quot;&quot;</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_template_dir</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Aborting setup&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No template file ... exiting.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">candidate_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s1">03d</span><span class="si">}</span><span class="s1">.md&#39;</span>
+            <span class="k">if</span> <span class="n">candidate_task</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">template_file</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">candidate_task</span><span class="p">))</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">template_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Validate that the template is acceptable markdown.&quot;&quot;&quot;</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_template_dir</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Aborting setup&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Required template file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist. Exiting.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
+            <span class="n">md_api</span><span class="o">.</span><span class="n">load_validator_with_template</span><span class="p">(</span><span class="n">template_file</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">,</span> <span class="n">heading</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Template for task </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> failed to validate due to </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TEMPLATES VALID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_validate_template_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Template directory should only have template file.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">fs</span><span class="o">.</span><span class="n">iterdir_without_hidden_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">):</span>
+            <span class="c1"># Only allowable template file in the directory is the template directory.</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;readme.md&#39;</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown file: </span><span class="si">{</span><span class="n">child</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> in template directory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_validate_dir</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">governed_heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">md_dir</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">validate_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">validate_only_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">readme_validate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">template_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate md files in a directory with option to recurse.</span>
+
+<span class="sd">        Template version will be fetched from the instance header.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># status is a linux returncode</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">item_path</span> <span class="ow">in</span> <span class="n">md_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">fs</span><span class="o">.</span><span class="n">local_and_visible</span><span class="p">(</span><span class="n">item_path</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">item_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">item_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.md&#39;</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Unexpected file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">item_path</span><span class="p">)</span><span class="si">}</span><span class="s1"> in folder </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">md_dir</span><span class="p">)</span><span class="si">}</span><span class="s1">, skipping.&#39;</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">readme_validate</span> <span class="ow">and</span> <span class="n">item_path</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;readme.md&#39;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">ignore</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">ignore</span><span class="p">)</span>
+                        <span class="n">matched</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">item_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">matched</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ignoring file </span><span class="si">{</span><span class="n">item_path</span><span class="si">}</span><span class="s1"> from validation.&#39;</span><span class="p">)</span>
+                            <span class="k">continue</span>
+
+                    <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">template_version</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">template_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">instance_version</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">fetch_value_from_header</span><span class="p">(</span>
+                            <span class="n">item_path</span><span class="p">,</span> <span class="n">author_const</span><span class="o">.</span><span class="n">TEMPLATE_VERSION_HEADER</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">instance_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">instance_version</span> <span class="o">=</span> <span class="s1">&#39;0.0.1&#39;</span>
+                        <span class="n">versione_template_dir</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_versioned_template_dir</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">template_dir</span><span class="p">,</span> <span class="n">instance_version</span>
+                        <span class="p">)</span>
+                        <span class="n">template_file</span> <span class="o">=</span> <span class="n">versione_template_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">template_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Required template file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist. Exiting.&#39;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+                    <span class="n">md_api</span><span class="o">.</span><span class="n">load_validator_with_template</span><span class="p">(</span>
+                        <span class="n">template_file</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="ow">not</span> <span class="n">validate_only_header</span><span class="p">,</span> <span class="n">governed_heading</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">md_api</span><span class="o">.</span><span class="n">validate_instance</span><span class="p">(</span><span class="n">item_path</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;INVALID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">item_path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;VALID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="n">item_path</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">recurse</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ignore</span><span class="p">:</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">ignore</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">match</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">item_path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">md_dir</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Ignoring directory </span><span class="si">{</span><span class="n">item_path</span><span class="si">}</span><span class="s1"> from validation.&#39;</span><span class="p">)</span>
+                            <span class="k">continue</span>
+                    <span class="n">rc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_dir</span><span class="p">(</span>
+                        <span class="n">governed_heading</span><span class="p">,</span>
+                        <span class="n">item_path</span><span class="p">,</span>
+                        <span class="n">validate_header</span><span class="p">,</span>
+                        <span class="n">validate_only_header</span><span class="p">,</span>
+                        <span class="n">recurse</span><span class="p">,</span>
+                        <span class="n">readme_validate</span><span class="p">,</span>
+                        <span class="n">template_version</span><span class="p">,</span>
+                        <span class="n">ignore</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="n">rc</span>
+
+        <span class="k">return</span> <span class="n">status</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">governed_heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">validate_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">validate_only_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">readme_validate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">template_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ignore</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            governed_heading: A heading for which structural enforcement (see online docs).</span>
+<span class="sd">            validate_header: Whether or not to validate the key structure of the yaml header to the markdown document.</span>
+<span class="sd">            validate_only_header: Whether to validate just the yaml header.</span>
+<span class="sd">            recurse: Whether to allow validated files to be in a directory tree.</span>
+<span class="sd">            readme_validate: Whether to validate readme files, otherwise they will be ignored.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Return code to be used for the command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Task directory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist. Exiting validate.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_dir</span><span class="p">(</span>
+            <span class="n">governed_heading</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_path</span><span class="p">,</span>
+            <span class="n">validate_header</span><span class="p">,</span>
+            <span class="n">validate_only_header</span><span class="p">,</span>
+            <span class="n">recurse</span><span class="p">,</span>
+            <span class="n">readme_validate</span><span class="p">,</span>
+            <span class="n">template_version</span><span class="p">,</span>
+            <span class="n">ignore</span>
+        <span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3261,10 +3551,10 @@ Docs            (<a title="trestle.core.commands.author.common.AuthorCommonComma
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

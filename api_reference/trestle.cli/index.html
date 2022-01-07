@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.cli/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2809,6 +2809,61 @@ Trestle            (<a title="trestle.core.commands.command_docs.CommandBase" hr
 
       <p>Manage OSCAL files in a human friendly manner.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/cli.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Trestle</span><span class="p">(</span><span class="n">CommandBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Manage OSCAL files in a human friendly manner.&quot;&quot;&quot;</span>
+
+    <span class="n">subcommands</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">AddCmd</span><span class="p">,</span>
+        <span class="n">AssembleCmd</span><span class="p">,</span>
+        <span class="n">AuthorCmd</span><span class="p">,</span>
+        <span class="n">CreateCmd</span><span class="p">,</span>
+        <span class="n">DescribeCmd</span><span class="p">,</span>
+        <span class="n">HrefCmd</span><span class="p">,</span>
+        <span class="n">ImportCmd</span><span class="p">,</span>
+        <span class="n">InitCmd</span><span class="p">,</span>
+        <span class="n">MergeCmd</span><span class="p">,</span>
+        <span class="n">PartialObjectValidate</span><span class="p">,</span>
+        <span class="n">RemoveCmd</span><span class="p">,</span>
+        <span class="n">ReplicateCmd</span><span class="p">,</span>
+        <span class="n">SplitCmd</span><span class="p">,</span>
+        <span class="n">TaskCmd</span><span class="p">,</span>
+        <span class="n">ValidateCmd</span><span class="p">,</span>
+        <span class="n">VersionCmd</span>
+    <span class="p">]</span>
+
+    <span class="n">discovered_plugins</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">finder</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;trestle_&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">discovered_plugins</span><span class="p">)</span>
+    <span class="c1"># This block is uncovered as trestle cannot find plugins in it&#39;s unit tests - it is the base module.</span>
+    <span class="k">for</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">discovered_plugins</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">([</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;commands&#39;</span><span class="p">)]):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+            <span class="n">command_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">plugin</span><span class="si">}</span><span class="s1">.commands.</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">clsmembers</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">command_module</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">clsmembers</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">cmd_cls</span> <span class="ow">in</span> <span class="n">clsmembers</span><span class="p">:</span>
+                <span class="c1"># add commands (derived from CommandPlusDocs or CommandBase) to subcommands list</span>
+                <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">cmd_cls</span><span class="p">,</span> <span class="n">CommandBase</span><span class="p">):</span>
+                    <span class="c1"># don&#39;t add CommandPlusDocs or CommandBase</span>
+                    <span class="k">if</span> <span class="n">cmd_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">CommandPlusDocs</span> <span class="ow">and</span> <span class="n">cmd_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">CommandBase</span><span class="p">:</span>
+                        <span class="n">subcommands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cmd_cls</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cmd_cls</span><span class="si">}</span><span class="s1"> added to subcommands from plugin </span><span class="si">{</span><span class="n">plugin</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">DISPLAY_VERBOSE_OUTPUT</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-tr&#39;</span><span class="p">,</span> <span class="s1">&#39;--trestle-root&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path of trestle root dir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+        <span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2974,10 +3029,10 @@ Trestle            (<a title="trestle.core.commands.command_docs.CommandBase" hr
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

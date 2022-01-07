@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.versioning.template_versioning/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2903,6 +2903,218 @@ TemplateVersioning        </code>
 </li>
 </ol>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/versioning/template_versioning.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TemplateVersioning</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Template versioning solution.</span>
+
+<span class="sd">    1. Load template with a specified version.</span>
+<span class="sd">        1. Template version can be specified via -tv flag</span>
+<span class="sd">        2. If no version specified the latest version will be used by default.</span>
+<span class="sd">        3. Otherwise use the templates from the specified version.</span>
+<span class="sd">    2. Backward compatibility.</span>
+<span class="sd">        1. Version 0.0.1 will be reserved for the template versions prior to this change.</span>
+<span class="sd">        2. If the old template path is detected (i.e. without the template version).</span>
+<span class="sd">            then the filesystem will be updated to the new path with the version.</span>
+<span class="sd">        3. Upon first run, old template versions prior to this change will be placed to the folder 0.0.1.</span>
+<span class="sd">        4. If templates have no headers then 0.0.1 version will be used.</span>
+<span class="sd">    3. Versioning organization.</span>
+<span class="sd">        1. Template and instance version is added both: in the file system (via path) and in the headers or metadata.</span>
+<span class="sd">    4. Instance version validation.</span>
+<span class="sd">        1. Markdown:</span>
+<span class="sd">            1. When validating the instance the header will be used to validate the version.</span>
+<span class="sd">        2. Drawio:</span>
+<span class="sd">            1. When validating the instance the metadata will be used to validate the version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">update_template_folder_structure</span><span class="p">(</span><span class="n">task_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Automatically detect whether the path is an old style and update it.</span>
+
+<span class="sd">        An old-style path is a path of the form:</span>
+<span class="sd">         root_folder/.trestle/author/{template_name}/{template_objects}</span>
+<span class="sd">        The new version path is a path of the form:</span>
+<span class="sd">         root_folder/.trestle/author/{template_name}/{version}/{template_objects}</span>
+<span class="sd">        By default all old-style templates will be updated to version 0.0.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">_check_if_exists_and_dir</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">all_files_wo_version</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span> <span class="n">fs</span><span class="o">.</span><span class="n">iterdir_without_hidden_files</span><span class="p">(</span><span class="n">task_path</span><span class="p">)))</span>
+
+            <span class="n">new_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">START_TEMPLATE_VERSION</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">new_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_files_wo_version</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;No templates outside of the version folders.&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_files_wo_version</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">new_dir</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_files_wo_version</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">validate_template_folder</span><span class="p">(</span><span class="n">template_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate template folder confirms to the versioned path style and has no other subdirectories.&quot;&quot;&quot;</span>
+        <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">_check_if_exists_and_dir</span><span class="p">(</span><span class="n">template_dir</span><span class="p">)</span>
+
+        <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[0-9]+.[0-9]+.[0-9]+&#39;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">version_regex</span><span class="p">)</span>
+        <span class="n">subdirectories</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="n">template_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subdirectories</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Subdirectories are not allowed in template folders: </span><span class="si">{</span><span class="n">subdirectories</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_versioned_template_dir</span><span class="p">(</span><span class="n">task_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a template folder of the specified version.</span>
+
+<span class="sd">        If no version is given, the latest version of template will be returned</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">_check_if_exists_and_dir</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+        <span class="n">latest_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">latest_path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">latest_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">latest_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The task: </span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1"> with version: </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1"> does not exists.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">latest_path</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get latest version of the template for the given task.&quot;&quot;&quot;</span>
+        <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">_check_if_exists_and_dir</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+
+        <span class="n">all_versions</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_all_versions_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+        <span class="n">max_version</span> <span class="o">=</span> <span class="n">START_TEMPLATE_VERSION</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_versions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No template versions were found for task: </span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1">, defaulting to 0.0.1&#39;</span><span class="p">)</span>
+            <span class="n">max_version</span> <span class="o">=</span> <span class="n">START_TEMPLATE_VERSION</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_version</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">all_versions</span><span class="p">)</span>
+
+        <span class="n">latest_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">max_version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">latest_path</span><span class="p">,</span> <span class="n">max_version</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_all_versions_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all versions for the task.&quot;&quot;&quot;</span>
+        <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[0-9]+.[0-9]+.[0-9]+&#39;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">version_regex</span><span class="p">)</span>
+        <span class="n">all_versions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_version</span> <span class="o">=</span> <span class="n">START_TEMPLATE_VERSION</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">task_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">string</span>
+                <span class="n">all_versions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">match</span> <span class="o">&gt;</span> <span class="n">max_version</span><span class="p">:</span>
+                    <span class="n">max_version</span> <span class="o">=</span> <span class="n">match</span>
+
+        <span class="k">return</span> <span class="n">all_versions</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">write_versioned_template</span><span class="p">(</span>
+        <span class="n">resource_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">task_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">target_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write a template with the header or metadata of a specified version.</span>
+
+<span class="sd">        If no version was given the latest version for the task will be used.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resource_name:  Template resource name</span>
+<span class="sd">            task_path: Task path</span>
+<span class="sd">            target_file: File path where template will be written</span>
+<span class="sd">            version: return a resource of a specific version</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dotted path of a versioned template, list of all available versions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">_check_if_exists_and_dir</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">templates_resource_path</span> <span class="o">=</span> <span class="n">TRESTLE_RESOURCES</span> <span class="o">+</span> <span class="s1">&#39;.templates&#39;</span>
+
+            <span class="n">generic_template</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">templates_resource_path</span><span class="p">,</span> <span class="n">resource_name</span><span class="p">))</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">get_latest_version_for_task</span><span class="p">(</span><span class="n">task_path</span><span class="p">)</span>
+
+            <span class="c1"># modify header/metadata in the template</span>
+            <span class="k">if</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.md&#39;</span><span class="p">:</span>
+                <span class="n">md_api</span> <span class="o">=</span> <span class="n">MarkdownAPI</span><span class="p">()</span>
+                <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span> <span class="o">=</span> <span class="n">md_api</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">read_markdown_wo_processing</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
+                <span class="n">header</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+                <span class="n">md_api</span><span class="o">.</span><span class="n">write_markdown_with_header</span><span class="p">(</span><span class="n">target_file</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">md_body</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template markdown to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.drawio&#39;</span><span class="p">:</span>
+                <span class="n">drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="n">generic_template</span><span class="p">)</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">metadata</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+
+                <span class="n">drawio</span><span class="o">.</span><span class="n">write_drawio_with_metadata</span><span class="p">(</span><span class="n">generic_template</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_file</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successfully written template drawio to </span><span class="si">{</span><span class="n">target_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported template file extension </span><span class="si">{</span><span class="n">generic_template</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while updating template folder: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_valid_version</span><span class="p">(</span><span class="n">template_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if the version format is correct.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">template_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># we can have empty version</span>
+        <span class="k">if</span> <span class="n">template_version</span> <span class="o">==</span> <span class="s1">&#39;0.0.0&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">version_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^[0-9]+.[0-9]+.[0-9]+$&#39;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">version_regex</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">template_version</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_build_dotted_path</span><span class="p">(</span><span class="n">dotted_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">all_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Traverse template resources and collect all versions.&quot;&quot;&quot;</span>
+        <span class="n">are_all_files</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">resource_listdir</span><span class="p">(</span><span class="n">dotted_path</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">dotted_path</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="s1">&#39;__pycache__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                <span class="n">TemplateVersioning</span><span class="o">.</span><span class="n">_build_dotted_path</span><span class="p">(</span><span class="n">dotted_path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="p">,</span> <span class="n">all_paths</span><span class="p">)</span>
+                <span class="n">are_all_files</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">are_all_files</span><span class="p">:</span>
+            <span class="n">all_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dotted_path</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_if_exists_and_dir</span><span class="p">(</span><span class="n">task_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Path: </span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1"> does not exists.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">task_path</span><span class="si">}</span><span class="s1"> passed, however template directory is expected.&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3408,10 +3620,10 @@ By default all old-style templates will be updated to version 0.0.1</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

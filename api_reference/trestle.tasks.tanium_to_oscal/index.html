@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.tanium_to_oscal/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2856,6 +2856,165 @@ TaniumToOscal            (<a title="trestle.tasks.base_task.TaskBase" href="../t
       </tr>
   </tbody>
 </table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/tanium_to_oscal.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TaniumToOscal</span><span class="p">(</span><span class="n">TaskBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Task to convert Tanium report to OSCAL json.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: Name of the task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;tanium-to-oscal&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">configparser</span><span class="o">.</span><span class="n">SectionProxy</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize trestle task tanium-to-oscal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_object: Config section associated with the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config_object</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Help information for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> task.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) results objects&#39;</span>
+            <span class="o">+</span> <span class="s1">&#39;and serialize to a file.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-to-oscal]:&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  cpus-min  = (optional) the desired minimum number of CPUs to employ.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium reports.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-overwrite = (optional) true [default] or false; replace existing output when true.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as &#39;</span>
+            <span class="o">+</span> <span class="s1">&#39;2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Tanium &#39;</span>
+            <span class="o">+</span> <span class="s1">&#39;report is used if present, otherwise current time is used.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Operation: A transformation is performed on one or more Tanium input files to produce output in &#39;</span>
+            <span class="o">+</span> <span class="s1">&#39;OSCAL partial results format.&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Perform transformation.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_work</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;simulated-&#39;</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform_work</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform the transformation work.</span>
+
+<span class="sd">        Transformation work steps: read input, process, write output, display analysis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;simulated-&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Config missing&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="c1"># config required input &amp; output dirs</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">idir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;input-dir&#39;</span><span class="p">]</span>
+            <span class="n">ipth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">idir</span><span class="p">)</span>
+            <span class="n">odir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;output-dir&#39;</span><span class="p">]</span>
+            <span class="n">opth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">odir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;key </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> missing&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="c1"># config optional overwrite &amp; quiet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;output-overwrite&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">quiet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">quiet</span>
+        <span class="c1"># config optional timestamp</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;timestamp&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">TaniumTransformer</span><span class="o">.</span><span class="n">set_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config invalid &quot;timestamp&quot;&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+        <span class="c1"># config optional performance</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;blocksize&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;blocksize&#39;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
+            <span class="s1">&#39;cpus_max&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;cpus-max&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;cpus_min&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s1">&#39;cpus-min&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;checking&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;checking&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="c1"># insure output dir exists</span>
+        <span class="n">opth</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># process</span>
+        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ipth</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+            <span class="n">tanium_transformer</span> <span class="o">=</span> <span class="n">TaniumTransformer</span><span class="p">()</span>
+            <span class="n">tanium_transformer</span><span class="o">.</span><span class="n">set_modes</span><span class="p">(</span><span class="n">modes</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">tanium_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span>
+            <span class="n">oname</span> <span class="o">=</span> <span class="n">ifile</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;.oscal&#39;</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span>
+            <span class="n">ofile</span> <span class="o">=</span> <span class="n">opth</span> <span class="o">/</span> <span class="n">oname</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overwrite</span> <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_file</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_analysis</span><span class="p">(</span><span class="n">tanium_transformer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read raw input file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">blob</span>
+
+    <span class="k">def</span> <span class="nf">_write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ofile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Write oscal results file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">oscal_write</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_show_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tanium_transformer</span><span class="p">:</span> <span class="n">TaniumTransformer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Show analysis.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+                <span class="n">analysis</span> <span class="o">=</span> <span class="n">tanium_transformer</span><span class="o">.</span><span class="n">analysis</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">analysis</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3141,10 +3300,10 @@ TaniumToOscal            (<a title="trestle.tasks.base_task.TaskBase" href="../t
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

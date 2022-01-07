@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_validator/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2826,6 +2826,194 @@ MarkdownValidator        </code>
 
       <p>A markdown validator. Validates markdown instance against given template.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MarkdownValidator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A markdown validator. Validates markdown instance against given template.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tmp_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">template_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="n">template_tree</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span>
+        <span class="n">validate_yaml_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">validate_md_body</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">md_header_to_validate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize markdown validator.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_yaml_header</span> <span class="o">=</span> <span class="n">validate_yaml_header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_md_body</span> <span class="o">=</span> <span class="n">validate_md_body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">md_header_to_validate</span> <span class="o">=</span> <span class="n">md_header_to_validate</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">md_header_to_validate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span> <span class="o">=</span> <span class="n">template_header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_tree</span> <span class="o">=</span> <span class="n">template_tree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span> <span class="o">=</span> <span class="n">tmp_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_template_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Version of the template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="si">}</span><span class="s1"> does not match the path </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;Move the template to the folder </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;Version&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="p">[</span><span class="s1">&#39;Version&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Version does not match template-version in template: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;x-trestle-&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;x-trestle-ignore&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">key2</span> <span class="ow">in</span> <span class="n">template_header</span><span class="p">[</span><span class="s1">&#39;x-trestle-ignore&#39;</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key2</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">is_valid_against_template</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">instance_header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">instance_tree</span><span class="p">:</span> <span class="n">MarkdownNode</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate instance markdown against template.</span>
+
+<span class="sd">        Instance is correct against a template iff:</span>
+<span class="sd">            1. For YAML header keys:</span>
+<span class="sd">                a. All keys from the template are present and not modified</span>
+<span class="sd">                b. Template version in the template and instance match</span>
+<span class="sd">            2. On the Markdown w/o YAML header:</span>
+<span class="sd">                a. No additional headers of the level 1 were added</span>
+<span class="sd">                b. Headers were not reordered</span>
+<span class="sd">                c. Headers in the instance should be a superset of the template headers</span>
+<span class="sd">                d. Headers must be in heirarchical order (i.e. # then ### then ## is not allowed)</span>
+<span class="sd">            3. If Governed Header is given then:</span>
+<span class="sd">                a. Governed Header is not modified</span>
+<span class="sd">                b. All keys (i.e. key: something) inside the section are present</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            instance: a path to the markdown instance that should be validated</span>
+<span class="sd">            instance_header: a YAML header extracted from the markdown</span>
+<span class="sd">            instance_tree: a tree structure representing markdown contents</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Whether or not the the candidate is valid against the template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_yaml_header</span><span class="p">:</span>
+            <span class="n">headers_match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_header</span><span class="p">,</span> <span class="n">instance_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_headers</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">headers_match</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML header mismatch between template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1"> and instance </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">headers_match</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_md_body</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">md_header_to_validate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">instance_gov_node</span> <span class="o">=</span> <span class="n">instance_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">md_header_to_validate</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">template_gov_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_tree</span><span class="o">.</span><span class="n">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">md_header_to_validate</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">instance_gov_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Governed document not found in instance: </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="n">instance_keys</span> <span class="o">=</span> <span class="n">instance_gov_node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">governed_document</span>
+            <span class="n">template_keys</span> <span class="o">=</span> <span class="n">template_gov_node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">governed_document</span>
+
+            <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_headers</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">template_keys</span><span class="p">,</span> <span class="n">instance_keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_md_body</span><span class="p">:</span>
+            <span class="n">instance_keys</span> <span class="o">=</span> <span class="n">instance_tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span>
+            <span class="n">template_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">instance_keys</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Headings in the instance: </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1"> were removed.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="n">instance_lvl1_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">instance_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">template_lvl1_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_tree</span><span class="o">.</span><span class="n">get_all_headers_for_level</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_lvl1_keys</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">instance_lvl1_keys</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;New headers of level 1 were added to the markdown instance: </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1">. &#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_headers</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">template_keys</span><span class="p">,</span> <span class="n">instance_keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">compare_keys</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">template</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">candidate</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">ignore_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare a template dictionary against a candidate as to whether key structure is maintained.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            template: Template dict which is used as a model of key-value pairs</span>
+<span class="sd">            candidate: Candidate dictionary to be measured</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Whether or not the the candidate matches the template keys.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ignore_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ignore_fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ignore_fields</span><span class="p">:</span>
+                <span class="n">candidate</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ignore_fields</span><span class="p">:</span>
+                <span class="n">template</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">template_version</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">extract_template_version</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+        <span class="n">candidate_version</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">extract_template_version</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">template_version</span> <span class="o">!=</span> <span class="n">candidate_version</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Versions of the template </span><span class="si">{</span><span class="n">template_version</span><span class="si">}</span><span class="s1"> and instance </span><span class="si">{</span><span class="n">candidate_version</span><span class="si">}</span><span class="s1"> are different&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of keys does not match in template </span><span class="si">{</span><span class="n">template</span><span class="si">}</span><span class="s1"> and instance </span><span class="si">{</span><span class="n">candidate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">candidate</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">candidate</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">ignore_fields</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">status</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Value under </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> must be dictionary in candidate </span><span class="si">{</span><span class="n">candidate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not in candidate </span><span class="si">{</span><span class="n">candidate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_validate_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">template_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">instance_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Validate instance headers against template.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">instance_keys</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Headings in the instance: </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1"> were removed.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">template_header_pointer</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">instance_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">template_header_pointer</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_keys</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">template_keys</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">template_keys</span><span class="p">[</span><span class="n">template_header_pointer</span><span class="p">]:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Headers in the instance: </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1"> were shuffled or modified.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">template_keys</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="n">template_keys</span><span class="p">[</span><span class="n">template_header_pointer</span><span class="p">]:</span>
+                <span class="n">template_header_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">md_const</span><span class="o">.</span><span class="n">SUBSTITUTION_REGEX</span><span class="p">,</span> <span class="n">template_keys</span><span class="p">[</span><span class="n">template_header_pointer</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">template_header_pointer</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># skip headers with substitutions</span>
+        <span class="k">if</span> <span class="n">template_header_pointer</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_keys</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Headings in the instance: </span><span class="si">{</span><span class="n">instance</span><span class="si">}</span><span class="s1"> were removed.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">extract_template_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract the template version from the header.</span>
+
+<span class="sd">        If no header is found then starting version(0.0.1) will be used by default</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">TEMPLATE_VERSION_HEADER</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">START_TEMPLATE_VERSION</span>
+
+        <span class="k">return</span> <span class="n">header</span><span class="p">[</span><span class="n">TEMPLATE_VERSION_HEADER</span><span class="p">]</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3285,10 +3473,10 @@ MarkdownValidator        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

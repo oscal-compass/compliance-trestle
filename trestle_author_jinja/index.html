@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_author_jinja/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2738,6 +2738,7 @@
 <li><code>-p</code> (optional) profile name (in the trestle project). When used the jinja template will have <code>resolved_catalog</code> and <code>catalog_interface</code> variables to use.</li>
 <li><code>-lut</code> (optional) loads yaml into a dictionary in python for which each (top level) variable is available in jinja.</li>
 <li><code>-elp</code> (optional) a period separated prefix for the variables in the lookup table. E.g. if the lut contained <code>banana: yellow</code> and the prefix was <code>fruit.tropical</code> using <code>{{ fruit.tropical.banana }}</code> would print out <code>yellow</code> in the jinja template.</li>
+<li><code>-pf</code> (optional) use to provide a custom formatting of the substituted parameters in the text. Use dot (.) to indicate where the parameter value will be written. E.g. <code>-pf *.*</code> to italicize all substituted parameters, <code>-pf Prefix:.</code> to add <code>Prefix:</code> to all parameters.</li>
 </ul>
 <h2 id="sample-jinja-templates">Sample jinja templates<a class="headerlink" href="#sample-jinja-templates" title="Permanent link">¤</a></h2>
 <p>Note in addition to these templates some testing examples are available <a href="https://github.com/IBM/develop">here</a></p>
@@ -2761,12 +2762,12 @@
 <h3 id="lut">LUT<a class="headerlink" href="#lut" title="Permanent link">¤</a></h3>
 <p>The lookup table is primarily used for string substitution and to provide variables for basic logic operations in jinja e.g.</p>
 <p>The LUT:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">names</span><span class="p">:</span>
-  <span class="nt">OSCAL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Open Security Compliance Assessment Language</span>
-  <span class="nt">trestle_pip</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">compliance-trestle</span>
-  <span class="nt">trestle_module</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trestle</span>
-<span class="nt">variables</span><span class="p">:</span>
-  <span class="nt">mac_os</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight"><pre><span></span><code><span class="nt">names</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">OSCAL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Open Security Compliance Assessment Language</span><span class="w"></span>
+<span class="w">  </span><span class="nt">trestle_pip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compliance-trestle</span><span class="w"></span>
+<span class="w">  </span><span class="nt">trestle_module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trestle</span><span class="w"></span>
+<span class="nt">variables</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">mac_os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
 </code></pre></div>
 <p>The Jinja template:</p>
 <div class="highlight"><pre><span></span><code><span class="x">Install via pip install </span><span class="cp">{{</span> <span class="nv">names.trestle_pip</span> <span class="cp">}}</span><span class="x"> and invoke at the python REPL by import </span><span class="cp">{{</span> <span class="nv">names.trestle_module</span> <span class="cp">}}</span><span class="x"></span>
@@ -2805,11 +2806,24 @@ Users are recommended to use homebrew to install the latest python 3 and then in
 </ol>
 <p><code>mdsection_include</code> is similar to the native <code>md_clean_include</code> except that.:</p>
 <ol>
-<li><code>mdsection_include</code> requires an second positional argument which is the title of a heading, from a markdown file, which you want the cotent from.</li>
-<li>E.g:  <code>{% mdsection_include 'test_markdown.md' '# Header we want' %}</code></li>
-<li><code>mdsection_include</code> can be used with an optional keyword argument <code>heading_level</code> argument similar to <code>md_clean_include</code></li>
-<li><code>{% mdsection_include 'test_markdown.md' '# Header we want' %}</code></li>
+<li>
+<p><code>mdsection_include</code> requires an second positional argument which is the title of a heading, from a markdown file, which you want the content from.</p>
+</li>
+<li>
+<p>E.g:  <code>{% mdsection_include 'test_markdown.md' '# Header we want' %}</code></p>
+</li>
+<li>
+<p><code>mdsection_include</code> can be used with an optional keyword argument <code>heading_level</code> argument similar to <code>md_clean_include</code></p>
+</li>
+<li>
+<p><code>{% mdsection_include 'test_markdown.md' '# Header we want' %}</code></p>
+</li>
 <li>The heading level argument adjusts to (based on the number of hashes) the most significant heading in the chosen section, if headings exist.</li>
+</ol>
+<p><code>md_datestamp</code> inserts a date stamp into the output. By default the date is in the format '%Y-%m-%d', e.g. '2021-12-28' and is followed by a double newline to prevent subsequent headings failing to parse correctly. E.g: <code>{% md_datestamp %}</code> results in a date in the format '2021-12-28' being inserted. <code>md_datestamp</code> can be used with the following optional keyword arguments:</p>
+<ol>
+<li><code>format</code> where a python <a href="https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes">datetime strftime format string</a> is provided to format the output. E.g. <code>{% md_datestamp format='%B %d, %Y' %}</code> results in <code>December 28, 2021</code> being inserted.</li>
+<li><code>newline</code> is a boolean to control the addition of a double newline after the inserted date string. For example <code>{% md_datestamp newline=false %}</code> inserts a date in the default format, without additional newlines.</li>
 </ol>
 
               
@@ -2876,10 +2890,10 @@ Users are recommended to use homebrew to install the latest python 3 and then in
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

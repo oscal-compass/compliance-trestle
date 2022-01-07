@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.ssp_io/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2908,6 +2908,310 @@ SSPMarkdownWriter        </code>
 
       <p>Class to write control responses as markdown.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/ssp_io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SSPMarkdownWriter</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Class to write control responses as markdown.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_root</span> <span class="o">=</span> <span class="n">trestle_root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="p">:</span> <span class="n">ssp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_catalog</span><span class="p">:</span> <span class="n">Catalog</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="p">:</span> <span class="n">CatalogInterface</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">set_ssp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ssp</span><span class="p">:</span> <span class="n">ssp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set ssp.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span> <span class="o">=</span> <span class="n">ssp</span>
+
+    <span class="k">def</span> <span class="nf">set_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resolved_catalog</span><span class="p">:</span> <span class="n">Catalog</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set catalog.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_catalog</span> <span class="o">=</span> <span class="n">resolved_catalog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">CatalogInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolved_catalog</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_control_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the control statement for an ssp - to be printed in markdown as a structured list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            control_id: The control_id to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A markdown blob as a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_catalog</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Cannot get control statement, set resolved catalog first.&#39;</span><span class="p">)</span>
+
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">control</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">control_lines</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">get_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree_and_adjust</span><span class="p">(</span><span class="n">control_lines</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_control_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">part_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get control part with given name.&quot;&quot;&quot;</span>
+        <span class="n">control_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control_part_prose</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part_name</span><span class="p">)</span>
+
+        <span class="n">md_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_str_with_header</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Control Part: </span><span class="si">{</span><span class="n">part_name</span><span class="si">}</span><span class="s1"> for control: </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">control_part</span><span class="p">,</span> <span class="n">level</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree_and_adjust</span><span class="p">(</span><span class="n">md_list</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">level</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_fedramp_control_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the fedramp metadata as markdown tables.</span>
+
+<span class="sd">        The fedramp metadata has the following elements:</span>
+<span class="sd">        - Responsible roles field</span>
+<span class="sd">        - Parameter values table</span>
+<span class="sd">        - Implementation status field</span>
+<span class="sd">        - Control origination field</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tables as one coherent markdown blob.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp_roles_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_responsible_roles_table</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+        <span class="n">params_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_table</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+        <span class="n">impl_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fedramp_implementation_status</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+        <span class="n">control_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fedramp_control_origination</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+        <span class="n">final_output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">resp_roles_table</span><span class="p">:</span>
+            <span class="n">final_output</span> <span class="o">+=</span> <span class="n">resp_roles_table</span>
+        <span class="k">if</span> <span class="n">params_values</span><span class="p">:</span>
+            <span class="n">final_output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">params_values</span>
+        <span class="k">if</span> <span class="n">impl_status</span><span class="p">:</span>
+            <span class="n">final_output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">impl_status</span>
+        <span class="k">if</span> <span class="n">control_orig</span><span class="p">:</span>
+            <span class="n">final_output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">control_orig</span>
+        <span class="k">return</span> <span class="n">final_output</span>
+
+    <span class="k">def</span> <span class="nf">get_responsible_roles_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For each role id - if the role exists in metadata use the title as what gets printed in the roles table.</span>
+
+<span class="sd">        If not (for now) warn and use the role-id as the printed text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Cannot get responsible roles, SSP is not set.&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">impl_requirement</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">impl_requirement</span><span class="o">.</span><span class="n">control_id</span> <span class="o">==</span> <span class="n">control_id</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">impl_requirement</span><span class="o">.</span><span class="n">responsible_roles</span><span class="p">:</span>
+                    <span class="n">role_ids</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">resp_role</span> <span class="ow">in</span> <span class="n">impl_requirement</span><span class="o">.</span><span class="n">responsible_roles</span><span class="p">:</span>
+                        <span class="n">role_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp_role</span><span class="o">.</span><span class="n">role_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">))</span>
+
+                    <span class="c1"># now check if this role exists in the metadata</span>
+                    <span class="n">role_titles</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">role_ids</span><span class="p">,</span> <span class="n">role_ids</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">roles</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">role</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">roles</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">role</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">role_ids</span><span class="p">:</span>
+                                <span class="n">role_titles</span><span class="p">[</span><span class="n">role</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">role</span><span class="o">.</span><span class="n">title</span>
+
+                    <span class="c1"># dictionary to md table</span>
+                    <span class="n">md_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_table_with_header</span><span class="p">(</span>
+                        <span class="s1">&#39;Responsible Roles.&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="n">key</span><span class="p">,</span> <span class="n">role_titles</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">role_titles</span><span class="o">.</span><span class="n">keys</span><span class="p">()],</span>
+                        <span class="p">[</span><span class="s1">&#39;Role ID&#39;</span><span class="p">,</span> <span class="s1">&#39;Title&#39;</span><span class="p">],</span>
+                        <span class="n">level</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">md_list</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;No responsible roles were found for the control with id: </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1"> in given SSP.&#39;</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_parameter_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Print Param_id | Default (aka label) | Value or set to &#39;none&#39;.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Cannot get parameter table, set SSP first.&#39;</span><span class="p">)</span>
+
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">control</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">params_lines</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">params_lines</span><span class="p">)</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
+
+    <span class="k">def</span> <span class="nf">get_fedramp_implementation_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print implementation status as a list of items, only showing those that are applicable for the control.</span>
+
+<span class="sd">        This is unlike the word document FedRAMP which uses checkboxes on standard set of options.</span>
+<span class="sd">        Using a LUT to map between structured data fields, defined by FedRAMP and historical text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Cannot get Fedramp implementation status, set SSP first.&#39;</span><span class="p">)</span>
+
+        <span class="n">implementation_statuses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">control_impl_req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_implemented_req</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">control_impl_req</span> <span class="ow">and</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">IMPLEMENTATION_STATUS</span><span class="p">:</span>
+                    <span class="n">implementation_statuses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">md_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_list_with_header</span><span class="p">(</span><span class="s1">&#39;FedRamp Implementation Status.&#39;</span><span class="p">,</span> <span class="n">implementation_statuses</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">md_list</span>
+
+    <span class="k">def</span> <span class="nf">get_fedramp_control_origination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print control origination, as a list of items, only showing those that are applicable for the control.</span>
+
+<span class="sd">        Using a LUT to map between structured data fields, defined by FedRAMP and historical text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Cannot get FedRamp control origination, set SSP first.&#39;</span><span class="p">)</span>
+
+        <span class="n">control_origination</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">control_impl_req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_implemented_req</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">control_impl_req</span> <span class="ow">and</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">CONTROL_ORIGINATION</span><span class="p">:</span>
+                    <span class="n">control_origination</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">md_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_list_with_header</span><span class="p">(</span><span class="s1">&#39;FedRamp Control Origination.&#39;</span><span class="p">,</span> <span class="n">control_origination</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">md_list</span>
+
+    <span class="k">def</span> <span class="nf">get_control_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the full control implemented requirements, broken down based on the available control responses.</span>
+
+<span class="sd">        For components the following structure is assumed:</span>
+
+<span class="sd">        &#39;The System&#39; is the default response, and all other components are treated as sub-headings per response item.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_catalog</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Cannot get control response, set resolved catalog first.&#39;</span><span class="p">)</span>
+
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="n">control_impl_req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_implemented_req</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">control_impl_req</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No implemented requirements found for the control </span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">md_writer</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">statement</span> <span class="ow">in</span> <span class="n">control_impl_req</span><span class="o">.</span><span class="n">statements</span><span class="p">:</span>
+                <span class="n">statement_id</span> <span class="o">=</span> <span class="n">statement</span><span class="o">.</span><span class="n">statement_id</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">statement_id</span>
+                <span class="n">part_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="c1"># look up label for this statement</span>
+                <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                    <span class="n">found_label</span><span class="p">,</span> <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog_interface</span><span class="o">.</span><span class="n">get_statement_label_if_exists</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">statement_id</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">found_label</span><span class="p">:</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="n">found_label</span>
+                        <span class="n">part_name</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span>
+
+                <span class="n">response_per_component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_responses_by_components</span><span class="p">(</span><span class="n">statement</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">response_per_component</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response_per_component</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">part_name</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+                        <span class="c1"># print part header only if subitem</span>
+                        <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Part </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span>
+                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">component_key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">component_key</span> <span class="o">==</span> <span class="n">SSP_MAIN_COMP_NAME</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># special case ignore header but print contents</span>
+                            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">component_key</span><span class="p">)</span>
+                        <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">md_writer</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">response_per_component</span><span class="p">[</span><span class="n">component_key</span><span class="p">])</span>
+                        <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">md_writer</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
+
+    <span class="k">def</span> <span class="nf">_get_responses_by_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">:</span> <span class="n">Statement</span><span class="p">,</span> <span class="n">write_empty_responses</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get response per component, substitute component id with title if possible.&quot;&quot;&quot;</span>
+        <span class="n">response_per_component</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">statement</span><span class="o">.</span><span class="n">by_components</span><span class="p">:</span>
+                <span class="c1"># look up component title</span>
+                <span class="n">subheader</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">component_uuid</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">system_implementation</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">uuid</span> <span class="o">==</span> <span class="n">component</span><span class="o">.</span><span class="n">component_uuid</span><span class="p">:</span>
+                            <span class="n">title</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">title</span>
+                            <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
+                                <span class="n">subheader</span> <span class="o">=</span> <span class="n">title</span>
+                <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">description</span>
+
+                <span class="k">if</span> <span class="n">response</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">response</span> <span class="ow">and</span> <span class="n">write_empty_responses</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">subheader</span><span class="p">:</span>
+                        <span class="n">response_per_component</span><span class="p">[</span><span class="n">subheader</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span>
+
+        <span class="k">return</span> <span class="n">response_per_component</span>
+
+    <span class="k">def</span> <span class="nf">_control_implemented_req</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ssp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve control implemented requirement by control-id.&quot;&quot;&quot;</span>
+        <span class="n">requirements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssp</span><span class="o">.</span><span class="n">control_implementation</span><span class="o">.</span><span class="n">implemented_requirements</span>
+        <span class="k">for</span> <span class="n">requirement</span> <span class="ow">in</span> <span class="n">requirements</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">requirement</span><span class="o">.</span><span class="n">control_id</span> <span class="o">==</span> <span class="n">control_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">requirement</span>
+
+    <span class="k">def</span> <span class="nf">_write_list_with_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">md_writer</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_list</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree_and_adjust</span><span class="p">(</span><span class="n">md_writer</span><span class="o">.</span><span class="n">get_lines</span><span class="p">(),</span> <span class="n">level</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_write_table_with_header</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">table_header</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">md_writer</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_table</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">table_header</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree_and_adjust</span><span class="p">(</span><span class="n">md_writer</span><span class="o">.</span><span class="n">get_lines</span><span class="p">(),</span> <span class="n">level</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_write_str_with_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">md_writer</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_header</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">md_writer</span><span class="o">.</span><span class="n">set_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree_and_adjust</span><span class="p">(</span><span class="n">md_writer</span><span class="o">.</span><span class="n">get_lines</span><span class="p">(),</span> <span class="n">level</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_build_tree_and_adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="o">.</span><span class="n">build_tree_from_markdown</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">change_header_level_by</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3508,10 +3812,10 @@ Using a LUT to map between structured data fields, defined by FedRAMP and histor
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

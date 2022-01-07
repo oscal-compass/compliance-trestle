@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_node/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2948,6 +2948,301 @@ MarkdownNode        </code>
 
       <p>Markdown will be read to the tree.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MarkdownNode</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Markdown will be read to the tree.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">SectionContent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize markdown node.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">build_tree_from_markdown</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">governed_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a tree out of the given markdown.&quot;&quot;&quot;</span>
+        <span class="n">ob</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="n">start_level</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_get_max_header_lvl</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">ob</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ob</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start_level</span><span class="p">,</span> <span class="n">governed_header</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ob</span>
+
+    <span class="k">def</span> <span class="nf">get_all_headers_for_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return all headers per specified level of heirarchy.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">header</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="n">level</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_node_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a node for the given key, substring matching is supported.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">strict_matching</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_all_headers_for_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return all headers contained in the node with a given key.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">strict_matching</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">header</span><span class="p">:</span> <span class="n">key</span> <span class="o">==</span> <span class="n">header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">))</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">header</span><span class="p">:</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">))</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_node_header_lvl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return current node header level.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">change_header_level_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change all headers in the tree by specified level up or down.</span>
+
+<span class="sd">        All children nodes will be modified by specified level as well.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            delta_level: each header will be modified by this number, can be negative.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># construct a map</span>
+        <span class="n">header_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;root&#39;</span><span class="p">:</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_header_level</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">)</span>
+            <span class="n">header_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_key</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">:</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modify_header_level</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">)</span>
+            <span class="n">header_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_key</span>
+
+        <span class="c1"># go through all contents and modify headers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header_map</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_build_tree</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">root_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">starting_line</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">governed_header</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a tree from the markdown recursively.</span>
+
+<span class="sd">        The tree is contructed with valid headers as node&#39;s keys</span>
+<span class="sd">        and node&#39;s content contains everything that is under that header.</span>
+<span class="sd">        The subsections are placed into node&#39;s children with the same structure.</span>
+
+<span class="sd">        A header is valid iff the line starts with # and it is not:</span>
+<span class="sd">          1. Inside of the html blocks</span>
+<span class="sd">          2. Inside single lined in the &lt;&gt; tags</span>
+<span class="sd">          3. Inside the html comment</span>
+<span class="sd">          4. Inside any table, code block or blockquotes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">SectionContent</span><span class="p">()</span>
+        <span class="n">node_children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">starting_line</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">header_lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">header_lvl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">header_lvl</span> <span class="o">&gt;=</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># build subtree</span>
+                    <span class="n">subtree</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_tree</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">governed_header</span><span class="p">)</span>
+                    <span class="n">node_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span>
+                    <span class="n">content</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">subtree</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>  <span class="c1"># level of the header is above or equal to the current level, subtree is over</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">CODEBLOCK_DEF</span><span class="p">):</span>
+                <span class="n">code_lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_code_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">code_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">code_lines</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_COMMENT_START</span><span class="p">):</span>
+                <span class="n">html_lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_html_block</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_COMMENT_END_REGEX</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">html_lines</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_TAG_REGEX_START</span><span class="p">):</span>
+                <span class="n">html_lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_html_block</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">HTML_TAG_REGEX_END</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">html_lines</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">TABLE_SYMBOL</span><span class="p">):</span>
+                <span class="n">table_block</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table_block</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">table_block</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_start_with</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">BLOCKQUOTE_CHAR</span><span class="p">):</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">blockquotes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">governed_header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span>
+                    <span class="n">root_key</span><span class="p">,</span> <span class="sa">fr</span><span class="s1">&#39;^[#]+ </span><span class="si">{</span><span class="n">governed_header</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">GOVERNED_DOC_REGEX</span><span class="p">):</span>
+                <span class="n">regexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">md_const</span><span class="o">.</span><span class="n">GOVERNED_DOC_REGEX</span><span class="p">)</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">regexp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">governed_document</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">starting_line</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">starting_line</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">content</span><span class="o">.</span><span class="n">raw_text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">starting_line</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">md_node</span> <span class="o">=</span> <span class="n">MarkdownNode</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">root_key</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">md_node</span><span class="o">.</span><span class="n">subnodes</span> <span class="o">=</span> <span class="n">node_children</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">md_node</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_modify_header_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delta_level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Modify header level by specified level.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">delta_level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Nothing to modify in header, level 0 is given.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">header</span>
+
+        <span class="n">current_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">current_level</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">current_level</span> <span class="o">+</span> <span class="n">delta_level</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Cannot substract </span><span class="si">{</span><span class="n">delta_level</span><span class="si">}</span><span class="s1"> as level of </span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="s1"> is </span><span class="si">{</span><span class="n">current_level</span><span class="si">}</span><span class="s1">. All `#` will be removed.&#39;</span>
+            <span class="p">)</span>
+            <span class="n">delta_level</span> <span class="o">=</span> <span class="n">current_level</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">current_level</span> <span class="o">+</span> <span class="n">delta_level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">replacement</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">replacement</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">current_level</span> <span class="o">+</span> <span class="n">delta_level</span><span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">*</span> <span class="n">current_level</span><span class="p">,</span> <span class="n">replacement</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">header</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_header_level_if_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a level of the header if the given line is indeed a header.</span>
+
+<span class="sd">        Level of the header is determined by the number of # symbols.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">header_symbols</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">md_const</span><span class="o">.</span><span class="n">HEADER_REGEX</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Header is valid only if it line starts with header</span>
+        <span class="k">if</span> <span class="n">header_symbols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">header_symbols</span><span class="o">.</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">header_symbols</span><span class="o">.</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_does_start_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start_chars</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine whether the line starts with given characters.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">start_chars</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_does_contain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the line matches regex.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">reg</span> <span class="o">!=</span> <span class="sa">r</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">regexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">regexp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_read_code_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Read code block.&quot;&quot;&quot;</span>
+        <span class="n">code_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Code block is not closed: </span><span class="si">{</span><span class="n">code_lines</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">code_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">CODEBLOCK_DEF</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">code_lines</span><span class="p">,</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="nf">_read_html_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ending_regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Read html block.&quot;&quot;&quot;</span>
+        <span class="n">html_block</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;&lt;br[ /]*&gt;&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">html_block</span><span class="p">,</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">ending_regex</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">html_block</span><span class="p">,</span> <span class="n">i</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;HTML block is not closed: </span><span class="si">{</span><span class="n">html_block</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">html_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">ending_regex</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">html_block</span><span class="p">,</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="nf">_read_table_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Read table.&quot;&quot;&quot;</span>
+        <span class="n">table_block</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">table_block</span><span class="p">,</span> <span class="n">i</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_does_contain</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">md_const</span><span class="o">.</span><span class="n">TABLE_REGEX</span><span class="p">):</span>
+                <span class="n">table_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="n">table_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">table_block</span><span class="p">,</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="nf">_rec_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MarkdownNode</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursevely traverses the tree and searches for the given key.</span>
+
+<span class="sd">        If strict matching is turned off, node will be matched if key is a substring of the node&#39;s header.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">node</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">strict_matching</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">el</span>
+                                         <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">]))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
+                <span class="n">matched_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse</span><span class="p">(</span><span class="n">subnode</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strict_matching</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">matched_node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">matched_node</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_rec_traverse_header_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">,</span> <span class="n">header_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Recursively traverse tree and update the contents.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;root&#39;</span><span class="p">:</span>
+                <span class="n">new_key</span> <span class="o">=</span> <span class="n">header_map</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">new_key</span>
+
+            <span class="c1"># update text</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">header_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">new_key</span> <span class="o">=</span> <span class="n">header_map</span><span class="p">[</span><span class="n">line</span><span class="p">]</span>
+                        <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_key</span>
+                    <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">header_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="c1"># keep spaces if any</span>
+                        <span class="n">new_key</span> <span class="o">=</span> <span class="n">header_map</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)]</span>
+                        <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">),</span> <span class="n">new_key</span><span class="p">)</span>
+
+                <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">raw_text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+            <span class="c1"># update subnodes</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">)):</span>
+                    <span class="n">subnode_key</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">subnode_key</span> <span class="ow">in</span> <span class="n">header_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">new_key</span> <span class="o">=</span> <span class="n">header_map</span><span class="p">[</span><span class="n">subnode_key</span><span class="p">]</span>
+                        <span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_key</span>
+
+        <span class="k">for</span> <span class="n">subnode</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">subnodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rec_traverse_header_update</span><span class="p">(</span><span class="n">subnode</span><span class="p">,</span> <span class="n">header_map</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_max_header_lvl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Go through all lines to determine highest header level. Less # means higher.&quot;&quot;&quot;</span>
+        <span class="n">min_lvl</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">header_lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_header_level_if_valid</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">header_lvl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">header_lvl</span> <span class="o">&lt;</span> <span class="n">min_lvl</span><span class="p">:</span>
+                <span class="n">min_lvl</span> <span class="o">=</span> <span class="n">header_lvl</span>
+
+        <span class="k">return</span> <span class="n">min_lvl</span> <span class="o">-</span> <span class="mi">1</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3236,6 +3531,32 @@ SectionContent        </code>
 
       <p>A content of the node.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown/markdown_node.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SectionContent</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A content of the node.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize section content.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">html_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blockquotes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">governed_document</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">MarkdownNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Unites contents together.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">subnodes_keys</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">code_lines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">html_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">html_lines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">tables</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blockquotes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">blockquotes</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3404,10 +3725,10 @@ SectionContent        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

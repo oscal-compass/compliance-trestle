@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.implementations.tanium/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3258,6 +3258,57 @@ RuleUse        </code>
 
       <p>Represents one row of Tanium data.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/implementations/tanium.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RuleUse</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Represents one row of Tanium data.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tanium_row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">comply</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">default_timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize given specified args.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tanium-row: </span><span class="si">{</span><span class="n">tanium_row</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># level 1 keys</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">computer_name</span> <span class="o">=</span> <span class="n">tanium_row</span><span class="p">[</span><span class="s1">&#39;Computer Name&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tanium_client_ip_address</span> <span class="o">=</span> <span class="n">tanium_row</span><span class="p">[</span><span class="s1">&#39;Tanium Client IP Address&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ip_address</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tanium_row</span><span class="p">[</span><span class="s1">&#39;IP Address&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tanium_row</span><span class="p">[</span><span class="s1">&#39;Count&#39;</span><span class="p">])</span>
+            <span class="c1"># comply keys</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span> <span class="o">=</span> <span class="n">comply</span><span class="p">[</span><span class="s1">&#39;Check ID&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rule_id</span> <span class="o">=</span> <span class="n">comply</span><span class="p">[</span><span class="s1">&#39;Rule ID&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">comply</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span>
+            <span class="c1"># defaults</span>
+            <span class="n">no_results</span> <span class="o">=</span> <span class="s1">&#39;[no results]&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_id_level</span> <span class="o">=</span> <span class="n">no_results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_id_version</span> <span class="o">=</span> <span class="n">no_results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_id_benchmark</span> <span class="o">=</span> <span class="n">no_results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">no_results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span> <span class="o">=</span> <span class="n">no_results</span>
+            <span class="c1"># parse</span>
+            <span class="k">if</span> <span class="s1">&#39;;&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">:</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">check_id_level</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">check_id_version</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">check_id_benchmark</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CIS &#39;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;CIS &#39;</span><span class="p">):]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39; Benchmark&#39;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">component</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39; Benchmark&#39;</span><span class="p">)]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">component_type</span> <span class="o">=</span> <span class="s1">&#39;Operating System&#39;</span>
+            <span class="c1"># timestamp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">comply</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Timestamp&#39;</span><span class="p">,</span> <span class="n">default_timestamp</span><span class="p">)</span>
+            <span class="c1"># collected</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collected</span> <span class="o">=</span> <span class="n">default_timestamp</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tanium-row: </span><span class="si">{</span><span class="n">tanium_row</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">e</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3368,6 +3419,47 @@ RuleUseFactory        </code>
 
       <p>Build RuleUse list.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/implementations/tanium.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">RuleUseFactory</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Build RuleUse list.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize given specified args.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+
+    <span class="k">def</span> <span class="nf">_make_sublist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tanium_row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RuleUse</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Build RuleUse sublist from input data item.&quot;&quot;&quot;</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">tanium_row</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Comply&#39;</span><span class="p">):</span>
+                <span class="k">break</span>
+        <span class="n">comply_list</span> <span class="o">=</span> <span class="n">tanium_row</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">comply</span> <span class="ow">in</span> <span class="n">comply_list</span><span class="p">:</span>
+            <span class="n">rule_use</span> <span class="o">=</span> <span class="n">RuleUse</span><span class="p">(</span><span class="n">tanium_row</span><span class="p">,</span> <span class="n">comply</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span><span class="p">)</span>
+            <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule_use</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">def</span> <span class="nf">make_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blob</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RuleUse</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Build RuleUse list from input data.&quot;&quot;&quot;</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">blob</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">jdata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">jdata</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">jdata</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;item: </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="n">retval</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_sublist</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;jdata: </span><span class="si">{</span><span class="n">jdata</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">retval</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_sublist</span><span class="p">(</span><span class="n">jdata</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ru_list: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">retval</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retval</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3478,6 +3570,319 @@ TaniumOscalFactory        </code>
 
       <p>Build Tanium OSCAL entities.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/implementations/tanium.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TaniumOscalFactory</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Build Tanium OSCAL entities.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">rule_use_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RuleUse</span><span class="p">],</span>
+        <span class="n">blocksize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">11000</span><span class="p">,</span>
+        <span class="n">cpus_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">cpus_min</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">checking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize given specified args.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span> <span class="o">=</span> <span class="n">rule_use_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observation_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="s1">&#39;https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpus</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checking</span> <span class="o">=</span> <span class="n">checking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># blocksize: default, min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocksize</span> <span class="o">=</span> <span class="n">blocksize</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocksize</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocksize</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># cpus max: default, max, min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_max</span> <span class="o">=</span> <span class="n">cpus_max</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_max</span> <span class="o">&gt;</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_max</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_min</span> <span class="o">=</span> <span class="n">cpus_min</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_min</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_max</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_max</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_min</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_min</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_is_duplicate_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_use</span><span class="p">:</span> <span class="n">RuleUse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check for duplicate component.&quot;&quot;&quot;</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">component_type</span> <span class="o">=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component_type</span>
+        <span class="n">component_title</span> <span class="o">=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">component_type</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="n">component_title</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">retval</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">def</span> <span class="nf">_derive_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValuesView</span><span class="p">[</span><span class="n">InventoryItem</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Derive components from RuleUse list.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">rule_use</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_duplicate_component</span><span class="p">(</span><span class="n">rule_use</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">component_type</span> <span class="o">=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component_type</span>
+            <span class="n">component_title</span> <span class="o">=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component</span>
+            <span class="c1"># See Note in _get_component_ref.</span>
+            <span class="n">component_description</span> <span class="o">=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component</span>
+            <span class="n">component_ref</span> <span class="o">=</span> <span class="n">_uuid_component</span><span class="p">()</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">Status1</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="s1">&#39;operational&#39;</span><span class="p">)</span>
+            <span class="n">component</span> <span class="o">=</span> <span class="n">SystemComponent</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="n">component_ref</span><span class="p">,</span>
+                <span class="nb">type</span><span class="o">=</span><span class="n">component_type</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">component_title</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">component_description</span><span class="p">,</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">status</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="p">[</span><span class="n">component_ref</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span>
+
+    <span class="k">def</span> <span class="nf">_get_component_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_use</span><span class="p">:</span> <span class="n">RuleUse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get component reference for specified rule use.&quot;&quot;&quot;</span>
+        <span class="n">uuid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">component_ref</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component_type</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">component</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># Note: currently title and description are the same,</span>
+            <span class="c1"># therefore checking description is not necessary.</span>
+            <span class="n">uuid</span> <span class="o">=</span> <span class="n">component_ref</span>
+            <span class="k">break</span>
+        <span class="k">return</span> <span class="n">uuid</span>
+
+    <span class="k">def</span> <span class="nf">_derive_inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">InventoryItem</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Derive inventory from RuleUse list.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checking</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derive_inventory_checked</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derive_inventory_unchecked</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_derive_inventory_checked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">InventoryItem</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Derive inventory from RuleUse list, properties checked.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">rule_use</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">inventory</span> <span class="o">=</span> <span class="n">InventoryItem</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">_uuid_inventory</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;inventory&#39;</span><span class="p">)</span>
+            <span class="n">inventory</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Computer_Name&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">computer_name</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Tanium_Client_IP_Address&#39;</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span><span class="p">,</span>
+                    <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span>
+                    <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_inventory_item_id&#39;</span>
+                <span class="p">),</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;IP_Address&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">ip_address</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">component_uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_component_ref</span><span class="p">(</span><span class="n">rule_use</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">component_uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">inventory</span><span class="o">.</span><span class="n">implemented_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">ImplementedComponent</span><span class="p">(</span><span class="n">component_uuid</span><span class="o">=</span><span class="n">component_uuid</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span><span class="p">[</span><span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span><span class="p">]</span> <span class="o">=</span> <span class="n">inventory</span>
+
+    <span class="k">def</span> <span class="nf">_derive_inventory_unchecked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">InventoryItem</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Derive inventory from RuleUse list, properties unchecked.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">rule_use</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">inventory</span> <span class="o">=</span> <span class="n">InventoryItem</span><span class="p">(</span><span class="n">uuid</span><span class="o">=</span><span class="n">_uuid_inventory</span><span class="p">(),</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;inventory&#39;</span><span class="p">)</span>
+            <span class="n">inventory</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Computer_Name&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">computer_name</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Tanium_Client_IP_Address&#39;</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span><span class="p">,</span>
+                    <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span>
+                    <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_inventory_item_id&#39;</span>
+                <span class="p">),</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;IP_Address&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">ip_address</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+                <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">component_uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_component_ref</span><span class="p">(</span><span class="n">rule_use</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">component_uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">inventory</span><span class="o">.</span><span class="n">implemented_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">ImplementedComponent</span><span class="p">(</span><span class="n">component_uuid</span><span class="o">=</span><span class="n">component_uuid</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span><span class="p">[</span><span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span><span class="p">]</span> <span class="o">=</span> <span class="n">inventory</span>
+
+    <span class="k">def</span> <span class="nf">_get_inventory_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_use</span><span class="p">:</span> <span class="n">RuleUse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get inventory reference for specified rule use.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span><span class="p">[</span><span class="n">rule_use</span><span class="o">.</span><span class="n">tanium_client_ip_address</span><span class="p">]</span><span class="o">.</span><span class="n">uuid</span>
+
+    <span class="k">def</span> <span class="nf">_get_observtion_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_use</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get observation properties.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checking</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_observtion_properties_checked</span><span class="p">(</span><span class="n">rule_use</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_observtion_properties_unchecked</span><span class="p">(</span><span class="n">rule_use</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_observtion_properties_checked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_use</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get observation properties, with checking.&quot;&quot;&quot;</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID_Benchmark&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id_benchmark</span><span class="p">,</span>
+                <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span>
+                <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_predefined_profile&#39;</span>
+            <span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID_Version&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id_version</span><span class="p">,</span>
+                <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span>
+                <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_predefined_profile_version&#39;</span>
+            <span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID_Level&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id_level</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Rule_ID&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_goal_description&#39;</span><span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Rule_ID&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_check_name_id&#39;</span><span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;State&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_result&#39;</span><span class="p">),</span>
+            <span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Timestamp&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_timestamp&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">props</span>
+
+    <span class="k">def</span> <span class="nf">_get_observtion_properties_unchecked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule_use</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get observation properties, without checking.&quot;&quot;&quot;</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID_Benchmark&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id_benchmark</span><span class="p">,</span>
+                <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span>
+                <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_predefined_profile&#39;</span>
+            <span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID_Version&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id_version</span><span class="p">,</span>
+                <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span>
+                <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_predefined_profile_version&#39;</span>
+            <span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Check_ID_Level&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">check_id_level</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Rule_ID&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_goal_description&#39;</span><span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Rule_ID&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_check_name_id&#39;</span><span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;State&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_result&#39;</span><span class="p">),</span>
+            <span class="n">Property</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Timestamp&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">ns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;scc_timestamp&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">props</span>
+
+    <span class="c1"># parallel process to process one chuck of entire data set</span>
+    <span class="k">def</span> <span class="nf">_batch_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Derive batch of observations from RuleUse list.&quot;&quot;&quot;</span>
+        <span class="n">observation_partial_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># determine which chunk to process</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_workers</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">index</span> <span class="o">*</span> <span class="n">batch_size</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;start: </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1"> end: </span><span class="si">{</span><span class="n">end</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># process just the one chunk</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+            <span class="n">rule_use</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">observation</span> <span class="o">=</span> <span class="n">Observation</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="n">_uuid_observation</span><span class="p">(),</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">rule_id</span><span class="p">,</span>
+                <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;TEST-AUTOMATED&#39;</span><span class="p">],</span>
+                <span class="n">collected</span><span class="o">=</span><span class="n">rule_use</span><span class="o">.</span><span class="n">collected</span>
+            <span class="p">)</span>
+            <span class="n">subject_reference</span> <span class="o">=</span> <span class="n">SubjectReference</span><span class="p">(</span><span class="n">subject_uuid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_inventory_ref</span><span class="p">(</span><span class="n">rule_use</span><span class="p">),</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;inventory-item&#39;</span><span class="p">)</span>
+            <span class="n">observation</span><span class="o">.</span><span class="n">subjects</span> <span class="o">=</span> <span class="p">[</span><span class="n">subject_reference</span><span class="p">]</span>
+            <span class="n">observation</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_observtion_properties</span><span class="p">(</span><span class="n">rule_use</span><span class="p">)</span>
+            <span class="n">observation_partial_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">observation_partial_list</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_batch_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate number of parallel processes to employ.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cpus_estimate</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rule_use_list</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocksize</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpus</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">cpus_estimate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_max</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus_min</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CPUs estimate: </span><span class="si">{</span><span class="n">cpus_estimate</span><span class="si">}</span><span class="s1"> available: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span><span class="si">}</span><span class="s1"> selection: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpus</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpus</span>
+
+    <span class="k">def</span> <span class="nf">_derive_observations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Observation</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Derive observations from RuleUse list.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observation_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_workers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># no need for multiprocessing</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_observation_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_observations</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># use multiprocessing to perform observations creation in parallel</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_workers</span><span class="p">)</span>
+            <span class="n">rval_list</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_observations</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_workers</span><span class="p">))</span>
+            <span class="c1"># gather observations from the sundry batch workers</span>
+            <span class="k">for</span> <span class="n">observations_partial_list</span> <span class="ow">in</span> <span class="n">rval_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_observation_list</span> <span class="o">+=</span> <span class="n">observations_partial_list</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SystemComponent</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL components.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_component_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValuesView</span><span class="p">[</span><span class="n">InventoryItem</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL inventory.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inventory_map</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">observations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Observation</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL observations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation_list</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">local_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LocalDefinitions1</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL local definitions.&quot;&quot;&quot;</span>
+        <span class="n">rval</span> <span class="o">=</span> <span class="n">LocalDefinitions1</span><span class="p">()</span>
+        <span class="n">rval</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span>
+        <span class="n">rval</span><span class="o">.</span><span class="n">inventory_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rval</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">control_selections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ControlSelection</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL control selections.&quot;&quot;&quot;</span>
+        <span class="n">rval</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ControlSelection</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">rval</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">reviewed_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReviewedControls</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL reviewed controls.&quot;&quot;&quot;</span>
+        <span class="n">rval</span> <span class="o">=</span> <span class="n">ReviewedControls</span><span class="p">(</span><span class="n">control_selections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_selections</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rval</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL statistics.&quot;&quot;&quot;</span>
+        <span class="n">analysis</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">analysis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;components: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">analysis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;inventory: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inventory</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">analysis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;observations: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observations</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">analysis</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;OSCAL result.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derive_components</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derive_inventory</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_derive_observations</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">Result</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="n">_uuid_result</span><span class="p">(),</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Tanium&#39;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Tanium&#39;</span><span class="p">,</span>
+                <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span><span class="p">,</span>
+                <span class="n">end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span><span class="p">,</span>
+                <span class="n">reviewed_controls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reviewed_controls</span><span class="p">,</span>
+                <span class="n">local_definitions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_definitions</span><span class="p">,</span>
+                <span class="n">observations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observations</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3761,6 +4166,61 @@ TaniumTransformer            (<a title="trestle.transforms.transformer_factory.R
 
       <p>Interface for Tanium transformer.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/implementations/tanium.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TaniumTransformer</span><span class="p">(</span><span class="n">ResultsTransformer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interface for Tanium transformer.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return analysis info.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">blocksize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return blocksize.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;blocksize&#39;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cpus_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return cpus_max.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cpus_max&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cpus_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return cpus_min.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cpus_min&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">checking</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return checking.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;checking&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_modes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Keep modes info.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">modes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span> <span class="o">=</span> <span class="n">modes</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blob</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Results</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Transform the blob into a Results.&quot;&quot;&quot;</span>
+        <span class="n">ts0</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span>
+        <span class="n">ru_factory</span> <span class="o">=</span> <span class="n">RuleUseFactory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">())</span>
+        <span class="n">ru_list</span> <span class="o">=</span> <span class="n">ru_factory</span><span class="o">.</span><span class="n">make_list</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span>
+        <span class="n">tanium_oscal_factory</span> <span class="o">=</span> <span class="n">TaniumOscalFactory</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(),</span> <span class="n">ru_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocksize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpus_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpus_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">checking</span>
+        <span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tanium_oscal_factory</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">ts1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis</span> <span class="o">=</span> <span class="n">tanium_oscal_factory</span><span class="o">.</span><span class="n">analysis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;transform time: </span><span class="si">{</span><span class="n">ts1</span><span class="o">-</span><span class="n">ts0</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4071,10 +4531,10 @@ TaniumTransformer            (<a title="trestle.transforms.transformer_factory.R
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

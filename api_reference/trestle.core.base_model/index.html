@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.base_model/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3057,6 +3057,367 @@ OscalBaseModel            (<a title="trestle.core.trestle_base_model.TrestleBase
 1. Overrides default configuation of the pydantic library with behaviours required for trestle
 2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">OscalBaseModel</span><span class="p">(</span><span class="n">TrestleBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.</span>
+
+<span class="sd">    This BaseModel provides two types of functionality:</span>
+<span class="sd">    1. Overrides default configuation of the pydantic library with behaviours required for trestle</span>
+<span class="sd">    2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Overriding configuration class for pydantic base model, for use with OSCAL data classes.&quot;&quot;&quot;</span>
+
+        <span class="n">json_loads</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">loads</span>
+        <span class="c1"># TODO: json_dumps with orjson.dumps see #840</span>
+
+        <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">robust_datetime_serialization</span><span class="p">(</span><span class="n">x</span><span class="p">)}</span>
+        <span class="n">allow_population_by_field_name</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Enforce strict schema</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+        <span class="c1"># Validate on assignment of variables to ensure no escapes</span>
+        <span class="n">validate_assignment</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_stripped_model_type</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">stripped_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stripped_fields_aliases</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Create a pydantic model, which is derived from the current model, but missing certain fields.</span>
+
+<span class="sd">        OSCAL mandates a &#39;strict&#39; schema (e.g. unless otherwise stated no additional fields), and certain fields</span>
+<span class="sd">        are mandatory. Given this the corresponding dataclasses are also strict. Workflows with trestle require missing</span>
+<span class="sd">        mandatory fields. This allows creation of derivative models missing certain fields.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stripped_fields: The fields to be removed from the current data class.</span>
+<span class="sd">            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Pydantic data class thta can be used to instanciate a model.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.</span>
+<span class="sd">            TrestleError: If incorrect aliases or field names are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stripped_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stripped_fields_aliases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Either &quot;stripped_fields&quot; or &quot;stripped_fields_aliases&quot; need to be passed, not both.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stripped_fields</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stripped_fields_aliases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Exactly one of &quot;stripped_fields&quot; or &quot;stripped_fields_aliases&quot; must be provided&#39;</span><span class="p">)</span>
+
+        <span class="c1"># create alias to field_name mapping</span>
+        <span class="n">excluded_fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">stripped_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">excluded_fields</span> <span class="o">=</span> <span class="n">stripped_fields</span>
+        <span class="k">elif</span> <span class="n">stripped_fields_aliases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">alias_to_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">excluded_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">alias_to_field</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">stripped_fields_aliases</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Field </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist in the model&#39;</span><span class="p">)</span>
+
+        <span class="n">current_fields</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span>
+        <span class="n">new_fields_for_model</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># Build field list</span>
+        <span class="k">for</span> <span class="n">current_mfield</span> <span class="ow">in</span> <span class="n">current_fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">excluded_fields</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># Validate name in the field</span>
+            <span class="c1"># Cehcke behaviour with an alias</span>
+            <span class="k">if</span> <span class="n">current_mfield</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+                <span class="n">new_fields_for_model</span><span class="p">[</span>
+                    <span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">alias</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_fields_for_model</span><span class="p">[</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">Optional</span><span class="p">[</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">],</span>
+                    <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="n">new_model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields_for_model</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="c1"># TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175</span>
+        <span class="n">new_model</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="n">new_model</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_model</span>
+
+    <span class="k">def</span> <span class="nf">get_field_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert field alias to a field.&quot;&quot;&quot;</span>
+        <span class="n">attr_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_alias</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr_field</span>
+
+    <span class="k">def</span> <span class="nf">get_field_value_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get attribute value by field alias.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO: can this be restricted beyond Any easily.</span>
+        <span class="n">attr_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_field_by_alias</span><span class="p">(</span><span class="n">attr_alias</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_field</span><span class="p">,</span> <span class="n">ModelField</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">stripped_instance</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">stripped_fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stripped_fields_aliases</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a new model instance with the specified fields being stripped.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            stripped_fields: The fields to be removed from the current data class.</span>
+<span class="sd">            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The current datamodel with the fields provided removed in a derivate (run time created) data model.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.</span>
+<span class="sd">            err.TrestleError: If incorrect aliases or field names are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># stripped class type</span>
+        <span class="n">stripped_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_stripped_model_type</span><span class="p">(</span>
+            <span class="n">stripped_fields</span><span class="o">=</span><span class="n">stripped_fields</span><span class="p">,</span> <span class="n">stripped_fields_aliases</span><span class="o">=</span><span class="n">stripped_fields_aliases</span>
+        <span class="p">)</span>
+
+        <span class="c1"># remaining values</span>
+        <span class="n">remaining_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">stripped_class</span><span class="o">.</span><span class="n">__fields__</span><span class="p">:</span>
+                <span class="n">remaining_values</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+        <span class="c1"># create stripped model instance</span>
+        <span class="c1"># TODO: Not sure if we can avoid type escapes here</span>
+        <span class="n">stripped_instance</span> <span class="o">=</span> <span class="n">stripped_class</span><span class="p">(</span><span class="o">**</span><span class="n">remaining_values</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">return</span> <span class="n">stripped_instance</span>
+
+    <span class="k">def</span> <span class="nf">oscal_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a dictionary including the root wrapping object key.&quot;&quot;&quot;</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">raw_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Additional check to avoid root serialization</span>
+        <span class="k">if</span> <span class="s1">&#39;__root__&#39;</span> <span class="ow">in</span> <span class="n">raw_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;__root__&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">raw_dict</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">oscal_serialize_json_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an &#39;oscal wrapped&#39; json object serialized in a compressed form as bytes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pretty: Whether or not to pretty-print json output or have in compressed form.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Oscal model serialized to a json object including packaging inside of a single top level key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">wrapped</span><span class="p">:</span>
+            <span class="n">odict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscal_dict</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">odict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">odict</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__json_encoder__</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="n">orjson</span><span class="o">.</span><span class="n">OPT_INDENT_2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">odict</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__json_encoder__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">oscal_serialize_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an &#39;oscal wrapped&#39; json object serialized in a compressed form as bytes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pretty: Whether or not to pretty-print json output or have in compressed form.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Oscal model serialized to a json object including packaging inside of a single top level key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This function is provided for backwards compatibility</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">oscal_serialize_json_bytes</span><span class="p">(</span><span class="n">pretty</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">oscal_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write out a pydantic data model in an oscal friendly way.</span>
+
+<span class="sd">        OSCAL schema mandates that top level elements are wrapped in a singular</span>
+<span class="sd">        json/yaml field. This function handles both json and yaml output as well</span>
+<span class="sd">        as formatting of the json.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: The output file location for the oscal object.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            err.TrestleError: If a unknown file extension is provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="c1"># The output will have \r\n newlines on windows and \n newlines elsewhere</span>
+
+        <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">YAML</span><span class="p">:</span>
+            <span class="n">write_file</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span>
+            <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oscal_serialize_json</span><span class="p">()),</span> <span class="n">write_file</span><span class="p">)</span>
+            <span class="n">write_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">write_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
+            <span class="n">write_file</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+            <span class="n">write_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oscal_serialize_json_bytes</span><span class="p">(</span><span class="n">pretty</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="c1"># Flush / close required (by experience) due to flushing issues in tests.</span>
+            <span class="n">write_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">write_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">oscal_read</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read OSCAL objects.</span>
+
+<span class="sd">        Handles the fact OSCAL wraps top level elements and also deals with both yaml and json.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: The path of the oscal object to read.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The oscal object read into trestle oscal models.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create the wrapper model.</span>
+        <span class="n">alias</span> <span class="o">=</span> <span class="n">classname_to_alias</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+
+        <span class="n">content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;oscal_read content type </span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s1"> and alias </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;path does not exist in oscal_read: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">YAML</span><span class="p">:</span>
+                <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
+                <span class="n">fh</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span>
+                    <span class="n">path</span><span class="p">,</span>
+                    <span class="n">json_loads</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">__config__</span><span class="o">.</span><span class="n">json_loads</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Provided oscal file does not have a single top level key wrapping it.&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;It has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s1"> keys.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Invalid OSCAL file structure, multiple base keys.&#39;</span><span class="p">)</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">alias</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Provided oscal file does not have top level key: </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Provided oscal file does not have top level key key: </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to parse OSCAL object: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error parsing file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parsed</span>
+
+    <span class="k">def</span> <span class="nf">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_oscal_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opportunistic copy operation between similar types of data classes.</span>
+
+<span class="sd">        Due to the way in which oscal is constructed we get a set of similar / the same definition across various</span>
+<span class="sd">        oscal models. Due to the lack of guarantees that they are the same we cannot easily &#39;collapse&#39; the mode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_oscal_type: The desired type of oscal model</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Opportunistic copy of the data into the new model type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Copy to started&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Json based copy&#39;</span><span class="p">)</span>
+            <span class="c1"># Note: Json based oppportunistic copy</span>
+            <span class="c1"># Dev notes: Do not change this from json. Due to enums (in particular) json is the closest we can get.</span>
+            <span class="k">return</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="n">parse_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oscal_serialize_json</span><span class="p">(</span><span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;__root__&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s1">&#39;__root__&#39;</span> <span class="ow">in</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="n">__fields__</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_oscal_type</span><span class="o">.</span><span class="n">__fields__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Root element based copy too&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
+
+        <span class="c1"># bad place here.</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Provided inconsistent classes to copy to methodology.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">copy_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_oscal_object</span><span class="p">:</span> <span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy operation that implicitly does type conversion.</span>
+
+<span class="sd">        Typically would</span>
+<span class="sd">        be used to set an attribute, however, does not need to be.</span>
+
+<span class="sd">        Deals with two scenarios:</span>
+<span class="sd">        1) Casting across oscal models of equivalent type. The purpose if this</span>
+<span class="sd">        is to cross class spaces.</span>
+
+<span class="sd">        2) The same as above where the item is an array style object which does</span>
+<span class="sd">        not correctly serialize to a dict.</span>
+
+<span class="sd">        3) if the from and &#39;to&#39; objects are root schema elements the copy operation</span>
+<span class="sd">        will copy the root element to the value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            existing_oscal_object: The oscal object where fields are copied from.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recast_object</span> <span class="o">=</span> <span class="n">existing_oscal_object</span><span class="o">.</span><span class="n">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">raw_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">raw_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">recast_object</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">raw_field</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">alias_to_field_map</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ModelField</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Create a map from field alias to field.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dict which has key&#39;s of aliases and Fields as values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alias_to_field</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ModelField</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">alias_to_field</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+        <span class="k">return</span> <span class="n">alias_to_field</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_collection_container</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether a pydantic model has being created to wrap a collection primitive (e.g a list or dict).</span>
+
+<span class="sd">        In performing model decomposition it is possible using trestle framework to automatically generate a model</span>
+<span class="sd">        which looks like</span>
+
+<span class="sd">        class Foo(OscalBaseModel):</span>
+<span class="sd">            __root__: List[Bar]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean on if it meets the above criteria</span>
+
+<span class="sd">        When these cases exist we need special handling of the type information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Additional sanity check on field length</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s1">&#39;__root__&#39;</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="p">:</span>
+            <span class="c1"># This is now a __root__ key only model</span>
+            <span class="k">if</span> <span class="n">is_collection_field_type</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="p">[</span><span class="s1">&#39;__root__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_collection_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Type</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the type wraps an collection, return the collection type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The collection type.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            err.TrestleError: if not a wrapper of the collection type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">is_collection_container</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;OscalBaseModel is not wrapping a collection type&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_origin</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="p">[</span><span class="s1">&#39;__root__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3084,6 +3445,24 @@ Config        </code>
 
       <p>Overriding configuration class for pydantic base model, for use with OSCAL data classes.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Overriding configuration class for pydantic base model, for use with OSCAL data classes.&quot;&quot;&quot;</span>
+
+    <span class="n">json_loads</span> <span class="o">=</span> <span class="n">orjson</span><span class="o">.</span><span class="n">loads</span>
+    <span class="c1"># TODO: json_dumps with orjson.dumps see #840</span>
+
+    <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">robust_datetime_serialization</span><span class="p">(</span><span class="n">x</span><span class="p">)}</span>
+    <span class="n">allow_population_by_field_name</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Enforce strict schema</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+
+    <span class="c1"># Validate on assignment of variables to ensure no escapes</span>
+    <span class="n">validate_assignment</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4442,10 +4821,10 @@ as formatting of the json.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

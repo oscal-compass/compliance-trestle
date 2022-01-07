@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.elements/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3312,6 +3312,259 @@ Element        </code>
 
       <p>Element wrapper of an OSCAL model.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/elements.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Element</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Element wrapper of an OSCAL model.&quot;&quot;&quot;</span>
+
+    <span class="n">IGNORE_WRAPPER_ALIAS</span> <span class="o">=</span> <span class="s1">&#39;__&#39;</span>
+
+    <span class="n">_allowed_sub_element_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Element&#39;</span><span class="p">,</span> <span class="s1">&#39;OscalBaseModel&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">:</span> <span class="n">OscalBaseModel</span><span class="p">,</span> <span class="n">wrapper_alias</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an element wrapper.</span>
+
+<span class="sd">        wrapper_alias is the OSCAL alias for the given elem object and used for seriazation in to_json() method.</span>
+
+<span class="sd">        For example,</span>
+<span class="sd">         - List[Catalog.Group] element should have wrapper alias &#39;groups&#39;</span>
+<span class="sd">         - Catalog element should have wrapper alias &#39;catalog&#39;</span>
+
+<span class="sd">        wrapper_alias is deduced for collection type object</span>
+
+<span class="sd">        if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: There are instances where elem is a list.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">:</span> <span class="n">OscalBaseModel</span> <span class="o">=</span> <span class="n">elem</span>
+
+        <span class="k">if</span> <span class="n">wrapper_alias</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">wrapper_alias</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_WRAPPER_ALIAS</span><span class="p">:</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
+                <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_singular_classname</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">class_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;wrapper_alias not found for a collection type object: </span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+            <span class="n">wrapper_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_alias</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrapper_alias</span>
+
+    <span class="k">def</span> <span class="nf">_get_singular_classname</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the inner class name for list or dict objects.&quot;&quot;&quot;</span>
+        <span class="c1"># this assumes all items in list and all values in dict are same type</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">,</span> <span class="s1">&#39;__root__&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">type_str</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">if</span> <span class="n">type_str</span> <span class="o">==</span> <span class="s1">&#39;list&#39;</span><span class="p">:</span>
+                <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="o">.</span><span class="n">__root__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">elif</span> <span class="n">type_str</span> <span class="o">==</span> <span class="s1">&#39;dict&#39;</span><span class="p">:</span>
+                <span class="n">class_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="o">.</span><span class="n">__root__</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">return</span> <span class="n">class_name</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OscalBaseModel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the model object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span>
+
+    <span class="k">def</span> <span class="nf">_split_element_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Split the element path into root_model and remaing attr names.&quot;&quot;&quot;</span>
+        <span class="n">path_parts</span> <span class="o">=</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">root_model</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">path_parts</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">return</span> <span class="n">root_model</span><span class="p">,</span> <span class="n">path_parts</span>
+
+    <span class="k">def</span> <span class="nf">get_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">check_parent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the element at the specified element path.</span>
+
+<span class="sd">        it will return the sub-model object at the path. Sub-model object</span>
+<span class="sd">        can be of type OscalBaseModel or List</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">element_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span>
+
+        <span class="c1"># find the root-model and element path parts</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_element_path</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span>
+
+        <span class="c1"># TODO validate that self._elem is of same type as root_model</span>
+
+        <span class="c1"># initialize the starting element for search</span>
+        <span class="n">elm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span> <span class="s1">&#39;__root__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="o">.</span><span class="n">__root__</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="o">.</span><span class="n">__root__</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="n">elm</span> <span class="o">=</span> <span class="n">elm</span><span class="o">.</span><span class="n">__root__</span>
+
+        <span class="c1"># if parent exists and does not end with wildcard, use the parent as the starting element for search</span>
+        <span class="k">if</span> <span class="n">check_parent</span> <span class="ow">and</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_parent</span><span class="p">(</span>
+        <span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span><span class="o">.</span><span class="n">get_last</span><span class="p">()</span> <span class="o">!=</span> <span class="n">ElementPath</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+            <span class="n">elm_at</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_at</span><span class="p">(</span><span class="n">element_path</span><span class="o">.</span><span class="n">get_parent</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">elm_at</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid parent path </span><span class="si">{</span><span class="n">element_path</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">elm</span> <span class="o">=</span> <span class="n">elm_at</span>
+
+        <span class="c1"># return the sub-element at the specified path</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">path_parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">elm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># process for wildcard and array indexes</span>
+
+            <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="n">ElementPath</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">attr</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">elm</span> <span class="o">=</span> <span class="n">elm</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">attr</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># index to a non list type should return None</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">elm</span> <span class="o">=</span> <span class="n">elm</span><span class="o">.</span><span class="n">get_field_value_by_alias</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">elm</span>
+
+    <span class="k">def</span> <span class="nf">get_preceding_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the preceding element in the path.&quot;&quot;&quot;</span>
+        <span class="n">preceding_path</span> <span class="o">=</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_preceding_path</span><span class="p">()</span>
+        <span class="n">preceding_elm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_at</span><span class="p">(</span><span class="n">preceding_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">preceding_elm</span>
+
+    <span class="k">def</span> <span class="nf">_get_sub_element_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert sub element into allowed model obj.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_allowed_sub_element_type</span><span class="p">(</span><span class="n">sub_element</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Sub element must be one of &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_allowed_sub_element_types</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;, found &quot;</span><span class="si">{</span><span class="n">sub_element</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">model_obj</span> <span class="o">=</span> <span class="n">sub_element</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_element</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+            <span class="n">model_obj</span> <span class="o">=</span> <span class="n">sub_element</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">model_obj</span>
+
+    <span class="k">def</span> <span class="nf">set_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="n">ElementPath</span><span class="p">,</span> <span class="n">sub_element</span><span class="p">:</span> <span class="n">OscalBaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Element&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set a sub_element at the path in the current element.</span>
+
+<span class="sd">        Sub element can be Element, OscalBaseModel, list or None type</span>
+<span class="sd">        It returns the element itself so that chaining operation can be done such as</span>
+<span class="sd">            `element.set_at(path, sub-element).get()`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># convert the element_path to ElementPath if needed</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">element_path</span> <span class="o">=</span> <span class="n">ElementPath</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span>
+
+        <span class="c1"># convert sub-element to OscalBaseModel if needed</span>
+        <span class="n">model_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sub_element_obj</span><span class="p">(</span><span class="n">sub_element</span><span class="p">)</span>
+
+        <span class="c1"># find the root-model and element path parts</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_element_path</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span>
+
+        <span class="c1"># TODO validate that self._elem is of same type as root_model</span>
+
+        <span class="c1"># If wildcard is present, check the input type and determine the preceding element</span>
+        <span class="k">if</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_last</span><span class="p">()</span> <span class="o">==</span> <span class="n">ElementPath</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+            <span class="c1"># validate the type is either list or OscalBaseModel</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model_obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model_obj</span><span class="p">,</span> <span class="n">OscalBaseModel</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The model object needs to be a List or OscalBaseModel for path with &quot;</span><span class="si">{</span><span class="n">ElementPath</span><span class="o">.</span><span class="n">WILDCARD</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># since wildcard * is there, we need to go one level up for preceding element in the path</span>
+            <span class="n">preceding_elm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preceding_element</span><span class="p">(</span><span class="n">element_path</span><span class="o">.</span><span class="n">get_preceding_path</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># get the preceding element in the path</span>
+            <span class="n">preceding_elm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_preceding_element</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">preceding_elm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid sub element path </span><span class="si">{</span><span class="n">element_path</span><span class="si">}</span><span class="s1"> with no valid preceding element&#39;</span><span class="p">)</span>
+
+        <span class="c1"># check if it can be a valid sub_element of the parent</span>
+        <span class="n">sub_element_name</span> <span class="o">=</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_element_name</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">preceding_elm</span><span class="p">,</span> <span class="n">sub_element_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Element &quot;</span><span class="si">{</span><span class="n">preceding_elm</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot; does not have the attribute &quot;</span><span class="si">{</span><span class="n">sub_element_name</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;of type &quot;</span><span class="si">{</span><span class="n">model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># set the sub-element</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">preceding_elm</span><span class="p">,</span> <span class="n">sub_element_name</span><span class="p">,</span> <span class="n">model_obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
+            <span class="n">sub_element_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sub_element_class</span><span class="p">(</span><span class="n">preceding_elm</span><span class="p">,</span> <span class="n">sub_element_name</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Validation error: </span><span class="si">{</span><span class="n">sub_element_name</span><span class="si">}</span><span class="s1"> is expected to be &quot;</span><span class="si">{</span><span class="n">sub_element_class</span><span class="si">}</span><span class="s1">&quot;, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;but found &quot;</span><span class="si">{</span><span class="n">model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># returning self will allow to do &#39;chaining&#39; of commands after set</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert into YAML string.&quot;&quot;&quot;</span>
+        <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">default_flow_style</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+        <span class="n">string_stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span> <span class="n">string_stream</span><span class="p">)</span>
+        <span class="n">yaml_data</span> <span class="o">=</span> <span class="n">string_stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="n">string_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">yaml_data</span>
+
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert into JSON string.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_alias</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_WRAPPER_ALIAS</span><span class="p">:</span>
+            <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="o">.</span><span class="n">oscal_serialize_json</span><span class="p">(</span><span class="n">pretty</span><span class="o">=</span><span class="n">pretty</span><span class="p">,</span> <span class="n">wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Note before trying to edit this</span>
+            <span class="c1"># This transient model allows self._elem not be an OscalBaseModel (e.g. a DICT or LIST)</span>
+            <span class="c1"># typing need to be clarified.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">,</span> <span class="n">OscalBaseModel</span><span class="p">):</span>
+                <span class="n">json_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="o">.</span><span class="n">oscal_serialize_json</span><span class="p">(</span><span class="n">pretty</span><span class="o">=</span><span class="n">pretty</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dynamic_passer</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">dynamic_passer</span><span class="p">[</span><span class="s1">&#39;TransientField&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_alias</span><span class="p">))</span>
+                <span class="n">wrapper_model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span>
+                    <span class="s1">&#39;TransientModel&#39;</span><span class="p">,</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="o">**</span><span class="n">dynamic_passer</span>
+                <span class="p">)</span>  <span class="c1"># type: ignore</span>
+                <span class="n">wrapped_model</span> <span class="o">=</span> <span class="n">wrapper_model</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_alias</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">})</span>
+                <span class="n">json_data</span> <span class="o">=</span> <span class="n">wrapped_model</span><span class="o">.</span><span class="n">oscal_serialize_json</span><span class="p">(</span><span class="n">pretty</span><span class="o">=</span><span class="n">pretty</span><span class="p">,</span> <span class="n">wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json_data</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_sub_element_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parent_elm</span><span class="p">:</span> <span class="n">OscalBaseModel</span><span class="p">,</span> <span class="n">sub_element_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the class of the sub-element.&quot;&quot;&quot;</span>
+        <span class="n">sub_element_class</span> <span class="o">=</span> <span class="n">parent_elm</span><span class="o">.</span><span class="n">__fields__</span><span class="p">[</span><span class="n">sub_element_name</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span>
+        <span class="k">return</span> <span class="n">sub_element_class</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_allowed_sub_element_types</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the list of allowed sub element types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_allowed_sub_element_types</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">is_allowed_sub_element_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">elm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if is of allowed sub element type.&quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: The following logic does not use the _allowed_sub_element_types being defined for the class</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span> <span class="n">OscalBaseModel</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elm</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="n">elm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation of element.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check that two elements are equal.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3884,6 +4137,338 @@ ElementPath        </code>
       <p>Element path wrapper of an element.</p>
 <p>This only allows a single wildcard '*' at the end to denote elements of an array or dict</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/models/elements.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ElementPath</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Element path wrapper of an element.</span>
+
+<span class="sd">    This only allows a single wildcard &#39;*&#39; at the end to denote elements of an array or dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">PATH_SEPARATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">ALIAS_PATH_SEPARATOR</span>
+
+    <span class="n">WILDCARD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ElementPath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an element wrapper.</span>
+
+<span class="sd">        It assumes the element path contains oscal field alias with hyphens only</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent_path</span> <span class="o">=</span> <span class="n">parent_path</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse</span><span class="p">(</span><span class="n">element_path</span><span class="p">)</span>
+
+        <span class="c1"># Initialize private variables for lazy processing and caching</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_element_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preceding_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ElementPath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse the element path and validate.&quot;&quot;&quot;</span>
+        <span class="n">parts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">element_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_SEPARATOR</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Invalid path &quot;</span><span class="si">{</span><span class="n">element_path</span><span class="si">}</span><span class="s1">&quot; because there are empty path parts between &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_SEPARATOR</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+                    <span class="s1">&#39;or in the beginning&#39;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid path </span><span class="si">{</span><span class="n">element_path</span><span class="si">}</span><span class="s1"> with wildcard.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parts</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the path parts as a list.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">use_parent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the type of an element.</span>
+
+<span class="sd">        If possible the model type will be derived from one of the top level models,</span>
+<span class="sd">        otherwise a &#39;root model&#39; can be passed for situations where this is not possible.</span>
+
+<span class="sd">        This type path should *NOT* have wild cards in it. It *may* have* indices.</span>
+<span class="sd">        Valid Examples:</span>
+<span class="sd">            catalog.metadata</span>
+<span class="sd">            catalog.groups</span>
+<span class="sd">            catalog.groups.group</span>
+<span class="sd">            catalog</span>
+<span class="sd">            catalog.groups.0</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root_model: An OscalBaseModel Type from which to base the approach on.</span>
+<span class="sd">            use_parent: Whether or not to normalise the full path across parent ElementPaths, default to not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The type of the model whether or not it is an OscalBaseModel or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">effective_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">use_parent</span><span class="p">:</span>
+            <span class="n">effective_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_path_parts</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">effective_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root_model</span><span class="p">:</span>
+            <span class="c1"># lookup root model from top level oscal models or fail</span>
+            <span class="n">prev_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top_level_type_lookup</span><span class="p">(</span><span class="n">effective_path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prev_model</span> <span class="o">=</span> <span class="n">root_model</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">effective_path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prev_model</span>
+        <span class="c1"># variables</span>
+        <span class="c1"># for current_element_str in effective_path[1:]:</span>
+        <span class="k">for</span> <span class="n">current_element_str</span> <span class="ow">in</span> <span class="n">effective_path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="c1"># Determine if the parent model is a collection.</span>
+            <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">prev_model</span><span class="p">):</span>
+                <span class="n">inner_model</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_inner_type</span><span class="p">(</span><span class="n">prev_model</span><span class="p">)</span>
+                <span class="n">inner_class_name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">inner_model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+                <span class="c1"># Assert that the current name fits an expected form.</span>
+                <span class="c1"># Valid choices here are *, integer (for arrays) and the inner model alias</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">inner_class_name</span> <span class="o">==</span> <span class="n">current_element_str</span> <span class="ow">or</span> <span class="n">current_element_str</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">WILDCARD</span>
+                        <span class="ow">or</span> <span class="n">current_element_str</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()):</span>
+                    <span class="n">prev_model</span> <span class="o">=</span> <span class="n">inner_model</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unexpected key in element path when finding type.&#39;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Indices, * are not allowed on non-collection types</span>
+                <span class="k">if</span> <span class="n">current_element_str</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Cannot get the type of an element path where wild cards do not match a  &#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                        <span class="s1">&#39;Wild card in unexpected position when trying to find class type.&#39;</span>
+                        <span class="o">+</span> <span class="s1">&#39; Element path type lookup can only occur where a single type can be identified.&#39;</span>
+                    <span class="p">)</span>
+                <span class="n">prev_model</span> <span class="o">=</span> <span class="n">prev_model</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()[</span><span class="n">current_element_str</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span>
+        <span class="k">return</span> <span class="n">prev_model</span>
+
+    <span class="k">def</span> <span class="nf">get_obm_wrapped_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">root_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">use_parent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the type of the element. If the type is a collection wrap the type in an OscalBaseModel as a __root__ element.</span>
+
+<span class="sd">        This should principally be used for validating content.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            root_model: An OscalBaseModel Type from which to base the approach on.</span>
+<span class="sd">            use_parent: Whether or not to normalise the full path across parent ElementPaths, default to not.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The type of the model whether wrapped or not as an OscalBaseModel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">root_model</span><span class="p">,</span> <span class="n">use_parent</span><span class="p">)</span>
+        <span class="c1"># Get an outer model type.</span>
+        <span class="n">origin_type</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_origin</span><span class="p">(</span><span class="n">base_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">origin_type</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+            <span class="c1"># OSCAL does not support collections of collections directly. We should not hit this scenario</span>
+            <span class="n">collection_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_last</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">collection_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Unexpected error in type system when inferring type from element path.&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Please report this issue.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unknown error inferring type from element path.&#39;</span><span class="p">)</span>
+            <span class="c1"># Final path must be the alias</span>
+
+            <span class="n">new_base_type</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">alias_to_classname</span><span class="p">(</span><span class="n">collection_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">),</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="n">__root__</span><span class="o">=</span><span class="p">(</span><span class="n">base_type</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_base_type</span>
+        <span class="k">return</span> <span class="n">base_type</span>
+
+    <span class="k">def</span> <span class="nf">_top_level_type_lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">common_types</span><span class="o">.</span><span class="n">TopLevelOscalModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;From an individual element tag, induce the type of the model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element_str: individual element as text such as &#39;catalog&#39; or &#39;profile&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Top level object model such as catalog, profile etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Even though awkward use chain of models.</span>
+        <span class="k">if</span> <span class="n">element_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">element_str</span><span class="si">}</span><span class="s1"> is not a top level model (e.g. catalog, profile)&#39;</span><span class="p">)</span>
+        <span class="n">model_package</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">[</span><span class="n">element_str</span><span class="p">]</span>
+        <span class="n">object_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_root_model</span><span class="p">(</span><span class="n">model_package</span><span class="p">)</span>
+        <span class="n">object_type</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">common_types</span><span class="o">.</span><span class="n">TopLevelOscalModel</span><span class="p">],</span> <span class="n">object_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">object_type</span>
+
+    <span class="k">def</span> <span class="nf">is_multipart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Assert whether or not an element path is multiple parts.</span>
+
+<span class="sd">        Originally element paths had to have multiple paths.</span>
+<span class="sd">        This provides a check for higher level code that still has that requirement.</span>
+
+<span class="sd">        Single part:</span>
+<span class="sd">            catalog</span>
+<span class="sd">            control</span>
+<span class="sd">            assessment-results</span>
+
+<span class="sd">        Multipart:</span>
+<span class="sd">            catalog.metadata</span>
+<span class="sd">            catalog.controls.control</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the path parts as a dot-separated string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PATH_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">get_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ElementPath&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the parent path.</span>
+
+<span class="sd">        It can be None or a valid ElementPath</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent_path</span>
+
+    <span class="k">def</span> <span class="nf">get_first</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the first part of the path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_last</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the last part of the path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_full</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the full path including parent path parts as a dot separated str.&quot;&quot;&quot;</span>
+        <span class="n">all_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_path_parts</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PATH_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_parts</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_element_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the element alias name from the path.</span>
+
+<span class="sd">        Essentailly this the last part of the element path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if it is available then return otherwise compute</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">element_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_last</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">element_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+                <span class="n">element_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_element_name</span> <span class="o">=</span> <span class="n">element_name</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_name</span>
+
+    <span class="k">def</span> <span class="nf">get_full_path_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get full path parts to the element including parent path parts as a list.&quot;&quot;&quot;</span>
+        <span class="n">path_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parent_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span><span class="o">.</span><span class="n">get_full_path_parts</span><span class="p">()</span>
+            <span class="n">path_parts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parent_path_parts</span><span class="p">)</span>
+            <span class="n">path_parts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># don&#39;t use the first part</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path_parts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">path_parts</span>
+
+    <span class="k">def</span> <span class="nf">get_preceding_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ElementPath&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the element path to the preceding element in the path.&quot;&quot;&quot;</span>
+        <span class="c1"># if it is available then return otherwise compute</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preceding_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_path_parts</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">prec_path_parts</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_preceding_path</span> <span class="o">=</span> <span class="n">ElementPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PATH_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prec_path_parts</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preceding_path</span>
+
+    <span class="k">def</span> <span class="nf">find_last_file_in_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="n">FileContentType</span><span class="p">,</span> <span class="n">model_dir</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Find the last (nearest) existing file in the element path leading to this element.&quot;&quot;&quot;</span>
+        <span class="c1"># model dir is the top level dir for this model, e.g. catalogs/mycat</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">model_dir</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span>
+        <span class="n">good_model</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">model_file</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">break</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">element</span>
+            <span class="n">good_model</span> <span class="o">=</span> <span class="n">model_file</span>
+        <span class="k">return</span> <span class="n">good_model</span>
+
+    <span class="k">def</span> <span class="nf">make_absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_dir</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">reference_dir</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make the parts absolute from the top model dir.&quot;&quot;&quot;</span>
+        <span class="c1"># Match the current relative element path to the model directory and reference directory</span>
+        <span class="c1"># If the element path is partial and doesn&#39;t connect to the top of the model,</span>
+        <span class="c1"># need to deduce absolute element path from the model_dir and the reference directory</span>
+        <span class="c1"># that corresponds to the root of the element path</span>
+
+        <span class="c1"># if first element is a model type it is already absolute</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">:</span>
+            <span class="n">rel_path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reference_dir</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">model_dir</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span>
+            <span class="n">rel_path</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">rel_path</span>
+
+    <span class="k">def</span> <span class="nf">make_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_relative_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Make the parts relative to the model path.&quot;&quot;&quot;</span>
+        <span class="c1"># The element path should currently be absolute</span>
+        <span class="c1"># The model relative path should be relative to the top leve of the model</span>
+        <span class="c1"># Change the element path to be relative to the model being loaded</span>
+        <span class="c1"># Returns 0 on success and 1 on failur</span>
+        <span class="n">rel_path_parts</span> <span class="o">=</span> <span class="n">model_relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">n_rel_parts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rel_path_parts</span><span class="p">)</span>
+        <span class="c1"># the element path can&#39;t start above the model path</span>
+        <span class="k">if</span> <span class="n">n_rel_parts</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="c1"># confirm the leading parts match</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rel_parts</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rel_path_parts</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="n">ii</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="mi">1</span>
+        <span class="c1"># chop off the leading parts of the absolute element path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="n">n_rel_parts</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">to_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="n">FileContentType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert to a file or directory path for the element path.</span>
+
+<span class="sd">        if content_type is not passed, it will return a path for directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="c1"># skip wildcard</span>
+        <span class="k">if</span> <span class="n">path_parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">ElementPath</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
+            <span class="n">path_parts</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">root_dir</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">root_dir</span>
+
+        <span class="n">path_str</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_parts</span><span class="p">)</span>
+
+        <span class="c1"># add file extension if required</span>
+        <span class="c1"># this will be omitted if it is a dir path</span>
+        <span class="k">if</span> <span class="n">content_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_extension</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span>
+            <span class="n">path_str</span> <span class="o">=</span> <span class="n">path_str</span> <span class="o">+</span> <span class="n">file_extension</span>
+
+        <span class="c1"># prepare the path</span>
+        <span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">file_path</span>
+
+    <span class="k">def</span> <span class="nf">to_root_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="n">FileContentType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert to a file path for the element root.&quot;&quot;&quot;</span>
+        <span class="n">path_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_first</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">content_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_extension</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span>
+            <span class="n">path_str</span> <span class="o">=</span> <span class="n">path_str</span> <span class="o">+</span> <span class="n">file_extension</span>
+
+        <span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_path</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return string representation of element path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Override equality method.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ElementPath</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -4880,10 +5465,10 @@ catalog.controls.control</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

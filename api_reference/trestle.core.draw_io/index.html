@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.draw_io/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2904,6 +2904,173 @@ DrawIO        </code>
 
       <p>Access and process drawio data / metadata.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/draw_io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DrawIO</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Access and process drawio data / metadata.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load drawio object into memory.</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            file_path: Path to the drawio object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">file_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">banned_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load the file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Candidate drawio file </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist or is a directory&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Candidate drawio file </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exist or is a directory&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_xml</span> <span class="o">=</span> <span class="n">defusedxml</span><span class="o">.</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">forbid_dtd</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exception loading Element tree from file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exception loading Element tree from file: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mx_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_xml</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mx_file</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;mxfile&#39;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;DrawIO file is not a draw io file (mxfile)&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;DrawIO file is not a draw io file (mxfile)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diagrams</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">diagram</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mx_file</span><span class="p">):</span>
+            <span class="c1"># Determine if compressed or not</span>
+            <span class="c1"># Assumption 1 mxGraphModel</span>
+            <span class="n">n_children</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">diagram</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">n_children</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Compressed object</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">diagrams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uncompress</span><span class="p">(</span><span class="n">diagram</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">n_children</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">diagrams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">diagram</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unhandled behaviour in drawio read.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_uncompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressed_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a compressed object from a drawio file return an xml element for the mxGraphModel.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            compressed_text: A compressed mxGraphModel from inside an mxfile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An element containing the mxGraphModel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Assume b64 encode</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">compressed_text</span><span class="p">)</span>
+        <span class="n">clean_text</span> <span class="o">=</span> <span class="n">unquote</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">decoded</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">))</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">defusedxml</span><span class="o">.</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">clean_text</span><span class="p">,</span> <span class="n">forbid_dtd</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;mxGraphModel&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Unknown data structure within a compressed drawio file.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">element</span>
+
+    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Get metadata from each tab if it exists or provide an empty dict.&quot;&quot;&quot;</span>
+        <span class="c1"># Note that id and label are special for drawio.</span>
+        <span class="n">md_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">diagram</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">diagrams</span><span class="p">:</span>
+            <span class="n">md_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># Drawio creates data within a root and then an object element type</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">diagram</span><span class="p">)</span>
+            <span class="n">root_obj</span> <span class="o">=</span> <span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">md_objects</span> <span class="o">=</span> <span class="n">root_obj</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+            <span class="c1"># Should always be true - to test presumptions.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">md_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">md_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">md_dict</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="n">md_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">banned_keys</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">md_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="n">md_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">md_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">md_list</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">restructure_metadata</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Restructure metadata into a hierarchial dict assuming a period separator.&quot;&quot;&quot;</span>
+        <span class="c1"># get the list of duplicate keys</span>
+        <span class="c1"># Get a count of keys</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">key_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">keys</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">stub</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">key_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">stub</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+            <span class="n">key_map</span><span class="p">[</span><span class="n">stub</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">key_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">holding</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                    <span class="n">holding</span><span class="p">[</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">input_dict</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">restructure_metadata</span><span class="p">(</span><span class="n">holding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">write_drawio_with_metadata</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">diagram_metadata_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">target_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write modified metadata to drawio file.</span>
+
+<span class="sd">        Writes given metadata to &#39;object&#39; element attributes inside of the selected drawio diagram element.</span>
+<span class="sd">        Currently supports writing only uncompressed elements.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: path to write modified drawio file to</span>
+<span class="sd">            metadata: dictionary of modified metadata to insert to drawio</span>
+<span class="sd">            diagram_metadata_idx: index of diagram which metadata was modified</span>
+<span class="sd">            target_path: if not provided the changes will be written to path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flattened_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_dictionary</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">diagram_metadata_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diagrams</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Drawio file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> does not contain a diagram for index </span><span class="si">{</span><span class="n">diagram_metadata_idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">diagram</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diagrams</span><span class="p">)[</span><span class="n">diagram_metadata_idx</span><span class="p">]</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">diagram</span><span class="p">)</span>
+        <span class="n">root_obj</span> <span class="o">=</span> <span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">md_objects</span> <span class="o">=</span> <span class="n">root_obj</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">md_objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to write metadata, diagram in drawio file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> does not have objects.&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">md_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">copy</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">flattened_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">banned_keys</span><span class="p">:</span>
+                <span class="c1"># outdated key delete</span>
+                <span class="k">del</span> <span class="n">md_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">banned_keys</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">md_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">flattened_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">flattened_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">banned_keys</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">md_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">flattened_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">parent_diagram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mx_file</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;diagram&#39;</span><span class="p">)[</span><span class="n">diagram_metadata_idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_diagram</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;mxGraphModel&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">parent_diagram</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">diagram</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">target_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_xml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">target_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_xml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_flatten_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Flatten hierarchial dict back to xml attributes.&quot;&quot;&quot;</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="n">parent_key</span> <span class="o">+</span> <span class="n">separator</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">parent_key</span> <span class="k">else</span> <span class="n">key</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flatten_dictionary</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">new_key</span><span class="p">,</span> <span class="n">separator</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">new_key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3204,6 +3371,60 @@ DrawIOMetadataValidator        </code>
 
       <p>Validator to check whether drawio metadata meets validation expectations.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/draw_io.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DrawIOMetadataValidator</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Validator to check whether drawio metadata meets validation expectations.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">must_be_first_tab</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize drawio validator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            template_path: Path to a templated drawio file where metadata will be looked up on the first tab only.</span>
+<span class="sd">            must_be_first_tab: Whether to search the candidate file for a metadata across multiple tabs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span> <span class="o">=</span> <span class="n">template_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">must_be_first_tab</span> <span class="o">=</span> <span class="n">must_be_first_tab</span>
+        <span class="c1"># Load metadat from template</span>
+        <span class="n">template_drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">)</span>
+        <span class="c1"># Zero index as must be first tab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_metadata</span> <span class="o">=</span> <span class="n">template_drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span> <span class="o">=</span> <span class="n">MarkdownValidator</span><span class="o">.</span><span class="n">extract_template_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_metadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Version of the template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="si">}</span><span class="s1"> does not match the path </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;Move the template to the folder </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;Version&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_metadata</span><span class="p">[</span><span class="s1">&#39;Version&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_version</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Version does not match template-version in template: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run drawio validation against a candidate file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            candidate: The path to a candidate markdown file to be validated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Whether or not the validation passes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            err.TrestleError: If a file IO / formatting error occurs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validating drawio file </span><span class="si">{</span><span class="n">candidate</span><span class="si">}</span><span class="s1"> against template file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">candidate_drawio</span> <span class="o">=</span> <span class="n">DrawIO</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+        <span class="n">drawio_metadata</span> <span class="o">=</span> <span class="n">candidate_drawio</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">must_be_first_tab</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MarkdownValidator</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_metadata</span><span class="p">,</span> <span class="n">drawio_metadata</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">md_tab</span> <span class="ow">in</span> <span class="n">drawio_metadata</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">MarkdownValidator</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_metadata</span><span class="p">,</span> <span class="n">md_tab</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">status</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">status</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3474,10 +3695,10 @@ DrawIOMetadataValidator        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

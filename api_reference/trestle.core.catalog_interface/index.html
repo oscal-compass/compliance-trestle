@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.catalog_interface/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -3265,6 +3265,624 @@ changes are then made to controls in the dict,
 then the catalog controls are updated by pulling from the dict back into the catalog.</p>
 <p>This class does no direct file i/o.  i/o is performed via ControlIO.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/catalog_interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CatalogInterface</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface to query and modify catalog contents.</span>
+
+<span class="sd">    The catalog is contained in two separate forms:  As an actual OSCAL catalog,</span>
+<span class="sd">    and as a separate dict providing direct lookup of a control by id.</span>
+
+<span class="sd">    The two representations should be converted as needed using provided routines:</span>
+<span class="sd">    dict -&gt; cat: update_catalog_controls</span>
+<span class="sd">    cat -&gt; dict: _create_control_dict</span>
+
+<span class="sd">    In normal use the dict is created by the CatalogInterface constructor,</span>
+<span class="sd">    changes are then made to controls in the dict,</span>
+<span class="sd">    then the catalog controls are updated by pulling from the dict back into the catalog.</span>
+
+<span class="sd">    This class does no direct file i/o.  i/o is performed via ControlIO.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">ControlHandle</span><span class="p">(</span><span class="n">TrestleBaseModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convenience class for handling controls as members of a group.</span>
+
+<span class="sd">        group_id: id of parent group or &#39;&#39; if not in a group</span>
+<span class="sd">        group_title: title of the group</span>
+<span class="sd">        group_class: class of the group</span>
+<span class="sd">        path: path of parent groups leading to this control - without the final control_id, or [&#39;&#39;] if in cat list</span>
+<span class="sd">        control: the control itself</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">group_title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+        <span class="n">group_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+        <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the interface with the catalog.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">catalog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_control_dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">catalog</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_add_params_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># this does not need to recurse because it is called for each control in the catalog</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">params</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Duplicate param id </span><span class="si">{</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> in control </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="k">def</span> <span class="nf">_add_sub_controls</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">control_handle</span><span class="p">:</span> <span class="n">ControlHandle</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ControlHandle</span><span class="p">],</span> <span class="n">path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all controls contained in this control and add it to the growing dict.</span>
+
+<span class="sd">        Add all its sub-controls to the dict recursively.</span>
+<span class="sd">        The path does not change because only groups are in the path, and controls cannot contain groups.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">control_handle</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">group_id</span> <span class="o">=</span> <span class="n">control_handle</span><span class="o">.</span><span class="n">group_id</span>
+            <span class="n">group_title</span> <span class="o">=</span> <span class="n">control_handle</span><span class="o">.</span><span class="n">group_title</span>
+            <span class="n">group_class</span> <span class="o">=</span> <span class="n">control_handle</span><span class="o">.</span><span class="n">group_class</span>
+            <span class="k">for</span> <span class="n">sub_control</span> <span class="ow">in</span> <span class="n">control_handle</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">control_handle</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">ControlHandle</span><span class="p">(</span>
+                    <span class="n">group_id</span><span class="o">=</span><span class="n">group_id</span><span class="p">,</span> <span class="n">group_title</span><span class="o">=</span><span class="n">group_title</span><span class="p">,</span> <span class="n">group_class</span><span class="o">=</span><span class="n">group_class</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">sub_control</span>
+                <span class="p">)</span>
+                <span class="n">control_dict</span><span class="p">[</span><span class="n">sub_control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_handle</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_sub_controls</span><span class="p">(</span><span class="n">control_handle</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_group_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ControlHandle</span><span class="p">],</span> <span class="n">path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">group_path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[:]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">group_path</span> <span class="ow">or</span> <span class="n">group_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                <span class="n">group_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">control_handle</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">ControlHandle</span><span class="p">(</span>
+                    <span class="n">group_id</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="n">group_title</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                    <span class="n">group_class</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">class_</span><span class="p">,</span>
+                    <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
+                    <span class="n">path</span><span class="o">=</span><span class="n">group_path</span>
+                <span class="p">)</span>
+                <span class="n">control_dict</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_handle</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_sub_controls</span><span class="p">(</span><span class="n">control_handle</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">,</span> <span class="n">group_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">group_path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[:]</span>
+            <span class="n">group_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">sub_group</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">new_path</span> <span class="o">=</span> <span class="n">group_path</span><span class="p">[:]</span>
+                <span class="n">new_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_group</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_group_controls</span><span class="p">(</span><span class="n">sub_group</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_control_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ControlHandle</span><span class="p">]:</span>
+        <span class="n">control_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">ControlHandle</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># add controls by group</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_group_controls</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="c1"># now add controls not in a group, if any</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">group_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">control_handle</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">ControlHandle</span><span class="p">(</span>
+                    <span class="n">group_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">group_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">group_class</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_CATALOG</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">group_path</span>
+                <span class="p">)</span>
+                <span class="n">control_dict</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_handle</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_sub_controls</span><span class="p">(</span><span class="n">control_handle</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">,</span> <span class="n">group_path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="n">control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_params_to_dict</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">control</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">control_dict</span>
+
+    <span class="k">def</span> <span class="nf">_get_all_controls_in_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">],</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="n">new_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">controls</span><span class="p">:</span>
+            <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">recurse</span> <span class="ow">and</span> <span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">new_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span> <span class="n">recurse</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">new_list</span>
+
+    <span class="k">def</span> <span class="nf">_get_all_controls_in_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a list of all controls in this group.</span>
+
+<span class="sd">        recurse specifies to recurse within controls, but groups are always recursed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">controls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">controls</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span> <span class="n">recurse</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">controls</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_group</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">recurse</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">controls</span>
+
+    <span class="k">def</span> <span class="nf">get_dependent_control_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Find all children of this control.&quot;&quot;&quot;</span>
+        <span class="n">children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">new_controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">children</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">con</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">con</span> <span class="ow">in</span> <span class="n">new_controls</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">children</span>
+
+    <span class="k">def</span> <span class="nf">get_control_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all control ids in catalog using the dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get control from catalog with this id using the dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">control_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">control</span>
+
+    <span class="k">def</span> <span class="nf">get_control_by_param_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get control from catalog that has this param id using the dict.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">param_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">param_id</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">get_control_part_prose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">part_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the prose for a named part in the control.&quot;&quot;&quot;</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ControlIOWriter</span><span class="o">.</span><span class="n">get_part_prose</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">part_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_all_controls_from_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Yield all deep and individual controls from the actual catalog by group.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            recurse: Whether to recurse within controls, but groups are always recursed</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            iterator of the controls in the catalog</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_group</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">recurse</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">controls</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">control</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">cat_controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span> <span class="n">recurse</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">cat_controls</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">control</span>
+
+    <span class="k">def</span> <span class="nf">get_all_controls_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Yield individual controls from the dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">handle</span><span class="o">.</span><span class="n">control</span> <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+    <span class="k">def</span> <span class="nf">get_count_of_controls_in_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Find number of controls in the dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">get_count_of_controls_in_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get count of controls from the actual catalog.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_controls_from_catalog</span><span class="p">(</span><span class="n">recurse</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">get_group_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all the group id&#39;s as strings in a list.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">list</span><span class="p">({</span><span class="n">control</span><span class="o">.</span><span class="n">group_id</span> <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()})))</span>
+
+    <span class="k">def</span> <span class="nf">get_all_groups_from_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve all groups in the catalog.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">my_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_groups_from_group</span><span class="p">(</span><span class="n">my_group</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">res</span>
+
+    <span class="k">def</span> <span class="nf">get_statement_label_if_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                      <span class="n">statement_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Get statement label if given.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">does_part_exists</span><span class="p">(</span><span class="n">part</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">does_match</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;statement&#39;</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">}</span> <span class="ow">and</span> <span class="n">part</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">statement_id</span><span class="p">:</span>
+                <span class="n">does_match</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">does_match</span>
+
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">control</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">found_part</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+                <span class="c1"># Performance OSCAL assumption, ids are nested so recurse only if prefix</span>
+                <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">id</span> <span class="ow">and</span> <span class="n">statement_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+                    <span class="n">part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_part_with_condition</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">does_part_exists</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">part</span><span class="p">:</span>
+                        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
+                        <span class="n">found_part</span> <span class="o">=</span> <span class="n">part</span>
+                        <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">label</span><span class="p">,</span> <span class="n">found_part</span>
+
+    <span class="k">def</span> <span class="nf">find_part_with_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Traverse part and find subpart that satisfies given condition.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="n">part</span><span class="p">):</span>
+            <span class="c1"># Part that satisfies the condition is found.</span>
+            <span class="k">return</span> <span class="n">part</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">subpart</span> <span class="ow">in</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                    <span class="n">found_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_part_with_condition</span><span class="p">(</span><span class="n">subpart</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">found_part</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">found_part</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_groups_from_group</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">]:</span>
+        <span class="k">yield</span> <span class="n">group</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">new_group</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_groups_from_group</span><span class="p">(</span><span class="n">new_group</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">res</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">object_with_props</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the label from an object with properties (such as a control).&quot;&quot;&quot;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">object_with_props</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">object_with_props</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">label</span>
+
+    <span class="k">def</span> <span class="nf">get_group_info_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the group_id, title, class for this control from the dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_id</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_title</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">group_class</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_control_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the path into the catalog for this control.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span><span class="o">.</span><span class="n">path</span>
+
+    <span class="k">def</span> <span class="nf">replace_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Replace the control in the control_dict after modifying it.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">control</span> <span class="o">=</span> <span class="n">control</span>
+
+    <span class="k">def</span> <span class="nf">get_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Safe method to get catalog after forced update from catalog dict.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_catalog_controls</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span>
+
+    <span class="k">def</span> <span class="nf">_update_all_controls_in_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Given a list of controls, create fresh list pulled from the control dict.&quot;&quot;&quot;</span>
+        <span class="n">new_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">controls</span><span class="p">:</span>
+            <span class="c1"># first update the control itself by getting it from the dict</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="c1"># then update any controls it contains from the dict</span>
+            <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">control</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_all_controls_in_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+            <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_list</span>
+
+    <span class="k">def</span> <span class="nf">_update_all_controls_in_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Given a group of controls, create fresh version pulled from the control dict.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_all_controls_in_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="n">new_groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">sub_group</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_all_controls_in_group</span><span class="p">(</span><span class="n">sub_group</span><span class="p">)</span>
+                <span class="n">new_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_group</span><span class="p">)</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="n">new_groups</span>
+
+    <span class="k">def</span> <span class="nf">update_catalog_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update the actual catalog by pulling fresh controls from the dict.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_all_controls_in_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_all_controls_in_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_string_in_part</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">part</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">,</span> <span class="n">seek_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">hits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">prose</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">seek_str</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">hits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">control_id</span><span class="p">,</span> <span class="n">part</span><span class="o">.</span><span class="n">prose</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sub_part</span> <span class="ow">in</span> <span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="n">hits</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_string_in_part</span><span class="p">(</span><span class="n">control_id</span><span class="p">,</span> <span class="n">sub_part</span><span class="p">,</span> <span class="n">seek_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">hits</span>
+
+    <span class="k">def</span> <span class="nf">find_string_in_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">seek_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Find all instances of this string in prose of control.&quot;&quot;&quot;</span>
+        <span class="n">hits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="n">hits</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_string_in_part</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">part</span><span class="p">,</span> <span class="n">seek_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">hits</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_full_profile_param_dict</span><span class="p">(</span><span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the full mapping of param_id to modified value for this profile.&quot;&quot;&quot;</span>
+        <span class="n">set_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">set_param_dict</span>
+        <span class="k">for</span> <span class="n">set_param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">):</span>
+            <span class="n">value_str</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">param_values_as_string</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
+            <span class="n">set_param_dict</span><span class="p">[</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_str</span>
+        <span class="k">return</span> <span class="n">set_param_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_profile_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">profile_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the list of params for this control and any set by the profile.&quot;&quot;&quot;</span>
+        <span class="n">param_dict</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">profile_param_dict</span><span class="p">:</span>
+                <span class="n">param_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_param_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">param_dict</span>
+
+    <span class="k">def</span> <span class="nf">write_catalog_as_markdown</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">responses</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">additional_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">profile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">preserve_header_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Write out the catalog controls from dict as markdown to the given directory.&quot;&quot;&quot;</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+
+        <span class="c1"># create the directory in which to write the control markdown files</span>
+        <span class="n">md_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">set_parameters</span><span class="p">:</span>
+            <span class="n">full_profile_param_dict</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">get_full_profile_param_dict</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="c1"># write out the controls</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_all_controls_from_catalog</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">new_header</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">yaml_header</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">set_parameters</span><span class="p">:</span>
+                <span class="n">param_dict</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">get_profile_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">full_profile_param_dict</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">param_dict</span><span class="p">:</span>
+                    <span class="n">new_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_dict</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_group_info_by_control</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="c1"># control could be in sub-group of group so build path to it</span>
+            <span class="n">group_dir</span> <span class="o">=</span> <span class="n">md_path</span>
+            <span class="n">control_path</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control_path</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="n">control_path</span><span class="p">:</span>
+                <span class="n">group_dir</span> <span class="o">=</span> <span class="n">group_dir</span> <span class="o">/</span> <span class="n">sub_dir</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">group_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="n">group_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">write_control</span><span class="p">(</span>
+                <span class="n">group_dir</span><span class="p">,</span>
+                <span class="n">control</span><span class="p">,</span>
+                <span class="n">group_title</span><span class="p">,</span>
+                <span class="n">new_header</span><span class="p">,</span>
+                <span class="n">sections</span><span class="p">,</span>
+                <span class="n">additional_content</span><span class="p">,</span>
+                <span class="n">responses</span><span class="p">,</span>
+                <span class="n">profile</span><span class="p">,</span>
+                <span class="n">preserve_header_values</span>
+            <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a sorted map of group id to group dir that is ordered by group id.</span>
+
+<span class="sd">        This includes &#39;&#39; as the root group id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># manually insert the top dir as group &#39;&#39;</span>
+        <span class="n">id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="n">md_path</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">gdir</span> <span class="ow">in</span> <span class="n">md_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*/&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">gdir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+                <span class="n">id_map</span><span class="p">[</span><span class="n">gdir</span><span class="o">.</span><span class="n">stem</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdir</span>
+        <span class="c1"># rebuild the dict by inserting items in manner sorted by key</span>
+        <span class="n">sorted_id_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">id_map</span><span class="p">):</span>
+            <span class="n">sorted_id_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">sorted_id_map</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find sorted list of paths to control md files in this group dir.</span>
+
+<span class="sd">        Parse control id and sort based on assumed pattern label-digits.frac.extra</span>
+<span class="sd">        The extra part is treated as an arbitrary string.</span>
+<span class="sd">        In the worst case this results in ordinary string sorting.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">control_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.md&#39;</span><span class="p">))</span>
+        <span class="n">control_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">control_path</span> <span class="ow">in</span> <span class="n">control_paths</span><span class="p">:</span>
+            <span class="n">control_id</span> <span class="o">=</span> <span class="n">control_path</span><span class="o">.</span><span class="n">stem</span>
+            <span class="c1"># set the label to be the control_id at start</span>
+            <span class="c1"># if the id doesn&#39;t fit the expected pattern it will just be sorted alphabetically based on the id string</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">control_id</span>
+            <span class="n">digits</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">frac</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">extra</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="c1"># now try to break off ac as label from ac-11.21xy</span>
+            <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">control_id</span><span class="p">:</span>
+                <span class="n">dash_split</span> <span class="o">=</span> <span class="n">control_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">dash_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">remainder</span> <span class="o">=</span> <span class="n">dash_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># now try to extract 11 and 21</span>
+                <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([0-9]+)\.([0-9]+)(.*)&#39;</span><span class="p">,</span> <span class="n">remainder</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+                    <span class="n">tup</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                    <span class="n">digits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">frac</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">extra</span> <span class="o">=</span> <span class="n">tup</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># look for 11 with no decimal</span>
+                    <span class="c1"># this is needed so ac-2 comes before ac-11</span>
+                    <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([0-9]+)(.*)&#39;</span><span class="p">,</span> <span class="n">remainder</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+                        <span class="n">tup</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                        <span class="n">digits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="c1"># extra will now contain xy</span>
+                        <span class="n">extra</span> <span class="o">=</span> <span class="n">tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">extra</span> <span class="o">=</span> <span class="n">remainder</span>
+            <span class="c1"># create the 4 keys used for sorting</span>
+            <span class="n">control_map</span><span class="p">[</span><span class="n">control_path</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">digits</span><span class="p">,</span> <span class="n">frac</span><span class="p">,</span> <span class="n">extra</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">control_paths</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">control_map</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">read_catalog_from_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the groups and catalog controls from the given directory.</span>
+
+<span class="sd">        This will overwrite the existing groups and controls in the catalog.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">)</span>
+        <span class="n">id_map</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># read each group dir</span>
+        <span class="k">for</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">group_dir</span> <span class="ow">in</span> <span class="n">id_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">control_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">group_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="c1"># Need to get group title from at least one control in this directory</span>
+            <span class="c1"># All controls in dir should have same group title</span>
+            <span class="c1"># Set group title to the first one found and warn if different non-empty title appears</span>
+            <span class="c1"># Controls with empty group titles are tolerated but at least one title must be present or warning given</span>
+            <span class="c1"># The special group with no name that has the catalog as parent is just a list and has no title</span>
+            <span class="k">for</span> <span class="n">control_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_dir</span><span class="p">):</span>
+                <span class="n">control</span><span class="p">,</span> <span class="n">control_group_title</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_control</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">control_group_title</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">group_title</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">control_group_title</span> <span class="o">!=</span> <span class="n">group_title</span><span class="p">:</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> group title </span><span class="si">{</span><span class="n">control_group_title</span><span class="si">}</span><span class="s1"> differs from </span><span class="si">{</span><span class="n">group_title</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">group_title</span> <span class="o">=</span> <span class="n">control_group_title</span>
+                <span class="n">control_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">group_id</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">group_title</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No group title found in controls for group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">new_group</span> <span class="o">=</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">group_id</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">group_title</span><span class="p">)</span>
+                <span class="n">new_group</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">control_list</span>
+                <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_group</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if the list of controls has no group id it also has no title and is just the controls of the catalog</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">control_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="n">groups</span> <span class="k">if</span> <span class="n">groups</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_catalog_imp_reqs</span><span class="p">(</span><span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+                              <span class="n">avail_comps</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Read the full set of control implemented requirements from markdown.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            md_path: Path to the markdown control files, with directories for each group</span>
+<span class="sd">            avail_comps: Dict mapping component names to known components</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of implemented requirements gathered from each control</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            As the controls are read into the catalog the needed components are added if not already available.</span>
+<span class="sd">            avail_comps provides the mapping of component name to the actual component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">imp_reqs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_path</span><span class="p">):</span>
+                <span class="n">imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_implemented_requirement</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">avail_comps</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">imp_reqs</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_additional_content</span><span class="p">(</span><span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Read all markdown controls and return list of alters.&quot;&quot;&quot;</span>
+        <span class="n">new_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">group_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_path</span><span class="p">):</span>
+                <span class="n">control_alters</span><span class="p">,</span> <span class="n">control_param_dict</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_new_alters_and_params</span><span class="p">(</span><span class="n">control_file</span><span class="p">)</span>
+                <span class="n">new_alters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">control_alters</span><span class="p">)</span>
+                <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">control_param_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_alters</span><span class="p">,</span> <span class="n">param_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">part_equivalent</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if individual parts are equivalent.&quot;&quot;&quot;</span>
+        <span class="c1"># id&#39;s may be different because we create the id ourselves on read</span>
+        <span class="c1"># FIXME should not need strip</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">prose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">prose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">prose</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">prose</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">prose</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">parts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">parts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">parts_equivalent</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parts_equivalent</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Part</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if lists of parts are equivalent.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">part_equivalent</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">controls_equivalent</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if the controls are equivalent.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ids differ: |</span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">| |</span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">|&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">title</span> <span class="o">!=</span> <span class="n">b</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">parts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">parts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">parts_equivalent</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># FIXME cannot check controls until markdown lists sub-controls</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">equivalent_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Test equivalence of catalog dict contents in various ways.&quot;&quot;&quot;</span>
+        <span class="n">other</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">get_count_of_controls_in_dict</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_count_of_controls_in_dict</span><span class="p">():</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;count of controls is different&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_controls_from_dict</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_control</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;error finding control </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls_equivalent</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;controls differ: </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the available sections by a full index of all controls.&quot;&quot;&quot;</span>
+        <span class="n">sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">control</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">control</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+                    <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sections</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3298,9 +3916,28 @@ ControlHandle            (<a title="trestle.core.trestle_base_model.TrestleBaseM
 <p>group_id: id of parent group or '' if not in a group
 group_title: title of the group
 group_class: class of the group
-path: path of parent controls leading to this child control
+path: path of parent groups leading to this control - without the final control_id, or [''] if in cat list
 control: the control itself</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/catalog_interface.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ControlHandle</span><span class="p">(</span><span class="n">TrestleBaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convenience class for handling controls as members of a group.</span>
+
+<span class="sd">    group_id: id of parent group or &#39;&#39; if not in a group</span>
+<span class="sd">    group_title: title of the group</span>
+<span class="sd">    group_class: class of the group</span>
+<span class="sd">    path: path of parent groups leading to this control - without the final control_id, or [&#39;&#39;] if in cat list</span>
+<span class="sd">    control: the control itself</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">group_title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">group_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3629,10 +4266,52 @@ control: the control itself</p>
 
       <p>Yield all deep and individual controls from the actual catalog by group.</p>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>recurse</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to recurse within controls, but groups are always recursed</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Iterator[trestle.oscal.catalog.Control]</code></td>
+      <td><p>iterator of the controls in the catalog</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>trestle/core/catalog_interface.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_all_controls_from_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Yield all deep and individual controls from the actual catalog by group.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yield all deep and individual controls from the actual catalog by group.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        recurse: Whether to recurse within controls, but groups are always recursed</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        iterator of the controls in the catalog</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
             <span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_controls_in_group</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">recurse</span><span class="p">)</span>
@@ -3983,6 +4662,8 @@ control: the control itself</p>
 <span class="k">def</span> <span class="nf">get_full_profile_param_dict</span><span class="p">(</span><span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the full mapping of param_id to modified value for this profile.&quot;&quot;&quot;</span>
     <span class="n">set_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">set_param_dict</span>
     <span class="k">for</span> <span class="n">set_param</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">):</span>
         <span class="n">value_str</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">param_values_as_string</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
         <span class="n">set_param_dict</span><span class="p">[</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_str</span>
@@ -4007,12 +4688,12 @@ control: the control itself</p>
 
     <div class="doc doc-contents ">
 
-      <p>Get all the group id's as a string.</p>
+      <p>Get all the group id's as strings in a list.</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/catalog_interface.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_group_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get all the group id&#39;s as a string.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Get all the group id&#39;s as strings in a list.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">list</span><span class="p">({</span><span class="n">control</span><span class="o">.</span><span class="n">group_id</span> <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()})))</span>
 </code></pre></div>
         </details>
@@ -4112,7 +4793,7 @@ control: the control itself</p>
           <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">get_profile_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">profile_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the list of params for this control and any set by the profile.&quot;&quot;&quot;</span>
-    <span class="n">param_dict</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">param_dict</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">get_control_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">profile_param_dict</span><span class="p">:</span>
             <span class="n">param_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_param_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -4313,13 +4994,10 @@ control: the control itself</p>
           <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">read_additional_content</span><span class="p">(</span><span class="n">md_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Read all markdown controls and return list of alters.&quot;&quot;&quot;</span>
-    <span class="n">group_ids</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span>
-
     <span class="n">new_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
-        <span class="n">group_path</span> <span class="o">=</span> <span class="n">md_path</span> <span class="o">/</span> <span class="n">group_id</span>
-        <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">group_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.md&#39;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">group_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_path</span><span class="p">):</span>
             <span class="n">control_alters</span><span class="p">,</span> <span class="n">control_param_dict</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_new_alters_and_params</span><span class="p">(</span><span class="n">control_file</span><span class="p">)</span>
             <span class="n">new_alters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">control_alters</span><span class="p">)</span>
             <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">control_param_dict</span><span class="p">)</span>
@@ -4357,20 +5035,36 @@ control: the control itself</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">)</span>
-    <span class="n">group_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_group_ids</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span>
+    <span class="n">id_map</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span>
     <span class="n">groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># read each group dir</span>
-    <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
-        <span class="n">group_dir</span> <span class="o">=</span> <span class="n">md_path</span> <span class="o">/</span> <span class="n">group_id</span>
+    <span class="k">for</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">group_dir</span> <span class="ow">in</span> <span class="n">id_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">control_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">control_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_control_paths</span><span class="p">(</span><span class="n">group_dir</span><span class="p">):</span>
-            <span class="n">control</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_control</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+        <span class="n">group_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># Need to get group title from at least one control in this directory</span>
+        <span class="c1"># All controls in dir should have same group title</span>
+        <span class="c1"># Set group title to the first one found and warn if different non-empty title appears</span>
+        <span class="c1"># Controls with empty group titles are tolerated but at least one title must be present or warning given</span>
+        <span class="c1"># The special group with no name that has the catalog as parent is just a list and has no title</span>
+        <span class="k">for</span> <span class="n">control_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_dir</span><span class="p">):</span>
+            <span class="n">control</span><span class="p">,</span> <span class="n">control_group_title</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_control</span><span class="p">(</span><span class="n">control_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">control_group_title</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group_title</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">control_group_title</span> <span class="o">!=</span> <span class="n">group_title</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Control </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> group title </span><span class="si">{</span><span class="n">control_group_title</span><span class="si">}</span><span class="s1"> differs from </span><span class="si">{</span><span class="n">group_title</span><span class="si">}</span><span class="s1">&#39;</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">group_title</span> <span class="o">=</span> <span class="n">control_group_title</span>
             <span class="n">control_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">group_id</span><span class="p">:</span>
-            <span class="n">new_group</span> <span class="o">=</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">group_id</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">group_title</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No group title found in controls for group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">new_group</span> <span class="o">=</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">group_id</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">group_title</span><span class="p">)</span>
             <span class="n">new_group</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">control_list</span>
             <span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_group</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if the list of controls has no group id it also has no title and is just the controls of the catalog</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">control_list</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="n">groups</span> <span class="k">if</span> <span class="n">groups</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalog</span>
@@ -4462,12 +5156,9 @@ avail_comps provides the mapping of component name to the actual component.</p>
 <span class="sd">        As the controls are read into the catalog the needed components are added if not already available.</span>
 <span class="sd">        avail_comps provides the mapping of component name to the actual component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">group_ids</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span>
-
     <span class="n">imp_reqs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
-        <span class="n">group_path</span> <span class="o">=</span> <span class="n">md_path</span> <span class="o">/</span> <span class="n">group_id</span>
-        <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_control_paths</span><span class="p">(</span><span class="n">group_path</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">group_path</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_group_ids_and_dirs</span><span class="p">(</span><span class="n">md_path</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">_get_sorted_control_paths</span><span class="p">(</span><span class="n">group_path</span><span class="p">):</span>
             <span class="n">imp_reqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ControlIOReader</span><span class="o">.</span><span class="n">read_implemented_requirement</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">avail_comps</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">imp_reqs</span>
 </code></pre></div>
@@ -4578,11 +5269,14 @@ avail_comps provides the mapping of component name to the actual component.</p>
             <span class="n">param_dict</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">get_profile_param_dict</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">full_profile_param_dict</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">param_dict</span><span class="p">:</span>
                 <span class="n">new_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">SET_PARAMS_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_dict</span>
-        <span class="n">group_id</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_group_info_by_control</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="c1"># this works also for the catalog controls with group_id=&#39;&#39;</span>
-        <span class="n">group_dir</span> <span class="o">=</span> <span class="n">md_path</span> <span class="o">/</span> <span class="n">group_id</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">group_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">group_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_group_info_by_control</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="c1"># control could be in sub-group of group so build path to it</span>
+        <span class="n">group_dir</span> <span class="o">=</span> <span class="n">md_path</span>
+        <span class="n">control_path</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_control_path</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="n">control_path</span><span class="p">:</span>
+            <span class="n">group_dir</span> <span class="o">=</span> <span class="n">group_dir</span> <span class="o">/</span> <span class="n">sub_dir</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">group_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">group_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">writer</span><span class="o">.</span><span class="n">write_control</span><span class="p">(</span>
             <span class="n">group_dir</span><span class="p">,</span>
             <span class="n">control</span><span class="p">,</span>
@@ -4688,10 +5382,10 @@ avail_comps provides the mapping of component name to the actual component.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

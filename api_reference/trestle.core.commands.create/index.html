@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.create/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2799,6 +2799,82 @@ CreateCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDo
 
       <p>Create a sample OSCAL model in trestle project.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/create.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CreateCmd</span><span class="p">(</span><span class="n">CommandPlusDocs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a sample OSCAL model in trestle project.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;create&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the output created model.&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">IOF_SHORT</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">IOF_LONG</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">IOF_HELP</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-x&#39;</span><span class="p">,</span> <span class="s1">&#39;--extension&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Type of file output.&#39;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;yml&#39;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;json&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Execute.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">object_type</span> <span class="o">=</span> <span class="n">ElementPath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while creating a sample OSCAL model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error while creating a sample OSCAL model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">UNKNOWN_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">TopLevelOscalModel</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create a top level OSCAL object within the trestle directory, leveraging functionality in add.&quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span>  <span class="c1"># trestle root is set via command line in args. Default is cwd.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">trestle_root</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fs</span><span class="o">.</span><span class="n">is_valid_project_root</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Given directory </span><span class="si">{</span><span class="n">trestle_root</span><span class="si">}</span><span class="s1"> is not a trestle project.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">TRESTLE_ROOT_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">plural_path</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_alias</span><span class="p">)</span>
+
+        <span class="n">desired_model_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">plural_path</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
+
+        <span class="n">desired_model_path</span> <span class="o">=</span> <span class="n">desired_model_dir</span> <span class="o">/</span> <span class="p">(</span><span class="n">model_alias</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">desired_model_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OSCAL file to be created here: </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1"> exists.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Aborting trestle create.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="c1"># Create sample model.</span>
+        <span class="n">sample_model</span> <span class="o">=</span> <span class="n">generators</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">object_type</span><span class="p">,</span> <span class="n">include_optional</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">include_optional_fields</span><span class="p">)</span>
+        <span class="c1"># Presuming top level level model not sure how to do the typing for this.</span>
+        <span class="n">sample_model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Generic </span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1"> created by trestle named </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s1">.&#39;</span>  <span class="c1"># type: ignore</span>
+        <span class="n">sample_model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">last_modified</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">astimezone</span><span class="p">()</span>
+        <span class="n">sample_model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">oscal_version</span> <span class="o">=</span> <span class="n">trestle</span><span class="o">.</span><span class="n">oscal</span><span class="o">.</span><span class="n">OSCAL_VERSION</span>
+        <span class="n">sample_model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;0.0.0&#39;</span>
+
+        <span class="n">top_element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">sample_model</span><span class="p">,</span> <span class="n">model_alias</span><span class="p">)</span>
+
+        <span class="n">create_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">desired_model_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">write_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span>
+            <span class="n">desired_model_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">top_element</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">desired_model_path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># create a plan to write the directory and file.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">create_plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
+            <span class="n">create_plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">create_action</span><span class="p">)</span>
+            <span class="n">create_plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">write_action</span><span class="p">)</span>
+            <span class="n">create_plan</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unknown error executing trestle create operations. Rolling back.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2988,10 +3064,10 @@ CreateCmd            (<a title="trestle.core.commands.command_docs.CommandPlusDo
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>

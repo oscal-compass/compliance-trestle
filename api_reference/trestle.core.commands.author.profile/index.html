@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.profile/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.3">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.4">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.edf004c2.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bb3983ee.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -2881,6 +2881,126 @@ ProfileAssemble            (<a title="trestle.core.commands.author.common.Author
 
       <p>Assemble markdown files of controls into a Profile json file.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/profile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProfileAssemble</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Assemble markdown files of controls into a Profile json file.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;profile-assemble&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name_help_str</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;Optional name of the profile model in the trestle workspace that is being modified.  &#39;</span>
+            <span class="s1">&#39;If not provided the output name is used.&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">name_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">file_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the source markdown file directory&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--markdown&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">file_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">output_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the output generated json Profile (ok to overwrite original)&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">output_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-sp&#39;</span><span class="p">,</span> <span class="s1">&#39;--set-parameters&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_SET_PARAMS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span><span class="p">)</span>
+            <span class="n">prof_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assemble_profile</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">prof_name</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">markdown</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Assembly of markdown to profile failed with error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_replace_alter_adds</span><span class="p">(</span><span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">,</span> <span class="n">alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Replace the alter adds in the orig_profile with the new ones.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="p">:</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Modify</span><span class="p">(</span><span class="n">alters</span><span class="o">=</span><span class="n">alters</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span><span class="p">:</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span> <span class="o">=</span> <span class="n">alters</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">alter_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="c1"># if an alter has adds - remove them up front and build dict of alters by control id</span>
+            <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span><span class="p">:</span>
+                <span class="n">alter</span><span class="o">.</span><span class="n">adds</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">alter_dict</span><span class="p">[</span><span class="n">alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">alter</span>
+            <span class="c1"># now go through new alters and add them to each control in dict by control id</span>
+            <span class="k">for</span> <span class="n">new_alter</span> <span class="ow">in</span> <span class="n">alters</span><span class="p">:</span>
+                <span class="n">alter</span> <span class="o">=</span> <span class="n">alter_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">alter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">alter_dict</span><span class="p">[</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">alter</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># even though we removed adds at start, we may have added one already</span>
+                    <span class="k">if</span> <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">:</span>
+                        <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">alter</span><span class="o">.</span><span class="n">adds</span> <span class="o">=</span> <span class="n">new_alter</span><span class="o">.</span><span class="n">adds</span>
+                    <span class="c1"># update the dict with the new alter with its added adds</span>
+                    <span class="n">alter_dict</span><span class="p">[</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">alter</span>
+            <span class="c1"># get the new list of alters from the dict and update profile</span>
+            <span class="n">new_alters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">alter_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span> <span class="o">=</span> <span class="n">new_alters</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_replace_modify_set_params</span><span class="p">(</span><span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">param_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="p">:</span>
+                <span class="n">profile</span><span class="o">.</span><span class="n">modify</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Modify</span><span class="p">()</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">)</span>
+            <span class="n">orig_param_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">set_param</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">:</span>
+                <span class="n">orig_param_dict</span><span class="p">[</span><span class="n">set_param</span><span class="o">.</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlIOReader</span><span class="o">.</span><span class="n">param_values_as_string</span><span class="p">(</span><span class="n">set_param</span><span class="p">)</span>
+            <span class="n">orig_param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">param_dict</span><span class="p">)</span>
+            <span class="n">new_set_params</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">orig_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">new_set_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="n">param_id</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">com</span><span class="o">.</span><span class="n">ParameterValue</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">value</span><span class="p">)]))</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">new_set_params</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">assemble_profile</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">orig_profile_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">md_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_profile_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assemble the markdown directory into a json profile model file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trestle_root: The trestle root directory</span>
+<span class="sd">            orig_profile_name: Optional name of original profile used to generate the markdown (default is md_name)</span>
+<span class="sd">            md_name: The name of the directory containing the markdown control files for the profile</span>
+<span class="sd">            new_profile_name: The name of the new json profile.  It can be the same as original to overwrite</span>
+<span class="sd">            set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            0 on success, 1 otherwise</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">md_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">md_name</span>
+        <span class="n">profile_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;profiles/</span><span class="si">{</span><span class="n">orig_profile_name</span><span class="si">}</span><span class="s1">/profile.json&#39;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">orig_profile</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">profile_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
+        <span class="c1"># load the editable sections of the markdown and create Adds for them</span>
+        <span class="c1"># then overwrite the Adds in the existing profile with the new ones</span>
+        <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_additional_content</span><span class="p">(</span><span class="n">md_dir</span><span class="p">)</span>
+        <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_replace_alter_adds</span><span class="p">(</span><span class="n">orig_profile</span><span class="p">,</span> <span class="n">found_alters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">set_parameters</span><span class="p">:</span>
+            <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_replace_modify_set_params</span><span class="p">(</span><span class="n">orig_profile</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">)</span>
+
+        <span class="n">new_prof_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;profiles/</span><span class="si">{</span><span class="n">new_profile_name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="n">new_prof_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating profile from markdown and destination profile directory exists, so updating.&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">new_prof_dir</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OSError deleting existing catalog directory with rmtree </span><span class="si">{</span><span class="n">new_prof_dir</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_prof_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+            <span class="n">orig_profile</span><span class="o">.</span><span class="n">oscal_write</span><span class="p">(</span><span class="n">new_prof_dir</span> <span class="o">/</span> <span class="s1">&#39;profile.json&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OSError writing profile from markdown to </span><span class="si">{</span><span class="n">new_prof_dir</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -2949,13 +3069,13 @@ ProfileAssemble            (<a title="trestle.core.commands.author.common.Author
       <tr>
         <td><code>orig_profile_name</code></td>
         <td><code>str</code></td>
-        <td><p>The output name of the profile json file to be created from the assembly</p></td>
+        <td><p>Optional name of original profile used to generate the markdown (default is md_name)</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>md_name</code></td>
         <td><code>str</code></td>
-        <td><p>The name of the directory containing the markdown control files for the ssp</p></td>
+        <td><p>The name of the directory containing the markdown control files for the profile</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -2998,8 +3118,8 @@ ProfileAssemble            (<a title="trestle.core.commands.author.common.Author
 
 <span class="sd">    Args:</span>
 <span class="sd">        trestle_root: The trestle root directory</span>
-<span class="sd">        orig_profile_name: The output name of the profile json file to be created from the assembly</span>
-<span class="sd">        md_name: The name of the directory containing the markdown control files for the ssp</span>
+<span class="sd">        orig_profile_name: Optional name of original profile used to generate the markdown (default is md_name)</span>
+<span class="sd">        md_name: The name of the directory containing the markdown control files for the profile</span>
 <span class="sd">        new_profile_name: The name of the new json profile.  It can be the same as original to overwrite</span>
 <span class="sd">        set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile</span>
 
@@ -3066,6 +3186,99 @@ ProfileGenerate            (<a title="trestle.core.commands.author.common.Author
 
       <p>Generate profile in markdown form from a profile in the trestle workspace.</p>
 
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/profile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProfileGenerate</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate profile in markdown form from a profile in the trestle workspace.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;profile-generate&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the source profile model in the trestle workspace&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">name_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_MARKDOWN_NAME</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="s1">&#39;--yaml-header&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_YAML_PATH</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-sp&#39;</span><span class="p">,</span> <span class="s1">&#39;--set-parameters&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_SET_PARAMS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-phv&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--preserve-header-values&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_PRESERVE_HEADER_VALUES</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="o">.</span><span class="n">allowed_task_name</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s1"> is not an allowed directory name&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="s1">&#39;yaml_header&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading yaml header file </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
+                    <span class="n">yaml_header</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">yaml_header</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">))</span>
+                <span class="k">except</span> <span class="n">YAMLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML error loading yaml header for ssp generation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="n">profile_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;profiles/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">/profile.json&#39;</span>
+
+            <span class="n">markdown_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_markdown</span><span class="p">(</span>
+                <span class="n">trestle_root</span><span class="p">,</span>
+                <span class="n">profile_path</span><span class="p">,</span>
+                <span class="n">markdown_path</span><span class="p">,</span>
+                <span class="n">yaml_header</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">preserve_header_values</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">set_parameters</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generation of the profile markdown failed with error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">generate_markdown</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">profile_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">markdown_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">yaml_header</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">preserve_header_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate markdown for the controls in the profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trestle_root: Root directory of the trestle workspace</span>
+<span class="sd">            profile_path: Path of the profile json file</span>
+<span class="sd">            markdown_path: Path to the directory into which the markdown will be written</span>
+<span class="sd">            set_parameters: Generate list of control parameters in yaml headers, with values if set by this profile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            0 on success, 1 on error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">profile_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
+            <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+            <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span>
+                <span class="n">markdown_path</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">preserve_header_values</span><span class="p">,</span> <span class="n">set_parameters</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">TrestleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> not found, error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error generating the catalog as markdown: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
 
 
 
@@ -3293,10 +3506,10 @@ ProfileGenerate            (<a title="trestle.core.commands.author.common.Author
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
+      <script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
       
     
   </body>
