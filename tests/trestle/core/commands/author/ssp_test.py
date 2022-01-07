@@ -15,6 +15,7 @@
 
 import argparse
 import pathlib
+from typing import List
 
 import pytest
 
@@ -23,6 +24,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 from tests.test_utils import setup_for_ssp
 
+import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.core import const
@@ -455,3 +457,34 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
     assert not test_utils.confirm_text_in_file(
         control_a1_path, '## Implementation', const.SSP_ADD_IMPLEMENTATION_PREFIX
     )
+
+
+def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with the nist tutorial catalog and profile."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
+    fs.save_top_level_model(catalog, tmp_trestle_dir, 'nist_tutorial_catalog', fs.FileContentType.JSON)
+    profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_profile.json')
+    fs.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', fs.FileContentType.JSON)
+    ssp_gen = SSPGenerate()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        profile='nist_tutorial_profile',
+        output='ssp_md',
+        sections=None,
+        preserve_header_values=False,
+        verbose=2
+    )
+    assert ssp_gen._run(args) == 0
+
+    ssp_assem = SSPAssemble()
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, output='ssp_json', markdown='ssp_md', verbose=2)
+    assert ssp_assem._run(args) == 0
+    json_ssp: ossp.SystemSecurityPlan
+    json_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)
+    comp_def = json_ssp.system_implementation.components[0]
+    assert comp_def.title == 'This System'
+    assert comp_def.status.state == ossp.State1.under_development
+    imp_reqs: List[ossp.ImplementedRequirement] = json_ssp.control_implementation.implemented_requirements
+    assert len(imp_reqs) == 2
+    assert imp_reqs[0].control_id == 's1.1.1'
+    assert imp_reqs[1].control_id == 's2.1.2'

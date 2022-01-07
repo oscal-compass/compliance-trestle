@@ -27,6 +27,7 @@ Note the examples here use markdown, however, jinja can quite easily target xml 
 - `-p` (optional) profile name (in the trestle project). When used the jinja template will have `resolved_catalog` and `catalog_interface` variables to use.
 - `-lut` (optional) loads yaml into a dictionary in python for which each (top level) variable is available in jinja.
 - `-elp` (optional) a period separated prefix for the variables in the lookup table. E.g. if the lut contained `banana: yellow` and the prefix was `fruit.tropical` using `{{ fruit.tropical.banana }}` would print out `yellow` in the jinja template.
+- `-pf` (optional) use to provide a custom formatting of the substituted parameters in the text. Use dot (.) to indicate where the parameter value will be written. E.g. `-pf *.*` to italicize all substituted parameters, `-pf Prefix:.` to add `Prefix:` to all parameters.
 
 ## Sample jinja templates
 
