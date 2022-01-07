@@ -70,7 +70,7 @@ class CisToCatalog(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Create catalog from from standard (e.g. CIS benchmark).')
+        logger.info('Purpose: Create catalog from standard (e.g. CIS benchmark).')
         logger.info('')
         logger.info('Configuration flags sit under [task.cis-to-catalog]:')
         text1 = '  input-dir              = '

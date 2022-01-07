@@ -79,7 +79,8 @@ class TaskCmd(CommandPlusDocs):
             if not config_path.exists():
                 logger.error(f'Config file at {config_path} does not exist.')
                 return CmdReturnCodes.COMMAND_ERROR.value
-            global_config = configparser.ConfigParser()
+            # permit ${name} in config definitions
+            global_config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
             global_config.read_file(config_path.open('r', encoding=const.FILE_ENCODING))
             # run setup
             task_index = self._build_task_index()
