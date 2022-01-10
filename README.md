@@ -64,7 +64,8 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 ## Python codebase, easy installation via pip
 
 Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is available on PyPi and can be easily installed via pip. It is under active development and new releases are made available regularly.\
-To install run: `pip install compliance-trestle`
+To install run: `pip install compliance-trestle`\
+See [Install trestle in a python virtual environment](https://ibm.github.io/compliance-trestle/python_trestle_setup/) for the full installation guide.
 
 ## Complete documentation and tutorials
 
