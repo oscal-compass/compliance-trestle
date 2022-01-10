@@ -135,7 +135,7 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
     shutil.rmtree(catalogs_dir / rep_name, ignore_errors=True)
 
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, name=source_name, output=rep_name, verbose=False, regenerate=False
+        trestle_root=tmp_trestle_dir, name=source_name, output=rep_name, verbose=0, regenerate=False
     )
 
     # Force PermissionError:
@@ -184,7 +184,7 @@ def test_replicate_file_system(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) 
     """Test model load failures."""
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=False)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=0)
     monkeypatch.setattr('trestle.core.commands.replicate.fs.get_trestle_project_root', mock_return)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1
