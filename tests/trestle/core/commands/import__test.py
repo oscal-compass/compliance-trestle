@@ -103,7 +103,7 @@ def test_import_run(tmp_trestle_dir: pathlib.Path, regen: bool) -> None:
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     i = importcmd.ImportCmd()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=catalog_file, output='imported', verbose=True, regenerate=regen
+        trestle_root=tmp_trestle_dir, file=catalog_file, output='imported', verbose=1, regenerate=regen
     )
     rc = i._run(args)
     assert rc == 0
@@ -145,7 +145,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     dup_file.close()
     j = importcmd.ImportCmd()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=1, regenerate=False
     )
     # 1. Validation rejects above import, which results in non-zero exit code for import.
     rc = j._run(args)
@@ -154,7 +154,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     # 2. ValidateCmd raises run (mocked), so import returns non-zero exit code.
     j = importcmd.ImportCmd()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=1, regenerate=False
     )
     monkeypatch.setattr(ValidateCmd, '_run', validate_import_mock)
     rc = j._run(args)
@@ -163,7 +163,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     # 3. Rollback raises exception, so import returns non-zero exit code:
     j = importcmd.ImportCmd()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=1, regenerate=False
     )
     monkeypatch.setattr(Plan, 'rollback', rollback_mock)
     rc = j._run(args)
@@ -174,11 +174,7 @@ def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     """Test an attempt to import into an existing trestle file."""
     # 1. Create a sample catalog,
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        output='my-catalog',
-        extension='json',
-        verbose=True,
-        include_optional_fields=False
+        trestle_root=tmp_trestle_dir, output='my-catalog', extension='json', verbose=1, include_optional_fields=False
     )
     create.CreateCmd.create_object('catalog', Catalog, args)
     # 2. Create a valid oscal object in tmp_trestle_dir.parent,
@@ -188,10 +184,7 @@ def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     # 3. then attempt to import that out to the previously created catalog, forcing the clash:
     i = importcmd.ImportCmd()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        file=f'{tmp_trestle_dir.parent}/{rand_str}.json',
-        output='my-catalog',
-        verbose=True
+        trestle_root=tmp_trestle_dir, file=f'{tmp_trestle_dir.parent}/{rand_str}.json', output='my-catalog', verbose=1
     )
     rc = i._run(args)
     assert rc == 1
@@ -204,7 +197,7 @@ def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     groups_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     groups_data = generators.generate_sample_model(Group)
     groups_data.oscal_write(pathlib.Path(groups_file))
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=groups_file, output='imported', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=groups_file, output='imported', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
@@ -214,7 +207,7 @@ def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for missing input file."""
     # Test
     args = argparse.Namespace(
-        file='/dummy_path/random_named_file.json', output='catalog', verbose=True, trestle_root=tmp_trestle_dir
+        file='/dummy_path/random_named_file.json', output='catalog', verbose=1, trestle_root=tmp_trestle_dir
     )
     i = importcmd.ImportCmd()
     rc = i._run(args)
@@ -229,7 +222,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path, monkeypatch: Monke
 
     # Input file, catalog:
     catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.resolve(), 'minimal_catalog.json')
-    args = argparse.Namespace(trestle_root=tmp_path, file=str(catalog_file_path), output='catalog', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_path, file=str(catalog_file_path), output='catalog', verbose=1)
     i = importcmd.ImportCmd()
     monkeypatch.setattr(fs, 'get_trestle_project_root', get_trestle_project_root_mock)
     rc = i._run(args)
@@ -241,7 +234,7 @@ def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path
     sample_file = open('infile.json', 'w+', encoding=const.FILE_ENCODING)
     sample_file.write('{}')
     sample_file.close()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file='infile.json', output='catalog', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file='infile.json', output='catalog', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
@@ -251,7 +244,7 @@ def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for bad input extension."""
     # Some input file with bad extension.
     temp_file = tempfile.NamedTemporaryFile(suffix='.txt')
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=temp_file.name, output='catalog', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=temp_file.name, output='catalog', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
@@ -276,19 +269,19 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     bad_file.write(sample_data)
     bad_file.close()
     monkeypatch.setattr(fs, 'load_file', load_file_mock)
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=bad_file.name, output='imported', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=bad_file.name, output='imported', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
     # Force PermissionError:
     monkeypatch.setattr(fs, 'load_file', load_file_permission_error_mock)
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=bad_file.name, output='imported', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=bad_file.name, output='imported', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
     # Force JSONDecodeError:
     monkeypatch.setattr(fs, 'load_file', load_file_json_decode_error_mock)
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=bad_file.name, output='imported', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=bad_file.name, output='imported', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
@@ -304,7 +297,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data, ensure_ascii=False))
     sample_file.close()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=sample_file.name, output='catalog', verbose=True)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=sample_file.name, output='catalog', verbose=1)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
@@ -326,7 +319,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path, monkeypatch: M
         trestle_root=tmp_trestle_dir,
         file=f'{tmp_trestle_dir.parent}/{rand_str}.json',
         output='catalog',
-        verbose=True,
+        verbose=1,
         regenerate=False
     )
     i = importcmd.ImportCmd()
@@ -341,7 +334,7 @@ def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=catalog_file, output='catalog', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=catalog_file, output='catalog', verbose=1, regenerate=False
     )
     i = importcmd.ImportCmd()
     rc = i._run(args)
@@ -360,7 +353,7 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch:
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     monkeypatch.setattr(Plan, 'execute', execute_plan_mock)
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=catalog_file, output='imported', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=catalog_file, output='imported', verbose=1, regenerate=False
     )
     i = importcmd.ImportCmd()
     rc = i._run(args)
@@ -370,9 +363,7 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path, monkeypatch:
 def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import via url."""
     uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=uri, output='my_catalog', verbose=True, regenerate=False
-    )
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=uri, output='my_catalog', verbose=1, regenerate=False)
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
     imported_catalog = Catalog.oscal_read(tmp_trestle_dir / 'catalogs/my_catalog/catalog.json')
@@ -386,9 +377,7 @@ def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_from_nist(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import via url from nist."""
     uri = 'https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_HIGH-baseline_profile-min.json'  # noqa: E501
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=uri, output='my_catalog', verbose=True, regenerate=False
-    )
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=uri, output='my_catalog', verbose=1, regenerate=False)
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
 
@@ -400,7 +389,7 @@ def test_import_load_profile(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(read_profile.modify.set_parameters[1].constraints) == 1
 
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(external_prof_path), output='my_prof', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=str(external_prof_path), output='my_prof', verbose=1, regenerate=False
     )
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
@@ -413,7 +402,7 @@ def test_import_wrong_oscal_version(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import of the wrong OSCAL version."""
     catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_bad_oscal_version.json'
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(catalog_path), output='my_catalog', verbose=True, regenerate=False
+        trestle_root=tmp_trestle_dir, file=str(catalog_path), output='my_catalog', verbose=1, regenerate=False
     )
     i = importcmd.ImportCmd()
     assert i._run(args) == 1

@@ -131,7 +131,7 @@ def create_trestle_project_with_model(
 
         i = ImportCmd()
         args = argparse.Namespace(
-            trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
+            trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=0, regenerate=False
         )
         assert i._run(args) == 0
     except Exception as e:
@@ -351,7 +351,7 @@ def setup_for_ssp(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         output=output_name,
-        verbose=True,
+        verbose=1,
         sections=sections,
         preserve_header_values=False
     )

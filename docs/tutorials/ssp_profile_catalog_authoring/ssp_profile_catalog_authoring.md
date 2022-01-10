@@ -12,6 +12,8 @@ In summary, the `catalog` tools allow conversion of a Catalog to markdown for ed
 
 If a yaml header has been added to any of the controls, it will be retained if catalog-generate is run with currently existing markdown for controls.  The yaml header can add parameters to the control's implemented requirements when an SSP is assembled from the markdown.
 
+For a complete standalone demonstration of the SSP generation process with trestle, please see the [Trestle SSP Demo](https://github.com/IBM/compliance-trestle-ssp-demo).
+
 ## Background on underlying concepts
 
 In order to understand the specific operations handled by these commands, it is helpful to clarify some of the underlying OSCAL structures and how they can be edited in markdown form.  This tutorial should be viewed in the context of the extensive documentation provided by [OSCAL](https://pages.nist.gov/OSCAL).
