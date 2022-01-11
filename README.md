@@ -51,7 +51,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 
 `trestle` supports OSCAL version `1.0.0` only at this stage.
 
-## Supported file formats for OSCAL objects.
+## Supported file formats for OSCAL objects
 
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
@@ -63,7 +63,9 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 
 ## Python codebase, easy installation via pip
 
-Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is available on PyPi so it is easily installed via pip.  It is under active development and new releases are made available regularly.
+Trestle runs on almost all Python platforms (e.g. Linux, Mac, Windows), is available on PyPi and can be easily installed via pip. It is under active development and new releases are made available regularly.\
+To install run: `pip install compliance-trestle`\
+See [Install trestle in a python virtual environment](https://ibm.github.io/compliance-trestle/python_trestle_setup/) for the full installation guide.
 
 ## Complete documentation and tutorials
 
