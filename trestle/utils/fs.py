@@ -69,7 +69,7 @@ def verify_trestle_folder(path: pathlib.Path) -> bool:
         if file_path.is_file() and not local_and_visible(file_path):
             logger.warning(f'Hidden files and symlinks are not allowed in OSCAL directories, deleting: {file_path}.')
             os.remove(file_path)
-        if file_path.is_file() and file_path.suffix not in {'.json', '.xml', '.yaml', '.md'}:
+        if file_path.is_file() and file_path.suffix not in {'.json', '.xml', '.yaml', '.yml', '.md'}:
             logger.warning(
                 f'Files of {file_path.suffix} are not allowed in the OSCAL directories '
                 f'and can cause the issues. Please remove the file {file_path}'
