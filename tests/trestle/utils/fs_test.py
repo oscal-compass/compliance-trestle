@@ -17,12 +17,9 @@ import os
 import pathlib
 from typing import List
 
-from _pytest.monkeypatch import MonkeyPatch
-
 import pytest
 
 from tests import test_utils
-from tests.test_utils import execute_command_and_assert
 
 import trestle.core.const as const
 import trestle.oscal.common as common
@@ -44,11 +41,8 @@ def test_should_ignore() -> None:
     assert fs.should_ignore('test') is False
 
 
-def test_oscal_dir_valid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
     """Test if oscal dir is valid or not."""
-    command_init = 'trestle init'
-    execute_command_and_assert(command_init, 0, monkeypatch)
-
     assert fs.check_oscal_directories(tmp_path)
 
     create_sample_catalog_project(tmp_path)
@@ -76,10 +70,8 @@ def test_oscal_dir_valid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> No
     assert fs.check_oscal_directories(tmp_path)
 
 
-def test_oscal_dir_notvalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+def test_oscal_dir_notvalid(tmp_path: pathlib.Path) -> None:
     """Test OSCAL directory not valid."""
-    command_init = 'trestle init'
-    execute_command_and_assert(command_init, 0, monkeypatch)
     assert fs.check_oscal_directories(tmp_path)
     create_sample_catalog_project(tmp_path)
     assert fs.check_oscal_directories(tmp_path)
