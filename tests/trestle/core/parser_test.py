@@ -68,5 +68,5 @@ def test_to_full_model_name() -> None:
 def test_parse_file(model_name: str, expected: str) -> None:
     """Test parse_file."""
     file_name = 'good_component.yaml'
-    component_obj = parser.parse_file(yaml_path / file_name, model_name=test_to_full_model_name())
+    component_obj = parser._parse_file(yaml_path / file_name, model_name=test_to_full_model_name())
     assert type(component_obj).__name__ == expected

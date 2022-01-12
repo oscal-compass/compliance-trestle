@@ -314,7 +314,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path, monkeypatch: M
     sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data, ensure_ascii=False))
     sample_file.close()
-    monkeypatch.setattr(parser, 'parse_file', parse_file_mock)
+    monkeypatch.setattr(parser, '_parse_file', parse_file_mock)
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         file=f'{tmp_trestle_dir.parent}/{rand_str}.json',

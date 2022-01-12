@@ -15,20 +15,17 @@
 # limitations under the License.
 """Validate by confirming no duplicate items."""
 
-import logging
 import re
 
-from trestle.core.base_model import OscalBaseModel
+from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.validator import Validator
 from trestle.oscal.__init__ import OSCAL_VERSION_REGEX
-
-logger = logging.getLogger(__name__)
 
 
 class OSCALVersionValidator(Validator):
     """Validator to confirm the OSCAL version is the one supported."""
 
-    def model_is_valid(self, model: OscalBaseModel) -> bool:
+    def model_is_valid(self, model: TopLevelOscalModel) -> bool:
         """
         Test if the model is valid based on OSCAL version.
 

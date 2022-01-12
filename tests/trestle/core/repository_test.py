@@ -305,7 +305,7 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model split."""
     # generate catalog data and import
     filepath = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    catalog_data = parser.parse_file(filepath, None)
+    catalog_data = parser._parse_file(filepath, None)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -347,7 +347,7 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model merge."""
     # generate catalog data and import and split
     filepath = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    catalog_data = parser.parse_file(filepath, None)
+    catalog_data = parser._parse_file(filepath, None)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
