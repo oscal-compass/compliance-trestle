@@ -322,9 +322,9 @@ class Repository:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
         if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = True
+            verbose = 1
         else:
-            verbose = False
+            verbose = 0
         args = argparse.Namespace(
             type=model_alias, name=name, extension=extension, trestle_root=self.root_dir, verbose=verbose
         )
@@ -349,9 +349,9 @@ class Repository:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
         if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = True
+            verbose = 1
         else:
-            verbose = False
+            verbose = 0
         args = argparse.Namespace(type=model_alias, name=name, trestle_root=self.root_dir, verbose=verbose)
 
         try:

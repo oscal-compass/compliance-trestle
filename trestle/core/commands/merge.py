@@ -33,6 +33,7 @@ from trestle.utils import fs, load_distributed
 from trestle.utils import log
 
 logger = logging.getLogger(__name__)
+trace = log.Trace(logger)
 
 
 class MergeCmd(CommandPlusDocs):
@@ -55,9 +56,8 @@ class MergeCmd(CommandPlusDocs):
 
             # remove any quotes passed in as on windows platforms
             elements_clean = args.element.strip("'")
-
             element_paths = elements_clean.split(',')
-            logger.debug(f'merge _run element paths {element_paths}')
+            trace.log(f'merge _run element paths {element_paths}')
             cwd = Path.cwd()
             rc = self.perform_all_merges(element_paths, cwd, args.trestle_root)
             return rc

@@ -82,8 +82,25 @@ def exception_handler(exception_type, exception, traceback) -> None:  # pylint: 
 
 def set_log_level_from_args(args: argparse.Namespace) -> None:
     """Vanity function to automatically set log levels based on verbosity flags."""
-    if args.verbose > 0:
+    if args.verbose > 1:
+        # these msgs only output by trace calls
+        set_global_logging_levels(logging.DEBUG - 5)
+    elif args.verbose == 1:
         set_global_logging_levels(logging.DEBUG)
     else:
         set_global_logging_levels(logging.INFO)
         sys.excepthook = exception_handler
+
+
+class Trace():
+    """Class allowing low priority trace message when verbose > 1 and log level below DEBUG."""
+
+    def __init__(self, logger: logging.Logger) -> None:
+        """Store the main logger with its module name."""
+        self._logger = logger
+
+    def log(self, msg: str) -> None:
+        """Output the trace msg if log level is below DEBUG."""
+        level = self._logger.getEffectiveLevel()
+        if level < logging.DEBUG:
+            self._logger.debug(msg)
