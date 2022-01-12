@@ -41,7 +41,10 @@ def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     for directory in const.MODEL_DIR_LIST:
         assert os.path.isdir(directory)
         assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
-        assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+        if os.name == 'nt':
+            assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE_WINDOWS))
+        else:
+            assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE_LINUX))
     assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 

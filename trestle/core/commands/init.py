@@ -16,6 +16,7 @@
 """Trestle Init Command."""
 import argparse
 import logging
+import os
 import pathlib
 import shutil
 from shutil import copyfile
@@ -27,6 +28,10 @@ import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
+
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +75,12 @@ class InitCmd(CommandBase):
             # Create directories
             for directory in directory_list:
                 directory.mkdir(parents=True, exist_ok=True)
-                file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
+                if os.name == 'nt':
+                    file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE_WINDOWS
+                    atts = win32api.GetFileAttributes(str(file_path))
+                    win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+                else:
+                    file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE_LINUX
                 file_path.touch()
         except OSError as e:
             raise TrestleError(f'Error while creating directories: {e}')

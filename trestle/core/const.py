@@ -26,7 +26,8 @@ PACKAGE_OSCAL = 'trestle.oscal'
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
-TRESTLE_KEEP_FILE = '.keep'
+TRESTLE_KEEP_FILE_LINUX = '.keep'
+TRESTLE_KEEP_FILE_WINDOWS = 'keep'
 
 # these are hyphenated - no underscore - and mixed singular and plural
 MODEL_TYPE_A_PLAN = 'assessment-plan'
