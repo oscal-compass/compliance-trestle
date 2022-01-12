@@ -413,7 +413,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
 
     # Merge everything back into the catalog
     # Equivalent to trestle merge -e catalog.*
-    args = argparse.Namespace(name='merge', element='catalog.*', verbose=1, trestle_root=tmp_trestle_dir)
+    args = argparse.Namespace(name='merge', element='catalog.*', verbose=2, trestle_root=tmp_trestle_dir)
     rc = MergeCmd()._run(args)
     assert rc == 0
 
