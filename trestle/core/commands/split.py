@@ -36,6 +36,7 @@ from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
+trace = log.Trace(logger)
 
 
 class AliasTracker(TrestleBaseModel):
@@ -85,7 +86,7 @@ class SplitCmd(CommandPlusDocs):
         """Split an OSCAL file into elements."""
         try:
             log.set_log_level_from_args(args)
-            logger.debug('Entering trestle split.')
+            trace.log('Entering trestle split.')
             # get the Model
             args_raw: Dict[str, str] = args.__dict__
 
