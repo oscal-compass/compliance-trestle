@@ -45,6 +45,7 @@ class CommandPlusDocs(CommandBase):
     """This class validates trestle-root argument.
 
     Trestle commands requiring trestle-root should extend from this class.
+    All commands that extend this class will validate the state of Trestle workspace.
     """
 
     def _validate_arguments(self, args):
@@ -52,6 +53,10 @@ class CommandPlusDocs(CommandBase):
         root = fs.get_trestle_project_root(args.trestle_root)
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
+            return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
+        is_oscal_dir_valid = fs.check_oscal_directories(args.trestle_root)
+        if not is_oscal_dir_valid:
+            logger.error('OSCAL directories are not valid, please remove extra files specified above.')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         args.trestle_root = root
         return CmdReturnCodes.SUCCESS.value

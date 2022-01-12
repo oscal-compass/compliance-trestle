@@ -30,6 +30,7 @@ from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.common_types import TopLevelOscalModel
+from trestle.core.const import MODEL_DIR_LIST
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils.load_distributed import load_distributed
@@ -59,6 +60,47 @@ def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
             return path
         path = path.parent
     return None
+
+
+def verify_trestle_folder(path: pathlib.Path) -> bool:
+    """Trestle folder should not have any files other than readme and models."""
+    is_valid = True
+    for file_path in path.rglob('*'):
+        if file_path.is_file() and not local_and_visible(file_path):
+            logger.warning(f'Hidden files and symlinks are not allowed in OSCAL directories, deleting: {file_path}.')
+            os.remove(file_path)
+        if file_path.is_file() and file_path.suffix not in {'.json', '.xml', '.yaml', '.md'}:
+            logger.warning(
+                f'Files of {file_path.suffix} are not allowed in the OSCAL directories '
+                f'and can cause the issues. Please remove the file {file_path}'
+            )
+            is_valid = False
+
+    return is_valid
+
+
+def check_oscal_directories(root_path: pathlib.Path) -> bool:
+    """
+    Identify the state of the Trestle workspace.
+
+    Traverses Trestle workspace and looks for unexpected files or directories.
+    Additional files are allowed in the Trestle root but not inside the model folders.
+    """
+    trestle_dir_walk = os.walk(root_path)
+    is_valid = True
+
+    for _, dirs, _ in trestle_dir_walk:
+        for d in dirs:
+            if d in MODEL_DIR_LIST:
+                is_valid = verify_trestle_folder(root_path / d)
+                if not is_valid:
+                    logger.error(
+                        f'OSCAL directory {root_path / d} contains unsupported files, '
+                        f'please remove them to avoid issues.'
+                    )
+                    return is_valid
+
+    return is_valid
 
 
 def is_valid_project_model_path(path: pathlib.Path) -> bool:

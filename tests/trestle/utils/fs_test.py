@@ -17,9 +17,12 @@ import os
 import pathlib
 from typing import List
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import pytest
 
 from tests import test_utils
+from tests.test_utils import execute_command_and_assert
 
 import trestle.core.const as const
 import trestle.oscal.common as common
@@ -39,6 +42,67 @@ def test_should_ignore() -> None:
     assert fs.should_ignore('_test') is True
     assert fs.should_ignore('__test') is True
     assert fs.should_ignore('test') is False
+
+
+def test_oscal_dir_valid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test if oscal dir is valid or not."""
+    command_init = 'trestle init'
+    execute_command_and_assert(command_init, 0, monkeypatch)
+
+    assert fs.check_oscal_directories(tmp_path)
+
+    create_sample_catalog_project(tmp_path)
+
+    assert fs.check_oscal_directories(tmp_path)
+
+    # add some hidden files
+    if not os.name == 'nt':
+        hidden_file = tmp_path / 'catalogs' / '.hidden.txt'
+        hidden_file.touch()
+        assert fs.is_hidden(hidden_file)
+    elif os.name == 'nt':
+        hidden_file = tmp_path / 'catalogs' / 'hidden.txt'
+        hidden_file.touch()
+        atts = win32api.GetFileAttributes(str(hidden_file))
+        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        assert fs.is_hidden(hidden_file)
+
+    assert fs.check_oscal_directories(tmp_path)
+    assert not hidden_file.exists()
+
+    # add some markdown readme
+    readme_file = tmp_path / 'catalogs' / 'README.md'
+    readme_file.touch()
+    assert fs.check_oscal_directories(tmp_path)
+
+
+def test_oscal_dir_notvalid(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test OSCAL directory not valid."""
+    command_init = 'trestle init'
+    execute_command_and_assert(command_init, 0, monkeypatch)
+    assert fs.check_oscal_directories(tmp_path)
+    create_sample_catalog_project(tmp_path)
+    assert fs.check_oscal_directories(tmp_path)
+
+    profiles_dir = tmp_path / 'profiles'
+    profiles_dir.mkdir(parents=True, exist_ok=True)
+
+    invalid_file = profiles_dir / 'shouldnt_be_here.txt'
+    invalid_file.touch()
+
+    assert not fs.check_oscal_directories(tmp_path)
+
+    invalid_file.unlink()
+
+    assert fs.check_oscal_directories(tmp_path)
+
+    metadata_dir = tmp_path / 'catalogs' / 'mycatalog' / 'catalog' / 'metadata'
+    deep_invalid_file = metadata_dir / 'responsible-parties' / 'should_be_here.docx'
+    readme_file = tmp_path / 'catalogs' / 'readme.md'
+    deep_invalid_file.touch()
+    readme_file.touch()
+
+    assert not fs.check_oscal_directories(tmp_path)
 
 
 def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
