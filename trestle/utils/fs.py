@@ -19,6 +19,7 @@ import json
 import logging
 import os
 import pathlib
+import platform
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union, cast
 
 from pydantic import create_model
@@ -35,7 +36,7 @@ from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils.load_distributed import load_distributed
 
-if os.name == 'nt':  # pragma: no cover
+if platform.system() == const.WINDOWS_PLATFORM_STR:  # pragma: no cover
     import win32api
     import win32con
 
@@ -60,6 +61,11 @@ def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
             return path
         path = path.parent
     return None
+
+
+def is_windows() -> bool:
+    """Check if current operating system is Windows."""
+    return platform.system() == const.WINDOWS_PLATFORM_STR
 
 
 def verify_trestle_folder(path: pathlib.Path) -> bool:
@@ -456,7 +462,7 @@ def is_hidden(file_path: pathlib.Path) -> bool:
         Whether or not the file is file/directory is hidden.
     """
     # Handle windows
-    if os.name == 'nt':  # pragma: no cover
+    if is_windows():  # pragma: no cover
         attribute = win32api.GetFileAttributes(str(file_path))
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
     # Handle unix
@@ -465,7 +471,7 @@ def is_hidden(file_path: pathlib.Path) -> bool:
 
 def is_symlink(file_path: pathlib.Path) -> bool:
     """Is the file path a symlink."""
-    if os.name == 'nt':
+    if is_windows():
         return file_path.suffix == '.lnk'
     return file_path.is_symlink()
 

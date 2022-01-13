@@ -13,7 +13,6 @@
 # limitations under the License.
 """Tests for fs module."""
 
-import os
 import pathlib
 from typing import List
 
@@ -28,7 +27,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 from trestle.utils import fs
 
-if os.name == 'nt':  # pragma: no cover
+if fs.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -50,16 +49,8 @@ def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
     assert fs.check_oscal_directories(tmp_path)
 
     # add some hidden files
-    if not os.name == 'nt':
-        hidden_file = tmp_path / 'catalogs' / '.hidden.txt'
-        hidden_file.touch()
-        assert fs.is_hidden(hidden_file)
-    elif os.name == 'nt':
-        hidden_file = tmp_path / 'catalogs' / 'hidden.txt'
-        hidden_file.touch()
-        atts = win32api.GetFileAttributes(str(hidden_file))
-        win32api.SetFileAttributes(str(hidden_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
-        assert fs.is_hidden(hidden_file)
+    hidden_file = tmp_path / 'catalogs' / '.hidden.txt'
+    test_utils.make_hidden_file(hidden_file)
 
     assert fs.check_oscal_directories(tmp_path)
     assert not hidden_file.exists()
@@ -502,7 +493,7 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
     (mycatalog_dir / 'file2.json').unlink()
 
-    if os.name == 'nt':
+    if fs.is_windows():
         hidden_file = mycatalog_dir / 'hidden.txt'
         hidden_file.touch()
         atts = win32api.GetFileAttributes(str(hidden_file))
@@ -513,7 +504,7 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     pathlib.Path(mycatalog_dir / 'file2.json').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
 
-    if os.name == 'nt':
+    if fs.is_windows():
         hidden_file.unlink()
     else:
         (mycatalog_dir / '.DS_Store').unlink()
@@ -559,7 +550,7 @@ def test_get_models_of_type_bad_cwd(tmp_path) -> None:
 
 def test_is_hidden_posix(tmp_path) -> None:
     """Test is_hidden on posix systems."""
-    if not os.name == 'nt':
+    if not fs.is_windows():
         hidden_file = tmp_path / '.hidden.md'
         hidden_dir = tmp_path / '.hidden/'
         visible_file = tmp_path / 'visible.md'
@@ -575,7 +566,7 @@ def test_is_hidden_posix(tmp_path) -> None:
 
 def test_is_hidden_windows(tmp_path) -> None:
     """Test is_hidden on windows systems."""
-    if os.name == 'nt':
+    if fs.is_windows():
         visible_file = tmp_path / 'visible.md'
         visible_dir = tmp_path / 'visible/'
         visible_file.touch()
@@ -622,7 +613,7 @@ def test_local_and_visible(tmp_path) -> None:
     """Test if file is local (not symlink) and visible (not hidden)."""
     local_file = tmp_path / 'local.md'
     local_file.touch()
-    if os.name == 'nt':
+    if fs.is_windows():
         link_file = tmp_path / 'not_local.lnk'
         link_file.touch()
     else:
@@ -673,7 +664,7 @@ def test_iterdir_without_hidden_files(tmp_path) -> None:
     pathlib.Path(tmp_path / 'visible.txt').touch()
     pathlib.Path(tmp_path / 'visibleDir/').mkdir()
 
-    if os.name == 'nt':
+    if fs.is_windows():
         """Windows"""
         hidden_file = tmp_path / 'hidden.txt'
         hidden_dir = tmp_path / 'hiddenDir/'
