@@ -77,11 +77,12 @@ class InitCmd(CommandBase):
                 directory.mkdir(parents=True, exist_ok=True)
                 if os.name == 'nt':
                     file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE_WINDOWS
+                    file_path.touch()
                     atts = win32api.GetFileAttributes(str(file_path))
                     win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
                 else:
                     file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE_LINUX
-                file_path.touch()
+                    file_path.touch()
         except OSError as e:
             raise TrestleError(f'Error while creating directories: {e}')
         except Exception as e:
