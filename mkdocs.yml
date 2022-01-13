@@ -114,6 +114,10 @@ nav:
       - parser: api_reference/trestle.core.parser.md
       - pipeline: api_reference/trestle.core.pipeline.md
       - profile_resolver: api_reference/trestle.core.profile_resolver.md
+      - profile_resolver_import: api_reference/trestle.core.profile_resolver_import.md
+      - profile_resolver_merge: api_reference/trestle.core.profile_resolver_merge.md
+      - profile_resolver_modify: api_reference/trestle.core.profile_resolver_modify.md
+      - profile_resolver_prune: api_reference/trestle.core.profile_resolver_prune.md
       - refs_validator: api_reference/trestle.core.refs_validator.md
       - remote:
         - cache: api_reference/trestle.core.remote.cache.md
