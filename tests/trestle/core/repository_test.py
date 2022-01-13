@@ -21,6 +21,7 @@ from tests import test_utils
 
 import trestle.core.parser as parser
 import trestle.oscal as oscal
+import trestle.oscal.catalog as cat
 from trestle.core import generators
 from trestle.core.err import TrestleError
 from trestle.core.repository import ManagedOSCAL, Repository
@@ -305,7 +306,7 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model split."""
     # generate catalog data and import
     filepath = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    catalog_data = parser._parse_file(filepath, None)
+    catalog_data = cat.Catalog.oscal_read(filepath)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -347,7 +348,7 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model merge."""
     # generate catalog data and import and split
     filepath = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    catalog_data = parser._parse_file(filepath, None)
+    catalog_data = cat.Catalog.oscal_read(filepath)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 

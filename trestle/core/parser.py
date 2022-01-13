@@ -21,13 +21,11 @@ the BaseModel functionality is inadequate.
 
 import importlib
 import logging
-import pathlib
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -86,18 +84,3 @@ def to_full_model_name(root_key: str) -> str:
     module = const.MODEL_TYPE_TO_MODEL_MODULE[root_key]
     class_name = utils.alias_to_classname(root_key, 'json')
     return f'{module}.{class_name}'
-
-
-def _parse_file(file_path: pathlib.Path, model_name: Optional[str]) -> OscalBaseModel:
-    """
-    Load an oscal file from the file system where the oscal model type is not known.
-
-    Args:
-        file_name: File path
-        model_name: should be of the form module.class which is derived from OscalBaseModel
-    """
-    data = fs.load_file(file_path)
-    rkey = root_key(data)
-    if model_name is None:
-        model_name = to_full_model_name(rkey)
-    return parse_dict(data[rkey], model_name)
