@@ -36,7 +36,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
 from trestle.core.utils import classname_to_alias
-from trestle.utils import fs
+from trestle.utils import fs, log
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -321,10 +321,7 @@ class Repository:
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = 1
-        else:
-            verbose = 0
+        verbose = log.get_current_verbosity_level(logger)
         args = argparse.Namespace(
             type=model_alias, name=name, extension=extension, trestle_root=self.root_dir, verbose=verbose
         )
@@ -348,10 +345,7 @@ class Repository:
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = 1
-        else:
-            verbose = 0
+        verbose = log.get_current_verbosity_level(logger)
         args = argparse.Namespace(type=model_alias, name=name, trestle_root=self.root_dir, verbose=verbose)
 
         try:
