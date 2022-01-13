@@ -48,7 +48,7 @@ class Import(Pipeline.Filter):
         self._change_prose = change_prose
         self._params_format = params_format
 
-    def process(self, input_=None) -> Iterator[cat.Catalog]:
+    def process(self, _=None) -> Iterator[cat.Catalog]:
         """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
         logger.debug(f'import entering process with href {self._import.href}')
         fetcher = cache.FetcherFactory.get_fetcher(self._trestle_root, self._import.href)

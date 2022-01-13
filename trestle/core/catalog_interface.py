@@ -76,7 +76,8 @@ class CatalogInterface():
 
     def _add_params_to_dict(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
-        for param in as_list(control.params):
+        params: List[common.Parameter] = as_list(control.params)
+        for param in params:
             if param.id in self._param_dict:
                 logger.warning(
                     f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
@@ -254,7 +255,8 @@ class CatalogInterface():
         label = None
         found_part = None
         if control.parts:
-            for part in as_list(control.parts):
+            parts: List[common.Part] = as_list(control.parts)
+            for part in parts:
                 # Performance OSCAL assumption, ids are nested so recurse only if prefix
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
@@ -292,7 +294,8 @@ class CatalogInterface():
         """Get the label from an object with properties (such as a control)."""
         label = ''
         if object_with_props.props:
-            for prop in as_list(object_with_props.props):
+            props: List[common.Property] = as_list(object_with_props.props)
+            for prop in props:
                 if prop.name == 'label':
                     label = prop.value
                     break
@@ -375,7 +378,8 @@ class CatalogInterface():
         set_param_dict: Dict[str, str] = {}
         if not profile.modify:
             return set_param_dict
-        for set_param in as_list(profile.modify.set_parameters):
+        set_params: List[prof.SetParameter] = as_list(profile.modify.set_parameters)
+        for set_param in set_params:
             value_str = ControlIOReader.param_values_as_string(set_param)
             set_param_dict[set_param.param_id] = value_str
         return set_param_dict

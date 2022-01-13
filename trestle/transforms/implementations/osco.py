@@ -35,7 +35,7 @@ from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
 from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
-from trestle.oscal.profile import Profile
+from trestle.oscal.profile import Import, Profile, SetParameter
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import FromOscalTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
@@ -633,7 +633,8 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         # for check versions prior to 0.1.59 include parameters
         # for later versions parameters should not be specified, caveat emptor
         if self._profile.modify is not None:
-            for set_parameter in as_list(self._profile.modify.set_parameters):
+            set_parameters: List[SetParameter] = as_list(self._profile.modify.set_parameters)
+            for set_parameter in set_parameters:
                 name = self._format_osco_rule_name(set_parameter.param_id)
                 parameter_value = set_parameter.values[0]
                 value = parameter_value.__root__
@@ -665,8 +666,9 @@ class ProfileToOscoTransformer(FromOscalTransformer):
     def _get_disable_rules(self) -> List[str]:
         """Extract disabled rules."""
         value = []
-        for item in as_list(self._profile.imports):
-            for control in as_list(item.exclude_controls):
+        _imports: List[Import] = as_list(self._profile.imports)
+        for _import in _imports:
+            for control in as_list(_import.exclude_controls):
                 self._add_disable_rules_for_control(value, control)
         return value
 

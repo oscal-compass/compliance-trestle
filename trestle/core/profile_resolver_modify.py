@@ -92,7 +92,7 @@ class Modify(Pipeline.Filter):
         A single line of prose may contain multiple moustaches.
         """
         # first check if there are any moustache patterns in the text
-        staches = re.findall(r'{{.*?}}', text)
+        staches: List[str] = re.findall(r'{{.*?}}', text)
         if not staches:
             return text
         # now have list of all staches including braces, e.g. ['{{foo}}', '{{bar}}']
@@ -129,15 +129,18 @@ class Modify(Pipeline.Filter):
     @staticmethod
     def _replace_control_prose(control: cat.Control, param_dict: Dict[str, str]) -> None:
         """Replace the control prose according to set_param."""
-        for part in as_list(control.parts):
+        parts: List[common.Part] = as_list(control.parts)
+        for part in parts:
             if part.prose is not None:
                 fixed_prose = Modify._replace_params(part.prose, param_dict)
                 # change the prose in the control itself
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 Modify._replace_part_prose(control, prt, param_dict)
-        for sub_control in as_list(control.controls):
-            for prt in as_list(sub_control.parts):
+        sub_controls: List[cat.Control] = as_list(control.controls)
+        for sub_control in sub_controls:
+            prts: List[common.Part] = as_list(sub_control.parts)
+            for prt in prts:
                 Modify._replace_part_prose(sub_control, prt, param_dict)
 
     @staticmethod
@@ -253,7 +256,7 @@ class Modify(Pipeline.Filter):
         if control is None:
             raise TrestleError(
                 f'Set parameter object in profile does not have a corresponding param-id: "{set_param.param_id}"'
-            )  # noqa:
+            )
         control.params = as_list(control.params)
         param_ids = [param.id for param in control.params]
         index = param_ids.index(set_param.param_id)
