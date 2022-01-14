@@ -27,6 +27,7 @@ import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
+from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +72,7 @@ class InitCmd(CommandBase):
             for directory in directory_list:
                 directory.mkdir(parents=True, exist_ok=True)
                 file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
-                file_path.touch()
+                fs.make_hidden_file(file_path)
         except OSError as e:
             raise TrestleError(f'Error while creating directories: {e}')
         except Exception as e:
