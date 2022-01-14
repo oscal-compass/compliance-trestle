@@ -39,7 +39,7 @@ from trestle.oscal import common
 from trestle.oscal import profile as prof
 from trestle.utils import fs
 
-if os.name == 'nt':  # pragma: no cover
+if fs.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -369,7 +369,7 @@ def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
 
     if_dot will make the change only if the filename is of the form .*
     """
-    if os.name == 'nt':
+    if fs.is_windows():
         if not if_dot or file_path.stem.startswith('.'):
             atts = win32api.GetFileAttributes(str(file_path))
             win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)

@@ -13,7 +13,6 @@
 # limitations under the License.
 """Tests for fs module."""
 
-import os
 import pathlib
 from typing import List
 
@@ -28,7 +27,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 from trestle.utils import fs
 
-if os.name == 'nt':  # pragma: no cover
+if fs.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -39,6 +38,58 @@ def test_should_ignore() -> None:
     assert fs.should_ignore('_test') is True
     assert fs.should_ignore('__test') is True
     assert fs.should_ignore('test') is False
+
+
+def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
+    """Test if oscal dir is valid or not."""
+    assert fs.check_oscal_directories(tmp_path)
+
+    create_sample_catalog_project(tmp_path)
+
+    assert fs.check_oscal_directories(tmp_path)
+
+    # add some hidden files
+    hidden_file = tmp_path / 'catalogs' / '.hidden.txt'
+    test_utils.make_hidden_file(hidden_file)
+
+    keep_file = tmp_path / 'catalogs' / '.keep'
+    test_utils.make_hidden_file(keep_file)
+
+    assert fs.check_oscal_directories(tmp_path)
+    assert not hidden_file.exists()
+    assert keep_file.exists()
+
+    # add some markdown readme
+    readme_file = tmp_path / 'catalogs' / 'README.md'
+    readme_file.touch()
+    assert fs.check_oscal_directories(tmp_path)
+
+
+def test_oscal_dir_notvalid(tmp_path: pathlib.Path) -> None:
+    """Test OSCAL directory not valid."""
+    assert fs.check_oscal_directories(tmp_path)
+    create_sample_catalog_project(tmp_path)
+    assert fs.check_oscal_directories(tmp_path)
+
+    profiles_dir = tmp_path / 'profiles'
+    profiles_dir.mkdir(parents=True, exist_ok=True)
+
+    invalid_file = profiles_dir / 'shouldnt_be_here.txt'
+    invalid_file.touch()
+
+    assert not fs.check_oscal_directories(tmp_path)
+
+    invalid_file.unlink()
+
+    assert fs.check_oscal_directories(tmp_path)
+
+    metadata_dir = tmp_path / 'catalogs' / 'mycatalog' / 'catalog' / 'metadata'
+    deep_invalid_file = metadata_dir / 'responsible-parties' / 'should_be_here.docx'
+    readme_file = tmp_path / 'catalogs' / 'readme.md'
+    deep_invalid_file.touch()
+    readme_file.touch()
+
+    assert not fs.check_oscal_directories(tmp_path)
 
 
 def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
@@ -446,7 +497,7 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
     (mycatalog_dir / 'file2.json').unlink()
 
-    if os.name == 'nt':
+    if fs.is_windows():
         hidden_file = mycatalog_dir / 'hidden.txt'
         hidden_file.touch()
         atts = win32api.GetFileAttributes(str(hidden_file))
@@ -457,7 +508,7 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     pathlib.Path(mycatalog_dir / 'file2.json').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
 
-    if os.name == 'nt':
+    if fs.is_windows():
         hidden_file.unlink()
     else:
         (mycatalog_dir / '.DS_Store').unlink()
@@ -503,7 +554,7 @@ def test_get_models_of_type_bad_cwd(tmp_path) -> None:
 
 def test_is_hidden_posix(tmp_path) -> None:
     """Test is_hidden on posix systems."""
-    if not os.name == 'nt':
+    if not fs.is_windows():
         hidden_file = tmp_path / '.hidden.md'
         hidden_dir = tmp_path / '.hidden/'
         visible_file = tmp_path / 'visible.md'
@@ -519,7 +570,7 @@ def test_is_hidden_posix(tmp_path) -> None:
 
 def test_is_hidden_windows(tmp_path) -> None:
     """Test is_hidden on windows systems."""
-    if os.name == 'nt':
+    if fs.is_windows():
         visible_file = tmp_path / 'visible.md'
         visible_dir = tmp_path / 'visible/'
         visible_file.touch()
@@ -566,7 +617,7 @@ def test_local_and_visible(tmp_path) -> None:
     """Test if file is local (not symlink) and visible (not hidden)."""
     local_file = tmp_path / 'local.md'
     local_file.touch()
-    if os.name == 'nt':
+    if fs.is_windows():
         link_file = tmp_path / 'not_local.lnk'
         link_file.touch()
     else:
@@ -612,12 +663,12 @@ def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect
         _ = fs.relative_resolve(input_path, tmp_path)
 
 
-def test_iterdir_without_hidden_files(tmp_path) -> None:
+def test_iterdir_without_hidden_files(tmp_path: pathlib.Path) -> None:
     """Test that hidden files are filtered from the path."""
     pathlib.Path(tmp_path / 'visible.txt').touch()
     pathlib.Path(tmp_path / 'visibleDir/').mkdir()
 
-    if os.name == 'nt':
+    if fs.is_windows():
         """Windows"""
         hidden_file = tmp_path / 'hidden.txt'
         hidden_dir = tmp_path / 'hiddenDir/'
@@ -636,6 +687,21 @@ def test_iterdir_without_hidden_files(tmp_path) -> None:
         pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
 
         assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
+
+
+def test_make_hidden_file(tmp_path: pathlib.Path) -> None:
+    """Test make hidden files."""
+    file_path = tmp_path / '.keep'
+    fs.make_hidden_file(file_path)
+
+    file_path2 = tmp_path / 'hidden.txt'
+    fs.make_hidden_file(file_path2)
+
+    assert file_path.exists() and not fs.local_and_visible(file_path)
+    if fs.is_windows():
+        assert file_path2.exists() and not fs.local_and_visible(file_path2)
+    else:
+        assert (tmp_path / '.hidden.txt').exists() and not fs.local_and_visible(tmp_path / '.hidden.txt')
 
 
 def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: catalog.Catalog) -> None:
