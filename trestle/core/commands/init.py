@@ -29,10 +29,6 @@ from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.err import TrestleError
 from trestle.utils import fs
 
-if fs.is_windows():  # pragma: no cover
-    import win32api
-    import win32con
-
 logger = logging.getLogger(__name__)
 
 
@@ -75,14 +71,8 @@ class InitCmd(CommandBase):
             # Create directories
             for directory in directory_list:
                 directory.mkdir(parents=True, exist_ok=True)
-                if fs.is_windows():
-                    file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE_WINDOWS
-                    file_path.touch()
-                    atts = win32api.GetFileAttributes(str(file_path))
-                    win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
-                else:
-                    file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE_LINUX
-                    file_path.touch()
+                file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
+                fs.make_hidden_file(file_path)
         except OSError as e:
             raise TrestleError(f'Error while creating directories: {e}')
         except Exception as e:

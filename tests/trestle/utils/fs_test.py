@@ -52,8 +52,12 @@ def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
     hidden_file = tmp_path / 'catalogs' / '.hidden.txt'
     test_utils.make_hidden_file(hidden_file)
 
+    keep_file = tmp_path / 'catalogs' / '.keep'
+    test_utils.make_hidden_file(keep_file)
+
     assert fs.check_oscal_directories(tmp_path)
     assert not hidden_file.exists()
+    assert keep_file.exists()
 
     # add some markdown readme
     readme_file = tmp_path / 'catalogs' / 'README.md'
@@ -659,7 +663,7 @@ def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect
         _ = fs.relative_resolve(input_path, tmp_path)
 
 
-def test_iterdir_without_hidden_files(tmp_path) -> None:
+def test_iterdir_without_hidden_files(tmp_path: pathlib.Path) -> None:
     """Test that hidden files are filtered from the path."""
     pathlib.Path(tmp_path / 'visible.txt').touch()
     pathlib.Path(tmp_path / 'visibleDir/').mkdir()
@@ -683,6 +687,21 @@ def test_iterdir_without_hidden_files(tmp_path) -> None:
         pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
 
         assert len(list(fs.iterdir_without_hidden_files(tmp_path))) == 3
+
+
+def test_make_hidden_file(tmp_path: pathlib.Path) -> None:
+    """Test make hidden files."""
+    file_path = tmp_path / '.keep'
+    fs.make_hidden_file(file_path)
+
+    file_path2 = tmp_path / 'hidden.txt'
+    fs.make_hidden_file(file_path2)
+
+    assert file_path.exists() and not fs.local_and_visible(file_path)
+    if fs.is_windows():
+        assert file_path2.exists() and not fs.local_and_visible(file_path2)
+    else:
+        assert (tmp_path / '.hidden.txt').exists() and not fs.local_and_visible(tmp_path / '.hidden.txt')
 
 
 def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: catalog.Catalog) -> None:

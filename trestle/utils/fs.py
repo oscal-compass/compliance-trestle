@@ -68,19 +68,33 @@ def is_windows() -> bool:
     return platform.system() == const.WINDOWS_PLATFORM_STR
 
 
+def make_hidden_file(file_path: pathlib.Path) -> None:
+    """Make hidden file."""
+    if not file_path.name.startswith('.') and not is_windows():
+        file_path = file_path.parent / ('.' + file_path.name)
+
+    file_path.touch()
+    if is_windows():
+        atts = win32api.GetFileAttributes(str(file_path))
+        win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+
 def verify_trestle_folder(path: pathlib.Path) -> bool:
     """Trestle folder should not have any files other than readme and models."""
     is_valid = True
     for file_path in path.rglob('*'):
-        if file_path.is_file() and not local_and_visible(file_path):
-            logger.warning(f'Hidden files and symlinks are not allowed in OSCAL directories, deleting: {file_path}.')
-            os.remove(file_path)
-        if file_path.is_file() and file_path.suffix not in {'.json', '.xml', '.yaml', '.yml', '.md'}:
-            logger.warning(
-                f'Files of {file_path.suffix} are not allowed in the OSCAL directories '
-                f'and can cause the issues. Please remove the file {file_path}'
-            )
-            is_valid = False
+        if file_path.is_file():
+            if not local_and_visible(file_path) and file_path.name != const.TRESTLE_KEEP_FILE:
+                logger.warning(
+                    f'Hidden files and symlinks are not allowed in OSCAL directories, deleting: {file_path}.'
+                )
+                os.remove(file_path)
+            if local_and_visible(file_path) and file_path.suffix not in {'.json', '.xml', '.yaml', '.yml', '.md'}:
+                logger.warning(
+                    f'Files of {file_path.suffix} are not allowed in the OSCAL directories '
+                    f'and can cause the issues. Please remove the file {file_path}'
+                )
+                is_valid = False
 
     return is_valid
 
