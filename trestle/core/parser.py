@@ -12,22 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Model parsing for use when models themselves must be infered and are not known.
+"""Model parsing for use when models themselves must be inferred and are not known.
 
 Under most use cases trestle.core.base_model.OscalBaseModel provides functionality for loading Oscal models from files.
-However, under some circumstances are unknown. Use of functionality in this module should be avoided and inspected
-when used as to it's appropriateness.
+However, under some circumstances the model internals are unknown.  Use of this module should be avoided unless
+the BaseModel functionality is inadequate.
 """
 
 import importlib
 import logging
-import pathlib
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -39,8 +37,8 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
     has been loaded into memory using json loads or similar and passed as a dict.
 
     Args:
-        data: Oscal data loaded into memory in a dictionary with the `root key` removed.
-        model_name: it should be of the form 'module.class' from trestle.oscal.* modules
+        data: Oscal data loaded into memory as a dictionary with the `root key` removed.
+        model_name: should be of the form 'module.class' from trestle.oscal.* modules
 
     Returns:
         The oscal model of the desired model.
@@ -57,7 +55,7 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
 
     logger.debug(f'Loading class "{class_name}" from "{module_name}"')
     module = importlib.import_module(module_name)
-    mclass = getattr(module, class_name)
+    mclass: OscalBaseModel = getattr(module, class_name)
     if mclass is None:
         raise TrestleError(f'class "{class_name}" could not be found in "{module_name}"')
 
@@ -73,7 +71,7 @@ def root_key(data: Dict[str, Any]) -> str:
     raise TrestleError('data does not contain a root key')
 
 
-def to_full_model_name(root_key: str) -> Optional[str]:
+def to_full_model_name(root_key: str) -> str:
     """
     Find model name from the root_key in the file.
 
@@ -81,27 +79,8 @@ def to_full_model_name(root_key: str) -> Optional[str]:
         root_key: root key such as 'system-security-plan' from a top level OSCAL model.
     """
     if root_key not in const.MODEL_TYPE_LIST:
-        logger.warning(f'{root_key} is not a top level model name.')
-        return None
+        raise TrestleError(f'{root_key} is not a top level model name.')
 
     module = const.MODEL_TYPE_TO_MODEL_MODULE[root_key]
     class_name = utils.alias_to_classname(root_key, 'json')
     return f'{module}.{class_name}'
-
-
-def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseModel:
-    """
-    Load an oscal file from the file system where the oscal model type is not known.
-
-    Args:
-        file_name: File path
-        model_name: it should be of the form module.class which is derived from OscalBaseModel
-    """
-    if file_name is None:
-        raise TrestleError('file_name is required')
-
-    data = fs.load_file(file_name)
-    rkey = root_key(data)
-    if model_name is None:
-        model_name = to_full_model_name(rkey)
-    return parse_dict(data[rkey], model_name)

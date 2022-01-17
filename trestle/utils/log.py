@@ -17,6 +17,8 @@
 import argparse
 import logging
 import sys
+from types import TracebackType
+from typing import Type
 
 # Singleton logger instance
 # All other CLI sub module will inherit settings of this logger as long as
@@ -75,21 +77,36 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     _logger.addHandler(console_debug_handler)
 
 
-def exception_handler(exception_type, exception, traceback) -> None:  # pylint: disable=W0613
+def _exception_handler(exception_type: Type[Exception], exception: Exception, traceback: TracebackType) -> None:
     """Empty exception handler to prevent stack traceback in quiet mode."""
     logging.warning(exception)
+
+
+def _get_trace_level() -> int:
+    """Get special value used for trace - just below DEBUG."""
+    return logging.DEBUG - 5
 
 
 def set_log_level_from_args(args: argparse.Namespace) -> None:
     """Vanity function to automatically set log levels based on verbosity flags."""
     if args.verbose > 1:
         # these msgs only output by trace calls
-        set_global_logging_levels(logging.DEBUG - 5)
+        set_global_logging_levels(_get_trace_level())
     elif args.verbose == 1:
         set_global_logging_levels(logging.DEBUG)
     else:
         set_global_logging_levels(logging.INFO)
-        sys.excepthook = exception_handler
+        sys.excepthook = _exception_handler
+
+
+def get_current_verbosity_level(logger: logging.Logger) -> int:
+    """Get the current verbosity level based on logging level."""
+    level = logger.getEffectiveLevel()
+    if level < logging.DEBUG:
+        return 2
+    elif level == logging.DEBUG:
+        return 1
+    return 0
 
 
 class Trace():
