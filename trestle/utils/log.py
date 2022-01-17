@@ -77,12 +77,12 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     _logger.addHandler(console_debug_handler)
 
 
-def exception_handler(exception_type: Type[Exception], exception: Exception, traceback: TracebackType) -> None:
+def _exception_handler(exception_type: Type[Exception], exception: Exception, traceback: TracebackType) -> None:
     """Empty exception handler to prevent stack traceback in quiet mode."""
     logging.warning(exception)
 
 
-def get_trace_level() -> int:
+def _get_trace_level() -> int:
     """Get special value used for trace - just below DEBUG."""
     return logging.DEBUG - 5
 
@@ -91,12 +91,12 @@ def set_log_level_from_args(args: argparse.Namespace) -> None:
     """Vanity function to automatically set log levels based on verbosity flags."""
     if args.verbose > 1:
         # these msgs only output by trace calls
-        set_global_logging_levels(get_trace_level())
+        set_global_logging_levels(_get_trace_level())
     elif args.verbose == 1:
         set_global_logging_levels(logging.DEBUG)
     else:
         set_global_logging_levels(logging.INFO)
-        sys.excepthook = exception_handler
+        sys.excepthook = _exception_handler
 
 
 def get_current_verbosity_level(logger: logging.Logger) -> int:
