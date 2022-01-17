@@ -1,4 +1,4 @@
-# Copyright (c) 2021 IBM Corp. All rights reserved.
+# Copyright (c) 2022 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -137,8 +137,7 @@ class Modify(Pipeline.Filter):
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 Modify._replace_part_prose(control, prt, param_dict)
-        sub_controls: List[cat.Control] = as_list(control.controls)
-        for sub_control in sub_controls:
+        for sub_control in as_list(control.controls):
             prts: List[common.Part] = as_list(sub_control.parts)
             for prt in prts:
                 Modify._replace_part_prose(sub_control, prt, param_dict)

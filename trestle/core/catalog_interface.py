@@ -17,9 +17,7 @@ import copy
 import logging
 import pathlib
 import re
-from typing import Callable, Dict, Iterator, List, Optional, Tuple
-
-from pydantic import BaseModel
+from typing import Callable, Dict, Iterator, List, Optional, Tuple, Union
 
 import trestle.core.const as const
 import trestle.core.generators as gens
@@ -76,8 +74,7 @@ class CatalogInterface():
 
     def _add_params_to_dict(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
-        params: List[common.Parameter] = as_list(control.params)
-        for param in params:
+        for param in as_list(control.params):
             if param.id in self._param_dict:
                 logger.warning(
                     f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
@@ -255,8 +252,7 @@ class CatalogInterface():
         label = None
         found_part = None
         if control.parts:
-            parts: List[common.Part] = as_list(control.parts)
-            for part in parts:
+            for part in as_list(control.parts):
                 # Performance OSCAL assumption, ids are nested so recurse only if prefix
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
@@ -290,15 +286,13 @@ class CatalogInterface():
                     yield res
 
     @staticmethod
-    def get_label(object_with_props: BaseModel) -> str:
-        """Get the label from an object with properties (such as a control)."""
+    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
+        """Get the label from a part or control - they both have props."""
         label = ''
-        if object_with_props.props:
-            props: List[common.Property] = as_list(object_with_props.props)
-            for prop in props:
-                if prop.name == 'label':
-                    label = prop.value
-                    break
+        for prop in as_list(part_control.props):
+            if prop.name == 'label':
+                label = prop.value
+                break
         return label
 
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
@@ -309,7 +303,7 @@ class CatalogInterface():
             self._control_dict[control_id].group_class
         )
 
-    def get_control_path(self, control_id: str) -> List[str]:
+    def _get_control_path(self, control_id: str) -> List[str]:
         """Return the path into the catalog for this control."""
         return self._control_dict[control_id].path
 
@@ -373,19 +367,18 @@ class CatalogInterface():
         return hits
 
     @staticmethod
-    def get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
+    def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
         """Get the full mapping of param_id to modified value for this profile."""
         set_param_dict: Dict[str, str] = {}
         if not profile.modify:
             return set_param_dict
-        set_params: List[prof.SetParameter] = as_list(profile.modify.set_parameters)
-        for set_param in set_params:
+        for set_param in as_list(profile.modify.set_parameters):
             value_str = ControlIOReader.param_values_as_string(set_param)
             set_param_dict[set_param.param_id] = value_str
         return set_param_dict
 
     @staticmethod
-    def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
+    def _get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
         """Get the list of params for this control and any set by the profile."""
         param_dict = ControlIOReader.get_control_param_dict(control, False)
         for key in param_dict.keys():
@@ -411,18 +404,18 @@ class CatalogInterface():
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
         if set_parameters:
-            full_profile_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
+            full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
             if set_parameters:
-                param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
+                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict)
                 if param_dict:
                     new_header[const.SET_PARAMS_TAG] = param_dict
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path
-            control_path = catalog_interface.get_control_path(control.id)
+            control_path = catalog_interface._get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():

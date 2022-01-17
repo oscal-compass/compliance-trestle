@@ -1,4 +1,4 @@
-# Copyright (c) 2021 IBM Corp. All rights reserved.
+# Copyright (c) 2022 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
-from trestle.core.profile_resolver_merge import Merge
-from trestle.core.profile_resolver_modify import Modify
-from trestle.core.profile_resolver_prune import Prune
 from trestle.core.remote import cache
+from trestle.core.resolver.merge import Merge
+from trestle.core.resolver.modify import Modify
+from trestle.core.resolver.prune import Prune
 
 logger = logging.getLogger(__name__)
 

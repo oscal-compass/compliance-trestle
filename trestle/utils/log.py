@@ -82,11 +82,16 @@ def exception_handler(exception_type: Type[Exception], exception: Exception, tra
     logging.warning(exception)
 
 
+def get_trace_level() -> int:
+    """Get special value used for trace - just below DEBUG."""
+    return logging.DEBUG - 5
+
+
 def set_log_level_from_args(args: argparse.Namespace) -> None:
     """Vanity function to automatically set log levels based on verbosity flags."""
     if args.verbose > 1:
         # these msgs only output by trace calls
-        set_global_logging_levels(logging.DEBUG - 5)
+        set_global_logging_levels(get_trace_level())
     elif args.verbose == 1:
         set_global_logging_levels(logging.DEBUG)
     else:

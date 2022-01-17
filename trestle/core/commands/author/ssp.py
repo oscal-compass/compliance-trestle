@@ -172,20 +172,15 @@ class SSPAssemble(AuthorCommonCommand):
         for imp_req in imp_reqs:
             if imp_req.control_id in control_map:
                 imp_req.uuid = control_map[imp_req.control_id].uuid
-            statements: List[ossp.Statement] = as_list(imp_req.statements)
-            for statement in statements:
+            for statement in as_list(imp_req.statements):
                 id_ = statement.statement_id
                 # for each statement id match the statement per component to the original
                 if id_ in id_map:
                     comp_dict = id_map[id_]
-                    by_comps: List[ossp.ByComponent] = as_list(statement.by_components)
-                    for by_comp in by_comps:
+                    for by_comp in as_list(statement.by_components):
                         if by_comp.component_uuid in comp_dict:
                             statement.uuid = comp_dict[by_comp.component_uuid].uuid
-                            orig_by_comps: List[ossp.ByComponent] = as_list(
-                                comp_dict[by_comp.component_uuid].by_components
-                            )
-                            for orig_by_comp in orig_by_comps:
+                            for orig_by_comp in as_list(comp_dict[by_comp.component_uuid].by_components):
                                 if orig_by_comp.component_uuid == by_comp.component_uuid:
                                     by_comp.uuid = orig_by_comp.uuid
                                     break

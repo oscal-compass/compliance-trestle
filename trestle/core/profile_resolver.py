@@ -18,7 +18,7 @@ import pathlib
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
-from trestle.core.profile_resolver_import import Import
+from trestle.core.resolver._import import Import
 
 logger = logging.getLogger(__name__)
 
