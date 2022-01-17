@@ -23,6 +23,7 @@ from trestle.core.control_io import ControlIOWriter
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.core.utils import as_list
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.ssp import Statement
@@ -120,16 +121,15 @@ class SSPMarkdownWriter():
         for impl_requirement in self._ssp.control_implementation.implemented_requirements:
             if impl_requirement.control_id == control_id:
                 if impl_requirement.responsible_roles:
-                    role_ids = []
-                    for resp_role in impl_requirement.responsible_roles:
-                        role_ids.append(resp_role.role_id.replace('_', ' '))
+                    resp_roles = as_list(impl_requirement.responsible_roles)
+                    role_ids = [role.role_id.replace('_', ' ') for role in resp_roles]
 
                     # now check if this role exists in the metadata
                     role_titles = dict(zip(role_ids, role_ids))
-                    if self._ssp.metadata.roles:
-                        for role in self._ssp.metadata.roles:
-                            if role.id in role_ids:
-                                role_titles[role.id] = role.title
+                    roles = as_list(self._ssp.metadata.roles)
+                    for role in roles:
+                        if role.id in role_ids:
+                            role_titles[role.id] = role.title
 
                     # dictionary to md table
                     md_list = self._write_table_with_header(
