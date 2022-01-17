@@ -24,8 +24,11 @@ import pytest
 from tests import test_utils
 
 from trestle.core import generators as gens
-from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
+from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
+from trestle.core.resolver.merge import Merge
+from trestle.core.resolver.modify import Modify
 from trestle.oscal import catalog as cat
 from trestle.oscal import common as com
 from trestle.oscal import profile as prof
@@ -145,7 +148,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     method = prof.Method.merge
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
 
     # merge into empty catalog
     merged = gens.generate_sample_model(cat.Catalog)
@@ -167,7 +170,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     method = prof.Method.use_first
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
     assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
@@ -175,7 +178,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 
     # now force a merge with keep
     profile.merge = None
-    merge_keep = ProfileResolver.Merge(profile)
+    merge_keep = Merge(profile)
     merged_keep = merge_keep._merge_catalog(new_merged, sample_catalog_rich_controls)
     assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 10
 
@@ -193,7 +196,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
     param_dict = {param_id: param_text}
-    assert ProfileResolver.Modify._replace_id_with_text(prose, param_dict) == result
+    assert Modify._replace_id_with_text(prose, param_dict) == result
 
 
 def test_profile_resolver_param_sub() -> None:
@@ -202,7 +205,7 @@ def test_profile_resolver_param_sub() -> None:
     id_10 = 'ac-2_smt.10'
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
     param_dict = {id_1: 'the cat', id_10: 'well fed'}
-    new_text = ProfileResolver.Modify._replace_params(param_text, param_dict)
+    new_text = Modify._replace_params(param_text, param_dict)
     assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
 
 
@@ -233,7 +236,7 @@ def test_merge_params() -> None:
     # kill remarks to confirm it is filled in by merge
     params[0].remarks = None
     profile = gens.generate_sample_model(prof.Profile)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
     merge._merge_items(params[0], params[1], prof.Method.merge)
     assert params[0]
     # the contraints in each are identical so they don't merge
@@ -253,7 +256,7 @@ def test_merge_two_catalogs() -> None:
     combine = prof.Combine(method=method)
     profile = gens.generate_sample_model(prof.Profile)
     profile.merge = prof.Merge(combine=combine)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
     merge._merge_two_catalogs(cat_1, cat_2, method, True)
     assert cat_1
     assert len(cat_1.controls) == 7
@@ -316,6 +319,6 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     assert statement_label == '2.'
     assert part.id == 'ac-1_smt.c.2'
 
-    cat_path = cat_interface.get_control_path('ac-2')
+    cat_path = cat_interface._get_control_path('ac-2')
     assert cat_path[0] == 'ac'
     assert len(cat_path) == 1

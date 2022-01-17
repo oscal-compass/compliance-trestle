@@ -118,6 +118,10 @@ nav:
       - remote:
         - cache: api_reference/trestle.core.remote.cache.md
       - repository: api_reference/trestle.core.repository.md
+      - resolver:
+        - merge: api_reference/trestle.core.resolver.merge.md
+        - modify: api_reference/trestle.core.resolver.modify.md
+        - prune: api_reference/trestle.core.resolver.prune.md
       - ssp_io: api_reference/trestle.core.ssp_io.md
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - utils: api_reference/trestle.core.utils.md

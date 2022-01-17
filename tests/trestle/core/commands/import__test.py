@@ -34,7 +34,6 @@ import trestle.core.err as err
 import trestle.oscal
 from trestle.cli import Trestle
 from trestle.core import generators
-from trestle.core import parser
 from trestle.core.commands import create
 from trestle.core.commands.validate import ValidateCmd
 from trestle.core.models.plans import Plan
@@ -298,30 +297,6 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     sample_file.write(json.dumps(sample_data, ensure_ascii=False))
     sample_file.close()
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=sample_file.name, output='catalog', verbose=1)
-    i = importcmd.ImportCmd()
-    rc = i._run(args)
-    assert rc == 1
-
-
-def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test model failures throw errors and exit badly."""
-
-    def parse_file_mock(*args, **kwargs):
-        raise err.TrestleError('stuff')
-
-    sample_data = {'id': '0000'}
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
-    sample_file.write(json.dumps(sample_data, ensure_ascii=False))
-    sample_file.close()
-    monkeypatch.setattr(parser, 'parse_file', parse_file_mock)
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        file=f'{tmp_trestle_dir.parent}/{rand_str}.json',
-        output='catalog',
-        verbose=1,
-        regenerate=False
-    )
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1

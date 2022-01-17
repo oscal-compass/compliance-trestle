@@ -19,7 +19,7 @@ import bz2
 import json
 import logging
 import uuid
-from typing import Any, Dict, Iterator, List, ValuesView
+from typing import Any, Dict, Iterator, List, Tuple, ValuesView
 from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
 
 from defusedxml import ElementTree
@@ -613,7 +613,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         }
         return json.dumps(ydata)
 
-    def _get_normalized_version(self, prop_name, prop_default) -> (int, int, int):
+    def _get_normalized_version(self, prop_name, prop_default) -> Tuple[int, int, int]:
         """Get normalized version.
 
         Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
@@ -665,8 +665,8 @@ class ProfileToOscoTransformer(FromOscalTransformer):
     def _get_disable_rules(self) -> List[str]:
         """Extract disabled rules."""
         value = []
-        for item in as_list(self._profile.imports):
-            for control in as_list(item.exclude_controls):
+        for _import in as_list(self._profile.imports):
+            for control in as_list(_import.exclude_controls):
                 self._add_disable_rules_for_control(value, control)
         return value
 

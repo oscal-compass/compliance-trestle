@@ -21,6 +21,7 @@ from tests import test_utils
 
 import trestle.core.parser as parser
 import trestle.oscal as oscal
+import trestle.oscal.catalog as cat
 from trestle.core import generators
 from trestle.core.err import TrestleError
 from trestle.core.repository import ManagedOSCAL, Repository
@@ -29,7 +30,7 @@ from trestle.core.repository import ManagedOSCAL, Repository
 def test_repo(tmp_trestle_dir: pathlib.Path) -> None:
     """Test creating Repository object."""
     repo = Repository(tmp_trestle_dir)
-    assert repo.root_dir == tmp_trestle_dir
+    assert repo._root_dir == tmp_trestle_dir
 
 
 def test_repo_invalid_root(tmp_path: pathlib.Path) -> None:
@@ -41,13 +42,13 @@ def test_repo_invalid_root(tmp_path: pathlib.Path) -> None:
 def test_import(tmp_trestle_dir: pathlib.Path) -> None:
     """Test import."""
     # Generate sample catalog model
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
 
     repo = Repository(tmp_trestle_dir)
     managed_oscal = repo.import_model(catalog_data, 'imported')
-    assert managed_oscal.root_dir == tmp_trestle_dir
-    assert managed_oscal.model_name == 'imported'
-    assert managed_oscal.model_type == catalog_data.__class__
+    assert managed_oscal._root_dir == tmp_trestle_dir
+    assert managed_oscal._model_name == 'imported'
+    assert managed_oscal._model_type == catalog_data.__class__
     assert managed_oscal.filepath.exists()
 
 
@@ -64,7 +65,7 @@ def test_import_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_model_exists(tmp_trestle_dir: pathlib.Path) -> None:
     """Model already exists."""
     # Generate sample catalog model
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
 
     repo = Repository(tmp_trestle_dir)
     managed_oscal = repo.import_model(catalog_data, 'imported')
@@ -106,13 +107,13 @@ def test_list(tmp_trestle_dir: pathlib.Path) -> None:
     """Test list models."""
     # 1. Empty list
     repo = Repository(tmp_trestle_dir)
-    model_list = repo.list_models(oscal.catalog.Catalog)
+    model_list = repo.list_models(cat.Catalog)
     assert len(model_list) == 0
 
     # model exists
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo.import_model(catalog_data, 'imported')
-    model_list = repo.list_models(oscal.catalog.Catalog)
+    model_list = repo.list_models(cat.Catalog)
     assert len(model_list) == 1
     assert 'imported' in model_list
 
@@ -127,11 +128,11 @@ def test_list_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_get(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get model."""
     # create a model
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     repo.import_model(catalog_data, 'imported')
-    managed_oscal = repo.get_model(oscal.catalog.Catalog, 'imported')
-    assert managed_oscal.model_name == 'imported'
+    managed_oscal = repo.get_model(cat.Catalog, 'imported')
+    assert managed_oscal._model_name == 'imported'
 
 
 def test_get_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
@@ -145,18 +146,18 @@ def test_get_model_not_exists(tmp_trestle_dir: pathlib.Path) -> None:
     """Invalid get model does not exists."""
     repo = Repository(tmp_trestle_dir)
     with pytest.raises(TrestleError, match='does not exist'):
-        repo.get_model(oscal.catalog.Catalog, 'anything')
+        repo.get_model(cat.Catalog, 'anything')
 
 
 def test_delete(tmp_trestle_dir: pathlib.Path) -> None:
     """Test delete model."""
     # create a model
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     repo.import_model(catalog_data, 'imported')
     # created model is 'dist' folder also
-    repo.assemble_model(oscal.catalog.Catalog, 'imported')
-    success = repo.delete_model(oscal.catalog.Catalog, 'imported')
+    repo.assemble_model(cat.Catalog, 'imported')
+    success = repo.delete_model(cat.Catalog, 'imported')
     assert success
 
 
@@ -171,16 +172,16 @@ def test_delete_model_not_exists(tmp_trestle_dir: pathlib.Path) -> None:
     """Delete model does not exists."""
     repo = Repository(tmp_trestle_dir)
     with pytest.raises(TrestleError, match='does not exist'):
-        repo.delete_model(oscal.catalog.Catalog, 'anything')
+        repo.delete_model(cat.Catalog, 'anything')
 
 
 def test_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test assemble model."""
     # create a model
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     repo.import_model(catalog_data, 'imported')
-    success = repo.assemble_model(oscal.catalog.Catalog, 'imported')
+    success = repo.assemble_model(cat.Catalog, 'imported')
     assert success
     dist_model_path = pathlib.Path(tmp_trestle_dir, 'dist', 'catalogs', 'imported.json')
     assert dist_model_path.exists()
@@ -196,17 +197,17 @@ def test_assemble_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_assemble_model_not_exists(tmp_trestle_dir: pathlib.Path) -> None:
     """Assemble model does not exists."""
     repo = Repository(tmp_trestle_dir)
-    success = repo.assemble_model(oscal.catalog.Catalog, 'anything')
+    success = repo.assemble_model(cat.Catalog, 'anything')
     assert not success
 
 
 def test_validate(tmp_trestle_dir: pathlib.Path) -> None:
     """Test validate model."""
     # create a model
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     repo.import_model(catalog_data, 'imported')
-    success = repo.validate_model(oscal.catalog.Catalog, 'imported')
+    success = repo.validate_model(cat.Catalog, 'imported')
     assert success
 
 
@@ -220,14 +221,14 @@ def test_validate_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_validate_model_not_exists(tmp_trestle_dir: pathlib.Path) -> None:
     """Assemble model does not exists."""
     repo = Repository(tmp_trestle_dir)
-    success = repo.validate_model(oscal.catalog.Catalog, 'anything')
+    success = repo.validate_model(cat.Catalog, 'anything')
     assert not success
 
 
 def test_managed_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     """Test creating Managed OSCAL object."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
     assert managed.model_dir == tmp_trestle_dir / 'catalogs' / 'imported'
@@ -236,7 +237,7 @@ def test_managed_oscal(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_invalid_root(tmp_path: pathlib.Path) -> None:
     """Invalid trestle_root directory while creating Managed OSCAL object."""
     with pytest.raises(TrestleError, match='not a valid Trestle root'):
-        ManagedOSCAL(tmp_path, oscal.catalog.Catalog, 'anything')
+        ManagedOSCAL(tmp_path, cat.Catalog, 'anything')
 
 
 def test_managed_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
@@ -248,26 +249,26 @@ def test_managed_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_invalid_model(tmp_trestle_dir: pathlib.Path) -> None:
     """Invalid model directory while creating Managed OSCAL object."""
     with pytest.raises(TrestleError, match=r'Model .* does not exist'):
-        ManagedOSCAL(tmp_trestle_dir, oscal.catalog.Catalog, 'anything')
+        ManagedOSCAL(tmp_trestle_dir, cat.Catalog, 'anything')
 
 
 def test_managed_file_not_exist(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model file does not exist while creating a Managed OSCAL object."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
     # delete file
     managed.filepath.unlink()
     with pytest.raises(TrestleError, match=r'Model file .* does not exist'):
-        ManagedOSCAL(tmp_trestle_dir, oscal.catalog.Catalog, 'imported')
+        ManagedOSCAL(tmp_trestle_dir, cat.Catalog, 'imported')
 
 
 def test_managed_read(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model read."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
     model = managed.read()
@@ -277,12 +278,12 @@ def test_managed_read(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_write(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model write."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
     # generate another catalog data for writing
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     success = managed.write(catalog_data)
     assert success
 
@@ -290,7 +291,7 @@ def test_managed_write(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_write_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
     """Invalid top level model while writing."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -305,7 +306,7 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model split."""
     # generate catalog data and import
     filepath = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    catalog_data = parser.parse_file(filepath, None)
+    catalog_data = cat.Catalog.oscal_read(filepath)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -328,7 +329,7 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_split_multi(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model split multiple elements."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -347,7 +348,7 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model merge."""
     # generate catalog data and import and split
     filepath = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    catalog_data = parser.parse_file(filepath, None)
+    catalog_data = cat.Catalog.oscal_read(filepath)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -379,7 +380,7 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_validate(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model validate."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    catalog_data = generators.generate_sample_model(cat.Catalog)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
     success = managed.validate()
