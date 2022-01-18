@@ -39,22 +39,6 @@ def load_good_catalog() -> catalog.Catalog:
     return catalog.Catalog.oscal_read(good_sample_path)
 
 
-def test_get_elements() -> None:
-    """Test getting flat list of elements."""
-    good_sample = load_good_catalog()
-
-    mdlist = mutils.get_elements_of_model_type(good_sample, common.Metadata)
-    assert (type(mdlist) == list)
-    # can only be 1 metadata
-    assert (len(mdlist) == 1)
-    assert (type(mdlist[0]) == common.Metadata)
-
-    control_list = mutils.get_elements_of_model_type(good_sample, catalog.Control)
-    assert (len(control_list) >= 1)
-    group_list = mutils.get_elements_of_model_type(good_sample, catalog.Group)
-    assert (len(group_list) >= 2)
-
-
 def test_is_collection_field_type() -> None:
     """Test for checking whether the type of a field in an OscalBaseModel object is a collection field."""
     good_catalog = load_good_catalog()
