@@ -35,7 +35,7 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
-from trestle.core.utils import classname_to_alias
+from trestle.core.utils import AliasMode, classname_to_alias
 from trestle.utils import fs, log
 from trestle.utils.load_distributed import load_distributed
 
@@ -54,7 +54,7 @@ class ManagedOSCAL:
         self._model_name = name
 
         # set model alais and dir
-        self.model_alias = classname_to_alias(self._model_type.__name__, 'json')
+        self.model_alias = classname_to_alias(self._model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(self.model_alias) is None:
             raise TrestleError(f'Given model {self.model_alias} is not a top level model.')
 
@@ -85,7 +85,7 @@ class ManagedOSCAL:
     def write(self, model: OscalBaseModel) -> bool:
         """Write OSCAL model to repository."""
         logger.debug(f'Writing model {self._model_name}.')
-        model_alias = classname_to_alias(model.__class__.__name__, 'json')
+        model_alias = classname_to_alias(model.__class__.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
@@ -196,7 +196,7 @@ class Repository:
     def import_model(self, model: OscalBaseModel, name: str, content_type='json') -> ManagedOSCAL:
         """Import OSCAL object into trestle repository."""
         logger.debug(f'Importing model {name} of type {model.__class__.__name__}.')
-        model_alias = classname_to_alias(model.__class__.__name__, 'json')
+        model_alias = classname_to_alias(model.__class__.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
@@ -263,7 +263,7 @@ class Repository:
     def list_models(self, model_type: Type[OscalBaseModel]) -> List[str]:
         """List models of a given type in trestle repository."""
         logger.debug(f'Listing models of type {model_type.__name__}.')
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
         models = fs.get_models_of_type(model_alias, self._root_dir)
@@ -273,7 +273,7 @@ class Repository:
     def get_model(self, model_type: Type[OscalBaseModel], name: str) -> ManagedOSCAL:
         """Get a specific OSCAL model from repository."""
         logger.debug(f'Getting model {name} of type {model_type.__name__}.')
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
         plural_path = fs.model_type_to_model_dir(model_alias)
@@ -288,7 +288,7 @@ class Repository:
     def delete_model(self, model_type: Type[OscalBaseModel], name: str) -> bool:
         """Delete an OSCAL model from repository."""
         logger.debug(f'Deleting model {name} of type {model_type.__name__}.')
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
         plural_path = fs.model_type_to_model_dir(model_alias)
@@ -317,7 +317,7 @@ class Repository:
         logger.debug(f'Assembling model {name} of type {model_type.__name__}.')
         success = False
 
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
@@ -341,7 +341,7 @@ class Repository:
         logger.debug(f'Validating model {name} of type {model_type.__name__}.')
         success = False
 
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 

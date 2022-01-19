@@ -218,7 +218,7 @@ class SplitCmd(CommandPlusDocs):
         """Create split actions of sub model."""
         actions: List[Action] = []
         file_name = cmd_utils.to_model_file_name(sub_model_item, file_prefix, content_type)
-        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
+        model_type = utils.classname_to_alias(type(sub_model_item).__name__, utils.AliasMode.JSON)
         sub_model_file = sub_model_dir / file_name
         actions.append(CreatePathAction(sub_model_file))
         actions.append(WriteFileAction(sub_model_file, Element(sub_model_item, model_type), content_type))
@@ -411,7 +411,7 @@ class SplitCmd(CommandPlusDocs):
                     root_file = base_dir / element_path.to_root_path(content_type)
 
                 split_plan.add_action(CreatePathAction(root_file))
-                wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, 'json')
+                wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, utils.AliasMode.JSON)
                 split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
 
         # return the end of the current path chain
@@ -474,7 +474,7 @@ class SplitCmd(CommandPlusDocs):
         else:
             root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file, True))
-        wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+        wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, utils.AliasMode.JSON)
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 
         return split_plan

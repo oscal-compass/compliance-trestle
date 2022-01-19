@@ -86,7 +86,9 @@ class AddCmd(CommandPlusDocs):
             parent_model, _ = fs.get_stripped_model_type(file_path, args.trestle_root)
             parent_object = parent_model.oscal_read(file_path)
             # FIXME : handle YAML files after detecting file type
-            parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
+            parent_element = Element(
+                parent_object, utils.classname_to_alias(parent_model.__name__, utils.AliasMode.JSON)
+            )
 
             add_plan = Plan()
             # Do _add for each element_path specified in args

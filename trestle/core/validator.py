@@ -17,7 +17,6 @@
 import argparse
 import logging
 from abc import ABC, abstractmethod
-from typing import TypeVar
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -27,9 +26,6 @@ from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
-
-# Generic type var
-TG = TypeVar('TG')
 
 
 class Validator(ABC):
