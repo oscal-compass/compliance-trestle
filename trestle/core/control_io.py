@@ -52,12 +52,11 @@ class ControlIOWriter():
         return wrapped
 
     @staticmethod
-    def _get_label(part: common.Part) -> str:
-        """Get the label from the props of a part."""
-        if part.props is not None:
-            for prop in part.props:
-                if prop.name == 'label':
-                    return prop.value.strip()
+    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
+        """Get the label from the props of a part or control."""
+        for prop in as_list(part_control.props):
+            if prop.name == 'label':
+                return prop.value.strip()
         return ''
 
     def _get_part(self, part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
@@ -132,7 +131,8 @@ class ControlIOWriter():
     def _add_control_statement_ssp(self, control: cat.Control) -> None:
         """Add the control statement and items to the markdown SSP."""
         self._md_file.new_paragraph()
-        label = self._get_label(control) if self._get_label(control) != '' else control.id.upper()
+        label = self.get_label(control)
+        label = label if label else control.id.upper()
         title = f'{label} - {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
@@ -245,7 +245,7 @@ class ControlIOWriter():
                                 # insert extra line to make mdformat happy
                                 self._md_file._add_line_raw('')
                             self._md_file.new_hr()
-                            part_label = self._get_label(prt)
+                            part_label = self.get_label(prt)
                             # if no label guess the label from the sub-part id
                             if not part_label:
                                 part_label = prt.id.split('.')[-1]
@@ -643,7 +643,7 @@ class ControlIOReader():
                 # id_text is the part id and needs to be as a label property value
                 # if none is there then create one from previous part, or use default
                 if not id_text:
-                    prev_label = ControlIOWriter._get_label(parts[-1]) if parts else ''
+                    prev_label = ControlIOWriter.get_label(parts[-1]) if parts else ''
                     id_text = ControlIOReader._create_next_label(prev_label, indent)
                 id_ = ControlIOReader._strip_to_make_ncname(parent_id + '.' + id_text)
                 name = 'objective' if id_.find('_obj') > 0 else 'item'

@@ -21,6 +21,7 @@ from typing import TypeVar
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.const import ARG_FILE
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
@@ -93,7 +94,7 @@ class Validator(ABC):
             return CmdReturnCodes.SUCCESS.value
 
         # validate file
-        if 'file' in args and args.file:
+        if ARG_FILE in args and args.file:
             file_path = trestle_root / args.file
             _, _, model = load_distributed(file_path, trestle_root)
             if not self.model_is_valid(model):

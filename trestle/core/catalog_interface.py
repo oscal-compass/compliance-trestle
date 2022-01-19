@@ -17,7 +17,7 @@ import copy
 import logging
 import pathlib
 import re
-from typing import Callable, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.core.const as const
 import trestle.core.generators as gens
@@ -257,7 +257,7 @@ class CatalogInterface():
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
                     if part:
-                        label = self.get_label(part)
+                        label = ControlIOWriter.get_label(part)
                         found_part = part
                         break
 
@@ -284,16 +284,6 @@ class CatalogInterface():
             for new_group in group.groups:
                 for res in CatalogInterface._get_groups_from_group(new_group):
                     yield res
-
-    @staticmethod
-    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
-        """Get the label from a part or control - they both have props."""
-        label = ''
-        for prop in as_list(part_control.props):
-            if prop.name == 'label':
-                label = prop.value
-                break
-        return label
 
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""

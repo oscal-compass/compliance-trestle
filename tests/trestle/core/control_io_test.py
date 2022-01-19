@@ -235,7 +235,7 @@ def test_create_next_label(prev_label, next_label, indent) -> None:
 def test_control_failures(tmp_path: pathlib.Path) -> None:
     """Test various failure modes."""
     part = common.Part(name='foo')
-    assert ControlIOWriter._get_label(part) == ''
+    assert ControlIOWriter.get_label(part) == ''
 
     assert ControlIOReader._strip_to_make_ncname('1a@foo') == 'afoo'
     with pytest.raises(TrestleError):

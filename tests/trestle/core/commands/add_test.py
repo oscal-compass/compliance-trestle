@@ -27,6 +27,7 @@ from tests import test_utils
 import trestle.core.err as err
 from trestle.cli import Trestle
 from trestle.core.commands.add import AddCmd
+from trestle.core.const import IOF_SHORT
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -78,7 +79,7 @@ def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> Non
         str(dest_file_location),
         '-e',
         'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties',
-        '-iof'
+        IOF_SHORT
     ]
 
     monkeypatch.setattr(sys, 'argv', testargs)
