@@ -37,6 +37,7 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.core.utils import AliasMode
 from trestle.oscal import catalog as oscatalog
 from trestle.oscal import common, component
 from trestle.utils import trash
@@ -160,7 +161,7 @@ def test_subsequent_split_model_plans(
     root_file = component_def_dir / element_paths[0].to_root_path(content_type)
     metadata_field_alias = element_paths[0].get_element_name()
     stripped_root = element.get().stripped_instance(stripped_fields_aliases=[metadata_field_alias])
-    root_wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+    root_wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, AliasMode.JSON)
 
     first_plan = Plan()
     first_plan.add_action(CreatePathAction(metadata_file))
@@ -229,7 +230,7 @@ def test_split_multi_level_dict_plans(
     for index, comp_obj in enumerate(components):
         # individual target dir
         component_element = Element(comp_obj)
-        model_type = utils.classname_to_alias(type(comp_obj).__name__, 'json')
+        model_type = utils.classname_to_alias(type(comp_obj).__name__, AliasMode.JSON)
         dir_prefix = str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
         component_dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
         component_file = components_dir / f'{component_dir_name}{file_ext}'
@@ -239,7 +240,7 @@ def test_split_multi_level_dict_plans(
         component_ctrl_dir = components_dir / element_paths[1].to_file_path(root_dir=component_dir_name)
 
         for i, component_ctrl_impl in enumerate(component_ctrl_impls):
-            model_type = utils.classname_to_alias(type(component_ctrl_impl).__name__, 'json')
+            model_type = utils.classname_to_alias(type(component_ctrl_impl).__name__, AliasMode.JSON)
             file_prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
             file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
             file_path = component_ctrl_dir / file_name

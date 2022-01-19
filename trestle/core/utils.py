@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Utilities for dealing with models."""
+import enum
 import importlib
 import logging
 import string
@@ -26,6 +27,17 @@ logger = logging.getLogger(__name__)
 
 # Generic typevar
 TG = TypeVar('TG')
+
+
+class AliasMode(enum.Enum):
+    """
+    Allowed formats for classname alias.
+
+    Currently there are only two.  If others are added, check they get handled properly in the code.
+    """
+
+    JSON = 1
+    FIELD = 2
 
 
 def camel_to_snake(camel: str) -> str:
@@ -65,7 +77,7 @@ def spaces_and_caps_to_snake(spaced_str: str) -> str:
     return underscored.lower()
 
 
-def classname_to_alias(classname: str, mode: str) -> str:
+def classname_to_alias(classname: str, mode: AliasMode) -> str:
     """
     Return oscal key name or field element name based on class name.
 
@@ -73,27 +85,23 @@ def classname_to_alias(classname: str, mode: str) -> str:
     """
     suffix = classname.split('.')[-1]
 
-    if mode == 'json':
+    if mode == AliasMode.JSON:
         # things like class_ should just be class
         if suffix[-1] == '_':
             suffix = suffix[:-1]
         return camel_to_dash(suffix).rstrip(string.digits)
-    if mode == 'field':
-        return camel_to_snake(suffix).rstrip(string.digits)
-    raise err.TrestleError(f'Bad mode {mode} in classname_to_alias')
+    return camel_to_snake(suffix).rstrip(string.digits)
 
 
-def alias_to_classname(alias: str, mode: str) -> str:
+def alias_to_classname(alias: str, mode: AliasMode) -> str:
     """
     Return class name based dashed or snake alias.
 
     This is applicable creating dynamic wrapper model for a list or dict field.
     """
-    if mode == 'json':
+    if mode == AliasMode.JSON:
         return snake_to_upper_camel(alias.replace('-', '_'))
-    if mode == 'field':
-        return snake_to_upper_camel(alias)
-    raise err.TrestleError(f'Bad mode {mode} in alias_to_classname')
+    return snake_to_upper_camel(alias)
 
 
 def camel_to_dash(name: str) -> str:

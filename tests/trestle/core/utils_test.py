@@ -131,35 +131,32 @@ def test_classname_to_alias() -> None:
     """Test conversion of class name to alias."""
     module_name = catalog.Catalog.__module__
 
-    with pytest.raises(err.TrestleError):
-        mutils.classname_to_alias('any', 'invalid_mode')
-
     short_classname = catalog.Catalog.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'catalog'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'catalog'
 
     short_classname = common.ResponsibleParty.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'responsible-party'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'responsible_party'
 
     short_classname = common.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'property'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'property'
 
     short_classname = common.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'member-of-organization'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'member_of_organization'
 
 
@@ -185,8 +182,5 @@ def test_camel_to_snake() -> None:
 
 def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
-    assert mutils.alias_to_classname('component-definition', 'json') == 'ComponentDefinition'
-    assert mutils.alias_to_classname('component_definition', 'field') == 'ComponentDefinition'
-
-    with pytest.raises(err.TrestleError):
-        assert mutils.alias_to_classname('component-definition', 'invalid') == 'ComponentDefinition'
+    assert mutils.alias_to_classname('component-definition', mutils.AliasMode.JSON) == 'ComponentDefinition'
+    assert mutils.alias_to_classname('component_definition', mutils.AliasMode.FIELD) == 'ComponentDefinition'

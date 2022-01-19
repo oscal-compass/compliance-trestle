@@ -220,6 +220,6 @@ def parse_element_arg(
 def to_model_file_name(model_obj: OscalBaseModel, file_prefix: str, content_type: FileContentType) -> str:
     """Return the file name for the item."""
     file_ext = FileContentType.to_file_extension(content_type)
-    model_type = utils.classname_to_alias(type(model_obj).__name__, 'json')
+    model_type = utils.classname_to_alias(type(model_obj).__name__, utils.AliasMode.JSON)
     file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
     return file_name

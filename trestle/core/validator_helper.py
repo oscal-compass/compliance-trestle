@@ -90,8 +90,8 @@ def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]
     # Neither of these should change
     # If other similar types are found they should be added to the FixedUuidModel typevar to prevent updating
     if isinstance(object_of_interest, FixedUuidModel):
-        return object_of_interest, uuid_lut
-    if isinstance(object_of_interest, pydantic.BaseModel):
+        pass
+    elif isinstance(object_of_interest, pydantic.BaseModel):
         # fields_set has names of fields set when model was initialized
         fields = getattr(object_of_interest, '__fields_set__', None)
         for field in fields:
@@ -102,14 +102,13 @@ def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]
             else:
                 new_object, uuid_lut = _regenerate_uuids_in_place(object_of_interest.__dict__[field], uuid_lut)
             object_of_interest.__dict__[field] = new_object
-        return object_of_interest, uuid_lut
-    if type(object_of_interest) is list:
+    elif type(object_of_interest) is list:
         new_list = []
         for item in object_of_interest:
             new_item, uuid_lut = _regenerate_uuids_in_place(item, uuid_lut)
             new_list.append(new_item)
-        return new_list, uuid_lut
-    if type(object_of_interest) is dict:
+        object_of_interest = new_list
+    elif type(object_of_interest) is dict:
         new_dict = {}
         for key, value in object_of_interest.items():
             if key == uuid_str:
@@ -119,7 +118,7 @@ def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]
             else:
                 new_value, uuid_lut = _regenerate_uuids_in_place(value, uuid_lut)
                 new_dict[key] = new_value
-        return new_dict, uuid_lut
+        object_of_interest = new_dict
     return object_of_interest, uuid_lut
 
 
@@ -127,21 +126,19 @@ def _update_new_uuid_refs(object_of_interest: Any, uuid_lut: Dict[str, str]) -> 
     """Update all refs to uuids that were changed."""
     n_refs_updated = 0
     if isinstance(object_of_interest, pydantic.BaseModel):
-        # fields_set has names of fields set when model was initialized
         fields = getattr(object_of_interest, '__fields_set__', None)
         for field in fields:
             new_object, n_new_updates = _update_new_uuid_refs(object_of_interest.__dict__[field], uuid_lut)
             n_refs_updated += n_new_updates
             object_of_interest.__dict__[field] = new_object
-        return object_of_interest, n_refs_updated
-    if type(object_of_interest) is list:
+    elif type(object_of_interest) is list:
         new_list = []
         for item in object_of_interest:
             new_item, n_new_updates = _update_new_uuid_refs(item, uuid_lut)
             n_refs_updated += n_new_updates
             new_list.append(new_item)
-        return new_list, n_refs_updated
-    if type(object_of_interest) is dict:
+        object_of_interest = new_list
+    elif type(object_of_interest) is dict:
         new_dict = {}
         for key, value in object_of_interest.items():
             if isinstance(value, str):
@@ -154,11 +151,11 @@ def _update_new_uuid_refs(object_of_interest: Any, uuid_lut: Dict[str, str]) -> 
                 new_value, n_new_updates = _update_new_uuid_refs(value, uuid_lut)
                 n_refs_updated += n_new_updates
                 new_dict[key] = new_value
-        return new_dict, n_refs_updated
-    if isinstance(object_of_interest, str):
+        object_of_interest = new_dict
+    elif isinstance(object_of_interest, str):
         if object_of_interest in uuid_lut:
             n_refs_updated += 1
-            return uuid_lut[object_of_interest], n_refs_updated
+            object_of_interest = uuid_lut[object_of_interest]
     return object_of_interest, n_refs_updated
 
 

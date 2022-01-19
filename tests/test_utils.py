@@ -34,6 +34,7 @@ from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
+from trestle.core.utils import AliasMode
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -97,7 +98,7 @@ def prepare_trestle_project_dir(
     """Prepare a temp directory with an example OSCAL model."""
     ensure_trestle_config_dir(repo_dir)
 
-    model_alias = utils.classname_to_alias(model_obj.__class__.__name__, 'json')
+    model_alias = utils.classname_to_alias(model_obj.__class__.__name__, AliasMode.JSON)
 
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = repo_dir / models_dir_name / 'my_test_model'
