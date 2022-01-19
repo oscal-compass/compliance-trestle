@@ -39,22 +39,6 @@ def load_good_catalog() -> catalog.Catalog:
     return catalog.Catalog.oscal_read(good_sample_path)
 
 
-def test_get_elements() -> None:
-    """Test getting flat list of elements."""
-    good_sample = load_good_catalog()
-
-    mdlist = mutils.get_elements_of_model_type(good_sample, common.Metadata)
-    assert (type(mdlist) == list)
-    # can only be 1 metadata
-    assert (len(mdlist) == 1)
-    assert (type(mdlist[0]) == common.Metadata)
-
-    control_list = mutils.get_elements_of_model_type(good_sample, catalog.Control)
-    assert (len(control_list) >= 1)
-    group_list = mutils.get_elements_of_model_type(good_sample, catalog.Group)
-    assert (len(group_list) >= 2)
-
-
 def test_is_collection_field_type() -> None:
     """Test for checking whether the type of a field in an OscalBaseModel object is a collection field."""
     good_catalog = load_good_catalog()
@@ -147,35 +131,32 @@ def test_classname_to_alias() -> None:
     """Test conversion of class name to alias."""
     module_name = catalog.Catalog.__module__
 
-    with pytest.raises(err.TrestleError):
-        mutils.classname_to_alias('any', 'invalid_mode')
-
     short_classname = catalog.Catalog.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'catalog'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'catalog'
 
     short_classname = common.ResponsibleParty.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'responsible-party'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'responsible_party'
 
     short_classname = common.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'property'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'property'
 
     short_classname = common.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
     assert json_alias == 'member-of-organization'
-    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
     assert json_alias == 'member_of_organization'
 
 
@@ -201,8 +182,5 @@ def test_camel_to_snake() -> None:
 
 def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
-    assert mutils.alias_to_classname('component-definition', 'json') == 'ComponentDefinition'
-    assert mutils.alias_to_classname('component_definition', 'field') == 'ComponentDefinition'
-
-    with pytest.raises(err.TrestleError):
-        assert mutils.alias_to_classname('component-definition', 'invalid') == 'ComponentDefinition'
+    assert mutils.alias_to_classname('component-definition', mutils.AliasMode.JSON) == 'ComponentDefinition'
+    assert mutils.alias_to_classname('component_definition', mutils.AliasMode.FIELD) == 'ComponentDefinition'

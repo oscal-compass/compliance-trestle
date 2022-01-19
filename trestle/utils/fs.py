@@ -216,7 +216,7 @@ def get_stripped_model_type(
     # if model type is a list or dict, generate a new wrapping model for it
     if utils.is_collection_field_type(singular_model_type):
         malias = model_alias.split('.')[-1]
-        class_name = utils.alias_to_classname(malias, 'json')
+        class_name = utils.alias_to_classname(malias, utils.AliasMode.JSON)
         logger.debug(f'collection field type class name {class_name} and alias {malias}')
         model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
         logger.debug(f'model_type created: {model_type}')
@@ -381,7 +381,7 @@ def get_singular_alias(alias_path: str, relative_path: Optional[pathlib.Path] = 
         outer_type = field.outer_type_
         inner_type = utils.get_inner_type(outer_type)
         inner_type_name = inner_type.__name__
-        singular_alias = utils.classname_to_alias(inner_type_name, 'json')
+        singular_alias = utils.classname_to_alias(inner_type_name, utils.AliasMode.JSON)
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}')
 

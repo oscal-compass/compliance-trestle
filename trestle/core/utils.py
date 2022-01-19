@@ -13,12 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Utilities for dealing with models."""
+import enum
 import importlib
 import logging
 import string
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, no_type_check
-
-from pydantic import BaseModel
 
 import trestle.core.err as err
 
@@ -28,6 +27,17 @@ logger = logging.getLogger(__name__)
 
 # Generic typevar
 TG = TypeVar('TG')
+
+
+class AliasMode(enum.Enum):
+    """
+    Allowed formats for classname alias.
+
+    Currently there are only two.  If others are added, check they get handled properly in the code.
+    """
+
+    JSON = 1
+    FIELD = 2
 
 
 def camel_to_snake(camel: str) -> str:
@@ -67,30 +77,7 @@ def spaces_and_caps_to_snake(spaced_str: str) -> str:
     return underscored.lower()
 
 
-def get_elements_of_model_type(object_of_interest, type_of_interest):
-    """
-    Return a flat list of a given type of pydantic object based on a presumed encompasing root object.
-
-    One warning. This object preserves the underlying object tree. So when you use this function do NOT recurse on the
-    results or you will end up with duplication errors.
-    """
-    loi = []
-    if type(object_of_interest) == type_of_interest:
-        loi.append(object_of_interest)
-        # keep going
-    if type(object_of_interest) is list:
-        for item in object_of_interest:
-            loi.extend(get_elements_of_model_type(item, type_of_interest))
-
-    if isinstance(object_of_interest, BaseModel):
-        for field in object_of_interest.__fields_set__:
-            if field == '__root__':
-                continue
-            loi.extend(get_elements_of_model_type(getattr(object_of_interest, field), type_of_interest))
-    return loi
-
-
-def classname_to_alias(classname: str, mode: str) -> str:
+def classname_to_alias(classname: str, mode: AliasMode) -> str:
     """
     Return oscal key name or field element name based on class name.
 
@@ -98,27 +85,23 @@ def classname_to_alias(classname: str, mode: str) -> str:
     """
     suffix = classname.split('.')[-1]
 
-    if mode == 'json':
+    if mode == AliasMode.JSON:
         # things like class_ should just be class
         if suffix[-1] == '_':
             suffix = suffix[:-1]
         return camel_to_dash(suffix).rstrip(string.digits)
-    if mode == 'field':
-        return camel_to_snake(suffix).rstrip(string.digits)
-    raise err.TrestleError('Bad option')
+    return camel_to_snake(suffix).rstrip(string.digits)
 
 
-def alias_to_classname(alias: str, mode: str) -> str:
+def alias_to_classname(alias: str, mode: AliasMode) -> str:
     """
     Return class name based dashed or snake alias.
 
     This is applicable creating dynamic wrapper model for a list or dict field.
     """
-    if mode == 'json':
+    if mode == AliasMode.JSON:
         return snake_to_upper_camel(alias.replace('-', '_'))
-    if mode == 'field':
-        return snake_to_upper_camel(alias)
-    raise err.TrestleError('Bad option')
+    return snake_to_upper_camel(alias)
 
 
 def camel_to_dash(name: str) -> str:
@@ -161,7 +144,7 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
 
 
-def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[Any]]:
+def _get_model_field_info(field_type: Type[Any]) -> Tuple[Type[Any], str, Type[Any]]:
     """Need special handling for pydantic wrapped __root__ objects."""
     # oscal_read of roles.json yields pydantic.Roles model with __root__ containing list of Role
     root: Type[Any] = None

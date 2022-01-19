@@ -82,5 +82,5 @@ def to_full_model_name(root_key: str) -> str:
         raise TrestleError(f'{root_key} is not a top level model name.')
 
     module = const.MODEL_TYPE_TO_MODEL_MODULE[root_key]
-    class_name = utils.alias_to_classname(root_key, 'json')
+    class_name = utils.alias_to_classname(root_key, utils.AliasMode.JSON)
     return f'{module}.{class_name}'

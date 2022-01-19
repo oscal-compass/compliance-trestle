@@ -43,7 +43,7 @@ import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.core.utils import classname_to_alias, get_origin, is_collection_field_type
+from trestle.core.utils import AliasMode, classname_to_alias, get_origin, is_collection_field_type
 
 logger = logging.getLogger(__name__)
 
@@ -213,9 +213,9 @@ class OscalBaseModel(TrestleBaseModel):
         raw_dict = self.dict(by_alias=True, exclude_none=True)
         # Additional check to avoid root serialization
         if '__root__' in raw_dict.keys():
-            result[classname_to_alias(class_name, 'json')] = raw_dict['__root__']
+            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['__root__']
         else:
-            result[classname_to_alias(class_name, 'json')] = raw_dict
+            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict
         return result
 
     def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
@@ -290,7 +290,7 @@ class OscalBaseModel(TrestleBaseModel):
             The oscal object read into trestle oscal models.
         """
         # Create the wrapper model.
-        alias = classname_to_alias(cls.__name__, 'json')
+        alias = classname_to_alias(cls.__name__, AliasMode.JSON)
 
         content_type = FileContentType.to_content_type(path.suffix)
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')

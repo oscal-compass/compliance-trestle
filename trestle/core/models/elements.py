@@ -113,7 +113,7 @@ class ElementPath:
             # Determine if the parent model is a collection.
             if utils.is_collection_field_type(prev_model):
                 inner_model = utils.get_inner_type(prev_model)
-                inner_class_name = utils.classname_to_alias(inner_model.__name__, 'json')
+                inner_class_name = utils.classname_to_alias(inner_model.__name__, utils.AliasMode.JSON)
                 # Assert that the current name fits an expected form.
                 # Valid choices here are *, integer (for arrays) and the inner model alias
                 if (inner_class_name == current_element_str or current_element_str == self.WILDCARD
@@ -162,7 +162,9 @@ class ElementPath:
             # Final path must be the alias
 
             new_base_type = create_model(
-                utils.alias_to_classname(collection_name, 'json'), __base__=OscalBaseModel, __root__=(base_type, ...)
+                utils.alias_to_classname(collection_name, utils.AliasMode.JSON),
+                __base__=OscalBaseModel,
+                __root__=(base_type, ...)
             )
             return new_base_type
         return base_type
@@ -392,7 +394,7 @@ class Element:
                     raise TrestleError(
                         f'wrapper_alias not found for a collection type object: {elem.__class__.__name__}'
                     )
-            wrapper_alias = utils.classname_to_alias(class_name, 'json')
+            wrapper_alias = utils.classname_to_alias(class_name, utils.AliasMode.JSON)
 
         self._wrapper_alias: str = wrapper_alias
 

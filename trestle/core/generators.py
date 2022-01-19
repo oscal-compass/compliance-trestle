@@ -156,7 +156,7 @@ def generate_sample_model(
                     # E.g. we need the type of the container.
                     if field == '__root__' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
-                            outer_type, utils.classname_to_alias(model.__name__, 'field')
+                            outer_type, utils.classname_to_alias(model.__name__, utils.AliasMode.FIELD)
                         )
                     else:
                         model_dict[field] = generate_sample_value_by_type(outer_type, field)

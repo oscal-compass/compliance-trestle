@@ -111,7 +111,7 @@ class MergeCmd(CommandPlusDocs):
         file_ext = FileContentType.to_file_extension(file_type)
         # Destination model filename
         destination_model_path = (
-            effective_cwd / f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}'
+            effective_cwd / f'{utils.classname_to_alias(destination_model_alias, utils.AliasMode.JSON)}{file_ext}'
         )
         logger.debug(f'destination model filename is {destination_model_path}')
         destination_model_type, _ = fs.get_stripped_model_type(destination_model_path, trestle_root)

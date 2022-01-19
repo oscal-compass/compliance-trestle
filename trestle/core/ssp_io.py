@@ -14,7 +14,7 @@
 """Handle direct IO for writing SSP responses as markdown."""
 import logging
 import pathlib
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from trestle.core import catalog_interface
 from trestle.core.catalog_interface import CatalogInterface
@@ -23,6 +23,7 @@ from trestle.core.control_io import ControlIOWriter
 from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.core.utils import as_list
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.ssp import Statement
@@ -33,18 +34,18 @@ logger = logging.getLogger(__name__)
 class SSPMarkdownWriter():
     """Class to write control responses as markdown."""
 
-    def __init__(self, trestle_root: pathlib.Path):
+    def __init__(self, trestle_root: pathlib.Path) -> None:
         """Initialize the class."""
         self._trestle_root = trestle_root
         self._ssp: ssp.SystemSecurityPlan = None
         self._resolved_catalog: Catalog = None
         self._catalog_interface: CatalogInterface = None
 
-    def set_ssp(self, ssp: ssp.SystemSecurityPlan):
+    def set_ssp(self, ssp: ssp.SystemSecurityPlan) -> None:
         """Set ssp."""
         self._ssp = ssp
 
-    def set_catalog(self, resolved_catalog: Catalog):
+    def set_catalog(self, resolved_catalog: Catalog) -> None:
         """Set catalog."""
         self._resolved_catalog = resolved_catalog
         self._catalog_interface = catalog_interface.CatalogInterface(self._resolved_catalog)
@@ -71,7 +72,7 @@ class SSPMarkdownWriter():
 
         return self._build_tree_and_adjust(control_lines, level)
 
-    def get_control_part(self, control_id: str, part_name: str, level: int):
+    def get_control_part(self, control_id: str, part_name: str, level: int) -> str:
         """Get control part with given name."""
         control_part = self._catalog_interface.get_control_part_prose(control_id, part_name)
 
@@ -120,16 +121,15 @@ class SSPMarkdownWriter():
         for impl_requirement in self._ssp.control_implementation.implemented_requirements:
             if impl_requirement.control_id == control_id:
                 if impl_requirement.responsible_roles:
-                    role_ids = []
-                    for resp_role in impl_requirement.responsible_roles:
-                        role_ids.append(resp_role.role_id.replace('_', ' '))
+                    resp_roles = as_list(impl_requirement.responsible_roles)
+                    role_ids = [role.role_id.replace('_', ' ') for role in resp_roles]
 
                     # now check if this role exists in the metadata
                     role_titles = dict(zip(role_ids, role_ids))
-                    if self._ssp.metadata.roles:
-                        for role in self._ssp.metadata.roles:
-                            if role.id in role_ids:
-                                role_titles[role.id] = role.title
+                    roles = as_list(self._ssp.metadata.roles)
+                    for role in roles:
+                        if role.id in role_ids:
+                            role_titles[role.id] = role.title
 
                     # dictionary to md table
                     md_list = self._write_table_with_header(
@@ -171,7 +171,7 @@ class SSPMarkdownWriter():
         if not self._ssp:
             raise TrestleError('Cannot get Fedramp implementation status, set SSP first.')
 
-        implementation_statuses = []
+        implementation_statuses: List[str] = []
         control_impl_req = self._control_implemented_req(control_id)
         if control_impl_req and control_impl_req.props:
             for prop in control_impl_req.props:
@@ -279,12 +279,14 @@ class SSPMarkdownWriter():
 
         return response_per_component
 
-    def _control_implemented_req(self, control_id: str) -> ssp.ImplementedRequirement:
+    def _control_implemented_req(self, control_id: str) -> Optional[ssp.ImplementedRequirement]:
         """Retrieve control implemented requirement by control-id."""
         requirements = self._ssp.control_implementation.implemented_requirements
         for requirement in requirements:
             if requirement.control_id == control_id:
                 return requirement
+        logger.debug(f'No implemented requirement found for control {control_id}')
+        return None
 
     def _write_list_with_header(self, header: str, lines: List[str], level: int) -> str:
         if lines:
