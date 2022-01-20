@@ -335,6 +335,7 @@ class OscalResultsFactory():
         """Initialize."""
         self._timestamp = timestamp
         self._observation_list: List[Observation] = []
+        self._result_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
         self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
@@ -371,6 +372,11 @@ class OscalResultsFactory():
         return self._observation_list
 
     @property
+    def result_properties(self) -> List[Property]:
+        """OSCAL result properties."""
+        return self._result_properties_list
+
+    @property
     def reviewed_controls(self) -> ReviewedControls:
         """OSCAL reviewed controls."""
         prop = ReviewedControls(control_selections=self.control_selections)
@@ -379,6 +385,10 @@ class OscalResultsFactory():
     @property
     def result(self) -> Result:
         """OSCAL result."""
+        # perform result properties aggregation
+        if len(self.observations) > 0:
+            self._aggregate_properties()
+        # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
             title='OpenShift Compliance Operator',
@@ -387,11 +397,43 @@ class OscalResultsFactory():
             end=self._timestamp,
             reviewed_controls=self.reviewed_controls,
         )
+        if len(self.result_properties) > 0:
+            prop.prop = self.result_properties
         if len(self.inventory) > 0:
             prop.local_definitions = self.local_definitions
-        if len(self._observation_list) > 0:
+        if len(self.observations) > 0:
             prop.observations = self.observations
         return prop
+
+    def _aggregate_properties(self):
+        """Aggregate common observation properties at the result level."""
+        tuples = {}
+        props = {}
+        observations = self.observations
+        result_properties = self.result_properties
+        # count property occurrences in each observation
+        for observation in observations:
+            for prop in observation.props:
+                key = f'{prop.name}:{prop.value}:{prop.class_}'
+                if key not in tuples.keys():
+                    tuples[key] = 0
+                tuples[key] += 1
+        # remove property aggregates from observation level
+        for key in tuples.keys():
+            # skip property if not identical for each and every observation
+            if tuples[key] != len(observations):
+                continue
+            # remove property from each observation, and put in property list
+            for observation in observations:
+                for prop in observation.props:
+                    pkey = f'{prop.name}:{prop.value}:{prop.class_}'
+                    if key == pkey:
+                        props[key] = prop
+                        observation.props.remove(prop)
+                        break
+        # add property aggregates to results level
+        for prop in props.values():
+            result_properties.append(prop)
 
     @property
     def analysis(self) -> List[str]:
