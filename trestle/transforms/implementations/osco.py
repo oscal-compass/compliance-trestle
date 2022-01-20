@@ -407,24 +407,16 @@ class OscalResultsFactory():
 
     def _aggregate_properties(self):
         """Aggregate common observation properties at the result level."""
-        tuples = {}
         props = {}
-        observations = self.observations
-        result_properties = self.result_properties
         # count property occurrences in each observation
-        for observation in observations:
-            for prop in observation.props:
-                key = f'{prop.name}:{prop.value}:{prop.class_}'
-                if key not in tuples.keys():
-                    tuples[key] = 0
-                tuples[key] += 1
+        property_occurrences = self._get_property_occurences()
         # remove property aggregates from observation level
-        for key in tuples.keys():
+        for key in property_occurrences.keys():
             # skip property if not identical for each and every observation
-            if tuples[key] != len(observations):
+            if property_occurrences[key] != len(self.observations):
                 continue
-            # remove property from each observation, and put in property list
-            for observation in observations:
+            # remove property from each observation and keep one instance
+            for observation in self.observations:
                 for prop in observation.props:
                     pkey = f'{prop.name}:{prop.value}:{prop.class_}'
                     if key == pkey:
@@ -433,7 +425,18 @@ class OscalResultsFactory():
                         break
         # add property aggregates to results level
         for prop in props.values():
-            result_properties.append(prop)
+            self.result_properties.append(prop)
+
+    def _get_property_occurences(self):
+        """Count property occurrences in each observation."""
+        property_occurences = {}
+        for observation in self.observations:
+            for prop in observation.props:
+                key = f'{prop.name}:{prop.value}:{prop.class_}'
+                if key not in property_occurences.keys():
+                    property_occurences[key] = 0
+                property_occurences[key] += 1
+        return property_occurences
 
     @property
     def analysis(self) -> List[str]:
