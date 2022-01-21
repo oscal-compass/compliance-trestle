@@ -1172,7 +1172,8 @@ class ControlIOReader():
         params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
         if params:
             control.params = []
-            for id_, label in params.items():
-                param = common.Parameter(id=id_, label=label)
+            for id_, value in params.items():
+                param_value = common.ParameterValue(__root__=value)
+                param = common.Parameter(id=id_, values=[param_value])
                 control.params.append(param)
         return control, group_title
