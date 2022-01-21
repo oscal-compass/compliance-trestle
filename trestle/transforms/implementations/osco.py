@@ -39,6 +39,7 @@ from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import FromOscalTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
+from trestle.transforms.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
 
@@ -387,7 +388,7 @@ class OscalResultsFactory():
         """OSCAL result."""
         # perform result properties aggregation
         if len(self.observations) > 0:
-            self._aggregate_properties()
+            self._result_properties_list = TransformerHelper.remove_common_observation_properties(self.observations)
         # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
@@ -404,39 +405,6 @@ class OscalResultsFactory():
         if len(self.observations) > 0:
             prop.observations = self.observations
         return prop
-
-    def _aggregate_properties(self):
-        """Aggregate common observation properties at the result level."""
-        props = {}
-        # count property occurrences in each observation
-        property_occurrences = self._get_property_occurences()
-        # remove property aggregates from observation level
-        for key in property_occurrences.keys():
-            # skip property if not identical for each and every observation
-            if property_occurrences[key] != len(self.observations):
-                continue
-            # remove property from each observation and keep one instance
-            for observation in self.observations:
-                for prop in observation.props:
-                    pkey = f'{prop.name}:{prop.value}:{prop.class_}'
-                    if key == pkey:
-                        props[key] = prop
-                        observation.props.remove(prop)
-                        break
-        # add property aggregates to results level
-        for prop in props.values():
-            self.result_properties.append(prop)
-
-    def _get_property_occurences(self):
-        """Count property occurrences in each observation."""
-        property_occurences = {}
-        for observation in self.observations:
-            for prop in observation.props:
-                key = f'{prop.name}:{prop.value}:{prop.class_}'
-                if key not in property_occurences.keys():
-                    property_occurences[key] = 0
-                property_occurences[key] += 1
-        return property_occurences
 
     @property
     def analysis(self) -> List[str]:
