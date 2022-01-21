@@ -24,13 +24,12 @@ from trestle.oscal.common import Property
 class TransformerHelper():
     """OSCAL transformer helper."""
 
-    @classmethod
-    def remove_common_observation_properties(cls, observations: List[Observation]) -> List[Property]:
+    def remove_common_observation_properties(self, observations: List[Observation]) -> List[Property]:
         """Remove common observation properties."""
         common_props = []
         props = {}
         # count each property occurrence in each observation
-        props_occurrence_counts = TransformerHelper._get_property_occurrence_counts(observations)
+        props_occurrence_counts = self._get_property_occurrence_counts(observations)
         # remove common properties from observation
         for key in props_occurrence_counts.keys():
             # skip property if not identical for each and every observation
@@ -49,8 +48,7 @@ class TransformerHelper():
         # return list of removed properties
         return common_props
 
-    @classmethod
-    def _get_property_occurrence_counts(cls, observations: List[Observation]):
+    def _get_property_occurrence_counts(self, observations: List[Observation]):
         """Count each property occurrence in each observation."""
         property_occurences = {}
         for observation in observations:

@@ -388,7 +388,7 @@ class OscalResultsFactory():
         """OSCAL result."""
         # perform result properties aggregation
         if len(self.observations) > 0:
-            self._result_properties_list = TransformerHelper.remove_common_observation_properties(self.observations)
+            self._result_properties_list = TransformerHelper().remove_common_observation_properties(self.observations)
         # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
