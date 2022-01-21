@@ -28,6 +28,8 @@ TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 TRESTLE_KEEP_FILE = '.keep'
 
+ALLOWED_EXTENSIONS_IN_DIRS = {'.json', '.xml', '.yaml', '.yml', '.md'}
+
 # these are hyphenated - no underscore - and mixed singular and plural
 MODEL_TYPE_A_PLAN = 'assessment-plan'
 MODEL_TYPE_A_RESULT = 'assessment-results'

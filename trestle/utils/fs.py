@@ -89,9 +89,9 @@ def verify_trestle_folder(path: pathlib.Path) -> bool:
                     f'Hidden files and symlinks are not allowed in OSCAL directories, deleting: {file_path}.'
                 )
                 os.remove(file_path)
-            elif local_and_visible(file_path) and file_path.suffix not in {'.json', '.xml', '.yaml', '.yml', '.md'}:
+            elif local_and_visible(file_path) and file_path.suffix not in const.ALLOWED_EXTENSIONS_IN_DIRS:
                 logger.warning(
-                    f'Files of {file_path.suffix} are not allowed in the OSCAL directories '
+                    f'Files with suffix {file_path.suffix} are not allowed in the OSCAL directories '
                     f'and can cause the issues. Please remove the file {file_path}'
                 )
                 is_valid = False
@@ -475,12 +475,14 @@ def is_hidden(file_path: pathlib.Path) -> bool:
     Returns:
         Whether or not the file is file/directory is hidden.
     """
+    # As far as trestle is concerned, all . files are considered hidden on all platforms
+    if file_path.stem.startswith('.'):
+        return True
     # Handle windows
     if is_windows():  # pragma: no cover
         attribute = win32api.GetFileAttributes(str(file_path))
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
-    # Handle unix
-    return file_path.stem.startswith('.')
+    return False
 
 
 def is_symlink(file_path: pathlib.Path) -> bool:

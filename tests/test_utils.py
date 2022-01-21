@@ -28,13 +28,14 @@ from _pytest.monkeypatch import MonkeyPatch
 from trestle.cli import Trestle
 from trestle.core import const, generators, utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
-from trestle.core.utils import AliasMode
+from trestle.core.utils import AliasMode, as_list
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -431,3 +432,64 @@ def create_profile_in_trestle_dir(trestle_root: pathlib.Path, catalog_name: str,
     import_ = prof.Import(href=f'{const.TRESTLE_HREF_HEADING}catalogs/{catalog_name}/catalog.json', include_all={})
     profile.imports = [import_]
     fs.save_top_level_model(profile, trestle_root, profile_name, fs.FileContentType.JSON)
+
+
+def get_valid_parts(parts: List[common.Part]) -> List[common.Part]:
+    """Get list of valid parts in list without recursion."""
+    return [part for part in parts if part.id and part.prose] if parts else []
+
+
+def get_total_valid_parts_count(parts: List[common.Part]) -> int:
+    """Get total count of valid parts in parts list."""
+    parts = get_valid_parts(parts)
+    count = len(parts)
+    for part in parts:
+        count += get_total_valid_parts_count(part.parts)
+    return count
+
+
+def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
+    """Check the total count of valid parts is the same, with recursion."""
+    n_a = get_total_valid_parts_count(a)
+    n_b = get_total_valid_parts_count(b)
+    if n_a != n_b:
+        logging.error(f'count of parts is different: {n_a} vs. {n_b}')
+        return False
+    return True
+
+
+def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
+    """Check if the controls are equivalent."""
+    if a.id != b.id:
+        logging.error(f'control ids differ: |{a.id}| |{b.id}|')
+        return False
+    if a.title != b.title:
+        logging.error(f'control {a.id} titles differ: |{a.title}| |{b.title}|')
+        return False
+    if not parts_equivalent(a.parts, b.parts):
+        logging.error(f'control {a.id} parts are not equivalent')
+        return False
+    n_params_a = len(as_list(a.params))
+    n_params_b = len(as_list(b.params))
+    if n_params_a != n_params_b:
+        logging.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
+        return False
+    # FIXME cannot check controls until markdown lists sub-controls
+    return True
+
+
+def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog) -> bool:
+    """Test equivalence of catalog dict contents in various ways."""
+    cat_int_b = CatalogInterface(cat_b)
+    if cat_int_b.get_count_of_controls_in_dict() != cat_int_a.get_count_of_controls_in_dict():
+        logging.error('count of controls is different')
+        return False
+    for a in cat_int_a.get_all_controls_from_dict():
+        try:
+            b = cat_int_b.get_control(a.id)
+        except Exception as e:
+            logging.error(f'error finding control {a.id} {e}')
+        if not controls_equivalent(a, b):
+            logging.error(f'controls differ: {a.id}')
+            return False
+    return True

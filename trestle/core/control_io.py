@@ -1135,7 +1135,7 @@ class ControlIOReader():
         """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
-        _, control_tree = md_api.processor.process_markdown(control_path)
+        yaml_header, control_tree = md_api.processor.process_markdown(control_path)
         control_titles = list(control_tree.get_all_headers_for_level(1))
         if len(control_titles) == 0:
             raise TrestleError(f'Control markdown: {control_path} contains no control title.')
@@ -1169,4 +1169,10 @@ class ControlIOReader():
                 _, control.parts = ControlIOReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
+        params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
+        if params:
+            control.params = []
+            for id_, label in params.items():
+                param = common.Parameter(id=id_, label=label)
+                control.params.append(param)
         return control, group_title
