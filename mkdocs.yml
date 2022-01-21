@@ -152,6 +152,7 @@ nav:
         - tanium: api_reference/trestle.transforms.implementations.tanium.md
       - results: api_reference/trestle.transforms.results.md
       - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
+      - transformer_helper: api_reference/trestle.transforms.transformer_helper.md
       - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
     - utils:
       - fs: api_reference/trestle.utils.fs.md
