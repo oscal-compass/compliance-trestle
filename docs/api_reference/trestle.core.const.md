@@ -1,2 +1,2 @@
-::: trestle.core.const
+::: trestle.common.const
 handler: python

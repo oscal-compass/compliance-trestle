@@ -20,7 +20,7 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.tasks.tanium_to_oscal as tanium_to_oscal
 import trestle.transforms.implementations.tanium as tanium
 from trestle.tasks.base_task import TaskOutcome

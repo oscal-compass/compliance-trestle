@@ -20,17 +20,19 @@ import traceback
 from pathlib import Path
 from typing import List
 
-from trestle.core import const, utils
+import trestle.common.common_types
+import trestle.common.filesystem
+from trestle.common import const, log, utils
+from trestle.common.err import TrestleError
+from trestle.common.model_io import ModelIO
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs, load_distributed
-from trestle.utils import log
 
 logger = logging.getLogger(__name__)
 trace = log.Trace(logger)
@@ -104,17 +106,17 @@ class MergeCmd(CommandPlusDocs):
         try:
             logger.debug(f'merge destination model alias: {destination_model_alias}')
             logger.debug('merge getting contextual file type effective working directory')
-            file_type = fs.get_contextual_file_type(effective_cwd)
+            file_type = trestle.common.filesystem.get_contextual_file_type(effective_cwd)
             logger.debug(f'contextual file type is {file_type}')
         except Exception as e:
             raise TrestleError(str(e))
         file_ext = FileContentType.to_file_extension(file_type)
         # Destination model filename
         destination_model_path = (
-            effective_cwd / f'{utils.classname_to_alias(destination_model_alias, utils.AliasMode.JSON)}{file_ext}'
+            effective_cwd / f'{classname_to_alias(destination_model_alias, AliasMode.JSON)}{file_ext}'
         )
         logger.debug(f'destination model filename is {destination_model_path}')
-        destination_model_type, _ = fs.get_stripped_model_type(destination_model_path, trestle_root)
+        destination_model_type, _ = ModelIO.get_stripped_model_type(destination_model_path, trestle_root)
 
         destination_model_object: OscalBaseModel = None
         if destination_model_path.exists():
@@ -128,7 +130,7 @@ class MergeCmd(CommandPlusDocs):
             if destination_model_type.is_collection_container():
                 collection_type = destination_model_type.get_collection_type()
 
-            merged_model_type, _, merged_model_instance = load_distributed.load_distributed(
+            merged_model_type, _, merged_model_instance = ModelIO.load_distributed(
                 destination_model_path, trestle_root, collection_type)
             plan = Plan()
             reset_destination_action = CreatePathAction(destination_model_path, clear_content=True)
@@ -146,8 +148,8 @@ class MergeCmd(CommandPlusDocs):
 
         logger.debug(f'get dest model with fields stripped: {target_model_alias}')
         # Get destination model without the target field stripped
-        merged_model_type, _ = fs.get_stripped_model_type(destination_model_path, trestle_root,
-                                                          aliases_not_to_be_stripped=[target_model_alias])
+        merged_model_type, _ = ModelIO.get_stripped_model_type(destination_model_path, trestle_root,
+                                                               aliases_not_to_be_stripped=[target_model_alias])
         # 3. Load Target model. Target model could be stripped
         try:
             target_model_type = element_path.get_type(merged_model_type)
@@ -176,15 +178,14 @@ class MergeCmd(CommandPlusDocs):
         target_model_filename = target_model_path.with_suffix(file_ext)
         if target_model_filename.exists():
             logger.debug(f'target model path with extension does exist so load distrib {target_model_filename}')
-            _, _, target_model_object = load_distributed.load_distributed(target_model_filename, trestle_root)
+            _, _, target_model_object = ModelIO.load_distributed(target_model_filename, trestle_root)
         else:
             target_model_filename = Path(target_model_path)
             logger.debug(f'target model path plus extension does not exist so load distrib {target_model_filename}')
             logger.debug(f'get collection type for model type {target_model_type}')
             collection_type = utils.get_origin(target_model_type)
             logger.debug(f'load {target_model_filename} as collection type {collection_type}')
-            _, _, target_model_object = load_distributed.load_distributed(target_model_filename, trestle_root,
-                                                                          collection_type)
+            _, _, target_model_object = ModelIO.load_distributed(target_model_filename, trestle_root, collection_type)
 
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
             logger.debug('loaded object has dict and root so set target model object to root contents')

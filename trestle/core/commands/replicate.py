@@ -18,18 +18,17 @@ import argparse
 import logging
 import traceback
 
-from trestle.core import const
+import trestle.common.filesystem
+from trestle.common import const, log
+from trestle.common.err import TrestleError
+from trestle.common.model_io import ModelIO
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
-from trestle.utils import log
-from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
@@ -78,11 +77,11 @@ class ReplicateCmd(CommandPlusDocs):
 
         # 1 Bad working directory if not running from current working directory
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        if not trestle_root or not fs.is_valid_project_root(trestle_root):
+        if not trestle_root or not trestle.common.filesystem.is_valid_project_root(trestle_root):
             logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return CmdReturnCodes.COMMAND_ERROR.value
 
-        plural_path = fs.model_type_to_model_dir(model_alias)
+        plural_path = ModelIO.model_type_to_model_dir(model_alias)
 
         # 2 Check that input file given exists.
 
@@ -97,7 +96,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 3 Distributed load from file
 
         try:
-            _, model_alias, model_instance = load_distributed(input_file, trestle_root)
+            _, model_alias, model_instance = ModelIO.load_distributed(input_file, trestle_root)
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, error loading file: {err}')

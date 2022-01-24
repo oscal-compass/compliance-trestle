@@ -23,8 +23,8 @@ import cmarkgfm
 
 import frontmatter
 
-from trestle.core import const
-from trestle.core.err import TrestleError
+from trestle.common import const
+from trestle.common.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 from yaml.scanner import ScannerError

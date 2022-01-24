@@ -17,7 +17,7 @@
 import logging
 import pathlib
 
-from trestle.core import const
+from trestle.common import const
 from trestle.transforms.transformer_singleton import transformer_factory
 
 logger = logging.getLogger(__name__)

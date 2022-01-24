@@ -22,8 +22,8 @@ import logging
 
 from ilcli import Command
 
+import trestle.common.filesystem
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -50,11 +50,11 @@ class CommandPlusDocs(CommandBase):
 
     def _validate_arguments(self, args):
         """Check trestle-root argument is a valid trestle root directory."""
-        root = fs.get_trestle_project_root(args.trestle_root)
+        root = trestle.common.filesystem.extract_trestle_project_root(args.trestle_root)
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
-        is_oscal_dir_valid = fs.check_oscal_directories(args.trestle_root)
+        is_oscal_dir_valid = trestle.common.filesystem.check_oscal_directories(args.trestle_root)
         if not is_oscal_dir_valid:
             logger.error('OSCAL directories are not valid, please remove extra files specified above.')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value

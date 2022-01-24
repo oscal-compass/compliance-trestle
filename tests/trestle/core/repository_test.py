@@ -19,11 +19,10 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.parser as parser
 import trestle.oscal as oscal
 import trestle.oscal.catalog as cat
-from trestle.core import generators
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
+from trestle.core import generators, parser
 from trestle.core.repository import ManagedOSCAL, Repository
 
 

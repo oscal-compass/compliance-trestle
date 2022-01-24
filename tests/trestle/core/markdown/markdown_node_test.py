@@ -20,7 +20,7 @@ import frontmatter
 
 import pytest
 
-import trestle.core.const as const
+import trestle.common.const as const
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_node import MarkdownNode
 

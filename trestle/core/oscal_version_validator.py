@@ -17,7 +17,7 @@
 
 import re
 
-from trestle.core.common_types import TopLevelOscalModel
+from trestle.common.common_types import TopLevelOscalModel
 from trestle.core.validator import Validator
 from trestle.oscal.__init__ import OSCAL_VERSION_REGEX
 

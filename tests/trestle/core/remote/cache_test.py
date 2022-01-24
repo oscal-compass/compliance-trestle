@@ -31,19 +31,19 @@ import pytest
 
 from tests.test_utils import models_are_equivalent
 
-import trestle.core.const as const
-import trestle.core.err as err
+import trestle.common.const as const
+import trestle.common.err as err
+import trestle.common.filesystem
+from trestle.common.err import TrestleError
 from trestle.core import generators
-from trestle.core.err import TrestleError
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
-from trestle.utils import fs
 
 
 def as_file_uri(path: str) -> str:
     """Convert sample non-existent path to file:/// and add drive letter if windows."""
     # Correct usage would start with / and leaving off should cause errors with cache
-    if fs.is_windows():
+    if trestle.common.filesystem.is_windows():
         drive = pathlib.Path.cwd().resolve().drive
         return f'file:///{drive}{path}'
     bare_path = path.lstrip('/')
@@ -328,7 +328,7 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 
     # paths with drive letter
     for uri in ['C:\\Users\\user\\this.json', 'C:/Users/user/this.json', 'C:file.json']:
-        if fs.is_windows():
+        if trestle.common.filesystem.is_windows():
             fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
             assert type(fetcher) == cache.LocalFetcher
         else:
@@ -377,7 +377,7 @@ def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path) -> None:
 @pytest.mark.parametrize('uri', ['C:mydir/myfile.json', 'C://mydir/myfile.json'])
 def test_fetcher_failures_windows(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
     """Test failures specific to Windows."""
-    if fs.is_windows():
+    if trestle.common.filesystem.is_windows():
         fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
         with pytest.raises(TrestleError):
             _ = fetcher.get_oscal()
@@ -385,7 +385,7 @@ def test_fetcher_failures_windows(uri: str, tmp_trestle_dir: pathlib.Path) -> No
 
 def test_fetcher_failure_windows_wrong_drive(tmp_trestle_dir: pathlib.Path) -> None:
     """Test failures specific to Windows."""
-    if fs.is_windows():
+    if trestle.common.filesystem.is_windows():
         rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
         catalog_file = tmp_trestle_dir.parent / f'{rand_str}.json'
         catalog_data = generators.generate_sample_model(Catalog)

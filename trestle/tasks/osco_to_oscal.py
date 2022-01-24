@@ -20,7 +20,7 @@ import pathlib
 import traceback
 from typing import Optional
 
-from trestle.core import const
+from trestle.common import const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.osco import OscoTransformer

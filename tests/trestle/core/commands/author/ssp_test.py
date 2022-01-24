@@ -27,12 +27,13 @@ from tests.test_utils import setup_for_ssp
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.core import const
+from trestle.common import const
+from trestle.common.model_io import ModelIO
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_io import ControlIOReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.utils import fs
 
 prof_name = 'main_profile'
 ssp_name = 'my_ssp'
@@ -227,7 +228,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     )
     assert ssp_assemble._run(args) == 0
 
-    orig_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    orig_ssp, _ = ModelIO.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 2
 
@@ -243,7 +244,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     )
     assert ssp_assemble._run(args) == 0
 
-    repeat_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    repeat_ssp, _ = ModelIO.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
     assert orig_ssp.system_implementation == repeat_ssp.system_implementation
     assert len(repeat_ssp.system_implementation.components) == 2
@@ -312,10 +313,10 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # load the ssp so we can add a setparameter to it for more test coverage
-    ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+    ssp, _ = ModelIO.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     new_setparam = ossp.SetParameter(param_id='ac-1_prm_1', values=['new_value'])
     ssp.control_implementation.set_parameters = [new_setparam]
-    fs.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
 
     filtered_name = 'filtered_ssp'
 
@@ -377,7 +378,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
 def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp gen when profile has bad control id."""
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'profile_bad_control.json')
-    fs.save_top_level_model(profile, tmp_trestle_dir, 'bad_prof', fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(profile, tmp_trestle_dir, 'bad_prof', FileContentType.JSON)
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, profile='bad_prof', output='my_ssp', verbose=0, sections=None
     )
@@ -388,11 +389,11 @@ def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
 def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     """Test parsing of metadata from yaml header."""
     catalog = test_utils.generate_complex_catalog()
-    fs.save_top_level_model(catalog, tmp_trestle_dir, 'complex_cat', fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(catalog, tmp_trestle_dir, 'complex_cat', FileContentType.JSON)
     prof_name = 'test_profile_c'
     ssp_name = 'my_ssp'
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / f'{prof_name}.json')
-    fs.save_top_level_model(profile, tmp_trestle_dir, prof_name, fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     header_path = test_utils.YAML_TEST_DATA_PATH / 'header_with_metadata.yaml'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -413,7 +414,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # read the assembled ssp and confirm roles are in metadata
-    ssp, _ = fs.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
+    ssp, _ = ModelIO.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     assert len(ssp.metadata.roles) == 2
 
 
@@ -423,7 +424,7 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
     prof_name = 'my_prof'
     ssp_name = 'my_ssp'
     catalog = test_utils.generate_complex_catalog()
-    fs.save_top_level_model(catalog, tmp_trestle_dir, cat_name, fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     test_utils.create_profile_in_trestle_dir(tmp_trestle_dir, cat_name, prof_name)
 
     args = argparse.Namespace(
@@ -462,9 +463,9 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
 def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with the nist tutorial catalog and profile."""
     catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
-    fs.save_top_level_model(catalog, tmp_trestle_dir, 'nist_tutorial_catalog', fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(catalog, tmp_trestle_dir, 'nist_tutorial_catalog', FileContentType.JSON)
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_profile.json')
-    fs.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', fs.FileContentType.JSON)
+    ModelIO.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', FileContentType.JSON)
     ssp_gen = SSPGenerate()
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -480,7 +481,7 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, output='ssp_json', markdown='ssp_md', verbose=1)
     assert ssp_assem._run(args) == 0
     json_ssp: ossp.SystemSecurityPlan
-    json_ssp, _ = fs.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)
+    json_ssp, _ = ModelIO.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)
     comp_def = json_ssp.system_implementation.components[0]
     assert comp_def.title == 'This System'
     assert comp_def.status.state == ossp.State1.under_development

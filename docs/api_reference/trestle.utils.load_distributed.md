@@ -1,2 +1,2 @@
-::: trestle.utils.load_distributed
+::: trestle.common.load_distributed
 handler: python

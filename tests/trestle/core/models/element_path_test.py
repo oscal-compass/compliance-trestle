@@ -19,9 +19,9 @@ from typing import Any, List, Type
 
 import pytest
 
-import trestle.core.utils as utils
+import trestle.common.utils as utils
+from trestle.common.err import TrestleError
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog, common, component

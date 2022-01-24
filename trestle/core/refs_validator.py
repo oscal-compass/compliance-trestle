@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming all refs have corresponding id."""
-from trestle.core.common_types import TopLevelOscalModel
-from trestle.core.utils import as_list
+from trestle.common.common_types import TopLevelOscalModel
+from trestle.common.list_utils import as_list
 from trestle.core.validator import Validator
 
 

@@ -28,18 +28,19 @@ import pytest
 
 from tests import test_utils
 
+import trestle.common.const as const
+import trestle.common.err as err
 import trestle.core.commands.import_ as importcmd
-import trestle.core.const as const
-import trestle.core.err as err
 import trestle.oscal
 from trestle.cli import Trestle
+from trestle.common import filesystem as fs
+from trestle.common.model_io import ModelIO
 from trestle.core import generators
 from trestle.core.commands import create
 from trestle.core.commands.validate import ValidateCmd
 from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog, Group
 from trestle.oscal.profile import Modify, Profile, SetParameter
-from trestle.utils import fs
 
 
 def test_import_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -223,7 +224,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path, monkeypatch: Monke
     catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.resolve(), 'minimal_catalog.json')
     args = argparse.Namespace(trestle_root=tmp_path, file=str(catalog_file_path), output='catalog', verbose=1)
     i = importcmd.ImportCmd()
-    monkeypatch.setattr(fs, 'get_trestle_project_root', get_trestle_project_root_mock)
+    monkeypatch.setattr(fs, 'extract_trestle_project_root', get_trestle_project_root_mock)
     rc = i._run(args)
     assert rc == 5
 
@@ -369,7 +370,7 @@ def test_import_load_profile(tmp_trestle_dir: pathlib.Path) -> None:
     i = importcmd.ImportCmd()
     assert i._run(args) == 0
 
-    loaded_profile, _ = fs.load_top_level_model(tmp_trestle_dir, 'my_prof', Profile)
+    loaded_profile, _ = ModelIO.load_top_level_model(tmp_trestle_dir, 'my_prof', Profile)
     assert len(loaded_profile.modify.set_parameters[1].constraints) == 1
 
 

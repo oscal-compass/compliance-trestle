@@ -1,2 +1,2 @@
-::: trestle.utils.log
+::: trestle.common.log
 handler: python

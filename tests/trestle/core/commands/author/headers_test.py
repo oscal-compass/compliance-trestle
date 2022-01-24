@@ -24,9 +24,9 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+import trestle.common.filesystem
 from trestle.cli import Trestle
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
-from trestle.utils import fs
 
 
 @pytest.mark.parametrize(
@@ -472,11 +472,17 @@ def test_e2e_backward_compatibility(
     if setup_rc > 0:
         return
 
-    all_files_wo_version = list(filter(lambda p: p.is_file() and not fs.is_hidden(p), (old_template_loc.iterdir())))
-    all_files_w_version = list(filter(lambda p: p.is_file() and not fs.is_hidden(p), (template_target_loc.iterdir())))
+    all_files_wo_version = list(
+        filter(lambda p: p.is_file() and not trestle.common.filesystem.is_hidden(p), (old_template_loc.iterdir()))
+    )
+    all_files_w_version = list(
+        filter(lambda p: p.is_file() and not trestle.common.filesystem.is_hidden(p), (template_target_loc.iterdir()))
+    )
 
     if template_loc.is_dir():
-        all_old_files = list(filter(lambda p: p.is_file() and not fs.is_hidden(p), (template_loc.iterdir())))
+        all_old_files = list(
+            filter(lambda p: p.is_file() and not trestle.common.filesystem.is_hidden(p), (template_loc.iterdir()))
+        )
         all_old_files = [el.parts[-1] for el in all_old_files]
     else:
         all_old_files = [template_loc.parts[-1]]

@@ -20,18 +20,18 @@ import pathlib
 import traceback
 from typing import List
 
-import trestle.core.const as const
-import trestle.core.err as err
+import trestle.common.const as const
+import trestle.common.err as err
 import trestle.core.generators as gens
-from trestle.core import utils
+from trestle.common import log
+from trestle.common.model_io import ModelIO
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
-from trestle.utils import log
 
 logger = logging.getLogger(__name__)
 
@@ -83,12 +83,10 @@ class AddCmd(CommandPlusDocs):
             file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
 
             # Get parent model and then load json into parent model
-            parent_model, _ = fs.get_stripped_model_type(file_path, args.trestle_root)
+            parent_model, _ = ModelIO.get_stripped_model_type(file_path, args.trestle_root)
             parent_object = parent_model.oscal_read(file_path)
             # FIXME : handle YAML files after detecting file type
-            parent_element = Element(
-                parent_object, utils.classname_to_alias(parent_model.__name__, utils.AliasMode.JSON)
-            )
+            parent_element = Element(parent_object, classname_to_alias(parent_model.__name__, AliasMode.JSON))
 
             add_plan = Plan()
             # Do _add for each element_path specified in args

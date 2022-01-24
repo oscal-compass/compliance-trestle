@@ -1,2 +1,2 @@
-::: trestle.core.err
+::: trestle.common.err
 handler: python

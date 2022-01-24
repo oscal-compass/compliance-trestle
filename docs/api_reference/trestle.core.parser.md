@@ -1,2 +1,2 @@
-::: trestle.core.parser
+::: trestle.common.parser
 handler: python

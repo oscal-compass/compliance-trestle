@@ -22,11 +22,11 @@ from typing import List, Optional, Tuple
 
 from pkg_resources import resource_filename, resource_listdir
 
+import trestle.common.filesystem
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER, TRESTLE_RESOURCES
 from trestle.core.draw_io import DrawIO
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,9 @@ class TemplateVersioning:
         TemplateVersioning._check_if_exists_and_dir(task_path)
 
         try:
-            all_files_wo_version = list(filter(lambda p: p.is_file(), fs.iterdir_without_hidden_files(task_path)))
+            all_files_wo_version = list(
+                filter(lambda p: p.is_file(), trestle.common.filesystem.iterdir_without_hidden_files(task_path))
+            )
 
             new_dir = Path(f'{task_path}/{START_TEMPLATE_VERSION}')
             new_dir.mkdir(parents=True, exist_ok=True)

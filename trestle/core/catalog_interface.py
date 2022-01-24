@@ -19,13 +19,13 @@ import pathlib
 import re
 from typing import Callable, Dict, Iterator, List, Optional, Tuple, Union
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
+from trestle.common.list_utils import as_list
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.core.utils import as_list
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 

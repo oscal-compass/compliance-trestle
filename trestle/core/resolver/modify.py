@@ -20,12 +20,12 @@ from typing import Dict, Iterator, List, Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
+from trestle.common.common_types import OBT
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.common_types import OBT
 from trestle.core.control_io import ControlIOReader
-from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
-from trestle.core.utils import as_list
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)

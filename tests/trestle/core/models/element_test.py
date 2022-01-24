@@ -19,7 +19,7 @@ from typing import List
 
 import pytest
 
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import common, component
 

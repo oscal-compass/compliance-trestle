@@ -26,7 +26,7 @@ import pytest
 import tests.test_utils as test_utils
 
 from trestle.cli import Trestle
-from trestle.core import const
+from trestle.common import const
 from trestle.core.commands import create
 from trestle.oscal.catalog import Catalog
 

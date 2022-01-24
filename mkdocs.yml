@@ -89,11 +89,11 @@ nav:
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
       - common_types: api_reference/trestle.core.common_types.md
-      - const: api_reference/trestle.core.const.md
+      - const: api_reference/trestle.common.const.md
       - control_io: api_reference/trestle.core.control_io.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
-      - err: api_reference/trestle.core.err.md
+      - err: api_reference/trestle.common.err.md
       - generators: api_reference/trestle.core.generators.md
       - jinja: api_reference/trestle.core.jinja.md
       - markdown:
@@ -111,7 +111,7 @@ nav:
         - plans: api_reference/trestle.core.models.plans.md
       - object_factory: api_reference/trestle.core.object_factory.md
       - oscal_version_validator: api_reference/trestle.core.oscal_version_validator.md
-      - parser: api_reference/trestle.core.parser.md
+      - parser: api_reference/trestle.common.parser.md
       - pipeline: api_reference/trestle.core.pipeline.md
       - profile_resolver: api_reference/trestle.core.profile_resolver.md
       - refs_validator: api_reference/trestle.core.refs_validator.md
@@ -124,7 +124,7 @@ nav:
         - prune: api_reference/trestle.core.resolver.prune.md
       - ssp_io: api_reference/trestle.core.ssp_io.md
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
-      - utils: api_reference/trestle.core.utils.md
+      - utils: api_reference/trestle.common.utils.md
       - validator: api_reference/trestle.core.validator.md
       - validator_factory: api_reference/trestle.core.validator_factory.md
       - validator_helper: api_reference/trestle.core.validator_helper.md
@@ -153,12 +153,12 @@ nav:
       - results: api_reference/trestle.transforms.results.md
       - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
       - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
-    - utils:
-      - fs: api_reference/trestle.utils.fs.md
-      - load_distributed: api_reference/trestle.utils.load_distributed.md
-      - log: api_reference/trestle.utils.log.md
-      - oscal_helper: api_reference/trestle.utils.oscal_helper.md
-      - trash: api_reference/trestle.utils.trash.md
+    - common:
+      - fs: api_reference/trestle.common.fs.md
+      - load_distributed: api_reference/trestle.common.load_distributed.md
+      - log: api_reference/trestle.common.log.md
+      - oscal_helper: api_reference/trestle.common.oscal_helper.md
+      - trash: api_reference/trestle.common.trash.md
 plugins:
 - search
 - mkdocstrings:

@@ -23,19 +23,19 @@ from typing import Dict, List
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-import trestle.core.const as const
+import trestle.common.const as const
+import trestle.common.filesystem
+import trestle.common.log as log
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
-import trestle.utils.fs as fs
-import trestle.utils.log as log
+from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.list_utils import as_list
+from trestle.common.model_io import ModelIO
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_io import ControlIOReader
-from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.core.utils import as_list
-from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class ProfileGenerate(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root = args.trestle_root
-            if not fs.allowed_task_name(args.output):
+            if not trestle.common.filesystem.is_directory_name_allowed(args.output):
                 logger.warning(f'{args.output} is not an allowed directory name')
                 return CmdReturnCodes.COMMAND_ERROR.value
 
@@ -116,7 +116,7 @@ class ProfileGenerate(AuthorCommonCommand):
             0 on success, 1 on error
         """
         try:
-            _, _, profile = load_distributed(profile_path, trestle_root)
+            _, _, profile = ModelIO.load_distributed(profile_path, trestle_root)
             catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
@@ -225,7 +225,7 @@ class ProfileAssemble(AuthorCommonCommand):
         """
         md_dir = trestle_root / md_name
         profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'
-        _, _, orig_profile = load_distributed(profile_path, trestle_root, prof.Profile)
+        _, _, orig_profile = ModelIO.load_distributed(profile_path, trestle_root, prof.Profile)
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
         found_alters, param_dict = CatalogInterface.read_additional_content(md_dir)

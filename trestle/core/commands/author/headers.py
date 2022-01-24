@@ -20,14 +20,14 @@ import pathlib
 import re
 from typing import List
 
+import trestle.common.filesystem
 import trestle.core.commands.author.consts as author_const
-import trestle.utils.fs as fs
-from trestle.core import const
+from trestle.common import const
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -200,7 +200,7 @@ class Headers(AuthorCommonCommand):
                     )
                 )
         for instance_file in instances:
-            if not fs.local_and_visible(instance_file):
+            if not trestle.common.filesystem.is_local_and_visible(instance_file):
                 continue
             if instance_file.name.lower() == 'readme.md' and not readme_validate:
                 continue
@@ -232,7 +232,12 @@ class Headers(AuthorCommonCommand):
                     )
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
+                    templates = list(
+                        filter(
+                            lambda p: trestle.common.filesystem.is_local_and_visible(p),
+                            versioned_template_dir.iterdir()
+                        )
+                    )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
                     all_versioned_templates[instance_version] = {}
@@ -270,7 +275,12 @@ class Headers(AuthorCommonCommand):
                     )
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(filter(lambda p: fs.local_and_visible(p), versioned_template_dir.iterdir()))
+                    templates = list(
+                        filter(
+                            lambda p: trestle.common.filesystem.is_local_and_visible(p),
+                            versioned_template_dir.iterdir()
+                        )
+                    )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
                     all_versioned_templates[instance_version] = {}
@@ -316,13 +326,13 @@ class Headers(AuthorCommonCommand):
                 # Files in the root directory must be exclused
                 if path.is_file():
                     continue
-                if not fs.allowed_task_name(path):
+                if not trestle.common.filesystem.is_directory_name_allowed(path):
                     continue
                 if str(relative_path).rstrip('/') in const.MODEL_DIR_LIST:
                     continue
                 if (relative_path in relative_excludes):
                     continue
-                if not fs.is_hidden(path):
+                if not trestle.common.filesystem.is_hidden(path):
                     paths.append(path)
 
         for path in paths:

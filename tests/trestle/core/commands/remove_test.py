@@ -25,7 +25,7 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.err as err
+import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.models.actions import RemoveAction

@@ -21,7 +21,7 @@ import pytest
 
 from tests import test_utils
 
-from trestle.utils import trash
+from trestle.common import trash
 
 
 def test_to_trash_dir_path(tmp_path: pathlib.Path) -> None:

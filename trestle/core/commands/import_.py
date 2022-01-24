@@ -18,19 +18,19 @@ import argparse
 import logging
 import pathlib
 
+import trestle.common.filesystem
 import trestle.core.commands.validate as validatecmd
-from trestle.core import const
+from trestle.common import const, log
+from trestle.common.err import TrestleError
+from trestle.common.model_io import ModelIO
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
-from trestle.utils import fs
-from trestle.utils import log
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class ImportCmd(CommandPlusDocs):
         logger.debug('Entering import run.')
 
         trestle_root = args.trestle_root
-        if not fs.is_valid_project_root(trestle_root):
+        if not trestle.common.filesystem.is_valid_project_root(trestle_root):
             logger.warning(f'Attempt to import from non-valid trestle project root {trestle_root}')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
 
@@ -83,7 +83,7 @@ class ImportCmd(CommandPlusDocs):
             logger.warning(f'Error importing file: {e}')
             return CmdReturnCodes.COMMAND_ERROR.value
 
-        plural_path = fs.model_type_to_model_dir(parent_alias)
+        plural_path = ModelIO.model_type_to_model_dir(parent_alias)
 
         output_name = args.output
 

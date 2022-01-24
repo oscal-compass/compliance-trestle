@@ -22,10 +22,14 @@ from pydantic.error_wrappers import ValidationError
 
 from ruamel.yaml import YAML
 
-import trestle.core.const as const
-from trestle.core import common_types, utils
+import trestle.common.common_types
+import trestle.common.const as const
+import trestle.common.str_utils
+from trestle.common import common_types, utils
+from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.model_io import ModelIO
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
 
 logger = logging.getLogger(__name__)
@@ -113,7 +117,7 @@ class ElementPath:
             # Determine if the parent model is a collection.
             if utils.is_collection_field_type(prev_model):
                 inner_model = utils.get_inner_type(prev_model)
-                inner_class_name = utils.classname_to_alias(inner_model.__name__, utils.AliasMode.JSON)
+                inner_class_name = classname_to_alias(inner_model.__name__, AliasMode.JSON)
                 # Assert that the current name fits an expected form.
                 # Valid choices here are *, integer (for arrays) and the inner model alias
                 if (inner_class_name == current_element_str or current_element_str == self.WILDCARD
@@ -162,7 +166,7 @@ class ElementPath:
             # Final path must be the alias
 
             new_base_type = create_model(
-                utils.alias_to_classname(collection_name, utils.AliasMode.JSON),
+                trestle.common.str_utils.alias_to_classname(collection_name, AliasMode.JSON),
                 __base__=OscalBaseModel,
                 __root__=(base_type, ...)
             )
@@ -182,7 +186,7 @@ class ElementPath:
         if element_str not in const.MODEL_TYPE_LIST:
             raise TrestleError(f'{element_str} is not a top level model (e.g. catalog, profile)')
         model_package = const.MODEL_TYPE_TO_MODEL_MODULE[element_str]
-        object_type, _ = utils.get_root_model(model_package)
+        object_type, _ = ModelIO.get_root_model(model_package)
         object_type = cast(Type[common_types.TopLevelOscalModel], object_type)
         return object_type
 
@@ -394,7 +398,7 @@ class Element:
                     raise TrestleError(
                         f'wrapper_alias not found for a collection type object: {elem.__class__.__name__}'
                     )
-            wrapper_alias = utils.classname_to_alias(class_name, utils.AliasMode.JSON)
+            wrapper_alias = trestle.common.str_utils.classname_to_alias(class_name, AliasMode.JSON)
 
         self._wrapper_alias: str = wrapper_alias
 

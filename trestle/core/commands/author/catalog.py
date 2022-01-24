@@ -21,14 +21,14 @@ import shutil
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-import trestle.core.const as const
-import trestle.utils.fs as fs
-import trestle.utils.log as log
+import trestle.common.const as const
+import trestle.common.filesystem
+import trestle.common.log as log
+from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.model_io import ModelIO
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError, TrestleNotFoundError
-from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ class CatalogGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root
-        if not fs.allowed_task_name(args.output):
+        if not trestle.common.filesystem.is_directory_name_allowed(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
             return CmdReturnCodes.COMMAND_ERROR.value
 
@@ -87,7 +87,7 @@ class CatalogGenerate(AuthorCommonCommand):
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
-            _, _, catalog = load_distributed(catalog_path, trestle_root)
+            _, _, catalog = ModelIO.load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
                 markdown_path,

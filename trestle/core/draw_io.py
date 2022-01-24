@@ -24,8 +24,8 @@ from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes on
 
 import defusedxml.ElementTree
 
-import trestle.core.const as const
-from trestle.core.err import TrestleError
+import trestle.common.const as const
+from trestle.common.err import TrestleError
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 logger = logging.getLogger(__name__)

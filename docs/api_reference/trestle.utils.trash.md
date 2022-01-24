@@ -1,2 +1,2 @@
-::: trestle.utils.trash
+::: trestle.common.trash
 handler: python

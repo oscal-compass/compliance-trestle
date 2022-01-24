@@ -19,7 +19,7 @@ import pathlib
 from shutil import copyfile
 from typing import List, Optional
 
-from . import fs
+import trestle.common.filesystem
 
 TRESTLE_TRASH_DIR = '.trestle/_trash/'
 TRESTLE_TRASH_FILE_EXT = '.bk'  # should start with a dot
@@ -29,7 +29,7 @@ TRESTLE_TRASH_DIR_EXT = '__bk'
 def to_trash_dir_path(dir_path: pathlib.Path) -> pathlib.Path:
     """Construct the path to the trashed file."""
     absolute_path = dir_path.resolve()
-    root_path = fs.get_trestle_project_root(absolute_path)
+    root_path = trestle.common.filesystem.extract_trestle_project_root(absolute_path)
     if root_path is None:
         raise AssertionError(f'Directory path "{absolute_path}" is not in a valid trestle project')
 
@@ -79,7 +79,7 @@ def to_origin_dir_path(trash_dir_path: pathlib.Path) -> pathlib.Path:
     if trash_dir_path.suffix != '' and trash_dir_path.suffix.endswith(TRESTLE_TRASH_FILE_EXT):
         raise AssertionError(f'Given path "{trash_dir_path}" is a trash file, not a valid trash directory')
 
-    trestle_root = fs.get_trestle_project_root(trash_dir_path)
+    trestle_root = trestle.common.filesystem.extract_trestle_project_root(trash_dir_path)
     if trestle_root is None:
         raise AssertionError(f'Directory path "{trash_dir_path}" is not in a valid trestle project path')
 
@@ -87,7 +87,7 @@ def to_origin_dir_path(trash_dir_path: pathlib.Path) -> pathlib.Path:
     if trash_root is None:
         raise AssertionError(f'Directory path "{trash_dir_path}" is not in a valid trestle trash path')
 
-    if not fs.has_parent_path(trash_dir_path, trash_root):
+    if not has_parent_path(trash_dir_path, trash_root):
         raise AssertionError(f'Directory path "{trash_dir_path}" is not a valid trash dir path')
 
     relative_path = trash_dir_path.relative_to(str(trash_root))
@@ -214,3 +214,15 @@ def recover(dest_content_path: pathlib.Path, delete_trash: bool = False) -> None
     if dest_content_path.suffix != '':
         return recover_file(dest_content_path, delete_trash)
     return recover_dir(dest_content_path, delete_trash)
+
+
+def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
+    """Check if sub_path has the specified parent_dir path."""
+    # sub_path should be longer than parent path
+    if len(sub_path.parts) < len(parent_path.parts):
+        return False
+
+    for i, part in enumerate(parent_path.parts):
+        if part != sub_path.parts[i]:
+            return False
+    return True

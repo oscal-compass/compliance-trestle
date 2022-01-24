@@ -18,9 +18,11 @@ import pathlib
 
 import pytest
 
-import trestle.core.const as const
-import trestle.core.err as err
-import trestle.core.utils as mutils
+import trestle.common.common_types
+import trestle.common.const as const
+import trestle.common.err as err
+import trestle.common.str_utils
+import trestle.common.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
 import trestle.oscal.catalog as catalog
@@ -29,6 +31,8 @@ import trestle.oscal.component as component
 import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
+from trestle.common.model_io import ModelIO
+from trestle.common.str_utils import AliasMode
 
 
 def load_good_catalog() -> catalog.Catalog:
@@ -106,10 +110,10 @@ def test_get_inner_type() -> None:
 def test_get_root_model() -> None:
     """Test looking for the root model of a trestle oscal module."""
     with pytest.raises(err.TrestleError):
-        mutils.get_root_model('invalid')
+        ModelIO.get_root_model('invalid')
 
     with pytest.raises(err.TrestleError):
-        mutils.get_root_model('pydantic')
+        ModelIO.get_root_model('pydantic')
 
     malias_to_mtype = {
         const.MODEL_TYPE_CATALOG: catalog.Catalog,
@@ -122,7 +126,7 @@ def test_get_root_model() -> None:
     }
     for key in malias_to_mtype:
         module_name = malias_to_mtype[key].__module__
-        model_type, model_alias = mutils.get_root_model(module_name)
+        model_type, model_alias = ModelIO.get_root_model(module_name)
         assert model_type == malias_to_mtype[key]
         assert model_alias == key
 
@@ -133,54 +137,54 @@ def test_classname_to_alias() -> None:
 
     short_classname = catalog.Catalog.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
+    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'catalog'
-    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
+    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'catalog'
 
     short_classname = common.ResponsibleParty.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
+    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'responsible-party'
-    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
+    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'responsible_party'
 
     short_classname = common.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
+    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'property'
-    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
+    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'property'
 
     short_classname = common.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = mutils.classname_to_alias(short_classname, mutils.AliasMode.JSON)
+    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'member-of-organization'
-    json_alias = mutils.classname_to_alias(full_classname, mutils.AliasMode.FIELD)
+    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'member_of_organization'
 
 
 def test_snake_to_upper_camel() -> None:
     """Ensure Snake to upper camel behaves correctly."""
-    cammeled = mutils.snake_to_upper_camel('component_definition')
+    cammeled = trestle.common.str_utils._snake_to_upper_camel('component_definition')
     assert cammeled == 'ComponentDefinition'
-    cammeled = mutils.snake_to_upper_camel('control')
+    cammeled = trestle.common.str_utils._snake_to_upper_camel('control')
     assert cammeled == 'Control'
-    cammeled = mutils.snake_to_upper_camel('')
+    cammeled = trestle.common.str_utils._snake_to_upper_camel('')
     assert cammeled == ''
 
 
 def test_camel_to_snake() -> None:
     """Ensure camel to snake behaves correctly."""
-    snaked = mutils.camel_to_snake('ComponentDefinition')
+    snaked = trestle.common.str_utils._camel_to_snake('ComponentDefinition')
     assert snaked == 'component_definition'
-    snaked = mutils.camel_to_snake('Control')
+    snaked = trestle.common.str_utils._camel_to_snake('Control')
     assert snaked == 'control'
-    snaked = mutils.camel_to_snake('')
+    snaked = trestle.common.str_utils._camel_to_snake('')
     assert snaked == ''
 
 
 def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
-    assert mutils.alias_to_classname('component-definition', mutils.AliasMode.JSON) == 'ComponentDefinition'
-    assert mutils.alias_to_classname('component_definition', mutils.AliasMode.FIELD) == 'ComponentDefinition'
+    assert trestle.common.str_utils.alias_to_classname('component-definition', AliasMode.JSON) == 'ComponentDefinition'
+    assert trestle.common.str_utils.alias_to_classname('component_definition', AliasMode.FIELD) == 'ComponentDefinition'
