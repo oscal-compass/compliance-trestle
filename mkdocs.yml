@@ -50,6 +50,18 @@ nav:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
   - trestle API reference:
     - cli: api_reference/trestle.cli.md
+    - common:
+      - catalog_helper: api_reference/trestle.common.catalog_helper.md
+      - common_types: api_reference/trestle.common.common_types.md
+      - const: api_reference/trestle.common.const.md
+      - err: api_reference/trestle.common.err.md
+      - filesystem: api_reference/trestle.common.filesystem.md
+      - list_utils: api_reference/trestle.common.list_utils.md
+      - log: api_reference/trestle.common.log.md
+      - model_io: api_reference/trestle.common.model_io.md
+      - str_utils: api_reference/trestle.common.str_utils.md
+      - trash: api_reference/trestle.common.trash.md
+      - utils: api_reference/trestle.common.utils.md
     - core:
       - all_validator: api_reference/trestle.core.all_validator.md
       - base_model: api_reference/trestle.core.base_model.md
@@ -88,12 +100,9 @@ nav:
         - transform_oscal: api_reference/trestle.core.commands.transform_oscal.md
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
-      - common_types: api_reference/trestle.core.common_types.md
-      - const: api_reference/trestle.common.const.md
       - control_io: api_reference/trestle.core.control_io.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
-      - err: api_reference/trestle.common.err.md
       - generators: api_reference/trestle.core.generators.md
       - jinja: api_reference/trestle.core.jinja.md
       - markdown:
@@ -111,7 +120,7 @@ nav:
         - plans: api_reference/trestle.core.models.plans.md
       - object_factory: api_reference/trestle.core.object_factory.md
       - oscal_version_validator: api_reference/trestle.core.oscal_version_validator.md
-      - parser: api_reference/trestle.common.parser.md
+      - parser: api_reference/trestle.core.parser.md
       - pipeline: api_reference/trestle.core.pipeline.md
       - profile_resolver: api_reference/trestle.core.profile_resolver.md
       - refs_validator: api_reference/trestle.core.refs_validator.md
@@ -124,7 +133,6 @@ nav:
         - prune: api_reference/trestle.core.resolver.prune.md
       - ssp_io: api_reference/trestle.core.ssp_io.md
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
-      - utils: api_reference/trestle.common.utils.md
       - validator: api_reference/trestle.core.validator.md
       - validator_factory: api_reference/trestle.core.validator_factory.md
       - validator_helper: api_reference/trestle.core.validator_helper.md
@@ -153,12 +161,6 @@ nav:
       - results: api_reference/trestle.transforms.results.md
       - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
       - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
-    - common:
-      - fs: api_reference/trestle.common.fs.md
-      - load_distributed: api_reference/trestle.common.load_distributed.md
-      - log: api_reference/trestle.common.log.md
-      - oscal_helper: api_reference/trestle.common.oscal_helper.md
-      - trash: api_reference/trestle.common.trash.md
 plugins:
 - search
 - mkdocstrings:
