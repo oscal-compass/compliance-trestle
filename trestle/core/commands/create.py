@@ -23,7 +23,7 @@ from typing import Type
 
 import trestle.common.filesystem
 import trestle.oscal
-from trestle.common import const, log
+from trestle.common import const, filesystem, log
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
@@ -70,7 +70,7 @@ class CreateCmd(CommandPlusDocs):
         """Create a top level OSCAL object within the trestle directory, leveraging functionality in add."""
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        if not trestle_root or not trestle.common.filesystem.is_valid_project_root(args.trestle_root):
+        if not trestle_root or not filesystem.is_valid_project_root(args.trestle_root):
             logger.error(f'Given directory {trestle_root} is not a trestle project.')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         plural_path = ModelIO.model_type_to_model_dir(model_alias)

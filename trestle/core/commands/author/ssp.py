@@ -22,12 +22,11 @@ from typing import Dict, List, Set
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-import trestle.common.filesystem
 import trestle.core.generators as gens
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const, err, log
+from trestle.common import const, err, filesystem, log
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_io import ModelIO
 from trestle.core.catalog_interface import CatalogInterface
@@ -82,7 +81,7 @@ class SSPGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root
-        if not trestle.common.filesystem.is_directory_name_allowed(args.output):
+        if not filesystem.is_directory_name_allowed(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
             return CmdReturnCodes.COMMAND_ERROR.value
 

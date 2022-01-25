@@ -21,15 +21,14 @@ import pytest
 from tests import test_utils
 
 import trestle.common.const as const
-import trestle.common.filesystem
-import trestle.common.trash
 import trestle.oscal.common as common
+from trestle.common import filesystem, trash
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 
-if trestle.common.filesystem.is_windows():  # pragma: no cover
+if filesystem.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -44,11 +43,11 @@ def test_should_ignore() -> None:
 
 def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
     """Test if oscal dir is valid or not."""
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
 
     create_sample_catalog_project(tmp_path)
 
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
 
     # add some hidden files
     hidden_file = tmp_path / 'catalogs' / '.hidden.txt'
@@ -57,21 +56,21 @@ def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
     keep_file = tmp_path / 'catalogs' / '.keep'
     test_utils.make_hidden_file(keep_file)
 
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
     assert not hidden_file.exists()
     assert keep_file.exists()
 
     # add some markdown readme
     readme_file = tmp_path / 'catalogs' / 'README.md'
     readme_file.touch()
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
 
 
 def test_oscal_dir_notvalid(tmp_path: pathlib.Path) -> None:
     """Test OSCAL directory not valid."""
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
     create_sample_catalog_project(tmp_path)
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
 
     profiles_dir = tmp_path / 'profiles'
     profiles_dir.mkdir(parents=True, exist_ok=True)
@@ -79,11 +78,11 @@ def test_oscal_dir_notvalid(tmp_path: pathlib.Path) -> None:
     invalid_file = profiles_dir / 'shouldnt_be_here.txt'
     invalid_file.touch()
 
-    assert not trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert not filesystem.check_oscal_directories(tmp_path)
 
     invalid_file.unlink()
 
-    assert trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert filesystem.check_oscal_directories(tmp_path)
 
     metadata_dir = tmp_path / 'catalogs' / 'mycatalog' / 'catalog' / 'metadata'
     deep_invalid_file = metadata_dir / 'responsible-parties' / 'should_be_here.docx'
@@ -91,21 +90,21 @@ def test_oscal_dir_notvalid(tmp_path: pathlib.Path) -> None:
     deep_invalid_file.touch()
     readme_file.touch()
 
-    assert not trestle.common.filesystem.check_oscal_directories(tmp_path)
+    assert not filesystem.check_oscal_directories(tmp_path)
 
 
 def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_root method."""
-    assert trestle.common.filesystem.is_valid_project_root(tmp_path) is False
+    assert filesystem.is_valid_project_root(tmp_path) is False
 
     test_utils.ensure_trestle_config_dir(tmp_path)
-    assert trestle.common.filesystem.is_valid_project_root(tmp_path) is True
+    assert filesystem.is_valid_project_root(tmp_path) is True
 
 
 def test_has_parent_path(tmp_path: pathlib.Path) -> None:
     """Test has_parent_path method."""
-    assert trestle.common.trash.has_parent_path(pathlib.Path('tests'), test_utils.BASE_TMP_DIR) is False
-    assert trestle.common.trash.has_parent_path(pathlib.Path('/invalid/path'), test_utils.BASE_TMP_DIR) is False
+    assert trash.has_parent_path(pathlib.Path('tests'), test_utils.BASE_TMP_DIR) is False
+    assert trash.has_parent_path(pathlib.Path('/invalid/path'), test_utils.BASE_TMP_DIR) is False
 
 
 def test_get_trestle_project_root(tmp_path: pathlib.Path, rand_str: str) -> None:
@@ -123,56 +122,56 @@ def test_get_trestle_project_root(tmp_path: pathlib.Path, rand_str: str) -> None
     sub_data_dir.mkdir(exist_ok=True, parents=True)
     sub_data_dir.joinpath('readme.md').touch()
 
-    assert trestle.common.filesystem.extract_trestle_project_root(sub_data_dir) is None
+    assert filesystem.extract_trestle_project_root(sub_data_dir) is None
 
     test_utils.ensure_trestle_config_dir(project_path)
-    assert trestle.common.filesystem.extract_trestle_project_root(sub_data_dir) == project_path
-    assert trestle.common.filesystem.extract_trestle_project_root(sub_data_dir.joinpath('readme.md')) == project_path
-    assert trestle.common.filesystem.extract_trestle_project_root(sub_path.joinpath('readme.md')) == project_path
-    assert trestle.common.filesystem.extract_trestle_project_root(sub_path) == project_path
-    assert trestle.common.filesystem.extract_trestle_project_root(project_path.parent) is None
+    assert filesystem.extract_trestle_project_root(sub_data_dir) == project_path
+    assert filesystem.extract_trestle_project_root(sub_data_dir.joinpath('readme.md')) == project_path
+    assert filesystem.extract_trestle_project_root(sub_path.joinpath('readme.md')) == project_path
+    assert filesystem.extract_trestle_project_root(sub_path) == project_path
+    assert filesystem.extract_trestle_project_root(project_path.parent) is None
 
 
 def test_is_valid_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_model method."""
-    assert trestle.common.filesystem._is_valid_project_model_path(tmp_path) is False
+    assert filesystem._is_valid_project_model_path(tmp_path) is False
 
     test_utils.ensure_trestle_config_dir(tmp_path)
-    assert trestle.common.filesystem._is_valid_project_model_path(tmp_path) is False
+    assert filesystem._is_valid_project_model_path(tmp_path) is False
 
     create_sample_catalog_project(tmp_path)
 
     catalog_dir = tmp_path / 'catalogs'
-    assert trestle.common.filesystem._is_valid_project_model_path(catalog_dir) is False
+    assert filesystem._is_valid_project_model_path(catalog_dir) is False
 
     mycatalog_dir = catalog_dir / 'mycatalog'
-    assert trestle.common.filesystem._is_valid_project_model_path(mycatalog_dir) is True
+    assert filesystem._is_valid_project_model_path(mycatalog_dir) is True
 
     metadata_dir = mycatalog_dir / 'metadata'
-    assert trestle.common.filesystem._is_valid_project_model_path(metadata_dir) is True
+    assert filesystem._is_valid_project_model_path(metadata_dir) is True
 
     foo_dir = tmp_path / 'foo/bar'
     foo_dir.mkdir(parents=True)
-    assert trestle.common.filesystem._is_valid_project_model_path(foo_dir) is False
+    assert filesystem._is_valid_project_model_path(foo_dir) is False
 
 
 def test_get_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test get_project_model_path  method."""
-    assert trestle.common.filesystem.extract_project_model_path(tmp_path) is None
+    assert filesystem.extract_project_model_path(tmp_path) is None
 
     test_utils.ensure_trestle_config_dir(tmp_path)
-    assert trestle.common.filesystem.extract_project_model_path(tmp_path) is None
+    assert filesystem.extract_project_model_path(tmp_path) is None
 
     create_sample_catalog_project(tmp_path)
 
     catalog_dir = tmp_path / 'catalogs'
-    assert trestle.common.filesystem.extract_project_model_path(catalog_dir) is None
+    assert filesystem.extract_project_model_path(catalog_dir) is None
 
     mycatalog_dir = catalog_dir / 'mycatalog'
-    assert trestle.common.filesystem.extract_project_model_path(mycatalog_dir) == mycatalog_dir
+    assert filesystem.extract_project_model_path(mycatalog_dir) == mycatalog_dir
 
     metadata_dir = mycatalog_dir / 'metadata'
-    assert trestle.common.filesystem.extract_project_model_path(metadata_dir) == mycatalog_dir
+    assert filesystem.extract_project_model_path(metadata_dir) == mycatalog_dir
 
 
 def test_load_file(tmp_path: pathlib.Path) -> None:
@@ -180,13 +179,13 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
     json_file_path = test_utils.NIST_SAMPLE_CD_JSON
     yaml_file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_component.yaml')
 
-    assert trestle.common.filesystem.load_file(json_file_path) is not None
-    assert trestle.common.filesystem.load_file(yaml_file_path) is not None
+    assert filesystem.load_file(json_file_path) is not None
+    assert filesystem.load_file(yaml_file_path) is not None
 
     try:
         sample_file_path = tmp_path.joinpath('sample.txt')
         with open(sample_file_path, 'w', encoding=const.FILE_ENCODING):
-            trestle.common.filesystem.load_file(sample_file_path)
+            filesystem.load_file(sample_file_path)
     except TrestleError:
         pass
 
@@ -452,7 +451,7 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     """Test fs.get_contextual_file_type()."""
     (tmp_path / 'file.json').touch()
     with pytest.raises(TrestleError):
-        trestle.common.filesystem.get_contextual_file_type(pathlib.Path(tmp_path / 'gu.json'))
+        filesystem.get_contextual_file_type(pathlib.Path(tmp_path / 'gu.json'))
     (tmp_path / 'file.json').unlink()
 
     (tmp_path / '.trestle').mkdir()
@@ -462,10 +461,10 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     mycatalog_dir = catalogs_dir / 'mycatalog'
 
     pathlib.Path(mycatalog_dir / 'file2.json').touch()
-    assert trestle.common.filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+    assert filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
     (mycatalog_dir / 'file2.json').unlink()
 
-    if trestle.common.filesystem.is_windows():
+    if filesystem.is_windows():
         hidden_file = mycatalog_dir / 'hidden.txt'
         hidden_file.touch()
         atts = win32api.GetFileAttributes(str(hidden_file))
@@ -474,22 +473,22 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
         pathlib.Path(mycatalog_dir / '.DS_Store').touch()
 
     pathlib.Path(mycatalog_dir / 'file2.json').touch()
-    assert trestle.common.filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+    assert filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
 
-    if trestle.common.filesystem.is_windows():
+    if filesystem.is_windows():
         hidden_file.unlink()
     else:
         (mycatalog_dir / '.DS_Store').unlink()
     (mycatalog_dir / 'file2.json').unlink()
 
     pathlib.Path(mycatalog_dir / 'file3.yml').touch()
-    assert trestle.common.filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
+    assert filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
     (mycatalog_dir / 'file3.yml').unlink()
 
     (mycatalog_dir / 'catalog').mkdir()
     (mycatalog_dir / 'catalog/groups').mkdir()
     (mycatalog_dir / 'catalog/groups/file4.yaml').touch()
-    assert trestle.common.filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
+    assert filesystem.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
 
 
 def test_get_models_of_type(tmp_trestle_dir) -> None:
@@ -522,37 +521,37 @@ def test_get_models_of_type_bad_cwd(tmp_path) -> None:
 
 def test_is_hidden_posix(tmp_path) -> None:
     """Test is_hidden on posix systems."""
-    if not trestle.common.filesystem.is_windows():
+    if not filesystem.is_windows():
         hidden_file = tmp_path / '.hidden.md'
         hidden_dir = tmp_path / '.hidden/'
         visible_file = tmp_path / 'visible.md'
         visible_dir = tmp_path / 'visible/'
 
-        assert trestle.common.filesystem.is_hidden(hidden_file)
-        assert trestle.common.filesystem.is_hidden(hidden_dir)
-        assert not trestle.common.filesystem.is_hidden(visible_file)
-        assert not trestle.common.filesystem.is_hidden(visible_dir)
+        assert filesystem.is_hidden(hidden_file)
+        assert filesystem.is_hidden(hidden_dir)
+        assert not filesystem.is_hidden(visible_file)
+        assert not filesystem.is_hidden(visible_dir)
     else:
         pass
 
 
 def test_is_hidden_windows(tmp_path) -> None:
     """Test is_hidden on windows systems."""
-    if trestle.common.filesystem.is_windows():
+    if filesystem.is_windows():
         visible_file = tmp_path / 'visible.md'
         visible_dir = tmp_path / 'visible/'
         visible_file.touch()
         visible_dir.touch()
-        assert not trestle.common.filesystem.is_hidden(visible_file)
-        assert not trestle.common.filesystem.is_hidden(visible_dir)
+        assert not filesystem.is_hidden(visible_file)
+        assert not filesystem.is_hidden(visible_dir)
 
         atts = win32api.GetFileAttributes(str(visible_file))
         win32api.SetFileAttributes(str(visible_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
         atts = win32api.GetFileAttributes(str(visible_dir))
         win32api.SetFileAttributes(str(visible_dir), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
 
-        assert trestle.common.filesystem.is_hidden(visible_file)
-        assert trestle.common.filesystem.is_hidden(visible_dir)
+        assert filesystem.is_hidden(visible_file)
+        assert filesystem.is_hidden(visible_dir)
     else:
         pass
 
@@ -567,7 +566,7 @@ def test_is_hidden_windows(tmp_path) -> None:
 )
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
     """Test whether task names are allowed."""
-    assert trestle.common.filesystem.is_directory_name_allowed(task_name) == outcome
+    assert filesystem.is_directory_name_allowed(task_name) == outcome
 
 
 def test_model_type_to_model_dir() -> None:
@@ -585,14 +584,14 @@ def test_local_and_visible(tmp_path) -> None:
     """Test if file is local (not symlink) and visible (not hidden)."""
     local_file = tmp_path / 'local.md'
     local_file.touch()
-    if trestle.common.filesystem.is_windows():
+    if filesystem.is_windows():
         link_file = tmp_path / 'not_local.lnk'
         link_file.touch()
     else:
         link_file = tmp_path / 'linked.md'
         link_file.symlink_to(local_file)
-    assert trestle.common.filesystem.is_local_and_visible(local_file)
-    assert not trestle.common.filesystem.is_local_and_visible(link_file)
+    assert filesystem.is_local_and_visible(local_file)
+    assert not filesystem.is_local_and_visible(link_file)
 
 
 @pytest.mark.parametrize(
@@ -626,9 +625,9 @@ def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect
         input_path = candidate
     if expect_failure:
         with pytest.raises(TrestleError):
-            _ = trestle.common.filesystem.relative_resolve(input_path, tmp_path)
+            _ = filesystem.relative_resolve(input_path, tmp_path)
     else:
-        _ = trestle.common.filesystem.relative_resolve(input_path, tmp_path)
+        _ = filesystem.relative_resolve(input_path, tmp_path)
 
 
 def test_iterdir_without_hidden_files(tmp_path: pathlib.Path) -> None:
@@ -636,7 +635,7 @@ def test_iterdir_without_hidden_files(tmp_path: pathlib.Path) -> None:
     pathlib.Path(tmp_path / 'visible.txt').touch()
     pathlib.Path(tmp_path / 'visibleDir/').mkdir()
 
-    if trestle.common.filesystem.is_windows():
+    if filesystem.is_windows():
         """Windows"""
         hidden_file = tmp_path / 'hidden.txt'
         hidden_dir = tmp_path / 'hiddenDir/'
@@ -647,30 +646,29 @@ def test_iterdir_without_hidden_files(tmp_path: pathlib.Path) -> None:
         atts = win32api.GetFileAttributes(str(hidden_dir))
         win32api.SetFileAttributes(str(hidden_dir), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
 
-        assert len(list(trestle.common.filesystem.iterdir_without_hidden_files(tmp_path))) == 3
+        assert len(list(filesystem.iterdir_without_hidden_files(tmp_path))) == 3
     else:
 
         pathlib.Path(tmp_path / '.DS_Store').touch()
         pathlib.Path(tmp_path / '.hidden.txt').touch()
         pathlib.Path(tmp_path / '.hiddenDir/').mkdir()
 
-        assert len(list(trestle.common.filesystem.iterdir_without_hidden_files(tmp_path))) == 3
+        assert len(list(filesystem.iterdir_without_hidden_files(tmp_path))) == 3
 
 
 def test_make_hidden_file(tmp_path: pathlib.Path) -> None:
     """Test make hidden files."""
     file_path = tmp_path / '.keep'
-    trestle.common.filesystem.make_hidden_file(file_path)
+    filesystem.make_hidden_file(file_path)
 
     file_path2 = tmp_path / 'hidden.txt'
-    trestle.common.filesystem.make_hidden_file(file_path2)
+    filesystem.make_hidden_file(file_path2)
 
-    assert file_path.exists() and not trestle.common.filesystem.is_local_and_visible(file_path)
-    if trestle.common.filesystem.is_windows():
-        assert file_path2.exists() and not trestle.common.filesystem.is_local_and_visible(file_path2)
+    assert file_path.exists() and not filesystem.is_local_and_visible(file_path)
+    if filesystem.is_windows():
+        assert file_path2.exists() and not filesystem.is_local_and_visible(file_path2)
     else:
-        assert (tmp_path / '.hidden.txt'
-                ).exists() and not trestle.common.filesystem.is_local_and_visible(tmp_path / '.hidden.txt')
+        assert (tmp_path / '.hidden.txt').exists() and not filesystem.is_local_and_visible(tmp_path / '.hidden.txt')
 
 
 def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: catalog.Catalog) -> None:

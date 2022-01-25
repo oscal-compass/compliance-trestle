@@ -18,10 +18,8 @@ import pathlib
 
 import pytest
 
-import trestle.common.common_types
 import trestle.common.const as const
 import trestle.common.err as err
-import trestle.common.str_utils
 import trestle.common.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
@@ -31,6 +29,7 @@ import trestle.oscal.component as component
 import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
+from trestle.common import str_utils
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode
 
@@ -137,54 +136,54 @@ def test_classname_to_alias() -> None:
 
     short_classname = catalog.Catalog.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
+    json_alias = str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'catalog'
-    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
+    json_alias = str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'catalog'
 
     short_classname = common.ResponsibleParty.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
+    json_alias = str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'responsible-party'
-    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
+    json_alias = str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'responsible_party'
 
     short_classname = common.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
+    json_alias = str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'property'
-    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
+    json_alias = str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'property'
 
     short_classname = common.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
-    json_alias = trestle.common.str_utils.classname_to_alias(short_classname, AliasMode.JSON)
+    json_alias = str_utils.classname_to_alias(short_classname, AliasMode.JSON)
     assert json_alias == 'member-of-organization'
-    json_alias = trestle.common.str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
+    json_alias = str_utils.classname_to_alias(full_classname, AliasMode.FIELD)
     assert json_alias == 'member_of_organization'
 
 
 def test_snake_to_upper_camel() -> None:
     """Ensure Snake to upper camel behaves correctly."""
-    cammeled = trestle.common.str_utils._snake_to_upper_camel('component_definition')
+    cammeled = str_utils._snake_to_upper_camel('component_definition')
     assert cammeled == 'ComponentDefinition'
-    cammeled = trestle.common.str_utils._snake_to_upper_camel('control')
+    cammeled = str_utils._snake_to_upper_camel('control')
     assert cammeled == 'Control'
-    cammeled = trestle.common.str_utils._snake_to_upper_camel('')
+    cammeled = str_utils._snake_to_upper_camel('')
     assert cammeled == ''
 
 
 def test_camel_to_snake() -> None:
     """Ensure camel to snake behaves correctly."""
-    snaked = trestle.common.str_utils._camel_to_snake('ComponentDefinition')
+    snaked = str_utils._camel_to_snake('ComponentDefinition')
     assert snaked == 'component_definition'
-    snaked = trestle.common.str_utils._camel_to_snake('Control')
+    snaked = str_utils._camel_to_snake('Control')
     assert snaked == 'control'
-    snaked = trestle.common.str_utils._camel_to_snake('')
+    snaked = str_utils._camel_to_snake('')
     assert snaked == ''
 
 
 def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
-    assert trestle.common.str_utils.alias_to_classname('component-definition', AliasMode.JSON) == 'ComponentDefinition'
-    assert trestle.common.str_utils.alias_to_classname('component_definition', AliasMode.FIELD) == 'ComponentDefinition'
+    assert str_utils.alias_to_classname('component-definition', AliasMode.JSON) == 'ComponentDefinition'
+    assert str_utils.alias_to_classname('component_definition', AliasMode.FIELD) == 'ComponentDefinition'

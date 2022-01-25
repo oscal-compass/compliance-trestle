@@ -18,9 +18,8 @@ import argparse
 import logging
 import pathlib
 
-import trestle.common.filesystem
 import trestle.core.commands.validate as validatecmd
-from trestle.common import const, log
+from trestle.common import const, filesystem, log
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.core import validator_helper
@@ -57,7 +56,7 @@ class ImportCmd(CommandPlusDocs):
         logger.debug('Entering import run.')
 
         trestle_root = args.trestle_root
-        if not trestle.common.filesystem.is_valid_project_root(trestle_root):
+        if not filesystem.is_valid_project_root(trestle_root):
             logger.warning(f'Attempt to import from non-valid trestle project root {trestle_root}')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
 

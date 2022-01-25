@@ -23,12 +23,11 @@ import shutil
 from typing import List, Optional, Type
 
 import trestle.common.const as const
-import trestle.common.filesystem
 import trestle.core.commands.assemble as assemblecmd
 import trestle.core.commands.merge as mergecmd
 import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
-from trestle.common import log
+from trestle.common import filesystem, log
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode, classname_to_alias
@@ -48,7 +47,7 @@ class ManagedOSCAL:
 
     def __init__(self, root_dir: pathlib.Path, model_type: Type[OscalBaseModel], name: str) -> None:
         """Initialize repository OSCAL model object."""
-        if not trestle.common.filesystem.is_valid_project_root(root_dir):
+        if not filesystem.is_valid_project_root(root_dir):
             raise TrestleError(f'Provided root directory {str(root_dir)} is not a valid Trestle root directory.')
         self._root_dir = root_dir
         self._model_type = model_type
@@ -190,7 +189,7 @@ class Repository:
 
     def __init__(self, root_dir: pathlib.Path) -> None:
         """Initialize trestle repository object."""
-        if not trestle.common.filesystem.is_valid_project_root(root_dir):
+        if not filesystem.is_valid_project_root(root_dir):
             raise TrestleError(f'Provided root directory {root_dir} is not a valid Trestle root directory.')
         self._root_dir = root_dir
 

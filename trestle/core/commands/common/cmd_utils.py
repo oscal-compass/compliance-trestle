@@ -17,9 +17,7 @@
 import pathlib
 from typing import Any, List, Optional, Type, Union
 
-import trestle.common.common_types
-import trestle.common.str_utils
-from trestle.common import const, utils
+from trestle.common import const, str_utils, utils
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode, classname_to_alias
@@ -129,7 +127,7 @@ def parse_chain(
             # at this point sub_model may be a list of items
             # new element path is needed only if any of the items contains the desired part
             if p != ElementPath.WILDCARD:
-                new_attrib = trestle.common.str_utils.dash_to_underscore(p)
+                new_attrib = str_utils.dash_to_underscore(p)
                 if isinstance(sub_model, list):
                     for item in sub_model:
                         # go into the list and find one with requested part
@@ -164,7 +162,7 @@ def parse_chain(
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue
-                        new_alias = trestle.common.str_utils.underscore_to_dash(key)
+                        new_alias = str_utils.underscore_to_dash(key)
                         new_path = full_path_str + '.' + new_alias
                         if not split_is_too_fine(new_path, model_obj):
                             # to add parts of an element, need to add two links

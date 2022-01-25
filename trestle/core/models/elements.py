@@ -22,10 +22,8 @@ from pydantic.error_wrappers import ValidationError
 
 from ruamel.yaml import YAML
 
-import trestle.common.common_types
 import trestle.common.const as const
-import trestle.common.str_utils
-from trestle.common import common_types, utils
+from trestle.common import common_types, str_utils, utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode, classname_to_alias
@@ -166,7 +164,7 @@ class ElementPath:
             # Final path must be the alias
 
             new_base_type = create_model(
-                trestle.common.str_utils.alias_to_classname(collection_name, AliasMode.JSON),
+                str_utils.alias_to_classname(collection_name, AliasMode.JSON),
                 __base__=OscalBaseModel,
                 __root__=(base_type, ...)
             )
@@ -398,7 +396,7 @@ class Element:
                     raise TrestleError(
                         f'wrapper_alias not found for a collection type object: {elem.__class__.__name__}'
                     )
-            wrapper_alias = trestle.common.str_utils.classname_to_alias(class_name, AliasMode.JSON)
+            wrapper_alias = str_utils.classname_to_alias(class_name, AliasMode.JSON)
 
         self._wrapper_alias: str = wrapper_alias
 

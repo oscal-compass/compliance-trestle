@@ -25,10 +25,8 @@ from typing import Any, List, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import trestle.common.filesystem
-import trestle.common.str_utils
 from trestle.cli import Trestle
-from trestle.common import const
+from trestle.common import const, filesystem, str_utils
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
@@ -43,7 +41,7 @@ from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
-if trestle.common.filesystem.is_windows():  # pragma: no cover
+if filesystem.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -101,7 +99,7 @@ def prepare_trestle_project_dir(
     """Prepare a temp directory with an example OSCAL model."""
     ensure_trestle_config_dir(repo_dir)
 
-    model_alias = trestle.common.str_utils.classname_to_alias(model_obj.__class__.__name__, AliasMode.JSON)
+    model_alias = str_utils.classname_to_alias(model_obj.__class__.__name__, AliasMode.JSON)
 
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = repo_dir / models_dir_name / 'my_test_model'
@@ -373,7 +371,7 @@ def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
 
     if_dot will make the change only if the filename is of the form .*
     """
-    if trestle.common.filesystem.is_windows():
+    if filesystem.is_windows():
         if not if_dot or file_path.stem.startswith('.'):
             atts = win32api.GetFileAttributes(str(file_path))
             win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)

@@ -20,9 +20,7 @@ import traceback
 from pathlib import Path
 from typing import List
 
-import trestle.common.common_types
-import trestle.common.filesystem
-from trestle.common import const, log, utils
+from trestle.common import const, filesystem, log, utils
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode, classname_to_alias
@@ -106,7 +104,7 @@ class MergeCmd(CommandPlusDocs):
         try:
             logger.debug(f'merge destination model alias: {destination_model_alias}')
             logger.debug('merge getting contextual file type effective working directory')
-            file_type = trestle.common.filesystem.get_contextual_file_type(effective_cwd)
+            file_type = filesystem.get_contextual_file_type(effective_cwd)
             logger.debug(f'contextual file type is {file_type}')
         except Exception as e:
             raise TrestleError(str(e))

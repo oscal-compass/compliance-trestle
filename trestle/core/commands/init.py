@@ -23,8 +23,8 @@ from shutil import copyfile
 from pkg_resources import resource_filename
 
 import trestle.common.const as const
-import trestle.common.filesystem
 import trestle.common.log as log
+from trestle.common import filesystem
 from trestle.common.err import TrestleError
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -72,7 +72,7 @@ class InitCmd(CommandBase):
             for directory in directory_list:
                 directory.mkdir(parents=True, exist_ok=True)
                 file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
-                trestle.common.filesystem.make_hidden_file(file_path)
+                filesystem.make_hidden_file(file_path)
         except OSError as e:
             raise TrestleError(f'Error while creating directories: {e}')
         except Exception as e:

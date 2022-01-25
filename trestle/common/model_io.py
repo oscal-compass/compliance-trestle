@@ -24,7 +24,7 @@ from pydantic import create_model
 
 import trestle.common
 import trestle.common.common_types
-from trestle.common import const, err, utils
+from trestle.common import const, err, str_utils, utils
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.filesystem import extract_trestle_project_root, iterdir_without_hidden_files
@@ -434,7 +434,7 @@ class ModelIO:
             outer_type = field.outer_type_
             inner_type = utils.get_inner_type(outer_type)
             inner_type_name = inner_type.__name__
-            singular_alias = trestle.common.str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
+            singular_alias = str_utils.classname_to_alias(inner_type_name, AliasMode.JSON)
         except Exception as e:
             raise err.TrestleError(f'Error in json path {alias_path}: {e}')
 

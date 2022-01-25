@@ -24,10 +24,10 @@ from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
-import trestle.common.filesystem
 import trestle.common.log as log
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
+from trestle.common import filesystem
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.list_utils import as_list
 from trestle.common.model_io import ModelIO
@@ -64,7 +64,7 @@ class ProfileGenerate(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root = args.trestle_root
-            if not trestle.common.filesystem.is_directory_name_allowed(args.output):
+            if not filesystem.is_directory_name_allowed(args.output):
                 logger.warning(f'{args.output} is not an allowed directory name')
                 return CmdReturnCodes.COMMAND_ERROR.value
 
