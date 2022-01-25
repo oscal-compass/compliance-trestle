@@ -184,6 +184,6 @@ def test_replicate_file_system(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) 
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=0)
-    monkeypatch.setattr('filesystem.extract_trestle_project_root', mock_return)
+    monkeypatch.setattr('trestle.common.filesystem.extract_trestle_project_root', mock_return)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1
