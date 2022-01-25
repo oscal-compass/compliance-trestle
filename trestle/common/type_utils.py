@@ -33,12 +33,12 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
 
 
-def _get_model_field_info(field_type: Type[Any]) -> Tuple[Type[Any], str, Type[Any]]:
+def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[Type[Any]], Optional[str], Optional[Type[Any]]]:
     """Need special handling for pydantic wrapped __root__ objects."""
     # oscal_read of roles.json yields pydantic.Roles model with __root__ containing list of Role
-    root: Type[Any] = None
-    root_type: str = None
-    singular_type: Type[Any] = None
+    root: Optional[Type[Any]] = None
+    root_type: Optional[str] = None
+    singular_type: Optional[Type[Any]] = None
     try:
         fields = field_type.__fields__
         root = fields['__root__']
@@ -47,10 +47,6 @@ def _get_model_field_info(field_type: Type[Any]) -> Tuple[Type[Any], str, Type[A
     except Exception:  # noqa S110
         pass
     return root, root_type, singular_type
-
-
-# FIXME: Typing issues here
-# FIXME: This method has diverged significantly from expectations:
 
 
 def is_collection_field_type(field_type: Type[Any]) -> bool:
@@ -74,7 +70,6 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     return origin_type in [list, dict]
 
 
-# Type annotation is incorrect.
 def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, Any]]]) -> Type[Any]:
     """Get the inner model in a generic collection model such as a List or a Dict.
 

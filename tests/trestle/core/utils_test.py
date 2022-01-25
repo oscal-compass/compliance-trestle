@@ -20,7 +20,7 @@ import pytest
 
 import trestle.common.const as const
 import trestle.common.err as err
-import trestle.common.utils as mutils
+import trestle.common.type_utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
 import trestle.oscal.catalog as catalog

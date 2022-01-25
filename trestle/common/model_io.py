@@ -24,7 +24,7 @@ from pydantic import create_model
 
 import trestle.common
 import trestle.common.common_types
-from trestle.common import const, err, str_utils, utils
+from trestle.common import const, err, str_utils, type_utils as utils
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.filesystem import extract_trestle_project_root, iterdir_without_hidden_files

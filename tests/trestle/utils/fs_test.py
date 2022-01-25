@@ -192,7 +192,7 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
 
 def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     """Test get model type and alias based on filesystem context."""
-    import trestle.common.utils as cutils
+    import trestle.common.type_utils as cutils
     with pytest.raises(TrestleError):
         ModelIO.get_relative_model_type(pathlib.Path('invalidpath'))
 

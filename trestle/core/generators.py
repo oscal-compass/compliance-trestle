@@ -26,7 +26,7 @@ from pydantic import ConstrainedStr
 
 import trestle.common.const as const
 import trestle.common.err as err
-import trestle.common.utils as utils
+import trestle.common.type_utils as utils
 from trestle.common import str_utils
 from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel

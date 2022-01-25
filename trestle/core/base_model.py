@@ -42,7 +42,7 @@ from ruamel.yaml import YAML
 import trestle.common.const as const
 import trestle.common.err as err
 from trestle.common.str_utils import AliasMode, classname_to_alias
-from trestle.common.utils import get_origin, is_collection_field_type
+from trestle.common.type_utils import get_origin, is_collection_field_type
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.trestle_base_model import TrestleBaseModel
 

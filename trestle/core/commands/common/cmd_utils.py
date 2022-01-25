@@ -17,7 +17,7 @@
 import pathlib
 from typing import Any, List, Optional, Type, Union
 
-from trestle.common import const, str_utils, utils
+from trestle.common import const, str_utils, type_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode, classname_to_alias
@@ -28,7 +28,7 @@ from trestle.core.models.file_content_type import FileContentType
 
 def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
-    if utils.is_collection_field_type(model_type):
+    if type_utils.is_collection_field_type(model_type):
         return False
     if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
         return True

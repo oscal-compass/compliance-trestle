@@ -20,7 +20,7 @@ import traceback
 from pathlib import Path
 from typing import List
 
-from trestle.common import const, filesystem, log, utils
+from trestle.common import const, filesystem, log, type_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.common.str_utils import AliasMode, classname_to_alias
@@ -181,7 +181,7 @@ class MergeCmd(CommandPlusDocs):
             target_model_filename = Path(target_model_path)
             logger.debug(f'target model path plus extension does not exist so load distrib {target_model_filename}')
             logger.debug(f'get collection type for model type {target_model_type}')
-            collection_type = utils.get_origin(target_model_type)
+            collection_type = type_utils.get_origin(target_model_type)
             logger.debug(f'load {target_model_filename} as collection type {collection_type}')
             _, _, target_model_object = ModelIO.load_distributed(target_model_filename, trestle_root, collection_type)
 
