@@ -33,6 +33,7 @@ from trestle.oscal.assessment_results import SystemComponent
 from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
+from trestle.transforms.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +84,7 @@ class TaniumTransformer(ResultsTransformer):
         tanium_oscal_factory = TaniumOscalFactory(
             self.get_timestamp(), ru_list, self.blocksize, self.cpus_max, self.cpus_min, self.checking
         )
-        results.__root__.append(tanium_oscal_factory.result)
+        results.__root__ = tanium_oscal_factory.results
         ts1 = datetime.datetime.now()
         self._analysis = tanium_oscal_factory.analysis
         self._analysis.append(f'transform time: {ts1-ts0}')
@@ -465,14 +466,6 @@ class TaniumOscalFactory():
         return self._observation_list
 
     @property
-    def local_definitions(self) -> LocalDefinitions1:
-        """OSCAL local definitions."""
-        rval = LocalDefinitions1()
-        rval.components = self.components
-        rval.inventory_items = list(self.inventory)
-        return rval
-
-    @property
     def control_selections(self) -> List[ControlSelection]:
         """OSCAL control selections."""
         rval = []
@@ -494,21 +487,76 @@ class TaniumOscalFactory():
         analysis.append(f'observations: {len(self.observations)}')
         return analysis
 
+    def _get_local_definitions(self, system_component: SystemComponent) -> LocalDefinitions1:
+        """Get local definitions."""
+        rval = LocalDefinitions1()
+        for component in self.components:
+            if component.uuid == system_component.uuid:
+                rval.components = [component]
+                rval.inventory_items = []
+                for inventory_item in self.inventory:
+                    for implemented_component in inventory_item.implemented_components:
+                        if implemented_component.component_uuid == system_component.uuid:
+                            rval.inventory_items.append(inventory_item)
+                break
+        return rval
+
+    def _get_observation_subject_uuids(self, observation: Observation) -> List[str]:
+        """Get subject uuids for given observation."""
+        rval = []
+        for subject in observation.subjects:
+            rval.append(subject.subject_uuid)
+        return rval
+
+    def _get_local_definitions_uuids(self, local_definitions: LocalDefinitions1) -> List[str]:
+        """Get inventory uuids for given local definitions."""
+        rval = []
+        for inventory_item in local_definitions.inventory_items:
+            rval.append(inventory_item.uuid)
+        return rval
+
+    def _is_matching_uuid(self, observation_subject_uuids: List[str], local_definitions_uuids: List[str]) -> bool:
+        """Check if any given observation uuid is present in given local definition uuids."""
+        rval = False
+        for subj_uuid in observation_subject_uuids:
+            if subj_uuid in local_definitions_uuids:
+                rval = True
+                break
+        return rval
+
+    def _get_observations(self, local_definitions: LocalDefinitions1) -> List[Observation]:
+        """Get observations for given local definitions."""
+        rval = []
+        local_definitions_uuids = self._get_local_definitions_uuids(local_definitions)
+        for observation in self.observations:
+            observation_subject_uuids = self._get_observation_subject_uuids(observation)
+            if self._is_matching_uuid(observation_subject_uuids, local_definitions_uuids):
+                rval.append(observation)
+        return rval
+
     @property
-    def result(self) -> Result:
+    def results(self) -> List[Result]:
         """OSCAL result."""
         if self._result is None:
             self._derive_components()
             self._derive_inventory()
             self._derive_observations()
-            self._result = Result(
+        results = []
+        for component in self.components:
+            local_definitions = self._get_local_definitions(component)
+            observations = self._get_observations(local_definitions)
+            result = Result(
                 uuid=_uuid_result(),
                 title='Tanium',
                 description='Tanium',
                 start=self._timestamp,
                 end=self._timestamp,
                 reviewed_controls=self.reviewed_controls,
-                local_definitions=self.local_definitions,
-                observations=self.observations
+                local_definitions=local_definitions,
+                observations=observations
             )
-        return self._result
+            result_properties_list = TransformerHelper().remove_common_observation_properties(observations)
+            if len(result_properties_list) > 0:
+                result.prop = result_properties_list
+            results.append(result)
+        return results
