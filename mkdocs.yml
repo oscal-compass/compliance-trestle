@@ -61,7 +61,7 @@ nav:
       - model_io: api_reference/trestle.common.model_io.md
       - str_utils: api_reference/trestle.common.str_utils.md
       - trash: api_reference/trestle.common.trash.md
-      - utils: api_reference/trestle.common.utils.md
+      - type_utils: api_reference/trestle.common.type_utils.md
     - core:
       - all_validator: api_reference/trestle.core.all_validator.md
       - base_model: api_reference/trestle.core.base_model.md
