@@ -26,6 +26,7 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common import cmd_utils as utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.const import ARG_ELEMENT, ARG_FILE
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element
 from trestle.utils import fs
@@ -54,10 +55,10 @@ class DescribeCmd(CommandPlusDocs):
 
             log.set_log_level_from_args(args)
 
-            if 'file' in args and args.file:
+            if ARG_FILE in args and args.file:
                 model_file = pathlib.Path(args.file)
 
-                element = '' if 'element' not in args or args.element is None else args.element.strip("'")
+                element = '' if ARG_ELEMENT not in args or args.element is None else args.element.strip("'")
                 try:
                     results = self.describe(model_file.resolve(), element, args.trestle_root)
                     return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value

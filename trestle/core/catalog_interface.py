@@ -17,7 +17,7 @@ import copy
 import logging
 import pathlib
 import re
-from typing import Callable, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.core.const as const
 import trestle.core.generators as gens
@@ -189,7 +189,16 @@ class CatalogInterface():
         return None
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
-        """Get the prose for a named part in the control."""
+        """
+        Get the prose for a named part in the control.
+
+        Args:
+            control_id: id of the control
+            part_name: name of the part
+
+        Returns:
+            Single string concatenating prose from all parts and sub-parts in control with that name.
+        """
         control = self.get_control(control_id)
         return ControlIOWriter.get_part_prose(control, part_name)
 
@@ -257,7 +266,7 @@ class CatalogInterface():
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
                     if part:
-                        label = self.get_label(part)
+                        label = ControlIOWriter.get_label(part)
                         found_part = part
                         break
 
@@ -284,16 +293,6 @@ class CatalogInterface():
             for new_group in group.groups:
                 for res in CatalogInterface._get_groups_from_group(new_group):
                     yield res
-
-    @staticmethod
-    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
-        """Get the label from a part or control - they both have props."""
-        label = ''
-        for prop in as_list(part_control.props):
-            if prop.name == 'label':
-                label = prop.value
-                break
-        return label
 
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
@@ -403,8 +402,7 @@ class CatalogInterface():
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
-        if set_parameters:
-            full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
+        full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
@@ -572,67 +570,6 @@ class CatalogInterface():
                 new_alters.extend(control_alters)
                 param_dict.update(control_param_dict)
         return new_alters, param_dict
-
-    @staticmethod
-    def part_equivalent(a: common.Part, b: common.Part) -> bool:
-        """Check if individual parts are equivalent."""
-        # id's may be different because we create the id ourselves on read
-        # FIXME should not need strip
-        if a.name != b.name:
-            return False
-        if (a.prose is None) != (b.prose is None):
-            return False
-        if a.prose:
-            if a.prose.strip() != b.prose.strip():
-                return False
-        if (a.parts is None) != (b.parts is None):
-            return False
-        if a.parts:
-            if not CatalogInterface.parts_equivalent(a.parts, b.parts):
-                return False
-        return True
-
-    @staticmethod
-    def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
-        """Check if lists of parts are equivalent."""
-        if len(a) != len(b):
-            return False
-        for pair in zip(a, b):
-            if not CatalogInterface.part_equivalent(pair[0], pair[1]):
-                return False
-        return True
-
-    @staticmethod
-    def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
-        """Check if the controls are equivalent."""
-        if a.id != b.id:
-            logging.error(f'ids differ: |{a.id}| |{b.id}|')
-            return False
-        if a.title != b.title:
-            return False
-        if (a.parts is None) != (b.parts is None):
-            return False
-        if a.parts:
-            if not CatalogInterface.parts_equivalent(a.parts, b.parts):
-                return False
-        # FIXME cannot check controls until markdown lists sub-controls
-        return True
-
-    def equivalent_to(self, catalog: cat.Catalog) -> bool:
-        """Test equivalence of catalog dict contents in various ways."""
-        other = CatalogInterface(catalog)
-        if other.get_count_of_controls_in_dict() != self.get_count_of_controls_in_dict():
-            logging.error('count of controls is different')
-            return False
-        for a in self.get_all_controls_from_dict():
-            try:
-                b = other.get_control(a.id)
-            except Exception as e:
-                logging.error(f'error finding control {a.id} {e}')
-            if not self.controls_equivalent(a, b):
-                logging.error(f'controls differ: {a.id}')
-                return False
-        return True
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""
