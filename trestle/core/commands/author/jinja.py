@@ -31,6 +31,7 @@ from trestle.common import const, log
 from trestle.common.model_io import ModelIO
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.control_io import ControlIOWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
@@ -168,6 +169,7 @@ class JinjaCmd(CommandPlusDocs):
                 ssp_writer.set_catalog(resolved_catalog)
                 lut['catalog'] = resolved_catalog
                 lut['catalog_interface'] = CatalogInterface(resolved_catalog)
+                lut['control_io_writer'] = ControlIOWriter()
                 lut['ssp_md_writer'] = ssp_writer
 
             new_output = template.render(**lut)

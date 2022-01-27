@@ -42,7 +42,7 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monke
         name_stem = f'random_named_{subcommand}'
         test_args = testargs_root + [subcommand] + ['-o', name_stem]
         if include_optional:
-            test_args += ['-iof']
+            test_args += [const.IOF_SHORT]
         monkeypatch.setattr(sys, 'argv', test_args)
         rc = Trestle().run()
         assert rc == 0

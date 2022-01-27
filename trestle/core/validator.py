@@ -19,6 +19,7 @@ import logging
 from abc import ABC, abstractmethod
 
 import trestle.common.filesystem
+from trestle.common.const import ARG_FILE
 from trestle.common.err import TrestleError
 from trestle.common.model_io import ModelIO
 from trestle.core.base_model import OscalBaseModel
@@ -89,7 +90,7 @@ class Validator(ABC):
             return CmdReturnCodes.SUCCESS.value
 
         # validate file
-        if 'file' in args and args.file:
+        if ARG_FILE in args and args.file:
             file_path = trestle_root / args.file
             _, _, model = ModelIO.load_distributed(file_path, trestle_root)
             if not self.model_is_valid(model):

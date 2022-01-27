@@ -16,7 +16,6 @@
 """Special types are defined here."""
 from typing import TypeVar
 
-from trestle.common import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
@@ -36,16 +35,6 @@ TopLevelOscalModel = TypeVar(
     Profile,
     SystemSecurityPlan
 )
-
-MODEL_ALIAS_TO_TOP_LEVEL_MODEL = {
-    const.MODEL_TYPE_CATALOG: Catalog,
-    const.MODEL_TYPE_PROFILE: Profile,
-    const.MODEL_TYPE_COMPDEF: ComponentDefinition,
-    const.MODEL_TYPE_SSP: SystemSecurityPlan,
-    const.MODEL_TYPE_A_PLAN: AssessmentPlan,
-    const.MODEL_TYPE_A_RESULT: AssessmentResults,
-    const.MODEL_TYPE_POAM: PlanOfActionAndMilestones
-}
 
 OBT = TypeVar('OBT', bound=OscalBaseModel)
 TG = TypeVar('TG')

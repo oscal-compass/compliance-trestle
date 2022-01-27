@@ -20,7 +20,7 @@ import pathlib
 
 import trestle.common.log as log
 from trestle.common import filesystem
-from trestle.common.const import TRESTLE_CONFIG_DIR
+from trestle.common.const import ARG_VALIDATE, TRESTLE_CONFIG_DIR
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
@@ -88,7 +88,7 @@ class AuthorCommonCommand(CommandPlusDocs):
         """Set template version argument to the latest version if none was given."""
         if not TemplateVersioning.is_valid_version(args.template_version):
             raise TrestleError(f'Version {args.template_version} is invalid, version format should be: 0.0.1')
-        if args.template_version is None and args.mode == 'validate':
+        if args.template_version is None and args.mode == ARG_VALIDATE:
             # in validate mode no version will validate instances based on header version
             args.template_version = ''
         if args.template_version is None:
