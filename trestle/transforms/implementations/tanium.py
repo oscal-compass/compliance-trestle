@@ -503,17 +503,14 @@ class TaniumOscalFactory():
 
     def _get_observation_subject_uuids(self, observation: Observation) -> List[str]:
         """Get subject uuids for given observation."""
-        rval = []
-        for subject in observation.subjects:
-            rval.append(subject.subject_uuid)
-        return rval
+        return [subject.subject_uuid for subject in observation.subjects]
 
     def _get_local_definitions_uuids(self, local_definitions: LocalDefinitions1) -> List[str]:
         """Get inventory uuids for given local definitions."""
-        rval = []
         if local_definitions.inventory_items:
-            for inventory_item in local_definitions.inventory_items:
-                rval.append(inventory_item.uuid)
+            rval = [inventory_item.uuid for inventory_item in local_definitions.inventory_items]
+        else:
+            rval = []
         return rval
 
     def _is_matching_uuid(self, observation_subject_uuids: List[str], local_definitions_uuids: List[str]) -> bool:
