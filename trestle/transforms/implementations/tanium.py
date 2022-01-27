@@ -515,12 +515,7 @@ class TaniumOscalFactory():
 
     def _is_matching_uuid(self, observation_subject_uuids: List[str], local_definitions_uuids: List[str]) -> bool:
         """Check if any given observation uuid is present in given local definition uuids."""
-        rval = False
-        for subj_uuid in observation_subject_uuids:
-            if subj_uuid in local_definitions_uuids:
-                rval = True
-                break
-        return rval
+        return len(list(set(observation_subject_uuids) & set(local_definitions_uuids))) > 0
 
     def _get_observations(self, local_definitions: LocalDefinitions1) -> List[Observation]:
         """Get observations for given local definitions."""
