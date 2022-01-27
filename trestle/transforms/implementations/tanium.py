@@ -166,7 +166,7 @@ class RuleUseFactory():
         lines = blob.splitlines()
         for line in lines:
             line = line.strip()
-            if len(line) > 0:
+            if line:
                 jdata = json.loads(line)
                 if type(jdata) is list:
                     for item in jdata:
@@ -556,7 +556,7 @@ class TaniumOscalFactory():
                 observations=observations
             )
             result_properties_list = TransformerHelper().remove_common_observation_properties(observations)
-            if len(result_properties_list) > 0:
+            if result_properties_list:
                 result.prop = result_properties_list
             results.append(result)
         return results

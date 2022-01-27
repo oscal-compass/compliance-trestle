@@ -387,7 +387,7 @@ class OscalResultsFactory():
     def result(self) -> Result:
         """OSCAL result."""
         # perform result properties aggregation
-        if len(self.observations) > 0:
+        if self.observations:
             self._result_properties_list = TransformerHelper().remove_common_observation_properties(self.observations)
         # produce result
         prop = Result(
@@ -398,11 +398,11 @@ class OscalResultsFactory():
             end=self._timestamp,
             reviewed_controls=self.reviewed_controls,
         )
-        if len(self.result_properties) > 0:
+        if self.result_properties:
             prop.prop = self.result_properties
-        if len(self.inventory) > 0:
+        if self.inventory:
             prop.local_definitions = self.local_definitions
-        if len(self.observations) > 0:
+        if self.observations:
             prop.observations = self.observations
         return prop
 
@@ -612,7 +612,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
                 'setValues': set_values,
             }
         disable_rules = self._get_disable_rules()
-        if len(disable_rules) > 0:
+        if disable_rules:
             spec['disableRules'] = disable_rules
         # yaml data
         ydata = {
