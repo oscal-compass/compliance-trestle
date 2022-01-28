@@ -55,10 +55,10 @@ nav:
       - common_types: api_reference/trestle.common.common_types.md
       - const: api_reference/trestle.common.const.md
       - err: api_reference/trestle.common.err.md
-      - filesystem: api_reference/trestle.common.filesystem.md
+      - file_utils: api_reference/trestle.common.file_utils.md
       - list_utils: api_reference/trestle.common.list_utils.md
       - log: api_reference/trestle.common.log.md
-      - model_io: api_reference/trestle.common.model_io.md
+      - model_utils: api_reference/trestle.common.model_utils.md
       - str_utils: api_reference/trestle.common.str_utils.md
       - trash: api_reference/trestle.common.trash.md
       - type_utils: api_reference/trestle.common.type_utils.md
