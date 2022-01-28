@@ -19,8 +19,8 @@ from typing import Any, List
 
 from ruamel.yaml import YAML
 
-import trestle.core.const as const
-from trestle.core.err import TrestleError
+import trestle.common.const as const
+from trestle.common.err import TrestleError
 
 logger = logging.getLogger(__name__)
 

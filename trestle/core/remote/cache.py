@@ -37,10 +37,10 @@ import paramiko
 import requests
 from requests.auth import HTTPBasicAuth
 
-from trestle.core import const, parser
+from trestle.common import const, file_utils
+from trestle.common.err import TrestleError
+from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -110,10 +110,10 @@ class FetcherBase(ABC):
         self._update_cache(force_update)
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
         try:
-            raw_data = fs.load_file(self._cached_object_path)
+            raw_data = file_utils.load_file(self._cached_object_path)
         except Exception:
             try:
-                raw_data = fs.load_file(self._cached_object_path)
+                raw_data = file_utils.load_file(self._cached_object_path)
             except Exception as e:
                 logger.error(f'Cannot fs.load_file {self._cached_object_path}')
                 logger.debug(e)

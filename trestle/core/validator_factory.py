@@ -17,8 +17,8 @@
 
 from ilcli import Command
 
+from trestle.common import const
 from trestle.core import all_validator, duplicates_validator, oscal_version_validator, refs_validator
-from trestle.core import const
 from trestle.core.object_factory import ObjectFactory
 
 # Create the singleton validator factory

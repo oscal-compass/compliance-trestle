@@ -20,8 +20,8 @@ import pytest
 
 from tests import test_utils
 
+from trestle.common.err import TrestleError
 from trestle.core.commands.common import cmd_utils
-from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
 
 

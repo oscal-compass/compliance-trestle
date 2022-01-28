@@ -24,9 +24,11 @@ from typing import Any, Dict, List, Type, TypeVar, Union, cast
 import pydantic.networks
 from pydantic import ConstrainedStr
 
-import trestle.core.const as const
-import trestle.core.err as err
-import trestle.core.utils as utils
+import trestle.common.const as const
+import trestle.common.err as err
+import trestle.common.type_utils as utils
+from trestle.common import str_utils
+from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
 
@@ -156,7 +158,7 @@ def generate_sample_model(
                     # E.g. we need the type of the container.
                     if field == '__root__' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
-                            outer_type, utils.classname_to_alias(model.__name__, utils.AliasMode.FIELD)
+                            outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
                         )
                     else:
                         model_dict[field] = generate_sample_value_by_type(outer_type, field)

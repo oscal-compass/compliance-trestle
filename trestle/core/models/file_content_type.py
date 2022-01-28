@@ -15,7 +15,7 @@
 from enum import Enum
 from pathlib import Path
 
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 
 
 class FileContentType(Enum):

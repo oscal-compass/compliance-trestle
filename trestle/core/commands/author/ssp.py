@@ -26,14 +26,15 @@ import trestle.core.generators as gens
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.core import const, err
+from trestle.common import const, err, file_utils, log
+from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.core.utils import as_list, none_if_empty
 from trestle.core.validator_helper import regenerate_uuids
-from trestle.utils import fs, log
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +81,7 @@ class SSPGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root
-        if not fs.allowed_task_name(args.output):
+        if not file_utils.is_directory_name_allowed(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
             return CmdReturnCodes.COMMAND_ERROR.value
 
@@ -210,8 +211,8 @@ class SSPAssemble(AuthorCommonCommand):
         md_path = trestle_root / args.markdown
 
         # if ssp already exists - should load it rather than make new one
-        ssp_path = fs.path_for_top_level_model(
-            trestle_root, args.output, ossp.SystemSecurityPlan, fs.FileContentType.JSON
+        ssp_path = ModelUtils.path_for_top_level_model(
+            trestle_root, args.output, ossp.SystemSecurityPlan, FileContentType.JSON
         )
         ssp: ossp.SystemSecurityPlan
         comp_dict: Dict[str, ossp.SystemComponent] = {}
@@ -220,7 +221,7 @@ class SSPAssemble(AuthorCommonCommand):
             # need to load imp_reqs from markdown but need component first
             if ssp_path.exists():
                 # load the existing json ssp
-                _, _, ssp = fs.load_distributed(ssp_path, trestle_root)
+                _, _, ssp = ModelUtils.load_distributed(ssp_path, trestle_root)
                 for component in ssp.system_implementation.components:
                     comp_dict[component.title] = component
                 # read the new imp reqs from markdown and have them reference existing components
@@ -264,7 +265,7 @@ class SSPAssemble(AuthorCommonCommand):
 
         # write out the ssp as json
         try:
-            fs.save_top_level_model(ssp, trestle_root, args.output, fs.FileContentType.JSON)
+            ModelUtils.save_top_level_model(ssp, trestle_root, args.output, FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
             logger.debug(traceback.format_exc())
@@ -298,9 +299,10 @@ class SSPFilter(AuthorCommonCommand):
         ssp: ossp.SystemSecurityPlan
 
         try:
-            ssp, _ = fs.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, fs.FileContentType.JSON)
-            profile_path = fs.path_for_top_level_model(
-                trestle_root, profile_name, prof.Profile, fs.FileContentType.JSON
+            ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name,
+                                                     ossp.SystemSecurityPlan, FileContentType.JSON)
+            profile_path = ModelUtils.path_for_top_level_model(
+                trestle_root, profile_name, prof.Profile, FileContentType.JSON
             )
 
             prof_resolver = ProfileResolver()
@@ -342,7 +344,7 @@ class SSPFilter(AuthorCommonCommand):
             ssp.control_implementation = control_imp
             if regenerate:
                 regenerate_uuids(ssp)
-            fs.save_top_level_model(ssp, trestle_root, out_name, fs.FileContentType.JSON)
+            ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')
             logger.debug(traceback.format_exc())

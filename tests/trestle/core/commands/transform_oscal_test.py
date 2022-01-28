@@ -19,12 +19,12 @@ from typing import Tuple
 
 from tests import test_utils
 
-from trestle.core import const
+from trestle.common import const
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.transform_oscal import TransformCmd
 from trestle.oscal.catalog import Catalog
-from trestle.utils import fs
 
 prof_name = 'main_profile'
 ssp_name = 'my_ssp'
@@ -130,7 +130,7 @@ def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
     rc = transform_oscal._run(args)
     assert rc == 0
 
-    resolved_catalog, _ = fs.load_top_level_model(tmp_trestle_dir, resolved_cat_name, Catalog)
+    resolved_catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, resolved_cat_name, Catalog)
     catalog_interface = CatalogInterface(resolved_catalog)
     n_controls = catalog_interface.get_count_of_controls_in_dict()
     assert n_controls == 3

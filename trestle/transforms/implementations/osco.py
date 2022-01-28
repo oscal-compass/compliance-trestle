@@ -26,7 +26,7 @@ from defusedxml import ElementTree
 
 from ruamel.yaml import YAML
 
-from trestle.core.utils import as_list
+from trestle.common.list_utils import as_list
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation

@@ -18,10 +18,10 @@ import pathlib
 
 import pytest
 
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.draw_io import DrawIO
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 

@@ -20,11 +20,11 @@ from uuid import uuid4
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
+from trestle.common.const import MARKDOWN_URL_REGEX, UUID_REGEX
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import none_if_empty
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
-from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
-from trestle.core.utils import none_if_empty
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)

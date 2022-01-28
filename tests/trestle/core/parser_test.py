@@ -19,7 +19,7 @@ import pathlib
 
 from ruamel.yaml import YAML
 
-from trestle.core import const
+from trestle.common import const
 from trestle.core import parser
 
 yaml_path = pathlib.Path('tests/data/yaml/')

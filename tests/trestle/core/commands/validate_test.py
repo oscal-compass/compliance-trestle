@@ -26,7 +26,7 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.cli import Trestle

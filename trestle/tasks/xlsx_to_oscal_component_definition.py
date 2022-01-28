@@ -29,6 +29,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from trestle import __version__
+from trestle.common.catalog_helper import CatalogHelper
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import Link
@@ -50,7 +51,6 @@ from trestle.oscal.component import SetParameter
 from trestle.oscal.component import Statement
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.utils.oscal_helper import CatalogHelper
 
 logger = logging.getLogger(__name__)
 

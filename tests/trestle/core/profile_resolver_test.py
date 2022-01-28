@@ -23,8 +23,10 @@ import pytest
 
 from tests import test_utils
 
+from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
 from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
 from trestle.core.resolver.merge import Merge
@@ -32,7 +34,6 @@ from trestle.core.resolver.modify import Modify
 from trestle.oscal import catalog as cat
 from trestle.oscal import common as com
 from trestle.oscal import profile as prof
-from trestle.utils import fs
 
 
 def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:
@@ -47,7 +48,9 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    prof_a_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
     # added part ac-1_expevid from prof a
@@ -213,7 +216,9 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether expected order of operations is preserved for parameter substution."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_e_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_e', prof.Profile, fs.FileContentType.JSON)
+    prof_e_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_e', prof.Profile, FileContentType.JSON
+    )
     profile_e_parameter_string = '## Override value ##'
     profile_a_value = 'all alert personell'
 
@@ -267,7 +272,9 @@ def test_merge_two_catalogs() -> None:
 def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test all types of property additions."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_f_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_f', prof.Profile, fs.FileContentType.JSON)
+    prof_f_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_f', prof.Profile, FileContentType.JSON
+    )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_f_path)
     interface = CatalogInterface(cat)
     ac_3 = interface.get_control('ac-3')
@@ -294,7 +301,9 @@ def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     Properties added with before or after will default to starting or ending.
     """
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
+    prof_g_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_g', prof.Profile, FileContentType.JSON
+    )
     _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
 
 
@@ -302,7 +311,9 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     """Test get all groups from the catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    prof_a_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     cat_interface = CatalogInterface(catalog)
 

@@ -24,13 +24,14 @@ import frontmatter
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
-from trestle.core import const
+from trestle.common import const
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.core.utils import as_list, none_if_empty, spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 

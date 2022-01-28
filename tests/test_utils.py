@@ -26,22 +26,23 @@ from typing import Any, List, Tuple
 from _pytest.monkeypatch import MonkeyPatch
 
 from trestle.cli import Trestle
-from trestle.core import const, generators, utils
+from trestle.common import const, file_utils, list_utils, str_utils
+from trestle.common.common_types import TopLevelOscalModel
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import AliasMode
+from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.common_types import TopLevelOscalModel
-from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
-from trestle.core.utils import AliasMode, as_list
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import profile as prof
-from trestle.utils import fs
 
-if fs.is_windows():  # pragma: no cover
+if file_utils.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -99,7 +100,7 @@ def prepare_trestle_project_dir(
     """Prepare a temp directory with an example OSCAL model."""
     ensure_trestle_config_dir(repo_dir)
 
-    model_alias = utils.classname_to_alias(model_obj.__class__.__name__, AliasMode.JSON)
+    model_alias = str_utils.classname_to_alias(model_obj.__class__.__name__, AliasMode.JSON)
 
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = repo_dir / models_dir_name / 'my_test_model'
@@ -371,7 +372,7 @@ def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
 
     if_dot will make the change only if the filename is of the form .*
     """
-    if fs.is_windows():
+    if file_utils.is_windows():
         if not if_dot or file_path.stem.startswith('.'):
             atts = win32api.GetFileAttributes(str(file_path))
             win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
@@ -415,7 +416,7 @@ def make_hidden_file(file_path: pathlib.Path) -> None:
 
 def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: TopLevelOscalModel) -> str:
     """Load the model and extract its uuid."""
-    model, _ = fs.load_top_level_model(trestle_root, model_name, model_class)
+    model, _ = ModelUtils.load_top_level_model(trestle_root, model_name, model_class)
     return model.uuid
 
 
@@ -431,7 +432,7 @@ def create_profile_in_trestle_dir(trestle_root: pathlib.Path, catalog_name: str,
     profile = generators.generate_sample_model(prof.Profile)
     import_ = prof.Import(href=f'{const.TRESTLE_HREF_HEADING}catalogs/{catalog_name}/catalog.json', include_all={})
     profile.imports = [import_]
-    fs.save_top_level_model(profile, trestle_root, profile_name, fs.FileContentType.JSON)
+    ModelUtils.save_top_level_model(profile, trestle_root, profile_name, FileContentType.JSON)
 
 
 def get_valid_parts(parts: List[common.Part]) -> List[common.Part]:
@@ -469,8 +470,8 @@ def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
     if not parts_equivalent(a.parts, b.parts):
         logging.error(f'control {a.id} parts are not equivalent')
         return False
-    n_params_a = len(as_list(a.params))
-    n_params_b = len(as_list(b.params))
+    n_params_a = len(list_utils.as_list(a.params))
+    n_params_b = len(list_utils.as_list(b.params))
     if n_params_a != n_params_b:
         logging.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
         return False

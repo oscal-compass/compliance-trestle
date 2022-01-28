@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Tuple, TypeVar
 
 import pydantic
 
-from trestle.core.common_types import FixedUuidModel
+from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]
     # Resources are identified by uuid, and the corresponding href will have # in front of the uuid string
     # Neither of these should change
     # If other similar types are found they should be added to the FixedUuidModel typevar to prevent updating
-    if isinstance(object_of_interest, FixedUuidModel):
+    if isinstance(object_of_interest, common.Resource):
         pass
     elif isinstance(object_of_interest, pydantic.BaseModel):
         # fields_set has names of fields set when model was initialized
