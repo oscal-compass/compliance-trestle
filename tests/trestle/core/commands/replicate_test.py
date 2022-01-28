@@ -26,7 +26,7 @@ from tests import test_utils
 import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.common import const
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.oscal.catalog import Catalog
 
@@ -39,7 +39,7 @@ def mock_return(*args, **kwargs):
 
 
 def _copy_local(source_model_path, source_model_name, model_alias):
-    plural_alias = ModelIO.model_type_to_model_dir(model_alias)
+    plural_alias = ModelUtils.model_type_to_model_dir(model_alias)
     full_model_path = source_model_path / plural_alias / source_model_name
     local_model_path = Path(plural_alias) / source_model_name
     shutil.rmtree(local_model_path, ignore_errors=True)
@@ -78,9 +78,9 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen, monkeypatch: Monkey
 
     # now load the replicate and compare
 
-    rep_model_type, rep_model_alias, rep_model_instance = ModelIO.load_distributed(rep_file, tmp_trestle_dir)
+    rep_model_type, rep_model_alias, rep_model_instance = ModelUtils.load_distributed(rep_file, tmp_trestle_dir)
 
-    expected_model_type, _ = ModelIO.get_stripped_model_type(rep_file.resolve(), tmp_trestle_dir)
+    expected_model_type, _ = ModelUtils.get_stripped_model_type(rep_file.resolve(), tmp_trestle_dir)
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 
@@ -138,23 +138,25 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
     )
 
     # Force PermissionError:
-    monkeypatch.setattr('trestle.core.commands.replicate.ModelIO.load_distributed', load_distributed_permission_error)
+    monkeypatch.setattr(
+        'trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_permission_error
+    )
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 7
 
     # Force TrestleError only:
-    monkeypatch.setattr('trestle.core.commands.replicate.ModelIO.load_distributed', load_distributed_error)
+    monkeypatch.setattr('trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_error)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1
 
-    monkeypatch.setattr('trestle.core.commands.replicate.ModelIO.load_distributed', load_distributed_return)
+    monkeypatch.setattr('trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.rollback', mock_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1
 
     # Force TrestleError in simulate:
-    monkeypatch.setattr('trestle.core.commands.replicate.ModelIO.load_distributed', load_distributed_return)
+    monkeypatch.setattr('trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1
@@ -184,6 +186,6 @@ def test_replicate_file_system(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) 
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=0)
-    monkeypatch.setattr('trestle.common.filesystem.extract_trestle_project_root', mock_return)
+    monkeypatch.setattr('trestle.common.file_utils.extract_trestle_project_root', mock_return)
     rc = ReplicateCmd.replicate_object('catalog', args)
     assert rc == 1

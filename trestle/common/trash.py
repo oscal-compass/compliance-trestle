@@ -19,7 +19,7 @@ import pathlib
 from shutil import copyfile
 from typing import List, Optional
 
-from trestle.common import filesystem
+from trestle.common import file_utils
 
 TRESTLE_TRASH_DIR = '.trestle/_trash/'
 TRESTLE_TRASH_FILE_EXT = '.bk'  # should start with a dot
@@ -29,7 +29,7 @@ TRESTLE_TRASH_DIR_EXT = '__bk'
 def to_trash_dir_path(dir_path: pathlib.Path) -> pathlib.Path:
     """Construct the path to the trashed file."""
     absolute_path = dir_path.resolve()
-    root_path = filesystem.extract_trestle_project_root(absolute_path)
+    root_path = file_utils.extract_trestle_project_root(absolute_path)
     if root_path is None:
         raise AssertionError(f'Directory path "{absolute_path}" is not in a valid trestle project')
 
@@ -79,7 +79,7 @@ def to_origin_dir_path(trash_dir_path: pathlib.Path) -> pathlib.Path:
     if trash_dir_path.suffix != '' and trash_dir_path.suffix.endswith(TRESTLE_TRASH_FILE_EXT):
         raise AssertionError(f'Given path "{trash_dir_path}" is a trash file, not a valid trash directory')
 
-    trestle_root = filesystem.extract_trestle_project_root(trash_dir_path)
+    trestle_root = file_utils.extract_trestle_project_root(trash_dir_path)
     if trestle_root is None:
         raise AssertionError(f'Directory path "{trash_dir_path}" is not in a valid trestle project path')
 

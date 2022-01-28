@@ -22,7 +22,7 @@ from typing import List, Optional, Tuple
 
 from pkg_resources import resource_filename, resource_listdir
 
-from trestle.common import filesystem
+from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER, TRESTLE_RESOURCES
 from trestle.core.draw_io import DrawIO
@@ -69,7 +69,7 @@ class TemplateVersioning:
 
         try:
             all_files_wo_version = list(
-                filter(lambda p: p.is_file(), filesystem.iterdir_without_hidden_files(task_path))
+                filter(lambda p: p.is_file(), file_utils.iterdir_without_hidden_files(task_path))
             )
 
             new_dir = Path(f'{task_path}/{START_TEMPLATE_VERSION}')

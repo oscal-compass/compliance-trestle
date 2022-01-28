@@ -28,7 +28,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
@@ -331,7 +331,7 @@ def test_control_bad_components(md_file: str) -> None:
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test getting the param dict of a control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_a_path = ModelIO.path_for_top_level_model(
+    prof_a_path = ModelUtils.path_for_top_level_model(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)

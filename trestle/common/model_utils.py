@@ -27,7 +27,7 @@ import trestle.common.common_types
 from trestle.common import const, err, str_utils, type_utils as utils
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
-from trestle.common.filesystem import extract_trestle_project_root, iterdir_without_hidden_files
+from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
@@ -35,7 +35,7 @@ from trestle.core.models.file_content_type import FileContentType
 logger = logging.getLogger(__name__)
 
 
-class ModelIO:
+class ModelUtils:
     """Utilities for the OSCAL models input and output."""
 
     @staticmethod
@@ -71,14 +71,14 @@ class ModelIO:
 
         # If the path contains a list type model
         if collection_type is list:
-            return ModelIO._load_list(abs_path, abs_trestle_root)
+            return ModelUtils._load_list(abs_path, abs_trestle_root)
 
         # If the path contains a dict type model
         if collection_type is dict:
-            return ModelIO._load_dict(abs_path, abs_trestle_root)
+            return ModelUtils._load_dict(abs_path, abs_trestle_root)
 
         # Get current model
-        primary_model_type, primary_model_alias = ModelIO.get_stripped_model_type(abs_path, abs_trestle_root)
+        primary_model_type, primary_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
         primary_model_instance: Optional[OscalBaseModel] = None
 
         # is this an attempt to load an actual json or yaml file?
@@ -93,14 +93,14 @@ class ModelIO:
             aliases_not_to_be_stripped = []
             instances_to_be_merged: List[OscalBaseModel] = []
 
-            for local_path in sorted(trestle.common.filesystem.iterdir_without_hidden_files(decomposed_dir)):
+            for local_path in sorted(trestle.common.file_utils.iterdir_without_hidden_files(decomposed_dir)):
                 if local_path.is_file():
-                    model_type, model_alias, model_instance = ModelIO.load_distributed(local_path, abs_trestle_root)
+                    model_type, model_alias, model_instance = ModelUtils.load_distributed(local_path, abs_trestle_root)
                     aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                     instances_to_be_merged.append(model_instance)
 
                 elif local_path.is_dir():
-                    model_type, model_alias = ModelIO.get_stripped_model_type(local_path, abs_trestle_root)
+                    model_type, model_alias = ModelUtils.get_stripped_model_type(local_path, abs_trestle_root)
                     # Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when
                     # iterating over the model file
 
@@ -114,17 +114,18 @@ class ModelIO:
                     if model_type.is_collection_container():
                         # This directory is a decomposed List or Dict
                         collection_type = model_type.get_collection_type()
-                        model_type, model_alias, model_instance = ModelIO.load_distributed(local_path, abs_trestle_root,
-                                                                                           collection_type)
+                        model_type, model_alias, model_instance = ModelUtils.load_distributed(local_path,
+                                                                                              abs_trestle_root,
+                                                                                              collection_type)
                         aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                         instances_to_be_merged.append(model_instance)
             primary_model_dict = {}
             if primary_model_instance is not None:
                 primary_model_dict = primary_model_instance.__dict__
 
-            merged_model_type, merged_model_alias = ModelIO.get_stripped_model_type(abs_path,
-                                                                                    abs_trestle_root,
-                                                                                    aliases_not_to_be_stripped)
+            merged_model_type, merged_model_alias = ModelUtils.get_stripped_model_type(abs_path,
+                                                                                       abs_trestle_root,
+                                                                                       aliases_not_to_be_stripped)
 
             # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
             # There may be a better overall way to approach this.
@@ -157,13 +158,13 @@ class ModelIO:
         If you need to load an existing model but its content type may not be known, use this method.
         But the file content type should be specified if it is somehow known.
         """
-        root_model_path = ModelIO._root_path_for_top_level_model(trestle_root, model_name, model_class)
+        root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         if file_content_type is None:
             file_content_type = FileContentType.path_to_content_type(root_model_path)
         if not FileContentType.is_readable_file(file_content_type):
             raise TrestleError(f'Unable to load model {model_name} without specifying json or yaml.')
         full_model_path = root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
-        _, _, model = ModelIO.load_distributed(full_model_path, trestle_root)
+        _, _, model = ModelUtils.load_distributed(full_model_path, trestle_root)
         return model, full_model_path
 
     @staticmethod
@@ -175,7 +176,7 @@ class ModelIO:
         You don't need to specify the model type (catalog, profile, etc.) but you must specify the file content type.
         If the model directory does not exist, it is created.
         """
-        root_model_path = ModelIO._root_path_for_top_level_model(trestle_root, model_name, model)
+        root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model)
         full_model_path = root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
         if not full_model_path.parent.exists():
             full_model_path.parent.mkdir(parents=True, exist_ok=True)
@@ -204,11 +205,11 @@ class ModelIO:
         else:
             raise TrestleError(f'No valid trestle model type directory (e.g. catalogs) found for {model_dir}.')
 
-        model_type, model_alias = ModelIO.get_root_model(module_name)
+        model_type, model_alias = ModelUtils.get_root_model(module_name)
         full_alias = model_alias
 
         for index, part in enumerate(model_relative_path.parts):
-            alias = ModelIO._extract_alias(part)
+            alias = ModelUtils._extract_alias(part)
             if index > 0 or model_alias != alias:
                 model_alias = alias
                 full_alias = f'{full_alias}.{model_alias}'
@@ -234,7 +235,7 @@ class ModelIO:
         """
         if aliases_not_to_be_stripped is None:
             aliases_not_to_be_stripped = []
-        singular_model_type, model_alias = ModelIO.get_relative_model_type(
+        singular_model_type, model_alias = ModelUtils.get_relative_model_type(
             absolute_path.relative_to(absolute_trestle_root))
         logger.debug(f'singular model type {singular_model_type} model alias {model_alias}')
 
@@ -251,7 +252,7 @@ class ModelIO:
 
         malias = model_alias.split('.')[-1]
         logger.debug(f'not collection field type, malias: {malias}')
-        if absolute_path.is_dir() and malias != ModelIO._extract_alias(absolute_path.name):
+        if absolute_path.is_dir() and malias != ModelUtils._extract_alias(absolute_path.name):
             split_subdir = absolute_path / malias
         else:
             split_subdir = absolute_path.parent / absolute_path.with_suffix('').name
@@ -259,7 +260,7 @@ class ModelIO:
         aliases_to_be_stripped = set()
         if split_subdir.exists():
             for f in iterdir_without_hidden_files(split_subdir):
-                alias = ModelIO._extract_alias(f.name)
+                alias = ModelUtils._extract_alias(f.name)
                 if alias not in aliases_not_to_be_stripped:
                     aliases_to_be_stripped.add(alias)
 
@@ -291,12 +292,12 @@ class ModelIO:
             raise err.TrestleError('Given directory is not within a trestle project.')
 
         # contruct path to the model file name
-        model_dir_name = ModelIO.model_type_to_model_dir(model_type)
+        model_dir_name = ModelUtils.model_type_to_model_dir(model_type)
         root_model_dir = trestle_root / model_dir_name
         model_list = []
         for f in root_model_dir.glob('*/'):
             # only look for proper json and yaml files
-            if not ModelIO._should_ignore(f.stem):
+            if not ModelUtils._should_ignore(f.stem):
                 if not f.is_dir():
                     logger.warning(
                         f'Ignoring validation of misplaced file {f.name} '
@@ -311,7 +312,7 @@ class ModelIO:
         """Get list of all models in trestle directory as tuples (model_type, model_name)."""
         full_list = []
         for model_type in const.MODEL_TYPE_LIST:
-            models = ModelIO.get_models_of_type(model_type, root)
+            models = ModelUtils.get_models_of_type(model_type, root)
             for m in models:
                 full_list.append((model_type, m))
         return full_list
@@ -328,7 +329,7 @@ class ModelIO:
 
         This does not inspect the file system or confirm the needed path and file exists.
         """
-        root_path = ModelIO._root_path_for_top_level_model(trestle_root, model_name, model_class)
+        root_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
     @staticmethod
@@ -344,7 +345,7 @@ class ModelIO:
         This method should only be called if the model needs to exist already in the trestle directory.
         If you do know the file content type, use path_for_top_level_model instead.
         """
-        root_model_path = ModelIO._root_path_for_top_level_model(trestle_root, model_name, model_class)
+        root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         file_content_type = FileContentType.path_to_content_type(root_model_path)
         if not FileContentType.is_readable_file(file_content_type):
             raise TrestleError(f'Unable to load model {model_name} as json or yaml.')
@@ -372,7 +373,7 @@ class ModelIO:
         full_alias_path = alias_path
         if relative_path:
             logger.debug(f'get_singular_alias contextual mode: {str}')
-            _, full_model_alias = ModelIO.get_relative_model_type(relative_path)
+            _, full_model_alias = ModelUtils.get_relative_model_type(relative_path)
             first_alias_a = full_model_alias.split('.')[-1]
             first_alias_b = alias_path.split('.')[0]
             if first_alias_a == first_alias_b:
@@ -387,7 +388,7 @@ class ModelIO:
         root_model_alias = path_parts[0]
         found = False
         for module_name in const.MODEL_TYPE_TO_MODEL_MODULE.values():
-            model_type, model_alias = ModelIO.get_root_model(module_name)
+            model_type, model_alias = ModelUtils.get_root_model(module_name)
             if root_model_alias == model_alias:
                 found = True
                 model_types.append(model_type)
@@ -491,13 +492,13 @@ class ModelIO:
         """Given path to a directory of list(array) models, load the distributed models."""
         aliases_not_to_be_stripped = []
         instances_to_be_merged: List[OscalBaseModel] = []
-        collection_model_type, collection_model_alias = ModelIO.get_stripped_model_type(abs_path, abs_trestle_root)
-        for path in sorted(trestle.common.filesystem.iterdir_without_hidden_files(abs_path)):
+        collection_model_type, collection_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
+        for path in sorted(trestle.common.file_utils.iterdir_without_hidden_files(abs_path)):
 
             # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
             if path.is_dir():
                 continue
-            _, model_alias, model_instance = ModelIO.load_distributed(path, abs_trestle_root)
+            _, model_alias, model_instance = ModelUtils.load_distributed(path, abs_trestle_root)
 
             instances_to_be_merged.append(model_instance)
             aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
@@ -509,9 +510,9 @@ class ModelIO:
                    abs_trestle_root: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, OscalBaseModel]]:
         """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
         model_dict: Dict[str, OscalBaseModel] = {}
-        collection_model_type, collection_model_alias = ModelIO.get_stripped_model_type(abs_path, abs_trestle_root)
-        for path in sorted(trestle.common.filesystem.iterdir_without_hidden_files(abs_path)):
-            model_type, model_alias, model_instance = ModelIO.load_distributed(path, abs_trestle_root)
+        collection_model_type, collection_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
+        for path in sorted(trestle.common.file_utils.iterdir_without_hidden_files(abs_path)):
+            model_type, model_alias, model_instance = ModelUtils.load_distributed(path, abs_trestle_root)
             field_name = path.parts[-1].split('__')[0].split('.')[0]
             model_dict[field_name] = model_instance
 

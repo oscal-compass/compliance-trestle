@@ -19,7 +19,7 @@ from typing import Any, List, Optional, Type, Union
 
 from trestle.common import const, str_utils, type_utils
 from trestle.common.err import TrestleError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.elements import ElementPath
@@ -147,7 +147,7 @@ def parse_chain(
         # If path has wildcard and it does not refer to a list, then there can be nothing after *
         if element_path.get_last() == ElementPath.WILDCARD:
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
-            parent_model = ModelIO.get_singular_alias(full_path_str, relative_path)
+            parent_model = ModelUtils.get_singular_alias(full_path_str, relative_path)
             # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
             # If it has __root__ it may mean it contains a list of objects and should be split as a list
             if isinstance(sub_model, OscalBaseModel):

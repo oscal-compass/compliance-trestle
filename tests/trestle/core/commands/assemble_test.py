@@ -25,7 +25,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.common import const
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog
@@ -60,7 +60,7 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
 
     # Read assembled model
     actual_model = Catalog.oscal_read(pathlib.Path('dist/catalogs/mycatalog.json'))
-    _, _, expected_model = ModelIO.load_distributed(mycatalog_dir / 'catalog.json', tmp_trestle_dir)
+    _, _, expected_model = ModelUtils.load_distributed(mycatalog_dir / 'catalog.json', tmp_trestle_dir)
 
     assert actual_model == expected_model
 
@@ -142,7 +142,7 @@ def test_assemble_catalog_all(
 
     # Read assembled model
     for my_name in my_names:
-        _, _, expected_model = ModelIO.load_distributed(catalogs_dir / f'{my_name}/catalog.json', tmp_trestle_dir)
+        _, _, expected_model = ModelUtils.load_distributed(catalogs_dir / f'{my_name}/catalog.json', tmp_trestle_dir)
         actual_model = Catalog.oscal_read(pathlib.Path(f'dist/catalogs/{my_name}.json'))
         assert actual_model == expected_model
 

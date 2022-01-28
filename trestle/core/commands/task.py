@@ -27,7 +27,7 @@ from typing import Dict, Optional, Type
 import trestle.common.const as const
 import trestle.common.log as log
 import trestle.tasks
-from trestle.common import filesystem
+from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -69,7 +69,7 @@ class TaskCmd(CommandPlusDocs):
                 return CmdReturnCodes.INCORRECT_ARGS.value
             # Ensure trestle directory (must be true)
             trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-            if not trestle_root or not filesystem.is_valid_project_root(args.trestle_root):
+            if not trestle_root or not file_utils.is_valid_project_root(args.trestle_root):
                 logger.error(f'Given directory: {trestle_root} is not a trestle project.')
                 return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
             config_path = trestle_root / const.TRESTLE_CONFIG_DIR / const.TRESTLE_CONFIG_FILE

@@ -23,7 +23,7 @@ from typing import List
 
 import trestle.core.commands.author.consts as author_const
 import trestle.core.draw_io as draw_io
-from trestle.common import filesystem
+from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
@@ -158,7 +158,7 @@ class Folders(AuthorCommonCommand):
         template_files = self.template_dir.rglob('*')
 
         for template_file in template_files:
-            if not filesystem.is_local_and_visible(template_file):
+            if not file_utils.is_local_and_visible(template_file):
                 continue
             elif template_file.is_dir():
                 continue
@@ -216,7 +216,7 @@ class Folders(AuthorCommonCommand):
         instance_file_names: List[pathlib.Path] = []
         # Fetch all instances versions and build dictionary of required template files
         for instance_file in instance_dir.iterdir():
-            if not filesystem.is_local_and_visible(instance_file):
+            if not file_utils.is_local_and_visible(instance_file):
                 continue
             if not instance_file.is_file():
                 continue
@@ -249,7 +249,7 @@ class Folders(AuthorCommonCommand):
 
                 if instance_version not in all_versioned_templates.keys():
                     templates = list(
-                        filter(lambda p: filesystem.is_local_and_visible(p), versioned_template_dir.iterdir())
+                        filter(lambda p: file_utils.is_local_and_visible(p), versioned_template_dir.iterdir())
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
@@ -293,7 +293,7 @@ class Folders(AuthorCommonCommand):
 
                 if instance_version not in all_versioned_templates.keys():
                     templates = list(
-                        filter(lambda p: filesystem.is_local_and_visible(p), versioned_template_dir.iterdir())
+                        filter(lambda p: file_utils.is_local_and_visible(p), versioned_template_dir.iterdir())
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
@@ -361,7 +361,7 @@ class Folders(AuthorCommonCommand):
 
         for task_instance in self.task_path.iterdir():
             if task_instance.is_dir():
-                if filesystem.is_symlink(task_instance):
+                if file_utils.is_symlink(task_instance):
                     continue
                 result = self._measure_template_folder(
                     task_instance,

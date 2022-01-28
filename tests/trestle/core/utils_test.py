@@ -30,7 +30,7 @@ import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 from trestle.common import str_utils
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 
 
@@ -109,10 +109,10 @@ def test_get_inner_type() -> None:
 def test_get_root_model() -> None:
     """Test looking for the root model of a trestle oscal module."""
     with pytest.raises(err.TrestleError):
-        ModelIO.get_root_model('invalid')
+        ModelUtils.get_root_model('invalid')
 
     with pytest.raises(err.TrestleError):
-        ModelIO.get_root_model('pydantic')
+        ModelUtils.get_root_model('pydantic')
 
     malias_to_mtype = {
         const.MODEL_TYPE_CATALOG: catalog.Catalog,
@@ -125,7 +125,7 @@ def test_get_root_model() -> None:
     }
     for key in malias_to_mtype:
         module_name = malias_to_mtype[key].__module__
-        model_type, model_alias = ModelIO.get_root_model(module_name)
+        model_type, model_alias = ModelUtils.get_root_model(module_name)
         assert model_type == malias_to_mtype[key]
         assert model_alias == key
 

@@ -24,7 +24,7 @@ import trestle.common.const as const
 import trestle.common.err as err
 from trestle.common import log
 from trestle.common.err import TrestleError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
@@ -73,7 +73,7 @@ class RemoveCmd(CommandPlusDocs):
                 logger.error(f'{file_path} is not part of the trestle project {args.trestle_root}')
                 return CmdReturnCodes.COMMAND_ERROR.value
             try:
-                parent_model, parent_alias = ModelIO.get_relative_model_type(relative_path)
+                parent_model, parent_alias = ModelUtils.get_relative_model_type(relative_path)
             except Exception as err:
                 logger.error(f'Remove failed (fs.get_relative_model_type()): {err}')
                 return CmdReturnCodes.COMMAND_ERROR.value

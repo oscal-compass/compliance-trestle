@@ -20,10 +20,14 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import Resource
 from trestle.oscal.component import ComponentDefinition
 from trestle.oscal.poam import PlanOfActionAndMilestones
 from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
+
+# model types containing uuids that should not regenerate
+FixedUuidModel = Resource
 
 TopLevelOscalModel = TypeVar(
     'TopLevelOscalModel',

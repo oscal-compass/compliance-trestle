@@ -24,7 +24,7 @@ import trestle.common.const as const
 import trestle.common.err as err
 import trestle.core.generators as gens
 from trestle.common import log
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -83,7 +83,7 @@ class AddCmd(CommandPlusDocs):
             file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
 
             # Get parent model and then load json into parent model
-            parent_model, _ = ModelIO.get_stripped_model_type(file_path, args.trestle_root)
+            parent_model, _ = ModelUtils.get_stripped_model_type(file_path, args.trestle_root)
             parent_object = parent_model.oscal_read(file_path)
             # FIXME : handle YAML files after detecting file type
             parent_element = Element(parent_object, classname_to_alias(parent_model.__name__, AliasMode.JSON))

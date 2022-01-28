@@ -21,8 +21,8 @@ import traceback
 
 import trestle.common.const as const
 import trestle.common.log as log
-from trestle.common import filesystem as fs
-from trestle.common.model_io import ModelIO
+from trestle.common import file_utils as fs
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPFilter
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -94,10 +94,10 @@ class TransformCmd(CommandPlusDocs):
         elif model_type == const.MODEL_TYPE_PROFILE:
             # anticipate more transform options here
             if transform == const.GENERATE_RESOLVED_CATALOG:
-                profile_path = ModelIO.full_path_for_top_level_model(trestle_root, input_name, Profile)
+                profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, input_name, Profile)
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_path)
                 file_type = fs.FileContentType.path_to_content_type(profile_path)
-                ModelIO.save_top_level_model(resolved_catalog, trestle_root, output_name, file_type)
+                ModelUtils.save_top_level_model(resolved_catalog, trestle_root, output_name, file_type)
                 return CmdReturnCodes.SUCCESS.value
         logger.warning(f'Transform operation not available for transform type {transform} and model type {model_type}')
         return CmdReturnCodes.COMMAND_ERROR.value

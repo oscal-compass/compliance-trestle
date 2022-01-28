@@ -26,7 +26,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.cli import Trestle
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -166,7 +166,7 @@ def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get profile param dict for control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    profile, profile_path = ModelIO.load_top_level_model(
+    profile, profile_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         'test_profile_a',
         prof.Profile,

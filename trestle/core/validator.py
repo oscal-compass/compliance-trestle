@@ -18,10 +18,10 @@ import argparse
 import logging
 from abc import ABC, abstractmethod
 
-import trestle.common.filesystem
+import trestle.common.file_utils
 from trestle.common.const import ARG_FILE
 from trestle.common.err import TrestleError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
@@ -59,12 +59,12 @@ class Validator(ABC):
             if 'name' in args and args.name is not None:
                 models = [args.name]
             else:
-                models = ModelIO.get_models_of_type(args.type, trestle_root)
-            models_path = trestle_root / ModelIO.model_type_to_model_dir(args.type)
+                models = ModelUtils.get_models_of_type(args.type, trestle_root)
+            models_path = trestle_root / ModelUtils.model_type_to_model_dir(args.type)
             for m in models:
                 model_path = models_path / m
                 try:
-                    _, _, model = ModelIO.load_distributed(model_path, trestle_root)
+                    _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
                 except TrestleError as e:
                     logger.warning(f'File load error {e}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
@@ -76,13 +76,13 @@ class Validator(ABC):
 
         # validate all
         if 'all' in args and args.all:
-            model_tups = ModelIO.get_all_models(trestle_root)
+            model_tups = ModelUtils.get_all_models(trestle_root)
             for mt in model_tups:
 
-                model_dir = trestle_root / ModelIO.model_type_to_model_dir(mt[0]) / mt[1]
-                extension_type = trestle.common.filesystem.get_contextual_file_type(model_dir)
+                model_dir = trestle_root / ModelUtils.model_type_to_model_dir(mt[0]) / mt[1]
+                extension_type = trestle.common.file_utils.get_contextual_file_type(model_dir)
                 model_path = model_dir / f'{mt[0]}{FileContentType.to_file_extension(extension_type)}'
-                _, _, model = ModelIO.load_distributed(model_path, trestle_root)
+                _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
                 if not self.model_is_valid(model):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
@@ -92,7 +92,7 @@ class Validator(ABC):
         # validate file
         if ARG_FILE in args and args.file:
             file_path = trestle_root / args.file
-            _, _, model = ModelIO.load_distributed(file_path, trestle_root)
+            _, _, model = ModelUtils.load_distributed(file_path, trestle_root)
             if not self.model_is_valid(model):
                 logger.info(f'INVALID: Model {file_path} did not pass the {self.error_msg()}')
                 return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value

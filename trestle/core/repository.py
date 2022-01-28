@@ -27,9 +27,9 @@ import trestle.core.commands.assemble as assemblecmd
 import trestle.core.commands.merge as mergecmd
 import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
-from trestle.common import filesystem, log
+from trestle.common import file_utils, log
 from trestle.common.err import TrestleError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
@@ -47,7 +47,7 @@ class ManagedOSCAL:
 
     def __init__(self, root_dir: pathlib.Path, model_type: Type[OscalBaseModel], name: str) -> None:
         """Initialize repository OSCAL model object."""
-        if not filesystem.is_valid_project_root(root_dir):
+        if not file_utils.is_valid_project_root(root_dir):
             raise TrestleError(f'Provided root directory {str(root_dir)} is not a valid Trestle root directory.')
         self._root_dir = root_dir
         self._model_type = model_type
@@ -58,7 +58,7 @@ class ManagedOSCAL:
         if parser.to_full_model_name(self.model_alias) is None:
             raise TrestleError(f'Given model {self.model_alias} is not a top level model.')
 
-        plural_path = ModelIO.model_type_to_model_dir(self.model_alias)
+        plural_path = ModelUtils.model_type_to_model_dir(self.model_alias)
         self.model_dir = self._root_dir / plural_path / self._model_name
 
         if not self.model_dir.exists() or not self.model_dir.is_dir():
@@ -79,7 +79,7 @@ class ManagedOSCAL:
     def read(self) -> OscalBaseModel:
         """Read OSCAL model from repository."""
         logger.debug(f'Reading model {self._model_name}.')
-        _, _, model = ModelIO.load_distributed(self.filepath, self._root_dir)
+        _, _, model = ModelUtils.load_distributed(self.filepath, self._root_dir)
         return model
 
     def write(self, model: OscalBaseModel) -> bool:
@@ -189,7 +189,7 @@ class Repository:
 
     def __init__(self, root_dir: pathlib.Path) -> None:
         """Initialize trestle repository object."""
-        if not filesystem.is_valid_project_root(root_dir):
+        if not file_utils.is_valid_project_root(root_dir):
             raise TrestleError(f'Provided root directory {root_dir} is not a valid Trestle root directory.')
         self._root_dir = root_dir
 
@@ -201,7 +201,7 @@ class Repository:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
         # Work out output directory and file
-        plural_path = ModelIO.model_type_to_model_dir(model_alias)
+        plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
         desired_model_dir = self._root_dir / plural_path
         desired_model_path = desired_model_dir / name / (model_alias + '.' + content_type)
@@ -266,7 +266,7 @@ class Repository:
         model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
-        models = ModelIO.get_models_of_type(model_alias, self._root_dir)
+        models = ModelUtils.get_models_of_type(model_alias, self._root_dir)
 
         return models
 
@@ -276,7 +276,7 @@ class Repository:
         model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
-        plural_path = ModelIO.model_type_to_model_dir(model_alias)
+        plural_path = ModelUtils.model_type_to_model_dir(model_alias)
         desired_model_dir = self._root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
@@ -291,7 +291,7 @@ class Repository:
         model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
-        plural_path = ModelIO.model_type_to_model_dir(model_alias)
+        plural_path = ModelUtils.model_type_to_model_dir(model_alias)
         desired_model_dir = self._root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():

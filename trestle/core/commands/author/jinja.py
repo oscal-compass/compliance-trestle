@@ -28,7 +28,7 @@ from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader
 from ruamel.yaml import YAML
 
 from trestle.common import const, log
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.control_io import ControlIOWriter
@@ -156,9 +156,9 @@ class JinjaCmd(CommandPlusDocs):
                 return 2
             if ssp:
                 # name lookup
-                ssp_data, _ = ModelIO.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
+                ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
                 lut['ssp'] = ssp_data
-                _, profile_path = ModelIO.load_top_level_model(trestle_root, profile, Profile)
+                _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(
                     trestle_root, profile_path, False, parameters_formatting

@@ -21,9 +21,9 @@ import traceback
 from typing import Dict, List, Tuple
 
 import trestle.common.log as log
-from trestle.common import const, filesystem, trash
+from trestle.common import const, file_utils, trash
 from trestle.common.err import TrestleError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -130,7 +130,7 @@ class SplitCmd(CommandPlusDocs):
         else:
             # cwd must be in the model directory if file to split is not specified
             # find top directory for this model based on trestle root and cwd
-            model_dir = filesystem.extract_project_model_path(effective_cwd)
+            model_dir = file_utils.extract_project_model_path(effective_cwd)
             if model_dir is None:
                 logger.warning('Current directory must be within a model directory if file is not specified')
                 return CmdReturnCodes.COMMAND_ERROR.value
@@ -162,7 +162,7 @@ class SplitCmd(CommandPlusDocs):
                 file_path_dict[key] = f'{current_path},{path}'
 
         for raw_file_name, element_path in file_path_dict.items():
-            file_path = filesystem.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
+            file_path = file_utils.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
             # this makes assumptions that the path is relative.
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
@@ -171,7 +171,7 @@ class SplitCmd(CommandPlusDocs):
 
             # find the base directory of the file
             base_dir = file_path.parent
-            model_type, _ = ModelIO.get_stripped_model_type(file_path, trestle_root)
+            model_type, _ = ModelUtils.get_stripped_model_type(file_path, trestle_root)
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 

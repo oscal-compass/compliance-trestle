@@ -19,7 +19,7 @@ import logging
 import pathlib
 
 import trestle.common.log as log
-from trestle.common import filesystem
+from trestle.common import file_utils
 from trestle.common.const import ARG_VALIDATE, TRESTLE_CONFIG_DIR
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
@@ -50,7 +50,7 @@ class AuthorCommonCommand(CommandPlusDocs):
 
         if self.task_name:
             self.task_path = self.trestle_root / self.task_name
-            if not filesystem.is_directory_name_allowed(self.task_name):
+            if not file_utils.is_directory_name_allowed(self.task_name):
                 logger.error(
                     f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
                 )

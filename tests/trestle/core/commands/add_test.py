@@ -27,7 +27,7 @@ from tests import test_utils
 import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.common.const import IOF_SHORT
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.add import AddCmd
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
@@ -208,7 +208,7 @@ def test_stripped_model(
 
     testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.back-matter']
 
-    current_model, _ = ModelIO.get_stripped_model_type(catalog_def_dir, tmp_path)
+    current_model, _ = ModelUtils.get_stripped_model_type(catalog_def_dir, tmp_path)
     current_catalog = current_model.oscal_read(pathlib.Path('catalog.json'))
     current_catalog.back_matter = BackMatter()
     expected_catalog = current_catalog
@@ -216,6 +216,6 @@ def test_stripped_model(
     monkeypatch.setattr(sys, 'argv', testargs)
     assert Trestle().run() == 0
 
-    actual_model, _ = ModelIO.get_stripped_model_type(catalog_def_dir, tmp_path)
+    actual_model, _ = ModelUtils.get_stripped_model_type(catalog_def_dir, tmp_path)
     actual_catalog = actual_model.oscal_read(pathlib.Path('catalog.json'))
     assert expected_catalog == actual_catalog

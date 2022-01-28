@@ -25,7 +25,7 @@ from ruamel.yaml import YAML
 import trestle.common.const as const
 from trestle.common import common_types, str_utils, type_utils as utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
@@ -184,7 +184,7 @@ class ElementPath:
         if element_str not in const.MODEL_TYPE_LIST:
             raise TrestleError(f'{element_str} is not a top level model (e.g. catalog, profile)')
         model_package = const.MODEL_TYPE_TO_MODEL_MODULE[element_str]
-        object_type, _ = ModelIO.get_root_model(model_package)
+        object_type, _ = ModelUtils.get_root_model(model_package)
         object_type = cast(Type[common_types.TopLevelOscalModel], object_type)
         return object_type
 

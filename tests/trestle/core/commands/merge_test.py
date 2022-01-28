@@ -28,7 +28,7 @@ from tests import test_utils
 from tests.test_utils import execute_command_and_assert
 
 import trestle.oscal.common as common
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
@@ -88,7 +88,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     # Read files
 
     # The destination file/model needs to be loaded in a stripped model
-    stripped_catalog_type, _ = ModelIO.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
+    stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     stripped_catalog = stripped_catalog_type.oscal_read(catalog_file)
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
@@ -96,7 +96,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
 
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
-    merged_catalog_type, merged_catalog_alias = ModelIO.get_stripped_model_type(
+    merged_catalog_type, merged_catalog_alias = ModelUtils.get_stripped_model_type(
         catalog_file.resolve(), tmp_trestle_dir, aliases_not_to_be_stripped=['back-matter'])
     merged_dict = stripped_catalog.__dict__
     merged_dict['back-matter'] = back_matter
@@ -160,10 +160,10 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     reset_destination_action = CreatePathAction(catalog_file, clear_content=True)
     expected_plan.add_action(reset_destination_action)
 
-    _, _, merged_metadata_instance = ModelIO.load_distributed(metadata_file, tmp_trestle_dir)
-    merged_catalog_type, _ = ModelIO.get_stripped_model_type(
+    _, _, merged_metadata_instance = ModelUtils.load_distributed(metadata_file, tmp_trestle_dir)
+    merged_catalog_type, _ = ModelUtils.get_stripped_model_type(
         catalog_file.resolve(), tmp_trestle_dir, aliases_not_to_be_stripped=['metadata'])
-    stripped_catalog_type, _ = ModelIO.get_stripped_model_type(catalog_file, tmp_trestle_dir)
+    stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file, tmp_trestle_dir)
     stripped_catalog = stripped_catalog_type.oscal_read(catalog_file)
     merged_catalog_dict = stripped_catalog.__dict__
     merged_catalog_dict['metadata'] = merged_metadata_instance
@@ -213,7 +213,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     reset_destination_action = CreatePathAction(catalog_file, clear_content=True)
     expected_plan.add_action(reset_destination_action)
 
-    _, _, merged_catalog_instance = ModelIO.load_distributed(catalog_file, tmp_trestle_dir)
+    _, _, merged_catalog_instance = ModelUtils.load_distributed(catalog_file, tmp_trestle_dir)
 
     element = Element(merged_catalog_instance)
     write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
@@ -260,7 +260,7 @@ def test_merge_everything_into_catalog_with_hidden_files_in_folders(testdata_dir
     reset_destination_action = CreatePathAction(catalog_file, clear_content=True)
     expected_plan.add_action(reset_destination_action)
 
-    _, _, merged_catalog_instance = ModelIO.load_distributed(catalog_file, tmp_trestle_dir)
+    _, _, merged_catalog_instance = ModelUtils.load_distributed(catalog_file, tmp_trestle_dir)
 
     element = Element(merged_catalog_instance)
     write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
@@ -334,7 +334,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     # Read files
 
     # The destination file/model needs to be loaded in a stripped model
-    stripped_metadata_type, _ = ModelIO.get_stripped_model_type(metadata_file, tmp_trestle_dir)
+    stripped_metadata_type, _ = ModelUtils.get_stripped_model_type(metadata_file, tmp_trestle_dir)
     stripped_metadata = stripped_metadata_type.oscal_read(metadata_file)
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
@@ -344,7 +344,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
 
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
-    merged_metadata_type, merged_metadata_alias = ModelIO.get_stripped_model_type(
+    merged_metadata_type, merged_metadata_alias = ModelUtils.get_stripped_model_type(
         metadata_file, tmp_trestle_dir, aliases_not_to_be_stripped=['roles'])
     merged_dict = stripped_metadata.__dict__
     merged_dict['roles'] = roles
@@ -390,7 +390,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
     catalog_file = Path('catalog.json')
 
     # Read and store the catalog before split
-    stripped_catalog_type, _ = ModelIO.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
+    stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     pre_split_catalog = stripped_catalog_type.oscal_read(catalog_file)
     assert 'groups' in pre_split_catalog.__fields__.keys()
 
@@ -406,7 +406,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
 
     assert split == 0
 
-    interim_catalog_type, _ = ModelIO.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
+    interim_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     interim_catalog = interim_catalog_type.oscal_read(catalog_file.resolve())
     assert 'groups' not in interim_catalog.__fields__.keys()
 
@@ -417,7 +417,7 @@ def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) 
     assert rc == 0
 
     # Check both the catalogs are the same.
-    post_catalog_type, _ = ModelIO.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
+    post_catalog_type, _ = ModelUtils.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     post_merge_catalog = post_catalog_type.oscal_read(catalog_file)
     assert post_merge_catalog == pre_split_catalog
 
@@ -472,7 +472,7 @@ def test_split_merge_out_of_context(
     os.chdir(full_context_dir)
 
     # Read and store the catalog before split
-    stripped_catalog_type, _ = ModelIO.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
+    stripped_catalog_type, _ = ModelUtils.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
     pre_split_catalog = stripped_catalog_type.oscal_read(full_path_to_model)
     assert 'groups' in pre_split_catalog.__fields__.keys()
 
@@ -484,7 +484,7 @@ def test_split_merge_out_of_context(
 
     assert split == 0
 
-    interim_catalog_type, _ = ModelIO.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
+    interim_catalog_type, _ = ModelUtils.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
     interim_catalog = interim_catalog_type.oscal_read(full_path_to_model.resolve())
     assert 'groups' not in interim_catalog.__fields__.keys()
 
@@ -499,7 +499,7 @@ def test_split_merge_out_of_context(
     plan.execute()
 
     # Check both the catalogs are the same.
-    post_catalog_type, _ = ModelIO.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
+    post_catalog_type, _ = ModelUtils.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
     post_merge_catalog = post_catalog_type.oscal_read(full_path_to_model)
     assert post_merge_catalog == pre_split_catalog
 

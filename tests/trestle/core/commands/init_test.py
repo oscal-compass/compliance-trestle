@@ -26,7 +26,7 @@ import pytest
 
 import trestle.common.const as const
 from trestle import cli
-from trestle.common import filesystem
+from trestle.common import file_utils
 
 
 def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
@@ -49,7 +49,7 @@ def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
 def test_directory_creation_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
-    if filesystem.is_windows():
+    if file_utils.is_windows():
         return
     os.chdir(tmp_path)
     config_dir = pathlib.Path(const.TRESTLE_CONFIG_DIR)

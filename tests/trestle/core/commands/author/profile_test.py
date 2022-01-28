@@ -29,7 +29,7 @@ from tests import test_utils
 
 import trestle.oscal.profile as prof
 from trestle.cli import Trestle
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
 from trestle.core.models.file_content_type import FileContentType
@@ -153,7 +153,8 @@ def test_profile_generate_assemble(
 
     # check the assembled profile is as expected
     profile: prof.Profile
-    profile, _ = ModelIO.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile, FileContentType.JSON)
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,
+                                                 prof.Profile, FileContentType.JSON)
     set_params = profile.modify.set_parameters
     sp_dict = {}
     for set_param in set_params:

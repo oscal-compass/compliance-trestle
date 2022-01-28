@@ -23,7 +23,7 @@ import pytest
 
 from tests import test_utils
 
-from trestle.common.model_io import ModelIO
+from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.models.file_content_type import FileContentType
@@ -48,7 +48,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = ModelIO.path_for_top_level_model(
+    prof_a_path = ModelUtils.path_for_top_level_model(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
@@ -216,7 +216,7 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether expected order of operations is preserved for parameter substution."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_e_path = ModelIO.path_for_top_level_model(
+    prof_e_path = ModelUtils.path_for_top_level_model(
         tmp_trestle_dir, 'test_profile_e', prof.Profile, FileContentType.JSON
     )
     profile_e_parameter_string = '## Override value ##'
@@ -272,7 +272,7 @@ def test_merge_two_catalogs() -> None:
 def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test all types of property additions."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_f_path = ModelIO.path_for_top_level_model(
+    prof_f_path = ModelUtils.path_for_top_level_model(
         tmp_trestle_dir, 'test_profile_f', prof.Profile, FileContentType.JSON
     )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_f_path)
@@ -301,7 +301,7 @@ def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     Properties added with before or after will default to starting or ending.
     """
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_g_path = ModelIO.path_for_top_level_model(
+    prof_g_path = ModelUtils.path_for_top_level_model(
         tmp_trestle_dir, 'test_profile_g', prof.Profile, FileContentType.JSON
     )
     _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
@@ -311,7 +311,7 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     """Test get all groups from the catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = ModelIO.path_for_top_level_model(
+    prof_a_path = ModelUtils.path_for_top_level_model(
         tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
     )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
