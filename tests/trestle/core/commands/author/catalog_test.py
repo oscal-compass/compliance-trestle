@@ -65,7 +65,7 @@ def test_catalog_generate_assemble(
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
-        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         if dir_exists:
             assembled_cat_dir.mkdir()
@@ -79,7 +79,7 @@ def test_catalog_generate_assemble(
             yaml_header = yaml.load(yaml_header_path.open('r'))
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
         assert (markdown_path / 'ac/ac-1.md').exists()
-        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
         CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
@@ -94,7 +94,7 @@ def test_catalog_generate_assemble(
     ac1.parts[0].parts.append(new_part)
     interface_orig.replace_control(ac1)
     interface_orig.update_catalog_controls()
-    assert interface_orig.equivalent_to(cat_new)
+    assert test_utils.catalog_interface_equivalent(interface_orig, cat_new)
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
