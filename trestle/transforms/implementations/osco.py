@@ -39,6 +39,7 @@ from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import FromOscalTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
+from trestle.transforms.transformer_helper import TransformerHelper
 
 logger = logging.getLogger(__name__)
 
@@ -335,6 +336,7 @@ class OscalResultsFactory():
         """Initialize."""
         self._timestamp = timestamp
         self._observation_list: List[Observation] = []
+        self._result_properties_list: List[Property] = []
         self._component_map: Dict[str, SystemComponent] = {}
         self._inventory_map: Dict[str, InventoryItem] = {}
         self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
@@ -371,6 +373,11 @@ class OscalResultsFactory():
         return self._observation_list
 
     @property
+    def result_properties(self) -> List[Property]:
+        """OSCAL result properties."""
+        return self._result_properties_list
+
+    @property
     def reviewed_controls(self) -> ReviewedControls:
         """OSCAL reviewed controls."""
         prop = ReviewedControls(control_selections=self.control_selections)
@@ -379,6 +386,10 @@ class OscalResultsFactory():
     @property
     def result(self) -> Result:
         """OSCAL result."""
+        # perform result properties aggregation
+        if self.observations:
+            self._result_properties_list = TransformerHelper().remove_common_observation_properties(self.observations)
+        # produce result
         prop = Result(
             uuid=str(uuid.uuid4()),
             title='OpenShift Compliance Operator',
@@ -387,9 +398,11 @@ class OscalResultsFactory():
             end=self._timestamp,
             reviewed_controls=self.reviewed_controls,
         )
-        if len(self.inventory) > 0:
+        if self.result_properties:
+            prop.prop = self.result_properties
+        if self.inventory:
             prop.local_definitions = self.local_definitions
-        if len(self._observation_list) > 0:
+        if self.observations:
             prop.observations = self.observations
         return prop
 
@@ -599,7 +612,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
                 'setValues': set_values,
             }
         disable_rules = self._get_disable_rules()
-        if len(disable_rules) > 0:
+        if disable_rules:
             spec['disableRules'] = disable_rules
         # yaml data
         ydata = {
