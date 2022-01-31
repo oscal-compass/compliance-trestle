@@ -246,6 +246,7 @@ def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
     assert retval == TaskOutcome.SUCCESS
 
 
+# Note: make test-cov performs inconsistently pre-python 3.9 with thread pool.
 def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     """Test execute optional call."""
     monkeybusiness = MonkeyBusiness()

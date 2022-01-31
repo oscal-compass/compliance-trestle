@@ -51,22 +51,22 @@ class TaniumTransformer(ResultsTransformer):
         return self._analysis
 
     @property
-    def blocksize(self):
+    def blocksize(self) -> int:
         """Return blocksize."""
         return self._modes.get('blocksize', 10000)
 
     @property
-    def cpus_max(self):
+    def cpus_max(self) -> int:
         """Return cpus_max."""
         return self._modes.get('cpus_max', 1)
 
     @property
-    def cpus_min(self):
+    def cpus_min(self) -> int:
         """Return cpus_min."""
         return self._modes.get('cpus_min', 1)
 
     @property
-    def checking(self):
+    def checking(self) -> bool:
         """Return checking."""
         return self._modes.get('checking', False)
 
@@ -254,7 +254,7 @@ class TaniumOscalFactory():
             break
         return retval
 
-    def _derive_components(self) -> Dict[str, ValuesView[InventoryItem]]:
+    def _derive_components(self) -> None:
         """Derive components from RuleUse list."""
         self._component_map = {}
         for rule_use in self._rule_use_list:
@@ -289,7 +289,7 @@ class TaniumOscalFactory():
             break
         return uuid
 
-    def _derive_inventory(self) -> Dict[str, InventoryItem]:
+    def _derive_inventory(self) -> None:
         """Derive inventory from RuleUse list."""
         self._inventory_map = {}
         if self._checking:
@@ -297,7 +297,7 @@ class TaniumOscalFactory():
         else:
             self._derive_inventory_unchecked()
 
-    def _derive_inventory_checked(self) -> Dict[str, InventoryItem]:
+    def _derive_inventory_checked(self) -> None:
         """Derive inventory from RuleUse list, properties checked."""
         self._inventory_map = {}
         for rule_use in self._rule_use_list:
@@ -320,7 +320,7 @@ class TaniumOscalFactory():
                 inventory.implemented_components = [ImplementedComponent(component_uuid=component_uuid)]
             self._inventory_map[rule_use.tanium_client_ip_address] = inventory
 
-    def _derive_inventory_unchecked(self) -> Dict[str, InventoryItem]:
+    def _derive_inventory_unchecked(self) -> None:
         """Derive inventory from RuleUse list, properties unchecked."""
         self._inventory_map = {}
         for rule_use in self._rule_use_list:
@@ -347,14 +347,14 @@ class TaniumOscalFactory():
         """Get inventory reference for specified rule use."""
         return self._inventory_map[rule_use.tanium_client_ip_address].uuid
 
-    def _get_observtion_properties(self, rule_use):
+    def _get_observtion_properties(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties."""
         if self._checking:
             return self._get_observtion_properties_checked(rule_use)
         else:
             return self._get_observtion_properties_unchecked(rule_use)
 
-    def _get_observtion_properties_checked(self, rule_use):
+    def _get_observtion_properties_checked(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties, with checking."""
         props = [
             Property(name='Check_ID', value=rule_use.check_id, ns=self._ns),
@@ -378,7 +378,7 @@ class TaniumOscalFactory():
         ]
         return props
 
-    def _get_observtion_properties_unchecked(self, rule_use):
+    def _get_observtion_properties_unchecked(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties, without checking."""
         props = [
             Property.construct(name='Check_ID', value=rule_use.check_id, ns=self._ns),
@@ -403,7 +403,7 @@ class TaniumOscalFactory():
         return props
 
     # parallel process to process one chuck of entire data set
-    def _batch_observations(self, index: int):
+    def _batch_observations(self, index: int) -> List[Observation]:
         """Derive batch of observations from RuleUse list."""
         observation_partial_list = []
         # determine which chunk to process
@@ -436,7 +436,7 @@ class TaniumOscalFactory():
             logger.debug(f'CPUs estimate: {cpus_estimate} available: {os.cpu_count()} selection: {self._cpus}')
         return self._cpus
 
-    def _derive_observations(self) -> List[Observation]:
+    def _derive_observations(self) -> None:
         """Derive observations from RuleUse list."""
         self._observation_list = []
         if self._batch_workers == 1:
@@ -446,6 +446,8 @@ class TaniumOscalFactory():
             # use multiprocessing to perform observations creation in parallel
             pool = multiprocessing.Pool(processes=self._batch_workers)
             rval_list = pool.map(self._batch_observations, range(self._batch_workers))
+            pool.close()
+            pool.join()
             # gather observations from the sundry batch workers
             for observations_partial_list in rval_list:
                 self._observation_list += observations_partial_list
