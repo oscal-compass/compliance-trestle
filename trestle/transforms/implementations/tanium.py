@@ -446,6 +446,7 @@ class TaniumOscalFactory():
             # use multiprocessing to perform observations creation in parallel
             pool = multiprocessing.Pool(processes=self._batch_workers)
             rval_list = pool.map(self._batch_observations, range(self._batch_workers))
+            # insure pool use completed
             pool.close()
             pool.join()
             # gather observations from the sundry batch workers
