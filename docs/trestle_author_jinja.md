@@ -31,7 +31,7 @@ Note the examples here use markdown, however, jinja can quite easily target xml 
 
 ## Sample jinja templates
 
-Note in addition to these templates some testing examples are available [here](https://github.com/IBM/develop)
+Below is a sample jinja template for SSP.
 
 | template                                          | Description                                                                                          | Optional args required                                                                                          |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
@@ -101,7 +101,7 @@ This as allows users, as an example to print out a control response, as markdown
 
 ## Custom Jinja tags.
 
-Trestle provides to custom jinja tags for use specifically with markdown: `mdsection_include` and `md_clean_include`.
+Trestle provides custom jinja tags for use specifically with markdown: `mdsection_include` and `md_clean_include`.
 
 `md_clean_include` is similar to the native `{% include 'sub_template' %}` that jinja provides except for the following:
 

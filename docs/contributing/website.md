@@ -13,6 +13,8 @@ The current documentation website build reuses some of these files, specifically
 - Entirety of `CONTRIBUTING.md`
 - Entirety of `CODE_OF_CONDUCT.md`
 - Entirety of `CHANGELOG.md`
+- Entirely of `MAINTAINERS.md`
+- Entirely of `DCO1.1.txt`
 
 For this to work correctly no relative links within the github repository should exist. All links should be absolute to
 the documentation website.
