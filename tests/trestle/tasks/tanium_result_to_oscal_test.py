@@ -24,7 +24,6 @@ import trestle.common.const as const
 import trestle.tasks.tanium_result_to_oscal as tanium_result_to_oscal
 import trestle.transforms.implementations.tanium as tanium
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.tanium import TaniumResultTransformer
 
 
 class MonkeyBusiness():
