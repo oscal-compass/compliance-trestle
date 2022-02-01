@@ -20,15 +20,15 @@ import pathlib
 import traceback
 from typing import Optional
 
-from trestle.common import const
+import trestle.common.const as const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.tanium import TaniumTransformer
+from trestle.transforms.implementations.tanium import TaniumResultTransformer
 
 logger = logging.getLogger(__name__)
 
 
-class TaniumToOscal(TaskBase):
+class TaniumResultToOscal(TaskBase):
     """
     Task to convert Tanium report to OSCAL json.
 
@@ -36,11 +36,11 @@ class TaniumToOscal(TaskBase):
         name: Name of the task.
     """
 
-    name = 'tanium-to-oscal'
+    name = 'tanium-result-to-oscal'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task tanium-to-oscal.
+        Initialize trestle task tanium-result-to-oscal.
 
         Args:
             config_object: Config section associated with the task.
@@ -56,7 +56,7 @@ class TaniumToOscal(TaskBase):
             + 'and serialize to a file.'
         )
         logger.info('')
-        logger.info('Configuration flags sit under [task.tanium-to-oscal]:')
+        logger.info('Configuration flags sit under [task.tanium-result-to-oscal]:')
         logger.info('  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.')
         logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.')
         logger.info('  cpus-min  = (optional) the desired minimum number of CPUs to employ.')
@@ -132,7 +132,7 @@ class TaniumToOscal(TaskBase):
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
-                TaniumTransformer.set_timestamp(timestamp)
+                TaniumResultTransformer.set_timestamp(timestamp)
             except Exception:
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
@@ -148,16 +148,16 @@ class TaniumToOscal(TaskBase):
         # process
         for ifile in sorted(ipth.iterdir()):
             blob = self._read_file(ifile)
-            tanium_transformer = TaniumTransformer()
-            tanium_transformer.set_modes(modes)
-            results = tanium_transformer.transform(blob)
+            tanium_result_transformer = TaniumResultTransformer()
+            tanium_result_transformer.set_modes(modes)
+            results = tanium_result_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
             if not self._overwrite and pathlib.Path(ofile).exists():
                 logger.error(f'output: {ofile} already exists')
                 return TaskOutcome(mode + 'failure')
             self._write_file(results, ofile)
-            self._show_analysis(tanium_transformer)
+            self._show_analysis(tanium_result_transformer)
         return TaskOutcome(mode + 'success')
 
     def _read_file(self, ifile: str):
@@ -176,10 +176,10 @@ class TaniumToOscal(TaskBase):
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
 
-    def _show_analysis(self, tanium_transformer: TaniumTransformer) -> None:
+    def _show_analysis(self, tanium_result_transformer: TaniumResultTransformer) -> None:
         """Show analysis."""
         if not self._simulate:
             if self._verbose:
-                analysis = tanium_transformer.analysis
+                analysis = tanium_result_transformer.analysis
                 for line in analysis:
                     logger.info(line)

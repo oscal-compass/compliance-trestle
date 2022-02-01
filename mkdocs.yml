@@ -26,7 +26,7 @@ nav:
   - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
   - Task - cis-to-catalog: tutorials/task.cis-to-catalog/transformation.md
   - Task - cis-to-component-definition: tutorials/task.cis-to-component-definition/transformation.md
-  - Task - tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
+  - Task - tanium-result-to-oscal: tutorials/task.tanuim-result-to-oscal/transformation.md
   - Work with authoring versions: tutorials/work_with_authoring_versions.md
 - Trestle command-line interface (CLI):
   - CLI for OSCAL documents: cli.md
@@ -149,9 +149,9 @@ nav:
       - base_task: api_reference/trestle.tasks.base_task.md
       - cis_to_catalog: api_reference/trestle.tasks.cis_to_catalog.md
       - cis_to_component_definition: api_reference/trestle.tasks.cis_to_component_definition.md
-      - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
+      - osco_result_to_oscal: api_reference/trestle.tasks.osco_result_to_oscal.md
       - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
-      - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
+      - tanium_result_to_oscal: api_reference/trestle.tasks.tanium_result_to_oscal.md
       - transform: api_reference/trestle.tasks.transform.md
       - xlsx_to_oscal_component_definition: api_reference/trestle.tasks.xlsx_to_oscal_component_definition.md
     - transforms:

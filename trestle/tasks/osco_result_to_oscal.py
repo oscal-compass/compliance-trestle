@@ -23,12 +23,12 @@ from typing import Optional
 from trestle.common import const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.osco import OscoTransformer
+from trestle.transforms.implementations.osco import OscoResultTransformer
 
 logger = logging.getLogger(__name__)
 
 
-class OscoToOscal(TaskBase):
+class OscoResultToOscal(TaskBase):
     """
     Task to convert Osco report to OSCAL json.
 
@@ -36,11 +36,11 @@ class OscoToOscal(TaskBase):
         name: Name of the task.
     """
 
-    name = 'osco-to-oscal'
+    name = 'osco-result-to-oscal'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task osco-to-oscal.
+        Initialize trestle task osco-result-to-oscal.
 
         Args:
             config_object: Config section associated with the task.
@@ -56,7 +56,7 @@ class OscoToOscal(TaskBase):
             + 'partial results files.'
         )
         logger.info('')
-        logger.info('Configuration flags sit under [task.osco-to-oscal]:')
+        logger.info('Configuration flags sit under [task.osco-result-to-oscal]:')
         logger.info(
             '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
         )
@@ -129,7 +129,7 @@ class OscoToOscal(TaskBase):
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
-                OscoTransformer.set_timestamp(timestamp)
+                OscoResultTransformer.set_timestamp(timestamp)
             except Exception:
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
@@ -144,7 +144,7 @@ class OscoToOscal(TaskBase):
             if ifile.suffix not in ['.json', '.jsn', '.yaml', '.yml', '.xml']:
                 continue
             blob = self._read_file(ifile)
-            osco_transformer = OscoTransformer()
+            osco_transformer = OscoResultTransformer()
             osco_transformer.set_modes(modes)
             results = osco_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
@@ -172,7 +172,7 @@ class OscoToOscal(TaskBase):
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
 
-    def _show_analysis(self, osco_transformer: OscoTransformer) -> None:
+    def _show_analysis(self, osco_transformer: OscoResultTransformer) -> None:
         """Show analysis."""
         if not self._simulate:
             if self._verbose:

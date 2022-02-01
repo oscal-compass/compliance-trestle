@@ -38,8 +38,8 @@ from trestle.transforms.transformer_helper import TransformerHelper
 logger = logging.getLogger(__name__)
 
 
-class TaniumTransformer(ResultsTransformer):
-    """Interface for Tanium transformer."""
+class TaniumResultTransformer(ResultsTransformer):
+    """Interface for Tanium results transformer."""
 
     def __init__(self) -> None:
         """Initialize."""
@@ -89,6 +89,15 @@ class TaniumTransformer(ResultsTransformer):
         self._analysis = tanium_oscal_factory.analysis
         self._analysis.append(f'transform time: {ts1-ts0}')
         return results
+
+
+class TaniumTransformer(TaniumResultTransformer):
+    """Interface for Tanium results transformer (deprecated)."""
+
+    def __init__(self) -> None:
+        """Initialize."""
+        logger.warn('deprecated: TaniumTransformer, use: TaniumResultTransformer')
+        super().__init__()
 
 
 class RuleUse():
@@ -510,10 +519,9 @@ class TaniumOscalFactory():
 
     def _get_local_definitions_uuids(self, local_definitions: LocalDefinitions1) -> List[str]:
         """Get inventory uuids for given local definitions."""
+        rval = []
         if local_definitions.inventory_items:
             rval = [inventory_item.uuid for inventory_item in local_definitions.inventory_items]
-        else:
-            rval = []
         return rval
 
     def _is_matching_uuid(self, observation_subject_uuids: List[str], local_definitions_uuids: List[str]) -> bool:

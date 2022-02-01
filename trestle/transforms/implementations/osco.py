@@ -44,8 +44,8 @@ from trestle.transforms.transformer_helper import TransformerHelper
 logger = logging.getLogger(__name__)
 
 
-class OscoTransformer(ResultsTransformer):
-    """Interface for Osco transformer."""
+class OscoResultTransformer(ResultsTransformer):
+    """Interface for Osco results transformer."""
 
     def __init__(self) -> None:
         """Initialize."""
@@ -135,6 +135,15 @@ class OscoTransformer(ResultsTransformer):
         results = Results()
         results.__root__.append(self._results_factory.result)
         return results
+
+
+class OscoTransformer(OscoResultTransformer):
+    """Interface for Osco results transformer (deprecated)."""
+
+    def __init__(self) -> None:
+        """Initialize."""
+        logger.warn('deprecated: OscoTransformer, use: OscoResultTransformer')
+        super().__init__()
 
 
 class RuleUse():
@@ -444,14 +453,14 @@ class OscalResultsFactory():
         inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
         self._inventory_map[rule_use.inventory_key] = inventory
 
-    def _get_inventory_properties(self, rule_use):
+    def _get_inventory_properties(self, rule_use: RuleUse) -> List[Property]:
         """Get inventory properties."""
         if self._checking:
             return self._get_inventory_properties_checked(rule_use)
         else:
             return self._get_inventory_properties_unchecked(rule_use)
 
-    def _get_inventory_properties_checked(self, rule_use):
+    def _get_inventory_properties_checked(self, rule_use: RuleUse) -> List[Property]:
         """Get inventory properties, with checking."""
         props = []
         if rule_use.host_name is None:
@@ -465,7 +474,7 @@ class OscalResultsFactory():
             )
         return props
 
-    def _get_inventory_properties_unchecked(self, rule_use):
+    def _get_inventory_properties_unchecked(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties, without checking."""
         props = []
         if rule_use.host_name is None:
@@ -498,14 +507,14 @@ class OscalResultsFactory():
         self._observation_list.append(observation)
         rule_use.observation = observation
 
-    def _get_observation_properties(self, rule_use):
+    def _get_observation_properties(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties."""
         if self._checking:
             return self._get_observation_properties_checked(rule_use)
         else:
             return self._get_observation_properties_unchecked(rule_use)
 
-    def _get_observation_properties_checked(self, rule_use):
+    def _get_observation_properties_checked(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties, with checking."""
         props = []
         props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
@@ -521,7 +530,7 @@ class OscalResultsFactory():
         props.append(Property(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
         return props
 
-    def _get_observation_properties_unchecked(self, rule_use):
+    def _get_observation_properties_unchecked(self, rule_use) -> List[Property]:
         """Get observation properties, without checking."""
         props = []
         props.append(Property.construct(name='scanner_name', value=rule_use.scanner_name, ns=self._ns))
@@ -626,7 +635,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         }
         return json.dumps(ydata)
 
-    def _get_normalized_version(self, prop_name, prop_default) -> Tuple[int, int, int]:
+    def _get_normalized_version(self, prop_name: str, prop_default: str) -> Tuple[int, int, int]:
         """Get normalized version.
 
         Normalize the "x.y.z" string value to an integer: 1,000,000*x + 1,000*y + z.
@@ -683,7 +692,7 @@ class ProfileToOscoTransformer(FromOscalTransformer):
                 self._add_disable_rules_for_control(value, control)
         return value
 
-    def _add_disable_rules_for_control(self, value, control):
+    def _add_disable_rules_for_control(self, value: List[str], control: ControlSelection):
         """Extract disabled rules for control."""
         for with_id in as_list(control.with_ids):
             name = self._format_osco_rule_name(with_id.__root__)

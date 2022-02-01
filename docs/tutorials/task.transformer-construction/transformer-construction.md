@@ -17,8 +17,8 @@ The objective here is to transform your compliance data into valid OSCAL, in par
 [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/).
 
 Examples of existing transformers  included with trestle are for the
-OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_to_oscal.py) and
-[Tanium](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium_to_oscal.py).
+OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_result_to_oscal.py) and
+[Tanium](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium_result_to_oscal.py).
 
 ## *Overview*
 
@@ -41,7 +41,7 @@ Other possible code stack configurations (not shown):
 For example, one could create an
 auditree-arboretum [harvest](https://github.com/ComplianceAsCode/auditree-harvest#report-development)
 report (file interface) that employs the trestle
-osco-to-oscal transformation (data processing) module.
+osco-result-to-oscal transformation (data processing) module.
 
 ## *Choose Mapping Strategy*
 
@@ -398,10 +398,10 @@ where 14 have result=PASS and 1 has result=FAIL, then the overall status for the
 ## *Examples*
 
 There are 2 transformers in trestle.
-The [osco-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_to_oscal.py)
+The [osco-result-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_result_to_oscal.py)
 transformer emits OSCAL Observations, the simplest partial result.
 
-The [tanium-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium_to_oscal.py)
+The [tanium-result-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium_result_to_oscal.py)
 transformer emits OSCAL Findings, a more complex partial result.
 
 Table of approximate lines of code.
@@ -415,7 +415,7 @@ Table of approximate lines of code.
  <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">test cases
 
 <tr>
- <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">osco-to-oscal
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">osco-result-to-oscal
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">Observations only
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">275
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">350
