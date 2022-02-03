@@ -216,7 +216,7 @@ class ProfileAssemble(AuthorCommonCommand):
             # then update it with new or additional mappings in param_str_dict
             profile_param_str_dict = {}
             for set_param in profile.modify.set_parameters:
-                param = CatalogInterface.setparam_to_param(set_param)
+                param = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
                 param_str = ControlIOReader.param_to_str(param, ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
                 profile_param_str_dict[set_param.param_id] = param_str
             profile_param_str_dict.update(param_str_dict)
