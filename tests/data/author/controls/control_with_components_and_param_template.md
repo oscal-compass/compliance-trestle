@@ -32,7 +32,7 @@ reviewed-by:
 
 ## Control Statement
 
-- \[a\] Develop, document, and disseminate to all alert personell:
+- \[a\] Develop, document, and disseminate to all alert personnel:
 
   - \[1\]  A thorough access control policy that:
 
