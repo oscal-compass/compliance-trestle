@@ -366,11 +366,18 @@ class CatalogInterface():
         return hits
 
     @staticmethod
-    def setparam_to_param(set_param: prof.SetParameter) -> common.Parameter:
-        """Convert setparameter to parameter."""
-        return common.Parameter(
-            id='trestle_dummy_id', values=set_param.values, select=set_param.select, label=set_param.label
-        )
+    def setparam_to_param(param_id: str, set_param: prof.SetParameter) -> common.Parameter:
+        """
+        Convert setparameter to parameter.
+
+        Args:
+            param_id: the id of the parameter
+            set_param: the set_parameter from a profile
+
+        Returns:
+            a Parameter with param_id and content from the SetParameter
+        """
+        return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
 
     @staticmethod
     def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
@@ -379,7 +386,7 @@ class CatalogInterface():
         if not profile.modify:
             return set_param_dict
         for set_param in as_list(profile.modify.set_parameters):
-            param = CatalogInterface.setparam_to_param(set_param)
+            param = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
             set_param_dict[set_param.param_id] = param
         return set_param_dict
 
