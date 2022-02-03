@@ -67,12 +67,14 @@ def is_hidden(file_path: pathlib.Path) -> bool:
     Returns:
         Whether or not the file is file/directory is hidden.
     """
+    # as far as trestle is concerned all .* files are hidden even on windows, regardless of attributes
+    if file_path.stem.startswith('.'):
+        return True
     # Handle windows
     if is_windows():  # pragma: no cover
         attribute = win32api.GetFileAttributes(str(file_path))
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
-    # Handle unix
-    return file_path.stem.startswith('.')
+    return False
 
 
 def is_symlink(file_path: pathlib.Path) -> bool:
@@ -135,12 +137,12 @@ def _verify_oscal_folder(path: pathlib.Path) -> bool:
         if file_path.is_file():
             if not is_local_and_visible(file_path) and file_path.name != const.TRESTLE_KEEP_FILE:
                 logger.warning(
-                    f'Hidden files and symlinks are not allowed in OSCAL directories, deleting: {file_path}.'
+                    f'Hidden files (.* files and, on windows, files with hidden attribute) and symlinks are not allowed'
+                    f' in OSCAL directories.  Please remove the file {file_path}.'
                 )
-                os.remove(file_path)
             elif is_local_and_visible(file_path) and file_path.suffix not in {'.json', '.xml', '.yaml', '.yml', '.md'}:
                 logger.warning(
-                    f'Files of {file_path.suffix} are not allowed in the OSCAL directories '
+                    f'Files of type {file_path.suffix} are not allowed in the OSCAL directories '
                     f'and can cause the issues. Please remove the file {file_path}'
                 )
                 is_valid = False
@@ -163,12 +165,7 @@ def check_oscal_directories(root_path: pathlib.Path) -> bool:
             if d in MODEL_DIR_LIST:
                 is_valid = _verify_oscal_folder(root_path / d)
                 if not is_valid:
-                    logger.error(
-                        f'OSCAL directory {root_path / d} contains unsupported files, '
-                        f'please remove them to avoid issues.'
-                    )
-                    return is_valid
-
+                    break
     return is_valid
 
 

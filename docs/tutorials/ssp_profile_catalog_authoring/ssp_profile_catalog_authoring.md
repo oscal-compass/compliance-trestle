@@ -7,6 +7,7 @@ Trestle has authoring tools that allow conversion of OSCAL documents to markdown
 1. `catalog-generate` converts a control Catalog to individual controls in markdown format for addition or editing of guidance prose.  `catalog-assemble` then gathers the prose and adds it to the controls in the Catalog.
 1. `profile-generate` takes a given Profile and converts the controls represented by its resolved profile catalog to individual controls in markdown format, with sections corresponding to the content that the Profile adds to the Catalog.  The user may edit that additional content or add more, and `profile-assemble` then gathers the updated additional content and creates a new OSCAL Profile that includes those edits.
 1. `ssp-generate` takes a given Profile and its resolved profile catalog, and represents the individual controls as markdown files with sections that prompt for prose regarding the implementation response for items in the statement of the control.  `ssp-assemble` then gathers the response sections and creates an OSCAL System Security Plan comprising the resolved profile catalog and the implementation responses.
+1. `ssp-filter` takes a given ssp and filters its contents based on the controls included in a provided profile.
 
 In summary, the `catalog` tools allow conversion of a Catalog to markdown for editing - and back again to a Catalog.  The `profile` tools similarly convert a Profile's resolved profile catalog to markdown and allow conversion to a new Profile with modified additions that get applied in resolving the profile catalog.  Finally, the `ssp` tools allow the addition of implementation prose to a resolved profile catalog, then combine that prose with the Catalog into an OSCAL System Security Plan.
 
@@ -49,6 +50,17 @@ We now look at the contents of a typical control markdown file.
 A Control may contain many parts, but only one of them is a Statement, which describes the function of the control.  The statement itself is broken down into separate items, each of which may contain parameter id's in "moustache" (`{{}}`) brackets.  Below is an example of a control statement as generated in markdown form by the `catalog-generate` command.
 
 ```markdown
+---
+x-trestle-set-params:
+  ac-1_prm_1: organization-defined personnel or roles
+  ac-1_prm_2: No value found
+  ac-1_prm_3: organization-defined official
+  ac-1_prm_4: organization-defined frequency
+  ac-1_prm_5: organization-defined events
+  ac-1_prm_6: organization-defined frequency
+  ac-1_prm_7: organization-defined events
+
+---
 # ac-1 - \[Access Control\] Policy and Procedures
 
 ## Control Statement
@@ -68,8 +80,11 @@ A Control may contain many parts, but only one of them is a Statement, which des
 
   - \[1\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
   - \[2\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
-
 - \[d\] My added item
+
+## Control guidance
+
+Access control policy and procedures address the controls in the AC family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance.
 
 ```
 

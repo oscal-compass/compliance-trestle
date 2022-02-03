@@ -462,13 +462,7 @@ The trestle remove command is the reversal of `trestle add`.
 
 ## `trestle validate`
 
-Trestle validate is designed to perform a function to ensure integrity of a set of OSCAL files. This can be as simple as
-a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
-remote system state.
-
-Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE
-
-Trestle validates files according to a number of criteria, and it can operate on one or more files specified in different ways.
+Trestle validate checks the integrity of one or more OSCAL files in a number of ways.
 
 `validate` returns a non-zero return code if there is any validation problem detected in a file.
 
@@ -476,21 +470,25 @@ The current list of validation modes that get checked internally are:
 
 | Mode          | Purpose                                                               |
 | ------------- | --------------------------------------------------------------------- |
-| duplicates    | Identify if duplicate uuid's are present                              |
+| duplicates    | Detect whether disallowed duplicate uuid's are present                |
 | oscal_version | Confirm that the oscal version of the file is supported               |
 | refs          | Confirm that all references in responsible parties are found in roles |
 
-In addition to validating a single file you can validate all files of a given type with the `-t` option:
+You can validate a single model file by specifying its full path:
+
+`trestle validate -f catalogs/my_cat/catalog.json`
+
+or by specifying its model name and type:
+
+`trestle validate -t catalog -n my_cat`
+
+In addition to validating a single file you can validate all files of a given type with the `-t` option and no file name:
 
 `trestle validate -t catalog`
 
 And you can validate all models with the `-a` option:
 
 `trestle validate -a`
-
-Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
-
-`trestle validate -t catalog -n my_catalog`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 

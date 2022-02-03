@@ -24,7 +24,7 @@ from trestle.common.common_types import OBT
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOReader
+from trestle.core.control_io import ControlIOReader, ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import common
 
@@ -50,27 +50,28 @@ class Modify(Pipeline.Filter):
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
-    def _replace_id_with_text(prose: str, param_dict: Dict[str, str]) -> str:
+    def _replace_id_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
         """Find all instances of param_id in prose and replace with param_text.
 
         Need to check all values in dict for a match
         Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
         """
-        for param_id, param_value in param_dict.items():
+        for param in param_dict.values():
             bad_chars = string.ascii_letters + string.digits + '._'
             new_prose = prose
-            id_len = len(param_id)
+            id_len = len(param.id)
             loc = 0
-            if param_id not in prose:
+            if param.id not in prose:
                 continue
             # handle simple case directly
-            if prose == param_id:
-                return param_value
+            param_str = ControlIOReader.param_to_str(param, param_rep)
+            if prose == param.id:
+                return param_str
             # it's there, but may be param_10 instead of param_1
             while True:
                 if loc >= len(new_prose):
                     return new_prose
-                next_loc = new_prose[loc:].find(param_id)
+                next_loc = new_prose[loc:].find(param.id)
                 if next_loc < 0:
                     return new_prose
                 loc += next_loc
@@ -79,13 +80,13 @@ class Modify(Pipeline.Filter):
                     continue
                 end_loc = loc + id_len
                 if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
-                    new_prose = new_prose[:loc] + param_value + new_prose[end_loc:]
-                    loc += len(param_value)
+                    new_prose = new_prose[:loc] + param_str + new_prose[end_loc:]
+                    loc += len(param_str)
                     continue
                 loc += id_len
 
     @staticmethod
-    def _replace_params(text: str, param_dict: Dict[str, str]) -> str:
+    def _replace_params(text: str, param_dict: Dict[str, common.Parameter], params_format: Optional[str] = None) -> str:
         """
         Replace params found in moustaches with values from the param_dict.
 
@@ -110,39 +111,49 @@ class Modify(Pipeline.Filter):
             if param_ids[i] not in param_dict:
                 logger.warning(f'Control prose references param {param_ids[i]} not found in the control.')
             elif param_dict[param_ids[i]] is not None:
-                text = text.replace(staches[i], param_dict[param_ids[i]], 1)
+                param = param_dict[param_ids[i]]
+                param_str = ControlIOReader.param_to_str(
+                    param, ParameterRep.VALUE_OR_LABEL_OR_CHOICES, False, False, params_format
+                )
+                text = text.replace(staches[i], param_str, 1)
             else:
                 logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         return text
 
     @staticmethod
-    def _replace_part_prose(control: cat.Control, part: common.Part, param_dict: Dict[str, str]) -> None:
+    def _replace_part_prose(
+        control: cat.Control,
+        part: common.Part,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str] = None
+    ) -> None:
         """Replace the part prose according to set_param."""
         if part.prose is not None:
-            fixed_prose = Modify._replace_params(part.prose, param_dict)
+            fixed_prose = Modify._replace_params(part.prose, param_dict, params_format)
             # change the prose in the control itself
             part.prose = fixed_prose
         for prt in as_list(part.parts):
-            Modify._replace_part_prose(control, prt, param_dict)
+            Modify._replace_part_prose(control, prt, param_dict, params_format)
         for sub_control in as_list(control.controls):
             for prt in as_list(sub_control.parts):
-                Modify._replace_part_prose(sub_control, prt, param_dict)
+                Modify._replace_part_prose(sub_control, prt, param_dict, params_format)
 
     @staticmethod
-    def _replace_control_prose(control: cat.Control, param_dict: Dict[str, str]) -> None:
+    def _replace_control_prose(
+        control: cat.Control, param_dict: Dict[str, common.Parameter], params_format: Optional[str] = None
+    ) -> None:
         """Replace the control prose according to set_param."""
-        parts: List[common.Part] = as_list(control.parts)
-        for part in parts:
+        for part in as_list(control.parts):
             if part.prose is not None:
-                fixed_prose = Modify._replace_params(part.prose, param_dict)
+                fixed_prose = Modify._replace_params(part.prose, param_dict, params_format)
                 # change the prose in the control itself
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
-                Modify._replace_part_prose(control, prt, param_dict)
+                Modify._replace_part_prose(control, prt, param_dict, params_format)
         for sub_control in as_list(control.controls):
             prts: List[common.Part] = as_list(sub_control.parts)
             for prt in prts:
-                Modify._replace_part_prose(sub_control, prt, param_dict)
+                Modify._replace_part_prose(sub_control, prt, param_dict, params_format)
 
     @staticmethod
     def _add_contents_as_list(add: prof.Add) -> List[OBT]:
@@ -282,13 +293,13 @@ class Modify(Pipeline.Filter):
 
     def _change_prose_with_param_values(self):
         """Go through all controls and change prose based on param values."""
-        param_dict: Dict[str, str] = {}
+        param_dict: Dict[str, common.Paramter] = {}
         # build the full mapping of params to values
         for control in self._catalog_interface.get_all_controls_from_dict():
-            param_dict.update(ControlIOReader.get_control_param_dict(control, False, self._params_format))
+            param_dict.update(ControlIOReader.get_control_param_dict(control, False))
         # insert param values into prose of all controls
         for control in self._catalog_interface.get_all_controls_from_dict():
-            self._replace_control_prose(control, param_dict)
+            self._replace_control_prose(control, param_dict, self._params_format)
 
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
         """Modify the controls based on the profile."""

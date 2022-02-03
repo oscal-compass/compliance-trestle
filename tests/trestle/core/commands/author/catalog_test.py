@@ -28,6 +28,7 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.control_io import ControlIOReader, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
@@ -179,5 +180,9 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict)
-    assert control_param_dict['ac-1_prm_1'] == 'all alert personell'
-    assert control_param_dict['ac-1_prm_7'] == 'organization-defined events'
+    assert ControlIOReader.param_to_str(
+        control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'all alert personell'
+    assert ControlIOReader.param_to_str(
+        control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'organization-defined events'

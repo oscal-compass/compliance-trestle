@@ -90,10 +90,10 @@ class CatalogGenerate(AuthorCommonCommand):
             _, _, catalog = ModelUtils.load_distributed(catalog_path, trestle_root)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path,
-                yaml_header,
+                md_path=markdown_path,
+                yaml_header=yaml_header,
                 sections=None,
-                responses=False,
+                prompt_responses=False,
                 additional_content=False,
                 profile=None,
                 preserve_header_values=preserve_header_values,
@@ -121,7 +121,9 @@ class CatalogAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
-        return CatalogAssemble.assemble_catalog(trestle_root, args.markdown, args.output)
+        return CatalogAssemble.assemble_catalog(
+            trestle_root=trestle_root, md_name=args.markdown, catalog_name=args.output
+        )
 
     @staticmethod
     def assemble_catalog(trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
@@ -131,11 +133,13 @@ class CatalogAssemble(AuthorCommonCommand):
         Args:
             trestle_root: The trestle root directory
             md_name: The name of the directory containing the markdown control files for the ssp
-            catalog_name: The output name of the catalog json file to be created from the assembly
+            catalog_name: The output name of the catalog model to be created from the assembly
 
         Returns:
             0 on success, 1 otherwise
 
+        Notes:
+            If the destination catalog_name model already exists in the trestle project, it is erased and overwritten.
         """
         md_dir = trestle_root / md_name
         if not md_dir.exists():
@@ -151,7 +155,7 @@ class CatalogAssemble(AuthorCommonCommand):
             return CmdReturnCodes.COMMAND_ERROR.value
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
-            logger.info('Creating catalog from markdown and destination catalog directory exists, so updating.')
+            logger.info('Creating catalog from markdown and destination catalog directory exists, so overwriting.')
             try:
                 shutil.rmtree(str(new_cat_dir))
             except OSError as e:

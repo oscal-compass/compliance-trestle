@@ -24,7 +24,7 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.list_utils import as_list
-from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -69,17 +69,17 @@ class CatalogInterface():
     def __init__(self, catalog: Optional[cat.Catalog] = None) -> None:
         """Initialize the interface with the catalog."""
         self._catalog = catalog
-        self._param_dict: Dict[str, str] = {}
+        self._param_control_map: Dict[str, str] = {}
         self._control_dict = self._create_control_dict() if catalog else None
 
-    def _add_params_to_dict(self, control: cat.Control) -> None:
+    def _add_params_to_map(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
         for param in as_list(control.params):
-            if param.id in self._param_dict:
+            if param.id in self._param_control_map:
                 logger.warning(
-                    f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
+                    f'Duplicate param id {param.id} in control {control.id} and {self._param_control_map[param.id]}.'
                 )
-            self._param_dict[param.id] = control.id
+            self._param_control_map[param.id] = control.id
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
@@ -140,7 +140,7 @@ class CatalogInterface():
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
         for handle in control_dict.values():
-            self._add_params_to_dict(handle.control)
+            self._add_params_to_map(handle.control)
         return control_dict
 
     def _get_all_controls_in_list(self, controls: List[cat.Control], recurse: bool) -> List[cat.Control]:
@@ -184,8 +184,8 @@ class CatalogInterface():
 
     def get_control_by_param_id(self, param_id: str) -> Optional[cat.Control]:
         """Get control from catalog that has this param id using the dict."""
-        if param_id in self._param_dict:
-            return self.get_control(self._param_dict[param_id])
+        if param_id in self._param_control_map:
+            return self.get_control(self._param_control_map[param_id])
         return None
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
@@ -366,19 +366,36 @@ class CatalogInterface():
         return hits
 
     @staticmethod
+    def setparam_to_param(set_param: prof.SetParameter) -> common.Parameter:
+        """Convert setparameter to parameter."""
+        return common.Parameter(
+            id='trestle_dummy_id', values=set_param.values, select=set_param.select, label=set_param.label
+        )
+
+    @staticmethod
     def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
         """Get the full mapping of param_id to modified value for this profile."""
-        set_param_dict: Dict[str, str] = {}
+        set_param_dict: Dict[str, common.Parameter] = {}
         if not profile.modify:
             return set_param_dict
         for set_param in as_list(profile.modify.set_parameters):
-            value_str = ControlIOReader.param_values_as_string(set_param)
-            set_param_dict[set_param.param_id] = value_str
+            param = CatalogInterface.setparam_to_param(set_param)
+            set_param_dict[set_param.param_id] = param
         return set_param_dict
 
     @staticmethod
-    def _get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
-        """Get the list of params for this control and any set by the profile."""
+    def _get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str,
+                                                                               common.Parameter]) -> Dict[str, str]:
+        """
+        Get the dict of params for this control including possible overrides made by the profile modifications.
+
+        Args:
+            control: The control being queried
+            profile_param_dict: The full dict of params and modified values made by the profile
+
+        Returns:
+            mapping of param ids to their final parameter states after possible modify by the profile setparameters
+        """
         param_dict = ControlIOReader.get_control_param_dict(control, False)
         for key in param_dict.keys():
             if key in profile_param_dict:
@@ -390,26 +407,45 @@ class CatalogInterface():
         md_path: pathlib.Path,
         yaml_header: dict,
         sections: Optional[Dict[str, str]],
-        responses: bool,
+        prompt_responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
         preserve_header_values: bool = False,
         set_parameters: bool = False
     ) -> None:
-        """Write out the catalog controls from dict as markdown to the given directory."""
+        """
+        Write out the catalog controls from dict as markdown files to the specified directory.
+
+        Args:
+            md_path: Path to directory in which to write the markdown
+            yaml_header: Dictionary to write into the yaml header of the controls
+            sections: Map of sections to include, with short names and full names
+            prompt_responses: Whether to prompt for responses in the control markdown
+            additional_content: Should the additional content be printed corresponding to profile adds
+            profile: Optional profile containing the adds making up additional content
+            preserve_header_values: Retain existing values in markdown header content but add new content
+            set_parameters: Set header values based on params in the control and in the profile
+
+        Returns:
+            None
+        """
         writer = ControlIOWriter()
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
+        # get the full list of params and their modified values for this profile
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
             if set_parameters:
                 param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict)
-                if param_dict:
-                    new_header[const.SET_PARAMS_TAG] = param_dict
+                param_value_dict: Dict[str, str] = {}
+                for key, value in param_dict.items():
+                    param_value_dict[key] = ControlIOReader.param_to_str(value, ParameterRep.VALUE_OR_STRING_NONE)
+                if param_value_dict:
+                    new_header[const.SET_PARAMS_TAG] = param_value_dict
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path
@@ -425,7 +461,7 @@ class CatalogInterface():
                 new_header,
                 sections,
                 additional_content,
-                responses,
+                prompt_responses,
                 profile,
                 preserve_header_values
             )
@@ -563,13 +599,13 @@ class CatalogInterface():
     def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Read all markdown controls and return list of alters."""
         new_alters: List[prof.Alter] = []
-        param_dict: Dict[str, str] = {}
+        param_str_dict: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(control_file)
+                control_alters, control_param_str_dict = ControlIOReader.read_new_alters_and_params(control_file)
                 new_alters.extend(control_alters)
-                param_dict.update(control_param_dict)
-        return new_alters, param_dict
+                param_str_dict.update(control_param_str_dict)
+        return new_alters, param_str_dict
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""

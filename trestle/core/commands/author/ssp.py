@@ -121,13 +121,14 @@ class SSPGenerate(AuthorCommonCommand):
 
         try:
             catalog_interface.write_catalog_as_markdown(
-                markdown_path,
-                yaml_header,
-                sections,
-                True,
-                False,
-                None,
-                preserve_header_values=args.preserve_header_values
+                md_path=markdown_path,
+                yaml_header=yaml_header,
+                sections=sections,
+                prompt_responses=True,
+                additional_content=False,
+                profile=None,
+                preserve_header_values=args.preserve_header_values,
+                set_parameters=False
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
@@ -294,8 +295,22 @@ class SSPFilter(AuthorCommonCommand):
 
         return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate)
 
-    def filter_ssp(self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool):
-        """Filter the ssp based on the profile and output new ssp."""
+    def filter_ssp(
+        self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool
+    ) -> int:
+        """
+        Filter the ssp based on controls included by the profile and output new ssp.
+
+        Args:
+            trestle_root: root directory of the trestle project
+            ssp_name: name of the ssp model
+            profile_name: name of the profile model used for filtering
+            out_name: name of the output ssp model with filtered controls
+            regenerate: whether to regenerate the uuid's in the ssp
+
+        Returns:
+            0 on success, 1 otherwise
+        """
         ssp: ossp.SystemSecurityPlan
 
         try:

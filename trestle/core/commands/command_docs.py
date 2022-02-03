@@ -56,7 +56,6 @@ class CommandPlusDocs(CommandBase):
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         is_oscal_dir_valid = file_utils.check_oscal_directories(args.trestle_root)
         if not is_oscal_dir_valid:
-            logger.error('OSCAL directories are not valid, please remove extra files specified above.')
             return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
         args.trestle_root = root
         return CmdReturnCodes.SUCCESS.value

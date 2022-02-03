@@ -26,6 +26,7 @@ from tests import test_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
 from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.control_io import ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
@@ -198,16 +199,20 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
-    param_dict = {param_id: param_text}
-    assert Modify._replace_id_with_text(prose, param_dict) == result
+    param = com.Parameter(id=param_id, values=[com.ParameterValue(__root__=param_text)])
+    param_dict = {param_id: param}
+    assert Modify._replace_id_with_text(prose, ParameterRep.VALUE_OR_NONE, param_dict) == result
 
 
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
     id_1 = 'ac-2_smt.1'
+    param_1 = com.Parameter(id=id_1, values=[com.ParameterValue(__root__='the cat')])
     id_10 = 'ac-2_smt.10'
+    param_10 = com.Parameter(id=id_10, values=[com.ParameterValue(__root__='well fed')])
+
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
-    param_dict = {id_1: 'the cat', id_10: 'well fed'}
+    param_dict = {id_1: param_1, id_10: param_10}
     new_text = Modify._replace_params(param_text, param_dict)
     assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
 
