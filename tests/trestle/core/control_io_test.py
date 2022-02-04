@@ -339,7 +339,7 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control = catalog_interface.get_control('ac-1')
     param_dict = ControlIOReader.get_control_param_dict(control, False)
     # confirm profile value is used
-    assert param_dict['ac-1_prm_1'] == 'all alert personell'
+    assert param_dict['ac-1_prm_1'] == 'all alert personnel'
     # confirm original param label is used since no value was assigned
     assert param_dict['ac-1_prm_7'] == 'organization-defined events'
 

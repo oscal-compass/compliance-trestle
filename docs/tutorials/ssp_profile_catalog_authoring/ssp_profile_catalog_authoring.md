@@ -94,7 +94,7 @@ The background text above conveys how a profile pulls controls from catalogs and
 
 ## Control Statement
 
-- \[a\] Develop, document, and disseminate to all personell:
+- \[a\] Develop, document, and disseminate to all personnel:
 
   - \[1\]  A thorough access control policy that:
 
@@ -222,7 +222,7 @@ responsible-roles:
 
 ## Control Description
 
-- \[a.\] Develop, document, and disseminate to all personell:
+- \[a.\] Develop, document, and disseminate to all personnel:
 
   - \[1.\] A thorough access control policy that:
 
