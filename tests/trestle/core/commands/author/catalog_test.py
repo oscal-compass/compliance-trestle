@@ -182,7 +182,7 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict)
     assert ControlIOReader.param_to_str(
         control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'all alert personell'
+    ) == 'all alert personnel'
     assert ControlIOReader.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'

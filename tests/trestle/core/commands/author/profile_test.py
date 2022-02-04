@@ -160,7 +160,7 @@ def test_profile_generate_assemble(
     for set_param in set_params:
         sp_dict[set_param.param_id] = set_param.values[0].__root__
     assert sp_dict
-    assert sp_dict['ac-1_prm_1'] == 'all personell'
+    assert sp_dict['ac-1_prm_1'] == 'all personnel'
     if set_parameters and add_header:
         assert 'ac-1_prm_2' not in sp_dict
         assert sp_dict['ac-1_prm_3'] == 'new value'

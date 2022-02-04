@@ -225,7 +225,7 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
         tmp_trestle_dir, 'test_profile_e', prof.Profile, FileContentType.JSON
     )
     profile_e_parameter_string = '## Override value ##'
-    profile_a_value = 'all alert personell'
+    profile_a_value = 'all alert personnel'
 
     # based on 800-53 rev 5
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_e_path)

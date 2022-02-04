@@ -339,7 +339,7 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control = catalog_interface.get_control('ac-1')
     param_dict = ControlIOReader.get_control_param_dict(control, False)
     # confirm profile value is used
-    assert ControlIOReader.param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personell'
+    assert ControlIOReader.param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
     # confirm original param label is used since no value was assigned
     assert ControlIOReader.param_to_str(
         param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
@@ -351,18 +351,6 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     assert ControlIOReader.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'choice 1, choice 2'
-    """
-    assert param_dict['ac-1_prm_1'] == ControlIOReader.wrap_param_and_value('ac-1_prm_1', 'all alert personell')
-    # confirm original param label is used since no value was assigned
-    wrapped_value = ControlIOReader.wrap_param_and_value('ac-1_prm_7', 'description: organization-defined events')
-    assert param_dict['ac-1_prm_7'] == wrapped_value
-    param = control.params[0]
-    param.values = None
-    param.select = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['choice 1', 'choice 2'])
-    param_dict = ControlIOReader.get_control_param_dict(control, False)
-    wrapped_value = ControlIOReader.wrap_param_and_value('ac-1_prm_1', 'choose one_or_more [choice 1, choice 2]')
-    assert param_dict['ac-1_prm_1'] == wrapped_value
-    """
 
 
 @pytest.mark.parametrize('preserve_header_values', [True, False])
