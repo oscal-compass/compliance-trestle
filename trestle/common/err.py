@@ -54,21 +54,3 @@ class TrestleNotFoundError(TrestleError):
             msg: The error message
         """
         super().__init__(msg)
-
-
-class TrestleValidationError(TrestleError):
-    """
-    General framwork related validation error.
-
-    Attributes:
-        msg (str): Human readable string describing the exception.
-    """
-
-    def __init__(self, msg: str):
-        """
-        Intialization for TresleValidationError.
-
-        Args:
-            msg (str): The error message
-        """
-        super().__init__(msg)

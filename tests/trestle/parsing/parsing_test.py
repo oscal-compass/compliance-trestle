@@ -23,7 +23,7 @@ import pytest
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.oscal.component as component
 
 yaml_path = pathlib.Path('tests/data/yaml/')

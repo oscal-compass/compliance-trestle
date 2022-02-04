@@ -16,14 +16,14 @@ import logging
 import pathlib
 from typing import Dict, List, Optional
 
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list
 from trestle.core import catalog_interface
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, SSP_MAIN_COMP_NAME
 from trestle.core.control_io import ControlIOWriter
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.core.utils import as_list
 from trestle.oscal import ssp
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.ssp import Statement

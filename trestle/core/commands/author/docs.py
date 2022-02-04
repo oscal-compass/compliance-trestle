@@ -23,11 +23,11 @@ import traceback
 from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
-import trestle.utils.fs as fs
+from trestle.common import file_utils
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
@@ -195,7 +195,7 @@ class Docs(AuthorCommonCommand):
 
     def _validate_template_dir(self) -> bool:
         """Template directory should only have template file."""
-        for child in fs.iterdir_without_hidden_files(self.template_dir):
+        for child in file_utils.iterdir_without_hidden_files(self.template_dir):
             # Only allowable template file in the directory is the template directory.
             if child.name != self.template_name and child.name.lower() != 'readme.md':
                 logger.error(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')
@@ -221,7 +221,7 @@ class Docs(AuthorCommonCommand):
         # status is a linux returncode
         status = 0
         for item_path in md_dir.iterdir():
-            if fs.local_and_visible(item_path):
+            if file_utils.is_local_and_visible(item_path):
                 if item_path.is_file():
                     if not item_path.suffix == '.md':
                         logger.info(

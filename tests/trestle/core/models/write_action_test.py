@@ -19,7 +19,7 @@ import os
 
 from tests import test_utils
 
-import trestle.core.const as const
+import trestle.common.const as const
 from trestle.core.models.actions import WriteAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType

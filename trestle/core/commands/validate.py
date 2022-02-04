@@ -19,12 +19,12 @@ import argparse
 import logging
 import traceback
 
+import trestle.common.log as log
 import trestle.core.validator_factory as vfact
-import trestle.utils.log as log
+from trestle.common.const import ARG_VALIDATE, VAL_MODE_ALL
+from trestle.common.err import TrestleError
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.const import VAL_MODE_ALL
-from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 class ValidateCmd(CommandPlusDocs):
     """Validate contents of a trestle model in different modes."""
 
-    name = 'validate'
+    name = ARG_VALIDATE
 
     def _init_arguments(self) -> None:
         vfact.init_arguments(self)

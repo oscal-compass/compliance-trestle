@@ -26,12 +26,13 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.cli import Trestle
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
 from trestle.oscal import profile as prof
 from trestle.oscal.common import Part, Property
-from trestle.utils import fs
 
 markdown_name = 'my_md'
 
@@ -65,7 +66,7 @@ def test_catalog_generate_assemble(
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
-        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
         if dir_exists:
             assembled_cat_dir.mkdir()
@@ -79,7 +80,7 @@ def test_catalog_generate_assemble(
             yaml_header = yaml.load(yaml_header_path.open('r'))
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
         assert (markdown_path / 'ac/ac-1.md').exists()
-        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_6', f'- \\[d\\] {new_prose}')
+        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
         CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
@@ -94,7 +95,7 @@ def test_catalog_generate_assemble(
     ac1.parts[0].parts.append(new_part)
     interface_orig.replace_control(ac1)
     interface_orig.update_catalog_controls()
-    assert interface_orig.equivalent_to(cat_new)
+    assert test_utils.catalog_interface_equivalent(interface_orig, cat_new)
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
@@ -165,11 +166,11 @@ def test_catalog_assemble_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: M
 def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test get profile param dict for control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    profile, profile_path = fs.load_top_level_model(
+    profile, profile_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         'test_profile_a',
         prof.Profile,
-        fs.FileContentType.JSON
+        FileContentType.JSON
     )
     profile_resolver = ProfileResolver()
     catalog = profile_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
@@ -178,5 +179,5 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict)
-    assert control_param_dict['ac-1_prm_1'] == 'all alert personell'
+    assert control_param_dict['ac-1_prm_1'] == 'all alert personnel'
     assert control_param_dict['ac-1_prm_7'] == 'organization-defined events'

@@ -20,12 +20,12 @@ import logging
 import pathlib
 import traceback
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.core.models.elements as elements
+from trestle.common import log
+from trestle.common.err import TrestleError
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
-from trestle.utils import log
 
 logger = logging.getLogger(__name__)
 

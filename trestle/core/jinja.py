@@ -24,7 +24,7 @@ from jinja2.environment import Environment
 from jinja2.ext import Extension
 from jinja2.parser import Parser
 
-from trestle.core import err
+from trestle.common import err
 from trestle.core.markdown import markdown_const
 from trestle.core.markdown import markdown_node
 

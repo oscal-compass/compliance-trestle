@@ -25,7 +25,7 @@ import uuid
 from typing import Dict, List, Optional, Tuple
 
 import trestle
-from trestle.core import const
+from trestle.common import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Party

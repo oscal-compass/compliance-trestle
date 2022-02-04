@@ -23,9 +23,10 @@ import importlib
 import logging
 from typing import Any, Dict
 
-from trestle.core import const, utils
+from trestle.common import const
+from trestle.common.err import TrestleError
+from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
@@ -82,5 +83,5 @@ def to_full_model_name(root_key: str) -> str:
         raise TrestleError(f'{root_key} is not a top level model name.')
 
     module = const.MODEL_TYPE_TO_MODEL_MODULE[root_key]
-    class_name = utils.alias_to_classname(root_key, utils.AliasMode.JSON)
+    class_name = alias_to_classname(root_key, AliasMode.JSON)
     return f'{module}.{class_name}'

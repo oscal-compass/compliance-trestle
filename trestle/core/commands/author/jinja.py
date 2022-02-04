@@ -27,15 +27,16 @@ from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader
 
 from ruamel.yaml import YAML
 
-from trestle.core import const
+from trestle.common import const, log
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.control_io import ControlIOWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
-from trestle.utils import fs, log
 
 logger = logging.getLogger(__name__)
 
@@ -155,9 +156,9 @@ class JinjaCmd(CommandPlusDocs):
                 return 2
             if ssp:
                 # name lookup
-                ssp_data, _ = fs.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
+                ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
                 lut['ssp'] = ssp_data
-                _, profile_path = fs.load_top_level_model(trestle_root, profile, Profile)
+                _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(
                     trestle_root, profile_path, False, parameters_formatting
@@ -168,6 +169,7 @@ class JinjaCmd(CommandPlusDocs):
                 ssp_writer.set_catalog(resolved_catalog)
                 lut['catalog'] = resolved_catalog
                 lut['catalog_interface'] = CatalogInterface(resolved_catalog)
+                lut['control_io_writer'] = ControlIOWriter()
                 lut['ssp_md_writer'] = ssp_writer
 
             new_output = template.render(**lut)

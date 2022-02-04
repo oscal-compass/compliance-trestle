@@ -20,20 +20,20 @@ import pathlib
 import traceback
 from typing import Dict, List, Tuple
 
-import trestle.utils.log as log
-from trestle.core import const
-from trestle.core import utils
+import trestle.common.log as log
+from trestle.common import const, file_utils, trash
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common import cmd_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
 trace = log.Trace(logger)
@@ -130,7 +130,7 @@ class SplitCmd(CommandPlusDocs):
         else:
             # cwd must be in the model directory if file to split is not specified
             # find top directory for this model based on trestle root and cwd
-            model_dir = fs.get_project_model_path(effective_cwd)
+            model_dir = file_utils.extract_project_model_path(effective_cwd)
             if model_dir is None:
                 logger.warning('Current directory must be within a model directory if file is not specified')
                 return CmdReturnCodes.COMMAND_ERROR.value
@@ -162,7 +162,7 @@ class SplitCmd(CommandPlusDocs):
                 file_path_dict[key] = f'{current_path},{path}'
 
         for raw_file_name, element_path in file_path_dict.items():
-            file_path = fs.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
+            file_path = file_utils.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
             # this makes assumptions that the path is relative.
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
@@ -171,7 +171,7 @@ class SplitCmd(CommandPlusDocs):
 
             # find the base directory of the file
             base_dir = file_path.parent
-            model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
+            model_type, _ = ModelUtils.get_stripped_model_type(file_path, trestle_root)
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
@@ -218,7 +218,7 @@ class SplitCmd(CommandPlusDocs):
         """Create split actions of sub model."""
         actions: List[Action] = []
         file_name = cmd_utils.to_model_file_name(sub_model_item, file_prefix, content_type)
-        model_type = utils.classname_to_alias(type(sub_model_item).__name__, utils.AliasMode.JSON)
+        model_type = classname_to_alias(type(sub_model_item).__name__, AliasMode.JSON)
         sub_model_file = sub_model_dir / file_name
         actions.append(CreatePathAction(sub_model_file))
         actions.append(WriteFileAction(sub_model_file, Element(sub_model_item, model_type), content_type))
@@ -411,7 +411,7 @@ class SplitCmd(CommandPlusDocs):
                     root_file = base_dir / element_path.to_root_path(content_type)
 
                 split_plan.add_action(CreatePathAction(root_file))
-                wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, utils.AliasMode.JSON)
+                wrapper_alias = classname_to_alias(stripped_model.__class__.__name__, AliasMode.JSON)
                 split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
 
         # return the end of the current path chain
@@ -474,7 +474,7 @@ class SplitCmd(CommandPlusDocs):
         else:
             root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file, True))
-        wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, utils.AliasMode.JSON)
+        wrapper_alias = classname_to_alias(stripped_root.__class__.__name__, AliasMode.JSON)
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 
         return split_plan

@@ -22,7 +22,7 @@ import re
 from typing import Dict, Iterable, List, Optional, Tuple
 
 import trestle.core.markdown.markdown_const as md_const
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 
 logger = logging.getLogger(__name__)
 

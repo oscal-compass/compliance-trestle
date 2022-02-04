@@ -14,19 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Special types are defined here."""
-
 from typing import TypeVar
 
-from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
-from trestle.oscal import common
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import Resource
 from trestle.oscal.component import ComponentDefinition
 from trestle.oscal.poam import PlanOfActionAndMilestones
 from trestle.oscal.profile import Profile
 from trestle.oscal.ssp import SystemSecurityPlan
+
+# model types containing uuids that should not regenerate
+FixedUuidModel = Resource
 
 TopLevelOscalModel = TypeVar(
     'TopLevelOscalModel',
@@ -39,17 +40,5 @@ TopLevelOscalModel = TypeVar(
     SystemSecurityPlan
 )
 
-MODEL_ALIAS_TO_TOP_LEVEL_MODEL = {
-    const.MODEL_TYPE_CATALOG: Catalog,
-    const.MODEL_TYPE_PROFILE: Profile,
-    const.MODEL_TYPE_COMPDEF: ComponentDefinition,
-    const.MODEL_TYPE_SSP: SystemSecurityPlan,
-    const.MODEL_TYPE_A_PLAN: AssessmentPlan,
-    const.MODEL_TYPE_A_RESULT: AssessmentResults,
-    const.MODEL_TYPE_POAM: PlanOfActionAndMilestones
-}
-
 OBT = TypeVar('OBT', bound=OscalBaseModel)
-
-# model types containing uuids that should not regenerate
-FixedUuidModel = common.Resource
+TG = TypeVar('TG')

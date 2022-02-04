@@ -18,10 +18,10 @@ from typing import Iterator, List, Optional, Tuple, Union
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
-from trestle.core.common_types import OBT
-from trestle.core.err import TrestleError
+from trestle.common.common_types import OBT
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.pipeline import Pipeline
-from trestle.core.utils import as_list, none_if_empty
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
