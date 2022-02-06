@@ -40,6 +40,8 @@ It's important to note that each profile is importing a selection of controls fr
 
 The tools are designed to be used in a continuous `generate-edit-assemble` cycle, with previous edits retained in each cycle.  Each new edit phase can add or modify the current content, allowing a new `generate` of an OSCAL json document capturing those edits.
 
+NOTE: We use `json` format for specifying OSCAL files in this tutorial, but it is equally applicable to `yaml` format also.
+
 ## `trestle author catalog-generate` and `trestle author catalog-assemble`
 
 `catalog-generate` will take an existing json catalog and write it out as markdown files for each control in a user-specified directory.  That directory will contain subdirectories for each group in the catalog, and those directories may contain subdirectories for groups within groups.  But controls containing controls are always split out into a series of controls in the same directory - and each control markdown file corresponds to a single control.
@@ -189,7 +191,7 @@ Example usage for creation of the markdown:
 
 `trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence' -o my_ssp`
 
-In this example the profile has previously been imported into the trestle project directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
+In this example the profile has previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
 
 The `-s --section` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  Each colon-separated pair refers to the actual part name first, followed by the form that should be used in the heading for that section.  This is done because the name itself may be abbreviated and lack needed spaces between words. If no section labels are provided all parts are included using the default 'name' as specified in the underlying OSCAL.
 
