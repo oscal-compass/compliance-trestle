@@ -18,14 +18,14 @@ import argparse
 import logging
 import pathlib
 
-import trestle.utils.fs as fs
-import trestle.utils.log as log
+import trestle.common.log as log
+from trestle.common import file_utils
+from trestle.common.const import ARG_VALIDATE, TRESTLE_CONFIG_DIR
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.const import TRESTLE_CONFIG_DIR
-from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ class AuthorCommonCommand(CommandPlusDocs):
 
         if self.task_name:
             self.task_path = self.trestle_root / self.task_name
-            if not fs.allowed_task_name(self.task_name):
+            if not file_utils.is_directory_name_allowed(self.task_name):
                 logger.error(
                     f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
                 )
@@ -88,7 +88,7 @@ class AuthorCommonCommand(CommandPlusDocs):
         """Set template version argument to the latest version if none was given."""
         if not TemplateVersioning.is_valid_version(args.template_version):
             raise TrestleError(f'Version {args.template_version} is invalid, version format should be: 0.0.1')
-        if args.template_version is None and args.mode == 'validate':
+        if args.template_version is None and args.mode == ARG_VALIDATE:
             # in validate mode no version will validate instances based on header version
             args.template_version = ''
         if args.template_version is None:

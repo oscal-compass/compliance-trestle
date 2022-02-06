@@ -45,7 +45,7 @@
         {
           "param-id": "ac-1_prm_1",
             "values": [
-              "all alert personell"
+              "all alert personnel"
             ]
         },
         {  "param-id": "ac-1_prm_2",
@@ -85,7 +85,7 @@
         },
         {  "param-id": "ac-2_prm_3",
             "values": [
-              "authorized personell"
+              "authorized personnel"
             ]
         },
         {  "param-id": "ac-2_prm_4",
@@ -95,7 +95,7 @@
         },
         {  "param-id": "ac-2_prm_5",
             "values": [
-              "personell"
+              "personnel"
             ]
         },
         {  "param-id": "ac-2_prm_6",

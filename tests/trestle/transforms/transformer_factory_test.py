@@ -17,7 +17,7 @@
 
 import pytest
 
-import trestle.core.err as err
+import trestle.common.err as err
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.common import RoleId
 from trestle.transforms.results import Results

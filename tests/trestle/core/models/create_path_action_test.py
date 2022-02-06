@@ -21,8 +21,8 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.const as const
-from trestle.core.err import TrestleError
+import trestle.common.const as const
+from trestle.common.err import TrestleError
 from trestle.core.models.actions import CreatePathAction
 
 

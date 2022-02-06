@@ -25,7 +25,7 @@ from typing import List, Optional, ValuesView
 from pydantic import BaseModel, Field
 
 import trestle
-from trestle.core import const
+from trestle.common import const
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control

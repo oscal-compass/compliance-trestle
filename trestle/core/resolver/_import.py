@@ -17,10 +17,10 @@ import logging
 import pathlib
 from typing import Iterator, List, Union
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
 from trestle.core.resolver.merge import Merge

@@ -30,7 +30,7 @@ from tests import test_utils
 import trestle.core.generators as gens
 import trestle.oscal.common as common
 from trestle.cli import Trestle
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 from trestle.oscal import catalog as cat
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile

@@ -22,9 +22,9 @@ import pytest
 
 import tests.test_utils as test_utils
 
+import trestle.common.const as const
+import trestle.common.err as err
 import trestle.core.base_model as ospydantic
-import trestle.core.const as const
-import trestle.core.err as err
 import trestle.oscal
 import trestle.oscal.assessment_plan as ap
 import trestle.oscal.catalog as oscatalog

@@ -19,17 +19,15 @@ import argparse
 import logging
 import traceback
 
-from trestle.core import const
+from trestle.common import const, file_utils, log
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
-from trestle.utils import log
-from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +56,7 @@ class AssembleCmd(CommandPlusDocs):
             logger.info(f'Assembling models of type {model_alias}.')
 
             trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-            if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
+            if not trestle_root or not file_utils.is_valid_project_root(args.trestle_root):
                 logger.error(f'Given directory {trestle_root} is not a trestle project.')
                 return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
 
@@ -67,7 +65,7 @@ class AssembleCmd(CommandPlusDocs):
                 model_names = [args.name]
                 logger.info(f'Assembling single model of type {model_alias}: {args.name}.')
             else:
-                model_names = fs.get_models_of_type(model_alias, trestle_root)
+                model_names = ModelUtils.get_models_of_type(model_alias, trestle_root)
                 nmodels = len(model_names)
                 logger.info(f'Assembling {nmodels} found models of type {model_alias}.')
             if len(model_names) == 0:
@@ -76,9 +74,9 @@ class AssembleCmd(CommandPlusDocs):
 
             for model_name in model_names:
                 # contruct path to the model file name
-                root_model_dir = trestle_root / fs.model_type_to_model_dir(model_alias)
+                root_model_dir = trestle_root / ModelUtils.model_type_to_model_dir(model_alias)
                 try:
-                    model_file_type = fs.get_contextual_file_type(root_model_dir / model_name)
+                    model_file_type = file_utils.get_contextual_file_type(root_model_dir / model_name)
                 except Exception as e:
                     logger.error('No files found in the specified model directory.')
                     logger.debug(e)
@@ -92,8 +90,8 @@ class AssembleCmd(CommandPlusDocs):
                     return CmdReturnCodes.COMMAND_ERROR.value
 
                 # distributed load
-                _, _, assembled_model = load_distributed(root_model_filepath, args.trestle_root)
-                plural_alias = fs.model_type_to_model_dir(model_alias)
+                _, _, assembled_model = ModelUtils.load_distributed(root_model_filepath, args.trestle_root)
+                plural_alias = ModelUtils.model_type_to_model_dir(model_alias)
 
                 assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / plural_alias
 

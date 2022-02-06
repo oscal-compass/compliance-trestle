@@ -23,8 +23,8 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests import test_utils
 
 from trestle.cli import Trestle
+from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import profile
-from trestle.utils.fs import FileContentType
 
 
 def test_href_cmd(

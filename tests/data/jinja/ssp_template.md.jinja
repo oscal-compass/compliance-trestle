@@ -23,12 +23,12 @@ Test SSP
 
 {% for control in catalog_interface._control_dict.values() %}
 {% if control.group_id ==  group.id %}
-{# ### {{ catalog_interface.get_label(control.control) }}: {{ control.control.title}}
+{# ### {{ control_io_writer.get_label(control.control) }}: {{ control.control.title}}
 
 #### Control Statement #}
 {{ ssp_md_writer.get_control_statement(control.control.id, 2) }}
 
-#### {{ catalog_interface.get_label(control.control) }} Summary information
+#### {{ control_io_writer.get_label(control.control) }} Summary information
 {{ ssp_md_writer.get_fedramp_control_tables(control.control.id, 4) }}
 
 #### Implementation

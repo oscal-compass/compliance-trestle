@@ -18,8 +18,8 @@ import logging
 import pathlib
 from typing import Optional
 
-from trestle.core import const
-from trestle.core.err import TrestleError
+from trestle.common import const
+from trestle.common.err import TrestleError
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 

@@ -21,14 +21,15 @@ import pathlib
 import traceback
 from typing import List
 
-import trestle.utils.log as log
+import trestle.common.log as log
+from trestle.common.const import ARG_ELEMENT, ARG_FILE
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common import cmd_utils as utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +55,10 @@ class DescribeCmd(CommandPlusDocs):
 
             log.set_log_level_from_args(args)
 
-            if 'file' in args and args.file:
+            if ARG_FILE in args and args.file:
                 model_file = pathlib.Path(args.file)
 
-                element = '' if 'element' not in args or args.element is None else args.element.strip("'")
+                element = '' if ARG_ELEMENT not in args or args.element is None else args.element.strip("'")
                 try:
                     results = self.describe(model_file.resolve(), element, args.trestle_root)
                     return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value
@@ -112,7 +113,7 @@ class DescribeCmd(CommandPlusDocs):
         """
         # figure out the model type so we can read it
         try:
-            model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
+            model_type, _ = ModelUtils.get_stripped_model_type(file_path, trestle_root)
             model: OscalBaseModel = model_type.oscal_read(file_path)
         except TrestleError as e:
             logger.warning(f'Error loading model {file_path} to describe: {e}')

@@ -21,10 +21,10 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.const as const
-from trestle.core.err import TrestleError
+import trestle.common.const as const
+from trestle.common import trash
+from trestle.common.err import TrestleError
 from trestle.core.models.actions import RemovePathAction
-from trestle.utils import trash
 
 
 def test_remove_path_file(tmp_path: pathlib.Path) -> None:

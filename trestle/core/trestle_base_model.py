@@ -18,7 +18,7 @@ from typing import Any, Type, TypeVar
 
 from pydantic import BaseModel, ValidationError
 
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 
 Model = TypeVar('Model', bound='BaseModel')
 

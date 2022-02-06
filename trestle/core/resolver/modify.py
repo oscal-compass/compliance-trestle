@@ -20,12 +20,12 @@ from typing import Dict, Iterator, List, Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
+from trestle.common.common_types import OBT
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.common_types import OBT
 from trestle.core.control_io import ControlIOReader
-from trestle.core.err import TrestleError
 from trestle.core.pipeline import Pipeline
-from trestle.core.utils import as_list
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -107,10 +107,12 @@ class Modify(Pipeline.Filter):
         # now replace original stache text with param values
         for i, _ in enumerate(staches):
             # A moustache may refer to a param_id not listed in the control's params
-            if param_ids[i] in param_dict:
+            if param_ids[i] not in param_dict:
+                logger.warning(f'Control prose references param {param_ids[i]} not found in the control.')
+            elif param_dict[param_ids[i]] is not None:
                 text = text.replace(staches[i], param_dict[param_ids[i]], 1)
             else:
-                logger.warning(f'Control prose references param {param_ids[i]} not found in the catalog.')
+                logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         return text
 
     @staticmethod

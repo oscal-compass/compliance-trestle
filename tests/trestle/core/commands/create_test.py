@@ -26,7 +26,7 @@ import pytest
 import tests.test_utils as test_utils
 
 from trestle.cli import Trestle
-from trestle.core import const
+from trestle.common import const
 from trestle.core.commands import create
 from trestle.oscal.catalog import Catalog
 
@@ -42,7 +42,7 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monke
         name_stem = f'random_named_{subcommand}'
         test_args = testargs_root + [subcommand] + ['-o', name_stem]
         if include_optional:
-            test_args += ['-iof']
+            test_args += [const.IOF_SHORT]
         monkeypatch.setattr(sys, 'argv', test_args)
         rc = Trestle().run()
         assert rc == 0

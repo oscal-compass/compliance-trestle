@@ -17,24 +17,18 @@
 
 import logging
 import pathlib
+from typing import Optional, Tuple
 
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 
 logger = logging.getLogger(__name__)
 
-t_control = Control
-t_control_id = str
-t_control_name = str
-t_control_prop = str
-t_prop_name = str
-t_status = str
 
-
-class CatalogHelper():
+class CatalogHelper:
     """Catalog Helper class to assist navigating catalog."""
 
-    def __init__(self, catalog_file) -> None:
+    def __init__(self, catalog_file: str) -> None:
         """Initialize."""
         self._catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
         logger.debug(f'catalog: {catalog_file}')
@@ -43,7 +37,7 @@ class CatalogHelper():
         """Catalog exists determination."""
         return self._catalog is not None
 
-    def find_control_id(self, control_name: t_control_name) -> (t_control_id, t_status):
+    def find_control_id(self, control_name: str) -> Tuple[Optional[str], Optional[str]]:
         """Find control_id for given control_name."""
         for group in self._catalog.groups:
             for control in group.controls:
@@ -52,13 +46,13 @@ class CatalogHelper():
                     return control_id, status
         return None, None
 
-    def _find_control_prop(self, control: t_control, prop_name: t_prop_name) -> t_control_prop:
+    def _find_control_prop(self, control: Control, prop_name: str) -> Optional[str]:
         for prop in control.props:
             if prop.name == prop_name:
                 return prop.value
         return None
 
-    def _find_control_id(self, control: t_control, control_name: t_control_name) -> (t_control_id, t_status):
+    def _find_control_id(self, control: Control, control_name: str) -> Tuple[Optional[str], Optional[str]]:
         label = self._find_control_prop(control, 'label')
         if label.strip().upper() == control_name.strip().upper():
             control_id = control.id
