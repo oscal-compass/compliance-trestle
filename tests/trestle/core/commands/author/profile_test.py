@@ -115,6 +115,7 @@ def test_profile_generate_assemble(
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # if set_parameters is true, the yaml header will contain all the parameters
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
         if add_header:

@@ -391,8 +391,8 @@ class CatalogInterface():
         return set_param_dict
 
     @staticmethod
-    def _get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str,
-                                                                               common.Parameter]) -> Dict[str, str]:
+    def _get_profile_param_dict(control: cat.Control,
+                                profile_param_dict: Dict[str, common.Parameter]) -> Dict[str, common.Parameter]:
         """
         Get the dict of params for this control including possible overrides made by the profile modifications.
 
@@ -403,6 +403,7 @@ class CatalogInterface():
         Returns:
             mapping of param ids to their final parameter states after possible modify by the profile setparameters
         """
+        # get the mapping of param_id's to params for this control, including those with no value set
         param_dict = ControlIOReader.get_control_param_dict(control, False)
         for key in param_dict.keys():
             if key in profile_param_dict:
