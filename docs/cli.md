@@ -10,13 +10,13 @@ To support each of these use cases trestle creates an opinionated directory stru
 
 ## Opinionated directory structure
 
-Trestle relies on an opinionated directory structure, similar to `git`, `go`, or `auditree`, to manage the workflow. Most trestle commands are restricted to working within an initialized directory tree.
+Trestle relies on an opinionated directory structure (trestle workspace), similar to `git`, `go`, or `auditree`, to manage the workflow. Most trestle commands are restricted to working within an initialized directory tree.
 
 The directory structure setup by trestle has three major elements:
 
 - A `.trestle` hidden folder.
 - A `dist` folder.
-- Folders for each of the OSCAL schemas.
+- Folders for each of the top level OSCAL models.
 
 The outline of the schema is below:
 
@@ -26,6 +26,7 @@ The outline of the schema is below:
 ├── dist
 │   ├── catalogs
 │   ├── profiles
+│   ├── component-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
@@ -40,6 +41,8 @@ The outline of the schema is below:
 ```
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuration files, caches and templates.
+
+`dist` directory will contain the assembled version of the top level models located on the source model directories.
 
 The bulk of the folder structure is used to represent each of the *top level schemas* or *top level models* such as `catalogs` and `profiles`. For each of these directories the following root structure is maintained:
 
@@ -62,11 +65,11 @@ which appears, for a catalog a user decides is titled nist-800-53, as:
 
 ```
 
-`dist` directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.
+In most of the places in the documentation we use `json` format for specifying model files, but they are equally applicable to `yaml` format also. The default format is `json`, and `yaml` is supported on best effort basis. Within one model directory the two different formats should not be mixed.
 
 ### Support for subdivided document structures
 
-The files constructed by OSCAL can run into the tens of thousands of lines of yaml or formatted json. At this size the
+The files constructed by OSCAL can run into tens of thousands of lines of yaml or formatted json. At this size the
 files become completely unmanageable for users. To combat this, trestle can `trestle split` a file into many smaller files and later merge those split files together.
 
 Directory structures such as the one below can represent OSCAL document structures. Users are strongly encourage to rely on split and merge to code these structures.
@@ -110,7 +113,7 @@ Users can query the contents of files using `trestle describe`, and probe the co
 
 OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
-This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestles underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
+This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
 
 ### Rules for element path
 
@@ -119,7 +122,7 @@ This accessing method is called 'element path' and is similar to _jsonPath_. Com
 1. Element paths are relative to the file.
    1. e.g. For `metadata.json` roles would be referred to as `metadata.roles`, from the catalog file that would be `catalog.metadata.roles`
 1. Arrays can be handled by a wild card `*` or a numerical index for a specific index.
-   1. `catalog.groups.*` to refer to each oscal group
+   1. `catalog.groups.*` to refer to each group in a catalog
    1. `catalog.groups.*.controls.*` to refer to 'for each control under a top level group'
    1. For NIST 800-53 `catalog.groups.0.controls.0.`
 1. On \*nix platforms if using the wildcard the element path argument should be wrapped in quotes to prevent problems with the shell interpreting the wild card before trestle can
@@ -136,7 +139,7 @@ Trestle provides utilities for converting from element path to trestle's python 
 
 ## `trestle init`
 
-This command will create a trestle project in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
+This command will create (initialize) a trestle workspace in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
 
 ```text
 .
@@ -144,6 +147,7 @@ This command will create a trestle project in the current directory with the nec
 ├── dist
 │   ├── catalogs
 │   ├── profiles
+│   ├── component-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
@@ -159,13 +163,13 @@ This command will create a trestle project in the current directory with the nec
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands.
 
-`dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
+`dist` directory will contain the merged or assembled version of the top level models located on the source model directories which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
 
 Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the `trestle` commands and subcommands MUST NOT be changed manually.
 
 ## `trestle create`
 
-This command will create a bare-bones sample file for one of the OSCAL models.  For example, `trestle create catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
+This command will create a bare-bones sample file for one of the top level OSCAL models.  For example, `trestle create catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
 
 ```text
 .
@@ -191,9 +195,6 @@ The following options are supported:
 - `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
-
-The initial level of decomposition of each type of model varies according to the model type.
-This default or reference decomposition behaviour can be changed by modifying the rules in a `.trestle/config file`. These rules can be written as a sequence of `trestle split` commands.
 
 Passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
 
@@ -240,7 +241,7 @@ If the element is of JSON/YAML type array list and you want trestle to create a 
 
 If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
 
-Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if we do `trestle split -f catalog.json -e 'catalog.*'` we end up with:
+Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if you do `trestle split -f catalog.json -e 'catalog.*'` you end up with:
 
 ```text
 catalogs
@@ -252,7 +253,7 @@ catalogs
  ┃ ┗ catalog.json
 ```
 
-If I then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` I would end up with:
+If you then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` you would end up with:
 
 ```text
 catalogs
@@ -266,7 +267,7 @@ catalogs
  ┃ ┗ catalog.json
 ```
 
-If instead I had specified `-e 'metadata.roles.*'` I would get:
+If instead you had specified `-e 'metadata.roles.*'` you would get:
 
 ```text
 my_catalog
@@ -298,9 +299,7 @@ The following option is required:
 
 - `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json` or the split `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`.
-If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component
-split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
+For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json` or the split `catalog` directory exists, the property `metadata` from `metadata.json` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
 
 ## `trestle describe`
 
@@ -361,14 +360,13 @@ Note that the type of the file is now `stripped.Catalog` and it no longer contai
 
 ## `trestle partial-object-validate`
 
-OSCAL objects are extremely large. Some systems may only be able to produce partial OSCAL objects. For example
-the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
+OSCAL objects may be extremely large. Some systems may only be able to produce partial OSCAL objects. For example, the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
 
 `trestle partial-object-validate` allows the validation of any sub-element/attribute using element path.
 
 Using the example above `trestle partial-object-validate -f results.json -e asssesment-results.results`.
 
-The file is not required to be in the trestle project or required to be a specific file name.
+The file is not required to be in the trestle directory or required to be a specific file name.
 
 ### Example valid element-paths
 
@@ -390,7 +388,7 @@ trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 
 Similarly, if the item imported is a profile, a corresponding href should point to a json file in the `profiles` directory.
 
-Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the trestle root directory to the actual
+Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the top level models directory to the actual
 catalog file.  The profile itself, which is having its imports modified, is just indicated by its name with the `-n` option.
 
 If the profile has more than one import, you can display the corresponding hrefs with:
@@ -422,7 +420,7 @@ This command assembles all contents (files and directories) representing a speci
 
 `$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53`
 
-will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
+will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON (e.g. based on the file extension), however, the output will be generated as YAML/JSON as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
 ## `trestle add`
 
@@ -663,7 +661,7 @@ ssg-rhel7-ds-cis-111.222.333.444-pod:
 
 **metadata format**
 
-The *oscal_metadata.yaml* file comprises one or more mappings. Below is shown the
+The *oscal-metadata.yaml* file comprises one or more mappings. Below is shown the
 format of a single mapping. The items in angle brackets are to be replaced with
 desired values for augmenting the produced OSCAL.
 
@@ -1282,7 +1280,7 @@ Example spread-sheet-file:
 Example component-definition.json:
 </span>
 
-[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
+[/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
 
 ### spread sheet to component definition mapping
 

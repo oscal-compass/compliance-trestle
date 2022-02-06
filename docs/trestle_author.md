@@ -5,7 +5,7 @@
 The premise of trestle is to support managing compliance artifacts as code.
 When this is considered, many organisations using `{github|gitlab|bitbucket}` rely on markdown documents for documentary artifacts that may either directly or indirectly support compliance efforts.
 
-To support this trestle has the concept of 'governing' documents that are authored documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.
+To support this, trestle has the concept of 'governing' documents that are authored documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.
 
 Living in the `GitOps` world this capability is anchored with `markdown` files as the core of the workflows. Currently `drawio` files are also supported for a subset of enforcement mechanisms.
 
@@ -117,9 +117,9 @@ This capability, where available, is activated by `--governed-heading` or `-gh`
 
 ### Drawio enforcement mechanisms
 
-Drawio or [diagrams.net](https://app.diagrams.net/) is a diagramming platform which has significant use for architecture diagrams. In the context of governance of content trestle is supporting enforcement of metadata.
+Drawio or [diagrams.net](https://app.diagrams.net/) is a diagramming platform which has significant use for architecture diagrams. In the context of governance of content, trestle is supporting enforcement of metadata.
 
-Drawio (or `mxgraph`) files have a set of data fields. In a drawio file this is available the edit menu as *edit data*. The diagram below shows how to access the (meta)data.
+Drawio (or `mxgraph`) files have a set of data fields. In a drawio file this is available in the edit menu as *edit data*. The diagram below shows how to access the (meta)data.
 
 ![Accessing the drawio data editor](assets/drawio_data_menu.png "Accessing the drawio data editor")
 
@@ -170,7 +170,7 @@ version _of that document_ (be it an instance or the template itself). This mean
 
 ## `trestle author folders`
 
-\`author folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
+`author folders` is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
 
 For example given the following template setup using `trestle author folders setup -tn my_task_2`
 
@@ -185,7 +185,7 @@ trestle_root
  ┃ ┗ config.ini
 ```
 
-Each task folder is required to meet template requirements for both `a_template.md`, `another_template.md`, and template.drawio.
+Each task folder is required to meet template requirements for both `a_template.md`, `another_template.md`, and `template.drawio`.
 The names, numbers, and nesting of folders is user specifiable, however, unlike `docs` the names must be carried over to each instances.
 
 Following the similar structure of `docs`, measurement occurs in the `my_task_2` where this structure is enforced for every directory.
@@ -235,7 +235,7 @@ version _of that document_ (be it an instance or the template itself). This mean
 
 ## `trestle author headers`
 
-Trestle author headers supports a different usecase that of `docs` and `folders` above: Some content is governed, however, it the content is non-standardized.
+Trestle author headers supports a different usecase than that of `docs` and `folders` above: some content is governed, however, the content is non-standardized.
 
 The result: metadata but not content needs to be measured. `author headers` provides this functionality for drawio and markdown files.
 
@@ -246,7 +246,7 @@ e.g.:
 ```text
 trestle_root
 ┣ .trestle
-┃ ┣ md
+┃ ┣ author
 ┃ ┃ ┗ my_task_2
 ┃ ┃ ┃ ┣ template.md
 ┃ ┃ ┃ ┗ template.drawio
@@ -272,7 +272,7 @@ If `--task-name` is not provided all folders in the repository will be measured.
 
 #### Exclude (`-ex`, `--exclude`)
 
-Primarily intended for use with global (`-g`), exclude will remove any _directory_ from the search scope of trestle author headers. Must be a relative path to the root of a trestle project, however, can be multiple levels deep (e.g. `--exclude=architecture/drafts`) would allow content in `architecture/diagrams` to still be indexed to find the header.
+Primarily intended for use with global (`-g`), exclude will remove any _directory_ from the search scope of trestle author headers. Must be a relative path to the root of a trestle directory, however, can be multiple levels deep (e.g. `--exclude=architecture/drafts`) would allow content in `architecture/diagrams` to still be indexed to find the header.
 
 #### Ignore files or folders from validation (`-ig`, `--ignore`)
 

@@ -13,7 +13,7 @@ Before embarking on a more ambitious contribution, please quickly [get in touch]
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
-We have also adopted [Contributor Covenant Code of Conduct](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/).
+We have also adopted [Contributor Covenant Code of Conduct](https://ibm.github.io/compliance-trestle/mkdocs_code_of_conduct/).
 
 ### Proposing new features
 
@@ -32,7 +32,7 @@ pull request so it can be tracked.
 The project maintainers use LGTM (Looks Good To Me) in comments on the code
 review to indicate acceptance. A change requires LGTMs from one of the maintainers.
 
-For a list of the maintainers, see the [MAINTAINERS.md](https://ibm.github.io/compliance-trestle/maintainers/) page.
+For a list of the maintainers, see the [maintainers](https://ibm.github.io/compliance-trestle/maintainers/) page.
 
 ### Trestle merging and release workflow
 
@@ -105,7 +105,7 @@ e.g.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://ibm.github.io/compliance-trestle/contributing/DCO.md) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
+same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://ibm.github.io/compliance-trestle/contributing/DCO/) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
 uses to manage code contributions.
 
 We simply ask that when submitting a patch for review, the developer
@@ -184,7 +184,7 @@ Both of these repositories are submodules in the trestle project. In order to de
 ### Code style and formating
 
 `trestle` uses [yapf](https://github.com/google/yapf) for code formatting and [flake8](https://flake8.pycqa.org/en/latest/) for code styling.  It also uses [pre-commit](https://pre-commit.com/) hooks that are integrated into the development process and the CI. When you run `make develop` you are ensuring that the pre-commit hooks are installed and updated to their latest versions for this repository. This ensures that all delivered code has been properly formatted
-and passes the linter rules.  See the [pre-commit configuration file](<>)./.pre-commit-config.yaml) for details on
+and passes the linter rules.  See the [pre-commit configuration file](https://github.com/IBM/compliance-trestle/blob/develop/.pre-commit-config.yaml) for details on
 `yapf` and `flake8` configurations.
 
 Since `yapf` and `flake8` are installed as part of the `pre-commit` hooks, running `yapf` and `flake8`
