@@ -42,6 +42,8 @@ The outline of the schema is below:
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuration files, caches and templates.
 
+`dist` directory will contain the assembled version of the top level models located on the source model directories.
+
 The bulk of the folder structure is used to represent each of the *top level schemas* or *top level models* such as `catalogs` and `profiles`. For each of these directories the following root structure is maintained:
 
 ```text
@@ -63,9 +65,7 @@ which appears, for a catalog a user decides is titled nist-800-53, as:
 
 ```
 
-`dist` directory will contain the assembled version of the top level models located on the source model directories which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.
-
-In most of the places in the documentation we use `json` format for specifying model files, but they are equally applicable to `yaml` format also.
+In most of the places in the documentation we use `json` format for specifying model files, but they are equally applicable to `yaml` format also. The default format is `json`, and `yaml` is supported on best effort basis. Within one model directory the two different formats should not be mixed.
 
 ### Support for subdivided document structures
 
@@ -196,9 +196,6 @@ The following options are supported:
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
 
-The initial level of decomposition of each type of model varies according to the model type.
-This default or reference decomposition behaviour can be changed by modifying the rules in `.trestle/config.ini` file. These rules can be written as a sequence of `trestle split` commands.
-
 Passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
 
 ## `trestle import`
@@ -244,7 +241,7 @@ If the element is of JSON/YAML type array list and you want trestle to create a 
 
 If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
 
-Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if I do `trestle split -f catalog.json -e 'catalog.*'` I end up with:
+Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if you do `trestle split -f catalog.json -e 'catalog.*'` you end up with:
 
 ```text
 catalogs
@@ -256,7 +253,7 @@ catalogs
  ┃ ┗ catalog.json
 ```
 
-If I then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` I would end up with:
+If you then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` you would end up with:
 
 ```text
 catalogs
@@ -270,7 +267,7 @@ catalogs
  ┃ ┗ catalog.json
 ```
 
-If instead I had specified `-e 'metadata.roles.*'` I would get:
+If instead you had specified `-e 'metadata.roles.*'` you would get:
 
 ```text
 my_catalog
@@ -302,7 +299,7 @@ The following option is required:
 
 - `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json | catalog.yaml` or the split `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json` or `catalog.yaml`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
+For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json` or the split `catalog` directory exists, the property `metadata` from `metadata.json` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
 
 ## `trestle describe`
 
@@ -363,7 +360,7 @@ Note that the type of the file is now `stripped.Catalog` and it no longer contai
 
 ## `trestle partial-object-validate`
 
-OSCAL objects are extremely large. Some systems may only be able to produce partial OSCAL objects. For example, the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
+OSCAL objects may be extremely large. Some systems may only be able to produce partial OSCAL objects. For example, the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
 
 `trestle partial-object-validate` allows the validation of any sub-element/attribute using element path.
 

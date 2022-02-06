@@ -170,7 +170,7 @@ version _of that document_ (be it an instance or the template itself). This mean
 
 ## `trestle author folders`
 
-\`author folders\` is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
+`author folders` is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
 
 For example given the following template setup using `trestle author folders setup -tn my_task_2`
 
