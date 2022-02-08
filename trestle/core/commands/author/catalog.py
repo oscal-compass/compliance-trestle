@@ -169,7 +169,7 @@ class CatalogAssemble(AuthorCommonCommand):
             except Exception as e:
                 raise TrestleError(f'Error loading original catalog {orig_cat_name}: {e}')
             orig_cat_interface = CatalogInterface(orig_cat)
-            orig_cat_interface.merge_catalog(catalog_interface)
+            orig_cat_interface.merge_catalog(catalog_interface, True)
             catalog = orig_cat_interface.get_catalog()
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
