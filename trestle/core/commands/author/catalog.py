@@ -17,6 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
+from typing import Optional
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -29,6 +30,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
 
@@ -117,16 +119,20 @@ class CatalogAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Catalog'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        name_help_str = 'Optional name of the original catalog used to generate markdown'
+        self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
         return CatalogAssemble.assemble_catalog(
-            trestle_root=trestle_root, md_name=args.markdown, catalog_name=args.output
+            trestle_root=trestle_root, md_name=args.markdown, catalog_name=args.output, orig_cat_name=args.name
         )
 
     @staticmethod
-    def assemble_catalog(trestle_root: pathlib.Path, md_name: str, catalog_name: str) -> int:
+    def assemble_catalog(
+        trestle_root: pathlib.Path, md_name: str, catalog_name: str, orig_cat_name: Optional[str]
+    ) -> int:
         """
         Assemble the markdown directory into a json catalog model file.
 
@@ -134,12 +140,14 @@ class CatalogAssemble(AuthorCommonCommand):
             trestle_root: The trestle root directory
             md_name: The name of the directory containing the markdown control files for the ssp
             catalog_name: The output name of the catalog model to be created from the assembly
+            orig_cat_name: Optional name of the original json catalog that the markdown controls will replace
 
         Returns:
             0 on success, 1 otherwise
 
         Notes:
-            If the destination catalog_name model already exists in the trestle project, it is erased and overwritten.
+            If the destination catalog_name model already exists in the trestle project, it is overwritten.
+            If no original catalog name is provided, the catalog is created anew using only the markdown content.
         """
         md_dir = trestle_root / md_name
         if not md_dir.exists():
@@ -153,6 +161,17 @@ class CatalogAssemble(AuthorCommonCommand):
         if catalog_interface.get_count_of_controls_in_catalog(True) == 0:
             logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
             return CmdReturnCodes.COMMAND_ERROR.value
+
+        # if original catalog given then merge the markdown controls into it
+        if orig_cat_name:
+            try:
+                orig_cat = ModelUtils.load_top_level_model(trestle_root, orig_cat_name, Catalog)
+            except Exception as e:
+                raise TrestleError(f'Error loading original catalog {orig_cat_name}: {e}')
+            orig_cat_interface = CatalogInterface(orig_cat)
+            orig_cat_interface.merge_catalog(catalog_interface)
+            catalog = orig_cat_interface.get_catalog()
+
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
             logger.info('Creating catalog from markdown and destination catalog directory exists, so overwriting.')

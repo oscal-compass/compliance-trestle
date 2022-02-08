@@ -23,6 +23,7 @@ import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
+from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
 from trestle.core.trestle_base_model import TrestleBaseModel
@@ -310,6 +311,10 @@ class CatalogInterface():
         """Replace the control in the control_dict after modifying it."""
         self._control_dict[control.id].control = control
 
+    def delete_control(self, control_id: str) -> None:
+        """Delete the control from the control_dict based on id."""
+        self._control_dict.pop(control_id, None)
+
     def get_catalog(self, update=True) -> cat.Catalog:
         """Safe method to get catalog after forced update from catalog dict."""
         if update:
@@ -317,15 +322,25 @@ class CatalogInterface():
         return self._catalog
 
     def _update_all_controls_in_list(self, controls: List[cat.Control]) -> List[cat.Control]:
-        """Given a list of controls, create fresh list pulled from the control dict."""
+        """
+        Given a list of controls, create fresh list pulled from the control dict.
+
+        Args:
+            controls: a list of controls in the original catalog
+
+        Returns:
+            The new list of updated controls, possibly with some missing if they have been removed from the dict
+        """
         new_list: List[cat.Control] = []
         for control in controls:
             # first update the control itself by getting it from the dict
             control = self.get_control(control.id)
-            # then update any controls it contains from the dict
-            if control.controls:
-                control.controls = self._update_all_controls_in_list(control.controls)
-            new_list.append(control)
+            # no warning given if control not found in dict.  it is assumed to have been removed from the catalog.
+            if control is not None:
+                # then update any controls it contains from the dict
+                if control.controls:
+                    control.controls = self._update_all_controls_in_list(control.controls)
+                new_list.append(control)
         return new_list
 
     def _update_all_controls_in_group(self, group: cat.Group) -> None:
@@ -391,8 +406,9 @@ class CatalogInterface():
         return set_param_dict
 
     @staticmethod
-    def _get_profile_param_dict(control: cat.Control,
-                                profile_param_dict: Dict[str, common.Parameter]) -> Dict[str, common.Parameter]:
+    def _get_profile_param_dict(
+        control: cat.Control, profile_param_dict: Dict[str, common.Parameter], values_only: bool
+    ) -> Dict[str, common.Parameter]:
         """
         Get the dict of params for this control including possible overrides made by the profile modifications.
 
@@ -403,8 +419,8 @@ class CatalogInterface():
         Returns:
             mapping of param ids to their final parameter states after possible modify by the profile setparameters
         """
-        # get the mapping of param_id's to params for this control, including those with no value set
-        param_dict = ControlIOReader.get_control_param_dict(control, False)
+        # get the mapping of param_id's to params for this control, excluding those with no value set
+        param_dict = ControlIOReader.get_control_param_dict(control, values_only)
         for key in param_dict.keys():
             if key in profile_param_dict:
                 param_dict[key] = profile_param_dict[key]
@@ -448,7 +464,7 @@ class CatalogInterface():
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
             if set_parameters:
-                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict)
+                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, True)
                 param_value_dict: Dict[str, str] = {}
                 for key, value in param_dict.items():
                     param_value_dict[key] = ControlIOReader.param_to_str(value, ParameterRep.VALUE_OR_STRING_NONE)
@@ -626,3 +642,96 @@ class CatalogInterface():
                 if part.name not in sections:
                     sections.append(part.name)
         return sections
+
+    @staticmethod
+    def merge_controls(dest: cat.Control, src: cat.Control, cull_params: bool) -> None:
+        """
+        Merge the src control into dest.
+
+        Args:
+            dest: destination control into which content will be added
+            src: source control with new content
+            cull_params: remove parameters from original that aren't in the new control
+        """
+        dest.parts = src.parts
+        src_map = {param.id: param for param in as_list(src.params)}
+        new_params: List[common.Parameter] = []
+        for param in as_list(dest.params):
+            if param.id in src_map:
+                param.values = src_map[param.id].values
+                new_params.append(param)
+            elif not cull_params:
+                new_params.append(param)
+        extra_ids = {src.id for src in src_map}.difference({param.id for param in new_params})
+        for id_ in extra_ids:
+            new_params.append(src_map[id_])
+        dest.params = new_params
+
+    def _find_control_in_group(self, group_id: str) -> Tuple[str, ControlHandle]:
+        """
+        Find a representative control for this group and its control handle.
+
+        This is a simple way to get group info (title etc.) given only group id.
+        It is not intended for high performance loops.  Use only as needed.
+        """
+        for control_id, control_handle in self._control_dict.items():
+            if control_handle.group_id == group_id:
+                return control_id, control_handle
+        raise TrestleError(f'No controls found for group {group_id}')
+
+    def merge_catalog(self, catalog: cat.Catalog, cull_missing_params: bool) -> None:
+        """
+        Merge the provided new catalog controls into the original catalog in this catalog interface.
+
+        Args:
+            catalog: catalog containing controls that are merged into the current catalog of the interface
+            cull_missing_params: if parameters aren't present in the new control, cull them from the final one
+
+        Notes:
+            This is mainly to support the reading of a catalog from markdown.  It allows retention of content such as
+            metadata and backmatter, along with labels and other parameter attributes that aren't in markdown.
+            The list of controls and group structure is specified by the markdown structure - but this doesn't allow
+            controls to contain controls.  Group lists are specified per directory.
+
+            Reading the markdown tells you groups and controls in them - and groups in groups.
+            Controls cannot change groups.  If the control was in the original json, its parts are replaced,
+            including its parameters.  Only values may be specified.  If no value specified, the value is unset in json.
+        """
+        cat_interface = CatalogInterface(catalog)
+        # for each control you know its group and params
+        # if culling then replace params directly
+        # otherwise merge them in
+        # either replace control or append it
+        # keep list of all controls and remove any that aren't present
+
+        # the param_dict is completely flat and has has group info for each control
+        # when catalog is updated, controls are pulled in from the dict
+        # if control is not there it is culled during update
+
+        # for each control in new catalog you know group info
+        #
+
+        for src in cat_interface.get_all_controls_from_dict():
+            group_id, _, _ = cat_interface.get_group_info_by_control(src.id)
+            dest = self.get_control(src.id)
+            if dest:
+                dest_group, _, _ = self.get_group_info_by_control(dest.id)
+                if dest_group != group_id:
+                    raise TrestleError(f'Markdown for control {src.id} has different group id.')
+                CatalogInterface.merge_controls(dest, src, cull_missing_params)
+                self.replace_control(dest)
+            else:
+                # need to add the control knowing its group must already exist
+                # get group info from control already present in group
+                _, control_handle = self._find_control_in_group(group_id)
+                # add the control and its handle to the param_dict
+                self._control_dict[src.id] = control_handle
+
+        # now need to cull any controls that are not in the src catalog
+        handled_ids = set(cat_interface._control_dict.keys())
+        orig_ids = set(self._control_dict.keys())
+        extra_ids = orig_ids.difference(handled_ids)
+        for extra_id in extra_ids:
+            self._control_dict.pop(extra_id)
+
+        self.update_catalog_controls()

@@ -119,7 +119,9 @@ class ProfileGenerate(AuthorCommonCommand):
         """
         try:
             _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)
-            catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
+            catalog = ProfileResolver().get_resolved_profile_catalog(
+                trestle_root, profile_path, True, None, ParameterRep.LEAVE_MOUSTACHE
+            )
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,

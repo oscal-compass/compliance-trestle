@@ -81,7 +81,10 @@
             "params": [
               {
                 "id": "ac-1_prm_1",
-                "label": "organization-defined personnel or roles"
+                "label": "organization-defined personnel or roles",
+                "values": [
+                  "Param_1_value_in_catalog"
+                ]
               },
               {
                 "id": "ac-1_prm_2",

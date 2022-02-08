@@ -42,6 +42,7 @@ logger = logging.getLogger(__name__)
 class ParameterRep(Enum):
     """Enum for ways to represent a parameter."""
 
+    LEAVE_MOUSTACHE = 0
     VALUE_OR_NONE = 1
     VALUE_OR_STRING_NONE = 2
     LABEL_OR_CHOICES = 3
@@ -1158,7 +1159,7 @@ class ControlIOReader():
         param_rep: ParameterRep,
         verbose=False,
         brackets=False,
-        params_format: Optional[str] = None
+        params_format: Optional[str] = None,
     ) -> Optional[str]:
         """
         Convert parameter to string based on best available representation.

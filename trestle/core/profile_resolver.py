@@ -18,6 +18,7 @@ import pathlib
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
+from trestle.core.control_io import ParameterRep
 from trestle.core.resolver._import import Import
 
 logger = logging.getLogger(__name__)
@@ -31,12 +32,13 @@ class ProfileResolver():
         trestle_root: pathlib.Path,
         profile_path: pathlib.Path,
         block_adds: bool = False,
-        params_format: str = None
+        params_format: str = None,
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) -> cat.Catalog:
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
-        import_filter = Import(trestle_root, import_, True, block_adds, params_format)
+        import_filter = Import(trestle_root, import_, True, block_adds, params_format, param_rep)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result

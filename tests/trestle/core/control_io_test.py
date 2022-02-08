@@ -397,7 +397,10 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
+        assert 'orig' in orig_control_read.params[0].values[0].__root__
     new_control_read, _ = ControlIOReader.read_control(control_path)
     # insert the new param in the orig control so we can compare the two controls
-    orig_control_read.params.append(new_control_read.parts[1])
+    orig_control_read.params.append(new_control_read.params[1])
+    if not preserve_header_values:
+        orig_control_read.params[0] = new_control_read.params[0]
     assert test_utils.controls_equivalent(orig_control_read, new_control_read)

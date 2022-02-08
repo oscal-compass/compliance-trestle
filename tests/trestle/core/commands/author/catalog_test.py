@@ -84,7 +84,7 @@ def test_catalog_generate_assemble(
         assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
-        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
+        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, None)
 
     cat_orig = cat.Catalog.oscal_read(catalog_path)
     cat_new = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
@@ -96,7 +96,7 @@ def test_catalog_generate_assemble(
     ac1.parts[0].parts.append(new_part)
     interface_orig.replace_control(ac1)
     interface_orig.update_catalog_controls()
-    assert test_utils.catalog_interface_equivalent(interface_orig, cat_new)
+    assert test_utils.catalog_interface_equivalent(interface_orig, cat_new, False)
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
@@ -179,10 +179,14 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control = catalog_interface.get_control('ac-1')
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
-    control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict)
+    control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict, False)
     assert ControlIOReader.param_to_str(
         control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'all alert personnel'
+    assert ControlIOReader.param_to_str(
+        control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'monthly'
+    # param 7 has no value so its label will be used
     assert ControlIOReader.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
