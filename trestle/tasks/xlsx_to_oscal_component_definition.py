@@ -408,7 +408,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             parameter_name = parameter_name.strip()
             if ' ' in parameter_name:
                 parameter_name = parameter_name.replace(' ', '_')
-                logger.info(f'row={row} edited {parameter_name} to remove whitespace')
+                logger.info(f'row {row} edited {parameter_name} to remove whitespace')
             values = self._get_parameter_values(work_sheet, row)
             guidelines = self._get_guidelines(values)
             href = self._get_namespace() + '/' + component_name.replace(' ', '%20')
@@ -550,6 +550,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
             tdir = self._config.get('output-dir')
             tdir = tdir.replace('component-definitions', 'catalogs')
             tpth = pathlib.Path(tdir)
+            # insure output dir exists
+            tpth.mkdir(exist_ok=True, parents=True)
             tname = 'catalog.json'
             tfile = tpth / tname
             self.parameter_helper.write_parameters_catalog(
@@ -692,10 +694,11 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 parameter_parts = combined_values.split(' ', 1)
             else:
                 parameter_parts = combined_values
-            if len(parameter_parts) != 2:
-                raise RuntimeError(f'row {row} col {col} unable to parse')
-            name = parameter_parts[1].strip()
-            description = parameter_parts[0].strip()
+            if len(parameter_parts) == 2:
+                name = parameter_parts[1].strip()
+                description = parameter_parts[0].strip()
+            else:
+                logger.info(f'row {row} col {col} invalid value')
         value = name, description
         return value
 

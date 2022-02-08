@@ -138,7 +138,7 @@ def test_xlsx_execute_bad_entry(tmp_path):
     section['spread-sheet-file'] = 'tests/data/spread-sheet/bad_parameter_name_and_description.xlsx'
     tgt = xlsx_to_oscal_component_definition.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
-    assert retval == TaskOutcome.FAILURE
+    assert retval == TaskOutcome.SUCCESS
 
 
 def test_xlsx_execute_missing_column_heading(tmp_path):
