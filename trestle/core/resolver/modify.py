@@ -52,40 +52,46 @@ class Modify(Pipeline.Filter):
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
-    def _replace_id_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
-        """Find all instances of param_id in prose and replace with param_text.
+    def _replace_param_id_with_str(prose: str, param_id: str, param_str: str) -> str:
+        """Replace param_id's with param_str and check for param_1 vs. param_10."""
+        # chars that are not allowed next to the param_id
+        bad_chars = string.ascii_letters + string.digits + '._'
+        id_len = len(param_id)
+        loc = 0
+        while True:
+            if loc >= len(prose):
+                return prose
+            next_loc = prose[loc:].find(param_id)
+            if next_loc < 0:
+                return prose
+            loc += next_loc
+            if loc > 0 and prose[loc - 1] in bad_chars:
+                loc += id_len
+                continue
+            end_loc = loc + id_len
+            if end_loc == len(prose) or prose[end_loc] not in bad_chars:
+                prose = prose[:loc] + param_str + prose[end_loc:]
+                loc += len(param_str)
+                continue
+            loc += id_len
+
+    @staticmethod
+    def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
+        """Find all instances of param_ids in prose and replace each with corresponding parameter representation.
 
         Need to check all values in dict for a match
         Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
         """
         for param in param_dict.values():
-            bad_chars = string.ascii_letters + string.digits + '._'
-            new_prose = prose
-            id_len = len(param.id)
-            loc = 0
             if param.id not in prose:
                 continue
-            # handle simple case directly
+            # create the replacement text for the param_id
             param_str = ControlIOReader.param_to_str(param, param_rep)
+            # handle simple case directly
             if prose == param.id:
                 return param_str
-            # it's there, but may be param_10 instead of param_1
-            while True:
-                if loc >= len(new_prose):
-                    return new_prose
-                next_loc = new_prose[loc:].find(param.id)
-                if next_loc < 0:
-                    return new_prose
-                loc += next_loc
-                if loc > 0 and new_prose[loc - 1] in bad_chars:
-                    loc += id_len
-                    continue
-                end_loc = loc + id_len
-                if end_loc == len(new_prose) or new_prose[end_loc] not in bad_chars:
-                    new_prose = new_prose[:loc] + param_str + new_prose[end_loc:]
-                    loc += len(param_str)
-                    continue
-                loc += id_len
+            prose = Modify._replace_param_id_with_str(prose, param.id, param_str)
+        return prose
 
     @staticmethod
     def _replace_params(

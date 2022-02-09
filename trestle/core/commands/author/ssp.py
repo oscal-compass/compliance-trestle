@@ -330,24 +330,20 @@ class SSPFilter(AuthorCommonCommand):
             control_imp = ssp.control_implementation
             ssp_control_ids: Set[str] = set()
 
-            set_params = control_imp.set_parameters
             new_set_params: List[ossp.SetParameter] = []
-            if set_params is not None:
-                for set_param in set_params:
-                    control = catalog_interface.get_control_by_param_id(set_param.param_id)
-                    if control is not None:
-                        new_set_params.append(set_param)
-                        ssp_control_ids.add(control.id)
+            for set_param in as_list(control_imp.set_parameters):
+                control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                if control is not None:
+                    new_set_params.append(set_param)
+                    ssp_control_ids.add(control.id)
             control_imp.set_parameters = new_set_params if new_set_params else None
 
-            imp_requirements = control_imp.implemented_requirements
             new_imp_requirements: List[ossp.ImplementedRequirement] = []
-            if imp_requirements is not None:
-                for imp_requirement in imp_requirements:
-                    control = catalog_interface.get_control(imp_requirement.control_id)
-                    if control is not None:
-                        new_imp_requirements.append(imp_requirement)
-                        ssp_control_ids.add(control.id)
+            for imp_requirement in as_list(control_imp.implemented_requirements):
+                control = catalog_interface.get_control(imp_requirement.control_id)
+                if control is not None:
+                    new_imp_requirements.append(imp_requirement)
+                    ssp_control_ids.add(control.id)
             control_imp.implemented_requirements = new_imp_requirements
 
             # make sure all controls in the profile have implemented reqs in the final ssp

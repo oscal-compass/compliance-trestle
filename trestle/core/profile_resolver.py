@@ -15,6 +15,7 @@
 
 import logging
 import pathlib
+from typing import Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -32,7 +33,7 @@ class ProfileResolver():
         trestle_root: pathlib.Path,
         profile_path: pathlib.Path,
         block_adds: bool = False,
-        params_format: str = None,
+        params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) -> cat.Catalog:
         """Create the resolved profile catalog given a profile path."""

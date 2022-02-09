@@ -153,24 +153,24 @@ class CatalogAssemble(AuthorCommonCommand):
         if not md_dir.exists():
             logger.warning(f'Markdown directory {md_name} does not exist.')
             return CmdReturnCodes.COMMAND_ERROR.value
-        catalog_interface = CatalogInterface()
+        md_catalog_interface = CatalogInterface()
         try:
-            catalog = catalog_interface.read_catalog_from_markdown(md_dir)
+            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
-        if catalog_interface.get_count_of_controls_in_catalog(True) == 0:
+        if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
             logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
             return CmdReturnCodes.COMMAND_ERROR.value
 
         # if original catalog given then merge the markdown controls into it
         if orig_cat_name:
             try:
-                orig_cat = ModelUtils.load_top_level_model(trestle_root, orig_cat_name, Catalog)
+                orig_cat, _ = ModelUtils.load_top_level_model(trestle_root, orig_cat_name, Catalog)
             except Exception as e:
                 raise TrestleError(f'Error loading original catalog {orig_cat_name}: {e}')
             orig_cat_interface = CatalogInterface(orig_cat)
-            orig_cat_interface.merge_catalog(catalog_interface, True)
-            catalog = orig_cat_interface.get_catalog()
+            orig_cat_interface.merge_catalog(md_catalog, True)
+            md_catalog = orig_cat_interface.get_catalog()
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():
@@ -181,7 +181,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 raise TrestleError(f'OSError deleting existing catalog directory with rmtree {new_cat_dir}: {e}')
         try:
             new_cat_dir.mkdir()
-            catalog.oscal_write(new_cat_dir / 'catalog.json')
+            md_catalog.oscal_write(new_cat_dir / 'catalog.json')
         except OSError as e:
             raise TrestleError(f'OSError writing catalog from markdown to {new_cat_dir}: {e}')
         return CmdReturnCodes.SUCCESS.value

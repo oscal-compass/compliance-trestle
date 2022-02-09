@@ -24,7 +24,7 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
@@ -662,10 +662,10 @@ class CatalogInterface():
                 new_params.append(param)
             elif not cull_params:
                 new_params.append(param)
-        extra_ids = {src.id for src in src_map}.difference({param.id for param in new_params})
+        extra_ids = set(src_map).difference({param.id for param in new_params})
         for id_ in extra_ids:
             new_params.append(src_map[id_])
-        dest.params = new_params
+        dest.params = none_if_empty(new_params)
 
     def _find_control_in_group(self, group_id: str) -> Tuple[str, ControlHandle]:
         """

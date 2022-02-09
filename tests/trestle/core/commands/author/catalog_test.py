@@ -13,6 +13,7 @@
 # limitations under the License.
 """Tests for the catalog author module."""
 
+import copy
 import pathlib
 import shutil
 import sys
@@ -33,16 +34,22 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
 from trestle.oscal import profile as prof
-from trestle.oscal.common import Part, Property
+from trestle.oscal.common import ParameterValue, Part, Property
 
 markdown_name = 'my_md'
 
 
+@pytest.mark.parametrize('orig_cat', [True, False])
 @pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
-    add_header: bool, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    orig_cat: bool,
+    add_header: bool,
+    use_cli: bool,
+    dir_exists: bool,
+    tmp_trestle_dir: pathlib.Path,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
@@ -69,6 +76,8 @@ def test_catalog_generate_assemble(
         assert ac1_path.exists()
         assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
+        if orig_cat:
+            test_args.extend(f'-n {cat_name}'.split())
         if dir_exists:
             assembled_cat_dir.mkdir()
         monkeypatch.setattr(sys, 'argv', test_args)
@@ -84,7 +93,8 @@ def test_catalog_generate_assemble(
         assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
-        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, None)
+        orig_cat_name = cat_name if orig_cat else None
+        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name)
 
     cat_orig = cat.Catalog.oscal_read(catalog_path)
     cat_new = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
@@ -132,6 +142,21 @@ def test_catalog_interface_groups() -> None:
     assert interface.get_count_of_controls_in_catalog(False) == 4
     groups = list(interface.get_all_groups_from_catalog())
     assert len(groups) == 4
+
+
+@pytest.mark.parametrize('cull_params', [True, False])
+def test_catalog_interface_merge_controls(cull_params: bool, sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test merging of controls."""
+    control_a = sample_catalog_rich_controls.groups[0].controls[0]
+    control_b = copy.deepcopy(control_a)
+    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    assert control_a == control_b
+    control_b.params[0].values = [ParameterValue(__root__='new value')]
+    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    assert control_a.params[0].values[0].__root__ == 'new value'
+    control_b.params = control_b.params[:1]
+    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    assert len(control_a.params) == 1 if cull_params else 2
 
 
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
