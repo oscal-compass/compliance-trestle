@@ -30,6 +30,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.validator_helper import regenerate_uuids
 from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
@@ -169,8 +170,10 @@ class CatalogAssemble(AuthorCommonCommand):
             except Exception as e:
                 raise TrestleError(f'Error loading original catalog {orig_cat_name}: {e}')
             orig_cat_interface = CatalogInterface(orig_cat)
+            # merge the just-read md catalog into the original json
             orig_cat_interface.merge_catalog(md_catalog, True)
             md_catalog = orig_cat_interface.get_catalog()
+            md_catalog, _, _ = regenerate_uuids(md_catalog)
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():

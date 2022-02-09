@@ -156,9 +156,10 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
 
 
 def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalModel) -> bool:
-    """Test if models are equivalent except for last modified."""
+    """Test if models are equivalent except for last modified and uuid."""
     # this will change the second model as a side-effect
     model_b.metadata.last_modified = model_a.metadata.last_modified
+    model_b.uuid = model_a.uuid
     return model_a == model_b
 
 
