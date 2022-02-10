@@ -50,9 +50,9 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-phv',
-            '--preserve-header-values',
-            help=const.HELP_PRESERVE_HEADER_VALUES,
+            '-ohv',
+            '--overwrite-header-values',
+            help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -127,7 +127,7 @@ class SSPGenerate(AuthorCommonCommand):
                 prompt_responses=True,
                 additional_content=False,
                 profile=None,
-                preserve_header_values=args.preserve_header_values,
+                overwrite_header_values=args.overwrite_header_values,
                 set_parameters=False
             )
         except Exception as e:

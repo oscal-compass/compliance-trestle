@@ -434,7 +434,7 @@ class CatalogInterface():
         prompt_responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        preserve_header_values: bool = False,
+        overwrite_header_values: bool = False,
         set_parameters: bool = False
     ) -> None:
         """
@@ -447,7 +447,7 @@ class CatalogInterface():
             prompt_responses: Whether to prompt for responses in the control markdown
             additional_content: Should the additional content be printed corresponding to profile adds
             profile: Optional profile containing the adds making up additional content
-            preserve_header_values: Retain existing values in markdown header content but add new content
+            overwrite_header_values: Overwrite existing values in markdown header content but add new content
             set_parameters: Set header values based on params in the control and in the profile
 
         Returns:
@@ -487,7 +487,7 @@ class CatalogInterface():
                 additional_content,
                 prompt_responses,
                 profile,
-                preserve_header_values
+                overwrite_header_values
             )
 
     @staticmethod

@@ -47,9 +47,9 @@ class CatalogGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-phv',
-            '--preserve-header-values',
-            help=const.HELP_PRESERVE_HEADER_VALUES,
+            '-ohv',
+            '--overwrite-header-values',
+            help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -77,7 +77,7 @@ class CatalogGenerate(AuthorCommonCommand):
         markdown_path = trestle_root / args.output
 
         return self.generate_markdown(
-            trestle_root, catalog_path, markdown_path, yaml_header, args.preserve_header_values
+            trestle_root, catalog_path, markdown_path, yaml_header, args.overwrite_header_values
         )
 
     def generate_markdown(
@@ -86,7 +86,7 @@ class CatalogGenerate(AuthorCommonCommand):
         catalog_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        preserve_header_values: bool
+        overwrite_header_values: bool
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
@@ -99,7 +99,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 prompt_responses=False,
                 additional_content=False,
                 profile=None,
-                preserve_header_values=preserve_header_values,
+                overwrite_header_values=overwrite_header_values,
                 set_parameters=True
             )
         except TrestleNotFoundError as e:

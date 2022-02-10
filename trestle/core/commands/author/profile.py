@@ -52,9 +52,9 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument(
-            '-phv',
-            '--preserve-header-values',
-            help=const.HELP_PRESERVE_HEADER_VALUES,
+            '-ohv',
+            '--overwrite-header-values',
+            help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -87,7 +87,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 profile_path,
                 markdown_path,
                 yaml_header,
-                args.preserve_header_values,
+                args.overwrite_header_values,
                 args.set_parameters
             )
         except Exception as e:
@@ -101,7 +101,7 @@ class ProfileGenerate(AuthorCommonCommand):
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        preserve_header_values: bool,
+        overwrite_header_values: bool,
         set_parameters: bool
     ) -> int:
         """Generate markdown for the controls in the profile.
@@ -111,7 +111,7 @@ class ProfileGenerate(AuthorCommonCommand):
             profile_path: Path of the profile json file
             markdown_path: Path to the directory into which the markdown will be written
             yaml_header: Dict to merge into the yaml header of the control markdown
-            preserve_header_values: Don't change values in the markdown header but allow new items to be added
+            overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
             set_parameters: Generate list of control parameters in yaml headers, with values if set by this profile
 
         Returns:
@@ -130,7 +130,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 prompt_responses=False,
                 additional_content=True,
                 profile=profile,
-                preserve_header_values=preserve_header_values,
+                overwrite_header_values=overwrite_header_values,
                 set_parameters=set_parameters
             )
         except TrestleNotFoundError as e:

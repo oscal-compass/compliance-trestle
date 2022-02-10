@@ -188,8 +188,8 @@ def test_profile_generate_assemble(
         assert prose.find(exp_str) >= 0
 
 
-@pytest.mark.parametrize('phv', [True, False])
-def test_profile_phv(phv: bool, tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('ohv', [True, False])
+def test_profile_ohv(ohv: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile generate assemble with preserve-header-values."""
     ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir)
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -199,7 +199,7 @@ def test_profile_phv(phv: bool, tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate = ProfileGenerate()
     yaml = YAML()
     yaml_header = yaml.load(yaml_header_path.open('r'))
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, phv, True)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv, True)
 
     edit_files(ac1_path, True, True, multi_guidance_dict)
 

@@ -350,20 +350,20 @@ class ControlIOWriter():
         return prose.strip()
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], preserve_dest_values: bool) -> None:
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
         """
         Merge dict src into dest.
 
         New items are always added from src to dest.
-        Items present in both will not override dest if preserve_dest_values is True.
+        Items present in both will be overriden dest if overwrite_header_values is True.
         """
         for key in src.keys():
             if key in dest:
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], preserve_dest_values)
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
                 # otherwise override dest if needed
-                elif not preserve_dest_values:
+                elif overwrite_header_values:
                     dest[key] = src[key]
             else:
                 # if the item was not already in dest, add it from src
@@ -379,7 +379,7 @@ class ControlIOWriter():
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
-        preserve_header_values: bool,
+        overwrite_header_values: bool,
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -393,15 +393,16 @@ class ControlIOWriter():
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
-            preserve_header_values: Retain existing values in markdown header content but add new content
+            overwrite_header_values: Overwrite existing values in markdown header content but add new content
 
         Returns:
             None
 
         Notes:
             The filename is constructed from the control's id, so only the markdown directory is required.
-            If a yaml header is present in the file, new values in provided header replace those in the markdown header.
-            But if preserve_header_values then don't change any existing values, but allow addition of new content.
+            If a yaml header is present in the file, new values in provided header will not replace those in the
+            markdown header unless overwrite_header_values is true.  If it is true then overwrite any existing values,
+            but in all cases new items from the provided header will be added to the markdown header.
             If the markdown file already exists, its current header and prose are read.
         """
         control_file = dest_path / (control.id + '.md')
@@ -412,7 +413,7 @@ class ControlIOWriter():
 
         merged_header = copy.deepcopy(header)
         if yaml_header:
-            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, preserve_header_values)
+            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
 
         self._add_yaml_header(merged_header)
 
