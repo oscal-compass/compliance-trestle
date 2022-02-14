@@ -80,9 +80,11 @@ def edit_files(ac1_path: pathlib.Path, set_parameters: bool, add_header: bool, g
     assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
     # delete the value for prm_2 so the value is blank
     # replace the value for prm_3 with new value
+    # delete entire line for prm_4
     if set_parameters and add_header:
         assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_2')
         assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_3')
+        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_4')
         assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_1', '  ac-1_prm_2:\n')
         assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_2', '  ac-1_prm_3: new value\n')
 
@@ -173,6 +175,7 @@ def test_profile_generate_assemble(
     assert sp_dict['ac-1_prm_1'] == 'all personnel'
     if set_parameters and add_header:
         assert 'ac-1_prm_2' not in sp_dict
+        assert 'ac-1_prm_4' not in sp_dict
         assert sp_dict['ac-1_prm_3'] == 'new value'
     else:
         assert sp_dict['ac-1_prm_2'] == 'A thorough'

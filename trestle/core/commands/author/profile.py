@@ -29,12 +29,11 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
-from trestle.common.list_utils import as_list
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOReader, ParameterRep
+from trestle.core.control_io import ParameterRep
 from trestle.core.profile_resolver import ProfileResolver
 
 logger = logging.getLogger(__name__)
@@ -209,21 +208,12 @@ class ProfileAssemble(AuthorCommonCommand):
 
     @staticmethod
     def _replace_modify_set_params(profile: prof.Profile, param_str_dict: Dict[str, str]) -> None:
-        """Update the set_params in the profile with new values from markdown."""
+        """Replace the set_params in the profile with list and values from markdown."""
         if param_str_dict:
             if not profile.modify:
                 profile.modify = prof.Modify()
-            profile.modify.set_parameters = as_list(profile.modify.set_parameters)
-            # create mapping of original param_id to value for profile
-            # then update it with new or additional mappings in param_str_dict
-            profile_param_str_dict = {}
-            for set_param in profile.modify.set_parameters:
-                param = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
-                param_str = ControlIOReader.param_to_str(param, ParameterRep.VALUE_OR_LABEL_OR_CHOICES)
-                profile_param_str_dict[set_param.param_id] = param_str
-            profile_param_str_dict.update(param_str_dict)
-            new_set_params = []
-            for key, value in profile_param_str_dict.items():
+            new_set_params: List[prof.SetParameter] = []
+            for key, value in param_str_dict.items():
                 if value:
                     new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
             profile.modify.set_parameters = new_set_params
@@ -240,13 +230,17 @@ class ProfileAssemble(AuthorCommonCommand):
             orig_profile_name: Optional name of original profile used to generate the markdown (default is md_name)
             md_name: The name of the directory containing the markdown control files for the profile
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
-            set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile
+            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
 
         Returns:
             0 on success, 1 otherwise
 
         Notes:
             There must already be a json profile model and it will either be updated or a new json profile created.
+            This routine only loads the profile and does not generate the resolved profile catalog.  As a result it
+            cannot confirm that parameters being set actually exist in the catalog, or that the given values are
+            consistent with selection options.  But for the first case, invalid param id's would trigger an error
+            if the profile is used to generate the resolved catalog.
         """
         md_dir = trestle_root / md_name
         profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'

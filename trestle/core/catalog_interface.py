@@ -698,19 +698,6 @@ class CatalogInterface():
             including its parameters.  Only values may be specified.  If no value specified, the value is unset in json.
         """
         cat_interface = CatalogInterface(catalog)
-        # for each control you know its group and params
-        # if culling then replace params directly
-        # otherwise merge them in
-        # either replace control or append it
-        # keep list of all controls and remove any that aren't present
-
-        # the param_dict is completely flat and has has group info for each control
-        # when catalog is updated, controls are pulled in from the dict
-        # if control is not there it is culled during update
-
-        # for each control in new catalog you know group info
-        #
-
         for src in cat_interface.get_all_controls_from_dict():
             group_id, _, _ = cat_interface.get_group_info_by_control(src.id)
             dest = self.get_control(src.id)
@@ -722,7 +709,7 @@ class CatalogInterface():
                 self.replace_control(dest)
             else:
                 # need to add the control knowing its group must already exist
-                # get group info from control already present in group
+                # get group info from an arbitrary control already present in group
                 _, control_handle = self._find_control_in_group(group_id)
                 # add the control and its handle to the param_dict
                 self._control_dict[src.id] = control_handle

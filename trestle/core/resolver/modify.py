@@ -15,7 +15,6 @@
 
 import logging
 import re
-import string
 from typing import Dict, Iterator, List, Optional
 
 import trestle.oscal.catalog as cat
@@ -54,26 +53,10 @@ class Modify(Pipeline.Filter):
     @staticmethod
     def _replace_param_id_with_str(prose: str, param_id: str, param_str: str) -> str:
         """Replace param_id's with param_str and check for param_1 vs. param_10."""
-        # chars that are not allowed next to the param_id
-        bad_chars = string.ascii_letters + string.digits + '._'
-        id_len = len(param_id)
-        loc = 0
-        while True:
-            if loc >= len(prose):
-                return prose
-            next_loc = prose[loc:].find(param_id)
-            if next_loc < 0:
-                return prose
-            loc += next_loc
-            if loc > 0 and prose[loc - 1] in bad_chars:
-                loc += id_len
-                continue
-            end_loc = loc + id_len
-            if end_loc == len(prose) or prose[end_loc] not in bad_chars:
-                prose = prose[:loc] + param_str + prose[end_loc:]
-                loc += len(param_str)
-                continue
-            loc += id_len
+        pattern = r'( |^)(' + param_id + r')( |$)'
+        # non-capturing groups are odd in re.sub so capture all 3 and replace the middle one
+        replace = r'\1' + param_str + r'\3'
+        return re.sub(pattern, replace, prose)
 
     @staticmethod
     def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
