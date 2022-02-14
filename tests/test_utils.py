@@ -156,9 +156,10 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
 
 
 def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalModel) -> bool:
-    """Test if models are equivalent except for last modified."""
+    """Test if models are equivalent except for last modified and uuid."""
     # this will change the second model as a side-effect
     model_b.metadata.last_modified = model_a.metadata.last_modified
+    model_b.uuid = model_a.uuid
     return model_a == model_b
 
 
@@ -356,7 +357,7 @@ def setup_for_ssp(
         output=output_name,
         verbose=1,
         sections=sections,
-        preserve_header_values=False
+        overwrite_header_values=False
     )
 
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -459,7 +460,7 @@ def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
     return True
 
 
-def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
+def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> bool:
     """Check if the controls are equivalent."""
     if a.id != b.id:
         logging.error(f'control ids differ: |{a.id}| |{b.id}|')
@@ -470,16 +471,23 @@ def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
     if not parts_equivalent(a.parts, b.parts):
         logging.error(f'control {a.id} parts are not equivalent')
         return False
-    n_params_a = len(list_utils.as_list(a.params))
-    n_params_b = len(list_utils.as_list(b.params))
-    if n_params_a != n_params_b:
-        logging.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
-        return False
-    # FIXME cannot check controls until markdown lists sub-controls
-    return True
+
+    if strong:
+        n_params_a = len(list_utils.as_list(a.params))
+        n_params_b = len(list_utils.as_list(b.params))
+        if n_params_a != n_params_b:
+            logging.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
+            return False
+    a_param_values = [param.values for param in list_utils.as_list(a.params) if param.values is not None]
+    a_vals = [param_value.__root__ for param_values in a_param_values for param_value in param_values]
+    b_param_values = [param.values for param in list_utils.as_list(b.params) if param.values is not None]
+    b_vals = [param_value.__root__ for param_values in b_param_values for param_value in param_values]
+
+    # sub-controls are not checked here
+    return a_vals == b_vals
 
 
-def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog) -> bool:
+def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog, strong=True) -> bool:
     """Test equivalence of catalog dict contents in various ways."""
     cat_int_b = CatalogInterface(cat_b)
     if cat_int_b.get_count_of_controls_in_dict() != cat_int_a.get_count_of_controls_in_dict():
@@ -490,7 +498,7 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
             b = cat_int_b.get_control(a.id)
         except Exception as e:
             logging.error(f'error finding control {a.id} {e}')
-        if not controls_equivalent(a, b):
+        if not controls_equivalent(a, b, strong):
             logging.error(f'controls differ: {a.id}')
             return False
     return True

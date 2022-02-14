@@ -57,7 +57,8 @@ def test_oscal_dir_valid(tmp_path: pathlib.Path) -> None:
     test_utils.make_hidden_file(keep_file)
 
     assert file_utils.check_oscal_directories(tmp_path)
-    assert not hidden_file.exists()
+    # bad hidden files are not removed but user is asked to remove them
+    assert hidden_file.exists()
     assert keep_file.exists()
 
     # add some markdown readme

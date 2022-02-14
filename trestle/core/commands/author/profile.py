@@ -29,12 +29,11 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
-from trestle.common.list_utils import as_list
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOReader
+from trestle.core.control_io import ParameterRep
 from trestle.core.profile_resolver import ProfileResolver
 
 logger = logging.getLogger(__name__)
@@ -52,9 +51,9 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument(
-            '-phv',
-            '--preserve-header-values',
-            help=const.HELP_PRESERVE_HEADER_VALUES,
+            '-ohv',
+            '--overwrite-header-values',
+            help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -87,7 +86,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 profile_path,
                 markdown_path,
                 yaml_header,
-                args.preserve_header_values,
+                args.overwrite_header_values,
                 args.set_parameters
             )
         except Exception as e:
@@ -101,7 +100,7 @@ class ProfileGenerate(AuthorCommonCommand):
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        preserve_header_values: bool,
+        overwrite_header_values: bool,
         set_parameters: bool
     ) -> int:
         """Generate markdown for the controls in the profile.
@@ -110,6 +109,8 @@ class ProfileGenerate(AuthorCommonCommand):
             trestle_root: Root directory of the trestle workspace
             profile_path: Path of the profile json file
             markdown_path: Path to the directory into which the markdown will be written
+            yaml_header: Dict to merge into the yaml header of the control markdown
+            overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
             set_parameters: Generate list of control parameters in yaml headers, with values if set by this profile
 
         Returns:
@@ -117,10 +118,19 @@ class ProfileGenerate(AuthorCommonCommand):
         """
         try:
             _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)
-            catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
+            catalog = ProfileResolver().get_resolved_profile_catalog(
+                trestle_root, profile_path, True, None, ParameterRep.LEAVE_MOUSTACHE
+            )
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, None, False, True, profile, preserve_header_values, set_parameters
+                md_path=markdown_path,
+                yaml_header=yaml_header,
+                sections=None,
+                prompt_responses=False,
+                additional_content=True,
+                profile=profile,
+                overwrite_header_values=overwrite_header_values,
+                set_parameters=set_parameters
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Profile {profile_path} not found, error {e}')
@@ -152,8 +162,15 @@ class ProfileAssemble(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
+            # the original profile model name defaults to being the same as the new one
             prof_name = args.output if not args.name else args.name
-            return self.assemble_profile(trestle_root, prof_name, args.markdown, args.output, args.set_parameters)
+            return self.assemble_profile(
+                trestle_root=trestle_root,
+                orig_profile_name=prof_name,
+                md_name=args.markdown,
+                new_profile_name=args.output,
+                set_parameters=args.set_parameters
+            )
         except Exception as e:
             logger.error(f'Assembly of markdown to profile failed with error: {e}')
             logger.debug(traceback.format_exc())
@@ -190,17 +207,13 @@ class ProfileAssemble(AuthorCommonCommand):
             profile.modify.alters = new_alters
 
     @staticmethod
-    def _replace_modify_set_params(profile: prof.Profile, param_dict: Dict[str, str]) -> None:
-        if param_dict:
+    def _replace_modify_set_params(profile: prof.Profile, param_str_dict: Dict[str, str]) -> None:
+        """Replace the set_params in the profile with list and values from markdown."""
+        if param_str_dict:
             if not profile.modify:
                 profile.modify = prof.Modify()
-            profile.modify.set_parameters = as_list(profile.modify.set_parameters)
-            orig_param_dict = {}
-            for set_param in profile.modify.set_parameters:
-                orig_param_dict[set_param.param_id] = ControlIOReader.param_values_as_string(set_param)
-            orig_param_dict.update(param_dict)
-            new_set_params = []
-            for key, value in orig_param_dict.items():
+            new_set_params: List[prof.SetParameter] = []
+            for key, value in param_str_dict.items():
                 if value:
                     new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
             profile.modify.set_parameters = new_set_params
@@ -217,21 +230,27 @@ class ProfileAssemble(AuthorCommonCommand):
             orig_profile_name: Optional name of original profile used to generate the markdown (default is md_name)
             md_name: The name of the directory containing the markdown control files for the profile
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
-            set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile
+            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
 
         Returns:
             0 on success, 1 otherwise
 
+        Notes:
+            There must already be a json profile model and it will either be updated or a new json profile created.
+            This routine only loads the profile and does not generate the resolved profile catalog.  As a result it
+            cannot confirm that parameters being set actually exist in the catalog, or that the given values are
+            consistent with selection options.  But for the first case, invalid param id's would trigger an error
+            if the profile is used to generate the resolved catalog.
         """
         md_dir = trestle_root / md_name
         profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'
         _, _, orig_profile = ModelUtils.load_distributed(profile_path, trestle_root, prof.Profile)
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
-        found_alters, param_dict = CatalogInterface.read_additional_content(md_dir)
+        found_alters, param_str_dict = CatalogInterface.read_additional_content(md_dir)
         ProfileAssemble._replace_alter_adds(orig_profile, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(orig_profile, param_dict)
+            ProfileAssemble._replace_modify_set_params(orig_profile, param_str_dict)
 
         new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
 

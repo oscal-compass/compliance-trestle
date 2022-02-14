@@ -18,6 +18,7 @@ import pathlib
 import re
 import string
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
@@ -36,6 +37,16 @@ from trestle.oscal import common
 from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
+
+
+class ParameterRep(Enum):
+    """Enum for ways to represent a parameter."""
+
+    LEAVE_MOUSTACHE = 0
+    VALUE_OR_NONE = 1
+    VALUE_OR_STRING_NONE = 2
+    LABEL_OR_CHOICES = 3
+    VALUE_OR_LABEL_OR_CHOICES = 4
 
 
 class ControlIOWriter():
@@ -223,7 +234,9 @@ class ControlIOWriter():
             for line in existing_text[part_label]:
                 self._md_file.new_line(line)
 
-    def _add_response(self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]]) -> None:
+    def _add_implementation_response_prompts(
+        self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]]
+    ) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
@@ -299,7 +312,10 @@ class ControlIOWriter():
             '<!-- If the profile makes additions to the control, they will appear below. -->'  # noqa E501
         )
         self._md_file.new_line(
-            '<!-- The above may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'  # noqa E501
+            '<!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'  # noqa E501
+        )
+        self._md_file.new_line(
+            '<!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. -->'  # noqa E501
         )
         self._md_file.new_line(
             '<!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->'  # noqa E501
@@ -334,20 +350,20 @@ class ControlIOWriter():
         return prose.strip()
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], preserve_dest_values: bool) -> None:
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
         """
         Merge dict src into dest.
 
         New items are always added from src to dest.
-        Items present in both will not override dest if preserve_dest_values is True.
+        Items present in both will be overriden dest if overwrite_header_values is True.
         """
         for key in src.keys():
             if key in dest:
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], preserve_dest_values)
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
                 # otherwise override dest if needed
-                elif not preserve_dest_values:
+                elif overwrite_header_values:
                     dest[key] = src[key]
             else:
                 # if the item was not already in dest, add it from src
@@ -363,7 +379,7 @@ class ControlIOWriter():
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
-        preserve_header_values: bool,
+        overwrite_header_values: bool,
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -377,25 +393,27 @@ class ControlIOWriter():
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
-            preserve_header_values: Retain existing values in markdown header content but add new content
+            overwrite_header_values: Overwrite existing values in markdown header content but add new content
 
         Returns:
             None
 
         Notes:
             The filename is constructed from the control's id, so only the markdown directory is required.
-            If a yaml header is present in the file, new values in provided header replace those in the markdown header.
-            But if preserve_header_values then don't change any existing values, but allow addition of new content.
-            The above only applies to generic header content and not sections of type x-trestle-
+            If a yaml header is present in the file, new values in provided header will not replace those in the
+            markdown header unless overwrite_header_values is true.  If it is true then overwrite any existing values,
+            but in all cases new items from the provided header will be added to the markdown header.
+            If the markdown file already exists, its current header and prose are read.
         """
         control_file = dest_path / (control.id + '.md')
+        # first read the existing markdown header and content if it exists
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
         self._sections = sections
 
         merged_header = copy.deepcopy(header)
         if yaml_header:
-            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, preserve_header_values)
+            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
 
         self._add_yaml_header(merged_header)
 
@@ -405,22 +423,24 @@ class ControlIOWriter():
 
         self._add_sections(control)
 
+        # only used for ssp-generate
         if prompt_responses:
-            self._add_response(control, existing_text)
+            self._add_implementation_response_prompts(control, existing_text)
 
+        # only used for profile-generate
         if additional_content:
             self._add_additional_content(control, profile)
 
         self._md_file.write_out()
 
     def get_control_statement(self, control: cat.Control) -> List[str]:
-        """Get back the formatted control from a catalog."""
+        """Get the control statement as formatted markdown from a control."""
         self._md_file = MDWriter(None)
         self._add_control_statement_ssp(control)
         return self._md_file.get_lines()
 
     def get_params(self, control: cat.Control) -> List[str]:
-        """Get parameters for control."""
+        """Get parameters of a control as a markdown table."""
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
@@ -428,7 +448,12 @@ class ControlIOWriter():
             self._md_file = MDWriter(None)
             self._md_file.new_paragraph()
             self._md_file.set_indent_level(-1)
-            self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
+            self._md_file.new_table(
+                [
+                    [key, ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
+                    for key in param_dict.keys()
+                ], ['Parameter ID', 'Value']
+            )
             self._md_file.set_indent_level(-1)
             return self._md_file.get_lines()
 
@@ -456,11 +481,6 @@ class ControlIOReader():
         if not match:
             raise TrestleError(f'Unable to convert label {orig_label} to NCNAME format.')
         return new_label
-
-    @staticmethod
-    def param_values_as_string(set_param: prof.SetParameter) -> str:
-        """Convert param values to single string."""
-        return 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
 
     @staticmethod
     def _load_control_lines_and_header(control_file: pathlib.Path) -> Tuple[List[str], Dict[str, Any]]:
@@ -1078,7 +1098,7 @@ class ControlIOReader():
         """Get parts for the markdown control corresponding to Editable Content - if any."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
-        param_dict: Dict[str, str] = {}
+        param_str_dict: Dict[str, str] = {}
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
         ii = 0
         while 0 <= ii < len(lines):
@@ -1096,39 +1116,115 @@ class ControlIOReader():
                     new_alters.append(alter)
             else:
                 ii += 1
+        # this reads strings from the yaml as param values.  could convert to params
         header_params = header.get(const.SET_PARAMS_TAG, {})
         if header_params:
-            param_dict.update(header_params)
-        return new_alters, param_dict
+            param_str_dict.update(header_params)
+        return new_alters, param_str_dict
 
     @staticmethod
-    def get_control_param_dict(control: cat.Control,
-                               values_only: bool,
-                               params_format: Optional[str] = None) -> Dict[str, str]:
-        """Get a dict of the parameters in a control and their values."""
-        param_dict: Dict[str, str] = {}
-        params: List[common.Parameter] = as_list(control.params)
-        for param in params:
-            value_str = 'No value found'
-            if param.label:
-                value_str = param.label
-            if param.values:
-                values = [val.__root__ for val in param.values]
-                if len(values) == 1:
-                    value_str = values[0]
-                else:
-                    value_str = f"[{', '.join(value for value in values)}]"
-            # if there isn't an actual value then ignore this param
-            elif values_only:
-                continue
-            if params_format:
-                if params_format.count('.') > 1:
-                    raise TrestleError(
-                        f'Additional text {params_format} '
-                        f'for the parameters cannot contain multiple dots (.)'
-                    )
-                value_str = params_format.replace('.', value_str)
-            param_dict[param.id] = value_str
+    def param_values_as_str_list(param: common.Parameter) -> List[str]:
+        """Convert param values to list of strings."""
+        return [val.__root__ for val in as_list(param.values)]
+
+    @staticmethod
+    def param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
+        """Convert param values to string with optional brackets."""
+        if not param.values:
+            return None
+        values_str = ', '.join(ControlIOReader.param_values_as_str_list(param))
+        return f'[{values_str}]' if brackets else values_str
+
+    @staticmethod
+    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> Optional[str]:
+        """Convert parameter selection to str."""
+        if param.select:
+            how_many = param.select.how_many.name if param.select.how_many else ''
+            choices_str = ', '.join(as_list(param.select.choice))
+            choices_str = f'[{choices_str}]' if brackets else choices_str
+            return f'choose {how_many} {choices_str}' if verbose else choices_str
+        return None
+
+    @staticmethod
+    def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+        """Convert param label or choices to string, using choices if present."""
+        if param.select:
+            return ControlIOReader.param_selection_as_str(param, verbose, brackets)
+        if param.label:
+            return param.label
+        return param.id
+
+    @staticmethod
+    def param_to_str(
+        param: common.Parameter,
+        param_rep: ParameterRep,
+        verbose=False,
+        brackets=False,
+        params_format: Optional[str] = None,
+    ) -> Optional[str]:
+        """
+        Convert parameter to string based on best available representation.
+
+        Args:
+            param_rep: how to represent the parameter
+            verbose: provide verbose text for selection choices
+            brackets: add brackets around the lists of items
+            params_format: a string containing a single dot that represents a form of highlighting around the param
+
+        Returns:
+            formatted string or None
+        """
+        param_str = None
+        if param_rep == ParameterRep.VALUE_OR_NONE:
+            param_str = ControlIOReader.param_values_as_str(param)
+        elif param_rep == ParameterRep.VALUE_OR_STRING_NONE:
+            param_str = ControlIOReader.param_values_as_str(param)
+            param_str = param_str if param_str else 'None'
+        elif param_rep == ParameterRep.LABEL_OR_CHOICES:
+            param_str = ControlIOReader.param_label_choices_as_str(param, verbose, brackets)
+        elif param_rep == ParameterRep.VALUE_OR_LABEL_OR_CHOICES:
+            param_str = ControlIOReader.param_values_as_str(param)
+            if not param_str:
+                param_str = ControlIOReader.param_label_choices_as_str(param, verbose, brackets)
+        if param_str and params_format:
+            if params_format.count('.') > 1:
+                raise TrestleError(
+                    f'Additional text {params_format} '
+                    f'for the parameters cannot contain multiple dots (.)'
+                )
+            param_str = params_format.replace('.', param_str)
+        return param_str
+
+    @staticmethod
+    def str_to_param(param: common.Parameter, param_str: str) -> None:
+        """Replace parameter contents with contents in string."""
+        # this is a simple version that replaces the values but it can be more elaborate
+        param.values = [common.ParameterValue(__root__=param_str)]
+
+    @staticmethod
+    def get_control_param_dict(
+        control: cat.Control,
+        values_only: bool,
+    ) -> Dict[str, common.Parameter]:
+        """
+        Create mapping of param id's to params.
+
+        Args:
+            control: the control containing params of interest
+            values_only: only add params to the dict that have actual values
+
+        Returns:
+            Dictionary of param_id mapped to param
+
+        Notes:
+            Warning is given if there is a parameter with no ID
+        """
+        param_dict: Dict[str, common.Parameter] = {}
+        for param in as_list(control.params):
+            if not param.id:
+                logger.warning(f'Control {control.id} has parameter with no id.  Ignoring.')
+            if param.values or not values_only:
+                param_dict[param.id] = param
         return param_dict
 
     @staticmethod

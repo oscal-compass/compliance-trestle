@@ -13,6 +13,7 @@
 # limitations under the License.
 """Tests for the catalog author module."""
 
+import copy
 import pathlib
 import shutil
 import sys
@@ -28,20 +29,29 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.control_io import ControlIOReader, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
 from trestle.oscal import profile as prof
-from trestle.oscal.common import Part, Property
+from trestle.oscal.common import ParameterValue, Part, Property
 
 markdown_name = 'my_md'
 
 
+@pytest.mark.parametrize('make_change', [True, False])
+@pytest.mark.parametrize('use_orig_cat', [True, False])
 @pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
-    add_header: bool, use_cli: bool, dir_exists: bool, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+    make_change: bool,
+    use_orig_cat: bool,
+    add_header: bool,
+    use_cli: bool,
+    dir_exists: bool,
+    tmp_trestle_dir: pathlib.Path,
+    monkeypatch: MonkeyPatch
 ) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
@@ -66,8 +76,11 @@ def test_catalog_generate_assemble(
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
-        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
+        if make_change:
+            assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
+        if use_orig_cat:
+            test_args.extend(f'-n {cat_name}'.split())
         if dir_exists:
             assembled_cat_dir.mkdir()
         monkeypatch.setattr(sys, 'argv', test_args)
@@ -80,22 +93,28 @@ def test_catalog_generate_assemble(
             yaml_header = yaml.load(yaml_header_path.open('r'))
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
         assert (markdown_path / 'ac/ac-1.md').exists()
-        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
+        if make_change:
+            assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
         if dir_exists:
             assembled_cat_dir.mkdir()
-        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name)
+        orig_cat_name = cat_name if use_orig_cat else None
+        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name)
 
-    cat_orig = cat.Catalog.oscal_read(catalog_path)
-    cat_new = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
-    interface_orig = CatalogInterface(cat_orig)
-    # add the item manually to the original catalog so we can confirm the item was loaded correctly
-    ac1 = interface_orig.get_control('ac-1')
-    prop = Property(name='label', value='d.')
-    new_part = Part(id='ac-1_smt.d', name='item', props=[prop], prose=new_prose)
-    ac1.parts[0].parts.append(new_part)
-    interface_orig.replace_control(ac1)
-    interface_orig.update_catalog_controls()
-    assert test_utils.catalog_interface_equivalent(interface_orig, cat_new)
+    orig_cat: cat.Catalog = cat.Catalog.oscal_read(catalog_path)
+    assembled_cat: cat.Catalog = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
+    assert (orig_cat.metadata.title == assembled_cat.metadata.title) == use_orig_cat
+    assert orig_cat.uuid != assembled_cat.uuid
+    interface_orig = CatalogInterface(orig_cat)
+    if make_change:
+        # add the item manually to the original catalog so we can confirm the item was loaded correctly
+        ac1 = interface_orig.get_control('ac-1')
+        prop = Property(name='label', value='d.')
+        new_part = Part(id='ac-1_smt.d', name='item', props=[prop], prose=new_prose)
+        ac1.parts[0].parts.append(new_part)
+        interface_orig.replace_control(ac1)
+        interface_orig.update_catalog_controls()
+        orig_cat = interface_orig.get_catalog()
+    assert test_utils.catalog_interface_equivalent(interface_orig, assembled_cat, False)
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
@@ -131,6 +150,21 @@ def test_catalog_interface_groups() -> None:
     assert interface.get_count_of_controls_in_catalog(False) == 4
     groups = list(interface.get_all_groups_from_catalog())
     assert len(groups) == 4
+
+
+@pytest.mark.parametrize('cull_params', [True, False])
+def test_catalog_interface_merge_controls(cull_params: bool, sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test merging of controls."""
+    control_a = sample_catalog_rich_controls.groups[0].controls[0]
+    control_b = copy.deepcopy(control_a)
+    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    assert control_a == control_b
+    control_b.params[0].values = [ParameterValue(__root__='new value')]
+    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    assert control_a.params[0].values[0].__root__ == 'new value'
+    control_b.params = control_b.params[:1]
+    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    assert len(control_a.params) == 1 if cull_params else 2
 
 
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -178,6 +212,14 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control = catalog_interface.get_control('ac-1')
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
-    control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict)
-    assert control_param_dict['ac-1_prm_1'] == 'all alert personnel'
-    assert control_param_dict['ac-1_prm_7'] == 'organization-defined events'
+    control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict, False)
+    assert ControlIOReader.param_to_str(
+        control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'all alert personnel'
+    assert ControlIOReader.param_to_str(
+        control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'monthly'
+    # param 7 has no value so its label will be used
+    assert ControlIOReader.param_to_str(
+        control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'organization-defined events'

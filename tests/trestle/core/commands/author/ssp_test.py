@@ -105,7 +105,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=1,
         sections=None,
         yaml_header=str(yaml_path),
-        preserve_header_values=False
+        overwrite_header_values=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -116,7 +116,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         sections=None,
         verbose=1,
-        preserve_header_values=False
+        overwrite_header_values=False
     )
     assert ssp_cmd._run(args) == 1
 
@@ -402,7 +402,7 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         sections=None,
         yaml_header=header_path,
-        preserve_header_values=False
+        overwrite_header_values=False
     )
     # generate the markdown with header content
     ssp_cmd = SSPGenerate()
@@ -434,7 +434,7 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         sections=None,
         yaml_header=None,
-        preserve_header_values=False
+        overwrite_header_values=False
     )
     # generate the markdown with no implementation response text
     ssp_cmd = SSPGenerate()
@@ -472,7 +472,7 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
         profile='nist_tutorial_profile',
         output='ssp_md',
         sections=None,
-        preserve_header_values=False,
+        overwrite_header_values=False,
         verbose=1
     )
     assert ssp_gen._run(args) == 0

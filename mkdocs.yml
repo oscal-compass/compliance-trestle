@@ -119,7 +119,6 @@ nav:
         - interfaces: api_reference/trestle.core.models.interfaces.md
         - plans: api_reference/trestle.core.models.plans.md
       - object_factory: api_reference/trestle.core.object_factory.md
-      - oscal_version_validator: api_reference/trestle.core.oscal_version_validator.md
       - parser: api_reference/trestle.core.parser.md
       - pipeline: api_reference/trestle.core.pipeline.md
       - profile_resolver: api_reference/trestle.core.profile_resolver.md

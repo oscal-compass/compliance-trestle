@@ -17,7 +17,7 @@ import argparse
 import pathlib
 import shutil
 import sys
-from typing import Dict
+from typing import Dict, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -40,6 +40,9 @@ from trestle.core.profile_resolver import ProfileResolver
 # then the assembled control is searched for exp_str in the prose of the named parts
 
 markdown_name = 'my_md'
+prof_name = 'my_prof'
+md_name = 'my_md'
+assembled_prof_name = 'my_assembled_prof'
 
 my_guidance_text = """
 
@@ -75,11 +78,33 @@ def edit_files(ac1_path: pathlib.Path, set_parameters: bool, add_header: bool, g
     """Edit the files to show assemble worked."""
     assert ac1_path.exists()
     assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
+    # delete the value for prm_2 so the value is blank
+    # replace the value for prm_3 with new value
+    # delete entire line for prm_4
     if set_parameters and add_header:
         assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_2')
         assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_3')
+        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_4')
         assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_1', '  ac-1_prm_2:\n')
         assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_2', '  ac-1_prm_3: new value\n')
+
+
+def setup_profile_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
+    """Set up files for profile generate."""
+    nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
+    trestle_cat_dir = trestle_root / 'catalogs/nist_cat'
+    trestle_cat_dir.mkdir(exist_ok=True, parents=True)
+    shutil.copy(nist_catalog_path, trestle_cat_dir / 'catalog.json')
+    profile_dir = trestle_root / f'profiles/{prof_name}'
+    profile_dir.mkdir(parents=True, exist_ok=True)
+    # simple test profile sets values for ac-1 params 1-6 but not param_7
+    simple_prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
+    profile_path = profile_dir / 'profile.json'
+    shutil.copy(simple_prof_path, profile_path)
+    markdown_path = trestle_root / md_name
+    ac1_path = markdown_path / 'ac/ac-1.md'
+    assembled_prof_dir = trestle_root / f'profiles/{assembled_prof_name}'
+    return ac1_path, assembled_prof_dir, profile_path, markdown_path
 
 
 @pytest.mark.parametrize('add_header', [True, False])
@@ -97,24 +122,11 @@ def test_profile_generate_assemble(
     monkeypatch: MonkeyPatch
 ) -> None:
     """Test the profile markdown generator."""
-    nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    trestle_cat_dir = tmp_trestle_dir / 'catalogs/nist_cat'
-    trestle_cat_dir.mkdir(exist_ok=True, parents=True)
-    shutil.copy(nist_catalog_path, trestle_cat_dir / 'catalog.json')
-    prof_name = 'my_prof'
-    md_name = 'my_md'
-    assembled_prof_name = 'my_assembled_prof'
-    profile_dir = tmp_trestle_dir / f'profiles/{prof_name}'
-    profile_dir.mkdir(parents=True, exist_ok=True)
-    simple_prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
-    profile_path = profile_dir / 'profile.json'
-    shutil.copy(simple_prof_path, profile_path)
-    markdown_path = tmp_trestle_dir / md_name
-    ac1_path = markdown_path / 'ac/ac-1.md'
-    assembled_prof_dir = tmp_trestle_dir / f'profiles/{assembled_prof_name}'
+    ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir)
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # if set_parameters is true, the yaml header will contain all the parameters
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
         if add_header:
@@ -163,6 +175,7 @@ def test_profile_generate_assemble(
     assert sp_dict['ac-1_prm_1'] == 'all personnel'
     if set_parameters and add_header:
         assert 'ac-1_prm_2' not in sp_dict
+        assert 'ac-1_prm_4' not in sp_dict
         assert sp_dict['ac-1_prm_3'] == 'new value'
     else:
         assert sp_dict['ac-1_prm_2'] == 'A thorough'
@@ -178,7 +191,46 @@ def test_profile_generate_assemble(
         assert prose.find(exp_str) >= 0
 
 
-def test_profile_failures(tmp_trestle_dir: pathlib.Path, tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+@pytest.mark.parametrize('ohv', [True, False])
+def test_profile_ohv(ohv: bool, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test profile generate assemble with preserve-header-values."""
+    ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir)
+    yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # if set_parameters is true, the yaml header will contain all the parameters
+    profile_generate = ProfileGenerate()
+    yaml = YAML()
+    yaml_header = yaml.load(yaml_header_path.open('r'))
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv, True)
+
+    edit_files(ac1_path, True, True, multi_guidance_dict)
+
+    assert ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True) == 0
+
+    # check the assembled profile is as expected
+    profile: prof.Profile
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,
+                                                 prof.Profile, FileContentType.JSON)
+    set_params = profile.modify.set_parameters
+    sp_dict = {}
+    for set_param in set_params:
+        sp_dict[set_param.param_id] = set_param.values[0].__root__
+
+    assert sp_dict
+    assert sp_dict['ac-1_prm_1'] == 'all personnel'
+    assert 'ac-1_prm_2' not in sp_dict
+    assert sp_dict['ac-1_prm_3'] == 'new value'
+
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
+    catalog_interface = CatalogInterface(catalog)
+    # confirm presence of all expected strings in the control named parts
+    for name, exp_str in multi_guidance_dict['name_exp']:
+        prose = catalog_interface.get_control_part_prose('ac-1', name)
+        assert prose.find(exp_str) >= 0
+
+
+def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
     # disallowed output name
     test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()

@@ -30,7 +30,7 @@ from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -265,13 +265,13 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
         ControlIOReader._load_control_lines_and_header(bad_file)
 
 
-@pytest.mark.parametrize('preserve_dest_values', [True, False])
-def test_merge_dicts_deep(preserve_dest_values) -> None:
+@pytest.mark.parametrize('overwrite_header_values', [True, False])
+def test_merge_dicts_deep(overwrite_header_values) -> None:
     """Test deep merge of dicts."""
     dest = {'trestle': {'foo': {'hello': 1}}, 'fedramp': {'roles': [5, 6], 'values': 8}, 'orig': 11}
     src = {'trestle': {'foo': {'hello': 3}, 'bar': 4}, 'fedramp': {'roles': 7, 'values': 10}, 'extra': 12}
-    ControlIOWriter.merge_dicts_deep(dest, src, preserve_dest_values)
-    if preserve_dest_values:
+    ControlIOWriter.merge_dicts_deep(dest, src, overwrite_header_values)
+    if not overwrite_header_values:
         assert dest['trestle'] == {'foo': {'hello': 1}, 'bar': 4}
         assert dest['fedramp'] == {'roles': [5, 6], 'values': 8}
         assert dest['orig'] == 11
@@ -287,12 +287,12 @@ def test_merge_dicts_deep_empty() -> None:
     """Test that empty items are left alone."""
     dest = {'foo': ''}
     src = {'foo': 'fancy value'}
-    ControlIOWriter.merge_dicts_deep(dest, src, True)
+    ControlIOWriter.merge_dicts_deep(dest, src, False)
     assert dest['foo'] == ''
     dest['foo'] = None
-    ControlIOWriter.merge_dicts_deep(dest, src, True)
-    assert dest['foo'] is None
     ControlIOWriter.merge_dicts_deep(dest, src, False)
+    assert dest['foo'] is None
+    ControlIOWriter.merge_dicts_deep(dest, src, True)
     assert dest['foo'] == 'fancy value'
 
 
@@ -339,13 +339,22 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control = catalog_interface.get_control('ac-1')
     param_dict = ControlIOReader.get_control_param_dict(control, False)
     # confirm profile value is used
-    assert param_dict['ac-1_prm_1'] == 'all alert personnel'
+    assert ControlIOReader.param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
     # confirm original param label is used since no value was assigned
-    assert param_dict['ac-1_prm_7'] == 'organization-defined events'
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'organization-defined events'
+    param = control.params[0]
+    param.values = None
+    param.select = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['choice 1', 'choice 2'])
+    param_dict = ControlIOReader.get_control_param_dict(control, False)
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'choice 1, choice 2'
 
 
-@pytest.mark.parametrize('preserve_header_values', [True, False])
-def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.Path) -> None:
+@pytest.mark.parametrize('overwrite_header_values', [True, False])
+def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.Path) -> None:
     """Test write/read of control header params."""
     # orig file just has one param ac-1_prm_3
     src_control_path = pathlib.Path('tests/data/author/controls/control_with_components_and_params.md')
@@ -370,7 +379,7 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
     control_writer = ControlIOWriter()
     # write the control back out with the test header
     control_writer.write_control(
-        tmp_path, orig_control_read, group_title, header, None, False, False, None, preserve_header_values
+        tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values
     )
     # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
@@ -378,7 +387,7 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
     assert header_2['new-reviewer'] == 'James'
     assert len(header_2[const.SET_PARAMS_TAG]) == 2
     assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_4']
-    if preserve_header_values:
+    if not overwrite_header_values:
         assert 'orig' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
         assert header_2['foo'] == 'bar'
         assert header_2['special'] == ''
@@ -388,7 +397,10 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
+        assert 'orig' in orig_control_read.params[0].values[0].__root__
     new_control_read, _ = ControlIOReader.read_control(control_path)
     # insert the new param in the orig control so we can compare the two controls
-    orig_control_read.params.append(new_control_read.parts[1])
+    orig_control_read.params.append(new_control_read.params[1])
+    if overwrite_header_values:
+        orig_control_read.params[0] = new_control_read.params[0]
     assert test_utils.controls_equivalent(orig_control_read, new_control_read)

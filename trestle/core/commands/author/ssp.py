@@ -50,9 +50,9 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
-            '-phv',
-            '--preserve-header-values',
-            help=const.HELP_PRESERVE_HEADER_VALUES,
+            '-ohv',
+            '--overwrite-header-values',
+            help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
@@ -121,13 +121,14 @@ class SSPGenerate(AuthorCommonCommand):
 
         try:
             catalog_interface.write_catalog_as_markdown(
-                markdown_path,
-                yaml_header,
-                sections,
-                True,
-                False,
-                None,
-                preserve_header_values=args.preserve_header_values
+                md_path=markdown_path,
+                yaml_header=yaml_header,
+                sections=sections,
+                prompt_responses=True,
+                additional_content=False,
+                profile=None,
+                overwrite_header_values=args.overwrite_header_values,
+                set_parameters=False
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')
@@ -294,8 +295,22 @@ class SSPFilter(AuthorCommonCommand):
 
         return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate)
 
-    def filter_ssp(self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool):
-        """Filter the ssp based on the profile and output new ssp."""
+    def filter_ssp(
+        self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool
+    ) -> int:
+        """
+        Filter the ssp based on controls included by the profile and output new ssp.
+
+        Args:
+            trestle_root: root directory of the trestle project
+            ssp_name: name of the ssp model
+            profile_name: name of the profile model used for filtering
+            out_name: name of the output ssp model with filtered controls
+            regenerate: whether to regenerate the uuid's in the ssp
+
+        Returns:
+            0 on success, 1 otherwise
+        """
         ssp: ossp.SystemSecurityPlan
 
         try:
@@ -315,24 +330,20 @@ class SSPFilter(AuthorCommonCommand):
             control_imp = ssp.control_implementation
             ssp_control_ids: Set[str] = set()
 
-            set_params = control_imp.set_parameters
             new_set_params: List[ossp.SetParameter] = []
-            if set_params is not None:
-                for set_param in set_params:
-                    control = catalog_interface.get_control_by_param_id(set_param.param_id)
-                    if control is not None:
-                        new_set_params.append(set_param)
-                        ssp_control_ids.add(control.id)
+            for set_param in as_list(control_imp.set_parameters):
+                control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                if control is not None:
+                    new_set_params.append(set_param)
+                    ssp_control_ids.add(control.id)
             control_imp.set_parameters = new_set_params if new_set_params else None
 
-            imp_requirements = control_imp.implemented_requirements
             new_imp_requirements: List[ossp.ImplementedRequirement] = []
-            if imp_requirements is not None:
-                for imp_requirement in imp_requirements:
-                    control = catalog_interface.get_control(imp_requirement.control_id)
-                    if control is not None:
-                        new_imp_requirements.append(imp_requirement)
-                        ssp_control_ids.add(control.id)
+            for imp_requirement in as_list(control_imp.implemented_requirements):
+                control = catalog_interface.get_control(imp_requirement.control_id)
+                if control is not None:
+                    new_imp_requirements.append(imp_requirement)
+                    ssp_control_ids.add(control.id)
             control_imp.implemented_requirements = new_imp_requirements
 
             # make sure all controls in the profile have implemented reqs in the final ssp
