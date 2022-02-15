@@ -15,7 +15,7 @@
 
 import logging
 import pathlib
-from typing import Iterator, List, Union
+from typing import Iterator, List, Optional, Union
 
 import trestle.common.const as const
 import trestle.oscal.catalog as cat
@@ -27,6 +27,7 @@ from trestle.core.remote import cache
 from trestle.core.resolver.merge import Merge
 from trestle.core.resolver.modify import Modify
 from trestle.core.resolver.prune import Prune
+from trestle.oscal.common import Resource
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,8 @@ class Import(Pipeline.Filter):
         change_prose=False,
         block_adds: bool = False,
         params_format: str = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        resources: Optional[List[Resource]] = None
     ) -> None:
         """Initialize and store trestle root for cache access."""
         self._trestle_root = trestle_root
@@ -50,6 +52,18 @@ class Import(Pipeline.Filter):
         self._change_prose = change_prose
         self._params_format = params_format
         self._param_rep = param_rep
+        self._resources = resources
+
+        if self._import.href[0] == '#':
+            try:
+                resource = [r for r in self._resources if r.uuid == self._import.href[1:]][0]
+                self._import.href = [rlink.href for rlink in resource.rlinks if rlink.href.endswith('.json')][0]
+
+            except Exception as e:
+                logger.error(f'Profile resolution failed for resource with uuid: {self._import.href}')
+                raise TrestleError(
+                    f'Back matter resource resolution needed for profile import failed with error: {str(e)}'
+                )
 
     def process(self, _=None) -> Iterator[cat.Catalog]:
         """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
@@ -72,7 +86,7 @@ class Import(Pipeline.Filter):
                 f'import pipelines for sub_imports of profile {self._import.href} with title {model.metadata.title}'
             )
             for sub_import in profile.imports:
-                import_filter = Import(self._trestle_root, sub_import)
+                import_filter = Import(self._trestle_root, sub_import, resources=model.back_matter.resources)
                 prune_filter = Prune(sub_import, profile)
                 pipeline = Pipeline([import_filter, prune_filter])
                 pipelines.append(pipeline)
