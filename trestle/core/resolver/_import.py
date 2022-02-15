@@ -55,6 +55,8 @@ class Import(Pipeline.Filter):
         self._resources = resources
 
         if self._import.href[0] == '#':
+            # Specification section on internal reference resolution:
+            # https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/#d2e300-head
             try:
                 resource = [r for r in self._resources if r.uuid == self._import.href[1:]][0]
                 self._import.href = [rlink.href for rlink in resource.rlinks if rlink.href.endswith('.json')][0]
