@@ -81,14 +81,16 @@ class Import(Pipeline.Filter):
         else:
             if model_type != const.MODEL_TYPE_PROFILE:
                 raise TrestleError(f'Improper model type {model_type} as profile import.')
+
             profile: prof.Profile = model
+            resources = profile.back_matter.resources if profile.back_matter and profile.back_matter.resources else None
 
             pipelines: List[Pipeline] = []
             logger.debug(
                 f'import pipelines for sub_imports of profile {self._import.href} with title {model.metadata.title}'
             )
             for sub_import in profile.imports:
-                import_filter = Import(self._trestle_root, sub_import, resources=model.back_matter.resources)
+                import_filter = Import(self._trestle_root, sub_import, resources=resources)
                 prune_filter = Prune(sub_import, profile)
                 pipeline = Pipeline([import_filter, prune_filter])
                 pipelines.append(pipeline)
