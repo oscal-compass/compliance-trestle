@@ -59,7 +59,11 @@ class Import(Pipeline.Filter):
             # https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/#d2e300-head
             try:
                 resource = [r for r in self._resources if r.uuid == self._import.href[1:]][0]
-                self._import.href = [rlink.href for rlink in resource.rlinks if rlink.href.endswith('.json')][0]
+                self._import.href = [
+                    rlink.href
+                    for rlink in resource.rlinks
+                    if rlink.href.endswith('.json') or rlink.href.endswith('.yaml') or rlink.href.endswith('.yml')
+                ][0]
 
             except Exception as e:
                 logger.error(f'Profile resolution failed for resource with uuid: {self._import.href}')
