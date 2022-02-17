@@ -24,7 +24,7 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.list_utils import as_list
 from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
@@ -555,7 +555,7 @@ class CatalogInterface():
 
         return sorted(control_paths, key=lambda x: control_map[x])
 
-    def read_catalog_from_markdown(self, md_path: pathlib.Path) -> cat.Catalog:
+    def read_catalog_from_markdown(self, md_path: pathlib.Path, set_parameters: bool) -> cat.Catalog:
         """
         Read the groups and catalog controls from the given directory.
 
@@ -575,7 +575,7 @@ class CatalogInterface():
             # Controls with empty group titles are tolerated but at least one title must be present or warning given
             # The special group with no name that has the catalog as parent is just a list and has no title
             for control_path in CatalogInterface._get_sorted_control_paths(group_dir):
-                control, control_group_title = ControlIOReader.read_control(control_path)
+                control, control_group_title = ControlIOReader.read_control(control_path, set_parameters)
                 if control_group_title:
                     if group_title:
                         if control_group_title != group_title:
@@ -620,13 +620,17 @@ class CatalogInterface():
         return imp_reqs
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
+    def read_additional_content(md_path: pathlib.Path,
+                                required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Read all markdown controls and return list of alters."""
         new_alters: List[prof.Alter] = []
         param_str_dict: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                control_alters, control_param_str_dict = ControlIOReader.read_new_alters_and_params(control_file)
+                control_alters, control_param_str_dict = ControlIOReader.read_new_alters_and_params(
+                    control_file,
+                    required_sections_list
+                )
                 new_alters.extend(control_alters)
                 param_str_dict.update(control_param_str_dict)
         return new_alters, param_str_dict
@@ -644,28 +648,18 @@ class CatalogInterface():
         return sections
 
     @staticmethod
-    def merge_controls(dest: cat.Control, src: cat.Control, cull_params: bool) -> None:
+    def merge_controls(dest: cat.Control, src: cat.Control, replace_params: bool) -> None:
         """
         Merge the src control into dest.
 
         Args:
             dest: destination control into which content will be added
             src: source control with new content
-            cull_params: remove parameters from original that aren't in the new control
+            replace_params: replace the control params with the new ones
         """
         dest.parts = src.parts
-        src_map = {param.id: param for param in as_list(src.params)}
-        new_params: List[common.Parameter] = []
-        for param in as_list(dest.params):
-            if param.id in src_map:
-                param.values = src_map[param.id].values
-                new_params.append(param)
-            elif not cull_params:
-                new_params.append(param)
-        extra_ids = set(src_map).difference({param.id for param in new_params})
-        for id_ in extra_ids:
-            new_params.append(src_map[id_])
-        dest.params = none_if_empty(new_params)
+        if replace_params:
+            dest.params = src.params
 
     def _find_control_in_group(self, group_id: str) -> Tuple[str, ControlHandle]:
         """
@@ -679,13 +673,13 @@ class CatalogInterface():
                 return control_id, control_handle
         raise TrestleError(f'No controls found for group {group_id}')
 
-    def merge_catalog(self, catalog: cat.Catalog, cull_missing_params: bool) -> None:
+    def merge_catalog(self, catalog: cat.Catalog, replace_params: bool) -> None:
         """
         Merge the provided new catalog controls into the original catalog in this catalog interface.
 
         Args:
             catalog: catalog containing controls that are merged into the current catalog of the interface
-            cull_missing_params: if parameters aren't present in the new control, cull them from the final one
+            replace_params: replace all params in the control with the new ones
 
         Notes:
             This is mainly to support the reading of a catalog from markdown.  It allows retention of content such as
@@ -705,7 +699,7 @@ class CatalogInterface():
                 dest_group, _, _ = self.get_group_info_by_control(dest.id)
                 if dest_group != group_id:
                     raise TrestleError(f'Markdown for control {src.id} has different group id.')
-                CatalogInterface.merge_controls(dest, src, cull_missing_params)
+                CatalogInterface.merge_controls(dest, src, replace_params)
                 self.replace_control(dest)
             else:
                 # need to add the control knowing its group must already exist

@@ -21,7 +21,7 @@ import os
 import pathlib
 import shutil
 import sys
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -146,6 +146,7 @@ def create_trestle_project_with_model(
 
 def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
     """Given 2 lists, check if the items in both the lists are same, regardless of order."""
+    # can't use set comparison for lists of unhashable objects
     list1 = list(list1)  # make a mutable copy
     try:
         for elem in list2:
@@ -172,34 +173,40 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
                 lines_b = file_b.readlines()
                 nlines = len(lines_a)
                 if nlines != len(lines_b):
-                    logger.info(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
                     return False
                 for ii in range(nlines):
                     if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        logger.info('lines differ:')
-                        logger.info(lines_a[ii])
-                        logger.info(lines_b[ii])
+                        logger.error('lines differ:')
+                        logger.error(lines_a[ii])
+                        logger.error(lines_b[ii])
                         return False
     except Exception:
         return False
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
+def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) -> bool:
     r"""Insert text lines after line containing tag.
 
     Return True on success, False tag not found.
     Text is a string with appropriate \n line endings.
+    If tag is none just add at end of file.
     """
-    lines: List[str] = []
-    with file_path.open('r') as f:
-        lines = f.readlines()
-    for ii, line in enumerate(lines):
-        if line.find(tag) >= 0:
-            lines.insert(ii + 1, text)
-            with file_path.open('w') as f:
-                f.writelines(lines)
-            return True
+    if tag:
+        lines: List[str] = []
+        with file_path.open('r') as f:
+            lines = f.readlines()
+            for ii, line in enumerate(lines):
+                if line.find(tag) >= 0:
+                    lines.insert(ii + 1, text)
+                    with file_path.open('w') as f:
+                        f.writelines(lines)
+                    return True
+    else:
+        with file_path.open('a') as f:
+            f.writelines(text)
+        return True
     return False
 
 
@@ -455,7 +462,7 @@ def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
     n_a = get_total_valid_parts_count(a)
     n_b = get_total_valid_parts_count(b)
     if n_a != n_b:
-        logging.error(f'count of parts is different: {n_a} vs. {n_b}')
+        logger.error(f'count of parts is different: {n_a} vs. {n_b}')
         return False
     return True
 
@@ -463,20 +470,20 @@ def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
 def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> bool:
     """Check if the controls are equivalent."""
     if a.id != b.id:
-        logging.error(f'control ids differ: |{a.id}| |{b.id}|')
+        logger.error(f'control ids differ: |{a.id}| |{b.id}|')
         return False
     if a.title != b.title:
-        logging.error(f'control {a.id} titles differ: |{a.title}| |{b.title}|')
+        logger.error(f'control {a.id} titles differ: |{a.title}| |{b.title}|')
         return False
     if not parts_equivalent(a.parts, b.parts):
-        logging.error(f'control {a.id} parts are not equivalent')
+        logger.error(f'control {a.id} parts are not equivalent')
         return False
 
     if strong:
         n_params_a = len(list_utils.as_list(a.params))
         n_params_b = len(list_utils.as_list(b.params))
         if n_params_a != n_params_b:
-            logging.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
+            logger.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
             return False
     a_param_values = [param.values for param in list_utils.as_list(a.params) if param.values is not None]
     a_vals = [param_value.__root__ for param_values in a_param_values for param_value in param_values]
@@ -484,21 +491,24 @@ def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> 
     b_vals = [param_value.__root__ for param_values in b_param_values for param_value in param_values]
 
     # sub-controls are not checked here
-    return a_vals == b_vals
+    if a_vals == b_vals:
+        return True
+    logger.error(f'control param vals are different for {a.id}: {a_vals} vs. {b_vals}')
+    return False
 
 
 def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog, strong=True) -> bool:
     """Test equivalence of catalog dict contents in various ways."""
     cat_int_b = CatalogInterface(cat_b)
     if cat_int_b.get_count_of_controls_in_dict() != cat_int_a.get_count_of_controls_in_dict():
-        logging.error('count of controls is different')
+        logger.error('count of controls is different')
         return False
     for a in cat_int_a.get_all_controls_from_dict():
         try:
             b = cat_int_b.get_control(a.id)
         except Exception as e:
-            logging.error(f'error finding control {a.id} {e}')
+            logger.error(f'error finding control {a.id} {e}')
         if not controls_equivalent(a, b, strong):
-            logging.error(f'controls differ: {a.id}')
+            logger.error(f'controls differ: {a.id}')
             return False
     return True

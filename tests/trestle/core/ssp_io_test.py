@@ -73,9 +73,7 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
     assert md_text4
 
 
-def test_ssp_get_control_response(
-    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
-) -> None:
+def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test generating SSP from the sample profile and generate markdown representation of it."""
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
@@ -92,7 +90,7 @@ def test_ssp_get_control_response(
     ssp_json_path = tmp_trestle_dir / 'system-security-plans/ssp_json/system-security-plan.json'
     profile_path = tmp_trestle_dir / 'profiles/main_profile/profile.json'
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, str(ssp_json_path))
-    ssp_obj, parent_alias = fetcher.get_oscal(True)
+    ssp_obj, _ = fetcher.get_oscal(True)
 
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
 

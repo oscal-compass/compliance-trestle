@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import traceback
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -26,11 +26,12 @@ import trestle.core.generators as gens
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const, err, file_utils, log
+from trestle.common import const, file_utils, log
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -62,22 +63,6 @@ class SSPGenerate(AuthorCommonCommand):
         )
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
 
-    @staticmethod
-    def _sections_from_args(args: argparse.Namespace) -> Dict[str, str]:
-        sections = {}
-        if args.sections is not None:
-            section_tuples = args.sections.strip("'").split(',')
-            for section in section_tuples:
-                if ':' in section:
-                    s = section.split(':')
-                    sections[s[0].strip()] = s[1].strip()
-                else:
-
-                    sections[section] = section
-            if 'statement' in sections.keys():
-                raise err.TrestleError('"statement" sections are not allowed ')
-        return sections
-
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root
@@ -108,22 +93,27 @@ class SSPGenerate(AuthorCommonCommand):
             logger.debug(traceback.format_exc())
             return CmdReturnCodes.COMMAND_ERROR.value
 
-        try:
-            sections = SSPGenerate._sections_from_args(args)
-            if sections == {}:
-                s_list = catalog_interface.get_sections()
-                for item in s_list:
-                    sections[item] = item
-            logger.debug(f'ssp sections: {sections}')
-        except err.TrestleError:
-            logger.warning('"statement" section is not allowed.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+        sections_dict: Dict[str, str] = {}
+        if 'sections' in args and args.sections:
+            sections_dict = sections_to_dict(args.sections)
+            if 'statement' in sections_dict:
+                logger.warning('"statement" section is not allowed.')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            # add any existing sections from the controls but only have short names
+            control_section_short_names = catalog_interface.get_sections()
+            for short_name in control_section_short_names:
+                if short_name not in sections_dict:
+                    sections_dict[short_name] = short_name
+            logger.debug(f'ssp sections dict: {sections_dict}')
+            sections_header = yaml_header.get(const.SECTIONS_TAG, {})
+            sections_header.update(sections_dict)
+            yaml_header[const.SECTIONS_TAG] = sections_header
 
         try:
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
-                sections=sections,
+                sections=sections_dict,
                 prompt_responses=True,
                 additional_content=False,
                 profile=None,
@@ -144,11 +134,17 @@ class SSPAssemble(AuthorCommonCommand):
     name = 'ssp-assemble'
 
     def _init_arguments(self) -> None:
+        name_help_str = (
+            'Optional name of the ssp model in the trestle workspace that is being modified.  '
+            'If not provided the output name is used.'
+        )
+        self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
         file_help_str = 'Name of the input markdown file directory'
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
+        self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
     def _merge_imp_reqs(
         self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement], regenerate: bool
@@ -189,7 +185,7 @@ class SSPAssemble(AuthorCommonCommand):
 
         ssp.control_implementation.implemented_requirements = imp_reqs
         if regenerate:
-            regenerate_uuids(ssp)
+            ssp, _, _ = regenerate_uuids(ssp)
 
     def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> None:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
@@ -211,18 +207,23 @@ class SSPAssemble(AuthorCommonCommand):
 
         md_path = trestle_root / args.markdown
 
-        # if ssp already exists - should load it rather than make new one
-        ssp_path = ModelUtils.path_for_top_level_model(
-            trestle_root, args.output, ossp.SystemSecurityPlan, FileContentType.JSON
+        orig_ssp_name = args.output
+        if 'name' in args and args.name is not None:
+            orig_ssp_name = args.name
+        new_ssp_name = args.output
+        # if ssp already exists - load it rather than make new one
+        orig_ssp_path = ModelUtils.path_for_top_level_model(
+            trestle_root, orig_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
         )
+
         ssp: ossp.SystemSecurityPlan
         comp_dict: Dict[str, ossp.SystemComponent] = {}
 
         try:
             # need to load imp_reqs from markdown but need component first
-            if ssp_path.exists():
+            if orig_ssp_path.exists():
                 # load the existing json ssp
-                _, _, ssp = ModelUtils.load_distributed(ssp_path, trestle_root)
+                _, _, ssp = ModelUtils.load_distributed(orig_ssp_path, trestle_root)
                 for component in ssp.system_implementation.components:
                     comp_dict[component.title] = component
                 # read the new imp reqs from markdown and have them reference existing components
@@ -264,9 +265,12 @@ class SSPAssemble(AuthorCommonCommand):
             logger.debug(traceback.format_exc())
             return CmdReturnCodes.COMMAND_ERROR.value
 
+        if 'version' in args and args.version:
+            ssp.metadata.version = com.Version(__root__=args.version)
+
         # write out the ssp as json
         try:
-            ModelUtils.save_top_level_model(ssp, trestle_root, args.output, FileContentType.JSON)
+            ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error saving the generated ssp: {e}')
             logger.debug(traceback.format_exc())
@@ -288,15 +292,25 @@ class SSPFilter(AuthorCommonCommand):
         output_help_str = 'Name of the output generated SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
+        self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
-        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate)
+        version: Optional[str] = None
+        if 'version' in args and args.version:
+            version = args.version
+        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, version)
 
     def filter_ssp(
-        self, trestle_root: pathlib.Path, ssp_name: str, profile_name: str, out_name: str, regenerate: bool
+        self,
+        trestle_root: pathlib.Path,
+        ssp_name: str,
+        profile_name: str,
+        out_name: str,
+        regenerate: bool,
+        version: Optional[str]
     ) -> int:
         """
         Filter the ssp based on controls included by the profile and output new ssp.
@@ -307,6 +321,7 @@ class SSPFilter(AuthorCommonCommand):
             profile_name: name of the profile model used for filtering
             out_name: name of the output ssp model with filtered controls
             regenerate: whether to regenerate the uuid's in the ssp
+            version: new version for the model
 
         Returns:
             0 on success, 1 otherwise
@@ -354,7 +369,10 @@ class SSPFilter(AuthorCommonCommand):
 
             ssp.control_implementation = control_imp
             if regenerate:
-                regenerate_uuids(ssp)
+                ssp, _, _ = regenerate_uuids(ssp)
+            if version:
+                ssp.metadata.version = com.Version(__root__=version)
+
             ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
         except Exception as e:
             logger.warning(f'Error generating the filtered ssp: {e}')

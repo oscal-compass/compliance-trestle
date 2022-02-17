@@ -17,7 +17,7 @@ import argparse
 import pathlib
 import shutil
 import sys
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -29,6 +29,7 @@ from tests import test_utils
 
 import trestle.oscal.profile as prof
 from trestle.cli import Trestle
+from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
@@ -74,19 +75,19 @@ multi_guidance_dict = {
 }
 
 
-def edit_files(ac1_path: pathlib.Path, set_parameters: bool, add_header: bool, guid_dict: Dict[str, str]) -> None:
+def edit_files(control_path: pathlib.Path, set_parameters: bool, add_header: bool, guid_dict: Dict[str, str]) -> None:
     """Edit the files to show assemble worked."""
-    assert ac1_path.exists()
-    assert test_utils.insert_text_in_file(ac1_path, guid_dict['ref'], guid_dict['text'])
+    assert control_path.exists()
+    assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     # delete the value for prm_2 so the value is blank
     # replace the value for prm_3 with new value
     # delete entire line for prm_4
     if set_parameters and add_header:
-        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_2')
-        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_3')
-        assert test_utils.delete_line_in_file(ac1_path, 'ac-1_prm_4')
-        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_1', '  ac-1_prm_2:\n')
-        assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_2', '  ac-1_prm_3: new value\n')
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_2')
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_3')
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_4')
+        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_1', '  ac-1_prm_2:\n')
+        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_2', '  ac-1_prm_3: new value\n')
 
 
 def setup_profile_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
@@ -126,13 +127,10 @@ def test_profile_generate_assemble(
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
-    # if set_parameters is true, the yaml header will contain all the parameters
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
-        if set_parameters:
-            test_args.append('-sp')
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
 
@@ -151,22 +149,21 @@ def test_profile_generate_assemble(
         if add_header:
             yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        profile_generate.generate_markdown(
-            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, set_parameters
-        )
+        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, False)
 
         edit_files(ac1_path, set_parameters, add_header, guid_dict)
 
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None
         ) == 0
 
     # check the assembled profile is as expected
     profile: prof.Profile
     profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,
                                                  prof.Profile, FileContentType.JSON)
+    # get the set_params in the assembled profile
     set_params = profile.modify.set_parameters
     sp_dict = {}
     for set_param in set_params:
@@ -191,43 +188,65 @@ def test_profile_generate_assemble(
         assert prose.find(exp_str) >= 0
 
 
+@pytest.mark.parametrize(
+    'required_sections, success', [(None, True), ('a_guidance,b_guidance', True), ('a_guidance,c_guidance', False)]
+)
 @pytest.mark.parametrize('ohv', [True, False])
-def test_profile_ohv(ohv: bool, tmp_trestle_dir: pathlib.Path) -> None:
-    """Test profile generate assemble with preserve-header-values."""
+def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test profile generate assemble with overwrite-header-values."""
     ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir)
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+    new_version = '1.2.3'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     # if set_parameters is true, the yaml header will contain all the parameters
     profile_generate = ProfileGenerate()
     yaml = YAML()
     yaml_header = yaml.load(yaml_header_path.open('r'))
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv, True)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv)
 
     edit_files(ac1_path, True, True, multi_guidance_dict)
+    markdown_path = tmp_trestle_dir / md_name
+    # change guidance in the other two controls but don't change header
+    ac2_path = markdown_path / 'ac/ac-2.md'
+    ac21_path = markdown_path / 'ac/ac-2.1.md'
+    edit_files(ac2_path, False, False, multi_guidance_dict)
+    edit_files(ac21_path, False, False, multi_guidance_dict)
 
-    assert ProfileAssemble.assemble_profile(tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True) == 0
+    if success:
+        assert ProfileAssemble.assemble_profile(
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections
+        ) == 0
 
-    # check the assembled profile is as expected
-    profile: prof.Profile
-    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,
-                                                 prof.Profile, FileContentType.JSON)
-    set_params = profile.modify.set_parameters
-    sp_dict = {}
-    for set_param in set_params:
-        sp_dict[set_param.param_id] = set_param.values[0].__root__
+        # check the assembled profile is as expected
+        profile: prof.Profile
+        profile, _ = ModelUtils.load_top_level_model(
+            tmp_trestle_dir, assembled_prof_name,
+            prof.Profile,
+            FileContentType.JSON
+        )
+        set_params = profile.modify.set_parameters
+        sp_dict = {}
+        for set_param in set_params:
+            sp_dict[set_param.param_id] = set_param.values[0].__root__
 
-    assert sp_dict
-    assert sp_dict['ac-1_prm_1'] == 'all personnel'
-    assert 'ac-1_prm_2' not in sp_dict
-    assert sp_dict['ac-1_prm_3'] == 'new value'
+        assert sp_dict
+        assert sp_dict['ac-1_prm_1'] == 'all personnel'
+        assert 'ac-1_prm_2' not in sp_dict
+        assert sp_dict['ac-1_prm_3'] == 'new value'
+        assert profile.metadata.version.__root__ == new_version
 
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
-    catalog_interface = CatalogInterface(catalog)
-    # confirm presence of all expected strings in the control named parts
-    for name, exp_str in multi_guidance_dict['name_exp']:
-        prose = catalog_interface.get_control_part_prose('ac-1', name)
-        assert prose.find(exp_str) >= 0
+        catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
+        catalog_interface = CatalogInterface(catalog)
+        # confirm presence of all expected strings in the control named parts
+        for name, exp_str in multi_guidance_dict['name_exp']:
+            prose = catalog_interface.get_control_part_prose('ac-1', name)
+            assert prose.find(exp_str) >= 0
+    else:
+        with pytest.raises(TrestleError):
+            ProfileAssemble.assemble_profile(
+                tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections
+            )
 
 
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

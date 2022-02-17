@@ -168,7 +168,7 @@ end of text
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlIOReader()
-    new_control, group_title = reader.read_control(md_path)
+    new_control, group_title = reader.read_control(md_path, False)
     new_control.title = dummy_title
     assert group_title == 'My Group Title'
     assert len(new_control.parts) == len(control.parts)
@@ -184,7 +184,7 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     with open(md_path, 'w') as f:
         f.write(control_text)
     # read it in as markdown to an OSCAL control in memory
-    control, group_title = ControlIOReader.read_control(md_path)
+    control, group_title = ControlIOReader.read_control(md_path, True)
     assert group_title == 'My Group Title'
     sub_dir = tmp_path / 'sub_dir'
     sub_dir.mkdir(exist_ok=True)
@@ -198,12 +198,12 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
 def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
     """Test reading a control that doesn't have a part label in statement."""
     md_file = testdata_dir / 'author/controls/control_no_labels.md'
-    control, group_title = ControlIOReader.read_control(md_file)
+    control, group_title = ControlIOReader.read_control(md_file, True)
     assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'c'
     assert control.parts[0].parts[2].parts[0].props[0].value == '1'
     md_file = testdata_dir / 'author/controls/control_some_labels.md'
-    control, group_title = ControlIOReader.read_control(md_file)
+    control, group_title = ControlIOReader.read_control(md_file, True)
     assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'aa'
     assert control.parts[0].parts[2].parts[1].props[0].value == 'abc13'
@@ -374,7 +374,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     # header_1 should have one param: 3
     header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_1.keys()) == 8
-    orig_control_read, group_title = ControlIOReader.read_control(control_path)
+    orig_control_read, group_title = ControlIOReader.read_control(control_path, True)
     assert group_title == 'Access Control'
     control_writer = ControlIOWriter()
     # write the control back out with the test header
@@ -398,7 +398,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
         assert 'orig' in orig_control_read.params[0].values[0].__root__
-    new_control_read, _ = ControlIOReader.read_control(control_path)
+    new_control_read, _ = ControlIOReader.read_control(control_path, True)
     # insert the new param in the orig control so we can compare the two controls
     orig_control_read.params.append(new_control_read.params[1])
     if overwrite_header_values:

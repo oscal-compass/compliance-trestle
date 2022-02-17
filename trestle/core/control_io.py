@@ -514,17 +514,19 @@ class ControlIOReader():
     @staticmethod
     def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
         """Process the title line and extract the control id, group title (in brackets) and control title."""
-        if line.count('-') < 2:
-            raise TrestleError(f'Markdown control title format error: {line}')
-        control_id = line.split()[1]
-        first_dash = line.find('-')
-        title_line = line[first_dash + 1:]
-        group_title_start = title_line.find('\[')
-        group_title_end = title_line.find('\]')
+        if line.count('-') < 1:
+            raise TrestleError(f'Markdown control title format error, missing - after control id: {line}')
+        split_line = line.split()
+        if len(split_line) < 3 or split_line[2] != '-':
+            raise TrestleError(f'Cannot parse control markdown title for control_id group and title: {line}')
+        # first token after the #
+        control_id = split_line[1]
+        group_title_start = line.find('\[')
+        group_title_end = line.find('\]')
         if group_title_start < 0 or group_title_end < 0 or group_title_start > group_title_end:
             raise TrestleError(f'unable to read group title for control {control_id}')
-        group_title = title_line[group_title_start + 2:group_title_end].strip()
-        control_title = title_line[group_title_end + 2:].strip()
+        group_title = line[group_title_start + 2:group_title_end].strip()
+        control_title = line[group_title_end + 2:].strip()
         return control_id, group_title, control_title
 
     @staticmethod
@@ -1060,8 +1062,13 @@ class ControlIOReader():
         return imp_req
 
     @staticmethod
-    def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
+    def _read_added_part(ii: int, lines: List[str], control_id: str,
+                         sections_dict: Dict[str, str]) -> Tuple[int, Optional[common.Part]]:
         """Read a single part indicated by ## Control foo."""
+        snake_dict: Dict[str, str] = {}
+        # create reverse lookup of long snake name to short name needed for part
+        for key, value in sections_dict.items():
+            snake_dict[spaces_and_caps_to_snake(value)] = key
         while 0 <= ii < len(lines):
             # look for ## Control foo - then read prose
             line = lines[ii]
@@ -1069,8 +1076,11 @@ class ControlIOReader():
             if line:
                 if not line.startswith(prefix):
                     raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
-                part_name_raw = line[len(prefix):]
-                part_name = spaces_and_caps_to_snake(part_name_raw)
+                part_name_long_raw = line[len(prefix):]
+                part_name_snake = spaces_and_caps_to_snake(part_name_long_raw)
+                # if the long name isn't there use the snake version for the part
+                # otherwise the part will have the desired short name for the corresponding section
+                part_name = snake_dict.get(part_name_snake, part_name_snake)
                 prose_lines = []
                 ii += 1
                 have_content = False
@@ -1094,19 +1104,23 @@ class ControlIOReader():
         return -1, None
 
     @staticmethod
-    def read_new_alters_and_params(control_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
+    def read_new_alters_and_params(control_path: pathlib.Path,
+                                   required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, str]]:
         """Get parts for the markdown control corresponding to Editable Content - if any."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
         param_str_dict: Dict[str, str] = {}
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
+        # query header for mapping of short to long section names
+        sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
+        found_sections: List[str] = []
         ii = 0
         while 0 <= ii < len(lines):
             line = lines[ii]
             if line.startswith(f'# {const.EDITABLE_CONTENT}'):
                 ii += 1
                 while 0 <= ii < len(lines):
-                    ii, part = ControlIOReader._read_added_part(ii, lines, control_id)
+                    ii, part = ControlIOReader._read_added_part(ii, lines, control_id, sections_dict)
                     if ii < 0:
                         break
                     alter = prof.Alter(
@@ -1114,8 +1128,12 @@ class ControlIOReader():
                         adds=[prof.Add(parts=[part], position='after', by_id=f'{control_id}_smt')]
                     )
                     new_alters.append(alter)
+                    found_sections.append(part.name)
             else:
                 ii += 1
+        missing_sections = set(required_sections_list) - set(found_sections)
+        if missing_sections:
+            raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
         # this reads strings from the yaml as param values.  could convert to params
         header_params = header.get(const.SET_PARAMS_TAG, {})
         if header_params:
@@ -1228,7 +1246,7 @@ class ControlIOReader():
         return param_dict
 
     @staticmethod
-    def read_control(control_path: pathlib.Path) -> Tuple[cat.Control, str]:
+    def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
         """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
@@ -1266,11 +1284,12 @@ class ControlIOReader():
                 _, control.parts = ControlIOReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
-        params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
-        if params:
-            control.params = []
-            for id_, value in params.items():
-                param_value = common.ParameterValue(__root__=value)
-                param = common.Parameter(id=id_, values=[param_value])
-                control.params.append(param)
+        if set_parameters:
+            params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
+            if params:
+                control.params = []
+                for id_, value in params.items():
+                    param_value = common.ParameterValue(__root__=value)
+                    param = common.Parameter(id=id_, values=[param_value])
+                    control.params.append(param)
         return control, group_title
