@@ -180,6 +180,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
+    # remove the sections that were added to original header so we can check other changes in header
     header.pop(const.SECTIONS_TAG)
     assert yaml_header == header
 
