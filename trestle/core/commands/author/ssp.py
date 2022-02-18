@@ -115,7 +115,8 @@ class SSPGenerate(AuthorCommonCommand):
                 additional_content=False,
                 profile=None,
                 overwrite_header_values=args.overwrite_header_values,
-                set_parameters=False
+                set_parameters=False,
+                required_sections=None
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')

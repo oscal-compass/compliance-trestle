@@ -86,6 +86,7 @@ class ProfileGenerate(AuthorCommonCommand):
             default=False
         )
         self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
+        self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -115,7 +116,13 @@ class ProfileGenerate(AuthorCommonCommand):
             markdown_path = trestle_root / args.output
 
             return self.generate_markdown(
-                trestle_root, profile_path, markdown_path, yaml_header, args.overwrite_header_values, sections_dict
+                trestle_root,
+                profile_path,
+                markdown_path,
+                yaml_header,
+                args.overwrite_header_values,
+                sections_dict,
+                args.required_sections
             )
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
@@ -129,7 +136,8 @@ class ProfileGenerate(AuthorCommonCommand):
         markdown_path: pathlib.Path,
         yaml_header: dict,
         overwrite_header_values: bool,
-        sections_dict: Optional[Dict[str, str]]
+        sections_dict: Optional[Dict[str, str]],
+        required_sections: Optional[str]
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -139,7 +147,8 @@ class ProfileGenerate(AuthorCommonCommand):
             markdown_path: Path to the directory into which the markdown will be written
             yaml_header: Dict to merge into the yaml header of the control markdown
             overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
-            sections_dict: optional dict mapping section short names to long
+            sections_dict: Optional dict mapping section short names to long
+            required_sections: Optional comma-sep list of sections that get prompted for prose if not in the profile
 
         Returns:
             0 on success, 1 on error
@@ -161,7 +170,8 @@ class ProfileGenerate(AuthorCommonCommand):
                 additional_content=True,
                 profile=profile,
                 overwrite_header_values=overwrite_header_values,
-                set_parameters=True
+                set_parameters=True,
+                required_sections=required_sections
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Profile {profile_path} not found, error {e}')

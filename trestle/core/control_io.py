@@ -302,7 +302,7 @@ class ControlIOWriter():
                                     adds.append((part.name, part.prose))
         return adds
 
-    def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> None:
+    def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> List[str]:
         adds = ControlIOWriter._get_adds(control.id, profile)
         has_content = len(adds) > 0
 
@@ -338,11 +338,15 @@ class ControlIOWriter():
         # next is to make mdformat happy
         self._md_file._add_line_raw('')
 
+        added_sections: List[str] = []
+
         for add in adds:
             name, prose = add
             title = self._sections_dict.get(name, name) if self._sections_dict else name
             self._md_file.new_header(level=2, title=f'Control {title}')
             self._md_file.new_paraline(prose)
+            added_sections.append(name)
+        return added_sections
 
     @staticmethod
     def get_part_prose(control: cat.Control, part_name: str) -> str:
@@ -373,6 +377,10 @@ class ControlIOWriter():
                 # if the item was not already in dest, add it from src
                 dest[key] = src[key]
 
+    def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
+        """Add prompts for any required sections that haven't already been written out."""
+        pass
+
     def write_control(
         self,
         dest_path: pathlib.Path,
@@ -384,6 +392,7 @@ class ControlIOWriter():
         prompt_responses: bool,
         profile: Optional[prof.Profile],
         overwrite_header_values: bool,
+        required_sections: Optional[List[str]]
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -398,6 +407,7 @@ class ControlIOWriter():
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
+            required_sections: List of required sections that may need prompting for content
 
         Returns:
             None
@@ -432,6 +442,7 @@ class ControlIOWriter():
 
         self._add_control_objective(control)
 
+        # add all sections from the control itself that weren't added above
         self._add_sections(control)
 
         # only used for ssp-generate
@@ -439,8 +450,13 @@ class ControlIOWriter():
             self._add_implementation_response_prompts(control, existing_text)
 
         # only used for profile-generate
+        # add sections corresponding to added parts in the profile
+        added_sections: List[str] = []
         if additional_content:
-            self._add_additional_content(control, profile)
+            added_sections = self._add_additional_content(control, profile)
+
+        if required_sections:
+            self._prompt_required_sections(required_sections, added_sections)
 
         self._md_file.write_out()
 

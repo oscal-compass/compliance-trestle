@@ -101,7 +101,8 @@ class CatalogGenerate(AuthorCommonCommand):
                 additional_content=False,
                 profile=None,
                 overwrite_header_values=overwrite_header_values,
-                set_parameters=True
+                set_parameters=True,
+                required_sections=None
             )
         except TrestleNotFoundError as e:
             logger.warning(f'Catalog {catalog_path} not found for load {e}')

@@ -154,7 +154,7 @@ def test_profile_generate_assemble(
             yaml_header = yaml.load(yaml_header_path.open('r'))
         sections_dict = sections_to_dict(all_sections)
         profile_generate.generate_markdown(
-            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, None
         )
 
         edit_files(ac1_path, set_parameters, add_header, guid_dict)
@@ -209,7 +209,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     profile_generate = ProfileGenerate()
     yaml = YAML()
     yaml_header = yaml.load(yaml_header_path.open('r'))
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv, None)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv, None, None)
 
     edit_files(ac1_path, True, True, multi_guidance_dict)
     markdown_path = tmp_trestle_dir / md_name
