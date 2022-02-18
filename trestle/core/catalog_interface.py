@@ -430,7 +430,7 @@ class CatalogInterface():
         self,
         md_path: pathlib.Path,
         yaml_header: dict,
-        sections: Optional[Dict[str, str]],
+        sections_dict: Optional[Dict[str, str]],
         prompt_responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
@@ -443,7 +443,7 @@ class CatalogInterface():
         Args:
             md_path: Path to directory in which to write the markdown
             yaml_header: Dictionary to write into the yaml header of the controls
-            sections: Map of sections to include, with short names and full names
+            sections_dict: Optional dict mapping section short names to long
             prompt_responses: Whether to prompt for responses in the control markdown
             additional_content: Should the additional content be printed corresponding to profile adds
             profile: Optional profile containing the adds making up additional content
@@ -483,7 +483,7 @@ class CatalogInterface():
                 control,
                 group_title,
                 new_header,
-                sections,
+                sections_dict,
                 additional_content,
                 prompt_responses,
                 profile,

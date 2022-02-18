@@ -96,7 +96,7 @@ class CatalogGenerate(AuthorCommonCommand):
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
-                sections=None,
+                sections_dict=None,
                 prompt_responses=False,
                 additional_content=False,
                 profile=None,

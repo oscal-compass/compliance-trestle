@@ -105,18 +105,20 @@ class ProfileGenerate(AuthorCommonCommand):
                     logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
                     return CmdReturnCodes.COMMAND_ERROR.value
 
+            # combine command line sections with any in the yaml header, with priority to command line
+            sections_dict: Optional[Dict[str, str]] = None
             if 'sections' in args and args.sections:
-                sections_dict = sections_to_dict(args.sections)
-                sections_header = yaml_header.get(const.SECTIONS_TAG, {})
-                sections_header.update(sections_dict)
-                yaml_header[const.SECTIONS_TAG] = sections_header
+                cmd_line_sections_dict = sections_to_dict(args.sections)
+                sections_dict = yaml_header.get(const.SECTIONS_TAG, {})
+                sections_dict.update(cmd_line_sections_dict)
+                yaml_header[const.SECTIONS_TAG] = sections_dict
 
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
             markdown_path = trestle_root / args.output
 
             return self.generate_markdown(
-                trestle_root, profile_path, markdown_path, yaml_header, args.overwrite_header_values
+                trestle_root, profile_path, markdown_path, yaml_header, args.overwrite_header_values, sections_dict
             )
         except Exception as e:
             logger.error(f'Generation of the profile markdown failed with error: {e}')
@@ -129,7 +131,8 @@ class ProfileGenerate(AuthorCommonCommand):
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        overwrite_header_values: bool
+        overwrite_header_values: bool,
+        sections_dict: Optional[Dict[str, str]]
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -139,6 +142,7 @@ class ProfileGenerate(AuthorCommonCommand):
             markdown_path: Path to the directory into which the markdown will be written
             yaml_header: Dict to merge into the yaml header of the control markdown
             overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
+            sections_dict: optional dict mapping section short names to long
 
         Returns:
             0 on success, 1 on error
@@ -152,7 +156,7 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
-                sections=None,
+                sections_dict=sections_dict,
                 prompt_responses=False,
                 additional_content=True,
                 profile=profile,

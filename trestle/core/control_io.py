@@ -375,7 +375,7 @@ class ControlIOWriter():
         control: cat.Control,
         group_title: str,
         yaml_header: Optional[Dict],
-        sections: Optional[Dict[str, str]],
+        sections_dict: Optional[Dict[str, str]],
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
@@ -389,7 +389,7 @@ class ControlIOWriter():
             control: The control to write as markdown
             group_title: Title of the group containing the control
             yaml_header: Optional dict to be written as markdown yaml header
-            sections: Optional string lookup dict mapping section abbrev. to pretty version for display
+            sections_dict: Optional dict mapping short section names to long
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
@@ -409,7 +409,7 @@ class ControlIOWriter():
         # first read the existing markdown header and content if it exists
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
-        self._sections = sections
+        self._sections = sections_dict
 
         merged_header = copy.deepcopy(header)
         if yaml_header:

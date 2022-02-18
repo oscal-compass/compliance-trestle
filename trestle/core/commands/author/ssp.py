@@ -113,7 +113,7 @@ class SSPGenerate(AuthorCommonCommand):
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
-                sections=sections_dict,
+                sections_dict=sections_dict,
                 prompt_responses=True,
                 additional_content=False,
                 profile=None,
