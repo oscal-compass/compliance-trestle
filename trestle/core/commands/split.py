@@ -94,8 +94,7 @@ class SplitCmd(CommandPlusDocs):
             elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
             file_name = ''
-            file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
-                const.ARG_FILE]
+            file_name = '' if not args_raw[const.ARG_FILE] else args_raw[const.ARG_FILE]
             # cwd must be in the model directory if file to split is not specified
             effective_cwd = pathlib.Path.cwd()
 

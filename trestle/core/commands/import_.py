@@ -115,7 +115,9 @@ class ImportCmd(CommandPlusDocs):
             logger.error(f'Import plan execution failed with error: {err}')
             return CmdReturnCodes.COMMAND_ERROR.value
 
-        args = argparse.Namespace(file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root)
+        args = argparse.Namespace(
+            file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root, type=None, all=None
+        )
         rollback = False
         try:
             rc = validatecmd.ValidateCmd()._run(args)

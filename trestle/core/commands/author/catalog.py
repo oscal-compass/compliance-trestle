@@ -64,7 +64,7 @@ class CatalogGenerate(AuthorCommonCommand):
             return CmdReturnCodes.COMMAND_ERROR.value
 
         yaml_header: dict = {}
-        if 'yaml_header' in args and args.yaml_header is not None:
+        if args.yaml_header:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
                 yaml = YAML(typ='safe')
@@ -133,9 +133,6 @@ class CatalogAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
-        version = ''
-        if 'version' in args and args.version:
-            version = args.version
         return CatalogAssemble.assemble_catalog(
             trestle_root=trestle_root,
             md_name=args.markdown,
@@ -143,7 +140,7 @@ class CatalogAssemble(AuthorCommonCommand):
             orig_cat_name=args.name,
             set_parameters=args.set_parameters,
             regenerate=args.regenerate,
-            version=version
+            version=args.version
         )
 
     @staticmethod

@@ -32,7 +32,7 @@ from trestle.cli import Trestle
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, sections_to_dict
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -47,32 +47,34 @@ assembled_prof_name = 'my_assembled_prof'
 
 my_guidance_text = """
 
-## Control my_guidance
+## Control My Guidance
 
-This is my_guidance.
+This is My Guidance.
 """
 
 # just add a new addition
-my_guidance_dict = {
-    'name_exp': [('my_guidance', 'This is my_guidance.')], 'ref': 'carefully.', 'text': my_guidance_text
-}
+my_guidance_dict = {'name_exp': [('my_guidance', 'This is My Guidance.')], 'text': my_guidance_text}
 
 multi_guidance_text = my_guidance_text = """
 
-## Control a_guidance
+## Control A Guidance
 
-This is a_guidance.
+This is A Guidance.
 
-## Control b_guidance
+## Control B Guidance
 
-This is b_guidance.
+This is B Guidance.
 """
 # add two additions
 multi_guidance_dict = {
-    'name_exp': [('a_guidance', 'This is a_guidance.'), ('b_guidance', 'This is b_guidance.')],
-    'ref': 'logs.',
+    'name_exp': [('a_guidance', 'This is A Guidance.'), ('b_guidance', 'This is B Guidance.')],
     'text': multi_guidance_text
 }
+
+all_sections = (
+    'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,my_guidance:My Guidance,'
+    'a_guidance:A Guidance,b_guidance:B Guidance'
+)
 
 
 def edit_files(control_path: pathlib.Path, set_parameters: bool, add_header: bool, guid_dict: Dict[str, str]) -> None:
@@ -131,6 +133,7 @@ def test_profile_generate_assemble(
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
+        test_args.extend(['-s', all_sections])
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
 
@@ -149,7 +152,10 @@ def test_profile_generate_assemble(
         if add_header:
             yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, None)
+        sections_dict = sections_to_dict(all_sections)
+        profile_generate.generate_markdown(
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict
+        )
 
         edit_files(ac1_path, set_parameters, add_header, guid_dict)
 

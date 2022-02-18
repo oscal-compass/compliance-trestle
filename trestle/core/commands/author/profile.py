@@ -96,7 +96,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 return CmdReturnCodes.COMMAND_ERROR.value
 
             yaml_header: dict = {}
-            if 'yaml_header' in args and args.yaml_header is not None:
+            if args.yaml_header:
                 try:
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
                     yaml = YAML()
@@ -107,11 +107,8 @@ class ProfileGenerate(AuthorCommonCommand):
 
             # combine command line sections with any in the yaml header, with priority to command line
             sections_dict: Optional[Dict[str, str]] = None
-            if 'sections' in args and args.sections:
-                cmd_line_sections_dict = sections_to_dict(args.sections)
-                sections_dict = yaml_header.get(const.SECTIONS_TAG, {})
-                sections_dict.update(cmd_line_sections_dict)
-                yaml_header[const.SECTIONS_TAG] = sections_dict
+            if args.sections:
+                sections_dict = sections_to_dict(args.sections)
 
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
@@ -148,6 +145,9 @@ class ProfileGenerate(AuthorCommonCommand):
             0 on success, 1 on error
         """
         try:
+            if sections_dict and 'statement' in sections_dict:
+                logger.warning('statement is not allowed as a section name.')
+                return CmdReturnCodes.COMMAND_ERROR.value
             _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)
             catalog = ProfileResolver().get_resolved_profile_catalog(
                 trestle_root, profile_path, True, None, ParameterRep.LEAVE_MOUSTACHE
@@ -198,12 +198,6 @@ class ProfileAssemble(AuthorCommonCommand):
             trestle_root = pathlib.Path(args.trestle_root)
             # the original profile model name defaults to being the same as the new one
             prof_name = args.output if not args.name else args.name
-            version: Optional[str] = None
-            if 'version' in args and args.version:
-                version = args.version
-            required_sections: Optional[str] = None
-            if 'required_sections' in args and args.required_sections:
-                required_sections = args.required_sections
             return self.assemble_profile(
                 trestle_root=trestle_root,
                 orig_profile_name=prof_name,
@@ -211,8 +205,8 @@ class ProfileAssemble(AuthorCommonCommand):
                 new_profile_name=args.output,
                 set_parameters=args.set_parameters,
                 regenerate=args.regenerate,
-                version=version,
-                required_sections=required_sections
+                version=args.version,
+                required_sections=args.required_sections
             )
         except Exception as e:
             logger.error(f'Assembly of markdown to profile failed with error: {e}')

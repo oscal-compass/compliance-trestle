@@ -73,7 +73,7 @@ class SSPGenerate(AuthorCommonCommand):
         profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 
         yaml_header: dict = {}
-        if 'yaml_header' in args and args.yaml_header is not None:
+        if args.yaml_header:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
                 yaml = YAML()
@@ -94,10 +94,10 @@ class SSPGenerate(AuthorCommonCommand):
             return CmdReturnCodes.COMMAND_ERROR.value
 
         sections_dict: Dict[str, str] = {}
-        if 'sections' in args and args.sections:
+        if args.sections:
             sections_dict = sections_to_dict(args.sections)
             if 'statement' in sections_dict:
-                logger.warning('"statement" section is not allowed.')
+                logger.warning('statement is not allowed as a section name.')
                 return CmdReturnCodes.COMMAND_ERROR.value
             # add any existing sections from the controls but only have short names
             control_section_short_names = catalog_interface.get_sections()
@@ -105,9 +105,6 @@ class SSPGenerate(AuthorCommonCommand):
                 if short_name not in sections_dict:
                     sections_dict[short_name] = short_name
             logger.debug(f'ssp sections dict: {sections_dict}')
-            sections_header = yaml_header.get(const.SECTIONS_TAG, {})
-            sections_header.update(sections_dict)
-            yaml_header[const.SECTIONS_TAG] = sections_header
 
         try:
             catalog_interface.write_catalog_as_markdown(
@@ -208,7 +205,7 @@ class SSPAssemble(AuthorCommonCommand):
         md_path = trestle_root / args.markdown
 
         orig_ssp_name = args.output
-        if 'name' in args and args.name is not None:
+        if args.name:
             orig_ssp_name = args.name
         new_ssp_name = args.output
         # if ssp already exists - load it rather than make new one
@@ -265,7 +262,7 @@ class SSPAssemble(AuthorCommonCommand):
             logger.debug(traceback.format_exc())
             return CmdReturnCodes.COMMAND_ERROR.value
 
-        if 'version' in args and args.version:
+        if args.version:
             ssp.metadata.version = com.Version(__root__=args.version)
 
         # write out the ssp as json
@@ -298,10 +295,7 @@ class SSPFilter(AuthorCommonCommand):
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
 
-        version: Optional[str] = None
-        if 'version' in args and args.version:
-            version = args.version
-        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, version)
+        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, args.version)
 
     def filter_ssp(
         self,

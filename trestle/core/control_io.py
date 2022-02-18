@@ -164,66 +164,69 @@ class ControlIOWriter():
                     return
 
     @staticmethod
-    def _get_control_section_part(part: common.Part, section: str) -> str:
+    def _get_control_section_part(part: common.Part, section_name: str) -> str:
         """Get the prose for a named section in the control."""
         prose = ''
-        if part.name == section and part.prose is not None:
+        if part.name == section_name and part.prose is not None:
             prose = ControlIOWriter._gap_join(prose, part.prose)
         if part.parts:
             for sub_part in part.parts:
-                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(sub_part, section))
+                prose = ControlIOWriter._gap_join(
+                    prose, ControlIOWriter._get_control_section_part(sub_part, section_name)
+                )
         return prose
 
     @staticmethod
-    def _get_control_section(control: cat.Control, section: str) -> str:
+    def _get_control_section_prose(control: cat.Control, section_name: str) -> str:
         prose = ''
         if control.parts:
             for part in control.parts:
-                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(part, section))
+                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(part, section_name))
         return prose
 
     @staticmethod
-    def _find_section_info(part: common.Part, section_list: List[str]):
+    def _find_section_info(part: common.Part, skip_section_list: List[str]) -> Tuple[str, str, str]:
         """Find section not in list."""
-        if part.prose and part.name not in section_list:
-            return part.id, part.name
+        if part.prose and part.name not in skip_section_list:
+            return part.id, part.name, part.title
         if part.parts:
             for part in part.parts:
-                id_, name = ControlIOWriter._find_section_info(part, section_list)
+                id_, name, title = ControlIOWriter._find_section_info(part, skip_section_list)
                 if id_:
-                    return id_, name
-        return '', ''
+                    return id_, name, title
+        return '', '', ''
 
     @staticmethod
-    def _find_section(control: cat.Control, section_list: List[str]) -> Tuple[str, str]:
+    def _find_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str]:
         """Find next section not in list."""
         if control.parts:
             for part in control.parts:
-                id_, name = ControlIOWriter._find_section_info(part, section_list)
+                id_, name, title = ControlIOWriter._find_section_info(part, skip_section_list)
                 if id_:
-                    return id_, name
-        return '', ''
+                    return id_, name, title
+        return '', '', ''
 
     @staticmethod
-    def _get_section(control: cat.Control, section_list: List[str]) -> Tuple[str, str, str]:
+    def _get_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str, str]:
         """Get sections that are not in the list."""
-        id_, name = ControlIOWriter._find_section(control, section_list)
+        id_, name, title = ControlIOWriter._find_section(control, skip_section_list)
         if id_:
-            return id_, name, ControlIOWriter._get_control_section(control, name)
-        return '', '', ''
+            return id_, name, title, ControlIOWriter._get_control_section_prose(control, name)
+        return '', '', '', ''
 
     def _add_sections(self, control: cat.Control) -> None:
         """Add the extra control sections after the main ones."""
         skip_section_list = ['statement', 'item', 'objective']
         while True:
-            name, id_, prose = self._get_section(control, skip_section_list)
+            _, name, title, prose = self._get_section(control, skip_section_list)
             if not name:
                 return
             if prose:
-                skip_section_list.append(id_)
-                if self._sections and id_ in self._sections:
-                    id_ = self._sections[id_]
-                self._md_file.new_header(level=2, title=f'Control {id_}')
+                # section title will be from the section_dict, the part title, or the part name in that order
+                section_title = self._sections_dict.get(name, title) if self._sections_dict else title
+                section_title = section_title if section_title else name
+                skip_section_list.append(name)
+                self._md_file.new_header(level=2, title=f'Control {section_title}')
                 self._md_file.new_line(prose)
                 self._md_file.new_paragraph()
 
@@ -337,7 +340,8 @@ class ControlIOWriter():
 
         for add in adds:
             name, prose = add
-            self._md_file.new_header(level=2, title=f'Control {name}')
+            title = self._sections_dict.get(name, name) if self._sections_dict else name
+            self._md_file.new_header(level=2, title=f'Control {title}')
             self._md_file.new_paraline(prose)
 
     @staticmethod
@@ -409,11 +413,18 @@ class ControlIOWriter():
         # first read the existing markdown header and content if it exists
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
-        self._sections = sections_dict
+        self._sections_dict = sections_dict
 
         merged_header = copy.deepcopy(header)
         if yaml_header:
             ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
+
+        # merge any provided sections with sections in the header, with overwrite
+        header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
+        if sections_dict:
+            header_sections_dict.update(sections_dict)
+        if header_sections_dict:
+            merged_header[const.SECTIONS_TAG] = header_sections_dict
 
         self._add_yaml_header(merged_header)
 
@@ -514,7 +525,7 @@ class ControlIOReader():
     @staticmethod
     def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
         """Process the title line and extract the control id, group title (in brackets) and control title."""
-        if line.count('-') < 1:
+        if line.count('-') == 0:
             raise TrestleError(f'Markdown control title format error, missing - after control id: {line}')
         split_line = line.split()
         if len(split_line) < 3 or split_line[2] != '-':
