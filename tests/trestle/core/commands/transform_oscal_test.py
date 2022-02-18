@@ -73,7 +73,7 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
 
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, version=None)
     assert ssp_assemble._run(args) == 0
 
     # now transform it with: trestle transform -t system-security-plan -i my_ssp -p test_profile_d -o xformed_ssp
@@ -85,14 +85,15 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
         transform_by='test_profile_d',
         output='xformed_ssp',
         regenerate=False,
-        verbose=1
+        verbose=1,
+        version=None
     )
     transform_oscal = TransformCmd()
     rc = transform_oscal._run(args)
     assert rc == 0
 
     assert transform_oscal.transform(
-        tmp_trestle_dir, const.MODEL_TYPE_SSP, const.FILTER_BY_PROFILE, 'bar', 'myout', 'myprof', False
+        tmp_trestle_dir, const.MODEL_TYPE_SSP, const.FILTER_BY_PROFILE, 'bar', 'myout', 'myprof', False, None
     ) == 1
 
 

@@ -39,12 +39,22 @@ from trestle.oscal.common import ParameterValue, Part, Property
 markdown_name = 'my_md'
 
 
+def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
+    if make_change:
+        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
+    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '  ac-1_prm_1: new value\n')
+    assert test_utils.delete_line_in_file(ac1_path, 'Param_1_value')
+    assert test_utils.insert_text_in_file(ac1_path, 'new value', '  ac-1_prm_2: added param 2 value\n')
+
+
+@pytest.mark.parametrize('set_parameters', [True, False])
 @pytest.mark.parametrize('make_change', [True, False])
 @pytest.mark.parametrize('use_orig_cat', [True, False])
 @pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
+    set_parameters: bool,
     make_change: bool,
     use_orig_cat: bool,
     add_header: bool,
@@ -76,9 +86,10 @@ def test_catalog_generate_assemble(
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
         assert ac1_path.exists()
-        if make_change:
-            assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
+        _change_params(ac1_path, new_prose, make_change)
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
+        if set_parameters:
+            test_args.append('-sp')
         if use_orig_cat:
             test_args.extend(f'-n {cat_name}'.split())
         if dir_exists:
@@ -93,28 +104,54 @@ def test_catalog_generate_assemble(
             yaml_header = yaml.load(yaml_header_path.open('r'))
         catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
         assert (markdown_path / 'ac/ac-1.md').exists()
-        if make_change:
-            assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}')
+        _change_params(ac1_path, new_prose, make_change)
         if dir_exists:
             assembled_cat_dir.mkdir()
         orig_cat_name = cat_name if use_orig_cat else None
-        CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name)
+        CatalogAssemble.assemble_catalog(
+            tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters, False, ''
+        )
 
     orig_cat: cat.Catalog = cat.Catalog.oscal_read(catalog_path)
     assembled_cat: cat.Catalog = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
     assert (orig_cat.metadata.title == assembled_cat.metadata.title) == use_orig_cat
-    assert orig_cat.uuid != assembled_cat.uuid
     interface_orig = CatalogInterface(orig_cat)
+    ac1 = interface_orig.get_control('ac-1')
     if make_change:
         # add the item manually to the original catalog so we can confirm the item was loaded correctly
-        ac1 = interface_orig.get_control('ac-1')
         prop = Property(name='label', value='d.')
         new_part = Part(id='ac-1_smt.d', name='item', props=[prop], prose=new_prose)
         ac1.parts[0].parts.append(new_part)
         interface_orig.replace_control(ac1)
-        interface_orig.update_catalog_controls()
+        orig_cat = interface_orig.get_catalog()
+    if set_parameters:
+        ac1.params[0].values = [ParameterValue(__root__='new value')]
+        ac1.params[1].values = [ParameterValue(__root__='added param 2 value')]
+        interface_orig.replace_control(ac1)
+        orig_cat = interface_orig.get_catalog()
+    elif not use_orig_cat:
+        ac1.params = None
+        interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     assert test_utils.catalog_interface_equivalent(interface_orig, assembled_cat, False)
+
+
+def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test catalog assemble version."""
+    cat_name = 'my_cat'
+    md_name = 'my_md'
+    new_version = '1.2.3'
+    assembled_cat_name = 'my_assembled_cat'
+    catalog_dir = tmp_trestle_dir / f'catalogs/{cat_name}'
+    catalog_dir.mkdir(parents=True, exist_ok=True)
+    catalog_path = catalog_dir / 'catalog.json'
+    sample_catalog_rich_controls.oscal_write(catalog_path)
+    markdown_path = tmp_trestle_dir / md_name
+    catalog_generate = CatalogGenerate()
+    catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, {}, False)
+    CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version)
+    assembled_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_cat_name, cat.Catalog)
+    assert assembled_cat.metadata.version.__root__ == new_version
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
@@ -152,19 +189,22 @@ def test_catalog_interface_groups() -> None:
     assert len(groups) == 4
 
 
-@pytest.mark.parametrize('cull_params', [True, False])
-def test_catalog_interface_merge_controls(cull_params: bool, sample_catalog_rich_controls: cat.Catalog) -> None:
+@pytest.mark.parametrize('replace_params', [True, False])
+def test_catalog_interface_merge_controls(replace_params: bool, sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test merging of controls."""
     control_a = sample_catalog_rich_controls.groups[0].controls[0]
     control_b = copy.deepcopy(control_a)
-    CatalogInterface.merge_controls(control_a, control_b, cull_params)
+    CatalogInterface.merge_controls(control_a, control_b, replace_params)
     assert control_a == control_b
     control_b.params[0].values = [ParameterValue(__root__='new value')]
-    CatalogInterface.merge_controls(control_a, control_b, cull_params)
-    assert control_a.params[0].values[0].__root__ == 'new value'
+    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    if replace_params:
+        assert control_a.params[0].values[0].__root__ == 'new value'
+    else:
+        assert control_a.params[0].values[0].__root__ == 'param_0_val'
     control_b.params = control_b.params[:1]
-    CatalogInterface.merge_controls(control_a, control_b, cull_params)
-    assert len(control_a.params) == 1 if cull_params else 2
+    CatalogInterface.merge_controls(control_a, control_b, replace_params)
+    assert len(control_a.params) == 1 if replace_params else 2
 
 
 def test_catalog_generate_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

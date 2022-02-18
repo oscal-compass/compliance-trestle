@@ -29,6 +29,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.model_utils import ModelUtils
+from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_io import ControlIOReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -66,7 +67,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 @pytest.mark.parametrize('sections', [False, True])
 def test_ssp_generate(import_cat, sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
+    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
     if not sections:
         args.sections = None
     ssp_cmd = SSPGenerate()
@@ -83,6 +84,9 @@ def test_ssp_generate(import_cat, sections, tmp_trestle_dir: pathlib.Path) -> No
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML()
         expected_header = yaml.load(f)
+    if sections:
+        sections_dict = sections_to_dict(sections + ',statement:statement')
+        expected_header[const.SECTIONS_TAG] = sections_dict
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
@@ -125,6 +129,7 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
     args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
+    args.sections = None
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
@@ -161,7 +166,7 @@ def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> N
 def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     # always start by creating the markdown with the yaml header
-    args, _, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name)
+    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
 
@@ -175,6 +180,8 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
+    # remove the sections that were added to original header so we can check other changes in header
+    header.pop(const.SECTIONS_TAG)
     assert yaml_header == header
 
     # edit the header by adding a list item and removing a value
@@ -209,6 +216,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
     acme_string = 'Do the ACME requirements'
+    new_version = '1.2.3'
 
     prose_a = 'Hello there\n  How are you\n line with more text\n\ndouble line'
     prose_b = 'This is fun\nline with *bold* text\n\n### ACME Component\n\n' + acme_string
@@ -224,13 +232,19 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # now assemble the edited controls into json ssp
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, regenerate=False
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=1,
+        regenerate=False,
+        version=new_version
     )
     assert ssp_assemble._run(args) == 0
 
     orig_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 2
+    assert orig_ssp.metadata.version.__root__ == new_version
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
@@ -238,7 +252,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
 
-    # now assemble it again but don't regen uuid's
+    # now assemble it again but don't regen uuid's and don't change version
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, regenerate=False
     )
@@ -248,6 +262,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
     assert orig_ssp.system_implementation == repeat_ssp.system_implementation
     assert len(repeat_ssp.system_implementation.components) == 2
+    assert repeat_ssp.metadata.version.__root__ == new_version
 
     found_it = False
     for imp_req in repeat_ssp.control_implementation.implemented_requirements:

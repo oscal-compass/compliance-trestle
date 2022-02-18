@@ -51,14 +51,6 @@ class Modify(Pipeline.Filter):
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
-    def _replace_param_id_with_str(prose: str, param_id: str, param_str: str) -> str:
-        """Replace param_id's with param_str and check for param_1 vs. param_10."""
-        pattern = r'( |^)(' + param_id + r')( |$)'
-        # non-capturing groups are odd in re.sub so capture all 3 and replace the middle one
-        replace = r'\1' + param_str + r'\3'
-        return re.sub(pattern, replace, prose)
-
-    @staticmethod
     def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
         """Find all instances of param_ids in prose and replace each with corresponding parameter representation.
 
@@ -70,10 +62,11 @@ class Modify(Pipeline.Filter):
                 continue
             # create the replacement text for the param_id
             param_str = ControlIOReader.param_to_str(param, param_rep)
-            # handle simple case directly
-            if prose == param.id:
-                return param_str
-            prose = Modify._replace_param_id_with_str(prose, param.id, param_str)
+            # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
+            # this only allows space next to param id, so :param_id would not get replaced
+            pattern = r'( |^)(' + param.id + r')( |$)'
+            replace = r'\1' + param_str + r'\3'
+            prose = re.sub(pattern, replace, prose)
         return prose
 
     @staticmethod

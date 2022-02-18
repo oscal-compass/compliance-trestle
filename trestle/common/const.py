@@ -258,6 +258,12 @@ HELP_OVERWRITE_HEADER_VALUES = (
 
 HELP_REGENERATE = 'Flag to force generation of new uuids in the model'
 
+HELP_VERSION = 'New version for the assembled model'
+
+HELP_SECTIONS = 'Comma-separated list of sections as short_name_no_spaces:long name with spaces'
+
+HELP_REQUIRED_SECTIONS = 'Short names of sections that must be in the assembled model, comma-separated'
+
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'
 
 FILTER_BY_PROFILE = 'filter-by-profile'
@@ -299,5 +305,7 @@ COMPLETION_DATE = 'completion-date'
 HELP_SET_PARAMS = 'set profile parameter values based on the yaml header in control markdown'
 
 SET_PARAMS_TAG = 'x-trestle-set-params'
+
+SECTIONS_TAG = 'x-trestle-sections'
 
 EDITABLE_CONTENT = 'Editable Content'

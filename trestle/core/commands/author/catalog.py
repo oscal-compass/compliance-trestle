@@ -24,6 +24,7 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.common.const as const
 import trestle.common.log as log
+import trestle.oscal.common as com
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.model_utils import ModelUtils
@@ -95,7 +96,7 @@ class CatalogGenerate(AuthorCommonCommand):
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
-                sections=None,
+                sections_dict=None,
                 prompt_responses=False,
                 additional_content=False,
                 profile=None,
@@ -116,23 +117,44 @@ class CatalogAssemble(AuthorCommonCommand):
     name = 'catalog-assemble'
 
     def _init_arguments(self) -> None:
+        name_help_str = (
+            'Optional name of the catalog model in the trestle workspace that is being modified.  '
+            'If not provided the output name is used.'
+        )
+        self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
         file_help_str = 'Name of the input markdown file directory'
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Catalog'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        name_help_str = 'Optional name of the original catalog used to generate markdown'
-        self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
+        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
+        self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
         trestle_root = pathlib.Path(args.trestle_root)
+        version = ''
+        if 'version' in args and args.version:
+            version = args.version
         return CatalogAssemble.assemble_catalog(
-            trestle_root=trestle_root, md_name=args.markdown, catalog_name=args.output, orig_cat_name=args.name
+            trestle_root=trestle_root,
+            md_name=args.markdown,
+            catalog_name=args.output,
+            orig_cat_name=args.name,
+            set_parameters=args.set_parameters,
+            regenerate=args.regenerate,
+            version=version
         )
 
     @staticmethod
     def assemble_catalog(
-        trestle_root: pathlib.Path, md_name: str, catalog_name: str, orig_cat_name: Optional[str]
+        trestle_root: pathlib.Path,
+        md_name: str,
+        catalog_name: str,
+        orig_cat_name: Optional[str],
+        set_parameters: bool,
+        regenerate: bool,
+        version: Optional[str]
     ) -> int:
         """
         Assemble the markdown directory into a json catalog model file.
@@ -142,6 +164,9 @@ class CatalogAssemble(AuthorCommonCommand):
             md_name: The name of the directory containing the markdown control files for the ssp
             catalog_name: The output name of the catalog model to be created from the assembly
             orig_cat_name: Optional name of the original json catalog that the markdown controls will replace
+            set_parameters: set the parameters in the control to the values in the markdown yaml header
+            regenerate: whether to regenerate the uuid's in the catalog
+            version: version for the assembled catalog
 
         Returns:
             0 on success, 1 otherwise
@@ -156,7 +181,7 @@ class CatalogAssemble(AuthorCommonCommand):
             return CmdReturnCodes.COMMAND_ERROR.value
         md_catalog_interface = CatalogInterface()
         try:
-            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir)
+            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
         if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
@@ -171,9 +196,13 @@ class CatalogAssemble(AuthorCommonCommand):
                 raise TrestleError(f'Error loading original catalog {orig_cat_name}: {e}')
             orig_cat_interface = CatalogInterface(orig_cat)
             # merge the just-read md catalog into the original json
-            orig_cat_interface.merge_catalog(md_catalog, True)
+            orig_cat_interface.merge_catalog(md_catalog, set_parameters)
             md_catalog = orig_cat_interface.get_catalog()
-            md_catalog, _, _ = regenerate_uuids(md_catalog)
+            if regenerate:
+                md_catalog, _, _ = regenerate_uuids(md_catalog)
+
+        if version:
+            md_catalog.metadata.version = com.Version(__root__=version)
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():

@@ -18,9 +18,11 @@ import argparse
 import logging
 import pathlib
 import traceback
+from typing import Optional
 
 import trestle.common.const as const
 import trestle.common.log as log
+import trestle.oscal.common as com
 from trestle.common import file_utils as fs
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPFilter
@@ -57,15 +59,26 @@ class TransformCmd(CommandPlusDocs):
         self.add_argument('-i', '--input', help='Name of input model', type=str, required=True)
         self.add_argument('-o', '--output', help='Name of output model or directory', type=str, required=True)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
+        self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         logger.debug('Entering trestle transform.')
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
+        version: Optional[str] = None
+        if 'version' in args and args.version:
+            version = args.version
 
         try:
             return self.transform(
-                trestle_root, args.type, args.transform, args.input, args.transform_by, args.output, args.regenerate
+                trestle_root,
+                args.type,
+                args.transform,
+                args.input,
+                args.transform_by,
+                args.output,
+                args.regenerate,
+                version
             )
         except Exception as e:
             logger.error(f'The transform operation failed with error: {e}')
@@ -80,7 +93,8 @@ class TransformCmd(CommandPlusDocs):
         input_name: str,
         transform_by: str,
         output_name: str,
-        regenerate: bool
+        regenerate: bool,
+        version: Optional[str]
     ) -> int:
         """Transform the input file based on the profile and infer the output type."""
         if model_type == const.MODEL_TYPE_SSP:
@@ -90,13 +104,15 @@ class TransformCmd(CommandPlusDocs):
                     logger.warning('A profile name must be provided for transform-by in the command.')
                     return CmdReturnCodes.COMMAND_ERROR.value
                 ssp_filter = SSPFilter()
-                return ssp_filter.filter_ssp(trestle_root, input_name, transform_by, output_name, regenerate)
+                return ssp_filter.filter_ssp(trestle_root, input_name, transform_by, output_name, regenerate, version)
         elif model_type == const.MODEL_TYPE_PROFILE:
             # anticipate more transform options here
             if transform == const.GENERATE_RESOLVED_CATALOG:
                 profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, input_name, Profile)
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, profile_path)
                 file_type = fs.FileContentType.path_to_content_type(profile_path)
+                if version:
+                    resolved_catalog.metadata.version = com.Version(__root__=version)
                 ModelUtils.save_top_level_model(resolved_catalog, trestle_root, output_name, file_type)
                 return CmdReturnCodes.SUCCESS.value
         logger.warning(f'Transform operation not available for transform type {transform} and model type {model_type}')
