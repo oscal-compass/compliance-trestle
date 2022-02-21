@@ -27,6 +27,7 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
+import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.cli import Trestle
 from trestle.common.err import TrestleError
@@ -73,7 +74,7 @@ multi_guidance_dict = {
 
 all_sections = (
     'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,my_guidance:My Guidance,'
-    'a_guidance:A Guidance,b_guidance:B Guidance'
+    'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra'
 )
 
 
@@ -130,7 +131,7 @@ def test_profile_generate_assemble(
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     if use_cli:
-        test_args = f'trestle author profile-generate -n {prof_name} -o {md_name}'.split()
+        test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
         test_args.extend(['-s', all_sections])
@@ -154,7 +155,7 @@ def test_profile_generate_assemble(
             yaml_header = yaml.load(yaml_header_path.open('r'))
         sections_dict = sections_to_dict(all_sections)
         profile_generate.generate_markdown(
-            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, None
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
         )
 
         edit_files(ac1_path, set_parameters, add_header, guid_dict)
@@ -257,15 +258,8 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
-    # disallowed output name
-    test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
-    monkeypatch.setattr(sys, 'argv', test_args)
-    assert Trestle().run() == 1
-
     # no trestle root specified direct command
-    test_args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, name='my_prof', output='new_prof', verbose=0, set_parameters=False
-    )
+    test_args = argparse.Namespace(name='my_prof', output='new_prof', verbose=0, set_parameters=False)
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
@@ -289,5 +283,54 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
 
     # profile not available for load
     test_args = 'trestle author profile-generate -n my_prof -o my_md -v'.split()
+    monkeypatch.setattr(sys, 'argv', test_args)
+    assert Trestle().run() == 1
+
+    # setup for generate and assemble
+    profile_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'my_prof', prof.Profile, FileContentType.JSON)
+    profile_path.parent.mkdir()
+    shutil.copyfile(test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json', profile_path)
+    cat_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'nist_cat', cat.Catalog, FileContentType.JSON)
+    cat_path.parent.mkdir()
+    shutil.copyfile(test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME, cat_path)
+
+    # generate markdown with required section but don't give it any prose
+    test_args = argparse.Namespace(
+        trestle_root=trestle_root,
+        name='my_prof',
+        output='md_prof',
+        verbose=0,
+        set_parameters=False,
+        overwrite_header_values=False,
+        yaml_header=None,
+        sections='NeededExtra:Needed Extra',
+        required_sections='NeededExtra'
+    )
+    profile_generate = ProfileGenerate()
+    assert profile_generate._run(test_args) == 0
+
+    # set arguments for assemble
+    test_args = argparse.Namespace(
+        trestle_root=trestle_root,
+        name=None,
+        markdown='md_prof',
+        output='my_prof',
+        verbose=0,
+        set_parameters=False,
+        yaml_header=None,
+        required_sections='NeededExtra',
+        regenerate=False,
+        version=None
+    )
+    # fail since required section not filled in
+    profile_assemble = ProfileAssemble()
+    assert profile_assemble._run(test_args) == 1
+
+    # succeed if not specifying required section
+    test_args.required_sections = None
+    assert profile_assemble._run(test_args) == 0
+
+    # disallowed output name
+    test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1

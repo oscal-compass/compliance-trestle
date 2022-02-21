@@ -43,10 +43,9 @@ class ParameterRep(Enum):
     """Enum for ways to represent a parameter."""
 
     LEAVE_MOUSTACHE = 0
-    VALUE_OR_NONE = 1
-    VALUE_OR_STRING_NONE = 2
-    LABEL_OR_CHOICES = 3
-    VALUE_OR_LABEL_OR_CHOICES = 4
+    VALUE_OR_STRING_NONE = 1
+    LABEL_OR_CHOICES = 2
+    VALUE_OR_LABEL_OR_CHOICES = 3
 
 
 class ControlIOWriter():
@@ -223,6 +222,7 @@ class ControlIOWriter():
                 return
             if prose:
                 # section title will be from the section_dict, the part title, or the part name in that order
+                # this way the user-provided section title can override the part title
                 section_title = self._sections_dict.get(name, title) if self._sections_dict else title
                 section_title = section_title if section_title else name
                 skip_section_list.append(name)
@@ -379,7 +379,11 @@ class ControlIOWriter():
 
     def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
         """Add prompts for any required sections that haven't already been written out."""
-        pass
+        missing_sections = set(required_sections).difference(added_sections)
+        for section in missing_sections:
+            section_title = self._sections_dict.get(section, section)
+            self._md_file.new_header(2, f'Control {section_title}')
+            self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
 
     def write_control(
         self,
@@ -1103,11 +1107,13 @@ class ControlIOReader():
             if line:
                 if not line.startswith(prefix):
                     raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
-                part_name_long_raw = line[len(prefix):]
+                part_name_long_raw = line[len(prefix):].strip()
                 part_name_snake = spaces_and_caps_to_snake(part_name_long_raw)
                 # if the long name isn't there use the snake version for the part
                 # otherwise the part will have the desired short name for the corresponding section
                 part_name = snake_dict.get(part_name_snake, part_name_snake)
+                # use sections dict to find correct title otherwise use the title from the markdown
+                part_title = sections_dict.get(part_name, part_name_long_raw)
                 prose_lines = []
                 ii += 1
                 have_content = False
@@ -1125,7 +1131,7 @@ class ControlIOReader():
                     # strip leading / trailing new lines.
                     prose = prose.strip('\n')
                     id_ = f'{control_id}_{part_name}'
-                    part = common.Part(id=id_, name=part_name, prose=prose)
+                    part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
                     return ii, part
             ii += 1
         return -1, None
@@ -1150,6 +1156,12 @@ class ControlIOReader():
                     ii, part = ControlIOReader._read_added_part(ii, lines, control_id, sections_dict)
                     if ii < 0:
                         break
+                    if part.name in required_sections_list and part.prose.startswith(
+                            const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
+                        missing_section = sections_dict.get(part.name, part.name)
+                        raise TrestleError(
+                            f'Control {control_id} is missing prose for required section {missing_section}'
+                        )
                     alter = prof.Alter(
                         control_id=control_id,
                         adds=[prof.Add(parts=[part], position='after', by_id=f'{control_id}_smt')]
@@ -1220,9 +1232,7 @@ class ControlIOReader():
             formatted string or None
         """
         param_str = None
-        if param_rep == ParameterRep.VALUE_OR_NONE:
-            param_str = ControlIOReader.param_values_as_str(param)
-        elif param_rep == ParameterRep.VALUE_OR_STRING_NONE:
+        if param_rep == ParameterRep.VALUE_OR_STRING_NONE:
             param_str = ControlIOReader.param_values_as_str(param)
             param_str = param_str if param_str else 'None'
         elif param_rep == ParameterRep.LABEL_OR_CHOICES:

@@ -91,7 +91,7 @@ class ProfileGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
-            trestle_root = args.trestle_root
+            trestle_root = pathlib.Path(args.trestle_root)
             if not file_utils.is_directory_name_allowed(args.output):
                 logger.warning(f'{args.output} is not an allowed directory name')
                 return CmdReturnCodes.COMMAND_ERROR.value
