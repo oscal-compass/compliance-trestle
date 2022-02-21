@@ -1156,6 +1156,7 @@ class ControlIOReader():
                     ii, part = ControlIOReader._read_added_part(ii, lines, control_id, sections_dict)
                     if ii < 0:
                         break
+                    # if section is required and it hasn't been edited with prose raise error
                     if part.name in required_sections_list and part.prose.startswith(
                             const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
                         missing_section = sections_dict.get(part.name, part.name)

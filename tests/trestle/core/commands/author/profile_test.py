@@ -37,8 +37,8 @@ from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerat
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
-# test dicts are of form {'name_exp': [(name, exp_str)...], 'ref': ref_str, 'text': prose}
-# the text is inserted on the line after ref appears
+# test dicts are of form {'name_exp': [(name, exp_str)...], 'text': prose}
+# the text is appended to the end of the file
 # then the assembled control is searched for exp_str in the prose of the named parts
 
 markdown_name = 'my_md'
@@ -163,7 +163,7 @@ def test_profile_generate_assemble(
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None, None
         ) == 0
 
     # check the assembled profile is as expected
@@ -222,7 +222,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
     if success:
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections, None
         ) == 0
 
         # check the assembled profile is as expected
@@ -252,7 +252,15 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     else:
         with pytest.raises(TrestleError):
             ProfileAssemble.assemble_profile(
-                tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections
+                tmp_trestle_dir,
+                prof_name,
+                md_name,
+                assembled_prof_name,
+                True,
+                False,
+                new_version,
+                required_sections,
+                None
             )
 
 
@@ -303,7 +311,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         set_parameters=False,
         overwrite_header_values=False,
         yaml_header=None,
-        sections='NeededExtra:Needed Extra',
+        sections='NeededExtra:Needed Extra,ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence',
         required_sections='NeededExtra'
     )
     profile_generate = ProfileGenerate()
@@ -320,7 +328,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         yaml_header=None,
         required_sections='NeededExtra',
         regenerate=False,
-        version=None
+        version=None,
+        allowed_sections=None
     )
     # fail since required section not filled in
     profile_assemble = ProfileAssemble()
@@ -328,6 +337,14 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
 
     # succeed if not specifying required section
     test_args.required_sections = None
+    assert profile_assemble._run(test_args) == 0
+
+    # fail if allowed sections doesn't include all needed
+    test_args.allowed_sections = 'NeededExtra,DummySection'
+    assert profile_assemble._run(test_args) == 1
+
+    # succed if allowed sections has all
+    test_args.allowed_sections = 'ExpectedEvidence,ImplGuidance,NeededExtra'
     assert profile_assemble._run(test_args) == 0
 
     # disallowed output name

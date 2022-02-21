@@ -266,6 +266,8 @@ HELP_SECTIONS = 'Comma-separated list of sections as short_name_no_spaces:long n
 
 HELP_REQUIRED_SECTIONS = 'Short names of sections that must be in the assembled model, comma-separated'
 
+HELP_ALLOWED_SECTIONS = 'Short names of sections that are allowed to be in the assembled model, comma-separated'
+
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'
 
 FILTER_BY_PROFILE = 'filter-by-profile'

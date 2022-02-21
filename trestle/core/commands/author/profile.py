@@ -201,6 +201,7 @@ class ProfileAssemble(AuthorCommonCommand):
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
         self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
+        self.add_argument('-as', '--allowed-sections', help=const.HELP_ALLOWED_SECTIONS, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -216,7 +217,8 @@ class ProfileAssemble(AuthorCommonCommand):
                 set_parameters=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
-                required_sections=args.required_sections
+                required_sections=args.required_sections,
+                allowed_sections=args.allowed_sections
             )
         except Exception as e:
             logger.error(f'Assembly of markdown to profile failed with error: {e}')
@@ -272,7 +274,8 @@ class ProfileAssemble(AuthorCommonCommand):
         set_parameters: bool,
         regenerate: bool,
         version: Optional[str],
-        required_sections: Optional[str]
+        required_sections: Optional[str],
+        allowed_sections: Optional[List[str]]
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
@@ -283,9 +286,10 @@ class ProfileAssemble(AuthorCommonCommand):
             md_name: The name of the directory containing the markdown control files for the profile
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
             set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
-            regenerate: whether to regenerate the uuid's in the profile
-            version: version for the assembled profile
-            required_sections: list of required sections in the assembled profile as comma-separated short names
+            regenerate: Whether to regenerate the uuid's in the profile
+            version: Optional version for the assembled profile
+            required_sections: Optional List of required sections in assembled profile as comma-separated short names
+            allowed_sections: Optional list of section short names that are allowed
 
         Returns:
             0 on success, 1 otherwise
@@ -304,6 +308,12 @@ class ProfileAssemble(AuthorCommonCommand):
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
         found_alters, param_str_dict = CatalogInterface.read_additional_content(md_dir, required_sections_list)
+        if allowed_sections:
+            for alter in found_alters:
+                for add in alter.adds:
+                    for part in add.parts:
+                        if part.name not in allowed_sections:
+                            raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
         ProfileAssemble._replace_alter_adds(orig_profile, found_alters)
         if set_parameters:
             ProfileAssemble._replace_modify_set_params(orig_profile, param_str_dict)
