@@ -91,7 +91,7 @@ class ProfileGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
-            trestle_root = pathlib.Path(args.trestle_root)
+            trestle_root: pathlib.Path = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
                 logger.warning(f'{args.output} is not an allowed directory name')
                 return CmdReturnCodes.COMMAND_ERROR.value
@@ -288,8 +288,8 @@ class ProfileAssemble(AuthorCommonCommand):
             set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
-            required_sections: Optional List of required sections in assembled profile as comma-separated short names
-            allowed_sections: Optional list of section short names that are allowed
+            required_sections: Optional List of required sections in assembled profile, as comma-separated short names
+            allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
 
         Returns:
             0 on success, 1 otherwise
