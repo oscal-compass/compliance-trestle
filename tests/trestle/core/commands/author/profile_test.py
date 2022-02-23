@@ -277,7 +277,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
 
     # bad yaml
     bad_yaml_path = str(test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml')
-    trestle_root = str(tmp_trestle_dir)
+    trestle_root = tmp_trestle_dir
     test_args = argparse.Namespace(
         trestle_root=trestle_root,
         name='my_prof',
