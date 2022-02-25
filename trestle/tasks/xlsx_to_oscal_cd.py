@@ -609,28 +609,30 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = {}
         for col in self._get_column_letter('NIST Mappings'):
             control = work_sheet[col + str(row)].value
-            if control is not None:
-                # remove blanks
-                control = ''.join(control.split())
-                if len(control) > 0:
-                    if control.lower() == 'none':
-                        continue
-                    # remove rhs of : inclusive
-                    if ':' in control:
-                        control = control.split(':')[0]
-                    # remove alphabet parts of control & accumulate in statements
-                    statements = []
-                    for i in string.ascii_lowercase:
-                        needle = '(' + i + ')'
-                        if needle in control:
-                            statements.append(needle)
-                            control = control.replace(needle, '')
-                    control = control.lower()
-                    # skip bogus control made up if dashes only
-                    if len(control.replace('-', '')) == 0:
-                        continue
-                    if control not in value.keys():
-                        value[control] = statements
+            if control is None:
+                continue
+            # remove blanks
+            control = ''.join(control.split())
+            if len(control) < 1:
+                continue
+            if control.lower() == 'none':
+                continue
+            # remove rhs of : inclusive
+            if ':' in control:
+                control = control.split(':')[0]
+            # remove alphabet parts of control & accumulate in statements
+            statements = []
+            for i in string.ascii_lowercase:
+                needle = '(' + i + ')'
+                if needle in control:
+                    statements.append(needle)
+                    control = control.replace(needle, '')
+            control = control.lower()
+            # skip bogus control made up if dashes only
+            if len(control.replace('-', '')) == 0:
+                continue
+            if control not in value.keys():
+                value[control] = statements
         if len(value.keys()) == 0:
             self.rows_missing_controls.append(row)
         logger.debug(f'row: {row} controls {value}')
