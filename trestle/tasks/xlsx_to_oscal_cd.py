@@ -54,6 +54,7 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
+
 def get_trestle_version():
     """Get trestle version wrapper."""
     return __version__
@@ -760,9 +761,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 class ParameterHelper():
     """Parameter Helper class is a temporary hack because Component Definition does not support Parameters."""
 
-    def __init__(
-        self, values: Any, id_: str, label: str, href: str, usage: str, guidelines: str 
-    ) -> None:
+    def __init__(self, values: Any, id_: str, label: str, href: str, usage: str, guidelines: str) -> None:
         """Initialize."""
         self._parameter_values = ParameterValue(__root__=str(values))
         self._id = id_
