@@ -54,30 +54,6 @@ from trestle.tasks.base_task import TaskOutcome
 
 logger = logging.getLogger(__name__)
 
-t_component_name = str
-t_control = str
-t_description = str
-t_goal_id = int
-t_goal_name_id = str
-t_goal_remarks = str
-t_goal_text = str
-t_goal_version = str
-t_guidelines = str
-t_name = str
-t_parameter_usage = str
-t_parameter_value = str
-t_parameter_values = str
-t_row = int
-t_statements = List[str]
-t_tokens = List[str]
-t_type = str
-t_uuid_str = str
-t_values = str
-t_work_sheet = Worksheet
-
-t_controls = Dict[t_control, t_statements]
-
-
 def get_trestle_version():
     """Get trestle version wrapper."""
     return __version__
@@ -91,11 +67,11 @@ class XlsxToOscalComponentDefinition(TaskBase):
         name: Name of the task.
     """
 
-    name = 'xlsx-to-oscal-component-definition'
+    name = 'xlsx-to-oscal-cd'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task xlsx-to-oscal-component-definition.
+        Initialize trestle task xlsx-to-oscal-cd.
 
         Args:
             config_object: Config section associated with the task.
@@ -114,7 +90,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.info('')
         logger.info('Purpose: From spread sheet and catalog produce OSCAL component definition file.')
         logger.info('')
-        logger.info('Configuration flags sit under [task.xlsx-to-oscal-component-definition]:')
+        logger.info('Configuration flags sit under [task.xlsx-to-oscal-cd]:')
         text1 = '  catalog-file      = '
         text2 = '(required) the path of the OSCAL catalog file.'
         logger.info(text1 + text2)
@@ -596,7 +572,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.debug(f'catalog-title: {value}')
         return value
 
-    def _row_generator(self, work_sheet: t_work_sheet) -> Iterator[t_row]:
+    def _row_generator(self, work_sheet: Worksheet) -> Iterator[int]:
         """Generate rows until goal_id is None."""
         row = 1
         while True:
@@ -606,17 +582,17 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 break
             yield row
 
-    def _get_goal_version(self) -> t_goal_version:
+    def _get_goal_version(self) -> str:
         """Fix goal_version at 1.0."""
         return '1.0'
 
-    def _get_goal_id(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_id:
+    def _get_goal_id(self, work_sheet: Worksheet, row: int) -> int:
         """Get goal_id from work_sheet."""
         col = self._get_column_letter('ControlId')
         value = work_sheet[col + str(row)].value
         return value
 
-    def _get_goal_text(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_text:
+    def _get_goal_text(self, work_sheet: Worksheet, row: int) -> str:
         """Get goal_text from work_sheet."""
         col = self._get_column_letter('ControlText')
         goal_text = work_sheet[col + str(row)].value
@@ -624,7 +600,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = goal_text.replace('\t', ' ')
         return value
 
-    def _get_controls(self, work_sheet: t_work_sheet, row: t_row) -> t_controls:
+    def _get_controls(self, work_sheet: Worksheet, row: int) -> Dict[str, List[str]]:
         """Produce dict of controls mapped to statements.
 
         Example: {'au-2': ['(a)', '(d)'], 'au-12': [], 'si-4': ['(a)', '(b)', '(c)']}
@@ -659,7 +635,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.debug(f'row: {row} controls {value}')
         return value
 
-    def _get_goal_name_id(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_name_id:
+    def _get_goal_name_id(self, work_sheet: Worksheet, row: int) -> str:
         """Get goal_name_id from work_sheet."""
         col = self._get_column_letter('goal_name_id')
         value = work_sheet[col + str(row)].value
@@ -669,7 +645,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = str(value).strip()
         return value
 
-    def _get_parameter_name_and_description(self, work_sheet: t_work_sheet, row: t_row) -> (t_name, t_description):
+    def _get_parameter_name_and_description(self, work_sheet: Worksheet, row: int) -> (str, str):
         """Get parameter_name and description from work_sheet."""
         name = None
         description = None
@@ -690,7 +666,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = name, description
         return value
 
-    def _get_parameter_value_default(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_value:
+    def _get_parameter_value_default(self, work_sheet: Worksheet, row: int) -> str:
         """Get parameter_value_default from work_sheet."""
         col = self._get_column_letter('ParameterValues')
         value = work_sheet[col + str(row)].value
@@ -698,7 +674,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             value = str(value).split(',')[0].strip()
         return value
 
-    def _get_parameter_values(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_values:
+    def _get_parameter_values(self, work_sheet: Worksheet, row: int) -> str:
         """Get parameter_values from work_sheet."""
         col = self._get_column_letter('ParameterValues')
         value = work_sheet[col + str(row)].value
@@ -711,7 +687,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = value.replace(']', '')
         return value
 
-    def _get_guidelines(self, values: t_values) -> t_guidelines:
+    def _get_guidelines(self, values: str) -> str:
         """Get guidelines based on values."""
         type_ = self._get_type(values)
         value = 'The first listed value option is set by default in the system '
@@ -719,7 +695,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value += f'Type {type_}.'
         return value
 
-    def _get_type(self, values: t_values) -> t_type:
+    def _get_type(self, values: str) -> str:
         """Get type based on values."""
         if self._is_int(values):
             value = 'Integer'
@@ -729,7 +705,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             value = 'String'
         return value
 
-    def _is_int(self, values: t_values) -> bool:
+    def _is_int(self, values: str) -> bool:
         """Determine if string represents list of int."""
         try:
             for value in values.split(','):
@@ -739,7 +715,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             retval = False
         return retval
 
-    def _is_float(self, values: t_values) -> bool:
+    def _is_float(self, values: str) -> bool:
         """Determine if string represents list of float."""
         try:
             for value in values.split(','):
@@ -749,17 +725,17 @@ class XlsxToOscalComponentDefinition(TaskBase):
             retval = False
         return retval
 
-    def _get_parameter_usage(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_usage:
+    def _get_parameter_usage(self, work_sheet: Worksheet, row: int) -> str:
         """Get parameter_usage from work_sheet."""
         return self._get_goal_remarks(work_sheet, row)
 
-    def _get_goal_text_tokens(self, work_sheet: t_work_sheet, row: t_row) -> t_tokens:
+    def _get_goal_text_tokens(self, work_sheet: Worksheet, row: int) -> List[str]:
         """Get goal_text tokens from work_sheet."""
         goal_text = self._get_goal_text(work_sheet, row)
         tokens = goal_text.split()
         return tokens
 
-    def _get_goal_remarks(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_remarks:
+    def _get_goal_remarks(self, work_sheet: Worksheet, row: int) -> str:
         """Get goal_remarks from work_sheet."""
         tokens = self._get_goal_text_tokens(work_sheet, row)
         # replace "Check whether" with "Ensure", if present
@@ -772,7 +748,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = ' '.join(tokens)
         return value
 
-    def _get_component_name(self, work_sheet: t_work_sheet, row: t_row) -> t_component_name:
+    def _get_component_name(self, work_sheet: Worksheet, row: int) -> str:
         """Get component_name from work_sheet."""
         col = self._get_column_letter('ResourceTitle')
         value = work_sheet[col + str(row)].value
@@ -781,25 +757,11 @@ class XlsxToOscalComponentDefinition(TaskBase):
         return value
 
 
-t_guidelines = str
-t_href = str
-t_id = str
-t_label = str
-t_ofile = str
-t_oscal_version = str
-t_parameters = Dict[str, Parameter]
-t_timestamp = str
-t_usage = str
-t_values = Any
-t_verbose = bool
-t_version = str
-
-
 class ParameterHelper():
     """Parameter Helper class is a temporary hack because Component Definition does not support Parameters."""
 
     def __init__(
-        self, values: t_values, id_: t_id, label: t_label, href: t_href, usage: t_usage, guidelines: t_guidelines
+        self, values: Any, id_: str, label: str, href: str, usage: str, guidelines: str 
     ) -> None:
         """Initialize."""
         self._parameter_values = ParameterValue(__root__=str(values))
@@ -823,12 +785,12 @@ class ParameterHelper():
 
     def write_parameters_catalog(
         self,
-        parameters: t_parameters,
-        timestamp: t_timestamp,
-        oscal_version: t_oscal_version,
-        version: t_version,
-        ofile: t_ofile,
-        verbose: t_verbose,
+        parameters: Dict[str, Parameter],
+        timestamp: str,
+        oscal_version: str,
+        version: str,
+        ofile: str,
+        verbose: bool,
     ) -> None:
         """Write parameters catalog."""
         parameter_metadata = Metadata(
