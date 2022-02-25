@@ -285,25 +285,29 @@ class XlsxToOscalComponentDefinition(TaskBase):
         columns = work_sheet.max_column
         for column in range(1, columns + 1):
             cell_value = self._cell_value(work_sheet, 1, column)
-            # equal
-            if self._fuzzy_equal('ControlId', cell_value):
+            if cell_value is None:
+                continue
+            cell_tokens = cell_value.split()
+            logger.debug(f'{cell_tokens}')
+            # find columns of interest (exact)
+            if cell_tokens == ['ControlId']:
                 self._add_column('ControlId', column, 1)
-            elif self._fuzzy_equal('ControlText', cell_value):
+            elif cell_tokens == ['ControlText']:
                 self._add_column('ControlText', column, 1)
-            elif self._fuzzy_equal('Version', cell_value):
+            elif cell_tokens == ['Version']:
                 self._add_column('Version', column, 1)
-            elif self._fuzzy_equal('goal_name_id', cell_value):
+            elif cell_tokens == ['goal_name_id']:
                 self._add_column('goal_name_id', column, 1)
-            # in
-            elif self._fuzzy_in('NIST Mappings', cell_value):
-                self._add_column('NIST Mappings', column, 0)
-            elif self._fuzzy_in('ResourceTitle', cell_value):
-                self._add_column('ResourceTitle', column, 1)
-            # in and in
-            if self._fuzzy_in('Parameter', cell_value) and self._fuzzy_in('[optional parameter]', cell_value):
+            elif cell_tokens == ['Parameter', '[optional', 'parameter]']:
                 self._add_column('ParameterName', column, 1)
-            if self._fuzzy_in('Values', cell_value) and self._fuzzy_in('[alternatives]', cell_value):
+            elif cell_tokens == ['Values', 'default', ',', '[alternatives]']:
                 self._add_column('ParameterValues', column, 1)
+            # find columns of interest (fuzzy)
+            elif 'NIST' in cell_tokens and 'Mappings' in cell_tokens:
+                self._add_column('NIST Mappings', column, 0)
+            elif 'ResourceTitle' in cell_tokens:
+                self._add_column('ResourceTitle', column, 0)
+        # insure expected columns found
         for name in ['ControlId',
                      'ControlText',
                      'Version',
@@ -329,22 +333,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = self.map_name_to_letters[name]
         if len(value) == 1:
             value = value[0]
-        return value
-
-    def _fuzzy_equal(self, v1, v2) -> bool:
-        """Fuzzy equal."""
-        if v1 is None or v2 is None:
-            value = False
-        else:
-            value = v1.lower().replace(' ', '') == v2.lower().replace(' ', '')
-        return value
-
-    def _fuzzy_in(self, v1, v2) -> bool:
-        """Fuzzy in."""
-        if v1 is None or v2 is None:
-            value = False
-        else:
-            value = v1.lower().replace(' ', '') in v2.lower().replace(' ', '')
         return value
 
     def _cell_value(self, work_sheet, row, col) -> Any:
