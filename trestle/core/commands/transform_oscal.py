@@ -65,9 +65,6 @@ class TransformCmd(CommandPlusDocs):
         logger.debug('Entering trestle transform.')
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        version: Optional[str] = None
-        if 'version' in args and args.version:
-            version = args.version
 
         try:
             return self.transform(
@@ -78,7 +75,7 @@ class TransformCmd(CommandPlusDocs):
                 args.transform_by,
                 args.output,
                 args.regenerate,
-                version
+                args.version
             )
         except Exception as e:
             logger.error(f'The transform operation failed with error: {e}')

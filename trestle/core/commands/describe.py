@@ -22,7 +22,6 @@ import traceback
 from typing import List
 
 import trestle.common.log as log
-from trestle.common.const import ARG_ELEMENT, ARG_FILE
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
@@ -55,10 +54,10 @@ class DescribeCmd(CommandPlusDocs):
 
             log.set_log_level_from_args(args)
 
-            if ARG_FILE in args and args.file:
+            if args.file:
                 model_file = pathlib.Path(args.file)
 
-                element = '' if ARG_ELEMENT not in args or args.element is None else args.element.strip("'")
+                element = '' if not args.element else args.element.strip("'")
                 try:
                     results = self.describe(model_file.resolve(), element, args.trestle_root)
                     return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value

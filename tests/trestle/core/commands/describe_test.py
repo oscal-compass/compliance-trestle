@@ -88,5 +88,5 @@ def test_describe_failures(
     assert DescribeCmd()._run(args) == 1
 
     # no filename specified
-    args = argparse.Namespace(verbose=1)
+    args = argparse.Namespace(file=None, element=None, trestle_root=tmp_path, verbose=1)
     assert DescribeCmd()._run(args) == 2

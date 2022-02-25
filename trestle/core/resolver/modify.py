@@ -63,10 +63,8 @@ class Modify(Pipeline.Filter):
             # create the replacement text for the param_id
             param_str = ControlIOReader.param_to_str(param, param_rep)
             # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
-            # this only allows space next to param id, so :param_id would not get replaced
-            pattern = r'( |^)(' + param.id + r')( |$)'
-            replace = r'\1' + param_str + r'\3'
-            prose = re.sub(pattern, replace, prose)
+            pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
+            prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
         return prose
 
     @staticmethod

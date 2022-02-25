@@ -435,7 +435,8 @@ class CatalogInterface():
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
         overwrite_header_values: bool = False,
-        set_parameters: bool = False
+        set_parameters: bool = False,
+        required_sections: Optional[str] = None
     ) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -449,11 +450,13 @@ class CatalogInterface():
             profile: Optional profile containing the adds making up additional content
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
             set_parameters: Set header values based on params in the control and in the profile
+            required_sections: Optional string containing list of sections that should be prompted for prose
 
         Returns:
             None
         """
         writer = ControlIOWriter()
+        required_section_list = required_sections.split(',') if required_sections else []
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
@@ -487,7 +490,8 @@ class CatalogInterface():
                 additional_content,
                 prompt_responses,
                 profile,
-                overwrite_header_values
+                overwrite_header_values,
+                required_section_list
             )
 
     @staticmethod

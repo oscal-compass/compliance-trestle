@@ -364,7 +364,8 @@ def setup_for_ssp(
         output=output_name,
         verbose=1,
         sections=sections,
-        overwrite_header_values=False
+        overwrite_header_values=False,
+        yaml_header=None
     )
 
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'

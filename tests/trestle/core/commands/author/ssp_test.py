@@ -120,7 +120,8 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         sections=None,
         verbose=1,
-        overwrite_header_values=False
+        overwrite_header_values=False,
+        yaml_header=None
     )
     assert ssp_cmd._run(args) == 1
 
@@ -237,7 +238,8 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         output=ssp_name,
         verbose=1,
         regenerate=False,
-        version=new_version
+        version=new_version,
+        name=None
     )
     assert ssp_assemble._run(args) == 0
 
@@ -254,7 +256,13 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now assemble it again but don't regen uuid's and don't change version
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, regenerate=False
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=1,
+        regenerate=False,
+        name=None,
+        version=None
     )
     assert ssp_assemble._run(args) == 0
 
@@ -281,7 +289,13 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     # assemble it again but regen uuid's
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, regenerate=True
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=1,
+        regenerate=True,
+        name=None,
+        version=None
     )
     assert ssp_assemble._run(args) == 0
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
@@ -324,7 +338,9 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
 
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, name=None, version=None
+    )
     assert ssp_assemble._run(args) == 0
 
     # load the ssp so we can add a setparameter to it for more test coverage
@@ -342,7 +358,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         profile='test_profile_d',
         output=filtered_name,
         verbose=1,
-        regenerate=False
+        regenerate=False,
+        version=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -356,7 +373,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         profile='test_profile_d',
         output=filtered_name,
         verbose=1,
-        regenerate=False
+        regenerate=False,
+        version=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -370,7 +388,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         profile='test_profile_d',
         output=filtered_name,
         verbose=1,
-        regenerate=True
+        regenerate=True,
+        version=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -384,7 +403,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         profile='test_profile_b',
         output=filtered_name,
         verbose=1,
-        regenerate=True
+        regenerate=True,
+        version=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
@@ -395,7 +415,7 @@ def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'profile_bad_control.json')
     ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'bad_prof', FileContentType.JSON)
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile='bad_prof', output='my_ssp', verbose=0, sections=None
+        trestle_root=tmp_trestle_dir, profile='bad_prof', output='my_ssp', verbose=0, sections=None, yaml_header=None
     )
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 1
@@ -425,7 +445,9 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
 
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=0)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=0, name=None, version=None
+    )
     assert ssp_assemble._run(args) == 0
 
     # read the assembled ssp and confirm roles are in metadata
@@ -488,12 +510,15 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
         output='ssp_md',
         sections=None,
         overwrite_header_values=False,
-        verbose=1
+        verbose=1,
+        yaml_header=None
     )
     assert ssp_gen._run(args) == 0
 
     ssp_assem = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, output='ssp_json', markdown='ssp_md', verbose=1)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, output='ssp_json', markdown='ssp_md', verbose=1, name=None, version=None
+    )
     assert ssp_assem._run(args) == 0
     json_ssp: ossp.SystemSecurityPlan
     json_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)

@@ -164,7 +164,7 @@ end of text
         control.parts.extend([sec_1, sec_2])
 
     writer = ControlIOWriter()
-    writer.write_control(tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False)
+    writer.write_control(tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False, None)
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlIOReader()
@@ -190,7 +190,7 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     sub_dir.mkdir(exist_ok=True)
     # write it out as markdown in a separate directory to avoid name clash
     control_writer = ControlIOWriter()
-    control_writer.write_control(sub_dir, control, 'My Group Title', None, None, False, False, None, False)
+    control_writer.write_control(sub_dir, control, 'My Group Title', None, None, False, False, None, False, None)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -379,7 +379,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     control_writer = ControlIOWriter()
     # write the control back out with the test header
     control_writer.write_control(
-        tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values
+        tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values, None
     )
     # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
