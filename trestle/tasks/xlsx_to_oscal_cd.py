@@ -267,14 +267,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
             cell_tokens = cell_value.split()
             logger.debug(f'{cell_tokens}')
             # find columns of interest (exact)
-            if cell_tokens == ['ControlId']:
-                self._add_column('ControlId', column, 1)
-            elif cell_tokens == ['ControlText']:
-                self._add_column('ControlText', column, 1)
-            elif cell_tokens == ['Version']:
-                self._add_column('Version', column, 1)
-            elif cell_tokens == ['goal_name_id']:
-                self._add_column('goal_name_id', column, 1)
+            if cell_tokens in [['ControlId'], ['ControlText'], ['Version'], ['goal_name_id']]:
+                self._add_column(cell_tokens[0], column, 1)
             elif cell_tokens == ['Parameter', '[optional', 'parameter]']:
                 self._add_column('ParameterName', column, 1)
             elif cell_tokens == ['Values', 'default', ',', '[alternatives]']:
@@ -521,7 +515,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         ]
         return value
 
-    def _report_issues(self):
+    def _report_issues(self) -> None:
         """Report issues."""
         if len(self.rows_missing_goal_name_id) > 0:
             logger.info(f'rows missing goal_name_id: {self.rows_missing_goal_name_id}')
@@ -532,7 +526,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         if len(self.rows_missing_parameters_values) > 0:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
 
-    def _write_catalog(self):
+    def _write_catalog(self) -> None:
         """Create a catalog containing the parameters."""
         if self.parameter_helper is not None:
             tdir = self._config.get('output-dir')
@@ -563,7 +557,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.debug(f'org-remarks: {value}')
         return value
 
-    def _get_class_for_property_name(self, property_name) -> str:
+    def _get_class_for_property_name(self, property_name: str) -> str:
         """Get class for property-name from config."""
         value = None
         data = self._config.get('property-name-to-class')
@@ -626,7 +620,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = goal_text.replace('\t', ' ')
         return value
 
-    def _normalize_control(self, control):
+    def _normalize_control(self, control: str) -> (str, List[str]):
         """Remove parenthesized characters from controls."""
         statements = []
         for i in string.ascii_lowercase:
