@@ -601,6 +601,17 @@ class XlsxToOscalComponentDefinition(TaskBase):
         value = goal_text.replace('\t', ' ')
         return value
 
+    def _normalize_control(self, control):
+        """Remove parenthesized characters from controls."""
+        statements = []
+        for i in string.ascii_lowercase:
+            needle = '(' + i + ')'
+            if needle in control:
+                statements.append(needle)
+                control = control.replace(needle, '')
+        control = control.lower()
+        return control, statements
+
     def _get_controls(self, work_sheet: Worksheet, row: int) -> Dict[str, List[str]]:
         """Produce dict of controls mapped to statements.
 
@@ -621,13 +632,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             if ':' in control:
                 control = control.split(':')[0]
             # remove alphabet parts of control & accumulate in statements
-            statements = []
-            for i in string.ascii_lowercase:
-                needle = '(' + i + ')'
-                if needle in control:
-                    statements.append(needle)
-                    control = control.replace(needle, '')
-            control = control.lower()
+            control, statements = self._normalize_control(control)
             # skip bogus control made up if dashes only
             if len(control.replace('-', '')) == 0:
                 continue
