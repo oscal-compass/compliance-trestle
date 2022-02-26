@@ -55,7 +55,7 @@ from trestle.tasks.base_task import TaskOutcome
 logger = logging.getLogger(__name__)
 
 
-def get_trestle_version():
+def get_trestle_version() -> str:
     """Get trestle version wrapper."""
     return __version__
 
@@ -256,7 +256,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         # </hack>
         return TaskOutcome('success')
 
-    def _map_columns(self, work_sheet) -> None:
+    def _map_columns(self, work_sheet: Worksheet) -> None:
         """Map columns."""
         self.map_name_to_letters = {}
         columns = work_sheet.max_column
@@ -296,7 +296,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             if name not in self.map_name_to_letters.keys():
                 raise RuntimeError(f'missing column {name}')
 
-    def _add_column(self, name, column, limit):
+    def _add_column(self, name: str, column: int, limit: int) -> None:
         """Add column."""
         if name not in self.map_name_to_letters:
             self.map_name_to_letters[name] = []
@@ -305,14 +305,14 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 raise RuntimeError(f'duplicate column {name} {get_column_letter(column)}')
         self.map_name_to_letters[name].append(get_column_letter(column))
 
-    def _get_column_letter(self, name):
+    def _get_column_letter(self, name: str) -> str:
         """Get column letter."""
         value = self.map_name_to_letters[name]
         if len(value) == 1:
             value = value[0]
         return value
 
-    def _cell_value(self, work_sheet, row, col) -> Any:
+    def _cell_value(self, work_sheet: Worksheet, row: int, col: int) -> Any:
         """Get value for cell, adjusting for merged cells."""
         cell = work_sheet.cell(row, col)
         retval = cell.value
@@ -325,8 +325,16 @@ class XlsxToOscalComponentDefinition(TaskBase):
         return retval
 
     def _add_implemented_requirements(
-        self, row, work_sheet, controls, component_name, parameter_name, responsible_roles, goal_name_id
+        self,
+        row: int,
+        work_sheet: Worksheet,
+        controls,
+        component_name,
+        parameter_name,
+        responsible_roles,
+        goal_name_id
     ) -> None:
+        logger.info(f'{type(controls)}')
         """Add implemented requirements."""
         goal_remarks = self._get_goal_remarks(work_sheet, row)
         parameter_value_default = self._get_parameter_value_default(work_sheet, row)
@@ -548,10 +556,12 @@ class XlsxToOscalComponentDefinition(TaskBase):
             for item in data.split(','):
                 item = item.strip()
                 parts = item.split(':')
-                if len(parts) == 2:
-                    if parts[0] == property_name:
-                        value = parts[1]
-                        break
+                if len(parts) != 2:
+                    continue
+                if parts[0] != property_name:
+                    continue
+                value = parts[1]
+                break
         logger.debug(f'property-name-to-class: {property_name} -> {value}')
         return value
 
