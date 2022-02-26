@@ -136,6 +136,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             return TaskOutcome('failure')
 
     def _execute(self) -> TaskOutcome:
+        """Execute path core."""
         if not self._config:
             logger.error('config missing')
             return TaskOutcome('failure')
@@ -199,6 +200,37 @@ class XlsxToOscalComponentDefinition(TaskBase):
         parties = self._build_parties(party_uuid_01, party_uuid_02, party_uuid_03)
         responsible_parties = self._build_responsible_parties(party_uuid_01, party_uuid_02, party_uuid_03)
         # process each row of spread sheet
+        self._process_rows(work_sheet, responsible_roles)
+        # create OSCAL ComponentDefinition
+        metadata = Metadata(
+            title='Component definition for ' + self._get_catalog_title() + ' profiles',
+            last_modified=self._timestamp,
+            oscal_version=OSCAL_VERSION,
+            version=get_trestle_version(),
+            roles=roles,
+            parties=parties,
+            responsible_parties=responsible_parties
+        )
+        component_definition = ComponentDefinition(
+            uuid=str(uuid.uuid4()),
+            metadata=metadata,
+            components=self.defined_components,
+        )
+        # write OSCAL ComponentDefinition to file
+        if self._verbose:
+            logger.info(f'output: {ofile}')
+        component_definition.oscal_write(pathlib.Path(ofile))
+        # issues
+        self._report_issues()
+        # <hack>
+        # create a catalog containing the parameters,
+        # since parameters are not supported in OSCAL 1.0.0 component definition
+        self._write_catalog()
+        # </hack>
+        return TaskOutcome('success')
+
+    def _process_rows(self, work_sheet: Worksheet, responsible_roles: List[ResponsibleRole]) -> None:
+        """Process spread sheet rows."""
         for row in self._row_generator(work_sheet):
             # quit when first row with no goal_id encountered
             goal_name_id = self._get_goal_name_id(work_sheet, row)
@@ -228,33 +260,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 defined_component.control_implementations = [control_implementation]
             else:
                 defined_component.control_implementations.append(control_implementation)
-        # create OSCAL ComponentDefinition
-        metadata = Metadata(
-            title='Component definition for ' + self._get_catalog_title() + ' profiles',
-            last_modified=self._timestamp,
-            oscal_version=OSCAL_VERSION,
-            version=get_trestle_version(),
-            roles=roles,
-            parties=parties,
-            responsible_parties=responsible_parties
-        )
-        component_definition = ComponentDefinition(
-            uuid=str(uuid.uuid4()),
-            metadata=metadata,
-            components=self.defined_components,
-        )
-        # write OSCAL ComponentDefinition to file
-        if self._verbose:
-            logger.info(f'output: {ofile}')
-        component_definition.oscal_write(pathlib.Path(ofile))
-        # issues
-        self._report_issues()
-        # <hack>
-        # create a catalog containing the parameters,
-        # since parameters are not supported in OSCAL 1.0.0 component definition
-        self._write_catalog()
-        # </hack>
-        return TaskOutcome('success')
 
     def _map_columns(self, work_sheet: Worksheet) -> None:
         """Map columns."""
