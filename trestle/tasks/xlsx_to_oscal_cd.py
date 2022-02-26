@@ -81,7 +81,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
                                                                                     ).isoformat()
 
-    def set_timestamp(self, timestamp) -> None:
+    def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""
         self._timestamp = timestamp
 
@@ -300,9 +300,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """Add column."""
         if name not in self.map_name_to_letters:
             self.map_name_to_letters[name] = []
-        if limit > 0:
-            if len(self.map_name_to_letters[name]) == limit:
-                raise RuntimeError(f'duplicate column {name} {get_column_letter(column)}')
+        if limit > 0 and len(self.map_name_to_letters[name]) == limit:
+            raise RuntimeError(f'duplicate column {name} {get_column_letter(column)}')
         self.map_name_to_letters[name].append(get_column_letter(column))
 
     def _get_column_letter(self, name: str) -> str:
@@ -328,13 +327,12 @@ class XlsxToOscalComponentDefinition(TaskBase):
         self,
         row: int,
         work_sheet: Worksheet,
-        controls,
-        component_name,
-        parameter_name,
-        responsible_roles,
-        goal_name_id
+        controls: Dict[str, List[str]],
+        component_name: str,
+        parameter_name: str,
+        responsible_roles: List[ResponsibleRole],
+        goal_name_id: str
     ) -> None:
-        logger.info(f'{type(controls)}')
         """Add implemented requirements."""
         goal_remarks = self._get_goal_remarks(work_sheet, row)
         parameter_value_default = self._get_parameter_value_default(work_sheet, row)
@@ -374,7 +372,9 @@ class XlsxToOscalComponentDefinition(TaskBase):
             # implemented_requirements
             self.implemented_requirements.append(implemented_requirement)
 
-    def _add_parameter(self, row, work_sheet, component_name, parameter_name, parameter_description) -> None:
+    def _add_parameter(
+        self, row: int, work_sheet: Worksheet, component_name: str, parameter_name: str, parameter_description: str
+    ) -> None:
         """Add_parameter."""
         usage = self._get_parameter_usage(work_sheet, row)
         if parameter_name is not None:
@@ -395,7 +395,14 @@ class XlsxToOscalComponentDefinition(TaskBase):
             )
             self.parameters[str(uuid.uuid4())] = self.parameter_helper.get_parameter()
 
-    def _add_statements(self, row, control, controls, component_name, implemented_requirement) -> None:
+    def _add_statements(
+        self,
+        row: int,
+        control: str,
+        controls: Dict[str, List[str]],
+        component_name: str,
+        implemented_requirement: ImplementedRequirement
+    ) -> None:
         """Add statements."""
         control_statements = controls[control]
         if len(control_statements) > 0:
@@ -414,7 +421,13 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 statements.append(statement)
             implemented_requirement.statements = statements
 
-    def _add_set_parameter(self, row, parameter_name, parameter_value_default, implemented_requirement) -> None:
+    def _add_set_parameter(
+        self,
+        row: int,
+        parameter_name: str,
+        parameter_value_default: str,
+        implemented_requirement: ImplementedRequirement
+    ) -> None:
         """Add set parameter."""
         if parameter_name is None:
             if row not in self.rows_missing_parameters:
@@ -430,7 +443,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 set_parameters = [set_parameter]
                 implemented_requirement.set_parameters = set_parameters
 
-    def _get_defined_component(self, component_name):
+    def _get_defined_component(self, component_name: str) -> DefinedComponent:
         """Get defined component."""
         if component_name not in self.component_names:
             # create new component
@@ -451,7 +464,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                     break
         return defined_component
 
-    def _build_roles(self):
+    def _build_roles(self) -> List[Role]:
         """Build roles."""
         value = [
             Role(id='prepared-by', title='Indicates the organization that created this content.'),
@@ -463,7 +476,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03):
+    def _build_responsible_roles(self, party_uuid_01: str, party_uuid_02: str,
+                                 party_uuid_03: str) -> List[ResponsibleRole]:
         """Build responsible roles."""
         role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
         role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
@@ -475,7 +489,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03):
+    def _build_parties(self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str) -> List[Party]:
         """Build parties."""
         value = [
             Party(uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()),
@@ -494,7 +508,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         ]
         return value
 
-    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03):
+    def _build_responsible_parties(self, party_uuid_01: str, party_uuid_02: str,
+                                   party_uuid_03: str) -> List[ResponsibleParty]:
         """Build responsible parties."""
         prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
         prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
