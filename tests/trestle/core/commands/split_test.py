@@ -672,17 +672,19 @@ def test_no_file_given(
 
     # no file given and cwd not in trestle directory should fail
     os.chdir(tmp_path)
-    args = argparse.Namespace(element='catalog.groups', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(file=None, element='catalog.groups', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 1
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.groups,catalog.metadata', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(
+        file=None, element='catalog.groups,catalog.metadata', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups.json').exists()
     assert (catalog_dir / 'catalog/metadata.json').exists()
 
     os.chdir('./catalog')
-    args = argparse.Namespace(element='groups.*', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(file=None, element='groups.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups/00000__group.json').exists()
 
@@ -691,7 +693,7 @@ def test_no_file_given(
     assert SplitCmd()._run(args) == 0
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(file=None, element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)

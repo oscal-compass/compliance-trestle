@@ -61,7 +61,7 @@ class AssembleCmd(CommandPlusDocs):
                 return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
 
             model_names = []
-            if 'name' in args and args.name:
+            if args.name:
                 model_names = [args.name]
                 logger.info(f'Assembling single model of type {model_alias}: {args.name}.')
             else:

@@ -19,7 +19,6 @@ import logging
 from abc import ABC, abstractmethod
 
 import trestle.common.file_utils
-from trestle.common.const import ARG_FILE
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
@@ -54,9 +53,9 @@ class Validator(ABC):
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
 
         # validate by type - all of type or just specified by name
-        if 'type' in args and args.type is not None:
+        if args.type:
             models = []
-            if 'name' in args and args.name is not None:
+            if args.name:
                 models = [args.name]
             else:
                 models = ModelUtils.get_models_of_type(args.type, trestle_root)
@@ -75,7 +74,7 @@ class Validator(ABC):
             return CmdReturnCodes.SUCCESS.value
 
         # validate all
-        if 'all' in args and args.all:
+        if args.all:
             model_tups = ModelUtils.get_all_models(trestle_root)
             for mt in model_tups:
 
@@ -90,7 +89,7 @@ class Validator(ABC):
             return CmdReturnCodes.SUCCESS.value
 
         # validate file
-        if ARG_FILE in args and args.file:
+        if args.file:
             file_path = trestle_root / args.file
             _, _, model = ModelUtils.load_distributed(file_path, trestle_root)
             if not self.model_is_valid(model):
