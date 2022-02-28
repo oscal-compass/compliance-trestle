@@ -202,7 +202,7 @@ class ClassText():
 
     @staticmethod
     def generate_all_body_text(classes):
-        """Get teh body of all classses into text."""
+        """Get the body of all classes into text."""
         new_classes = []
         for c in classes:
             c.generate_body_text()

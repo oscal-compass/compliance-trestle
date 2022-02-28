@@ -152,7 +152,7 @@ nav:
       - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
       - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
       - transform: api_reference/trestle.tasks.transform.md
-      - xlsx_to_oscal_component_definition: api_reference/trestle.tasks.xlsx_to_oscal_component_definition.md
+      - xlsx_to_oscal_cd: api_reference/trestle.tasks.xlsx_to_oscal_cd.md
     - transforms:
       - implementations:
         - osco: api_reference/trestle.transforms.implementations.osco.md
