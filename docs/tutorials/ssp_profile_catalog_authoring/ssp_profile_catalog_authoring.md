@@ -206,7 +206,7 @@ The addition of guidance sections in the `profile` tools requires special handli
 
 There is also a `--required-sections` option during both `profile-generate` and `profile-assemble`.  This option expects a list of sections as *comma-separated short names*, e.g. `--required-sections "ImplGuidance,ExpEvidence"`.  During `profile-generate` any required sections will have in the markdown a prompt created for guidance prose to be entered.  And during `profile-assemble` if required sections are specified, those sections must have prose filled in or it will fail with error.
 
-Finally, `profile-assemble` also has an `--allowed-sections` option that restricts any added guidance to only those allowed sections - and if disallowed sections are present it will fail with error.
+Finally, `profile-assemble` also has an `--allowed-sections` option that restricts any added guidance to only those allowed sections - and if disallowed sections are present it will fail with error.  If `--allowed-sections` is not specified then any sections found in the markdown will be added to the assembled profile.
 
 Note that these section options are all optional and there isn't a need to provide this form of restriction and enforcement.  But in order to have such sections read properly and mapped to the intended part names, a mapping must be provided in one of the ways described above.  And for certain workflows, if the allowed and required sections are specified by a command that is run as an action outside the user's control, it allows restriction of what changes can or must be made to a profile in terms of added guidance.
 
@@ -266,7 +266,7 @@ Example usage for creation of the markdown:
 
 In this example the profile has previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
 
-The `-s --section` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools, but it also serves a role of filtering the guidance and possibly changing the titles for those sections in the markdown.
+The `-s --sections` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools, but it also serves a role of filtering the guidance and possibly changing the titles for those sections in the markdown.
 
 The generated markdown output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
 for each control group.
