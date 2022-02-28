@@ -19,7 +19,7 @@ repos:
     rev: 3.9.2
     hooks:
       - id: flake8
-        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605", "--illegal-import-packages=filecmp"]
+        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605", "--illegal-import-packages=filecmp", "--jobs=1"]
         additional_dependencies:
           [
             flake8-2020,
@@ -44,7 +44,7 @@ repos:
         exclude: "(oscal/|third_party)"
         stages: [commit]
       - id: flake8
-        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605", "--illegal-import-packages=filecmp"]
+        args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605", "--illegal-import-packages=filecmp", "--jobs=1"]
         additional_dependencies:
           [
             flake8-2020,
