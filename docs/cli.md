@@ -109,7 +109,7 @@ Users can query the contents of files using `trestle describe`, and probe the co
 ...
 ```
 
-## Specifing attributes / elements within trestle commands.
+## Specifying attributes / elements within trestle commands.
 
 OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
@@ -364,7 +364,7 @@ OSCAL objects may be extremely large. Some systems may only be able to produce p
 
 `trestle partial-object-validate` allows the validation of any sub-element/attribute using element path.
 
-Using the example above `trestle partial-object-validate -f results.json -e asssesment-results.results`.
+Using the example above `trestle partial-object-validate -f results.json -e assessment-results.results`.
 
 The file is not required to be in the trestle directory or required to be a specific file name.
 
