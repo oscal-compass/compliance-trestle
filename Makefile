@@ -34,7 +34,7 @@ code-format: pre-commit-update
 	pre-commit run yapf --all-files
 
 code-lint: pre-commit-update
-	pre-commit run flake8 --all-files
+	pre-commit run flake8 --all-files --jobs=1
 
 code-typing:
 	mypy --pretty trestle
