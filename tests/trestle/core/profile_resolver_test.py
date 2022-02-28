@@ -193,7 +193,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
         ('ac-2_smt.1', 'hello', 'ac-2_smt.1', 'hello'), ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there', 'hello there'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there', ' hello there'),
         ('ac-2_smt.1', 'hello', ' xac-2_smt.1 there', ' xac-2_smt.1 there'),
-        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.1', ' hello there hello'),
+        ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there ac-2_smt.1', 'hello there hello'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10', ' hello there my 10 str'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10x', ' hello there ac-2_smt.10x'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there _ac-2_smt.10', ' hello there _ac-2_smt.10')
@@ -204,7 +204,7 @@ def test_replace_params(param_id, param_text, prose, result) -> None:
     param = com.Parameter(id=param_id, values=[com.ParameterValue(__root__=param_text)])
     param_10 = com.Parameter(id='ac-2_smt.10', values=[com.ParameterValue(__root__='my 10 str')])
     param_dict = {param_id: param, 'ac-1_smt.10': param_10}
-    assert Modify._replace_ids_with_text(prose, ParameterRep.VALUE_OR_NONE, param_dict) == result
+    assert Modify._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
 
 
 def test_profile_resolver_param_sub() -> None:

@@ -9,7 +9,7 @@
     },
     "imports": [
       {
-        "href": "trestle://catalogs/nist_cat/catalog.json",
+        "href": "#657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
         "include-controls": [
           {
             "with-ids": [
@@ -146,6 +146,18 @@
                   "prose": "Daily logs."
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    "back_matter": {
+      "resources": [
+        {
+          "uuid": "657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
+          "rlinks": [
+            {
+              "href": "trestle://catalogs/nist_cat/catalog.json"
             }
           ]
         }

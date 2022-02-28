@@ -57,7 +57,8 @@ def setup_for_ssp(include_header: bool,
             output=ssp_name,
             verbose=1,
             sections=sections,
-            overwrite_header_values=False
+            overwrite_header_values=False,
+            yaml_header=None
         )
     return args, sections, yaml_path
 
@@ -73,7 +74,9 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
 
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, version=None)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, version=None, name=None
+    )
     assert ssp_assemble._run(args) == 0
 
     # now transform it with: trestle transform -t system-security-plan -i my_ssp -p test_profile_d -o xformed_ssp
@@ -125,7 +128,8 @@ def test_resolved_catalog_transform(tmp_trestle_dir: pathlib.Path) -> None:
         transform_by='',
         output=resolved_cat_name,
         regenerate=False,
-        verbose=1
+        verbose=1,
+        version=None
     )
     transform_oscal = TransformCmd()
     rc = transform_oscal._run(args)
