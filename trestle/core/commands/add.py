@@ -43,6 +43,7 @@ class Add():
 
     The method first finds the parent model from the file and loads the file into the model.
     Then the method executes 'add' for each of the element paths specified.
+    Add was originally its own command but has been incorporated into the Create command.
     """
 
     def add_from_args(self, args: argparse.Namespace) -> int:
