@@ -62,7 +62,7 @@ Looking in indexes: https://pypi.org/simple,...
 ```bash
 (venv.trestle)$ trestle -h
 usage: trestle [-h]
-               {init,create,split,merge,replicate,add,remove,validate,import,task,assemble,version}
+               {assemble,author,create,describe,href,import,init,merge,partial-object-validate,remove,replicate,split,task,validate,version}
                ...
 ```
 
@@ -74,19 +74,26 @@ usage: trestle [-h]
 Manage OSCAL files in a human friendly manner.
 
 positional arguments:
-  {init,create,split,merge,replicate,add,remove,validate,import,task,assemble,version}
-    init                Initialize a trestle working directory.
-    create              Create a sample OSCAL model in trestle project.
-    split               Split subcomponents on a trestle model.
-    merge               Merge subcomponents on a trestle model.
-    replicate           Replicate a top level model within the trestle directory structure.
-    add                 Add a subcomponent to an existing model.
-    remove              Remove a subcomponent to an existing model.
-    validate            Validate contents of a trestle model in different modes.
+  {assemble,author,create,describe,href,import,init,merge,partial-object-validate,remove,replicate,split,task,validate,version}
+    assemble            Assemble all subcomponents from a specified trestle model into a single JSON/YAML file under
+                        dist.
+    author              trestle author, a collection of commands for authoring compliance content outside of OSCAL.
+    create              Create a sample OSCAL model in trestle project or create new elements within a given model.
+    describe            Describe contents of a model file including optional element path.
+    href                Change href of import in profile to point to catalog in trestle project. This command is
+                        needed when generating an SSP with a profile that imports a catalog from a temporary location
+                        different from the final intended location of the catalog. Omit the href argument to see the
+                        list of current imports in the profile.
     import              Import an existing full OSCAL model into the trestle project.
+    init                Initialize a trestle working directory.
+    merge               Merge subcomponents on a trestle model.
+    partial-object-validate
+                        Direct validation any oscal object in a file, including list objects.
+    remove              Remove a subcomponent to an existing model.
+    replicate           Replicate a top level model within the trestle directory structure.
+    split               Split subcomponents on a trestle model.
     task                Run arbitrary trestle tasks in a simple and extensible methodology.
-    assemble            Assemble all subcomponents from a specified trestle
-                        model into a single JSON/YAML file under dist.
+    validate            Validate contents of a trestle model in different modes.
     version             Output version info for trestle and OSCAL.
 
 optional arguments:

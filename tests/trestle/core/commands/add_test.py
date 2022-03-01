@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle add command."""
+"""Tests for trestle add command via its new interface as part of the Create command."""
 import os
 import pathlib
 import sys
@@ -28,12 +28,14 @@ import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.common.const import IOF_SHORT
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.add import AddCmd
+from trestle.core.commands.add import Add
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import BackMatter
+
+# Add was originally its own command but was incorporated as part of the Create command.
 
 
 def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -51,7 +53,7 @@ def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
 
     testargs = [
         'trestle',
-        'add',
+        'create',
         '-f',
         str(dest_file_location),
         '-e',
@@ -74,7 +76,7 @@ def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> Non
     Catalog.oscal_read(original_catalog_path).oscal_write(dest_file_location)
     testargs = [
         'trestle',
-        'add',
+        'create',
         '-f',
         str(dest_file_location),
         '-e',
@@ -116,7 +118,7 @@ def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     element_path = ElementPath('catalog.metadata.roles')
     catalog_element = Element(minimal_catalog_missing_roles)
     expected_update_action_1 = UpdateAction(expected_catalog_roles1.get_at(element_path), catalog_element, element_path)
-    actual_update_action, actual_catalog_roles = AddCmd.add(element_path, catalog_element, False)
+    actual_update_action, actual_catalog_roles = Add.add(element_path, catalog_element, False)
 
     assert actual_catalog_roles == expected_catalog_roles1
     assert actual_update_action == expected_update_action_1
@@ -124,7 +126,7 @@ def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     # Execute second _add - this time roles already exists, so this adds a roles object to roles array
     catalog_element = actual_catalog_roles
     expected_update_action_2 = UpdateAction(expected_catalog_roles2.get_at(element_path), catalog_element, element_path)
-    actual_update_action2, actual_catalog_roles2 = AddCmd.add(element_path, catalog_element, False)
+    actual_update_action2, actual_catalog_roles2 = Add.add(element_path, catalog_element, False)
     assert actual_catalog_roles2 == expected_catalog_roles2
     assert actual_update_action2 == expected_update_action_2
 
@@ -134,7 +136,7 @@ def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     expected_update_action_3 = UpdateAction(
         expected_catalog_roles2_rp.get_at(element_path), catalog_element, element_path
     )
-    actual_update_action3, actual_catalog_roles2_rp = AddCmd.add(element_path, catalog_element, False)
+    actual_update_action3, actual_catalog_roles2_rp = Add.add(element_path, catalog_element, False)
     assert actual_catalog_roles2_rp == expected_catalog_roles2_rp
     assert actual_update_action3 == expected_update_action_3
 
@@ -154,32 +156,28 @@ def test_add_failure(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, ke
     catalog_element = Element(sample_catalog_minimal)
 
     with pytest.raises(err.TrestleError):
-        AddCmd.add(element_path, catalog_element, False)
+        Add.add(element_path, catalog_element, False)
 
     element_path = ElementPath('catalog.metadata.title')
     with pytest.raises(err.TrestleError):
-        AddCmd.add(element_path, catalog_element, False)
+        Add.add(element_path, catalog_element, False)
 
     element_path = ElementPath('catalog.metadata.bad_path')
     with pytest.raises(err.TrestleError):
-        AddCmd.add(element_path, catalog_element, False)
+        Add.add(element_path, catalog_element, False)
 
 
 def test_run_failure(keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure of _run for AddCmd."""
-    testargs = ['trestle', 'add', '-e', 'catalog.metadata.roles']
+    testargs = ['trestle', 'create', '-e', 'catalog.metadata.roles']
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as e:
-        Trestle().run()
-    assert e.type == SystemExit
-    assert e.value.code == 2
+    rc = Trestle().run()
+    assert rc > 0
 
-    testargs = ['trestle', 'add', '-f', './catalog.json']
+    testargs = ['trestle', 'create', '-f', './catalog.json']
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as e:
-        Trestle().run()
-    assert e.type == SystemExit
-    assert e.value.code == 2
+    rc = Trestle().run()
+    assert rc > 0
 
 
 def test_stripped_model(
@@ -201,12 +199,12 @@ def test_stripped_model(
     # Now that the metadata has been split, add of catalog.metadata.roles will error,
     # but add of catalog.back-matter will pass
 
-    testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.metadata.roles']
+    testargs = ['trestle', 'create', '-f', 'catalog.json', '-e', 'catalog.metadata.roles']
 
     monkeypatch.setattr(sys, 'argv', testargs)
     assert Trestle().run() == 1
 
-    testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.back-matter']
+    testargs = ['trestle', 'create', '-f', 'catalog.json', '-e', 'catalog.back-matter']
 
     current_model, _ = ModelUtils.get_stripped_model_type(catalog_def_dir, tmp_path)
     current_catalog = current_model.oscal_read(pathlib.Path('catalog.json'))
