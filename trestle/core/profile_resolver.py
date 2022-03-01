@@ -39,6 +39,7 @@ class ProfileResolver():
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
+        # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.
         import_filter = Import(trestle_root, import_, True, block_adds, params_format, param_rep)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
