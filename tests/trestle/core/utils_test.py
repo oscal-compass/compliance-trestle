@@ -44,6 +44,8 @@ def load_good_catalog() -> catalog.Catalog:
 
 def test_is_collection_field_type() -> None:
     """Test for checking whether the type of a field in an OscalBaseModel object is a collection field."""
+    # originally Dicts were possible, but with Trestle 1.0.0 the only collection type is List
+    # Dicts only appear for include_all, which only needs to be handled specially in the sample generator
     good_catalog = load_good_catalog()
 
     assert mutils.is_collection_field_type(type('this is a string')) is False
@@ -63,8 +65,11 @@ def test_is_collection_field_type() -> None:
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.responsible_parties)) is False  # list
     responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
-    assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # Dict[str, ResponsibleParty]
+    assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # List[ResponsibleParty]
     assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
+
+    dct = {'foo': responsible_parties_field}
+    assert mutils.is_collection_field_type(dct) is False  # hand-created dict is not collection field type
 
     assert mutils.is_collection_field_type(
         type(good_catalog.metadata.parties[0].addresses[0].addr_lines)

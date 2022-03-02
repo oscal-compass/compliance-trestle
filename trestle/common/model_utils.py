@@ -73,9 +73,10 @@ class ModelUtils:
         if collection_type is list:
             return ModelUtils._load_list(abs_path, abs_trestle_root)
 
-        # If the path contains a dict type model
-        if collection_type is dict:
-            return ModelUtils._load_dict(abs_path, abs_trestle_root)
+        # the only other collection type in OSCAL is dict, and it only applies to include_all,
+        # which is too granular ever to be loaded by this routine
+        if collection_type:
+            raise TrestleError(f'Collection type {collection_type} not recognized for distributed load.')
 
         # Get current model
         primary_model_type, primary_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
@@ -504,16 +505,3 @@ class ModelUtils:
             aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
 
         return collection_model_type, collection_model_alias, instances_to_be_merged
-
-    @staticmethod
-    def _load_dict(abs_path: Path,
-                   abs_trestle_root: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, OscalBaseModel]]:
-        """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
-        model_dict: Dict[str, OscalBaseModel] = {}
-        collection_model_type, collection_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
-        for path in sorted(trestle.common.file_utils.iterdir_without_hidden_files(abs_path)):
-            model_type, model_alias, model_instance = ModelUtils.load_distributed(path, abs_trestle_root)
-            field_name = path.parts[-1].split('__')[0].split('.')[0]
-            model_dict[field_name] = model_instance
-
-        return collection_model_type, collection_model_alias, model_dict

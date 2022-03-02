@@ -176,14 +176,7 @@ class Modify(Pipeline.Filter):
         add_list = Modify._add_contents_as_list(add)
         # if by_id is not specified then OSCAL docs say to interpret before and after as starting or ending
         if not add.by_id:
-            # if we are just adding to the list then the add contents should be of the same type
-            if add.position in [prof.Position.before, prof.Position.starting]:
-                for offset, item in enumerate(add_list):
-                    input_list.insert(offset, item)
-                return True
-            else:
-                input_list.extend(add_list)
-                return True
+            raise TrestleError(f'Unexpected add by_id {add.by_id} in Modify.')
         # Test here for matched by_id attribute.
         try:
             for index in range(len(input_list)):
@@ -239,13 +232,14 @@ class Modify(Pipeline.Filter):
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:
         control.parts = as_list(control.parts)
         if add.by_id is None or add.by_id == control.id:
-            # add contents will be added to the control directly
+            # add contents will be added to the control directly and with no recursion
             for attr in ['params', 'props', 'parts', 'links']:
                 add_list = getattr(add, attr, None)
                 if add_list:
                     Modify._add_attr_to_control(control, add_list, attr, add.position)
             return
         else:
+            # this is only called if by_id is not None
             if not Modify._add_to_parts(control.parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
 
