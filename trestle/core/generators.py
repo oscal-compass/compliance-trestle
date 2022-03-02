@@ -139,6 +139,9 @@ def generate_sample_model(
                     model_dict[field] = {}
                 continue
             outer_type = model.__fields__[field].outer_type_
+            # next appears to be needed for python 3.7
+            if utils.get_origin(outer_type) == Union:
+                outer_type = outer_type.__args__[0]
             if model.__fields__[field].required or effective_optional:
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
