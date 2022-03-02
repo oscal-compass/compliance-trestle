@@ -194,7 +194,7 @@ class Modify(Pipeline.Filter):
                     return True
         except AttributeError:
             raise TrestleError(
-                'Cannot use "after" or "before" modifictions for a list where elements'
+                'Cannot use "after" or "before" modifications for a list where elements'
                 + ' do not contain the referenced by_id attribute.'
             )
         return False
