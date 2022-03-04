@@ -222,7 +222,6 @@ Default values for mandatory datatypes will be like below. All UUID's will be po
 
 Again, passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer version of the element being created, by including optional fields.
 
-
 ## `trestle import`
 
 This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f /local_dir/existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
