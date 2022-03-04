@@ -385,6 +385,18 @@ class ControlIOWriter():
             self._md_file.new_header(2, f'Control {section_title}')
             self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
 
+    @staticmethod
+    def is_withdrawn(control: cat.Control) -> bool:
+        """
+        Determine if control is marked Withdrawn.
+
+        This is determined by property with name 'status' with value 'Withdrawn'.
+        """
+        for prop in as_list(control.props):
+            if prop.name == 'status' and prop.value == 'Withdrawn':
+                return True
+        return False
+
     def write_control(
         self,
         dest_path: pathlib.Path,
@@ -422,7 +434,11 @@ class ControlIOWriter():
             markdown header unless overwrite_header_values is true.  If it is true then overwrite any existing values,
             but in all cases new items from the provided header will be added to the markdown header.
             If the markdown file already exists, its current header and prose are read.
+            Controls are checked if they are marked withdrawn, and if so they are not written out.
         """
+        if ControlIOWriter.is_withdrawn(control):
+            logger.debug(f'Not writing out control {control.id} since it is marked Withdrawn.')
+            return
         control_file = dest_path / (control.id + '.md')
         # first read the existing markdown header and content if it exists
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)

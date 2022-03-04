@@ -263,3 +263,20 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     assert ControlIOReader.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
+
+
+def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test catalog generate when some controls are marked withdrawn."""
+    control_a = sample_catalog_rich_controls.groups[0].controls[0]
+    control_b = sample_catalog_rich_controls.groups[0].controls[1]
+    group_id = sample_catalog_rich_controls.groups[0].id
+    if not control_b.props:
+        control_b.props = []
+    control_b.props.append(Property(name='status', value='Withdrawn'))
+    catalog_interface = CatalogInterface(sample_catalog_rich_controls)
+    catalog_interface.write_catalog_as_markdown(tmp_path, {}, None, False)
+    # confirm that the first control was written out but not the second
+    path_a = tmp_path / group_id / (control_a.id + '.md')
+    assert path_a.exists()
+    path_b = tmp_path / group_id / (control_b.id + '.md')
+    assert not path_b.exists()
