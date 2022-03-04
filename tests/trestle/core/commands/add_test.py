@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle add command via its new interface as part of the Create command."""
+"""Tests for trestle add via its new interface as part of the Create command."""
 import os
 import pathlib
 import sys
