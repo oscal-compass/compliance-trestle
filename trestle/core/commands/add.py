@@ -53,7 +53,6 @@ class Add():
         # Get parent model and then load json into parent model
         parent_model, _ = ModelUtils.get_stripped_model_type(file_path, args.trestle_root)
         parent_object = parent_model.oscal_read(file_path)
-        # FIXME : handle YAML files after detecting file type
         parent_element = Element(parent_object, classname_to_alias(parent_model.__name__, AliasMode.JSON))
 
         add_plan = Plan()
@@ -65,6 +64,7 @@ class Add():
             add_plan.add_action(update_action)
 
         create_action = CreatePathAction(file_path, True)
+        # this will output json or yaml based on type of input file
         write_action = WriteFileAction(file_path, parent_element, FileContentType.to_content_type(file_path.suffix))
 
         add_plan.add_action(create_action)
