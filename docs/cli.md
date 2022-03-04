@@ -2,7 +2,7 @@
 
 The trestle CLI has three primary use cases:
 
-- Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle add`, `trestle split`, `trestle merge`.
+- Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
 
@@ -169,7 +169,7 @@ Notice that trestle is a highly opinionated tool and, therefore, the names of th
 
 ## `trestle create`
 
-This command will create a bare-bones sample file for one of the top level OSCAL models.  For example, `trestle create catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
+This command will create a bare-bones sample file for one of the top level OSCAL models, and it can also create new elements within an existing file.  For example, `trestle create -t catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
 
 ```text
 .
@@ -180,23 +180,47 @@ This command will create a bare-bones sample file for one of the top level OSCAL
 ...
 ```
 
-The following subcommands are currently supported:
+The `-t` specifies the type of the model to create, which can be one of catalog, profile, component-definition, system-security-plan, assessment-plan, assessment-results, plan-of-action-and-milestones.  Each type will be created in its corresponding directory, such as catalogs, profiles, etc.
 
-- `trestle create catalog`: creates a directory structure containing a sample OSCAL catalog model under the `catalogs` folder.
-- `trestle create profile`: creates a directory structure containing a sample OSCAL profile model under the `profiles` folder.
-- `trestle create component-definition`: creates a directory structure containing a sample component-definition model under the `component-definitions` folder.
-- `trestle create system-security-plan`: creates a directory structure containing a sample system-security-plan model under the `system-security-plans` folder.
-- `trestle create assessment-plan`: creates a directory structure containing a sample assessment-plan under the `assessment-plans` folder.
-- `trestle create assessment-result`: creates a directory structure containing a sample assessment-result under the `assessment-results` folder.
-- `trestle create plan-of-action-and-milestone`: creates a directory structure containing a sample plan-of-action-and-milestone under the `plan-of-action-and-milestones` folder.
-
-The following options are supported:
+The following additional options are supported:
 
 - `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
 
 Passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
+
+In addition, `trestle create` can create new components within an existing file by specifying the existing file name and the corresponding element path to create within that file.
+
+For example,
+
+`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle create -f ./catalog.json -e catalog.metadata.roles `
+
+will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
+
+```json
+{
+  "roles": [
+    {
+      "id": "REPLACE_ME",
+      "title": "REPLACE_ME"
+    }
+  ]
+}
+```
+
+Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
+
+```yaml
+  - DateTime: <Current date-time>
+  - Boolean: false
+  - Integer: 0
+  - String: REPLACE_ME
+  - Float/Double: 0.00
+  - Id field: Auto generated UUID
+```
+
+Again, passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer version of the element being created, by including optional fields.
 
 ## `trestle import`
 
@@ -422,41 +446,9 @@ This command assembles all contents (files and directories) representing a speci
 
 will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON (e.g. based on the file extension), however, the output will be generated as YAML/JSON as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
-## `trestle add`
-
-This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example,
-
-`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles `
-
-will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
-
-```json
-{
-  "roles": [
-    {
-      "id": "REPLACE_ME",
-      "title": "REPLACE_ME"
-    }
-  ]
-}
-```
-
-Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
-
-```yaml
-  - DateTime: <Current date-time>
-  - Boolean: false
-  - Integer: 0
-  - String: REPLACE_ME
-  - Float/Double: 0.00
-  - Id field: Auto generated UUID
-```
-
-Passing `-iof` or `--include-optional-fields` will make `trestle add` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
-
 ## `trestle remove`
 
-The trestle remove command is the reversal of `trestle add`.
+The trestle remove command is the reversal of `trestle create -f filename.json -e element_path`, as it will remove the corresponding element from the specified file.
 
 ## `trestle validate`
 

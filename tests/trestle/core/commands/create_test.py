@@ -40,7 +40,7 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monke
     testargs_root = ['trestle', 'create']
     for subcommand in subcommand_list:
         name_stem = f'random_named_{subcommand}'
-        test_args = testargs_root + [subcommand] + ['-o', name_stem]
+        test_args = testargs_root + ['-t', subcommand] + ['-o', name_stem]
         if include_optional:
             test_args += [const.IOF_SHORT]
         monkeypatch.setattr(sys, 'argv', test_args)
@@ -77,7 +77,7 @@ def test_fail_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
 def test_broken_args(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test behaviour on broken arguments."""
     # must be done using sys patching.
-    testargs_root = ['trestle', 'create']
+    testargs_root = ['trestle', 'create', '-t']
     monkeypatch.setattr(sys, 'argv', testargs_root)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         Trestle().run()
@@ -86,24 +86,20 @@ def test_broken_args(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) ->
     testargs = testargs_root + ['catalog']
     # missing command
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        Trestle().run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code > 0
+    rc = Trestle().run()
+    assert rc > 0
     # missing mandatory args
     testargs = testargs + ['-x', 'json']
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        Trestle().run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code > 0
+    rc = Trestle().run()
+    assert rc > 0
     testargs = testargs + ['-o', 'output']
     # correct behavior
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
     assert rc == 0
     # correct behavior
-    testargs[2] = 'bad_name'
+    testargs[3] = 'bad_name'
     monkeypatch.setattr(sys, 'argv', testargs)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         Trestle().run()
