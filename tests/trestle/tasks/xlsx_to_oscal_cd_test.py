@@ -128,6 +128,19 @@ def test_xlsx_execute_no_overwrite(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+def test_xlsx_execute_embedded_blank_in_parameter_name(tmp_path):
+    """Test execute call embedded blank in parameter name."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['spread-sheet-file'] = 'tests/data/spread-sheet/embedded_blank_in_parameter_name.xlsx'
+    tgt = xlsx_to_oscal_cd.XlsxToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+
+
 def test_xlsx_execute_bad_entry(tmp_path):
     """Test execute call bad entry."""
     config = configparser.ConfigParser()
