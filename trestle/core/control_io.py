@@ -390,6 +390,12 @@ class ControlIOWriter():
         """
         Determine if control is marked Withdrawn.
 
+        Args:
+            control: The control that may be marked withdrawn.
+
+        Returns:
+            True if marked withdrawn, false otherwise.
+
         This is determined by property with name 'status' with value 'Withdrawn'.
         """
         for prop in as_list(control.props):
