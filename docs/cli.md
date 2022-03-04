@@ -180,7 +180,7 @@ This command will create a bare-bones sample file for one of the top level OSCAL
 ...
 ```
 
-The `-t` specifies the type of the model to create, which can be one of catalog, profile, component-definition, system-security-plan, assessment-result, plan-of-action-and-milestone.  Each type will be created in its corresponding directory, such as catalogs, profiles, etc.
+The `-t` specifies the type of the model to create, which can be one of catalog, profile, component-definition, system-security-plan, assessment-plan, assessment-results, plan-of-action-and-milestones.  Each type will be created in its corresponding directory, such as catalogs, profiles, etc.
 
 The following additional options are supported:
 
