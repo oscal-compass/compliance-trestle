@@ -39,7 +39,7 @@ from trestle.oscal.common import BackMatter
 
 
 def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test _run for AddCmd."""
+    """Test _run for create element method within CreateCmd."""
     original_catalog_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     dest_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
     dest_file_location = dest_file_folder / 'catalog.yml'
@@ -68,7 +68,7 @@ def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
 
 
 def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test _run for AddCmd with iof."""
+    """Test _run for create element method in CreateCmd with iof."""
     original_catalog_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     dest_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
     dest_file_location = dest_file_folder / 'catalog.yml'
@@ -89,7 +89,7 @@ def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> Non
 
 
 def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
-    """Test AddCmd.add() method for trestle add."""
+    """Test Add.add() method used by trestle CreateCmd."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog_missing_roles.json'
     minimal_catalog_missing_roles = Catalog.oscal_read(file_path)
 
@@ -142,7 +142,7 @@ def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
 
 
 def test_add_failure(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, keep_cwd: pathlib.Path) -> None:
-    """Test AddCmd.add() method for trestle add."""
+    """Test Add.add() method failures."""
     content_type = FileContentType.JSON
 
     _, _ = test_utils.prepare_trestle_project_dir(
@@ -183,7 +183,7 @@ def test_run_failure(keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
 def test_stripped_model(
     tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
 ) -> None:
-    """Test _run for AddCmd for stripped model."""
+    """Test CreateCmd creating element for stripped model."""
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,

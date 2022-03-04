@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 class RemoveCmd(CommandPlusDocs):
-    """Remove a subcomponent to an existing model."""
+    """Remove a subcomponent from an existing model."""
 
     name = 'remove'
 

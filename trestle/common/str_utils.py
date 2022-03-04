@@ -74,7 +74,7 @@ def classname_to_alias(classname: str, mode: AliasMode) -> str:
     """
     suffix = classname.split('.')[-1]
 
-    # the alias mode is eitehr json or field - yaml doesn't apply here
+    # the alias mode is either json or field - yaml doesn't apply here
     if mode == AliasMode.JSON:
         # things like class_ should just be class
         if suffix[-1] == '_':
