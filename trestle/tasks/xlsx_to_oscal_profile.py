@@ -23,8 +23,6 @@ import uuid
 from typing import List, Optional
 
 from trestle import __version__
-from trestle.common.xlsx_helper import Column
-from trestle.common.xlsx_helper import XlsxHelper
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
 from trestle.oscal.profile import Import
@@ -34,6 +32,8 @@ from trestle.oscal.profile import SelectControlById
 from trestle.oscal.profile import SetParameter
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
+from trestle.tasks.xlsx_helper import Column
+from trestle.tasks.xlsx_helper import XlsxHelper
 
 logger = logging.getLogger(__name__)
 

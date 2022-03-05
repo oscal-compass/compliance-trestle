@@ -24,8 +24,6 @@ from typing import Any, Dict, List, Optional
 
 from trestle import __version__
 from trestle.common.catalog_helper import CatalogHelper
-from trestle.common.xlsx_helper import Column
-from trestle.common.xlsx_helper import XlsxHelper
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import Link
@@ -47,6 +45,8 @@ from trestle.oscal.component import SetParameter
 from trestle.oscal.component import Statement
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
+from trestle.tasks.xlsx_helper import Column
+from trestle.tasks.xlsx_helper import XlsxHelper
 
 logger = logging.getLogger(__name__)
 

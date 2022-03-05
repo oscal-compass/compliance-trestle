@@ -62,7 +62,6 @@ nav:
       - str_utils: api_reference/trestle.common.str_utils.md
       - trash: api_reference/trestle.common.trash.md
       - type_utils: api_reference/trestle.common.type_utils.md
-      - xlsx_helper: api_reference/trestle.common.xlsx_helper.md
     - core:
       - all_validator: api_reference/trestle.core.all_validator.md
       - base_model: api_reference/trestle.core.base_model.md
@@ -153,6 +152,7 @@ nav:
       - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
       - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
       - transform: api_reference/trestle.tasks.transform.md
+      - xlsx_helper: api_reference/trestle.tasks.xlsx_helper.md
       - xlsx_to_oscal_cd: api_reference/trestle.tasks.xlsx_to_oscal_cd.md
       - xlsx_to_oscal_profile: api_reference/trestle.tasks.xlsx_to_oscal_profile.md
     - transforms:
