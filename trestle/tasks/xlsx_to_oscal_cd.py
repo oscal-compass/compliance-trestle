@@ -148,9 +148,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
         self.parameter_helper = None
         # load spread sheet
         self.xlsx_helper.load(spread_sheet, sheet_name)
-        # accumulators
-        self.rows_missing_parameters = []
-        self.rows_missing_parameters_values = []
         # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
@@ -321,15 +318,9 @@ class XlsxToOscalComponentDefinition(TaskBase):
         implemented_requirement: ImplementedRequirement
     ) -> None:
         """Add set parameter."""
-        if parameter_name is None:
-            if row not in self.rows_missing_parameters:
-                self.rows_missing_parameters.append(row)
-        else:
+        if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
-            if parameter_value_default is None:
-                if row not in self.rows_missing_parameters_values:
-                    self.rows_missing_parameters_values.append(row)
-            else:
+            if parameter_value_default is not None:
                 values = [parameter_value_default]
                 set_parameter = SetParameter(param_id=parameter_name, values=values)
                 set_parameters = [set_parameter]
@@ -416,10 +407,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
     def _report_issues(self) -> None:
         """Report issues."""
         self.xlsx_helper.report_issues()
-        if len(self.rows_missing_parameters) > 0:
-            logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
-        if len(self.rows_missing_parameters_values) > 0:
-            logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
 
     def _write_catalog(self) -> None:
         """Create a catalog containing the parameters."""

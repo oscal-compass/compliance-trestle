@@ -113,6 +113,8 @@ class XlsxHelper:
         self.rows_invalid_goal_name_id = []
         self.rows_invalid_parameter_name = []
         self.rows_missing_controls = []
+        self.rows_missing_parameters = []
+        self.rows_missing_parameters_values = []
         # map columns
         self._map_columns()
 
@@ -166,7 +168,8 @@ class XlsxHelper:
         col = self._get_column_letter(Column.rename_values_alternatives)
         value = self._work_sheet[col + str(row)].value
         if value is None:
-            logger.debug(f'row {row} col {col} missing value')
+            if row not in self.rows_missing_parameters_values:
+                self.rows_missing_parameters_values.append(row)
         # massage into comma separated list of values
         else:
             value = str(value).strip().replace(' ', '')
@@ -261,6 +264,9 @@ class XlsxHelper:
                     self.rows_invalid_parameter_name.append(row)
             else:
                 logger.info(f'row {row} col {col} invalid value')
+        if name is None:
+            if row not in self.rows_missing_parameters:
+                self.rows_missing_parameters.append(row)
         value = name, description
         return value
 
@@ -351,3 +357,7 @@ class XlsxHelper:
             logger.info(f'rows invalid parameter_name: {self.rows_invalid_parameter_name}')
         if len(self.rows_missing_controls) > 0:
             logger.info(f'rows missing controls: {self.rows_missing_controls}')
+        if len(self.rows_missing_parameters) > 0:
+            logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
+        if len(self.rows_missing_parameters_values) > 0:
+            logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
