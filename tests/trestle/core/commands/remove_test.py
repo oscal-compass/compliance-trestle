@@ -265,7 +265,7 @@ def test_run_failure_plan_execute(
     )
     monkeypatch.chdir(tmp_path)
     # Add remarks here, so it is a valid removal target,
-    testargs = ['trestle', 'add', '-f', str(catalog_def_file), '-e', 'catalog.metadata.remarks']
+    testargs = ['trestle', 'create', '-f', str(catalog_def_file), '-e', 'catalog.metadata.remarks']
     monkeypatch.setattr(sys, 'argv', testargs)
     Trestle().run()
     # .. then attempt to remove it here, but mocking a failed execute:
