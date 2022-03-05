@@ -174,7 +174,7 @@ class XlsxHelper:
         col = self._get_column_letter(Column.goal_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
-            self.rows_missing_goal_name_id.append(row)
+            self._add_row(row, self.rows_missing_goal_name_id)
             value = self._get_goal_id(row)
         value = str(value).strip()
         return value
@@ -184,12 +184,12 @@ class XlsxHelper:
         col = self._get_column_letter(Column.goal_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
-            self.rows_missing_goal_name_id.append(row)
+            self._add_row(row, self.rows_missing_goal_name_id)
         else:
             svalue = str(value).strip()
             value = ''.join(str(svalue).split())
             if value != svalue:
-                self.rows_invalid_goal_name_id.append(row)
+                self._add_row(row, self.rows_invalid_goal_name_id)
         return value
 
     def get_parameter_usage(self, row: int) -> str:
@@ -209,8 +209,7 @@ class XlsxHelper:
         col = self._get_column_letter(Column.rename_values_alternatives)
         value = self._work_sheet[col + str(row)].value
         if value is None:
-            if row not in self.rows_missing_parameters_values:
-                self.rows_missing_parameters_values.append(row)
+            self._add_row(row, self.rows_missing_parameters_values)
         # massage into comma separated list of values
         else:
             value = str(value).strip().replace(' ', '')
@@ -271,7 +270,7 @@ class XlsxHelper:
             if control not in value.keys():
                 value[control] = statements
         if len(value.keys()) == 0:
-            self.rows_missing_controls.append(row)
+            self._add_row(row, self.rows_missing_controls)
         logger.debug(f'row: {row} controls {value}')
         return value
 
@@ -302,12 +301,11 @@ class XlsxHelper:
                 sname = str(name).strip()
                 name = sname.replace(' ', '_')
                 if name != sname:
-                    self.rows_invalid_parameter_name.append(row)
+                    self._add_row(row, self.rows_invalid_parameter_name)
             else:
                 logger.info(f'row {row} col {col} invalid value')
         if name is None:
-            if row not in self.rows_missing_parameters:
-                self.rows_missing_parameters.append(row)
+            self._add_row(row, self.rows_missing_parameters)
         value = name, description
         return value
 
@@ -387,6 +385,11 @@ class XlsxHelper:
                 control = control.replace(needle, '')
         control = control.lower()
         return control, statements
+
+    def _add_row(self, row: int, account: List[int]) -> None:
+        """Add row to accounting list of rows."""
+        if row not in account:
+            account.append(row)
 
     def report_issues(self) -> None:
         """Report issues."""
