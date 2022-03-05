@@ -105,7 +105,7 @@ class XlsxHelper:
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
 
-    def configure(self, task: TaskBase) -> str:
+    def configure(self, task: TaskBase) -> bool:
         """Configure."""
         if not task._config:
             logger.error('config missing')
