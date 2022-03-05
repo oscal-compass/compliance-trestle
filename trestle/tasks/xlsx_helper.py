@@ -15,12 +15,16 @@
 """XLSX utilities."""
 
 import logging
+import pathlib
 import string
 from typing import Any, Dict, Iterator, List
 
 from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from openpyxl.utils import get_column_letter
+
+from trestle.common.catalog_helper import CatalogHelper
+from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +79,7 @@ class Column():
 class XlsxHelper:
     """Xlsx Helper common functions and assistance navigating spread sheet."""
 
-    def _print_info(self, name, oscal_name) -> None:
+    def print_info(self, name, oscal_name) -> None:
         """Print the help string."""
         logger.info(f'Help information for {name} task.')
         logger.info('')
@@ -101,8 +105,45 @@ class XlsxHelper:
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
 
+    def configure(self, task: TaskBase) -> str:
+        """Configure."""
+        if not task._config:
+            logger.error('config missing')
+            return False
+        # config verbosity
+        quiet = task._config.get('quiet', False)
+        task._verbose = not quiet
+        # config catalog
+        if task.name == 'xlsx-to-oscal-cd':
+            catalog_file = task._config.get('catalog-file')
+            if catalog_file is None:
+                logger.error('config missing "catalog-file"')
+                return False
+            task.catalog_helper = CatalogHelper(catalog_file)
+            if not task.catalog_helper.exists():
+                logger.error('"catalog-file" not found')
+                return False
+        # config spread sheet
+        spread_sheet = task._config.get('spread-sheet-file')
+        if spread_sheet is None:
+            logger.error('config missing "spread-sheet"')
+            return False
+        if not pathlib.Path(spread_sheet).exists():
+            logger.error('"spread-sheet" not found')
+            return False
+        sheet_name = task._config.get('work-sheet-name')
+        if sheet_name is None:
+            logger.error('config missing "work-sheet-name"')
+            return False
+        # announce spreadsheet
+        if task._verbose:
+            logger.info(f'input: {spread_sheet}')
+        # load spread sheet
+        self.load(spread_sheet, sheet_name)
+        return True
+
     def load(self, spread_sheet: str, sheet_name: str) -> None:
-        """Initialize."""
+        """Load."""
         self._spread_sheet = spread_sheet
         self._sheet_name = sheet_name
         self._wb = load_workbook(self._spread_sheet)

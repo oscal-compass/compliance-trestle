@@ -70,7 +70,7 @@ class XlsxToOscalProfile(TaskBase):
 
     def print_info(self) -> None:
         """Print the help string."""
-        self.xlsx_helper._print_info(self.name, 'profile')
+        self.xlsx_helper.print_info(self.name, 'profile')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -86,27 +86,8 @@ class XlsxToOscalProfile(TaskBase):
 
     def _execute(self) -> TaskOutcome:
         """Execute path core."""
-        if not self._config:
-            logger.error('config missing')
+        if not self.xlsx_helper.configure(self):
             return TaskOutcome('failure')
-        # config verbosity
-        quiet = self._config.get('quiet', False)
-        self._verbose = not quiet
-        # config spread sheet
-        spread_sheet = self._config.get('spread-sheet-file')
-        if spread_sheet is None:
-            logger.error('config missing "spread-sheet"')
-            return TaskOutcome('failure')
-        if not pathlib.Path(spread_sheet).exists():
-            logger.error('"spread-sheet" not found')
-            return TaskOutcome('failure')
-        sheet_name = self._config.get('work-sheet-name')
-        if sheet_name is None:
-            logger.error('config missing "work-sheet-name"')
-            return TaskOutcome('failure')
-        # announce spreadsheet
-        if self._verbose:
-            logger.info(f'input: {spread_sheet}')
         # config output
         odir = self._config.get('output-dir')
         opth = pathlib.Path(odir)
@@ -119,8 +100,6 @@ class XlsxToOscalProfile(TaskBase):
         if not self._overwrite and pathlib.Path(ofile).exists():
             logger.error(f'output: {ofile} already exists')
             return TaskOutcome('failure')
-        # load spread sheet
-        self.xlsx_helper.load(spread_sheet, sheet_name)
         # create OSCAL Profile
         metadata = Metadata(
             title='Profile for ' + self._get_profile_title(),

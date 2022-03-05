@@ -23,7 +23,6 @@ import uuid
 from typing import Any, Dict, List, Optional
 
 from trestle import __version__
-from trestle.common.catalog_helper import CatalogHelper
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import Link
@@ -83,7 +82,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def print_info(self) -> None:
         """Print the help string."""
-        self.xlsx_helper._print_info(self.name, 'component_definition')
+        self.xlsx_helper.print_info(self.name, 'component_definition')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -99,36 +98,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _execute(self) -> TaskOutcome:
         """Execute path core."""
-        if not self._config:
-            logger.error('config missing')
+        if not self.xlsx_helper.configure(self):
             return TaskOutcome('failure')
-        # config verbosity
-        quiet = self._config.get('quiet', False)
-        self._verbose = not quiet
-        # config catalog
-        catalog_file = self._config.get('catalog-file')
-        if catalog_file is None:
-            logger.error('config missing "catalog-file"')
-            return TaskOutcome('failure')
-        self.catalog_helper = CatalogHelper(catalog_file)
-        if not self.catalog_helper.exists():
-            logger.error('"catalog-file" not found')
-            return TaskOutcome('failure')
-        # config spread sheet
-        spread_sheet = self._config.get('spread-sheet-file')
-        if spread_sheet is None:
-            logger.error('config missing "spread-sheet"')
-            return TaskOutcome('failure')
-        if not pathlib.Path(spread_sheet).exists():
-            logger.error('"spread-sheet" not found')
-            return TaskOutcome('failure')
-        sheet_name = self._config.get('work-sheet-name')
-        if sheet_name is None:
-            logger.error('config missing "work-sheet-name"')
-            return TaskOutcome('failure')
-        # announce spreadsheet
-        if self._verbose:
-            logger.info(f'input: {spread_sheet}')
         # config output
         odir = self._config.get('output-dir')
         opth = pathlib.Path(odir)
@@ -146,8 +117,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
         self.defined_components = []
         self.parameters = {}
         self.parameter_helper = None
-        # load spread sheet
-        self.xlsx_helper.load(spread_sheet, sheet_name)
         # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
