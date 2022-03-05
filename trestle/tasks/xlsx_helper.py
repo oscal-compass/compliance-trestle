@@ -73,9 +73,35 @@ class Column():
 
 
 class XlsxHelper:
-    """Xlsx Helper class to assist navigating spread sheet."""
+    """Xlsx Helper common functions and assistance navigating spread sheet."""
 
-    def __init__(self, spread_sheet: str, sheet_name: str) -> None:
+    def _print_info(self, name, oscal_name) -> None:
+        """Print the help string."""
+        logger.info(f'Help information for {name} task.')
+        logger.info('')
+        logger.info(f'Purpose: From spread sheet and catalog produce OSCAL {oscal_name} file.')
+        logger.info('')
+        logger.info(f'Configuration flags sit under [task.{name}]:')
+        if oscal_name == 'component_definition':
+            text1 = '  catalog-file      = '
+            text2 = '(required) the path of the OSCAL catalog file.'
+            logger.info(text1 + text2)
+        text1 = '  spread-sheet-file = '
+        text2 = '(required) the path of the spread sheet file.'
+        logger.info(text1 + text2)
+        text1 = '  work-sheet-name   = '
+        text2 = '(required) the name of the work sheet in the spread sheet file.'
+        logger.info(text1 + text2)
+        for line in Column.help_list:
+            logger.info(line)
+        text1 = '  output-dir        = '
+        text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
+        logger.info(text1 + text2)
+        text1 = '  output-overwrite  = '
+        text2 = '(optional) true [default] or false; replace existing output when true.'
+        logger.info(text1 + text2)
+
+    def load(self, spread_sheet: str, sheet_name: str) -> None:
         """Initialize."""
         self._spread_sheet = spread_sheet
         self._sheet_name = sheet_name

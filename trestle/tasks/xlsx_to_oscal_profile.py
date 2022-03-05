@@ -32,7 +32,6 @@ from trestle.oscal.profile import SelectControlById
 from trestle.oscal.profile import SetParameter
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.tasks.xlsx_helper import Column
 from trestle.tasks.xlsx_helper import XlsxHelper
 
 logger = logging.getLogger(__name__)
@@ -61,6 +60,7 @@ class XlsxToOscalProfile(TaskBase):
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
+        self.xlsx_helper = XlsxHelper()
         self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
                                                                                     ).isoformat()
 
@@ -70,28 +70,7 @@ class XlsxToOscalProfile(TaskBase):
 
     def print_info(self) -> None:
         """Print the help string."""
-        logger.info(f'Help information for {self.name} task.')
-        logger.info('')
-        logger.info('Purpose: From spread sheet and catalog produce OSCAL profile file.')
-        logger.info('')
-        logger.info(f'Configuration flags sit under [task.{self.name}]:')
-        text1 = '  catalog-file      = '
-        text2 = '(required) the path of the OSCAL catalog file.'
-        logger.info(text1 + text2)
-        text1 = '  spread-sheet-file = '
-        text2 = '(required) the path of the spread sheet file.'
-        logger.info(text1 + text2)
-        text1 = '  work-sheet-name   = '
-        text2 = '(required) the name of the work sheet in the spread sheet file.'
-        logger.info(text1 + text2)
-        for line in Column.help_list:
-            logger.info(line)
-        text1 = '  output-dir        = '
-        text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
-        logger.info(text1 + text2)
-        text1 = '  output-overwrite  = '
-        text2 = '(optional) true [default] or false; replace existing output when true.'
-        logger.info(text1 + text2)
+        self.xlsx_helper._print_info(self.name, 'profile')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -140,8 +119,8 @@ class XlsxToOscalProfile(TaskBase):
         if not self._overwrite and pathlib.Path(ofile).exists():
             logger.error(f'output: {ofile} already exists')
             return TaskOutcome('failure')
-        # create xlsx helper
-        self.xlsx_helper = XlsxHelper(spread_sheet, sheet_name)
+        # load spread sheet
+        self.xlsx_helper.load(spread_sheet, sheet_name)
         # create OSCAL Profile
         metadata = Metadata(
             title='Profile for ' + self._get_profile_title(),
