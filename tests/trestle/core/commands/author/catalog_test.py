@@ -116,6 +116,8 @@ def test_catalog_generate_assemble(
     assembled_cat: cat.Catalog = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
     assert (orig_cat.metadata.title == assembled_cat.metadata.title) == use_orig_cat
     interface_orig = CatalogInterface(orig_cat)
+    # need to delete withdrawn controls because they won't be in the assembled catalog
+    interface_orig.delete_withdrawn_controls()
     ac1 = interface_orig.get_control('ac-1')
     if make_change:
         # add the item manually to the original catalog so we can confirm the item was loaded correctly
