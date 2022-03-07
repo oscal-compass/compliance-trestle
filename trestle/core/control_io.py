@@ -399,8 +399,9 @@ class ControlIOWriter():
         This is determined by property with name 'status' with value 'Withdrawn'.
         """
         for prop in as_list(control.props):
-            if prop.name == 'status' and prop.value == 'Withdrawn':
-                return True
+            if prop.name and prop.value:
+                if prop.name.lower().strip() == 'status' and prop.value.lower().strip() == 'withdrawn':
+                    return True
         return False
 
     def write_control(
