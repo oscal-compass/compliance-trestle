@@ -167,16 +167,11 @@ class Modify(Pipeline.Filter):
 
         Return True on success or False if id needed and not found.
 
-        If the add is not by_id then the insertion will happen immediately.
-        But if the add is by_id it will insert if the id is found, or return False if not.
+        This is only called when by_id is not None.
+        The add will be inserted if the id is found, or return False if not.
         This allows a separate recursive routine to search sub-lists for the id.
-
-        Note: If a list can be none this method will fail
         """
         add_list = Modify._add_contents_as_list(add)
-        # if by_id is not specified then OSCAL docs say to interpret before and after as starting or ending
-        if not add.by_id:
-            raise TrestleError(f'Unexpected add by_id {add.by_id} in Modify.')
         # Test here for matched by_id attribute.
         try:
             for index in range(len(input_list)):
@@ -201,6 +196,11 @@ class Modify(Pipeline.Filter):
 
     @staticmethod
     def _add_to_parts(parts: List[common.Part], add: prof.Add) -> bool:
+        """
+        Add the add to the parts.
+
+        This is only called if add.by_id is not None.
+        """
         if Modify._add_to_list(parts, add):
             return True
         for part in parts:
@@ -230,6 +230,7 @@ class Modify(Pipeline.Filter):
 
     @staticmethod
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:
+        """First step in applying Add to control."""
         control.parts = as_list(control.parts)
         if add.by_id is None or add.by_id == control.id:
             # add contents will be added to the control directly and with no recursion

@@ -53,7 +53,7 @@ class ModelUtils:
             abs_path: The path to the file/directory to be loaded.
             abs_trestle_root: The trestle project root directory.
             collection_type: The type of collection model, if it is a collection model.
-                typing.List if the model is a list, typing.Dict if the model is additionalProperty.
+                typing.List is the only collection type handled or expected.
                 Defaults to None.
 
         Returns:
@@ -69,14 +69,14 @@ class ModelUtils:
         if not abs_path.exists():
             raise TrestleNotFoundError(f'File {abs_path} not found for load.')
 
-        # If the path contains a list type model
-        if collection_type is list:
-            return ModelUtils._load_list(abs_path, abs_trestle_root)
-
-        # the only other collection type in OSCAL is dict, and it only applies to include_all,
-        # which is too granular ever to be loaded by this routine
         if collection_type:
-            raise TrestleError(f'Collection type {collection_type} not recognized for distributed load.')
+            # If the path contains a list type model
+            if collection_type is list:
+                return ModelUtils._load_list(abs_path, abs_trestle_root)
+            # the only other collection type in OSCAL is dict, and it only applies to include_all,
+            # which is too granular ever to be loaded by this routine
+            else:
+                raise TrestleError(f'Collection type {collection_type} not recognized for distributed load.')
 
         # Get current model
         primary_model_type, primary_model_alias = ModelUtils.get_stripped_model_type(abs_path, abs_trestle_root)
