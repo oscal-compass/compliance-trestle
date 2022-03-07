@@ -21,7 +21,6 @@ import pathlib
 import pkgutil
 
 from trestle.common import const, log
-from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
 from trestle.core.commands.command_docs import CommandBase
@@ -47,7 +46,6 @@ class Trestle(CommandBase):
     """Manage OSCAL files in a human friendly manner."""
 
     subcommands = [
-        AddCmd,
         AssembleCmd,
         AuthorCmd,
         CreateCmd,
