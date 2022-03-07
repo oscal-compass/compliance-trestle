@@ -28,6 +28,7 @@ from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
+from trestle.core.commands.add import Add
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -39,31 +40,60 @@ logger = logging.getLogger(__name__)
 
 
 class CreateCmd(CommandPlusDocs):
-    """Create a sample OSCAL model in trestle project."""
+    """Create a sample OSCAL model in trestle project or create new elements within a given model."""
 
     name = 'create'
 
     def _init_arguments(self) -> None:
-        self.add_argument('model', help='', choices=const.MODEL_TYPE_LIST)
-        self.add_argument('-o', '--output', help='Name of the output created model.', required=True)
+        self.add_argument('-t', '--type', help='Type of model if created anew.', choices=const.MODEL_TYPE_LIST)
+        self.add_argument('-o', '--output', help='Name of the output created model.')
         self.add_argument(const.IOF_SHORT, const.IOF_LONG, help=const.IOF_HELP, action='store_true')
         self.add_argument(
             '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
+        self.add_argument(
+            '-f', '--file', help='Optional existing OSCAL file that will have elements created within it.', type=str
+        )
+        self.add_argument(
+            '-e', '--element', help='Optional path of element to be created whithin the specified file.', type=str
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Execute."""
-        try:
-            object_type = ElementPath(args.model).get_type()
-            return self.create_object(args.model, object_type, args)
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while creating a sample OSCAL model: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while creating a sample OSCAL model: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+        """
+        Execute the create command.
+
+        Notes
+            Either a new model will be created of the specified type,
+            or an existing file will have new elements added within it.
+        """
+        # Normal create path
+        if args.type and args.output:
+            try:
+                object_type = ElementPath(args.type).get_type()
+                return self.create_object(args.type, object_type, args)
+            except TrestleError as e:
+                logger.debug(traceback.format_exc())
+                logger.error(f'Error while creating a sample OSCAL model: {e}')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            except Exception as e:  # pragma: no cover
+                logger.debug(traceback.format_exc())
+                logger.error(f'Unexpected error while creating a sample OSCAL model: {e}')
+                return CmdReturnCodes.UNKNOWN_ERROR.value
+        # Add path
+        elif args.file and args.element:
+            try:
+                add = Add()
+                return add.add_from_args(args)
+            except TrestleError as e:
+                logger.debug(traceback.format_exc())
+                logger.error(f'Error while creating a new element in existing file: {e}')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            except Exception as e:  # pragma: no cover
+                logger.debug(traceback.format_exc())
+                logger.error(f'Unexpected error while creating a new element in existing file: {e}')
+                return CmdReturnCodes.UNKNOWN_ERROR.value
+        logger.warning('Create requires either a model type and output name, or a file and element path.')
+        return CmdReturnCodes.INCORRECT_ARGS.value
 
     @classmethod
     def create_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
