@@ -9,7 +9,7 @@
     },
     "imports": [
       {
-        "href": "https://github.ibm.com/degenaro/hybrid-cloud-demos/blob/master/spread-sheets/ibm_cloud_best_practices_controls_meta_data_with_goalNameID_NIST_params.xlsx",
+        "href": "https://github.mycorp.com/spread-sheets/best_practices_controls.xlsx",
         "include-controls": [
           {
             "with-ids": [
