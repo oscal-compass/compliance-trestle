@@ -13,10 +13,6 @@
 # limitations under the License.
 """Tests for list_utils module."""
 
-import pytest
-
-from tests import test_utils
-
 from trestle.common import list_utils
 
 
