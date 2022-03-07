@@ -116,6 +116,8 @@ def test_catalog_generate_assemble(
     assembled_cat: cat.Catalog = cat.Catalog.oscal_read(assembled_cat_dir / 'catalog.json')
     assert (orig_cat.metadata.title == assembled_cat.metadata.title) == use_orig_cat
     interface_orig = CatalogInterface(orig_cat)
+    # need to delete withdrawn controls because they won't be in the assembled catalog
+    interface_orig.delete_withdrawn_controls()
     ac1 = interface_orig.get_control('ac-1')
     if make_change:
         # add the item manually to the original catalog so we can confirm the item was loaded correctly
@@ -263,3 +265,20 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     assert ControlIOReader.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
+
+
+def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test catalog generate when some controls are marked withdrawn."""
+    control_a = sample_catalog_rich_controls.groups[0].controls[0]
+    control_b = sample_catalog_rich_controls.groups[0].controls[1]
+    group_id = sample_catalog_rich_controls.groups[0].id
+    if not control_b.props:
+        control_b.props = []
+    control_b.props.append(Property(name='status', value='Withdrawn'))
+    catalog_interface = CatalogInterface(sample_catalog_rich_controls)
+    catalog_interface.write_catalog_as_markdown(tmp_path, {}, None, False)
+    # confirm that the first control was written out but not the second
+    path_a = tmp_path / group_id / (control_a.id + '.md')
+    assert path_a.exists()
+    path_b = tmp_path / group_id / (control_b.id + '.md')
+    assert not path_b.exists()

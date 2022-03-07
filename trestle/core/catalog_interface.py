@@ -287,6 +287,15 @@ class CatalogInterface():
 
         return None
 
+    def delete_withdrawn_controls(self) -> None:
+        """Delete all withdrawn controls from the catalog."""
+        delete_list = []
+        for control in self.get_all_controls_from_dict():
+            if ControlIOWriter.is_withdrawn(control):
+                delete_list.append(control.id)
+        for id_ in delete_list:
+            self.delete_control(id_)
+
     @staticmethod
     def _get_groups_from_group(group: cat.Group) -> Iterator[cat.Group]:
         yield group
