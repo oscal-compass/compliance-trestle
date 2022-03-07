@@ -27,3 +27,18 @@ def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
 def none_if_empty(list_: List[TG]) -> Optional[List[TG]]:
     """Convert to None if empty list."""
     return list_ if list_ else None
+
+
+def is_ordered_sublist(needle: List[str], haystack: List[str]) -> bool:
+    """Determine if needle is exactly contained in haystack.
+
+    The needle list comprises an ordered list of strings.
+    The haystack list comprises an ordered list of strings that is to be searched.
+    If the strings in the needle appear in the haystack in that exact order then
+    return true, else false.
+
+    Examples:
+    needle=['a','b','c'], haystack=['x','y','a','b','c','z'], result = True
+    needle=['a','b','c'], haystack=['x','y','a','b','z','c'], result = False
+    """
+    return ' '.join(needle) in ' '.join(haystack)

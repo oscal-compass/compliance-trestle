@@ -24,16 +24,10 @@ from openpyxl.cell.cell import MergedCell
 from openpyxl.utils import get_column_letter
 
 from trestle.common.catalog_helper import CatalogHelper
+from trestle.common.list_utils import is_ordered_sublist
 from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)
-
-
-def is_sublist(needle: List[str], haystack: List[str]) -> bool:
-    """Determine if needle is exactly contained in haystack."""
-    list1 = [element for element in needle if element in haystack]
-    list2 = [element for element in haystack if element in needle]
-    return list1 == list2 and len(needle) == len(list1)
 
 
 class Column():
@@ -339,7 +333,7 @@ class XlsxHelper:
                 self._add_column(Column.rename_parameter_opt_parm, column, 1)
             elif cell_tokens == Column.tokens_values_alternatives:
                 self._add_column(Column.rename_values_alternatives, column, 1)
-            elif is_sublist(Column.tokens_nist_mappings, cell_tokens):
+            elif is_ordered_sublist(Column.tokens_nist_mappings, cell_tokens):
                 self._add_column(Column.nist_mappings, column, 0)
             elif Column.resource_title in cell_tokens:
                 self._add_column(Column.resource_title, column, 0)
