@@ -1367,7 +1367,6 @@ th, td {
 </table>
 </details>
 
-
 ## `trestle task xlsx-to-oscal-profile`
 
 The *trestle task xlsx-to-oscal-profile* command facilitates transformation of an excel spread sheet into an OSCAL profile.json file.
