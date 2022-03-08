@@ -130,7 +130,14 @@
                 {
                   "id": "ac-1_last_lev2",
                   "name": "ImplGuidance",
-                  "prose": "New part inside subpart at the end"
+                  "prose": "New part inside subpart at the end",
+                  "parts": [
+                    {
+                      "id": "ac-1_last_lev2_b",
+                      "name": "ImplGuidance",
+                      "prose": "New part at second level of part with no by_id"
+                    }
+                  ]
                 }
               ]
             }
