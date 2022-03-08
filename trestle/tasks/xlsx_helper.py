@@ -23,11 +23,17 @@ from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from openpyxl.utils import get_column_letter
 
+from trestle import __version__
 from trestle.common.catalog_helper import CatalogHelper
 from trestle.common.list_utils import is_ordered_sublist
 from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)
+
+
+def get_trestle_version() -> str:
+    """Get trestle version wrapper."""
+    return __version__
 
 
 class Column():
