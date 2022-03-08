@@ -52,22 +52,21 @@ def _get_model_field_info(field_type: Type[Any]) -> Tuple[Optional[Type[Any]], O
 def is_collection_field_type(field_type: Type[Any]) -> bool:
     """Check whether a type hint is a collection type as used by OSCAL.
 
-    Specifically this is whether the type is a list or string.
+    Specifically this is whether the type is a list or not.
 
     Args:
         field_type: A type or a type alias of a field typically as served via pydantic introspection
 
     Returns:
-        Status if if it is a list or dict return type as used by oscal.
+        True if it is a collection type list.
     """
     # first check if it is a pydantic __root__ object
     _, root_type, _ = _get_model_field_info(field_type)
-    if root_type is not None:
-        return root_type in ['List', 'Dict']
+    if root_type == 'List':
+        return True
     # Retrieves type from a type annotation
     origin_type = get_origin(field_type)
-    # dict in fact may not be possible
-    return origin_type in [list, dict]
+    return origin_type == list
 
 
 def get_inner_type(collection_field_type: Union[Type[List[Any]], Type[Dict[str, Any]]]) -> Type[Any]:

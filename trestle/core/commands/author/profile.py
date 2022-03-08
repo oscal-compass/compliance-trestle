@@ -303,7 +303,7 @@ class ProfileAssemble(AuthorCommonCommand):
         """
         md_dir = trestle_root / md_name
         profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'
-        _, _, orig_profile = ModelUtils.load_distributed(profile_path, trestle_root, prof.Profile)
+        _, _, orig_profile = ModelUtils.load_distributed(profile_path, trestle_root)
         required_sections_list = required_sections.split(',') if required_sections else []
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones

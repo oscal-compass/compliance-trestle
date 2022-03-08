@@ -16,9 +16,13 @@
 """Tests for trestle load_distributed module."""
 
 import shutil
+from typing import Dict
+
+import pytest
 
 from tests import test_utils
 
+from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import Role
@@ -78,7 +82,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
 
 
 def test_load_distributed(testdata_dir, tmp_trestle_dir):
-    """Test massive distributed load, that includes recusive load, list and dict."""
+    """Test massive distributed load, that includes recursive load and list."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
@@ -100,3 +104,8 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
     assert actual_model_type == Catalog
     assert actual_model_alias == 'catalog'
     assert test_utils.models_are_equivalent(expected_model_instance, actual_model_instance)
+
+    # confirm it fails attempting to load collection type that is not a list
+    with pytest.raises(TrestleError):
+        actual_model_type, actual_model_alias, actual_model_instance = ModelUtils.load_distributed(
+            catalog_file, tmp_trestle_dir, Dict)

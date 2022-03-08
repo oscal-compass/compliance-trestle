@@ -20,7 +20,7 @@ import shutil
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-from pkg_resources import resource_filename, resource_listdir
+from pkg_resources import resource_filename
 
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
@@ -220,19 +220,6 @@ class TemplateVersioning:
             return True
         else:
             return False
-
-    @staticmethod
-    def _build_dotted_path(dotted_path: str, all_paths: List[str]) -> None:
-        """Traverse template resources and collect all versions."""
-        are_all_files = True
-        for r in resource_listdir(dotted_path, ''):
-            p = Path(resource_filename(dotted_path, r))
-            if p.is_dir() and '__pycache__' not in str(p):
-                TemplateVersioning._build_dotted_path(dotted_path + '.' + r, all_paths)
-                are_all_files = False
-
-        if are_all_files:
-            all_paths.append(dotted_path)
 
     @staticmethod
     def _check_if_exists_and_dir(task_path: Path) -> None:
