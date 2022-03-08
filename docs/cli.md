@@ -1202,9 +1202,9 @@ Example output directory contents listing:
 
 </details>
 
-## `trestle task xlsx-to-component-definition`
+## `trestle task xlsx-to-oscal-cd`
 
-The *trestle task xlsx-to-component-definition* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
+The *trestle task xlsx-to-oscal-cd* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
 Specify in the config:
 
 <ul>
@@ -1225,7 +1225,7 @@ Specify in the config:
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task xlsx-to-oscal-cd -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -1234,7 +1234,7 @@ Example config:
 */home/user/task.config*
 
 ```conf
-[task.xlsx-to-oscal-component-definition]
+[task.xlsx-to-oscal-cd]
 
 catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
 spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
