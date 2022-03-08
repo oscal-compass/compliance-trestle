@@ -174,7 +174,7 @@ class XlsxHelper:
         return value
 
     def get_goal_name_id_strict(self, row: int) -> str:
-        """Get goal_name_id from work_sheet."""
+        """Get goal_name_id from work_sheet (strict)."""
         col = self._get_column_letter(Column.goal_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
