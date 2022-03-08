@@ -31,6 +31,7 @@ from trestle.common.file_utils import extract_trestle_project_root, iterdir_with
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
@@ -505,3 +506,58 @@ class ModelUtils:
             aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
 
         return collection_model_type, collection_model_alias, instances_to_be_merged
+
+    @staticmethod
+    def parameter_to_dict(
+        obj: Union[OscalBaseModel, str, common.HowMany, common.Remarks]
+    ) -> Dict[str, Union[str, Dict[str, Any]]]:
+        """Convert obj to dict containing only string values, storing only the fields that have values set."""
+        if isinstance(obj, common.HowMany):
+            return obj.name
+        if isinstance(obj, common.Remarks):
+            return obj.__root__
+        # it is either a string already or we cast it to string
+        if not hasattr(obj, '__fields_set__'):
+            return str(obj)
+        # it is an oscal object and we need to recurse within its attributes
+        res = {}
+        for field in obj.__fields_set__:
+            attr = getattr(obj, field)
+            if isinstance(attr, list):
+                new_list = []
+                for item in attr:
+                    new_list.append(ModelUtils.parameter_to_dict(item))
+                res[field] = new_list
+            elif isinstance(attr, str):
+                res[field] = attr
+            else:
+                res[field] = ModelUtils.parameter_to_dict(attr)
+        return res
+
+    @staticmethod
+    def _string_to_howmany(count_str: str) -> Optional[common.HowMany]:
+        clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
+        if clean_str == 'one or more':
+            return common.HowMany.one_or_more
+        elif clean_str == 'one':
+            return common.HowMany.one
+        return None
+
+    @staticmethod
+    def dict_to_parameter(param_dict: Dict[str, Any]) -> common.Parameter:
+        """Convert dict with only string values to Parameter with handling for HowMany and with validity checks."""
+        if 'select' in param_dict and 'how_many' in param_dict['select']:
+            count_str = param_dict['select']['how_many']
+            how_many = ModelUtils._string_to_howmany(count_str)
+            if how_many is None:
+                raise TrestleError(f'Unrecognized HowMany value {how_many} in Parameter: should be one-or-more or one.')
+            param_dict['select']['how_many'] = how_many
+            values = param_dict.get('values', [])
+            if how_many == common.HowMany.one and len(values) > 1:
+                raise TrestleError(f'Parameter specifies HowMany=1 but has {len(values)} values given.')
+            choices = param_dict['select'].get('choice', [])
+            if choices and values:
+                for value in values:
+                    if value not in choices:
+                        raise TrestleError(f'Value provided for parameter, {value} is not in choices: {choices}.')
+        return common.Parameter(**param_dict)
