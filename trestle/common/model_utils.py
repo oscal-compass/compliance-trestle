@@ -508,7 +508,7 @@ class ModelUtils:
         return collection_model_type, collection_model_alias, instances_to_be_merged
 
     @staticmethod
-    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Dict[str, Union[str, Dict[str, Any]]]:
+    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
         """
         Convert obj to dict containing only string values, storing only the fields that have values set.
 
