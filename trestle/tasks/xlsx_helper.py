@@ -193,7 +193,7 @@ class XlsxHelper:
             yield row
 
     def _is_filtered(self, row) -> bool:
-        """Return True is row is to be skipped."""
+        """Return True if row is to be skipped."""
         if self._column.filter_column is None:
             return False
         col = self._get_column_letter(self._column.filter_column)
