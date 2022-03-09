@@ -113,7 +113,7 @@ class XlsxHelper:
         # config verbosity
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
-        # config catalog
+        # required for component-definition
         if task.name == 'xlsx-to-oscal-cd':
             catalog_file = task._config.get('catalog-file')
             if catalog_file is None:
@@ -122,6 +122,16 @@ class XlsxHelper:
             task.catalog_helper = CatalogHelper(catalog_file)
             if not task.catalog_helper.exists():
                 logger.error('"catalog-file" not found')
+                return False
+        # required for profile
+        if task.name == 'xlsx-to-oscal-profile':
+            profile_title = task._config.get('profile-title')
+            if profile_title is None:
+                logger.error('config missing "profile-title"')
+                return False
+            spread_sheet_url = task._config.get('spread-sheet-url')
+            if spread_sheet_url is None:
+                logger.error('config missing "spread-sheet-url"')
                 return False
         # config spread sheet
         spread_sheet = task._config.get('spread-sheet-file')

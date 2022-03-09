@@ -113,6 +113,32 @@ def test_xlsx_execute_missing_spread_sheet(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+def test_xlsx_execute_missing_spread_sheet_url(tmp_path):
+    """Test execute call missing spread sheet url."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-profile.config')
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-profile']
+    section['output-dir'] = str(tmp_path)
+    del section['spread-sheet-url']
+    tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_xlsx_execute_missing_profile_title(tmp_path):
+    """Test execute call missing profile title."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-profile.config')
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-profile']
+    section['output-dir'] = str(tmp_path)
+    del section['profile-title']
+    tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
 def test_xlsx_execute_no_overwrite(tmp_path):
     """Test execute call output already exists."""
     config = configparser.ConfigParser()
