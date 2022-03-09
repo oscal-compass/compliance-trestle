@@ -563,7 +563,21 @@ class ModelUtils:
 
     @staticmethod
     def dict_to_parameter(param_dict: Dict[str, Any]) -> common.Parameter:
-        """Convert dict with only string values to Parameter with handling for HowMany and with validity checks."""
+        """
+        Convert dict with only string values to Parameter with handling for HowMany and with validity checks.
+
+        Args:
+            param_dict: Dictionary of pure string values representing Parameter contents
+
+        Returns:
+            A valid OSCAL Parameter
+
+        Notes:
+            This will handle both partial and full parameter dictionaries
+            It will check for validity of the values if a select and HowMany is specified
+            There is special handling for values: If it is a single string it is converted to list of one ParameterValue
+            But if it is a list of strings is regarded as a list of values and is converted to a list of ParameterValues
+        """
         values = param_dict.get('values', [])
         # special handling when only one value present - convert to list of 1
         if isinstance(values, str):
