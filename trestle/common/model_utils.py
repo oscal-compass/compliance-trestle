@@ -573,8 +573,8 @@ class ModelUtils:
             A valid OSCAL Parameter
 
         Notes:
-            This will handle both partial and full parameter dictionaries
-            It will check for validity of the values if a select and HowMany is specified
+            This handles both partial and full parameter dictionaries
+            It checks for validity of the values if a select and HowMany is specified
             There is special handling for values: If it is a single string it is converted to list of one ParameterValue
             But if it is a list of strings is regarded as a list of values and is converted to a list of ParameterValues
         """
