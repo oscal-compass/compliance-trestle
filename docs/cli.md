@@ -1202,9 +1202,9 @@ Example output directory contents listing:
 
 </details>
 
-## `trestle task xlsx-to-component-definition`
+## `trestle task xlsx-to-oscal-cd`
 
-The *trestle task xlsx-to-component-definition* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
+The *trestle task xlsx-to-oscal-cd* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
 Specify in the config:
 
 <ul>
@@ -1225,16 +1225,16 @@ Specify in the config:
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task xlsx-to-oscal-cd -c /home/user/task-xlsx-to-oscal-cd.config`
 
 <span style="color:green">
 Example config:
 </span>
 
-*/home/user/task.config*
+*/home/user/task-xlsx-to-oscal-cd.config*
 
 ```conf
-[task.xlsx-to-oscal-component-definition]
+[task.xlsx-to-oscal-cd]
 
 catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
 spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
@@ -1366,3 +1366,57 @@ th, td {
     </ul>
 </table>
 </details>
+
+## `trestle task xlsx-to-oscal-profile`
+
+The *trestle task xlsx-to-oscal-profile* command facilitates transformation of an excel spread sheet into an OSCAL profile.json file.
+Specify in the config:
+
+<ul>
+<li> the href URL of the spread sheet
+<li> file system location of spread sheet file
+<li> work sheet name in the spread sheet file
+<li> output directory to write the profile.json file
+<li> whether or not to overwrite an existing profile.json file
+<li> the profile title
+</ul>
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+`$TRESTLE_BASEDIR$ trestle task xlsx-to-oscal-profile -c /home/user/task-xlsx-to-oscal-profile.config`
+
+<span style="color:green">
+Example config:
+</span>
+
+*/home/user/task-xlsx-to-oscal-profile.config*
+
+```conf
+[task.xlsx-to-oscal-profile]
+
+spread-sheet-url = https://github.mycorp.com/spread-sheets/best_practices_controls.xlsx
+spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
+work-sheet-name = best_practices_controls
+output-dir = /home/user/compliance/data/tasks/xlsx/output
+output-overwrite = true
+
+profile-title = IBM Best Practices SCC GOALS
+```
+
+**spread-sheet-file**
+
+<span style="color:green">
+Example spread-sheet-file:
+</span>
+
+[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+
+**output**
+
+<span style="color:green">
+Example profile.json:
+</span>
+
+[/home/user/compliance/data/tasks/xlsx/output/profile.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/profile.json)
