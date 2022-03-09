@@ -361,7 +361,12 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     # header has two params - 3 and 4
     header = {
         const.SET_PARAMS_TAG: {
-            'ac-1_prm_3': 'new prm_3 val from input header', 'ac-1_prm_4': 'new prm_4 val from input header'
+            'ac-1_prm_3': {
+                'values': 'new prm_3 val from input header'
+            },
+            'ac-1_prm_4': {
+                'values': 'new prm_4 val from input header'
+            }
         },
         'foo': 'new bar',
         'new-reviewer': 'James',
@@ -386,14 +391,14 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     assert len(header_2.keys()) == 9
     assert header_2['new-reviewer'] == 'James'
     assert len(header_2[const.SET_PARAMS_TAG]) == 2
-    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_4']
+    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_4']['values']
     if not overwrite_header_values:
-        assert 'orig' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+        assert 'orig' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']['values']
         assert header_2['foo'] == 'bar'
         assert header_2['special'] == ''
         assert header_2['none-thing'] is None
     else:
-        assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+        assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']['values']
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'

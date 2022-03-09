@@ -42,9 +42,9 @@ markdown_name = 'my_md'
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
         assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '  ac-1_prm_1: new value\n')
+    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '    values: new value\n')
     assert test_utils.delete_line_in_file(ac1_path, 'Param_1_value')
-    assert test_utils.insert_text_in_file(ac1_path, 'new value', '  ac-1_prm_2: added param 2 value\n')
+    assert test_utils.insert_text_in_file(ac1_path, 'values:', '  ac-1_prm_2:\n    values: added param 2 value\n')
 
 
 @pytest.mark.parametrize('set_parameters', [True, False])

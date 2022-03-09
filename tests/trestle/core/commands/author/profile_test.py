@@ -86,11 +86,11 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, add_header: boo
     # replace the value for prm_3 with new value
     # delete entire line for prm_4
     if set_parameters and add_header:
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_2')
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_3')
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_4')
-        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_1', '  ac-1_prm_2:\n')
-        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_2', '  ac-1_prm_3: new value\n')
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_2', 1)
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_3', 1)
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_4', 1)
+        assert test_utils.insert_text_in_file(control_path, 'values:', '  ac-1_prm_2:\n')
+        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_2', '  ac-1_prm_3:\n    values: new value\n')
 
 
 def setup_profile_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:

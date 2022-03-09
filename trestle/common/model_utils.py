@@ -508,13 +508,21 @@ class ModelUtils:
         return collection_model_type, collection_model_alias, instances_to_be_merged
 
     @staticmethod
-    def parameter_to_dict(
-        obj: Union[OscalBaseModel, str, common.HowMany, common.Remarks]
-    ) -> Dict[str, Union[str, Dict[str, Any]]]:
-        """Convert obj to dict containing only string values, storing only the fields that have values set."""
+    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Dict[str, Union[str, Dict[str, Any]]]:
+        """
+        Convert obj to dict containing only string values, storing only the fields that have values set.
+
+        Args:
+            obj: The parameter or its consituent parts in recursive calls
+            partial: Whether to convert the entire param or just the parts needed for markdown header
+
+        Returns:
+            The converted parameter as dictionary
+        """
+        main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
         if isinstance(obj, common.HowMany):
             return obj.name
-        if isinstance(obj, common.Remarks):
+        if isinstance(obj, common.Remarks) or isinstance(obj, common.ParameterValue):
             return obj.__root__
         # it is either a string already or we cast it to string
         if not hasattr(obj, '__fields_set__'):
@@ -522,16 +530,26 @@ class ModelUtils:
         # it is an oscal object and we need to recurse within its attributes
         res = {}
         for field in obj.__fields_set__:
+            if partial and field not in main_fields:
+                continue
             attr = getattr(obj, field)
+            if not attr:
+                continue
             if isinstance(attr, list):
+                if not attr:
+                    continue
+                # special handling when only one value present - convert to single string
+                if field == 'values' and len(attr) == 1:
+                    res[field] = str(attr[0].__root__)
+                    continue
                 new_list = []
                 for item in attr:
-                    new_list.append(ModelUtils.parameter_to_dict(item))
+                    new_list.append(ModelUtils.parameter_to_dict(item, partial))
                 res[field] = new_list
             elif isinstance(attr, str):
                 res[field] = attr
             else:
-                res[field] = ModelUtils.parameter_to_dict(attr)
+                res[field] = ModelUtils.parameter_to_dict(attr, partial)
         return res
 
     @staticmethod
@@ -546,13 +564,17 @@ class ModelUtils:
     @staticmethod
     def dict_to_parameter(param_dict: Dict[str, Any]) -> common.Parameter:
         """Convert dict with only string values to Parameter with handling for HowMany and with validity checks."""
+        values = param_dict.get('values', [])
+        # special handling when only one value present - convert to list of 1
+        if isinstance(values, str):
+            values = [values]
+            param_dict['values'] = values
         if 'select' in param_dict and 'how_many' in param_dict['select']:
             count_str = param_dict['select']['how_many']
             how_many = ModelUtils._string_to_howmany(count_str)
             if how_many is None:
                 raise TrestleError(f'Unrecognized HowMany value {how_many} in Parameter: should be one-or-more or one.')
             param_dict['select']['how_many'] = how_many
-            values = param_dict.get('values', [])
             if how_many == common.HowMany.one and len(values) > 1:
                 raise TrestleError(f'Parameter specifies HowMany=1 but has {len(values)} values given.')
             choices = param_dict['select'].get('choice', [])

@@ -17,7 +17,8 @@ x-trestle-fedramp-props:
     - id: foo
     - id: bar
 x-trestle-set-params:
-  param-id: param_value
+  param-id:
+    values: param_value
 x-trestle-evidence:
   named-evidence: location
 x-trestle-dependent-on:

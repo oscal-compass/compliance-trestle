@@ -28,6 +28,7 @@ import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
 from trestle.core.markdown.markdown_api import MarkdownAPI
@@ -494,7 +495,7 @@ class ControlIOWriter():
         return self._md_file.get_lines()
 
     def get_params(self, control: cat.Control) -> List[str]:
-        """Get parameters of a control as a markdown table."""
+        """Get parameters of a control as a markdown table for ssp_io."""
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
@@ -1197,7 +1198,6 @@ class ControlIOReader():
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
-        # this reads strings from the yaml as param values.  could convert to params
         header_params = header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_str_dict.update(header_params)
@@ -1349,8 +1349,8 @@ class ControlIOReader():
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []
-                for id_, value in params.items():
-                    param_value = common.ParameterValue(__root__=value)
-                    param = common.Parameter(id=id_, values=[param_value])
+                for id_, param_dict in params.items():
+                    param_dict['id'] = id_
+                    param = ModelUtils.dict_to_parameter(param_dict)
                     control.params.append(param)
         return control, group_title

@@ -197,12 +197,12 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
         lines: List[str] = []
         with file_path.open('r') as f:
             lines = f.readlines()
-            for ii, line in enumerate(lines):
-                if line.find(tag) >= 0:
-                    lines.insert(ii + 1, text)
-                    with file_path.open('w') as f:
-                        f.writelines(lines)
-                    return True
+        for ii, line in enumerate(lines):
+            if line.find(tag) >= 0:
+                lines.insert(ii + 1, text)
+                with file_path.open('w') as f:
+                    f.writelines(lines)
+                return True
     else:
         with file_path.open('a') as f:
             f.writelines(text)
@@ -225,16 +225,18 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     return False
 
 
-def delete_line_in_file(file_path: pathlib.Path, tag: str) -> bool:
-    """Delete a line in a file containing tag."""
-    lines: List[str] = []
-    with file_path.open('r') as f:
-        lines = f.readlines()
+def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> bool:
+    """Delete a run of lines in a file containing tag."""
+    f = file_path.open('r')
+    lines = f.readlines()
+    f.close()
     for ii, line in enumerate(lines):
-        if line.find(tag) >= 0:
-            del lines[ii]
-            with file_path.open('w') as f:
-                f.writelines(lines)
+        if tag in line:
+            del lines[ii:(ii + extra_lines + 1)]
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
             return True
     return False
 

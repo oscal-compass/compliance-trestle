@@ -260,9 +260,11 @@ class ProfileAssemble(AuthorCommonCommand):
             if not profile.modify:
                 profile.modify = prof.Modify()
             new_set_params: List[prof.SetParameter] = []
-            for key, value in param_str_dict.items():
-                if value:
-                    new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
+            for key, param_dict in param_str_dict.items():
+                if param_dict:
+                    param_dict['id'] = key
+                    param = ModelUtils.dict_to_parameter(param_dict)
+                    new_set_params.append(prof.SetParameter(param_id=key, values=param.values))
             profile.modify.set_parameters = new_set_params
 
     @staticmethod

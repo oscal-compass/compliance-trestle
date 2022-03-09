@@ -25,7 +25,8 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
-from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
+from trestle.common.model_utils import ModelUtils
+from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -479,7 +480,9 @@ class CatalogInterface():
                 param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, True)
                 param_value_dict: Dict[str, str] = {}
                 for key, value in param_dict.items():
-                    param_value_dict[key] = ControlIOReader.param_to_str(value, ParameterRep.VALUE_OR_STRING_NONE)
+                    new_dict = ModelUtils.parameter_to_dict(value, True)
+                    new_dict.pop('id')
+                    param_value_dict[key] = new_dict
                 if param_value_dict:
                     new_header[const.SET_PARAMS_TAG] = param_value_dict
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
