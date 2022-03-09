@@ -47,6 +47,7 @@ class Column():
     resource_title = 'ResourceTitle'
     parameter_opt_parm = 'Parameter [optional parameter]'
     values_alternatives = 'Values default , [alternatives]'
+    filter_column = None
 
     tokens_nist_mappings = nist_mappings.split()
 
@@ -79,6 +80,10 @@ class Column():
 class XlsxHelper:
     """Xlsx Helper common functions and assistance navigating spread sheet."""
 
+    def __init__(self) -> None:
+        """Initialize."""
+        self._column = Column()
+
     def print_info(self, name, oscal_name) -> None:
         """Print the help string."""
         logger.info(f'Help information for {name} task.')
@@ -96,13 +101,16 @@ class XlsxHelper:
         text1 = '  work-sheet-name   = '
         text2 = '(required) the name of the work sheet in the spread sheet file.'
         logger.info(text1 + text2)
-        for line in Column.help_list:
+        for line in self._column.help_list:
             logger.info(line)
         text1 = '  output-dir        = '
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
         logger.info(text1 + text2)
         text1 = '  output-overwrite  = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
+        logger.info(text1 + text2)
+        text1 = '  filter-column     = '
+        text2 = '(optional) column heading of yes/no values; process only "yes" rows.'
         logger.info(text1 + text2)
 
     def configure(self, task: TaskBase) -> bool:
@@ -133,6 +141,8 @@ class XlsxHelper:
             if spread_sheet_url is None:
                 logger.error('config missing "spread-sheet-url"')
                 return False
+        # optional
+        self._column.filter_column = task._config.get('filter-column', None)
         # config spread sheet
         spread_sheet = task._config.get('spread-sheet-file')
         if spread_sheet is None:
@@ -166,6 +176,7 @@ class XlsxHelper:
         self.rows_missing_controls = []
         self.rows_missing_parameters = []
         self.rows_missing_parameters_values = []
+        self.rows_filtered = []
         # map columns
         self._map_columns()
 
@@ -177,11 +188,26 @@ class XlsxHelper:
             goal_id = self._get_goal_id(row)
             if goal_id is None:
                 break
+            if self._is_filtered(row):
+                continue
             yield row
+
+    def _is_filtered(self, row) -> bool:
+        """Return True is row is to be skipped."""
+        if self._column.filter_column is None:
+            return False
+        col = self._get_column_letter(self._column.filter_column)
+        value = self._work_sheet[col + str(row)].value
+        if value is None:
+            return False
+        if value.lower() != 'yes':
+            return False
+        self._add_row(row, self.rows_filtered)
+        return True
 
     def get_goal_name_id(self, row: int) -> str:
         """Get goal_name_id from work_sheet."""
-        col = self._get_column_letter(Column.goal_name_id)
+        col = self._get_column_letter(self._column.goal_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
             self._add_row(row, self.rows_missing_goal_name_id)
@@ -191,7 +217,7 @@ class XlsxHelper:
 
     def get_goal_name_id_strict(self, row: int) -> str:
         """Get goal_name_id from work_sheet (strict)."""
-        col = self._get_column_letter(Column.goal_name_id)
+        col = self._get_column_letter(self._column.goal_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
             self._add_row(row, self.rows_missing_goal_name_id)
@@ -208,7 +234,7 @@ class XlsxHelper:
 
     def get_parameter_value_default(self, row: int) -> str:
         """Get parameter_value_default from work_sheet."""
-        col = self._get_column_letter(Column.rename_values_alternatives)
+        col = self._get_column_letter(self._column.rename_values_alternatives)
         value = self._work_sheet[col + str(row)].value
         if value is not None:
             value = str(value).split(',')[0].strip()
@@ -216,7 +242,7 @@ class XlsxHelper:
 
     def get_parameter_values(self, row: int) -> str:
         """Get parameter_values from work_sheet."""
-        col = self._get_column_letter(Column.rename_values_alternatives)
+        col = self._get_column_letter(self._column.rename_values_alternatives)
         value = self._work_sheet[col + str(row)].value
         if value is None:
             self._add_row(row, self.rows_missing_parameters_values)
@@ -230,7 +256,7 @@ class XlsxHelper:
 
     def _get_goal_text(self, row: int) -> str:
         """Get goal_text from work_sheet."""
-        col = self._get_column_letter(Column.control_text)
+        col = self._get_column_letter(self._column.control_text)
         goal_text = self._work_sheet[col + str(row)].value
         # normalize & tokenize
         value = goal_text.replace('\t', ' ')
@@ -261,7 +287,7 @@ class XlsxHelper:
         Example: {'au-2': ['(a)', '(d)'], 'au-12': [], 'si-4': ['(a)', '(b)', '(c)']}
         """
         value = {}
-        for col in self._get_column_letter(Column.nist_mappings):
+        for col in self._get_column_letter(self._column.nist_mappings):
             control = self._work_sheet[col + str(row)].value
             if control is None:
                 continue
@@ -286,7 +312,7 @@ class XlsxHelper:
 
     def get_component_name(self, row: int) -> str:
         """Get component_name from work_sheet."""
-        col = self._get_column_letter(Column.resource_title)
+        col = self._get_column_letter(self._column.resource_title)
         value = self._work_sheet[col + str(row)].value
         if value is None:
             raise RuntimeError(f'row {row} col {col} missing component name')
@@ -296,7 +322,7 @@ class XlsxHelper:
         """Get parameter_name and description from work_sheet."""
         name = None
         description = None
-        col = self._get_column_letter(Column.rename_parameter_opt_parm)
+        col = self._get_column_letter(self._column.rename_parameter_opt_parm)
         combined_values = self._work_sheet[col + str(row)].value
         if combined_values is not None:
             if '\n' in combined_values:
@@ -321,7 +347,7 @@ class XlsxHelper:
 
     def _get_goal_id(self, row: int) -> int:
         """Get goal_id from work_sheet."""
-        col = self._get_column_letter(Column.control_id)
+        col = self._get_column_letter(self._column.control_id)
         value = self._work_sheet[col + str(row)].value
         return value
 
@@ -341,27 +367,30 @@ class XlsxHelper:
             if cell_value is None:
                 continue
             cell_tokens = cell_value.split()
-            logger.debug(f'{cell_tokens}')
             # find columns of interest
-            if cell_tokens in [[Column.control_id], [Column.control_text], [Column.version], [Column.goal_name_id]]:
+            if cell_tokens in [[self._column.control_id], [self._column.control_text], [self._column.version],
+                               [self._column.goal_name_id]]:
                 self._add_column(cell_tokens[0], column, 1)
-            elif cell_tokens == Column.tokens_parameter_opt_parm:
-                self._add_column(Column.rename_parameter_opt_parm, column, 1)
-            elif cell_tokens == Column.tokens_values_alternatives:
-                self._add_column(Column.rename_values_alternatives, column, 1)
-            elif is_ordered_sublist(Column.tokens_nist_mappings, cell_tokens):
-                self._add_column(Column.nist_mappings, column, 0)
-            elif Column.resource_title in cell_tokens:
-                self._add_column(Column.resource_title, column, 0)
+            elif cell_tokens == self._column.tokens_parameter_opt_parm:
+                self._add_column(self._column.rename_parameter_opt_parm, column, 1)
+            elif cell_tokens == self._column.tokens_values_alternatives:
+                self._add_column(self._column.rename_values_alternatives, column, 1)
+            elif self._column.filter_column == cell_value:
+                self._add_column(self._column.filter_column, column, 1)
+            # multi
+            elif is_ordered_sublist(self._column.tokens_nist_mappings, cell_tokens):
+                self._add_column(self._column.nist_mappings, column, 0)
+            elif self._column.resource_title in cell_tokens:
+                self._add_column(self._column.resource_title, column, 0)
         # insure expected columns found
-        for name in [Column.control_id,
-                     Column.control_text,
-                     Column.version,
-                     Column.goal_name_id,
-                     Column.nist_mappings,
-                     Column.resource_title,
-                     Column.rename_parameter_opt_parm,
-                     Column.rename_values_alternatives]:
+        for name in [self._column.control_id,
+                     self._column.control_text,
+                     self._column.version,
+                     self._column.goal_name_id,
+                     self._column.nist_mappings,
+                     self._column.resource_title,
+                     self._column.rename_parameter_opt_parm,
+                     self._column.rename_values_alternatives]:
             if name not in self.map_name_to_letters.keys():
                 raise RuntimeError(f'missing column {name}')
 
@@ -415,3 +444,5 @@ class XlsxHelper:
             logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
         if len(self.rows_missing_parameters_values) > 0:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
+        if len(self.rows_filtered) > 0:
+            logger.info(f'rows filtered: {self.rows_filtered}')

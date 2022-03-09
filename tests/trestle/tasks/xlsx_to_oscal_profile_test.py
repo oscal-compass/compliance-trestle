@@ -79,6 +79,32 @@ def test_xlsx_execute(tmp_path):
         assert (result)
 
 
+@patch(target='uuid.uuid4', new=uuid_mock1)
+@patch(target='trestle.tasks.xlsx_to_oscal_profile.get_trestle_version', new=get_trestle_version_mock1)
+def test_xlsx_execute_filter(tmp_path):
+    """Test execute filter call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-profile.config')
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-profile']
+    d_expected = pathlib.Path(section['output-dir'] + '-filtered')
+    d_produced = tmp_path
+    section['output-dir'] = str(tmp_path)
+    tgt = xlsx_to_oscal_profile.XlsxToOscalProfile(section)
+    tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
+    section['filter-column'] = 'Include in FS Cloud Profile?'
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    assert d_expected != d_produced
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
 def test_xlsx_execute_bogus_spread_sheet(tmp_path):
     """Test execute call bogus spread sheet."""
     config = configparser.ConfigParser()
