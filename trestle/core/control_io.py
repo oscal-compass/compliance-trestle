@@ -1162,11 +1162,10 @@ class ControlIOReader():
 
     @staticmethod
     def read_new_alters_and_params(control_path: pathlib.Path,
-                                   required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, str]]:
-        """Get parts for the markdown control corresponding to Editable Content - if any."""
+                                   required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, Any]]:
+        """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
-        param_str_dict: Dict[str, str] = {}
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
         # query header for mapping of short to long section names
         sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
@@ -1198,10 +1197,11 @@ class ControlIOReader():
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
+        param_dict: Dict[str, Any] = {}
         header_params = header.get(const.SET_PARAMS_TAG, {})
         if header_params:
-            param_str_dict.update(header_params)
-        return new_alters, param_str_dict
+            param_dict.update(header_params)
+        return new_alters, param_dict
 
     @staticmethod
     def param_values_as_str_list(param: common.Parameter) -> List[str]:

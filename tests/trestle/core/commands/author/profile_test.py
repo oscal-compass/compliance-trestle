@@ -172,18 +172,17 @@ def test_profile_generate_assemble(
                                                  prof.Profile, FileContentType.JSON)
     # get the set_params in the assembled profile
     set_params = profile.modify.set_parameters
-    sp_dict = {}
-    for set_param in set_params:
-        sp_dict[set_param.param_id] = set_param.values[0].__root__
-    assert sp_dict
-    assert sp_dict['ac-1_prm_1'] == 'all personnel'
+    assert set_params[0].values[0].__root__ == 'all personnel'
     if set_parameters and add_header:
-        assert 'ac-1_prm_2' not in sp_dict
-        assert 'ac-1_prm_4' not in sp_dict
-        assert sp_dict['ac-1_prm_3'] == 'new value'
+        # confirm prm_2 and 4 are not present
+        assert set_params[1].param_id == 'ac-1_prm_3'
+        assert set_params[1].values[0].__root__ == 'new value'
+        assert set_params[2].param_id == 'ac-1_prm_5'
     else:
-        assert sp_dict['ac-1_prm_2'] == 'A thorough'
-        assert sp_dict['ac-1_prm_3'] == 'officer'
+        assert set_params[1].param_id == 'ac-1_prm_2'
+        assert set_params[1].values[0].__root__ == 'A thorough'
+        assert set_params[2].param_id == 'ac-1_prm_3'
+        assert set_params[2].values[0].__root__ == 'officer'
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
@@ -233,14 +232,11 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
             FileContentType.JSON
         )
         set_params = profile.modify.set_parameters
-        sp_dict = {}
-        for set_param in set_params:
-            sp_dict[set_param.param_id] = set_param.values[0].__root__
 
-        assert sp_dict
-        assert sp_dict['ac-1_prm_1'] == 'all personnel'
-        assert 'ac-1_prm_2' not in sp_dict
-        assert sp_dict['ac-1_prm_3'] == 'new value'
+        assert set_params[0].values[0].__root__ == 'all personnel'
+        # ac-1_prm_2 should not be present
+        assert set_params[1].param_id == 'ac-1_prm_3'
+        assert set_params[1].values[0].__root__ == 'new value'
         assert profile.metadata.version.__root__ == new_version
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')

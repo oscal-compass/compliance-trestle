@@ -17,7 +17,7 @@ import copy
 import logging
 import pathlib
 import re
-from typing import Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.common.const as const
 import trestle.core.generators as gens
@@ -477,7 +477,7 @@ class CatalogInterface():
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
             if set_parameters:
-                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, True)
+                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, False)
                 param_value_dict: Dict[str, str] = {}
                 for key, value in param_dict.items():
                     new_dict = ModelUtils.parameter_to_dict(value, True)
@@ -637,19 +637,19 @@ class CatalogInterface():
 
     @staticmethod
     def read_additional_content(md_path: pathlib.Path,
-                                required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, str]]:
-        """Read all markdown controls and return list of alters."""
+                                required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, Any]]:
+        """Read all markdown controls and return list of alters plus control param dict."""
         new_alters: List[prof.Alter] = []
-        param_str_dict: Dict[str, str] = {}
+        param_dict: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                control_alters, control_param_str_dict = ControlIOReader.read_new_alters_and_params(
+                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
                     control_file,
                     required_sections_list
                 )
                 new_alters.extend(control_alters)
-                param_str_dict.update(control_param_str_dict)
-        return new_alters, param_str_dict
+                param_dict.update(control_param_dict)
+        return new_alters, param_dict
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""

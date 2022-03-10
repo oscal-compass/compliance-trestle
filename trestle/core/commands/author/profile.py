@@ -264,7 +264,9 @@ class ProfileAssemble(AuthorCommonCommand):
                 if param_dict:
                     param_dict['id'] = key
                     param = ModelUtils.dict_to_parameter(param_dict)
-                    new_set_params.append(prof.SetParameter(param_id=key, values=param.values))
+                    new_set_params.append(
+                        prof.SetParameter(param_id=key, label=param.label, values=param.values, select=param.select)
+                    )
             profile.modify.set_parameters = new_set_params
 
     @staticmethod
@@ -309,7 +311,7 @@ class ProfileAssemble(AuthorCommonCommand):
         required_sections_list = required_sections.split(',') if required_sections else []
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
-        found_alters, param_str_dict = CatalogInterface.read_additional_content(md_dir, required_sections_list)
+        found_alters, param_dict = CatalogInterface.read_additional_content(md_dir, required_sections_list)
         if allowed_sections:
             for alter in found_alters:
                 for add in alter.adds:
@@ -318,7 +320,7 @@ class ProfileAssemble(AuthorCommonCommand):
                             raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
         ProfileAssemble._replace_alter_adds(orig_profile, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(orig_profile, param_str_dict)
+            ProfileAssemble._replace_modify_set_params(orig_profile, param_dict)
 
         new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
         if regenerate:
