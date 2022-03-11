@@ -272,7 +272,7 @@ class XlsxHelper:
         """Get goal_remarks from work_sheet."""
         tokens = self._get_goal_text_tokens(row)
         # replace "Check whether" with "Ensure", if present
-        if len(tokens) > 0:
+        if tokens:
             if tokens[0] == 'Check':
                 if len(tokens) > 1:
                     if tokens[1] == 'whether':
@@ -432,17 +432,17 @@ class XlsxHelper:
 
     def report_issues(self) -> None:
         """Report issues."""
-        if len(self.rows_missing_goal_name_id) > 0:
+        if self.rows_missing_goal_name_id:
             logger.info(f'rows missing goal_name_id: {self.rows_missing_goal_name_id}')
-        if len(self.rows_invalid_goal_name_id) > 0:
+        if self.rows_invalid_goal_name_id:
             logger.info(f'rows invalid goal_name_id: {self.rows_invalid_goal_name_id}')
-        if len(self.rows_invalid_parameter_name) > 0:
+        if self.rows_invalid_parameter_name:
             logger.info(f'rows invalid parameter_name: {self.rows_invalid_parameter_name}')
-        if len(self.rows_missing_controls) > 0:
+        if self.rows_missing_controls:
             logger.info(f'rows missing controls: {self.rows_missing_controls}')
-        if len(self.rows_missing_parameters) > 0:
+        if self.rows_missing_parameters:
             logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
-        if len(self.rows_missing_parameters_values) > 0:
+        if self.rows_missing_parameters_values:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
-        if len(self.rows_filtered) > 0:
+        if self.rows_filtered:
             logger.info(f'rows filtered: {self.rows_filtered}')
