@@ -136,11 +136,12 @@ responsible-roles:
 x-trestle-set-params:
   ac-1_prm_1:
     values: all personnel
-  ac-1_prm_2:
   ac-1_prm_3:
     values: new value
+    profile-set-param: true
   ac-1_prm_5:
     values: all meetings
+    profile-set-param: true
   ac-1_prm_6:
     values: monthly
 x-trestle-sections:
@@ -217,7 +218,7 @@ In a cyclic operation of `profile generate-edit-assemble` you would simply be re
 
 It's important to note that these operations only apply to the `Adds` in the profile itself - and nothing upstream of the profile is affected.  Nor is anything else in the original profile lost or altered.  In the example above, the section, `## Control Implementation Guidance` was added by editing the generated control - and after `profile-assemble` it ended up as new guidance in the assembled profile.
 
-As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.
+As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.  But unlike with `catalog-assemble`, only those parameter values with the extra flag, `profile-set-param` set to `true` will be part of the assembled profile's SetParams when you assemble with the `--set-parameters` flag.  If you don't set that flag during `profile-assemble` then all the SetParameters in the original profile will be carried through to the new one.  But if you do set that flag, then only the header parameters with `profile-set-param` set to true will be added.  Note that `profile-generate` will mark those parameters as true for those parameters that were set in the original profile.  This lets you see all current parameter values for the resolved control and at the same time see the values set by the profile. It thereby allows you to make changes as desired to the SetParameters in the assembled profile.
 
 ## Use of Sections in `profile-generate` and `profile-assemble`
 
@@ -285,7 +286,7 @@ Example usage for creation of the markdown:
 
 In this example the profile has previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
 
-The `-s --sections` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools, but it also serves a role of filtering the guidance and possibly changing the titles for those sections in the markdown.
+The `-s --sections` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools in providing a mapping between all possible short names for guidance and their corresponding long versions that should appear in the markdown headings.  In addition, `ssp-generate` has an `--allowed-sections` option that specifies a list of section short names that will be included in the markdown.  This provides a means for filtering the guidance that appears in the markdown for the controls.  Note that unlike in `profile-assemble` there is no error if sections are present in the control that are not among the "allowed" sections.  For `ssp-generate` the allowed sections simply provide a means for filtering the guidance.  If you do not specify `--allowed-sections` then all sections present in the control will appear in the markdown.
 
 The generated markdown output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
 for each control group.
