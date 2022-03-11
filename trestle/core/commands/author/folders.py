@@ -24,7 +24,7 @@ from typing import List
 import trestle.core.commands.author.consts as author_const
 import trestle.core.draw_io as draw_io
 from trestle.common import file_utils
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -84,7 +84,7 @@ class Folders(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             if self._initialize(args):
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError(f'Error when initializing trestle folders command with args: {args}')
             if args.mode == 'create-sample':
                 status = self.create_sample()
 
@@ -105,30 +105,23 @@ class Folders(AuthorCommonCommand):
                     args.ignore
                 )
             else:
-                logger.error(f'Unsupported mode: {args.mode} for folders command.')
-                return CmdReturnCodes.INCORRECT_ARGS.value
+                raise TrestleIncorrectArgsError(f'Unsupported mode: {args.mode} for folders command.')
+
             return status
-        except TrestleError as e:
-            logger.error(f'Error occurred when running trestle author folders: {e}')
-            logger.error('Exiting')
-            return CmdReturnCodes.COMMAND_ERROR.value
+
         except Exception as e:  # pragma: no cover
-            logger.error(f'Unexpected error occurred when running trestle author folders: {e}')
-            logger.error('Exiting')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error occurred when running trestle author folders')
 
     def setup_template(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement."""
         if not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
-            logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         elif self.template_dir.is_file():
-            logger.error(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
 
         template_file_a_md = self.template_dir / 'a_template.md'
         template_file_another_md = self.template_dir / 'another_template.md'
@@ -150,46 +143,38 @@ class Folders(AuthorCommonCommand):
     ) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
-            logger.error(
+            raise TrestleError(
                 f'Template directory {self.rel_dir(self.template_dir)} for task {self.task_name} does not exist.'
             )
-            return CmdReturnCodes.COMMAND_ERROR.value
         # get list of files:
         template_files = self.template_dir.rglob('*')
 
         for template_file in template_files:
-            if not file_utils.is_local_and_visible(template_file):
-                continue
-            elif template_file.is_dir():
-                continue
-            elif template_file.suffix.lower() == '.md':
-                if not readme_validate and template_file.name == 'readme.md':
-                    logger.error('Template directory contains a readme.md file and readme validation is off.')
-                    return CmdReturnCodes.COMMAND_ERROR.value
-                try:
+            try:
+                if not file_utils.is_local_and_visible(template_file):
+                    continue
+                elif template_file.is_dir():
+                    continue
+                elif template_file.suffix.lower() == '.md':
+                    if not readme_validate and template_file.name == 'readme.md':
+                        logger.error('Template directory contains a readme.md file and readme validation is off.')
+                        return CmdReturnCodes.COMMAND_ERROR.value
+
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(
                         template_file, validate_header, not validate_only_header, heading
                     )
-                except Exception as ex:
-                    logger.error(
-                        f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
-                        + f' failed to validate due to {ex}'
-                    )
-                    return CmdReturnCodes.COMMAND_ERROR.value
-            elif template_file.suffix.lower().lstrip('.') == 'drawio':
-                try:
+                elif template_file.suffix.lower().lstrip('.') == 'drawio':
                     _ = draw_io.DrawIOMetadataValidator(template_file)
-                except Exception as ex:
-                    logger.error(
-                        f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
-                        + f' failed to validate due to {ex}'
+                else:
+                    logger.info(
+                        f'File: {self.rel_dir(template_file)} within the template directory was ignored'
+                        + 'as it is not markdown.'
                     )
-                    return CmdReturnCodes.COMMAND_ERROR.value
-            else:
-                logger.info(
-                    f'File: {self.rel_dir(template_file)} within the template directory was ignored'
-                    + 'as it is not markdown.'
+            except Exception as ex:
+                raise TrestleError(
+                    f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
+                    + f' failed to validate due to {ex}'
                 )
         logger.info(f'TEMPLATES VALID: {self.task_name}.')
         return CmdReturnCodes.SUCCESS.value
@@ -265,8 +250,9 @@ class Folders(AuthorCommonCommand):
                     )
                     status = md_api.validate_instance(instance_file)
                     if not status:
-                        logger.error(f'Markdown file {instance_file} failed validation against' + f' {template_file}')
-                        logger.info(f'INVALID: {instance_file}')
+                        logger.warning(
+                            f'INVALID: Markdown file {instance_file} failed validation against' + f' {template_file}'
+                        )
                         return False
                     else:
                         logger.info(f'VALID: {instance_file}')
@@ -307,8 +293,9 @@ class Folders(AuthorCommonCommand):
                     drawio_validator = draw_io.DrawIOMetadataValidator(template_file)
                     status = drawio_validator.validate(instance_file)
                     if not status:
-                        logger.error(f'Drawio file {instance_file} failed validation against' + f' {template_file}')
-                        logger.info(f'INVALID: {instance_file}')
+                        logger.warning(
+                            f'INVALID: Drawio file {instance_file} failed validation against' + f' {template_file}'
+                        )
                         return False
                     else:
                         logger.info(f'VALID: {instance_file}')
@@ -322,7 +309,7 @@ class Folders(AuthorCommonCommand):
         for version in all_versioned_templates.keys():
             for template in all_versioned_templates[version]:
                 if not all_versioned_templates[version][template]:
-                    logger.error(
+                    logger.warning(
                         f'Required template file {template} does not exist in measured instance' + f'{instance_dir}'
                     )
                     return False
@@ -356,8 +343,7 @@ class Folders(AuthorCommonCommand):
     ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
-            logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Task directory {self.task_path} does not exist. Exiting validate.')
 
         for task_instance in self.task_path.iterdir():
             if task_instance.is_dir():
@@ -373,11 +359,10 @@ class Folders(AuthorCommonCommand):
                     ignore
                 )
                 if not result:
-                    logger.error(
+                    raise TrestleError(
                         'Governed-folder validation failed for task'
                         + f'{self.task_name} on directory {self.rel_dir(task_instance)}'
                     )
-                    return CmdReturnCodes.COMMAND_ERROR.value
             else:
                 logger.warning(
                     f'Unexpected file {self.rel_dir(task_instance)} identified in {self.task_name}'
