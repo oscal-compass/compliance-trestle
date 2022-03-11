@@ -19,12 +19,11 @@ import logging
 import pathlib
 import re
 import shutil
-import traceback
 from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
 from trestle.common import file_utils
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -115,16 +114,9 @@ class Docs(AuthorCommonCommand):
                 )
 
             return status
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error occurred when running trestle author docs: {e}')
-            logger.error('Exiting')
-            return CmdReturnCodes.COMMAND_ERROR.value
+
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
-            logger.error('Exiting')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error occurred when running trestle author docs')
 
     def setup_template_governed_docs(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement.
@@ -188,8 +180,8 @@ class Docs(AuthorCommonCommand):
             md_api = MarkdownAPI()
             md_api.load_validator_with_template(template_file, validate_header, validate_only_header, heading)
         except Exception as ex:
-            logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Template for task {self.task_name} failed to validate due to {ex}')
+
         logger.info(f'TEMPLATES VALID: {self.task_name}')
         return CmdReturnCodes.SUCCESS.value
 
