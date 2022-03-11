@@ -217,10 +217,10 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
         lines = f.readlines()
     found_tag = False
     for line in lines:
-        if line.find(tag) >= 0:
+        if not found_tag and tag in line:
             found_tag = True
             continue
-        if found_tag and line.find(text) >= 0:
+        if found_tag and text in line:
             return True
     return False
 
@@ -359,6 +359,7 @@ def setup_for_ssp(
     """Create the markdown ssp content from catalog and profile."""
     setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
 
+    # leave out guidance:Guidance
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -367,7 +368,8 @@ def setup_for_ssp(
         verbose=1,
         sections=sections,
         overwrite_header_values=False,
-        yaml_header=None
+        yaml_header=None,
+        allowed_sections=None
     )
 
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'

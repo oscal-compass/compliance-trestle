@@ -48,7 +48,8 @@ def setup_for_ssp(include_header: bool,
             output=ssp_name,
             verbose=1,
             sections=sections,
-            yaml_header=str(yaml_path)
+            yaml_header=str(yaml_path),
+            allowed_sections=None
         )
     else:
         args = argparse.Namespace(
@@ -58,7 +59,8 @@ def setup_for_ssp(include_header: bool,
             verbose=1,
             sections=sections,
             overwrite_header_values=False,
-            yaml_header=None
+            yaml_header=None,
+            allowed_sections=None
         )
     return args, sections, yaml_path
 

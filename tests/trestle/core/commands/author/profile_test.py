@@ -78,19 +78,21 @@ all_sections = (
 )
 
 
-def edit_files(control_path: pathlib.Path, set_parameters: bool, add_header: bool, guid_dict: Dict[str, str]) -> None:
+def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict[str, str]) -> None:
     """Edit the files to show assemble worked."""
     assert control_path.exists()
     assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     # delete the value for prm_2 so the value is blank
     # replace the value for prm_3 with new value
     # delete entire line for prm_4
-    if set_parameters and add_header:
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_2', 1)
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_3', 1)
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_4', 1)
-        assert test_utils.insert_text_in_file(control_path, 'values:', '  ac-1_prm_2:\n')
-        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_2', '  ac-1_prm_3:\n    values: new value\n')
+    if set_parameters:
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_2', 2)
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_3', 2)
+        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_4', 2)
+        new_param_2 = '  ac-1_prm_2:\n    values: bad value\n    profile-set-param: false\n'
+        assert test_utils.insert_text_in_file(control_path, 'profile-set-param:', new_param_2)
+        new_param_3 = '  ac-1_prm_3:\n    values: new value\n    profile-set-param: true\n'
+        assert test_utils.insert_text_in_file(control_path, 'profile-set-param: false', new_param_3)
 
 
 def setup_profile_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
@@ -138,7 +140,7 @@ def test_profile_generate_assemble(
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
 
-        edit_files(ac1_path, set_parameters, add_header, guid_dict)
+        edit_files(ac1_path, set_parameters, guid_dict)
 
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if set_parameters:
@@ -158,7 +160,7 @@ def test_profile_generate_assemble(
             tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
         )
 
-        edit_files(ac1_path, set_parameters, add_header, guid_dict)
+        edit_files(ac1_path, set_parameters, guid_dict)
 
         if dir_exists:
             assembled_prof_dir.mkdir()
@@ -172,17 +174,13 @@ def test_profile_generate_assemble(
                                                  prof.Profile, FileContentType.JSON)
     # get the set_params in the assembled profile
     set_params = profile.modify.set_parameters
-    assert set_params[0].values[0].__root__ == 'all personnel'
-    if set_parameters and add_header:
-        # confirm prm_2 and 4 are not present
+    if set_parameters:
+        assert set_params[0].param_id == 'ac-1_prm_1'
+        assert set_params[0].values[0].__root__ == 'all personnel'
         assert set_params[1].param_id == 'ac-1_prm_3'
         assert set_params[1].values[0].__root__ == 'new value'
-        assert set_params[2].param_id == 'ac-1_prm_5'
     else:
-        assert set_params[1].param_id == 'ac-1_prm_2'
-        assert set_params[1].values[0].__root__ == 'A thorough'
-        assert set_params[2].param_id == 'ac-1_prm_3'
-        assert set_params[2].values[0].__root__ == 'officer'
+        assert len(set_params) == 15
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
@@ -211,13 +209,13 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     yaml_header = yaml.load(yaml_header_path.open('r'))
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, yaml_header, ohv, None, None)
 
-    edit_files(ac1_path, True, True, multi_guidance_dict)
+    edit_files(ac1_path, True, multi_guidance_dict)
     markdown_path = tmp_trestle_dir / md_name
     # change guidance in the other two controls but don't change header
     ac2_path = markdown_path / 'ac/ac-2.md'
     ac21_path = markdown_path / 'ac/ac-2.1.md'
-    edit_files(ac2_path, False, False, multi_guidance_dict)
-    edit_files(ac21_path, False, False, multi_guidance_dict)
+    edit_files(ac2_path, False, multi_guidance_dict)
+    edit_files(ac21_path, False, multi_guidance_dict)
 
     if success:
         assert ProfileAssemble.assemble_profile(
@@ -233,9 +231,8 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         )
         set_params = profile.modify.set_parameters
 
+        assert len(set_params) == 13
         assert set_params[0].values[0].__root__ == 'all personnel'
-        # ac-1_prm_2 should not be present
-        assert set_params[1].param_id == 'ac-1_prm_3'
         assert set_params[1].values[0].__root__ == 'new value'
         assert profile.metadata.version.__root__ == new_version
 

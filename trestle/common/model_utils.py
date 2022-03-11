@@ -536,8 +536,6 @@ class ModelUtils:
             if not attr:
                 continue
             if isinstance(attr, list):
-                if not attr:
-                    continue
                 # special handling when only one value present - convert to single string
                 if field == 'values' and len(attr) == 1:
                     res[field] = str(attr[0].__root__)

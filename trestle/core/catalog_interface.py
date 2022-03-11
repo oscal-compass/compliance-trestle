@@ -190,6 +190,16 @@ class CatalogInterface():
             return self.get_control(self._param_control_map[param_id])
         return None
 
+    def get_parameter_values_by_id(self, param_id: str) -> Optional[List[common.ParameterValue]]:
+        """Get the values in the control for the given parameter id."""
+        control = self.get_control_by_param_id(param_id)
+        if not control:
+            return None
+        for param in as_list(control.params):
+            if param.id == param_id:
+                return param.values
+        return None
+
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
         Get the prose for a named part in the control.
@@ -446,7 +456,8 @@ class CatalogInterface():
         profile: Optional[prof.Profile] = None,
         overwrite_header_values: bool = False,
         set_parameters: bool = False,
-        required_sections: Optional[str] = None
+        required_sections: Optional[str] = None,
+        allowed_sections: Optional[str] = None
     ) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -461,30 +472,36 @@ class CatalogInterface():
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
             set_parameters: Set header values based on params in the control and in the profile
             required_sections: Optional string containing list of sections that should be prompted for prose
+            allowed_sections: Optional string containing list of sections that should be included in markdown
 
         Returns:
             None
         """
         writer = ControlIOWriter()
         required_section_list = required_sections.split(',') if required_sections else []
+        allowed_section_list = allowed_sections.split(',') if allowed_sections else []
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
-        # get the full list of params and their modified values for this profile
+        # get the list of SetParams for this profile
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
             if set_parameters:
-                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, False)
-                param_value_dict: Dict[str, str] = {}
-                for key, value in param_dict.items():
-                    new_dict = ModelUtils.parameter_to_dict(value, True)
+                # combine the profile setparams with the values in the control
+                control_param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, False)
+                set_param_dict: Dict[str, str] = {}
+                for param_id, param_dict in control_param_dict.items():
+                    new_dict = ModelUtils.parameter_to_dict(param_dict, True)
                     new_dict.pop('id')
-                    param_value_dict[key] = new_dict
-                if param_value_dict:
-                    new_header[const.SET_PARAMS_TAG] = param_value_dict
+                    # mark the param as being in the profile's SetParameters
+                    if param_id in full_profile_param_dict:
+                        new_dict[const.PROFILE_SET_PARAM] = True
+                    set_param_dict[param_id] = new_dict
+                if set_param_dict:
+                    new_header[const.SET_PARAMS_TAG] = set_param_dict
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path
@@ -503,7 +520,8 @@ class CatalogInterface():
                 prompt_responses,
                 profile,
                 overwrite_header_values,
-                required_section_list
+                required_section_list,
+                allowed_section_list
             )
 
     @staticmethod
@@ -640,7 +658,7 @@ class CatalogInterface():
                                 required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, Any]]:
         """Read all markdown controls and return list of alters plus control param dict."""
         new_alters: List[prof.Alter] = []
-        param_dict: Dict[str, str] = {}
+        final_param_dict: Dict[str, Any] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in CatalogInterface._get_sorted_control_paths(group_path):
                 control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
@@ -648,8 +666,14 @@ class CatalogInterface():
                     required_sections_list
                 )
                 new_alters.extend(control_alters)
-                param_dict.update(control_param_dict)
-        return new_alters, param_dict
+                for param_id, param_dict in control_param_dict.items():
+                    # only add params that have the profile-set-param flag set to true
+                    if const.PROFILE_SET_PARAM in param_dict:
+                        if param_dict[const.PROFILE_SET_PARAM]:
+                            # need to clear out the extra tag
+                            param_dict.pop(const.PROFILE_SET_PARAM)
+                            final_param_dict[param_id] = param_dict
+        return new_alters, final_param_dict
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""
@@ -659,7 +683,7 @@ class CatalogInterface():
             if not control.control.parts:
                 continue
             for part in control.control.parts:
-                if part.name not in sections:
+                if part.name not in sections and part.name != 'statement':
                     sections.append(part.name)
         return sections
 

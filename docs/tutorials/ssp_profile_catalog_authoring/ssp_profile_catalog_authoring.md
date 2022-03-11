@@ -59,31 +59,44 @@ control-origination:
 responsible-roles:
   - Customer
 x-trestle-set-params:
-  ac-1_prm_1: new value
-  ac-1_prm_2: added param 2 value
-
+  ac-1_prm_1:
+    label: organization-defined personnel or roles
+    values: new value
+  new value
+  ac-1_prm_2: 
+    select:
+      choice:
+        - Organization-level 
+        - Mission/business process-level
+        - System-level
+      how_many: one_or_more
+    values:
+      - Organization-level
+      - System-level
+  ac-1_prm_3:
+    label: organization-defined official
 ---
 
 # ac-1 - \[Access Control\] Policy and Procedures
 
 ## Control Statement
 
-- \[a\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
+- \[a.\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
 
-  - \[1\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
+  - \[1.\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
 
-    - \[a\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    - \[b\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+    - \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+    - \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
 
-  - \[2\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+  - \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
 
-- \[b\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
+- \[b.\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
 
-- \[c\] Review and update the current access control:
+- \[c.\] Review and update the current access control:
 
-  - \[1\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
-  - \[2\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
-- \[d\] My added item
+  - \[1.\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
+  - \[2.\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
+- \[d.\] My added item
 
 ## Control guidance
 
@@ -93,7 +106,7 @@ Access control policy and procedures address the controls in the AC family that 
 
 The control markdown files rely on brackets around key items that are important in defining the control's properties and structure.  `\[Access Control\]` at the top indicates the title of the group containing the control.  The name of the control is already known from the name of the markdown file (`ac-1.md`) and the name of the group is already known from the name of the directory containing the group's controls (`ac`) - but the group title must be indicated in the control in a special manner, hence the brackets.  The text following the group title is the title of the control itself.  All controls in a group should have the same group title or a warning will be indicated in certain trestle operations.
 
-In addition, each part label corresponds to the label used in the OSCAL structure for the control statement, and so must be maintained in a special manner -  hence the need for brackets on `\[a\]`.  These brackets will not be rendered by markdown viewers, so they will not impact the final formatted presentation of the control.
+In addition, each part label corresponds to the label used in the OSCAL structure for the control statement, and so must be maintained in a special manner -  hence the need for brackets on `\[(a)\]`.
 
 The items in moustaches (`{{}}`) correspond to the original prose from the control description.  The moustaches represent places to substitue parameter values, but no substitutions are ever made until the final SSP generation.  The authoring process provides multiple ways to set and change the final parameter values, as described below.
 
@@ -103,7 +116,9 @@ A user then may edit the control statement for the control and add or change the
 
 As with profile and ssp generation described below, a yaml header may be provided with the `--yaml` option that is inserted into the top of each control file.  If a control file already exists, as is expected in a continuous cycle of generate-edit-assemble, then the provided header will be merged with the existing header in each control.  If a given item in the header is already present in the control, by default the values in the markdown header will be given priority, though this can be overridden by the `--overwrite-header-values` option, which will give priority to any values coming from the provided yaml header.  In all cases, values in the yaml header not already present in the markdown header will be inserted.
 
-In the control markdown example above, the header contains some arbitrary values along with a special `x-trestle-set-params` section containing parameters for some of the parameters in the control.  Any parameters set for the control in the catalog will appear in the markdown header automatically during `catalog-generate`.  These values may be changed and values for other parameters may be inserted into the markdown header for later use during `catalog-assemble`.
+In the control markdown example above, the header contains some arbitrary values along with a special `x-trestle-set-params` section containing parameters for some of the parameters in the control.  Any parameters for the control in the catalog will appear in the markdown header automatically during `catalog-generate`.  These values may be changed and values for other parameters may be inserted into the markdown header for later use during `catalog-assemble`.
+
+Parameters in the header are shown with a subset of their full OSCAL attributes in order to convey any values they may have along with descriptive text.  This amounts to the parameter id, its label if present, any values if present, and any select if present.  When a select is present the list of choices is provided along with the how-many option.  Note that values is a list in OSCAL, but in many cases it is a list of only one item.  As a result, for convenience the values: dictionary may either have one string value (on the same line with `values:`) or as an indented `-` list of multiple values underneath `values:`.  Multiple examples are evident in the sample above, including ac-1_prm_3, which only has a label and no values.
 
 `catalog-assemble` is run with the command `catalog-assemble --markdown my_md --output my_new_catalog`.  This will read the markdown for each control and create a new catalog based on any edits to the markdown.  Note that you may optionally provide a `--name` option specifying an original json catalog into which the updated controls are inserted, and the resulting catalog can either replace the original one or output to a different json file.  New controls may be added and existing controls may be removed.  The main benefit is that the original metadata and other contents of the catalog json file will be retained.  You have the option to specify a new `--version` for the catalog, and an option to regenerate the uuid's in the catalog.  Finally, you have the option to use the parameters in the markdown header to update the values in the control.  Any parameters and their values present will be added to the control, and any not present will be removed.  The parameters themselves are still present but their values are removed.
 
@@ -119,11 +134,15 @@ control-origination:
 responsible-roles:
   - Customer
 x-trestle-set-params:
-  ac-1_prm_1: all personnel
+  ac-1_prm_1:
+    values: all personnel
   ac-1_prm_2:
-  ac-1_prm_3: new value
-  ac-1_prm_5: all meetings
-  ac-1_prm_6: monthly
+  ac-1_prm_3:
+    values: new value
+  ac-1_prm_5:
+    values: all meetings
+  ac-1_prm_6:
+    values: monthly
 x-trestle-sections:
   ImplGuidance: Implementation Guidance
   ExpectedEvidence: Expected Evidence

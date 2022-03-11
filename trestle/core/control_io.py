@@ -83,7 +83,8 @@ class ControlIOWriter():
             # the options here are to force the label to be the part.id or the part.label
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
             # here we choose the latter and extract the final element
-            label = part.id.split('.')[-1]
+            label = ControlIOWriter.get_label(part)
+            label = part.id.split('.')[-1] if not label else label
             wrapped_label = self._wrap_label(label)
             pad = '' if wrapped_label == '' or not part.prose else ' '
             prose = '' if part.prose is None else part.prose
@@ -214,13 +215,16 @@ class ControlIOWriter():
             return id_, name, title, ControlIOWriter._get_control_section_prose(control, name)
         return '', '', '', ''
 
-    def _add_sections(self, control: cat.Control) -> None:
+    def _add_sections(self, control: cat.Control, allowed_sections: Optional[List[str]]) -> None:
         """Add the extra control sections after the main ones."""
         skip_section_list = ['statement', 'item', 'objective']
         while True:
             _, name, title, prose = self._get_section(control, skip_section_list)
             if not name:
                 return
+            if allowed_sections and name not in allowed_sections:
+                skip_section_list.append(name)
+                continue
             if prose:
                 # section title will be from the section_dict, the part title, or the part name in that order
                 # this way the user-provided section title can override the part title
@@ -263,10 +267,9 @@ class ControlIOWriter():
                                 # insert extra line to make mdformat happy
                                 self._md_file._add_line_raw('')
                             self._md_file.new_hr()
-                            part_label = self.get_label(prt)
                             # if no label guess the label from the sub-part id
-                            if not part_label:
-                                part_label = prt.id.split('.')[-1]
+                            part_label = self.get_label(prt)
+                            part_label = prt.id.split('.')[-1] if not part_label else part_label
                             self._md_file.new_header(level=2, title=f'Implementation {part_label}')
                             added_content = False
                             for comp_name, prose_dict in comp_dict.items():
@@ -416,7 +419,8 @@ class ControlIOWriter():
         prompt_responses: bool,
         profile: Optional[prof.Profile],
         overwrite_header_values: bool,
-        required_sections: Optional[List[str]]
+        required_sections: Optional[List[str]],
+        allowed_sections: Optional[List[str]]
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -432,6 +436,7 @@ class ControlIOWriter():
             profile: Profile containing the adds making up additional content
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
             required_sections: List of required sections that may need prompting for content
+            allowed_sections: List of allowed sections that will appear in markdown
 
         Returns:
             None
@@ -470,8 +475,8 @@ class ControlIOWriter():
 
         self._add_control_objective(control)
 
-        # add all sections from the control itself that weren't added above
-        self._add_sections(control)
+        # add allowed sections to the markdown
+        self._add_sections(control, allowed_sections)
 
         # only used for ssp-generate
         if prompt_responses:
@@ -723,7 +728,7 @@ class ControlIOReader():
                 if not id_text:
                     prev_label = ControlIOWriter.get_label(parts[-1]) if parts else ''
                     id_text = ControlIOReader._create_next_label(prev_label, indent)
-                id_ = ControlIOReader._strip_to_make_ncname(parent_id + '.' + id_text)
+                id_ = ControlIOReader._strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
                 name = 'objective' if id_.find('_obj') > 0 else 'item'
                 prop = common.Property(name='label', value=id_text)
                 part = common.Part(name=name, id=id_, prose=prose, props=[prop])
@@ -825,7 +830,7 @@ class ControlIOReader():
             if line and not line.startswith(prefix):
                 # the control has no sections to read, so exit the loop
                 break
-            label = line[len(prefix):].lstrip()
+            label = line[len(prefix):].strip()
             prose = ''
             ii += 1
             while 0 <= ii < len(lines) and not lines[ii].startswith(prefix) and not lines[ii].startswith(
@@ -833,7 +838,10 @@ class ControlIOReader():
                 prose = '\n'.join([prose, lines[ii]])
                 ii += 1
             if prose:
-                id_ = ControlIOReader._strip_to_make_ncname(control_id + '_smt.' + label)
+                if label.lower() == 'guidance':
+                    id_ = ControlIOReader._strip_to_make_ncname(control_id + '_gdn')
+                else:
+                    id_ = ControlIOReader._strip_to_make_ncname(control_id + '_' + label)
                 label = ControlIOReader._strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
