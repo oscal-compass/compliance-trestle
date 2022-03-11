@@ -59,7 +59,7 @@ class SSPGenerate(AuthorCommonCommand):
             default=False
         )
         sections_help_str = (
-            'Comma separated list of section:alias pairs for sections to output.  Otherwises defaults to all.'
+            'Comma separated list of section:alias pairs.  Provides mapping of short names to long for markdown.'
         )
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
         allowed_sections_help_str = (
