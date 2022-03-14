@@ -136,13 +136,15 @@ responsible-roles:
 x-trestle-set-params:
   ac-1_prm_1:
     values: all personnel
-  ac-1_prm_3:
+    profile-values: new value from profile
+  ac-1_prm_2:
     values: new value
-    profile-set-param: true
-  ac-1_prm_5:
+  ac-1_prm_3:
     values: all meetings
-    profile-set-param: true
-  ac-1_prm_6:
+    profile-values:
+      - some meetings
+      - most meetings
+  ac-1_prm_4:
     values: monthly
 x-trestle-sections:
   ImplGuidance: Implementation Guidance
@@ -212,13 +214,13 @@ This is B Guidance.
 
 ```
 
-In the above markdown example, the fixed, uneditable parts of the control are output first, follwed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section below to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
+In the above markdown example, the fixed, uneditable parts of the control are output first (after the header, which can be edited), follwed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section below to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
 
 In a cyclic operation of `profile generate-edit-assemble` you would simply be re-writing from and to the same json profile, in which case the `--name` and `--output` are the same file.  For this reason the default value for `--name` is the given output file name specified by `--output` and you can just use `trestle author profile-assemble --markdown profile_md --output my_profile`.  This will assemble the markdown profile contents in directory `profile_md` into a json profile named `my_profile` but it will first use the existing `my_profile` json file as the parent profile and incorporate changes (due to user edits) in the markdown version of the profile.  Unlike `catalog-assemble` there must always be a parent json profile to reference during assemble, and an explicit value for `--name` is only needed if the parent file is different from the assembled output file.
 
 It's important to note that these operations only apply to the `Adds` in the profile itself - and nothing upstream of the profile is affected.  Nor is anything else in the original profile lost or altered.  In the example above, the section, `## Control Implementation Guidance` was added by editing the generated control - and after `profile-assemble` it ended up as new guidance in the assembled profile.
 
-As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.  But unlike with `catalog-assemble`, only those parameter values with the extra flag, `profile-set-param` set to `true` will be part of the assembled profile's SetParams when you assemble with the `--set-parameters` flag.  If you don't set that flag during `profile-assemble` then all the SetParameters in the original profile will be carried through to the new one.  But if you do set that flag, then only the header parameters with `profile-set-param` set to true will be added.  Note that `profile-generate` will mark those parameters as true for those parameters that were set in the original profile.  This lets you see all current parameter values for the resolved control and at the same time see the values set by the profile. It thereby allows you to make changes as desired to the SetParameters in the assembled profile.
+As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.  But unlike with `catalog-assemble`, only those parameter values marked `profile-values` will be part of the assembled profile's SetParams when you assemble with the `--set-parameters` flag.  For each parameter, the "incoming" values for the parameters prior to any changes made by the profile are listed as `values:` and any pending changes made by the profile are listed as `profile-values:`.  If you don't use the `--set-parameters` flag then all the original SetParameters in the profile will be retained in the new, assembled profile.  But if you do set that flag, then only the header parameters with `profile-values:` will be added as SetParameters.  This lets you see all the incoming values for parameters along with any changes made by the current profile, and you can modify, add, or remove parameter settings as desired in the new profile.
 
 ## Use of Sections in `profile-generate` and `profile-assemble`
 

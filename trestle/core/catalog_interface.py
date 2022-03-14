@@ -190,16 +190,6 @@ class CatalogInterface():
             return self.get_control(self._param_control_map[param_id])
         return None
 
-    def get_parameter_values_by_id(self, param_id: str) -> Optional[List[common.ParameterValue]]:
-        """Get the values in the control for the given parameter id."""
-        control = self.get_control_by_param_id(param_id)
-        if not control:
-            return None
-        for param in as_list(control.params):
-            if param.id == param_id:
-                return param.values
-        return None
-
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
         Get the prose for a named part in the control.
