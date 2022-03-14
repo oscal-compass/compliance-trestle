@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle List Utils."""
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from trestle.common.common_types import TG
 
@@ -42,3 +42,15 @@ def is_ordered_sublist(needle: List[str], haystack: List[str]) -> bool:
     needle=['a','b','c'], haystack=['x','y','a','b','z','c'], result = False
     """
     return ' '.join(needle) in ' '.join(haystack)
+
+
+def join_str_to_list_dicts(dict1: Dict, dict2: Dict) -> None:
+    """Join two dicts of str to List into first."""
+    # merge like keys
+    for key in dict1.keys():
+        if key in dict2.keys():
+            dict1[key] = dict1[key] + dict2[key]
+    # merge unlike keys
+    for key in dict2.keys():
+        if key not in dict1.keys():
+            dict1[key] = dict2[key]
