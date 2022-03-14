@@ -258,7 +258,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
     ) -> None:
         """Add statements."""
         control_statements = controls[control]
-        if len(control_statements) > 0:
+        if control_statements:
             statements = []
             for control_statement in control_statements:
                 statement_id = control + control_statement

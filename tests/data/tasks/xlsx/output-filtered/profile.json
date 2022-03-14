@@ -1,0 +1,77 @@
+{
+  "profile": {
+    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+    "metadata": {
+      "title": "Profile for IBM Best Practices SCC GOALS",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "https://github.mycorp.com/spread-sheets/best_practices_controls.xlsx",
+        "include-controls": [
+          {
+            "with-ids": [
+              "appid_",
+              "cis_tls_configured",
+              "cloudant_admin_role_serviceid_maxcount",
+              "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
+              "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
+              "kubernetes_service_ingress_tls_configured",
+              "kubernetes_service_latest_version"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "no_of_service_id_admins_for_cloudant_db",
+          "label": "Maximum no of Cloudant DB Service IDs administrators",
+          "usage": "Ensure Cloudant has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "cis_tls_versions",
+          "label": "tlsVersion",
+          "usage": "Ensure Cloud Internet Services (CIS) has TLS v1.2 set for all inbound traffic"
+        },
+        {
+          "param-id": "iks_ingress_tls_versions",
+          "label": "tlsVersion",
+          "usage": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic",
+          "values": [
+            "1.2",
+            "1.3"
+          ]
+        },
+        {
+          "param-id": "source_code_scaning_vulnerability_threashhold",
+          "label": "Source code scaning vulnerability threashhold",
+          "usage": "Ensure Continuous Delivery toolchain continuously scans source code to identify vulnerabilities above the # threshold.",
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        {
+          "param-id": "source_code_scaning_vulnerability_threashhold",
+          "label": "Source code scaning vulnerability threashhold",
+          "usage": "Nonsense",
+          "values": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        }
+      ]
+    }
+  }
+}

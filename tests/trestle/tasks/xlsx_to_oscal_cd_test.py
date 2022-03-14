@@ -28,11 +28,13 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
+CONFIG_PATH = 'tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config'
+
 
 def test_xlsx_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -44,7 +46,7 @@ def test_xlsx_print_info(tmp_path):
 def test_xlsx_simulate(tmp_path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -59,7 +61,7 @@ def test_xlsx_simulate(tmp_path):
 def test_xlsx_execute(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
@@ -82,7 +84,7 @@ def test_xlsx_execute(tmp_path):
 def test_xlsx_execute_bogus_spread_sheet(tmp_path):
     """Test execute call bogus spread sheet."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -103,7 +105,7 @@ def test_xlsx_execute_bogus_config(tmp_path):
 def test_xlsx_execute_missing_spread_sheet(tmp_path):
     """Test execute call missing spread sheet."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -116,7 +118,7 @@ def test_xlsx_execute_missing_spread_sheet(tmp_path):
 def test_xlsx_execute_no_overwrite(tmp_path):
     """Test execute call output already exists."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -131,7 +133,7 @@ def test_xlsx_execute_no_overwrite(tmp_path):
 def test_xlsx_execute_embedded_blank_in_parameter_name(tmp_path):
     """Test execute call embedded blank in parameter name."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -144,7 +146,7 @@ def test_xlsx_execute_embedded_blank_in_parameter_name(tmp_path):
 def test_xlsx_execute_bad_entry(tmp_path):
     """Test execute call bad entry."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -157,7 +159,7 @@ def test_xlsx_execute_bad_entry(tmp_path):
 def test_xlsx_execute_missing_column_heading(tmp_path):
     """Test execute call missing column heading."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -170,7 +172,7 @@ def test_xlsx_execute_missing_column_heading(tmp_path):
 def test_xlsx_execute_duplicate_column_heading(tmp_path):
     """Test execute call duplicate column heading."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -183,7 +185,7 @@ def test_xlsx_execute_duplicate_column_heading(tmp_path):
 def test_xlsx_execute_missing_resource_title(tmp_path):
     """Test execute call missing resource title."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
@@ -196,7 +198,7 @@ def test_xlsx_execute_missing_resource_title(tmp_path):
 def test_xlsx_execute_catalog_missing(tmp_path):
     """Test execute call missing catalog."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section.pop('catalog-file')
@@ -209,7 +211,7 @@ def test_xlsx_execute_catalog_missing(tmp_path):
 def test_xlsx_execute_catalog_not_found(tmp_path):
     """Test execute call catalog not found."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['catalog-file'] = '/foobar'
@@ -222,7 +224,7 @@ def test_xlsx_execute_catalog_not_found(tmp_path):
 def test_xlsx_execute_spread_sheet_missing(tmp_path):
     """Test execute call spread sheet missing."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section.pop('spread-sheet-file')
@@ -235,7 +237,7 @@ def test_xlsx_execute_spread_sheet_missing(tmp_path):
 def test_xlsx_execute_spread_sheet_not_found(tmp_path):
     """Test execute call spread sheet not found."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section['spread-sheet-file'] = '/foobar'
@@ -248,7 +250,7 @@ def test_xlsx_execute_spread_sheet_not_found(tmp_path):
 def test_xlsx_execute_work_sheet_name_missing(tmp_path):
     """Test execute call work sheet name missing."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-oscal-cd.config')
+    config_path = pathlib.Path(CONFIG_PATH)
     config.read(config_path)
     section = config['task.xlsx-to-oscal-cd']
     section.pop('work-sheet-name')
