@@ -490,15 +490,32 @@ class CatalogInterface():
         for control in catalog_interface.get_all_controls_from_catalog(True):
             new_header = copy.deepcopy(yaml_header)
             if set_parameters:
-                # combine the profile setparams with the values in the control
-                control_param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, False)
+                # get all params for this control
+                control_param_dict = ControlIOReader.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
-                    new_dict = ModelUtils.parameter_to_dict(param_dict, True)
-                    new_dict.pop('id')
-                    # mark the param as being in the profile's SetParameters
+                    # if the param is in the profile set_params, load its contents first and mark as profile-values
                     if param_id in full_profile_param_dict:
-                        new_dict[const.PROFILE_SET_PARAM] = True
+                        # get the param from the profile set_param
+                        param = full_profile_param_dict[param_id]
+                        # assign its contents to the dict
+                        new_dict = ModelUtils.parameter_to_dict(param, True)
+                        profile_values = new_dict.get(const.VALUES, None)
+                        if profile_values:
+                            new_dict[const.PROFILE_VALUES] = profile_values
+                            new_dict.pop(const.VALUES)
+                        # then insert the original, incoming values as values
+                        if param_id in control_param_dict:
+                            orig_param = control_param_dict[param_id]
+                            orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                            new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                            # merge contents from the two sources with priority to the profile-param
+                            for item in ['select', 'label']:
+                                if item in orig_dict and item not in new_dict:
+                                    new_dict[item] = orig_dict[item]
+                    else:
+                        new_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                    new_dict.pop('id')
                     set_param_dict[param_id] = new_dict
                 if set_param_dict:
                     new_header[const.SET_PARAMS_TAG] = set_param_dict
@@ -667,12 +684,10 @@ class CatalogInterface():
                 )
                 new_alters.extend(control_alters)
                 for param_id, param_dict in control_param_dict.items():
-                    # only add params that have the profile-set-param flag set to true
-                    if const.PROFILE_SET_PARAM in param_dict:
-                        if param_dict[const.PROFILE_SET_PARAM]:
-                            # need to clear out the extra tag
-                            param_dict.pop(const.PROFILE_SET_PARAM)
-                            final_param_dict[param_id] = param_dict
+                    # if profile_values are present, overwrite values with them
+                    if const.PROFILE_VALUES in param_dict:
+                        param_dict[const.VALUES] = param_dict.pop(const.PROFILE_VALUES)
+                        final_param_dict[param_id] = param_dict
         return new_alters, final_param_dict
 
     def get_sections(self) -> List[str]:

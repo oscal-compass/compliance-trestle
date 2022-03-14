@@ -20,7 +20,7 @@ from typing import Dict, Iterator, List, Optional
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_io import ControlIOReader, ParameterRep
@@ -38,6 +38,7 @@ class Modify(Pipeline.Filter):
         profile: prof.Profile,
         change_prose: bool = False,
         block_adds: bool = False,
+        block_params: bool = False,
         params_format: str = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) -> None:
@@ -45,6 +46,7 @@ class Modify(Pipeline.Filter):
         self._profile = profile
         self._catalog_interface: Optional[CatalogInterface] = None
         self._block_adds = block_adds
+        self._block_params = block_params
         self._change_prose = change_prose
         self._params_format = params_format
         self._param_rep = param_rep
@@ -257,23 +259,17 @@ class Modify(Pipeline.Filter):
             )
         control.params = as_list(control.params)
         param_ids = [param.id for param in control.params]
+        if set_param.param_id not in param_ids:
+            raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
         index = param_ids.index(set_param.param_id)
         param = control.params[index]
-        # FIXME these may need to merge
-        if set_param.values:
-            param.values = set_param.values
-        if set_param.constraints:
-            param.constraints = set_param.constraints
-        if set_param.guidelines:
-            param.guidelines = set_param.guidelines
-        if set_param.links:
-            param.links = set_param.links
-        if set_param.props:
-            param.props = set_param.props
-        if set_param.select:
-            param.select = set_param.select
-        if set_param.usage:
-            param.usage = set_param.usage
+        param.values = set_param.values
+        param.constraints = set_param.constraints
+        param.guidelines = set_param.guidelines
+        param.links = set_param.links
+        param.props = set_param.props
+        param.select = set_param.select
+        param.usage = set_param.usage
         control.params[index] = param
         self._catalog_interface.replace_control(control)
 
@@ -293,12 +289,12 @@ class Modify(Pipeline.Filter):
         self._catalog_interface = CatalogInterface(catalog)
         alters: Optional[List[prof.Alter]] = None
         # find the modify and alters
-        if self._profile.modify is not None:
+        if self._profile.modify:
             # change all parameter values
-            if self._profile.modify.set_parameters is not None:
-                param_list = self._profile.modify.set_parameters
-                for param in param_list:
-                    self._set_parameter_in_control(param)
+            if self._profile.modify.set_parameters and not self._block_params:
+                set_param_list = self._profile.modify.set_parameters
+                for set_param in set_param_list:
+                    self._set_parameter_in_control(set_param)
             alters = self._profile.modify.alters
 
         if alters is not None:

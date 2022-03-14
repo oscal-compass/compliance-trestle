@@ -82,17 +82,12 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict
     """Edit the files to show assemble worked."""
     assert control_path.exists()
     assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
-    # delete the value for prm_2 so the value is blank
-    # replace the value for prm_3 with new value
-    # delete entire line for prm_4
     if set_parameters:
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_2', 2)
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_3', 2)
-        assert test_utils.delete_line_in_file(control_path, 'ac-1_prm_4', 2)
-        new_param_2 = '  ac-1_prm_2:\n    values: bad value\n    profile-set-param: false\n'
-        assert test_utils.insert_text_in_file(control_path, 'profile-set-param:', new_param_2)
-        new_param_3 = '  ac-1_prm_3:\n    values: new value\n    profile-set-param: true\n'
-        assert test_utils.insert_text_in_file(control_path, 'profile-set-param: false', new_param_3)
+        # delete profile values for 2 and 4, then replace value for 3 with new value
+        assert test_utils.delete_line_in_file(control_path, 'A thorough')
+        assert test_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
+        assert test_utils.delete_line_in_file(control_path, 'officer')
+        assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 
 def setup_profile_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
