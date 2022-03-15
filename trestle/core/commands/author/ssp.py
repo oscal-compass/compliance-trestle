@@ -59,9 +59,13 @@ class SSPGenerate(AuthorCommonCommand):
             default=False
         )
         sections_help_str = (
-            'Comma separated list of section:alias pairs for sections to output.' + ' Otherwises defaults to all.'
+            'Comma separated list of section:alias pairs.  Provides mapping of short names to long for markdown.'
         )
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
+        allowed_sections_help_str = (
+            'Comma separated list of section short names to include in the markdown.  Others will not appear.'
+        )
+        self.add_argument('-as', '--allowed-sections', help=allowed_sections_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -116,7 +120,8 @@ class SSPGenerate(AuthorCommonCommand):
                 profile=None,
                 overwrite_header_values=args.overwrite_header_values,
                 set_parameters=False,
-                required_sections=None
+                required_sections=None,
+                allowed_sections=args.allowed_sections
             )
         except Exception as e:
             logger.error(f'Error writing the catalog as markdown: {e}')

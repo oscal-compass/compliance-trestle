@@ -310,6 +310,10 @@ HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in
 
 SET_PARAMS_TAG = 'x-trestle-set-params'
 
+PROFILE_VALUES = 'profile-values'
+
+VALUES = 'values'
+
 SECTIONS_TAG = 'x-trestle-sections'
 
 EDITABLE_CONTENT = 'Editable Content'

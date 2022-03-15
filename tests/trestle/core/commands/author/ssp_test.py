@@ -64,12 +64,13 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 
 @pytest.mark.parametrize('import_cat', [False, True])
-@pytest.mark.parametrize('sections', [False, True])
-def test_ssp_generate(import_cat, sections, tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('specify_sections', [False, True])
+def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
     args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
-    if not sections:
-        args.sections = None
+    if specify_sections:
+        args.allowed_sections = 'ImplGuidance,ExpectedEvidence'
+
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
@@ -84,9 +85,9 @@ def test_ssp_generate(import_cat, sections, tmp_trestle_dir: pathlib.Path) -> No
     with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML()
         expected_header = yaml.load(f)
-    if sections:
-        sections_dict = sections_to_dict(sections + ',statement:statement')
-        expected_header[const.SECTIONS_TAG] = sections_dict
+    sections_dict = sections_to_dict(sections)
+    expected_header[const.SECTIONS_TAG] = sections_dict
+    assert test_utils.confirm_text_in_file(ac_1, '## Control', '## Control Guidance') != specify_sections
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
@@ -437,7 +438,8 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         sections=None,
         yaml_header=header_path,
-        overwrite_header_values=False
+        overwrite_header_values=False,
+        allowed_sections=None
     )
     # generate the markdown with header content
     ssp_cmd = SSPGenerate()
@@ -471,7 +473,8 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
         verbose=0,
         sections=None,
         yaml_header=None,
-        overwrite_header_values=False
+        overwrite_header_values=False,
+        allowed_sections=None
     )
     # generate the markdown with no implementation response text
     ssp_cmd = SSPGenerate()
@@ -511,7 +514,8 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
         sections=None,
         overwrite_header_values=False,
         verbose=1,
-        yaml_header=None
+        yaml_header=None,
+        allowed_sections=None
     )
     assert ssp_gen._run(args) == 0
 
