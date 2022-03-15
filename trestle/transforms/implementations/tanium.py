@@ -172,7 +172,7 @@ class RuleUseFactory():
     def _make_sublist(self, tanium_row: Dict[str, Any]) -> List[RuleUse]:
         """Build RuleUse sublist from input data item."""
         retval = []
-        keys = tanium_row.keys()
+        keys = tanium_row
         for key in keys:
             if key.startswith('Comply'):
                 break
@@ -243,9 +243,9 @@ class TaniumOscalFactory():
         """Initialize given specified args."""
         self._rule_use_list = rule_use_list
         self._timestamp = timestamp
-        self._component_map = {}
-        self._inventory_map = {}
-        self._observation_list = []
+        self._component_map: Dict[str, SystemComponent] = {}
+        self._inventory_map: Dict[str, InventoryItem] = {}
+        self._observation_list: List[Observation] = []
         self._ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
         self._cpus = None
         self._checking = checking
@@ -265,7 +265,7 @@ class TaniumOscalFactory():
             self._cpus_min = self._cpus_max
         if self._cpus_min < 1:
             self._cpus_min = 1
-        self._cacheProperties = CacheProperties(caching=caching, checking=checking)
+        self._cache_properties = CacheProperties(caching=caching, checking=checking)
 
     def _is_duplicate_component(self, rule_use: RuleUse) -> bool:
         """Check for duplicate component."""
@@ -283,7 +283,7 @@ class TaniumOscalFactory():
 
     def _derive_components(self) -> None:
         """Derive components from RuleUse list."""
-        self._component_map = {}
+        self._component_map: Dict[str, SystemComponent] = {}
         for rule_use in self._rule_use_list:
             if self._is_duplicate_component(rule_use):
                 continue
@@ -318,21 +318,21 @@ class TaniumOscalFactory():
 
     def _derive_inventory(self) -> None:
         """Derive inventory from RuleUse list."""
-        self._inventory_map = {}
+        self._inventory_map: Dict[str, InventoryItem] = {}
         for rule_use in self._rule_use_list:
             if rule_use.tanium_client_ip_address in self._inventory_map:
                 continue
             inventory = InventoryItem(uuid=_uuid_inventory(), description='inventory')
             inventory.props = [
-                self._cacheProperties.get(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
-                self._cacheProperties.get(
+                self._cache_properties.get(name='Computer_Name', value=rule_use.computer_name, ns=self._ns),
+                self._cache_properties.get(
                     name='Tanium_Client_IP_Address',
                     value=rule_use.tanium_client_ip_address,
                     ns=self._ns,
                     class_='scc_inventory_item_id'
                 ),
-                self._cacheProperties.get(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
-                self._cacheProperties.get(name='Count', value=rule_use.count, ns=self._ns)
+                self._cache_properties.get(name='IP_Address', value=rule_use.ip_address, ns=self._ns),
+                self._cache_properties.get(name='Count', value=rule_use.count, ns=self._ns)
             ]
             component_uuid = self._get_component_ref(rule_use)
             if component_uuid is not None:
@@ -346,33 +346,33 @@ class TaniumOscalFactory():
     def _get_observtion_properties(self, rule_use) -> List[Property]:
         """Get observation properties."""
         props = [
-            self._cacheProperties.get(name='Check_ID', value=rule_use.check_id, ns=self._ns),
-            self._cacheProperties.get(
+            self._cache_properties.get(name='Check_ID', value=rule_use.check_id, ns=self._ns),
+            self._cache_properties.get(
                 name='Check_ID_Benchmark',
                 value=rule_use.check_id_benchmark,
                 ns=self._ns,
                 class_='scc_predefined_profile'
             ),
-            self._cacheProperties.get(
+            self._cache_properties.get(
                 name='Check_ID_Version',
                 value=rule_use.check_id_version,
                 ns=self._ns,
                 class_='scc_predefined_profile_version'
             ),
-            self._cacheProperties.get(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
-            self._cacheProperties.get(
+            self._cache_properties.get(name='Check_ID_Level', value=rule_use.check_id_level, ns=self._ns),
+            self._cache_properties.get(
                 name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_goal_description'
             ),
-            self._cacheProperties.get(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
-            self._cacheProperties.get(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
-            self._cacheProperties.get(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
+            self._cache_properties.get(name='Rule_ID', value=rule_use.rule_id, ns=self._ns, class_='scc_check_name_id'),
+            self._cache_properties.get(name='State', value=rule_use.state, ns=self._ns, class_='scc_result'),
+            self._cache_properties.get(name='Timestamp', value=rule_use.timestamp, ns=self._ns, class_='scc_timestamp'),
         ]
         return props
 
     # parallel process to process one chuck of entire data set
     def _batch_observations(self, index: int) -> Dict[str, List[Observation]]:
         """Derive batch of observations from RuleUse list."""
-        observation_partial_map = {}
+        observation_partial_map: Dict[str, List[Observation]] = {}
         # determine which chunk to process
         batch_size = (len(self._rule_use_list) // self._batch_workers) + 1
         start = index * batch_size
@@ -392,9 +392,7 @@ class TaniumOscalFactory():
             subject_reference = SubjectReference(subject_uuid=subject_uuid, type='inventory-item')
             observation.subjects = [subject_reference]
             observation.props = self._get_observtion_properties(rule_use)
-            if subject_uuid not in observation_partial_map.keys():
-                observation_partial_map[subject_uuid] = []
-            observation_partial_map[subject_uuid].append(observation)
+            observation_partial_map[subject_uuid] = observation_partial_map.get(subject_uuid, []) + [observation]
         return observation_partial_map
 
     @property
@@ -435,7 +433,7 @@ class TaniumOscalFactory():
         """OSCAL observations."""
         rval = []
         # observations are partitioned by local-definition uuid; join them into one list
-        for key in self._observation_map.keys():
+        for key in self._observation_map:
             list_ = self._observation_map[key]
             for observation in list_:
                 rval.append(observation)
@@ -461,7 +459,7 @@ class TaniumOscalFactory():
         analysis.append(f'components: {len(self.components)}')
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
-        analysis.append(f'cache: requests={self._cacheProperties.requests} hits={self._cacheProperties.hits}')
+        analysis.append(f'cache: requests={self._cache_properties.requests} hits={self._cache_properties.hits}')
         return analysis
 
     def _get_local_definitions(self, system_component: SystemComponent) -> LocalDefinitions1:
@@ -488,7 +486,7 @@ class TaniumOscalFactory():
     def _get_observations_for_uuid(self, uuid_) -> List[Observation]:
         """Get observations for given uuid."""
         rval = 0
-        if uuid_ in self._observation_map.keys():
+        if uuid_ in self._observation_map:
             rval = []
             list_ = self._observation_map[uuid_]
             for observation in list_:
