@@ -228,7 +228,7 @@ class HTTPSFetcher(FetcherBase):
         # so we test for either None or ''.
         if u.username != '' and u.username is not None:
             # This also checks for invalid environment variable name (IEEE 1003.1)
-            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':
+            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':  # nosec
                 logger.error(
                     'Malformed URI, '
                     f'username must refer to an environment variable using moustache {self._uri}'
