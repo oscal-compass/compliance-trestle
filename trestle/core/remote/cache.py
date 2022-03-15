@@ -228,7 +228,7 @@ class HTTPSFetcher(FetcherBase):
         # so we test for either None or ''.
         if u.username != '' and u.username is not None:
             # This also checks for invalid environment variable name (IEEE 1003.1)
-            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':  # noqa S105
+            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':
                 logger.error(
                     'Malformed URI, '
                     f'username must refer to an environment variable using moustache {self._uri}'
@@ -244,8 +244,8 @@ class HTTPSFetcher(FetcherBase):
                     f'Cache request for invalid input URI: username not found in the environment {self._uri}'
                 )
             self._username = os.environ[username_var]
-        if u.password != '' and u.password is not None:
-            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.password) or u.password == '{{_}}':
+        if u.password != '' and u.password is not None:  # noqa S105
+            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.password) or u.password == '{{_}}':  # noqa S105
                 logger.error(
                     f'Malformed URI, password must refer to an environment variable using moustache {self._uri}'
                 )
@@ -261,7 +261,7 @@ class HTTPSFetcher(FetcherBase):
                     f'password not found in the environment {self._uri}'
                 )
             self._password = os.environ[password_var]
-        if self._username and (self._password == '' or self._password is None):
+        if self._username and (self._password == '' or self._password is None):  # noqa S105
             logger.error(
                 'Malformed URI, username found but valid password not found '
                 f'via environment variable in URI {self._uri}'
