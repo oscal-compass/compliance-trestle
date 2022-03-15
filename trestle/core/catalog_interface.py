@@ -478,7 +478,9 @@ class CatalogInterface():
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
+            # make copy of incoming yaml header
             new_header = copy.deepcopy(yaml_header)
+            # here we do special handling of how set-parameters merge with the yaml header
             if set_parameters:
                 # get all params for this control
                 control_param_dict = ControlIOReader.get_control_param_dict(control, False)
@@ -508,7 +510,28 @@ class CatalogInterface():
                     new_dict.pop('id')
                     set_param_dict[param_id] = new_dict
                 if set_param_dict:
+                    if const.SET_PARAMS_TAG not in new_header:
+                        new_header[const.SET_PARAMS_TAG] = {}
+                    if overwrite_header_values:
+                        # update the control params with new values
+                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                            if key in control_param_dict:
+                                set_param_dict[key] = value
+                    else:
+                        # update the control params with any values in yaml header not set in control
+                        # need to maintain order in the set_param_dict
+                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                            if key in control_param_dict and key not in set_param_dict:
+                                set_param_dict[key] = value
                     new_header[const.SET_PARAMS_TAG] = set_param_dict
+                elif const.SET_PARAMS_TAG in new_header:
+                    # need to cull any params that are not in control
+                    pop_list: List[str] = []
+                    for key in new_header[const.SET_PARAMS_TAG].keys():
+                        if key not in control_param_dict:
+                            pop_list.append(key)
+                    for pop in pop_list:
+                        new_header[const.SET_PARAMS_TAG].pop(pop)
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path

@@ -83,10 +83,8 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict
     assert control_path.exists()
     assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if set_parameters:
-        # delete profile values for 2 and 4, then replace value for 3 with new value
-        assert test_utils.delete_line_in_file(control_path, 'A thorough')
+        # delete profile values for 4, then replace value for 3 with new value
         assert test_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
-        assert test_utils.delete_line_in_file(control_path, 'officer')
         assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 
@@ -172,8 +170,11 @@ def test_profile_generate_assemble(
     if set_parameters:
         assert set_params[0].param_id == 'ac-1_prm_1'
         assert set_params[0].values[0].__root__ == 'all personnel'
-        assert set_params[1].param_id == 'ac-1_prm_3'
-        assert set_params[1].values[0].__root__ == 'new value'
+        assert set_params[1].param_id == 'ac-1_prm_2'
+        assert set_params[1].values[0].__root__ == 'Organization-level'
+        assert set_params[1].values[1].__root__ == 'System-level'
+        assert set_params[2].param_id == 'ac-1_prm_3'
+        assert set_params[2].values[0].__root__ == 'new value'
     else:
         assert len(set_params) == 15
 
@@ -226,10 +227,19 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
         )
         set_params = profile.modify.set_parameters
 
-        assert len(set_params) == 13
+        assert len(set_params) == 14
         assert set_params[0].values[0].__root__ == 'all personnel'
-        assert set_params[1].values[0].__root__ == 'new value'
+        assert set_params[1].param_id == 'ac-1_prm_2'
+        assert set_params[1].values[0].__root__ == 'Organization-level'
+        assert set_params[1].values[1].__root__ == 'System-level'
+        assert set_params[2].values[0].__root__ == 'new value'
         assert profile.metadata.version.__root__ == new_version
+        if ohv:
+            assert set_params[3].values[0].__root__ == 'no meetings'
+            assert set_params[3].label == 'meetings cancelled'
+        else:
+            assert set_params[3].values[0].__root__ == 'all meetings'
+            assert set_params[3].label == 'organization-defined events'
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
