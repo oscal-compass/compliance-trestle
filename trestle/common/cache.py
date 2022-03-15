@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Cached objects."""
+from typing import Any, Dict
+
 from trestle.oscal.common import Property
 
 
@@ -25,7 +27,7 @@ class CacheBase():
         self._checking = checking
         self._requests = 0
         self._hits = 0
-        self._map = {}
+        self._map: Dict[str, Any] = {}
 
     @property
     def requests(self) -> int:
@@ -49,8 +51,8 @@ class CacheProperties(CacheBase):
         """Get property from cache or create new property."""
         self._requests += 1
         # try fetch from cache
-        key = str(name) + '|' + str(value) + '|' + str(class_) + '|' + str(ns)
-        if key in self._map.keys():
+        key = '|'.join([str(name), str(value), str(class_), str(ns)])
+        if key in self._map:
             self._hits += 1
             return self._map[key]
         # create new property and put into cache if caching
