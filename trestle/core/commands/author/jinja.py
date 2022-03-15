@@ -161,7 +161,7 @@ class JinjaCmd(CommandPlusDocs):
                 _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
                 profile_resolver = ProfileResolver()
                 resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-                    trestle_root, profile_path, False, parameters_formatting
+                    trestle_root, profile_path, False, False, parameters_formatting
                 )
 
                 ssp_writer = SSPMarkdownWriter(trestle_root)

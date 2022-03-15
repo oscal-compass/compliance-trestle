@@ -42,9 +42,9 @@ markdown_name = 'my_md'
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
         assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '  ac-1_prm_1: new value\n')
+    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '    values: new value\n')
     assert test_utils.delete_line_in_file(ac1_path, 'Param_1_value')
-    assert test_utils.insert_text_in_file(ac1_path, 'new value', '  ac-1_prm_2: added param 2 value\n')
+    assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
 
 
 @pytest.mark.parametrize('set_parameters', [True, False])
@@ -128,7 +128,7 @@ def test_catalog_generate_assemble(
         orig_cat = interface_orig.get_catalog()
     if set_parameters:
         ac1.params[0].values = [ParameterValue(__root__='new value')]
-        ac1.params[1].values = [ParameterValue(__root__='added param 2 value')]
+        ac1.params[2].values = [ParameterValue(__root__='added param 3 value')]
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
     elif not use_orig_cat:

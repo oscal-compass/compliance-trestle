@@ -33,6 +33,7 @@ class ProfileResolver():
         trestle_root: pathlib.Path,
         profile_path: pathlib.Path,
         block_adds: bool = False,
+        block_params: bool = False,
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) -> cat.Catalog:
@@ -40,7 +41,7 @@ class ProfileResolver():
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
         # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.
-        import_filter = Import(trestle_root, import_, True, block_adds, params_format, param_rep)
+        import_filter = Import(trestle_root, import_, True, block_adds, block_params, params_format, param_rep)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result
