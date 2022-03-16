@@ -154,6 +154,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version)
     assembled_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_cat_name, cat.Catalog)
     assert assembled_cat.metadata.version.__root__ == new_version
+    assert ModelUtils.model_age(assembled_cat) < test_utils.NEW_MODEL_AGE_SECONDS
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
