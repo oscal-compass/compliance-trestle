@@ -20,7 +20,7 @@ import logging
 from datetime import datetime
 from typing import Type
 
-import trestle.common.err
+import trestle.common.err as err
 import trestle.common.file_utils
 import trestle.oscal
 from trestle.common import const, file_utils, log
@@ -75,12 +75,12 @@ class CreateCmd(CommandPlusDocs):
                 add = Add()
                 return add.add_from_args(args)
 
-            raise trestle.TrestleIncorrectArgsError(
+            raise err.TrestleIncorrectArgsError(
                 'Create requires either a model type and output name, or a file and element path.'
             )
 
         except Exception as e:  # pragma: no cover
-            return trestle.handle_generic_command_exception(e, logger, 'Error while creating a sample OSCAL model')
+            return err.handle_generic_command_exception(e, logger, 'Error while creating a sample OSCAL model')
 
     @classmethod
     def create_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
@@ -88,7 +88,7 @@ class CreateCmd(CommandPlusDocs):
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if not trestle_root or not file_utils.is_valid_project_root(args.trestle_root):
-            raise trestle.TrestleRootError(f'Given directory {trestle_root} is not a trestle project.')
+            raise err.TrestleRootError(f'Given directory {trestle_root} is not a trestle project.')
 
         plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
@@ -97,7 +97,7 @@ class CreateCmd(CommandPlusDocs):
         desired_model_path = desired_model_dir / (model_alias + '.' + args.extension)
 
         if desired_model_path.exists():
-            raise trestle.TrestleError(f'OSCAL file to be created here: {desired_model_path} exists.')
+            raise err.TrestleError(f'OSCAL file to be created here: {desired_model_path} exists.')
 
         # Create sample model.
         sample_model = generators.generate_sample_model(object_type, include_optional=args.include_optional_fields)
