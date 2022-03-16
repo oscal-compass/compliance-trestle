@@ -677,3 +677,11 @@ def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_cat
     ModelUtils.save_top_level_model(sample_catalog_minimal, tmp_trestle_dir, 'mycat', FileContentType.JSON)
     cat_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, 'mycat', catalog.Catalog)
     assert cat_path == tmp_trestle_dir / 'catalogs/mycat/catalog.json'
+
+
+def test_update_timestamps(sample_catalog_rich_controls: catalog.Catalog) -> None:
+    """Test update timestamps."""
+    orig_timestamp = sample_catalog_rich_controls.metadata.last_modified.__root__
+    ModelUtils.update_timestamp(sample_catalog_rich_controls)
+    assert sample_catalog_rich_controls.metadata.last_modified.__root__ > orig_timestamp
+    assert ModelUtils.model_age(sample_catalog_rich_controls) < test_utils.NEW_MODEL_AGE_SECONDS

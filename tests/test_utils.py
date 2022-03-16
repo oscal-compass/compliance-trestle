@@ -65,6 +65,8 @@ COMPONENT_DEF_DIR = 'component-definitions'
 NIST_EXAMPLES = pathlib.Path('nist-content/examples')
 NIST_SAMPLE_CD_JSON = NIST_EXAMPLES / 'component-definition' / 'json' / 'example-component.json'
 
+NEW_MODEL_AGE_SECONDS = 100
+
 
 def clean_tmp_path(tmp_path: pathlib.Path):
     """Clean tmp directory."""
