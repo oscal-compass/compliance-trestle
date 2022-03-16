@@ -157,8 +157,7 @@ class Folders(AuthorCommonCommand):
                     continue
                 elif template_file.suffix.lower() == '.md':
                     if not readme_validate and template_file.name == 'readme.md':
-                        logger.error('Template directory contains a readme.md file and readme validation is off.')
-                        return CmdReturnCodes.COMMAND_ERROR.value
+                        raise TrestleError('Template directory contains a readme.md file and readme validation is off.')
 
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(

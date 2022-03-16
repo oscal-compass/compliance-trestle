@@ -16,7 +16,6 @@
 import argparse
 import logging
 import pathlib
-import traceback
 from typing import Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
@@ -27,6 +26,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -68,49 +68,42 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-as', '--allowed-sections', help=allowed_sections_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = args.trestle_root
-        if not file_utils.is_directory_name_allowed(args.output):
-            logger.warning(f'{args.output} is not an allowed directory name')
-            return CmdReturnCodes.COMMAND_ERROR.value
-
-        profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
-
-        yaml_header: dict = {}
-        if args.yaml_header:
-            try:
-                logging.debug(f'Loading yaml header file {args.yaml_header}')
-                yaml = YAML()
-                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
-            except YAMLError as e:
-                logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                return CmdReturnCodes.COMMAND_ERROR.value
-
-        markdown_path = trestle_root / args.output
-
-        profile_resolver = ProfileResolver()
         try:
+            log.set_log_level_from_args(args)
+            trestle_root = args.trestle_root
+            if not file_utils.is_directory_name_allowed(args.output):
+                raise TrestleError(f'{args.output} is not an allowed directory name')
+
+            profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
+
+            yaml_header: dict = {}
+            if args.yaml_header:
+                try:
+                    logging.debug(f'Loading yaml header file {args.yaml_header}')
+                    yaml = YAML()
+                    yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+                except YAMLError as e:
+                    raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
+
+            markdown_path = trestle_root / args.output
+
+            profile_resolver = ProfileResolver()
+
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
             catalog_interface = CatalogInterface(resolved_catalog)
-        except Exception as e:
-            logger.error(f'Error creating the resolved profile catalog: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
 
-        sections_dict: Dict[str, str] = {}
-        if args.sections:
-            sections_dict = sections_to_dict(args.sections)
-            if 'statement' in sections_dict:
-                logger.warning('statement is not allowed as a section name.')
-                return CmdReturnCodes.COMMAND_ERROR.value
-            # add any existing sections from the controls but only have short names
-            control_section_short_names = catalog_interface.get_sections()
-            for short_name in control_section_short_names:
-                if short_name not in sections_dict:
-                    sections_dict[short_name] = short_name
-            logger.debug(f'ssp sections dict: {sections_dict}')
+            sections_dict: Dict[str, str] = {}
+            if args.sections:
+                sections_dict = sections_to_dict(args.sections)
+                if 'statement' in sections_dict:
+                    raise TrestleError('Statement is not allowed as a section name.')
+                # add any existing sections from the controls but only have short names
+                control_section_short_names = catalog_interface.get_sections()
+                for short_name in control_section_short_names:
+                    if short_name not in sections_dict:
+                        sections_dict[short_name] = short_name
+                logger.debug(f'ssp sections dict: {sections_dict}')
 
-        try:
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
@@ -123,12 +116,11 @@ class SSPGenerate(AuthorCommonCommand):
                 required_sections=None,
                 allowed_sections=args.allowed_sections
             )
-        except Exception as e:
-            logger.error(f'Error writing the catalog as markdown: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return CmdReturnCodes.SUCCESS.value
+            return CmdReturnCodes.SUCCESS.value
+
+        except Exception as e:
+            return handle_generic_command_exception(e, logger, 'Error while writing markdown from catalog')
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -205,24 +197,24 @@ class SSPAssemble(AuthorCommonCommand):
         metadata.roles = none_if_empty(metadata.roles)
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = pathlib.Path(args.trestle_root)
-
-        md_path = trestle_root / args.markdown
-
-        orig_ssp_name = args.output
-        if args.name:
-            orig_ssp_name = args.name
-        new_ssp_name = args.output
-        # if ssp already exists - load it rather than make new one
-        orig_ssp_path = ModelUtils.path_for_top_level_model(
-            trestle_root, orig_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
-        )
-
-        ssp: ossp.SystemSecurityPlan
-        comp_dict: Dict[str, ossp.SystemComponent] = {}
-
         try:
+            log.set_log_level_from_args(args)
+            trestle_root = pathlib.Path(args.trestle_root)
+
+            md_path = trestle_root / args.markdown
+
+            orig_ssp_name = args.output
+            if args.name:
+                orig_ssp_name = args.name
+            new_ssp_name = args.output
+            # if ssp already exists - load it rather than make new one
+            orig_ssp_path = ModelUtils.path_for_top_level_model(
+                trestle_root, orig_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
+            )
+
+            ssp: ossp.SystemSecurityPlan
+            comp_dict: Dict[str, ossp.SystemComponent] = {}
+
             # need to load imp_reqs from markdown but need component first
             if orig_ssp_path.exists():
                 # load the existing json ssp
@@ -263,23 +255,16 @@ class SSPAssemble(AuthorCommonCommand):
                 ssp.system_implementation.components.append(comp)
             self._generate_roles_in_metadata(ssp)
 
-        except Exception as e:
-            logger.warning(f'Error assembling the ssp from markdown: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
+            if args.version:
+                ssp.metadata.version = com.Version(__root__=args.version)
 
-        if args.version:
-            ssp.metadata.version = com.Version(__root__=args.version)
-
-        # write out the ssp as json
-        try:
+            # write out the ssp as json
             ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, FileContentType.JSON)
-        except Exception as e:
-            logger.warning(f'Error saving the generated ssp: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
 
-        return CmdReturnCodes.SUCCESS.value
+            return CmdReturnCodes.SUCCESS.value
+
+        except Exception as e:
+            return handle_generic_command_exception(e, logger, 'Error while assembling SSP')
 
 
 class SSPFilter(AuthorCommonCommand):
@@ -298,10 +283,13 @@ class SSPFilter(AuthorCommonCommand):
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = pathlib.Path(args.trestle_root)
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root = pathlib.Path(args.trestle_root)
 
-        return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, args.version)
+            return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, args.version)
+        except Exception as e:
+            return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
 
     def filter_ssp(
         self,
@@ -328,55 +316,47 @@ class SSPFilter(AuthorCommonCommand):
         """
         ssp: ossp.SystemSecurityPlan
 
-        try:
-            ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name,
-                                                     ossp.SystemSecurityPlan, FileContentType.JSON)
-            profile_path = ModelUtils.path_for_top_level_model(
-                trestle_root, profile_name, prof.Profile, FileContentType.JSON
-            )
+        ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+        profile_path = ModelUtils.path_for_top_level_model(
+            trestle_root, profile_name, prof.Profile, FileContentType.JSON
+        )
 
-            prof_resolver = ProfileResolver()
-            catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-            catalog_interface = CatalogInterface(catalog)
+        prof_resolver = ProfileResolver()
+        catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+        catalog_interface = CatalogInterface(catalog)
 
-            # The input ssp should reference a superset of the controls referenced by the profile
-            # Need to cull references in the ssp to controls not in the profile
-            # Also make sure the output ssp contains imp reqs for all controls in the profile
-            control_imp = ssp.control_implementation
-            ssp_control_ids: Set[str] = set()
+        # The input ssp should reference a superset of the controls referenced by the profile
+        # Need to cull references in the ssp to controls not in the profile
+        # Also make sure the output ssp contains imp reqs for all controls in the profile
+        control_imp = ssp.control_implementation
+        ssp_control_ids: Set[str] = set()
 
-            new_set_params: List[ossp.SetParameter] = []
-            for set_param in as_list(control_imp.set_parameters):
-                control = catalog_interface.get_control_by_param_id(set_param.param_id)
-                if control is not None:
-                    new_set_params.append(set_param)
-                    ssp_control_ids.add(control.id)
-            control_imp.set_parameters = new_set_params if new_set_params else None
+        new_set_params: List[ossp.SetParameter] = []
+        for set_param in as_list(control_imp.set_parameters):
+            control = catalog_interface.get_control_by_param_id(set_param.param_id)
+            if control is not None:
+                new_set_params.append(set_param)
+                ssp_control_ids.add(control.id)
+        control_imp.set_parameters = new_set_params if new_set_params else None
 
-            new_imp_requirements: List[ossp.ImplementedRequirement] = []
-            for imp_requirement in as_list(control_imp.implemented_requirements):
-                control = catalog_interface.get_control(imp_requirement.control_id)
-                if control is not None:
-                    new_imp_requirements.append(imp_requirement)
-                    ssp_control_ids.add(control.id)
-            control_imp.implemented_requirements = new_imp_requirements
+        new_imp_requirements: List[ossp.ImplementedRequirement] = []
+        for imp_requirement in as_list(control_imp.implemented_requirements):
+            control = catalog_interface.get_control(imp_requirement.control_id)
+            if control is not None:
+                new_imp_requirements.append(imp_requirement)
+                ssp_control_ids.add(control.id)
+        control_imp.implemented_requirements = new_imp_requirements
 
-            # make sure all controls in the profile have implemented reqs in the final ssp
-            if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
-                logger.warning('Unable to filter the ssp because the profile references controls not in it.')
-                logger.debug(traceback.format_exc())
-                return CmdReturnCodes.COMMAND_ERROR.value
+        # make sure all controls in the profile have implemented reqs in the final ssp
+        if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+            raise TrestleError('Unable to filter the ssp because the profile references controls not in it.')
 
-            ssp.control_implementation = control_imp
-            if regenerate:
-                ssp, _, _ = regenerate_uuids(ssp)
-            if version:
-                ssp.metadata.version = com.Version(__root__=version)
+        ssp.control_implementation = control_imp
+        if regenerate:
+            ssp, _, _ = regenerate_uuids(ssp)
+        if version:
+            ssp.metadata.version = com.Version(__root__=version)
 
-            ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
-        except Exception as e:
-            logger.warning(f'Error generating the filtered ssp: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
+        ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
 
         return CmdReturnCodes.SUCCESS.value

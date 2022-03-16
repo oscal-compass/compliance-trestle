@@ -17,9 +17,12 @@ import argparse
 import pathlib
 from typing import Tuple
 
+import pytest
+
 from tests import test_utils
 
 from trestle.common import const
+from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
@@ -97,9 +100,10 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     rc = transform_oscal._run(args)
     assert rc == 0
 
-    assert transform_oscal.transform(
-        tmp_trestle_dir, const.MODEL_TYPE_SSP, const.FILTER_BY_PROFILE, 'bar', 'myout', 'myprof', False, None
-    ) == 1
+    with pytest.raises(TrestleError):
+        transform_oscal.transform(
+            tmp_trestle_dir, const.MODEL_TYPE_SSP, const.FILTER_BY_PROFILE, 'bar', 'myout', 'myprof', False, None
+        )
 
 
 def test_transform_failure(tmp_trestle_dir: pathlib.Path) -> None:

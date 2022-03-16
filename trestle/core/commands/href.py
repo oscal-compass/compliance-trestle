@@ -18,10 +18,9 @@
 import argparse
 import logging
 import pathlib
-import traceback
 
 import trestle.common.log as log
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -77,14 +76,8 @@ class HrefCmd(CommandPlusDocs):
             item_num = args.item
 
             return self.change_import_href(args.trestle_root, profile_name, new_href, item_num)
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while changing href or import in profile: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while changing href or import in profile: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, f'Error while changing href or import in profile: {e}')
 
     @classmethod
     def change_import_href(cls, trestle_root: pathlib.Path, profile_name: str, new_href: str, import_num: int) -> int:
@@ -134,8 +127,8 @@ class HrefCmd(CommandPlusDocs):
                 logger.info(f'{ii:2}: {import_.href}')
             return CmdReturnCodes.SUCCESS.value
         if n_imports <= import_num:
-            logger.warning(f'Import number {import_num} is too large.  This profile has only {n_imports} imports.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Import number {import_num} is too large.  This profile has only {n_imports} imports.')
+
         logger.info(f'Changing import {import_num} in profile {profile_name} from, to:')
         logger.info(f'{profile_data.imports[import_num].href}')
         logger.info(f'{new_href}')

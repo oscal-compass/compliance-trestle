@@ -16,12 +16,11 @@
 """Trestle Merge Command."""
 import argparse
 import logging
-import traceback
 from pathlib import Path
 from typing import List
 
 from trestle.common import const, file_utils, log, type_utils
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
@@ -61,26 +60,16 @@ class MergeCmd(CommandPlusDocs):
             cwd = Path.cwd()
             rc = self.perform_all_merges(element_paths, cwd, args.trestle_root)
             return rc
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while merging subcomponents on a trestle model: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while merging subcomponents on a trestle model: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error while merging subcomponents on a trestle model')
 
     @classmethod
     def perform_all_merges(cls, element_paths: List[str], effective_cwd: Path, trestle_root: Path) -> int:
         """Run all merges over a list of element paths."""
-        try:
-            for element_path in element_paths:
-                logger.debug(f'merge {element_path}')
-                plan = cls.merge(effective_cwd, ElementPath(element_path), trestle_root)
-                plan.execute()
-        except TrestleError as err:
-            logger.error(f'Merge failed: {err}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+        for element_path in element_paths:
+            logger.debug(f'merge {element_path}')
+            plan = cls.merge(effective_cwd, ElementPath(element_path), trestle_root)
+            plan.execute()
         return CmdReturnCodes.SUCCESS.value
 
     @classmethod
@@ -90,9 +79,9 @@ class MergeCmd(CommandPlusDocs):
         It returns a plan for the operation
         """
         if not element_path.is_multipart():
-            msg = 'Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups'
-            logger.error(msg)
-            raise TrestleError(msg)
+            raise TrestleError(
+                'Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups'
+            )
 
         target_model_alias = element_path.get_last()
         logger.debug(f'merge element path list: {element_path} target model alias {target_model_alias}')
