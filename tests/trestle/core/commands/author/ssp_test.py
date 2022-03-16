@@ -341,7 +341,13 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, name=None, version=None
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=1,
+        name=None,
+        version=None,
+        regenerate=False
     )
     assert ssp_assemble._run(args) == 0
 
@@ -449,7 +455,13 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=0, name=None, version=None
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        name=None,
+        version=None,
+        regenerate=False
     )
     assert ssp_assemble._run(args) == 0
 
@@ -522,7 +534,13 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
 
     ssp_assem = SSPAssemble()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, output='ssp_json', markdown='ssp_md', verbose=1, name=None, version=None
+        trestle_root=tmp_trestle_dir,
+        output='ssp_json',
+        markdown='ssp_md',
+        verbose=1,
+        name=None,
+        version=None,
+        regenerate=False
     )
     assert ssp_assem._run(args) == 0
     json_ssp: ossp.SystemSecurityPlan

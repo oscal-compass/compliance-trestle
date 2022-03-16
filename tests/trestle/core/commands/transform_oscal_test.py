@@ -77,7 +77,13 @@ def test_ssp_transform(tmp_trestle_dir: pathlib.Path) -> None:
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=1, version=None, name=None
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=1,
+        version=None,
+        name=None,
+        regenerate=False
     )
     assert ssp_assemble._run(args) == 0
 
