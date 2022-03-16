@@ -217,15 +217,22 @@ class SSPAssemble(AuthorCommonCommand):
         if args.name:
             orig_ssp_name = args.name
         new_ssp_name = args.output
-        # if orig ssp exists - load it rather than instantiate new one
+        # if orig ssp exists - need to load it rather than instantiate new one
         orig_ssp_path = ModelUtils.path_for_top_level_model(
             trestle_root, orig_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
         )
 
+        # if output ssp already exists, load it to see if new one is different
+        existing_ssp: Optional[ossp.SystemSecurityPlan] = None
+        new_ssp_path = ModelUtils.path_for_top_level_model(
+            trestle_root, new_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
+        )
+        if new_ssp_path.exists():
+            _, _, existing_ssp = ModelUtils.load_distributed(new_ssp_path, trestle_root)
+
         ssp: ossp.SystemSecurityPlan
         comp_dict: Dict[str, ossp.SystemComponent] = {}
 
-        changed = False
         try:
             # need to load imp_reqs from markdown but need component first
             if orig_ssp_path.exists():
@@ -235,8 +242,7 @@ class SSPAssemble(AuthorCommonCommand):
                     comp_dict[component.title] = component
                 # read the new imp reqs from markdown and have them reference existing components
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
-                if self._merge_imp_reqs(ssp, imp_reqs):
-                    changed = True
+                self._merge_imp_reqs(ssp, imp_reqs)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
@@ -272,37 +278,29 @@ class SSPAssemble(AuthorCommonCommand):
                 for comp in ssp.system_implementation.components:
                     if comp in component_list:
                         new_list.append(comp)
-                    else:
-                        changed = True
                 for comp in component_list:
                     if comp not in new_list:
                         new_list.append(comp)
-                    else:
-                        changed = True
                 ssp.system_implementation.components = new_list
             elif component_list:
                 ssp.system_implementation.components = component_list
-                changed = True
-            if self._generate_roles_in_metadata(ssp):
-                changed = True
+            self._generate_roles_in_metadata(ssp)
+
+            if args.version:
+                ssp.metadata.version = com.Version(__root__=args.version)
+
+            if args.regenerate:
+                ssp, _, _ = regenerate_uuids(ssp)
+            ModelUtils.update_timestamp(ssp)
+
+            if existing_ssp == ssp:
+                logger.info('No changes to assembled ssp so ssp not written out.')
+                return CmdReturnCodes.SUCCESS.value
 
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')
             logger.debug(traceback.format_exc())
             return CmdReturnCodes.COMMAND_ERROR.value
-
-        if args.version:
-            if ssp.metadata.version.__root__ != args.version:
-                ssp.metadata.version = com.Version(__root__=args.version)
-                changed = True
-
-        if not changed:
-            logger.info('No changes to assembled ssp so ssp not written out.')
-            return CmdReturnCodes.SUCCESS.value
-
-        if args.regenerate:
-            ssp, _, _ = regenerate_uuids(ssp)
-        ModelUtils.update_timestamp(ssp)
 
         # write out the ssp as json
         try:

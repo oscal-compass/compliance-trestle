@@ -107,7 +107,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         output=ssp_name,
-        verbose=1,
+        verbose=0,
         sections=None,
         yaml_header=str(yaml_path),
         overwrite_header_values=False
@@ -120,7 +120,7 @@ def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
         profile='foo',
         output=ssp_name,
         sections=None,
-        verbose=1,
+        verbose=0,
         overwrite_header_values=False,
         yaml_header=None
     )
@@ -237,18 +237,20 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         markdown=ssp_name,
         output=ssp_name,
-        verbose=1,
+        verbose=0,
         regenerate=False,
         version=new_version,
         name=None
     )
     assert ssp_assemble._run(args) == 0
 
-    orig_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 2
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
+
+    orig_file_creation = orig_ssp_path.stat().st_ctime
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
@@ -261,12 +263,15 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         markdown=ssp_name,
         output=ssp_name,
-        verbose=1,
+        verbose=0,
         regenerate=False,
         name=None,
         version=None
     )
     assert ssp_assemble._run(args) == 0
+
+    # confirm the file was not written out since no change
+    assert orig_ssp_path.stat().st_ctime == orig_file_creation
 
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
@@ -294,7 +299,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         markdown=ssp_name,
         output=ssp_name,
-        verbose=1,
+        verbose=0,
         regenerate=True,
         name=None,
         version=None
@@ -306,7 +311,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     """Test bad output name."""
     args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, profile=prof_name, output='catalogs', verbose=1, yaml_header='dummy.yaml'
+        trestle_root=tmp_trestle_dir, profile=prof_name, output='catalogs', verbose=0, yaml_header='dummy.yaml'
     )
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 1
@@ -344,7 +349,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         markdown=ssp_name,
         output=ssp_name,
-        verbose=1,
+        verbose=0,
         name=None,
         version=None,
         regenerate=False
@@ -365,7 +370,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         name=ssp_name,
         profile='test_profile_d',
         output=filtered_name,
-        verbose=1,
+        verbose=0,
         regenerate=False,
         version=None
     )
@@ -380,7 +385,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         name=ssp_name,
         profile='test_profile_d',
         output=filtered_name,
-        verbose=1,
+        verbose=0,
         regenerate=False,
         version=None
     )
@@ -395,7 +400,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         name=ssp_name,
         profile='test_profile_d',
         output=filtered_name,
-        verbose=1,
+        verbose=0,
         regenerate=True,
         version=None
     )
@@ -410,7 +415,7 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         name=ssp_name,
         profile='test_profile_b',
         output=filtered_name,
-        verbose=1,
+        verbose=0,
         regenerate=True,
         version=None
     )
@@ -526,7 +531,7 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
         output='ssp_md',
         sections=None,
         overwrite_header_values=False,
-        verbose=1,
+        verbose=0,
         yaml_header=None,
         allowed_sections=None
     )
@@ -537,7 +542,7 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir,
         output='ssp_json',
         markdown='ssp_md',
-        verbose=1,
+        verbose=0,
         name=None,
         version=None,
         regenerate=False
