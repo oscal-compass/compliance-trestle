@@ -165,6 +165,7 @@ def test_profile_generate_assemble(
     profile: prof.Profile
     profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,
                                                  prof.Profile, FileContentType.JSON)
+    assert ModelUtils.model_age(profile) < test_utils.NEW_MODEL_AGE_SECONDS
     # get the set_params in the assembled profile
     set_params = profile.modify.set_parameters
     if set_parameters:

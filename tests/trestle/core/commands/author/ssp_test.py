@@ -248,6 +248,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     orig_uuid = orig_ssp.uuid
     assert len(orig_ssp.system_implementation.components) == 2
     assert orig_ssp.metadata.version.__root__ == new_version
+    assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0

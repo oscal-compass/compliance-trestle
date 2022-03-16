@@ -17,6 +17,7 @@
 import importlib
 import logging
 import pathlib
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
@@ -595,3 +596,18 @@ class ModelUtils:
                     if value not in choices:
                         raise TrestleError(f'Value provided for parameter, {value} is not in choices: {choices}.')
         return common.Parameter(**param_dict)
+
+    @staticmethod
+    def update_timestamp(model: TopLevelOscalModel) -> None:
+        """Update the LastModified timestamp in top level model to now."""
+        model.metadata.last_modified = common.LastModified(__root__=datetime.now().astimezone())
+
+    @staticmethod
+    def model_age(model: TopLevelOscalModel) -> int:
+        """Find time in seconds since LastModified timestamp."""
+        # default to one year if no last_modified
+        age_seconds = const.DAY_SECONDS * 365
+        if model.metadata.last_modified:
+            dt = datetime.now().astimezone() - model.metadata.last_modified.__root__
+            age_seconds = dt.seconds
+        return age_seconds

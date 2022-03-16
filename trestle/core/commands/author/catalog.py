@@ -204,6 +204,7 @@ class CatalogAssemble(AuthorCommonCommand):
 
         if version:
             md_catalog.metadata.version = com.Version(__root__=version)
+        ModelUtils.update_timestamp(md_catalog)
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():

@@ -325,6 +325,7 @@ class ProfileAssemble(AuthorCommonCommand):
             orig_profile, _, _ = regenerate_uuids(orig_profile)
         if version:
             orig_profile.metadata.version = com.Version(__root__=version)
+        ModelUtils.update_timestamp(orig_profile)
 
         if new_prof_dir.exists():
             logger.info('Creating profile from markdown and destination profile directory exists, so updating.')

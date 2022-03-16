@@ -181,6 +181,7 @@ class SSPAssemble(AuthorCommonCommand):
         ssp.control_implementation.implemented_requirements = imp_reqs
         if regenerate:
             ssp, _, _ = regenerate_uuids(ssp)
+        ModelUtils.update_timestamp(ssp)
 
     def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> None:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
@@ -356,6 +357,7 @@ class SSPFilter(AuthorCommonCommand):
             ssp, _, _ = regenerate_uuids(ssp)
         if version:
             ssp.metadata.version = com.Version(__root__=version)
+        ModelUtils.update_timestamp(ssp)
 
         ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
 
