@@ -51,7 +51,6 @@ nav:
   - trestle API reference:
     - cli: api_reference/trestle.cli.md
     - common:
-      - cache: api_reference/trestle.common.cache.md
       - catalog_helper: api_reference/trestle.common.catalog_helper.md
       - common_types: api_reference/trestle.common.common_types.md
       - const: api_reference/trestle.common.const.md
