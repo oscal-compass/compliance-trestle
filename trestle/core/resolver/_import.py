@@ -41,6 +41,7 @@ class Import(Pipeline.Filter):
         import_: prof.Import,
         change_prose=False,
         block_adds: bool = False,
+        block_params: bool = False,
         params_format: str = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
         resources: Optional[List[Resource]] = None
@@ -49,6 +50,7 @@ class Import(Pipeline.Filter):
         self._trestle_root = trestle_root
         self._import = import_
         self._block_adds = block_adds
+        self._block_params = block_params
         self._change_prose = change_prose
         self._params_format = params_format
         self._param_rep = param_rep
@@ -100,6 +102,8 @@ class Import(Pipeline.Filter):
                 pipelines.append(pipeline)
                 logger.debug(f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}')
             merge_filter = Merge(profile)
-            modify_filter = Modify(profile, self._change_prose, self._block_adds, self._params_format, self._param_rep)
+            modify_filter = Modify(
+                profile, self._change_prose, self._block_adds, self._block_params, self._params_format, self._param_rep
+            )
             final_pipeline = Pipeline([merge_filter, modify_filter])
             yield next(final_pipeline.process(pipelines))

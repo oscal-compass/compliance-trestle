@@ -65,6 +65,8 @@ COMPONENT_DEF_DIR = 'component-definitions'
 NIST_EXAMPLES = pathlib.Path('nist-content/examples')
 NIST_SAMPLE_CD_JSON = NIST_EXAMPLES / 'component-definition' / 'json' / 'example-component.json'
 
+NEW_MODEL_AGE_SECONDS = 100
+
 
 def clean_tmp_path(tmp_path: pathlib.Path):
     """Clean tmp directory."""
@@ -197,12 +199,12 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
         lines: List[str] = []
         with file_path.open('r') as f:
             lines = f.readlines()
-            for ii, line in enumerate(lines):
-                if line.find(tag) >= 0:
-                    lines.insert(ii + 1, text)
-                    with file_path.open('w') as f:
-                        f.writelines(lines)
-                    return True
+        for ii, line in enumerate(lines):
+            if line.find(tag) >= 0:
+                lines.insert(ii + 1, text)
+                with file_path.open('w') as f:
+                    f.writelines(lines)
+                return True
     else:
         with file_path.open('a') as f:
             f.writelines(text)
@@ -217,24 +219,26 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
         lines = f.readlines()
     found_tag = False
     for line in lines:
-        if line.find(tag) >= 0:
+        if not found_tag and tag in line:
             found_tag = True
             continue
-        if found_tag and line.find(text) >= 0:
+        if found_tag and text in line:
             return True
     return False
 
 
-def delete_line_in_file(file_path: pathlib.Path, tag: str) -> bool:
-    """Delete a line in a file containing tag."""
-    lines: List[str] = []
-    with file_path.open('r') as f:
-        lines = f.readlines()
+def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> bool:
+    """Delete a run of lines in a file containing tag."""
+    f = file_path.open('r')
+    lines = f.readlines()
+    f.close()
     for ii, line in enumerate(lines):
-        if line.find(tag) >= 0:
-            del lines[ii]
-            with file_path.open('w') as f:
-                f.writelines(lines)
+        if tag in line:
+            del lines[ii:(ii + extra_lines + 1)]
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
             return True
     return False
 
@@ -357,6 +361,7 @@ def setup_for_ssp(
     """Create the markdown ssp content from catalog and profile."""
     setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
 
+    # leave out guidance:Guidance
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -365,7 +370,8 @@ def setup_for_ssp(
         verbose=1,
         sections=sections,
         overwrite_header_values=False,
-        yaml_header=None
+        yaml_header=None,
+        allowed_sections=None
     )
 
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'

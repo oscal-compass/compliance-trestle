@@ -26,7 +26,7 @@ import trestle.common.const as const
 import trestle.common.log as log
 import trestle.oscal.common as com
 from trestle.common import file_utils
-from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -57,29 +57,30 @@ class CatalogGenerate(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = args.trestle_root
-        if not file_utils.is_directory_name_allowed(args.output):
-            logger.warning(f'{args.output} is not an allowed directory name')
-            return CmdReturnCodes.COMMAND_ERROR.value
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root = args.trestle_root
+            if not file_utils.is_directory_name_allowed(args.output):
+                raise TrestleError(f'{args.output} is not an allowed directory name')
 
-        yaml_header: dict = {}
-        if args.yaml_header:
-            try:
-                logging.debug(f'Loading yaml header file {args.yaml_header}')
-                yaml = YAML(typ='safe')
-                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
-            except YAMLError as e:
-                logging.warning(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
-                return CmdReturnCodes.COMMAND_ERROR.value
+            yaml_header: dict = {}
+            if args.yaml_header:
+                try:
+                    logging.debug(f'Loading yaml header file {args.yaml_header}')
+                    yaml = YAML(typ='safe')
+                    yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+                except YAMLError as e:
+                    raise TrestleError(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
 
-        catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
+            catalog_path = trestle_root / f'catalogs/{args.name}/catalog.json'
 
-        markdown_path = trestle_root / args.output
+            markdown_path = trestle_root / args.output
 
-        return self.generate_markdown(
-            trestle_root, catalog_path, markdown_path, yaml_header, args.overwrite_header_values
-        )
+            return self.generate_markdown(
+                trestle_root, catalog_path, markdown_path, yaml_header, args.overwrite_header_values
+            )
+        except Exception as e:
+            return handle_generic_command_exception(e, logger, 'Error occurred when generating markdown for catalog')
 
     def generate_markdown(
         self,
@@ -105,10 +106,10 @@ class CatalogGenerate(AuthorCommonCommand):
                 required_sections=None
             )
         except TrestleNotFoundError as e:
-            logger.warning(f'Catalog {catalog_path} not found for load {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
         except Exception as e:
             raise TrestleError(f'Error generating markdown for controls in {catalog_path}: {e}')
+
         return CmdReturnCodes.SUCCESS.value
 
 
@@ -132,17 +133,20 @@ class CatalogAssemble(AuthorCommonCommand):
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = pathlib.Path(args.trestle_root)
-        return CatalogAssemble.assemble_catalog(
-            trestle_root=trestle_root,
-            md_name=args.markdown,
-            catalog_name=args.output,
-            orig_cat_name=args.name,
-            set_parameters=args.set_parameters,
-            regenerate=args.regenerate,
-            version=args.version
-        )
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root = pathlib.Path(args.trestle_root)
+            return CatalogAssemble.assemble_catalog(
+                trestle_root=trestle_root,
+                md_name=args.markdown,
+                catalog_name=args.output,
+                orig_cat_name=args.name,
+                set_parameters=args.set_parameters,
+                regenerate=args.regenerate,
+                version=args.version
+            )
+        except Exception as e:
+            return handle_generic_command_exception(e, logger, 'Error occurred while assembling catalog')
 
     @staticmethod
     def assemble_catalog(
@@ -175,16 +179,15 @@ class CatalogAssemble(AuthorCommonCommand):
         """
         md_dir = trestle_root / md_name
         if not md_dir.exists():
-            logger.warning(f'Markdown directory {md_name} does not exist.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Markdown directory {md_name} does not exist.')
+
         md_catalog_interface = CatalogInterface()
         try:
             md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
         if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
-            logger.warning(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'No controls were loaded from markdown {md_dir}.  No catalog.json created.')
 
         # if original catalog given then merge the markdown controls into it
         if orig_cat_name:
@@ -201,6 +204,7 @@ class CatalogAssemble(AuthorCommonCommand):
 
         if version:
             md_catalog.metadata.version = com.Version(__root__=version)
+        ModelUtils.update_timestamp(md_catalog)
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
         if new_cat_dir.exists():

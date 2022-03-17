@@ -10,7 +10,8 @@ x-trestle-fedramp-props:
     - id: admin-unix
     - id: ux-coder
 x-trestle-set-params:
-  ac-1_prm_3: orig val in control md header
+  ac-1_prm_3:
+    values: orig val in control md header
 x-trestle-evidence:
   named-evidence: location
 x-trestle-dependent-on:

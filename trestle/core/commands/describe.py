@@ -18,11 +18,10 @@
 import argparse
 import logging
 import pathlib
-import traceback
 from typing import List
 
 import trestle.common.log as log
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -58,23 +57,14 @@ class DescribeCmd(CommandPlusDocs):
                 model_file = pathlib.Path(args.file)
 
                 element = '' if not args.element else args.element.strip("'")
-                try:
-                    results = self.describe(model_file.resolve(), element, args.trestle_root)
-                    return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value
-                except Exception as error:
-                    logger.error(f'Unexpected error: {error}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                results = self.describe(model_file.resolve(), element, args.trestle_root)
 
-            logger.warning('No file specified for command describe.')
-            return CmdReturnCodes.INCORRECT_ARGS.value
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while describing contents of a model: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while describing contents of a model: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+                return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value
+            else:
+                raise TrestleIncorrectArgsError('No file specified for command describe.')
+
+        except Exception as e:
+            return handle_generic_command_exception(e, logger, 'Error while describing contents of a model')
 
     @classmethod
     def _clean_type_string(cls, text: str) -> str:
