@@ -188,7 +188,7 @@ class SSPAssemble(AuthorCommonCommand):
         ssp.control_implementation.implemented_requirements = imp_reqs
         return changed
 
-    def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> None:
+    def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> bool:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
         metadata = ssp.metadata
         metadata.roles = as_list(metadata.roles)
