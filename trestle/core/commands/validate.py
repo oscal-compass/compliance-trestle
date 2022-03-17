@@ -37,8 +37,6 @@ class ValidateCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
-            logger.debug('Entering trestle validate.')
-
             log.set_log_level_from_args(args)
 
             mode_args = argparse.Namespace(mode=VAL_MODE_ALL)
