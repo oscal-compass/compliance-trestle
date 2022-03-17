@@ -104,17 +104,17 @@ def is_directory_name_allowed(name: str) -> bool:
 
     root_path = pathed_name.parts[0]
     if root_path in const.MODEL_TYPE_TO_MODEL_DIR.values():
-        logger.error('Task name is the same as an OSCAL schema name.')
+        logger.warning('Task name is the same as an OSCAL schema name.')
         return False
     if root_path[0] == '.':
-        logger.error('Task name must not start with "."')
+        logger.warning('Task name must not start with "."')
         return False
     if pathed_name.suffix != '':
         # Does it look like a file
-        logger.error('tasks name must not look like a file path (e.g. contain a suffix')
+        logger.warning('Task name must not look like a file path (e.g. contain a suffix')
         return False
     if '__global__' in pathed_name.parts:
-        logger.error('Task name cannot contain __global__')
+        logger.warning('Task name cannot contain __global__')
         return False
     return True
 

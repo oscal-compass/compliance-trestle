@@ -19,12 +19,11 @@ import logging
 import pathlib
 import re
 import shutil
-import traceback
 from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
 from trestle.common import file_utils
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -115,16 +114,9 @@ class Docs(AuthorCommonCommand):
                 )
 
             return status
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error occurred when running trestle author docs: {e}')
-            logger.error('Exiting')
-            return CmdReturnCodes.COMMAND_ERROR.value
+
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error occurred when running trestle author docs: {e}')
-            logger.error('Exiting')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error occurred when running trestle author docs')
 
     def setup_template_governed_docs(self, template_version: str) -> int:
         """Create structure to allow markdown template enforcement.
@@ -135,17 +127,14 @@ class Docs(AuthorCommonCommand):
         if not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
-            logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         elif self.template_dir.is_file():
-            logger.error(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
         logger.debug(self.template_dir)
         if not self._validate_template_dir():
-            logger.error('Aborting setup')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError('Aborting setup')
         template_file = self.template_dir / self.template_name
         if template_file.is_file():
             return CmdReturnCodes.SUCCESS.value
@@ -159,11 +148,9 @@ class Docs(AuthorCommonCommand):
         template_file = self.template_dir / self.template_name
 
         if not self._validate_template_dir():
-            logger.error('Aborting setup')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError('Aborting setup')
         if not template_file.is_file():
-            logger.error('No template file ... exiting.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError('No template file ... exiting.')
 
         index = 0
         while True:
@@ -179,17 +166,15 @@ class Docs(AuthorCommonCommand):
         """Validate that the template is acceptable markdown."""
         template_file = self.template_dir / self.template_name
         if not self._validate_template_dir():
-            logger.error('Aborting setup')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError('Aborting setup')
         if not template_file.is_file():
-            logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
         try:
             md_api = MarkdownAPI()
             md_api.load_validator_with_template(template_file, validate_header, validate_only_header, heading)
         except Exception as ex:
-            logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Template for task {self.task_name} failed to validate due to {ex}')
+
         logger.info(f'TEMPLATES VALID: {self.task_name}')
         return CmdReturnCodes.SUCCESS.value
 
@@ -198,7 +183,7 @@ class Docs(AuthorCommonCommand):
         for child in file_utils.iterdir_without_hidden_files(self.template_dir):
             # Only allowable template file in the directory is the template directory.
             if child.name != self.template_name and child.name.lower() != 'readme.md':
-                logger.error(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')
+                logger.warning(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')
                 return False
         return True
 
@@ -252,8 +237,9 @@ class Docs(AuthorCommonCommand):
                         )
                         template_file = versione_template_dir / self.template_name
                     if not template_file.is_file():
-                        logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
-                        return CmdReturnCodes.COMMAND_ERROR.value
+                        raise TrestleError(
+                            f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.'
+                        )
                     md_api.load_validator_with_template(
                         template_file, validate_header, not validate_only_header, governed_heading
                     )
@@ -307,8 +293,8 @@ class Docs(AuthorCommonCommand):
             Return code to be used for the command.
         """
         if not self.task_path.is_dir():
-            logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+
         return self._validate_dir(
             governed_heading,
             self.task_path,

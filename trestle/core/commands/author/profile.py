@@ -17,7 +17,6 @@ import argparse
 import logging
 import pathlib
 import shutil
-import traceback
 from typing import Any, Dict, List, Optional
 
 from ruamel.yaml import YAML
@@ -28,7 +27,7 @@ import trestle.common.log as log
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
-from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -93,8 +92,7 @@ class ProfileGenerate(AuthorCommonCommand):
             log.set_log_level_from_args(args)
             trestle_root: pathlib.Path = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
-                logger.warning(f'{args.output} is not an allowed directory name')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError(f'{args.output} is not an allowed directory name')
 
             yaml_header: dict = {}
             if args.yaml_header:
@@ -103,8 +101,7 @@ class ProfileGenerate(AuthorCommonCommand):
                     yaml = YAML()
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
-                    logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                    raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
 
             # combine command line sections with any in the yaml header, with priority to command line
             sections_dict: Optional[Dict[str, str]] = None
@@ -125,9 +122,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 args.required_sections
             )
         except Exception as e:
-            logger.error(f'Generation of the profile markdown failed with error: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
 
     def generate_markdown(
         self,
@@ -175,11 +170,9 @@ class ProfileGenerate(AuthorCommonCommand):
                 allowed_sections=None
             )
         except TrestleNotFoundError as e:
-            logger.warning(f'Profile {profile_path} not found, error {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Profile {profile_path} not found, error {e}')
         except TrestleError as e:
-            logger.warning(f'Error generating the catalog as markdown: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Error generating the catalog as markdown: {e}')
         return CmdReturnCodes.SUCCESS.value
 
 
@@ -222,9 +215,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 allowed_sections=args.allowed_sections
             )
         except Exception as e:
-            logger.error(f'Assembly of markdown to profile failed with error: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
 
     @staticmethod
     def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> bool:

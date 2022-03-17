@@ -22,6 +22,8 @@ import sys
 
 from _pytest.monkeypatch import MonkeyPatch
 
+import pytest
+
 import trestle.common.err as err
 from trestle.cli import Trestle
 from trestle.common import const
@@ -99,10 +101,10 @@ def test_assemble_execution_failure(
     shutil.rmtree(pathlib.Path('dist'))
     shutil.copytree(test_data_source, catalogs_dir)
     monkeypatch.setattr(Plan, 'execute', execute_mock)
-    rc = AssembleCmd().assemble_model(
-        'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
-    )
-    assert rc == 1
+    with pytest.raises(err.TrestleError):
+        AssembleCmd().assemble_model(
+            'catalog', argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
+        )
 
 
 def test_assemble_missing_top_model(
