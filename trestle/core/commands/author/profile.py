@@ -349,8 +349,11 @@ class ProfileAssemble(AuthorCommonCommand):
         new_profile_dir = trestle_root / f'profiles/{new_profile_name}'
         new_profile_path = new_profile_dir / 'profile.json'
 
-        # do simple and fast tests of changes so that the full equality check is only done as last resort
+        if version:
+            new_profile.metadata.version = com.Version(__root__=version)
+
         if new_profile_path.exists():
+            # first do simple and fast tests of changes so that the full equality check is only done as last resort
             _, _, existing_profile = ModelUtils.load_distributed(new_profile_path, trestle_root)
             # need special handling in case modify is None in either or both profiles
             no_changes = not existing_profile.modify and not new_profile.modify
@@ -360,6 +363,8 @@ class ProfileAssemble(AuthorCommonCommand):
                     existing_profile.modify.alters == new_profile.modify.alters
                     and existing_profile.modify.set_parameters == new_profile.modify.set_parameters
                 )
+            if no_changes and existing_profile.metadata.version != new_profile.metadata.version:
+                no_changes = False
             # at this point if no known changes then do the full and possibly expensive comparison to confirm
             if no_changes and existing_profile == new_profile:
                 logger.info('Assembled profile has no changes so no update of existing file.')
@@ -367,8 +372,6 @@ class ProfileAssemble(AuthorCommonCommand):
 
         if regenerate:
             new_profile, _, _ = regenerate_uuids(new_profile)
-        if version:
-            new_profile.metadata.version = com.Version(__root__=version)
         ModelUtils.update_timestamp(new_profile)
 
         if new_profile_dir.exists():

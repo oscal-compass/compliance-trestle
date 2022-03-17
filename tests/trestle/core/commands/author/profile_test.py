@@ -374,7 +374,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     ) == 0
 
     # note the file timestamp, then regenerate and assemble again
-    orig_time = profile_path.stat().st_ctime
+    orig_time = profile_path.stat().st_mtime
 
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
 
@@ -383,7 +383,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     ) == 0
 
     # the timestamp should be the same, indicating the file was not written
-    new_time = profile_path.stat().st_ctime
+    new_time = profile_path.stat().st_mtime
 
     assert new_time == orig_time
 
@@ -396,6 +396,6 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     ) == 0
 
     # the timestamp should now be different
-    new_time = profile_path.stat().st_ctime
+    new_time = profile_path.stat().st_mtime
 
     assert new_time != orig_time

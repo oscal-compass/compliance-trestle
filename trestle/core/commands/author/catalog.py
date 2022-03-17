@@ -196,14 +196,22 @@ class CatalogAssemble(AuthorCommonCommand):
             # merge the just-read md catalog into the original json
             orig_cat_interface.merge_catalog(md_catalog, set_parameters)
             md_catalog = orig_cat_interface.get_catalog()
-            if regenerate:
-                md_catalog, _, _ = regenerate_uuids(md_catalog)
 
         if version:
             md_catalog.metadata.version = com.Version(__root__=version)
-        ModelUtils.update_timestamp(md_catalog)
 
         new_cat_dir = trestle_root / f'catalogs/{catalog_name}'
+        new_cat_path = new_cat_dir / 'catalog.json'
+        if new_cat_path.exists():
+            _, _, existing_cat = ModelUtils.load_distributed(new_cat_path, trestle_root)
+            if existing_cat == md_catalog:
+                logger.info('Assembled catalog is not different from existing version, so no update.')
+                return CmdReturnCodes.SUCCESS.value
+
+        if regenerate:
+            md_catalog, _, _ = regenerate_uuids(md_catalog)
+        ModelUtils.update_timestamp(md_catalog)
+
         if new_cat_dir.exists():
             logger.info('Creating catalog from markdown and destination catalog directory exists, so overwriting.')
             try:

@@ -250,7 +250,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
 
-    orig_file_creation = orig_ssp_path.stat().st_ctime
+    orig_file_creation = orig_ssp_path.stat().st_mtime
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
@@ -271,7 +271,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # confirm the file was not written out since no change
-    assert orig_ssp_path.stat().st_ctime == orig_file_creation
+    assert orig_ssp_path.stat().st_mtime == orig_file_creation
 
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
@@ -295,6 +295,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert found_it
 
     # assemble it again but regen uuid's
+    # this should not regen uuid's because the file is not written out if only difference is uuid's
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         markdown=ssp_name,
@@ -305,7 +306,24 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
         version=None
     )
     assert ssp_assemble._run(args) == 0
+    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    # confirm the file was not written out since no change
+    assert orig_ssp_path.stat().st_mtime == orig_file_creation
+
+    # assemble it again but give new version and regen uuid's
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        markdown=ssp_name,
+        output=ssp_name,
+        verbose=0,
+        regenerate=True,
+        name=None,
+        version='new version to force write'
+    )
+    assert ssp_assemble._run(args) == 0
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
+    # confirm the file was not written out since no change
+    assert orig_ssp_path.stat().st_mtime > orig_file_creation
 
 
 def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:

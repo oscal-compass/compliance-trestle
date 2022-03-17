@@ -289,13 +289,13 @@ class SSPAssemble(AuthorCommonCommand):
             if args.version:
                 ssp.metadata.version = com.Version(__root__=args.version)
 
-            if args.regenerate:
-                ssp, _, _ = regenerate_uuids(ssp)
-            ModelUtils.update_timestamp(ssp)
-
             if existing_ssp == ssp:
                 logger.info('No changes to assembled ssp so ssp not written out.')
                 return CmdReturnCodes.SUCCESS.value
+
+            if args.regenerate:
+                ssp, _, _ = regenerate_uuids(ssp)
+            ModelUtils.update_timestamp(ssp)
 
         except Exception as e:
             logger.warning(f'Error assembling the ssp from markdown: {e}')
