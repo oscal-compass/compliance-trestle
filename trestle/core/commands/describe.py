@@ -63,7 +63,7 @@ class DescribeCmd(CommandPlusDocs):
             else:
                 raise TrestleIncorrectArgsError('No file specified for command describe.')
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while describing contents of a model')
 
     @classmethod

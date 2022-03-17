@@ -24,14 +24,18 @@ import pytest
 import tests.test_utils as test_utils
 
 from trestle.cli import Trestle
+from trestle.common.err import TrestleError
 from trestle.core.commands.partial_object_validate import PartialObjectValidate
 
 benchmark_args = ['sample_file', 'element_path', 'rc']
 benchmark_values = [
-    (pathlib.Path('json/minimal_catalog.json'), 'catalog',
-     0), (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata',
-          4), (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
-    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0),
+    (pathlib.Path('json/minimal_catalog.json'), 'catalog', 0),
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0)
+]
+
+bechmark_values_failed = [
+    (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata', 4),
     (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 4),
     (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 4),
     (pathlib.Path('json/minimal_catalog.json'), 'catalogs', 4)
@@ -55,8 +59,17 @@ def test_partial_object_validate(
     """Test partial object validation with various combinations."""
     full_path = testdata_dir / sample_file
     actual_rc = PartialObjectValidate.partial_object_validate(full_path, element_path)
-
     assert rc == actual_rc
+
+
+@pytest.mark.parametrize(benchmark_args, bechmark_values_failed)
+def test_partial_object_validate_failed(
+    sample_file: pathlib.Path, element_path: str, rc: int, testdata_dir: pathlib.Path
+) -> None:
+    """Test partial object validation with various combinations."""
+    full_path = testdata_dir / sample_file
+    with pytest.raises(TrestleError):
+        PartialObjectValidate.partial_object_validate(full_path, element_path)
 
 
 @pytest.mark.parametrize(benchmark_args, benchmark_values)
