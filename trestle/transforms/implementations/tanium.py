@@ -362,7 +362,7 @@ class TaniumOscalFactory():
         # non-aggregated property
         props.append(self._property_manager.materialize(name=name, value=value, ns=ns, class_=class_))
 
-    def _get_observtion_properties(self, rule_use) -> List[Property]:
+    def _get_observtion_properties(self, rule_use: RuleUse) -> List[Property]:
         """Get observation properties."""
         props = []
         group = self._get_component_ref(rule_use)
@@ -405,7 +405,7 @@ class TaniumOscalFactory():
         )
         return props
 
-    def _derive_common_property_accounting(self):
+    def _derive_common_property_accounting(self) -> None:
         """Derive common properties accounting from RuleUse list."""
         for rule_use in self._rule_use_list:
             group = self._get_component_ref(rule_use)
@@ -555,7 +555,7 @@ class TaniumOscalFactory():
             rval = [inventory_item.uuid for inventory_item in local_definitions.inventory_items]
         return rval
 
-    def _get_observations_for_uuid(self, uuid_) -> List[Observation]:
+    def _get_observations_for_uuid(self, uuid_: str) -> List[Observation]:
         """Get observations for given uuid."""
         rval = 0
         if uuid_ in self._observation_map:
