@@ -89,7 +89,6 @@ class MergeCmd(CommandPlusDocs):
         # Load destination model
         destination_path = element_path.get_preceding_path()
         destination_model_alias = destination_path.get_last()
-        trace.log('merge getting contextual file type effective working directory')
         trace.log(f'merge destination model alias: {destination_model_alias}')
         trace.log('merge getting contextual file type effective working directory')
         # Destination model filetype
