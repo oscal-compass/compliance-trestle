@@ -488,7 +488,7 @@ class TaniumOscalFactory():
             rval_list = pool.map(self._batch_observations, range(self._batch_workers))
             # gather observations from the sundry batch workers
             for partial_observation_map in rval_list:
-                join_str_to_list_dicts(self._observation_map, partial_observation_map)
+                self._observation_map = join_str_to_list_dicts(self._observation_map, partial_observation_map)
 
     @property
     def components(self) -> List[SystemComponent]:

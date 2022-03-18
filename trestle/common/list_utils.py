@@ -44,9 +44,10 @@ def is_ordered_sublist(needle: List[str], haystack: List[str]) -> bool:
     return ' '.join(needle) in ' '.join(haystack)
 
 
-def join_str_to_list_dicts(dict1: Dict, dict2: Dict) -> None:
-    """Join two dicts of str to List into first."""
+def join_str_to_list_dicts(dict1: Dict, dict2: Dict) -> Dict:
+    """Join two dicts of str to List."""
     # merge like keys
-    dict1 = {key: dict1[key] + dict2.get(key, '') for key in dict1}
+    dict3 = {key: dict1[key] + dict2.get(key, []) for key in dict1}
     # merge unlike keys
-    dict1.update({key: dict2[key] for key in dict2 if key not in dict1})
+    dict3.update({key: dict2[key] for key in dict2 if key not in dict3})
+    return dict3
