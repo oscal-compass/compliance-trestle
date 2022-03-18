@@ -367,7 +367,7 @@ def setup_for_ssp(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         output=output_name,
-        verbose=1,
+        verbose=0,
         sections=sections,
         overwrite_header_values=False,
         yaml_header=None,

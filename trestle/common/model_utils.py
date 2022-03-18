@@ -598,9 +598,10 @@ class ModelUtils:
         return common.Parameter(**param_dict)
 
     @staticmethod
-    def update_timestamp(model: TopLevelOscalModel) -> None:
+    def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
         """Update the LastModified timestamp in top level model to now."""
-        model.metadata.last_modified = common.LastModified(__root__=datetime.now().astimezone())
+        timestamp = timestamp if timestamp else datetime.now().astimezone()
+        model.metadata.last_modified = common.LastModified(__root__=timestamp)
 
     @staticmethod
     def model_age(model: TopLevelOscalModel) -> int:
