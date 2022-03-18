@@ -62,6 +62,8 @@ class PartialObjectValidate(CommandBase):
                 raise TrestleError('File path provided does not exist or is a directory')
 
             element_str: str = args.element
+            if ',' in element_str:
+                logger.warning('Only a single element path is allowed.')
 
             return self.partial_object_validate(file_path, element_str)
         except Exception as e:  # pragma: no cover
