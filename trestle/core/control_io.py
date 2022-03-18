@@ -548,17 +548,16 @@ class ControlIOReader():
         try:
             content = control_file.open('r', encoding=const.FILE_ENCODING).read()
         except UnicodeDecodeError as e:
-            logger.error('utf-8 decoding failed.')
-            logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
-            logger.debug(f'Underlying exception {e}')
-            raise TrestleError('Unable to load file due to utf-8 encoding issues.')
+            logger.debug(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
+            raise TrestleError(f'Unable to load file due to utf-8 encoding issues: {e}')
         try:
             fm = frontmatter.loads(content)
         except Exception as e:
-            logger.error(f'Error parsing yaml header from file {control_file}')
-            logger.error('This is most likely due to an incorrect yaml structure.')
-            logger.debug(f'Underlying error: {str(e)}')
-            raise TrestleError(f'Failure parsing yaml header on file {control_file}')
+            logger.error(
+                f'Error parsing yaml header from file {control_file}. '
+                f'This is most likely due to an incorrect yaml structure.'
+            )
+            raise TrestleError(f'Failure parsing yaml header on file {control_file}: {e}')
         raw_lines = fm.content.split('\n')
         header = fm.metadata
         # Any fully blank lines will be retained but as empty strings
@@ -976,8 +975,7 @@ class ControlIOReader():
                         ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
 
         except TrestleError as e:
-            logger.error(f'Error occurred reading {control_file}')
-            raise e
+            raise TrestleError(f'Error occurred reading {control_file}: {e}')
         return comp_dict, yaml_header
 
     @staticmethod

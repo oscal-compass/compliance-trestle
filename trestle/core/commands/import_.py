@@ -22,7 +22,6 @@ import trestle.core.commands.validate as validatecmd
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, TrestleRootError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
-from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -83,7 +82,7 @@ class ImportCmd(CommandPlusDocs):
 
             if args.regenerate:
                 logger.debug(f'regenerating uuids in imported file {input_uri}')
-                model_read, lut, nchanged = validator_helper.regenerate_uuids(model_read)
+                model_read, lut, nchanged = ModelUtils.regenerate_uuids(model_read)
                 logger.debug(f'uuid lut has {len(lut.items())} entries and {nchanged} refs were updated')
 
             top_element = Element(model_read)

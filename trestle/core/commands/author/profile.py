@@ -34,7 +34,6 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_io import ParameterRep
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.core.validator_helper import regenerate_uuids
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +120,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 sections_dict,
                 args.required_sections
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
 
     def generate_markdown(
@@ -214,7 +213,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 required_sections=args.required_sections,
                 allowed_sections=args.allowed_sections
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
 
     @staticmethod
@@ -362,7 +361,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
-            new_profile, _, _ = regenerate_uuids(new_profile)
+            new_profile, _, _ = ModelUtils.regenerate_uuids(new_profile)
         ModelUtils.update_last_modified(new_profile)
 
         if new_profile_dir.exists():

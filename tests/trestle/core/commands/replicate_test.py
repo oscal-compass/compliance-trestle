@@ -141,25 +141,25 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir, regen, monkeypatc
     monkeypatch.setattr(
         'trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_permission_error
     )
-    rc = ReplicateCmd.replicate_object('catalog', args)
-    assert rc == 7
+    with pytest.raises(PermissionError):
+        ReplicateCmd.replicate_object('catalog', args)
 
     # Force TrestleError only:
     monkeypatch.setattr('trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_error)
-    rc = ReplicateCmd.replicate_object('catalog', args)
-    assert rc == 1
+    with pytest.raises(err.TrestleError):
+        ReplicateCmd.replicate_object('catalog', args)
 
     monkeypatch.setattr('trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.rollback', mock_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
-    rc = ReplicateCmd.replicate_object('catalog', args)
-    assert rc == 1
+    with pytest.raises(err.TrestleError):
+        ReplicateCmd.replicate_object('catalog', args)
 
     # Force TrestleError in simulate:
     monkeypatch.setattr('trestle.core.commands.replicate.ModelUtils.load_distributed', load_distributed_return)
     monkeypatch.setattr('trestle.core.commands.replicate.Plan.execute', execute_trestle_error)
-    rc = ReplicateCmd.replicate_object('catalog', args)
-    assert rc == 1
+    with pytest.raises(err.TrestleError):
+        ReplicateCmd.replicate_object('catalog', args)
 
 
 def test_replicate_load_file_failure(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) -> None:
@@ -187,5 +187,5 @@ def test_replicate_file_system(tmp_trestle_dir: Path, monkeypatch: MonkeyPatch) 
 
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=0)
     monkeypatch.setattr('trestle.common.file_utils.extract_trestle_project_root', mock_return)
-    rc = ReplicateCmd.replicate_object('catalog', args)
-    assert rc == 1
+    with pytest.raises(err.TrestleError):
+        ReplicateCmd.replicate_object('catalog', args)

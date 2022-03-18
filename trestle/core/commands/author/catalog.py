@@ -31,7 +31,6 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.validator_helper import regenerate_uuids
 from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
@@ -79,7 +78,7 @@ class CatalogGenerate(AuthorCommonCommand):
             return self.generate_markdown(
                 trestle_root, catalog_path, markdown_path, yaml_header, args.overwrite_header_values
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error occurred when generating markdown for catalog')
 
     def generate_markdown(
@@ -145,7 +144,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 regenerate=args.regenerate,
                 version=args.version
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error occurred while assembling catalog')
 
     @staticmethod
@@ -212,7 +211,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
-            md_catalog, _, _ = regenerate_uuids(md_catalog)
+            md_catalog, _, _ = ModelUtils.regenerate_uuids(md_catalog)
         ModelUtils.update_last_modified(md_catalog)
 
         if new_cat_dir.exists():

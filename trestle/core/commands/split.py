@@ -17,12 +17,11 @@
 import argparse
 import logging
 import pathlib
-import traceback
 from typing import Dict, List, Tuple
 
 import trestle.common.log as log
 from trestle.common import const, file_utils, trash
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
@@ -99,14 +98,8 @@ class SplitCmd(CommandPlusDocs):
             effective_cwd = pathlib.Path.cwd()
 
             return self.perform_split(effective_cwd, file_name, elements_clean, args.trestle_root)
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while performing a split operation: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while performing a split operation: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error while performing a split operation')
 
     @classmethod
     def perform_split(
@@ -131,8 +124,7 @@ class SplitCmd(CommandPlusDocs):
             # find top directory for this model based on trestle root and cwd
             model_dir = file_utils.extract_project_model_path(effective_cwd)
             if model_dir is None:
-                logger.warning('Current directory must be within a model directory if file is not specified')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError('Current directory must be within a model directory if file is not specified')
 
             content_type: FileContentType = FileContentType.dir_to_content_type(model_dir)
 
@@ -145,8 +137,8 @@ class SplitCmd(CommandPlusDocs):
                 file_path = element_path.find_last_file_in_path(content_type, model_dir)
                 # now make the element path relative to the model file to be loaded
                 if file_path is None or element_path.make_relative(file_path.relative_to(model_dir)) != 0:
-                    logger.warning(f'Unable to match element path with files in model directory {element_path}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                    raise TrestleError(f'Unable to match element path with files in model directory {element_path}')
+
                 file_path_list.append((file_path, element_path.to_string()))
 
         # match paths to corresponding files since several paths may be split from the same file
@@ -164,8 +156,8 @@ class SplitCmd(CommandPlusDocs):
             file_path = file_utils.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
             # this makes assumptions that the path is relative.
             if not file_path.exists():
-                logger.error(f'File {file_path} does not exist.')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError(f'File {file_path} does not exist.')
+
             content_type = FileContentType.to_content_type(file_path.suffix)
 
             # find the base directory of the file
@@ -175,8 +167,7 @@ class SplitCmd(CommandPlusDocs):
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
             if cmd_utils.split_is_too_fine(element_path, model):
-                logger.warning('Cannot split the model to the level of uuids, strings, etc.')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError('Cannot split the model to the level of uuids, strings, etc.')
 
             # use the model itself to resolve any wildcards and create list of element paths
             logger.debug(f'split calling parse_element_args on {element_path}')
@@ -200,9 +191,8 @@ class SplitCmd(CommandPlusDocs):
             try:
                 split_plan.execute()
             except Exception as e:
-                logger.error(f'Split has failed with error: {e}.')
                 trash.recover(file_path, True)
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError(f'Split has failed with error: {e}.')
 
         return CmdReturnCodes.SUCCESS.value
 
