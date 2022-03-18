@@ -21,7 +21,6 @@ import traceback
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
-from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -116,7 +115,7 @@ class ReplicateCmd(CommandPlusDocs):
 
         if args.regenerate:
             logger.debug(f'regenerating uuids for model {input_file}')
-            model_instance, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(model_instance)
+            model_instance, uuid_lut, n_refs_updated = ModelUtils.regenerate_uuids(model_instance)
             logger.debug(f'{len(uuid_lut)} uuids generated and {n_refs_updated} references updated')
 
         # 4 Prepare actions and plan

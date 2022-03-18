@@ -15,9 +15,9 @@
 # limitations under the License.
 """Validate by confirming no duplicate uuids."""
 
+from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.validator import Validator
-from trestle.core.validator_helper import has_no_duplicate_values_by_name
 
 
 class DuplicatesValidator(Validator):
@@ -33,4 +33,4 @@ class DuplicatesValidator(Validator):
         returns:
             True (valid) if the model does not contain duplicate uuid's.
         """
-        return has_no_duplicate_values_by_name(model, 'uuid')
+        return ModelUtils.has_no_duplicate_values_by_name(model, 'uuid')

@@ -17,11 +17,12 @@
 import importlib
 import logging
 import pathlib
+import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, cast
 
-from pydantic import create_model
+from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
@@ -35,6 +36,9 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
+
+# Generic type var
+TG = TypeVar('TG')
 
 
 class ModelUtils:
@@ -612,3 +616,163 @@ class ModelUtils:
             dt = datetime.now().astimezone() - model.metadata.last_modified.__root__
             age_seconds = dt.seconds
         return age_seconds
+
+    @staticmethod
+    def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[Any]:
+        """Traverse object and return list of values of specified name."""
+        loe = []
+        if isinstance(object_of_interest, BaseModel):
+            value = getattr(object_of_interest, name_of_interest, None)
+            if value is not None:
+                loe.append(value)
+            fields = getattr(object_of_interest, '__fields_set__', None)
+            if fields is not None:
+                for field in fields:
+                    loe.extend(
+                        ModelUtils.find_values_by_name(getattr(object_of_interest, field, None), name_of_interest)
+                    )
+        elif type(object_of_interest) is list:
+            for item in object_of_interest:
+                loe.extend(ModelUtils.find_values_by_name(item, name_of_interest))
+        elif type(object_of_interest) is dict:
+            if name_of_interest in object_of_interest:
+                loe.append(object_of_interest[name_of_interest])
+            for item in object_of_interest.values():
+                loe.extend(ModelUtils.find_values_by_name(item, name_of_interest))
+        return loe
+
+    @staticmethod
+    def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
+        """Determine if duplicate values of type exist in object."""
+        loe = ModelUtils.find_values_by_name(object_of_interest, name_of_interest)
+        set_loe = set(loe)
+        if len(loe) == len(set_loe):
+            return True
+        items = {}
+        for item in loe:
+            items[item] = items.get(item, 0) + 1
+        # now print items
+        for item, instances in items.items():
+            if instances > 1:
+                logger.info(f'Duplicate detected of item {item} with {instances} instances.')
+        return False
+
+    @staticmethod
+    def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]) -> Tuple[Any, Dict[str, str]]:
+        """Update all uuids in model that require updating.
+
+        Go through the model and replace all dicts with key == 'uuid' and replace the value with a new uuid4.
+        Build a lookup table of the updates that were made.
+        This function does not update the corresponding refs to those uuid's.  That is done by update_uuid_refs
+        Note that this function needs to be started off with uuid_lut == {}, i.e. an empty dict.
+        After that it recurses and grows the lut.
+
+        Args:
+            object_of_interest: pydantic.BaseModel, list, dict or str will be updated
+            uuid_lut: dict of the growing lut of old:new uuid's.  First call must be made with value {}
+
+        Returns:
+            The updated object_of_interest with new uuid's (but refs to them are not updated)
+            The final lookup table of old:new uuid's
+
+        """
+        uuid_str = 'uuid'
+        # Certain types are known not to need updating and should not change
+        # Resources are identified by uuid, and the corresponding href will have # in front of the uuid string
+        # Neither of these should change
+        # If other similar types are found they should be added to the FixedUuidModel typevar to prevent updating
+        if isinstance(object_of_interest, common.Resource):
+            pass
+        elif isinstance(object_of_interest, BaseModel):
+            # fields_set has names of fields set when model was initialized
+            fields = getattr(object_of_interest, '__fields_set__', None)
+            for field in fields:
+                new_object = None
+                if field == uuid_str:
+                    new_object = str(uuid.uuid4())
+                    uuid_lut[object_of_interest.__dict__[field]] = new_object
+                else:
+                    new_object, uuid_lut = ModelUtils._regenerate_uuids_in_place(
+                        object_of_interest.__dict__[field],
+                        uuid_lut
+                    )
+                object_of_interest.__dict__[field] = new_object
+        elif type(object_of_interest) is list:
+            new_list = []
+            for item in object_of_interest:
+                new_item, uuid_lut = ModelUtils._regenerate_uuids_in_place(item, uuid_lut)
+                new_list.append(new_item)
+            object_of_interest = new_list
+        elif type(object_of_interest) is dict:
+            new_dict = {}
+            for key, value in object_of_interest.items():
+                if key == uuid_str:
+                    new_val = str(uuid.uuid4())
+                    new_dict[uuid_str] = new_val
+                    uuid_lut[value] = new_val
+                else:
+                    new_value, uuid_lut = ModelUtils._regenerate_uuids_in_place(value, uuid_lut)
+                    new_dict[key] = new_value
+            object_of_interest = new_dict
+        return object_of_interest, uuid_lut
+
+    @staticmethod
+    def _update_new_uuid_refs(object_of_interest: Any, uuid_lut: Dict[str, str]) -> Tuple[Any, int]:
+        """Update all refs to uuids that were changed."""
+        n_refs_updated = 0
+        if isinstance(object_of_interest, BaseModel):
+            fields = getattr(object_of_interest, '__fields_set__', None)
+            for field in fields:
+                new_object, n_new_updates = ModelUtils._update_new_uuid_refs(
+                    object_of_interest.__dict__[field],
+                    uuid_lut
+                )
+                n_refs_updated += n_new_updates
+                object_of_interest.__dict__[field] = new_object
+        elif type(object_of_interest) is list:
+            new_list = []
+            for item in object_of_interest:
+                new_item, n_new_updates = ModelUtils._update_new_uuid_refs(item, uuid_lut)
+                n_refs_updated += n_new_updates
+                new_list.append(new_item)
+            object_of_interest = new_list
+        elif type(object_of_interest) is dict:
+            new_dict = {}
+            for key, value in object_of_interest.items():
+                if isinstance(value, str):
+                    if value in uuid_lut:
+                        new_dict[key] = uuid_lut[value]
+                        n_refs_updated += 1
+                    else:
+                        new_dict[key] = value
+                else:
+                    new_value, n_new_updates = ModelUtils._update_new_uuid_refs(value, uuid_lut)
+                    n_refs_updated += n_new_updates
+                    new_dict[key] = new_value
+            object_of_interest = new_dict
+        elif isinstance(object_of_interest, str):
+            if object_of_interest in uuid_lut:
+                n_refs_updated += 1
+                object_of_interest = uuid_lut[object_of_interest]
+        return object_of_interest, n_refs_updated
+
+    @staticmethod
+    def regenerate_uuids(object_of_interest: Any) -> Tuple[Any, Dict[str, str], int]:
+        """Regenerate all uuids in object and update corresponding references.
+
+        Find all dicts with key == 'uuid' and replace the value with a new uuid4.
+        Build a corresponding lookup table as you go, of old:new uuid values.
+        Then make a second pass through the object and replace all string values
+        present in the lookup table with the new value.
+
+        Args:
+            object_of_interest: pydantic.BaseModel, list, dict or str will be updated
+
+        Returns:
+            The updated object with new uuid's and refs
+            The final lookup table of old:new uuid's
+            A count of the number of refs that were updated
+        """
+        new_object, uuid_lut = ModelUtils._regenerate_uuids_in_place(object_of_interest, {})
+        new_object, n_refs_updated = ModelUtils._update_new_uuid_refs(new_object, uuid_lut)
+        return new_object, uuid_lut, n_refs_updated

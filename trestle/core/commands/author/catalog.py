@@ -31,7 +31,6 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.validator_helper import regenerate_uuids
 from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
@@ -212,7 +211,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
-            md_catalog, _, _ = regenerate_uuids(md_catalog)
+            md_catalog, _, _ = ModelUtils.regenerate_uuids(md_catalog)
         ModelUtils.update_last_modified(md_catalog)
 
         if new_cat_dir.exists():
