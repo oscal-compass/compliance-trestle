@@ -20,7 +20,7 @@ import pathlib
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
 from pydantic import BaseModel, create_model
 
@@ -36,9 +36,6 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
-
-# Generic type var
-TG = TypeVar('TG')
 
 
 class ModelUtils:
