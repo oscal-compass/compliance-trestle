@@ -14,7 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for models util module."""
+import copy
 import pathlib
+
+from pydantic import ValidationError
 
 import pytest
 
@@ -192,3 +195,65 @@ def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
     assert str_utils.alias_to_classname('component-definition', AliasMode.JSON) == 'ComponentDefinition'
     assert str_utils.alias_to_classname('component_definition', AliasMode.FIELD) == 'ComponentDefinition'
+
+
+def test_parameter_to_dict() -> None:
+    """Test parameter to dict conversion."""
+    test1 = common.Test(expression='not too big', remarks='test for 1')
+    test2 = common.Test(expression='keep it small', remarks='test for 2')
+    constraints = [common.ParameterConstraint(description='my constraints', tests=[test1, test2])]
+    sel = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['one', 'two', 'three'])
+    values = [common.ParameterValue(__root__='one'), common.ParameterValue(__root__='two')]
+    prop1 = common.Property(name='prop1', value='value1')
+    prop2 = common.Property(name='prop2', value='value2', remarks='remark2')
+    param = common.Parameter(
+        id='param1',
+        label='label1',
+        values=values,
+        props=[prop1, prop2],
+        select=sel,
+        remarks='remarks1',
+        constraints=constraints
+    )
+    param_dict = ModelUtils.parameter_to_dict(param, False)
+    dict_copy = copy.deepcopy(param_dict)
+    new_param = ModelUtils.dict_to_parameter(dict_copy)
+    assert param == new_param
+
+    # confirm it strips items properly to partial form
+    partial_dict = ModelUtils.parameter_to_dict(param, True)
+    new_partial_param = ModelUtils.dict_to_parameter(partial_dict)
+    partial_param = common.Parameter(id='param1', label='label1', values=values, select=sel)
+    assert new_partial_param == partial_param
+
+    # confirm that disallowed attributes raise exception
+    dict_copy = copy.deepcopy(param_dict)
+    dict_copy['foo'] = 'bar'
+    with pytest.raises(ValidationError):
+        _ = ModelUtils.dict_to_parameter(dict_copy)
+
+    # confirm that bad string for how-many raises exception
+    dict_copy = copy.deepcopy(param_dict)
+    dict_copy['select']['how_many'] = 'seven'
+    with pytest.raises(err.TrestleError):
+        _ = ModelUtils.dict_to_parameter(dict_copy)
+
+    # confirm values must be among allowed choices or raise exception
+    sel = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['one', 'two', 'three'])
+    param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'five'])
+    param_dict = ModelUtils.parameter_to_dict(param, False)
+    with pytest.raises(err.TrestleError):
+        _ = ModelUtils.dict_to_parameter(param_dict)
+
+    # confirm only one item if HowMany is one or raise exception
+    sel = common.ParameterSelection(how_many=common.HowMany.one, choice=['one', 'two', 'three'])
+    param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'three'])
+    param_dict = ModelUtils.parameter_to_dict(param, False)
+    with pytest.raises(err.TrestleError):
+        _ = ModelUtils.dict_to_parameter(param_dict)
+
+    # confirm special handling for one value works
+    sel = common.ParameterSelection(how_many=common.HowMany.one, choice=['one', 'two', 'three'])
+    param = common.Parameter(id='param1', label='label1', select=sel, values=['two'])
+    param_dict = ModelUtils.parameter_to_dict(param, False)
+    assert param == ModelUtils.dict_to_parameter(param_dict)

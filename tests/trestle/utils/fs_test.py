@@ -14,6 +14,7 @@
 """Tests for fs module."""
 
 import pathlib
+from datetime import datetime, timedelta
 from typing import List
 
 import pytest
@@ -677,3 +678,12 @@ def test_full_path_for_top_level_model(tmp_trestle_dir: pathlib.Path, sample_cat
     ModelUtils.save_top_level_model(sample_catalog_minimal, tmp_trestle_dir, 'mycat', FileContentType.JSON)
     cat_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, 'mycat', catalog.Catalog)
     assert cat_path == tmp_trestle_dir / 'catalogs/mycat/catalog.json'
+
+
+def test_update_last_modified(sample_catalog_rich_controls: catalog.Catalog) -> None:
+    """Test update timestamps."""
+    hour_ago = datetime.now().astimezone() - timedelta(seconds=const.HOUR_SECONDS)
+    ModelUtils.update_last_modified(sample_catalog_rich_controls, hour_ago)
+    assert sample_catalog_rich_controls.metadata.last_modified.__root__ == hour_ago
+    ModelUtils.update_last_modified(sample_catalog_rich_controls)
+    assert ModelUtils.model_age(sample_catalog_rich_controls) < test_utils.NEW_MODEL_AGE_SECONDS

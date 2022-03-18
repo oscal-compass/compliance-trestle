@@ -97,7 +97,6 @@ nav:
         - replicate: api_reference/trestle.core.commands.replicate.md
         - split: api_reference/trestle.core.commands.split.md
         - task: api_reference/trestle.core.commands.task.md
-        - transform_oscal: api_reference/trestle.core.commands.transform_oscal.md
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
       - control_io: api_reference/trestle.core.control_io.md

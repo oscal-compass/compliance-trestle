@@ -17,7 +17,7 @@ import copy
 import logging
 import pathlib
 import re
-from typing import Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.common.const as const
 import trestle.core.generators as gens
@@ -25,7 +25,8 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
-from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
+from trestle.common.model_utils import ModelUtils
+from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -445,7 +446,8 @@ class CatalogInterface():
         profile: Optional[prof.Profile] = None,
         overwrite_header_values: bool = False,
         set_parameters: bool = False,
-        required_sections: Optional[str] = None
+        required_sections: Optional[str] = None,
+        allowed_sections: Optional[str] = None
     ) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -460,28 +462,76 @@ class CatalogInterface():
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
             set_parameters: Set header values based on params in the control and in the profile
             required_sections: Optional string containing list of sections that should be prompted for prose
+            allowed_sections: Optional string containing list of sections that should be included in markdown
 
         Returns:
             None
         """
         writer = ControlIOWriter()
         required_section_list = required_sections.split(',') if required_sections else []
+        allowed_section_list = allowed_sections.split(',') if allowed_sections else []
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
-        # get the full list of params and their modified values for this profile
+        # get the list of SetParams for this profile
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
+            # make copy of incoming yaml header
             new_header = copy.deepcopy(yaml_header)
+            # here we do special handling of how set-parameters merge with the yaml header
             if set_parameters:
-                param_dict = CatalogInterface._get_profile_param_dict(control, full_profile_param_dict, True)
-                param_value_dict: Dict[str, str] = {}
-                for key, value in param_dict.items():
-                    param_value_dict[key] = ControlIOReader.param_to_str(value, ParameterRep.VALUE_OR_STRING_NONE)
-                if param_value_dict:
-                    new_header[const.SET_PARAMS_TAG] = param_value_dict
+                # get all params for this control
+                control_param_dict = ControlIOReader.get_control_param_dict(control, False)
+                set_param_dict: Dict[str, str] = {}
+                for param_id, param_dict in control_param_dict.items():
+                    # if the param is in the profile set_params, load its contents first and mark as profile-values
+                    if param_id in full_profile_param_dict:
+                        # get the param from the profile set_param
+                        param = full_profile_param_dict[param_id]
+                        # assign its contents to the dict
+                        new_dict = ModelUtils.parameter_to_dict(param, True)
+                        profile_values = new_dict.get(const.VALUES, None)
+                        if profile_values:
+                            new_dict[const.PROFILE_VALUES] = profile_values
+                            new_dict.pop(const.VALUES)
+                        # then insert the original, incoming values as values
+                        if param_id in control_param_dict:
+                            orig_param = control_param_dict[param_id]
+                            orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                            new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                            # merge contents from the two sources with priority to the profile-param
+                            for item in ['select', 'label']:
+                                if item in orig_dict and item not in new_dict:
+                                    new_dict[item] = orig_dict[item]
+                    else:
+                        new_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                    new_dict.pop('id')
+                    set_param_dict[param_id] = new_dict
+                if set_param_dict:
+                    if const.SET_PARAMS_TAG not in new_header:
+                        new_header[const.SET_PARAMS_TAG] = {}
+                    if overwrite_header_values:
+                        # update the control params with new values
+                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                            if key in control_param_dict:
+                                set_param_dict[key] = value
+                    else:
+                        # update the control params with any values in yaml header not set in control
+                        # need to maintain order in the set_param_dict
+                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                            if key in control_param_dict and key not in set_param_dict:
+                                set_param_dict[key] = value
+                    new_header[const.SET_PARAMS_TAG] = set_param_dict
+                elif const.SET_PARAMS_TAG in new_header:
+                    # need to cull any params that are not in control
+                    pop_list: List[str] = []
+                    for key in new_header[const.SET_PARAMS_TAG].keys():
+                        if key not in control_param_dict:
+                            pop_list.append(key)
+                    for pop in pop_list:
+                        new_header[const.SET_PARAMS_TAG].pop(pop)
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path
@@ -500,7 +550,8 @@ class CatalogInterface():
                 prompt_responses,
                 profile,
                 overwrite_header_values,
-                required_section_list
+                required_section_list,
+                allowed_section_list
             )
 
     @staticmethod
@@ -634,19 +685,23 @@ class CatalogInterface():
 
     @staticmethod
     def read_additional_content(md_path: pathlib.Path,
-                                required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, str]]:
-        """Read all markdown controls and return list of alters."""
+                                required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, Any]]:
+        """Read all markdown controls and return list of alters plus control param dict."""
         new_alters: List[prof.Alter] = []
-        param_str_dict: Dict[str, str] = {}
+        final_param_dict: Dict[str, Any] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                control_alters, control_param_str_dict = ControlIOReader.read_new_alters_and_params(
+                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
                     control_file,
                     required_sections_list
                 )
                 new_alters.extend(control_alters)
-                param_str_dict.update(control_param_str_dict)
-        return new_alters, param_str_dict
+                for param_id, param_dict in control_param_dict.items():
+                    # if profile_values are present, overwrite values with them
+                    if const.PROFILE_VALUES in param_dict:
+                        param_dict[const.VALUES] = param_dict.pop(const.PROFILE_VALUES)
+                        final_param_dict[param_id] = param_dict
+        return new_alters, final_param_dict
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""
@@ -656,7 +711,7 @@ class CatalogInterface():
             if not control.control.parts:
                 continue
             for part in control.control.parts:
-                if part.name not in sections:
+                if part.name not in sections and part.name != 'statement':
                     sections.append(part.name)
         return sections
 

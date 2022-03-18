@@ -19,7 +19,6 @@ import logging
 import operator
 import pathlib
 import re
-import traceback
 import uuid
 from typing import Any, Dict, Optional
 
@@ -28,9 +27,11 @@ from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader
 from ruamel.yaml import YAML
 
 from trestle.common import const, log
+from trestle.common.err import TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_io import ControlIOWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
@@ -82,37 +83,41 @@ class JinjaCmd(CommandPlusDocs):
         self.add_argument('-p', '--profile', help='An optional profile to be passed', default=None, required=False)
 
     def _run(self, args: argparse.Namespace):
-        log.set_log_level_from_args(args)
-        logger.debug(f'Starting {self.name} command')
-        input_path = pathlib.Path(args.input)
-        output_path = pathlib.Path(args.output)
+        try:
+            log.set_log_level_from_args(args)
+            logger.debug(f'Starting {self.name} command')
+            input_path = pathlib.Path(args.input)
+            output_path = pathlib.Path(args.output)
 
-        if args.look_up_table:
-            lut_table = pathlib.Path(args.look_up_table)
-            lookup_table_path = pathlib.Path.cwd() / lut_table
-            lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
-            status = JinjaCmd.jinja_ify(
-                pathlib.Path(args.trestle_root),
-                input_path,
-                output_path,
-                args.system_security_plan,
-                args.profile,
-                lut,
-                number_captions=args.number_captions,
-                parameters_formatting=args.param_formatting
-            )
-        else:
-            status = JinjaCmd.jinja_ify(
-                pathlib.Path(args.trestle_root),
-                input_path,
-                output_path,
-                args.system_security_plan,
-                args.profile,
-                number_captions=args.number_captions,
-                parameters_formatting=args.param_formatting
-            )
-        logger.debug(f'Done {self.name} command')
-        return status
+            if args.look_up_table:
+                lut_table = pathlib.Path(args.look_up_table)
+                lookup_table_path = pathlib.Path.cwd() / lut_table
+                lut = JinjaCmd.load_LUT(lookup_table_path, args.external_lut_prefix)
+                status = JinjaCmd.jinja_ify(
+                    pathlib.Path(args.trestle_root),
+                    input_path,
+                    output_path,
+                    args.system_security_plan,
+                    args.profile,
+                    lut,
+                    number_captions=args.number_captions,
+                    parameters_formatting=args.param_formatting
+                )
+            else:
+                status = JinjaCmd.jinja_ify(
+                    pathlib.Path(args.trestle_root),
+                    input_path,
+                    output_path,
+                    args.system_security_plan,
+                    args.profile,
+                    number_captions=args.number_captions,
+                    parameters_formatting=args.param_formatting
+                )
+            logger.debug(f'Done {self.name} command')
+            return status
+
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Error while generating markdown via Jinja template')
 
     @staticmethod
     def load_LUT(path: pathlib.Path, prefix: Optional[str]) -> Dict[str, Any]:  # noqa: N802
@@ -139,68 +144,62 @@ class JinjaCmd(CommandPlusDocs):
         parameters_formatting: Optional[str] = None
     ) -> int:
         """Run jinja over an input file with additional booleans."""
-        try:
-            if lut is None:
-                lut = {}
-            template_folder = pathlib.Path.cwd()
-            jinja_env = Environment(
-                loader=FileSystemLoader(template_folder),
-                extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
-                trim_blocks=True,
-                autoescape=True
+        if lut is None:
+            lut = {}
+        template_folder = pathlib.Path.cwd()
+        jinja_env = Environment(
+            loader=FileSystemLoader(template_folder),
+            extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
+            trim_blocks=True,
+            autoescape=True
+        )
+        template = jinja_env.get_template(str(r_input_file))
+        # create boolean dict
+        if operator.xor(bool(ssp), bool(profile)):
+            raise TrestleIncorrectArgsError('Both SSP and profile should be provided or not at all')
+        if ssp:
+            # name lookup
+            ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
+            lut['ssp'] = ssp_data
+            _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
+            profile_resolver = ProfileResolver()
+            resolved_catalog = profile_resolver.get_resolved_profile_catalog(
+                trestle_root, profile_path, False, False, parameters_formatting
             )
-            template = jinja_env.get_template(str(r_input_file))
-            # create boolean dict
-            if operator.xor(bool(ssp), bool(profile)):
-                logger.error('Both SSP and profile should be provided or not at all')
-                return 2
-            if ssp:
-                # name lookup
-                ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
-                lut['ssp'] = ssp_data
-                _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
-                profile_resolver = ProfileResolver()
-                resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-                    trestle_root, profile_path, False, parameters_formatting
-                )
 
-                ssp_writer = SSPMarkdownWriter(trestle_root)
-                ssp_writer.set_ssp(ssp_data)
-                ssp_writer.set_catalog(resolved_catalog)
-                lut['catalog'] = resolved_catalog
-                lut['catalog_interface'] = CatalogInterface(resolved_catalog)
-                lut['control_io_writer'] = ControlIOWriter()
-                lut['ssp_md_writer'] = ssp_writer
+            ssp_writer = SSPMarkdownWriter(trestle_root)
+            ssp_writer.set_ssp(ssp_data)
+            ssp_writer.set_catalog(resolved_catalog)
+            lut['catalog'] = resolved_catalog
+            lut['catalog_interface'] = CatalogInterface(resolved_catalog)
+            lut['control_io_writer'] = ControlIOWriter()
+            lut['ssp_md_writer'] = ssp_writer
 
+        new_output = template.render(**lut)
+        output = ''
+        # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
+        error_countdown = JinjaCmd.max_recursion_depth
+        while new_output != output and error_countdown > 0:
+            error_countdown = error_countdown - 1
+            output = new_output
+            random_name = uuid.uuid4()  # Should be random and not used.
+            dict_loader = DictLoader({str(random_name): new_output})
+            jinja_env = Environment(
+                loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
+                extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
+                autoescape=True,
+                trim_blocks=True
+            )
+            template = jinja_env.get_template(str(random_name))
             new_output = template.render(**lut)
-            output = ''
-            # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
-            error_countdown = JinjaCmd.max_recursion_depth
-            while new_output != output and error_countdown > 0:
-                error_countdown = error_countdown - 1
-                output = new_output
-                random_name = uuid.uuid4()  # Should be random and not used.
-                dict_loader = DictLoader({str(random_name): new_output})
-                jinja_env = Environment(
-                    loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                    extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
-                    autoescape=True,
-                    trim_blocks=True
-                )
-                template = jinja_env.get_template(str(random_name))
-                new_output = template.render(**lut)
 
-            output_file = trestle_root / r_output_file
-            if number_captions:
-                output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
-            else:
-                output_file.open('w', encoding=const.FILE_ENCODING).write(output)
+        output_file = trestle_root / r_output_file
+        if number_captions:
+            output_file.open('w', encoding=const.FILE_ENCODING).write(_number_captions(output))
+        else:
+            output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
-        except Exception as e:  # pragma: no cover
-            logger.error(f'Unknown exception {str(e)} occured.')
-            logger.debug(traceback.format_exc())
-            return 1
-        return 0
+        return CmdReturnCodes.SUCCESS.value
 
 
 def _number_captions(md_body: str) -> str:

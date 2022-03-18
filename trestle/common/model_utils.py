@@ -17,6 +17,7 @@
 import importlib
 import logging
 import pathlib
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
@@ -31,6 +32,7 @@ from trestle.common.file_utils import extract_trestle_project_root, iterdir_with
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
@@ -505,3 +507,108 @@ class ModelUtils:
             aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
 
         return collection_model_type, collection_model_alias, instances_to_be_merged
+
+    @staticmethod
+    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+        """
+        Convert obj to dict containing only string values, storing only the fields that have values set.
+
+        Args:
+            obj: The parameter or its consituent parts in recursive calls
+            partial: Whether to convert the entire param or just the parts needed for markdown header
+
+        Returns:
+            The converted parameter as dictionary
+        """
+        main_fields = ['id', 'label', 'values', 'select', 'choice', 'how_many']
+        if isinstance(obj, common.HowMany):
+            return obj.name
+        if isinstance(obj, common.Remarks) or isinstance(obj, common.ParameterValue):
+            return obj.__root__
+        # it is either a string already or we cast it to string
+        if not hasattr(obj, '__fields_set__'):
+            return str(obj)
+        # it is an oscal object and we need to recurse within its attributes
+        res = {}
+        for field in obj.__fields_set__:
+            if partial and field not in main_fields:
+                continue
+            attr = getattr(obj, field)
+            if not attr:
+                continue
+            if isinstance(attr, list):
+                # special handling when only one value present - convert to single string
+                if field == 'values' and len(attr) == 1:
+                    res[field] = str(attr[0].__root__)
+                    continue
+                new_list = []
+                for item in attr:
+                    new_list.append(ModelUtils.parameter_to_dict(item, partial))
+                res[field] = new_list
+            elif isinstance(attr, str):
+                res[field] = attr
+            else:
+                res[field] = ModelUtils.parameter_to_dict(attr, partial)
+        return res
+
+    @staticmethod
+    def _string_to_howmany(count_str: str) -> Optional[common.HowMany]:
+        clean_str = count_str.lower().strip().replace('-', ' ').replace('_', ' ')
+        if clean_str == 'one or more':
+            return common.HowMany.one_or_more
+        elif clean_str == 'one':
+            return common.HowMany.one
+        return None
+
+    @staticmethod
+    def dict_to_parameter(param_dict: Dict[str, Any]) -> common.Parameter:
+        """
+        Convert dict with only string values to Parameter with handling for HowMany and with validity checks.
+
+        Args:
+            param_dict: Dictionary of pure string values representing Parameter contents
+
+        Returns:
+            A valid OSCAL Parameter
+
+        Notes:
+            This handles both partial and full parameter dictionaries
+            It checks for validity of the values if a select and HowMany is specified
+            There is special handling for values: If it is a single string it is converted to list of one ParameterValue
+            But if it is a list of strings is regarded as a list of values and is converted to a list of ParameterValues
+        """
+        values = param_dict.get('values', [])
+        # special handling when only one value present - convert to list of 1
+        if isinstance(values, str):
+            values = [values]
+            param_dict['values'] = values
+        if 'select' in param_dict and 'how_many' in param_dict['select']:
+            count_str = param_dict['select']['how_many']
+            how_many = ModelUtils._string_to_howmany(count_str)
+            if how_many is None:
+                raise TrestleError(f'Unrecognized HowMany value {how_many} in Parameter: should be one-or-more or one.')
+            param_dict['select']['how_many'] = how_many
+            if how_many == common.HowMany.one and len(values) > 1:
+                raise TrestleError(f'Parameter specifies HowMany=1 but has {len(values)} values given.')
+            choices = param_dict['select'].get('choice', [])
+            if choices and values:
+                for value in values:
+                    if value not in choices:
+                        raise TrestleError(f'Value provided for parameter, {value} is not in choices: {choices}.')
+        return common.Parameter(**param_dict)
+
+    @staticmethod
+    def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
+        """Update the LastModified timestamp in top level model to now."""
+        timestamp = timestamp if timestamp else datetime.now().astimezone()
+        model.metadata.last_modified = common.LastModified(__root__=timestamp)
+
+    @staticmethod
+    def model_age(model: TopLevelOscalModel) -> int:
+        """Find time in seconds since LastModified timestamp."""
+        # default to one year if no last_modified
+        age_seconds = const.DAY_SECONDS * 365
+        if model.metadata.last_modified:
+            dt = datetime.now().astimezone() - model.metadata.last_modified.__root__
+            age_seconds = dt.seconds
+        return age_seconds

@@ -196,8 +196,8 @@ def test_assemble_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_assemble_model_not_exists(tmp_trestle_dir: pathlib.Path) -> None:
     """Assemble model does not exists."""
     repo = Repository(tmp_trestle_dir)
-    success = repo.assemble_model(cat.Catalog, 'anything')
-    assert not success
+    with pytest.raises(TrestleError):
+        repo.assemble_model(cat.Catalog, 'anything')
 
 
 def test_validate(tmp_trestle_dir: pathlib.Path) -> None:

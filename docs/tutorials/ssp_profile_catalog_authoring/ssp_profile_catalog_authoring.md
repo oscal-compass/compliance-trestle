@@ -59,31 +59,44 @@ control-origination:
 responsible-roles:
   - Customer
 x-trestle-set-params:
-  ac-1_prm_1: new value
-  ac-1_prm_2: added param 2 value
-
+  ac-1_prm_1:
+    label: organization-defined personnel or roles
+    values: new value
+  new value
+  ac-1_prm_2: 
+    select:
+      choice:
+        - Organization-level 
+        - Mission/business process-level
+        - System-level
+      how_many: one_or_more
+    values:
+      - Organization-level
+      - System-level
+  ac-1_prm_3:
+    label: organization-defined official
 ---
 
 # ac-1 - \[Access Control\] Policy and Procedures
 
 ## Control Statement
 
-- \[a\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
+- \[a.\] Develop, document, and disseminate to {{ insert: param, ac-1_prm_1 }}:
 
-  - \[1\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
+  - \[1.\]  {{ insert: param, ac-1_prm_2 }} access control policy that:
 
-    - \[a\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    - \[b\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
+    - \[(a)\] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+    - \[(b)\] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
 
-  - \[2\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
+  - \[2.\] Procedures to facilitate the implementation of the access control policy and the associated access controls;
 
-- \[b\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
+- \[b.\] Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and
 
-- \[c\] Review and update the current access control:
+- \[c.\] Review and update the current access control:
 
-  - \[1\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
-  - \[2\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
-- \[d\] My added item
+  - \[1.\] Policy {{ insert: param, ac-1_prm_4 }} and following {{ insert: param, ac-1_prm_5 }}; and
+  - \[2.\] Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}.
+- \[d.\] My added item
 
 ## Control guidance
 
@@ -93,7 +106,7 @@ Access control policy and procedures address the controls in the AC family that 
 
 The control markdown files rely on brackets around key items that are important in defining the control's properties and structure.  `\[Access Control\]` at the top indicates the title of the group containing the control.  The name of the control is already known from the name of the markdown file (`ac-1.md`) and the name of the group is already known from the name of the directory containing the group's controls (`ac`) - but the group title must be indicated in the control in a special manner, hence the brackets.  The text following the group title is the title of the control itself.  All controls in a group should have the same group title or a warning will be indicated in certain trestle operations.
 
-In addition, each part label corresponds to the label used in the OSCAL structure for the control statement, and so must be maintained in a special manner -  hence the need for brackets on `\[a\]`.  These brackets will not be rendered by markdown viewers, so they will not impact the final formatted presentation of the control.
+In addition, each part label corresponds to the label used in the OSCAL structure for the control statement, and so must be maintained in a special manner -  hence the need for brackets on `\[(a)\]`.
 
 The items in moustaches (`{{}}`) correspond to the original prose from the control description.  The moustaches represent places to substitue parameter values, but no substitutions are ever made until the final SSP generation.  The authoring process provides multiple ways to set and change the final parameter values, as described below.
 
@@ -103,9 +116,13 @@ A user then may edit the control statement for the control and add or change the
 
 As with profile and ssp generation described below, a yaml header may be provided with the `--yaml` option that is inserted into the top of each control file.  If a control file already exists, as is expected in a continuous cycle of generate-edit-assemble, then the provided header will be merged with the existing header in each control.  If a given item in the header is already present in the control, by default the values in the markdown header will be given priority, though this can be overridden by the `--overwrite-header-values` option, which will give priority to any values coming from the provided yaml header.  In all cases, values in the yaml header not already present in the markdown header will be inserted.
 
-In the control markdown example above, the header contains some arbitrary values along with a special `x-trestle-set-params` section containing parameters for some of the parameters in the control.  Any parameters set for the control in the catalog will appear in the markdown header automatically during `catalog-generate`.  These values may be changed and values for other parameters may be inserted into the markdown header for later use during `catalog-assemble`.
+In the control markdown example above, the header contains some arbitrary values along with a special `x-trestle-set-params` section containing parameters for some of the parameters in the control.  Any parameters for the control in the catalog will appear in the markdown header automatically during `catalog-generate`.  These values may be changed and values for other parameters may be inserted into the markdown header for later use during `catalog-assemble`.
+
+Parameters in the header are shown with a subset of their full OSCAL attributes in order to convey any values they may have along with descriptive text.  This amounts to the parameter id, its label if present, any values if present, and any select if present.  When a select is present the list of choices is provided along with the how-many option.  Note that values is a list in OSCAL, but in many cases it is a list of only one item.  As a result, for convenience the values: dictionary may either have one string value (on the same line with `values:`) or as an indented `-` list of multiple values underneath `values:`.  Multiple examples are evident in the sample above, including ac-1_prm_3, which only has a label and no values.
 
 `catalog-assemble` is run with the command `catalog-assemble --markdown my_md --output my_new_catalog`.  This will read the markdown for each control and create a new catalog based on any edits to the markdown.  Note that you may optionally provide a `--name` option specifying an original json catalog into which the updated controls are inserted, and the resulting catalog can either replace the original one or output to a different json file.  New controls may be added and existing controls may be removed.  The main benefit is that the original metadata and other contents of the catalog json file will be retained.  You have the option to specify a new `--version` for the catalog, and an option to regenerate the uuid's in the catalog.  Finally, you have the option to use the parameters in the markdown header to update the values in the control.  Any parameters and their values present will be added to the control, and any not present will be removed.  The parameters themselves are still present but their values are removed.
+
+*Special Note about assemble*: In order to avoid triggering actions when a new file is created that has no actual changes in it, `catalog-assemble` and the other `-assemble` tools below will check to see if the output file already exists, and if so it will be examined for changes relative to the newly assembled one.  If there are no changes the file will not be written out.  Note that the check happens *before* any possible `--regeneration` of uuid's, and *after* any possible `--version` change.  This avoids the creation of a new file and new uuid's if there is no change to the version or other file contents relative to the existing output file, but if the specified `--version` is different from the one in the existing output file, or there is any other difference in the model, a new file will be written out.
 
 ## `trestle author profile-generate` and `trestle author profile-assemble`
 
@@ -119,11 +136,18 @@ control-origination:
 responsible-roles:
   - Customer
 x-trestle-set-params:
-  ac-1_prm_1: all personnel
+  ac-1_prm_1:
+    values: all personnel
+    profile-values: new value from profile
   ac-1_prm_2:
-  ac-1_prm_3: new value
-  ac-1_prm_5: all meetings
-  ac-1_prm_6: monthly
+    values: new value
+  ac-1_prm_3:
+    values: all meetings
+    profile-values:
+      - some meetings
+      - most meetings
+  ac-1_prm_4:
+    values: monthly
 x-trestle-sections:
   ImplGuidance: Implementation Guidance
   ExpectedEvidence: Expected Evidence
@@ -192,13 +216,15 @@ This is B Guidance.
 
 ```
 
-In the above markdown example, the fixed, uneditable parts of the control are output first, follwed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section below to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
+In the above markdown example, the fixed, uneditable parts of the control are output first (after the header, which can be edited), followed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section below to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
 
 In a cyclic operation of `profile generate-edit-assemble` you would simply be re-writing from and to the same json profile, in which case the `--name` and `--output` are the same file.  For this reason the default value for `--name` is the given output file name specified by `--output` and you can just use `trestle author profile-assemble --markdown profile_md --output my_profile`.  This will assemble the markdown profile contents in directory `profile_md` into a json profile named `my_profile` but it will first use the existing `my_profile` json file as the parent profile and incorporate changes (due to user edits) in the markdown version of the profile.  Unlike `catalog-assemble` there must always be a parent json profile to reference during assemble, and an explicit value for `--name` is only needed if the parent file is different from the assembled output file.
 
 It's important to note that these operations only apply to the `Adds` in the profile itself - and nothing upstream of the profile is affected.  Nor is anything else in the original profile lost or altered.  In the example above, the section, `## Control Implementation Guidance` was added by editing the generated control - and after `profile-assemble` it ended up as new guidance in the assembled profile.
 
-As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.
+As in the other commands, `profile-generate` allows specification of a yaml header with `--yaml`, and support of the `--overwrite-header-values` flag.   Also, during assembly with `profile-assemble` the `--set-parameters` flag will set parameters in the profile for the control based on the header in the control markdown file.  But unlike with `catalog-assemble`, only those parameter values marked `profile-values` will be part of the assembled profile's SetParams when you assemble with the `--set-parameters` flag.  For each parameter, the "incoming" values for the parameters prior to any changes made by the profile are listed as `values:` and any pending changes made by the profile are listed as `profile-values:`.  If you don't use the `--set-parameters` flag then all the original SetParameters in the profile will be retained in the new, assembled profile.  But if you do set that flag, then only the header parameters with `profile-values:` will be added as SetParameters.  This lets you see all the incoming values for parameters along with any changes made by the current profile, and you can modify, add, or remove parameter settings as desired in the new profile.
+
+As with `catalog-assemble` described above, a new file is written out only if there are changes to the model relative to an existing output file.
 
 ## Use of Sections in `profile-generate` and `profile-assemble`
 
@@ -266,7 +292,7 @@ Example usage for creation of the markdown:
 
 In this example the profile has previously been imported into the trestle directory.  The profile itself must be in the trestle directory, but the imported catalogs and profiles may be URI's with href's as described below.
 
-The `-s --sections` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools, but it also serves a role of filtering the guidance and possibly changing the titles for those sections in the markdown.
+The `-s --sections` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  The concept is the same as above with `profile` tools in providing a mapping between all possible short names for guidance and their corresponding long versions that should appear in the markdown headings.  In addition, `ssp-generate` has an `--allowed-sections` option that specifies a list of section short names that will be included in the markdown.  This provides a means for filtering the guidance that appears in the markdown for the controls.  Note that unlike in `profile-assemble` there is no error if sections are present in the control that are not among the "allowed" sections.  For `ssp-generate` the allowed sections simply provide a means for filtering the guidance.  If you do not specify `--allowed-sections` then all sections present in the control will appear in the markdown.
 
 The generated markdown output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
 for each control group.
@@ -380,7 +406,7 @@ This will assemble the markdown files in the my_ssp directory and create a json 
 
 As indicated for `ssp-generate`, please do not alter any of the horizontal rule lines or lines indicating the part or control id, e.g. `### ACME Component`.  You may run `ssp-generate` and `ssp-assemble` repeatedly for the same markdown directory, allowing a continuous editing and updating cycle.
 
-As with all the `assemble` tools, you may optionally specify a `--name` for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.
+As with all the `assemble` tools, you may optionally specify a `--name` for a corresponding json file into which the updates will be inserted, thereby preserving metadata and other aspects of the model.  The result can overwrite the provided model or get directed to a new model.  And the version may be updated and the uuid's regenerated.  As with the other `-assemble` tools, if an output file already exists, a new one will only be written if there are changes to the model relative to the existing file.  See `catalog-assemble` for more details.
 
 ## `trestle author ssp-filter`
 
