@@ -17,13 +17,11 @@
 import argparse
 import logging
 import pathlib
-import traceback
 from typing import List, Tuple
 
 import trestle.common.const as const
 import trestle.common.err as err
 from trestle.common import log
-from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -66,24 +64,11 @@ class RemoveCmd(CommandPlusDocs):
             args_dict = args.__dict__
 
             file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
-            try:
-                relative_path = file_path.relative_to(args.trestle_root)
+            relative_path = file_path.relative_to(args.trestle_root)
             # Get parent model and then load json into parent model
-            except Exception:
-                logger.error(f'{file_path} is not part of the trestle project {args.trestle_root}')
-                return CmdReturnCodes.COMMAND_ERROR.value
-            try:
-                parent_model, parent_alias = ModelUtils.get_relative_model_type(relative_path)
-            except Exception as err:
-                logger.error(f'Remove failed (fs.get_relative_model_type()): {err}')
-                return CmdReturnCodes.COMMAND_ERROR.value
+            parent_model, parent_alias = ModelUtils.get_relative_model_type(relative_path)
 
-            try:
-                parent_object = parent_model.oscal_read(file_path)
-            except Exception as err:
-                logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
-                return CmdReturnCodes.COMMAND_ERROR.value
-
+            parent_object = parent_model.oscal_read(file_path)
             parent_element = Element(parent_object, parent_alias)
 
             add_plan = Plan()
@@ -92,12 +77,7 @@ class RemoveCmd(CommandPlusDocs):
             element_paths: List[str] = str(args_dict[const.ARG_ELEMENT]).split(',')
             for elm_path_str in element_paths:
                 element_path = ElementPath(elm_path_str)
-                try:
-                    remove_action, parent_element = self.remove(element_path, parent_element)
-                except TrestleError as err:
-                    logger.debug(f'self.remove() failed: {err}')
-                    logger.error(f'Remove failed (self.remove()): {err}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                remove_action, parent_element = self.remove(element_path, parent_element)
                 add_plan.add_action(remove_action)
 
             create_action = CreatePathAction(file_path, True)
@@ -106,23 +86,12 @@ class RemoveCmd(CommandPlusDocs):
             add_plan.add_action(create_action)
             add_plan.add_action(write_action)
 
-            try:
-                add_plan.execute()
-            except TrestleError as err:
-                logger.debug(f'Remove failed at execute(): {err}')
-                logger.error(f'Remove failed (execute()): {err}')
-                return CmdReturnCodes.COMMAND_ERROR.value
+            add_plan.execute()
 
             return CmdReturnCodes.SUCCESS.value
 
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while removing OSCAL component: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-        except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while removing OSCAL component: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+        except Exception as e:
+            return err.handle_generic_command_exception(e, logger, 'Error while removing OSCAL component')
 
     @classmethod
     def remove(cls, element_path: ElementPath, parent_element: Element) -> Tuple[RemoveAction, Element]:

@@ -128,7 +128,6 @@ class ElementPath:
             else:
                 # Indices, * are not allowed on non-collection types
                 if current_element_str == self.WILDCARD:
-                    logger.error('Cannot get the type of an element path where wild cards do not match a  ')
                     raise TrestleError(
                         'Wild card in unexpected position when trying to find class type.'
                         + ' Element path type lookup can only occur where a single type can be identified.'

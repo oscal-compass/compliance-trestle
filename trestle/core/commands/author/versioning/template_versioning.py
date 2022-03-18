@@ -88,10 +88,8 @@ class TemplateVersioning:
                     p.unlink()
 
         except OSError as e:
-            logger.error(f'Error while updating template folder: {e}')
             raise TrestleError(f'Error while updating template folder: {e}')
         except Exception as e:
-            logger.error(f'Unexpected error while updating template folder: {e}')
             raise TrestleError(f'Unexpected error while updating template folder: {e}')
 
     @staticmethod
@@ -204,7 +202,6 @@ class TemplateVersioning:
             else:
                 raise TrestleError(f'Unsupported template file extension {generic_template.suffix}')
         except OSError as e:
-            logger.error(f'Error while updating template folder: {e}')
             raise TrestleError(f'Error while updating template folder: {e}')
 
     @staticmethod

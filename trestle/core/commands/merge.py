@@ -89,30 +89,28 @@ class MergeCmd(CommandPlusDocs):
         # Load destination model
         destination_path = element_path.get_preceding_path()
         destination_model_alias = destination_path.get_last()
+        trace.log(f'merge destination model alias: {destination_model_alias}')
+        trace.log('merge getting contextual file type effective working directory')
         # Destination model filetype
-        try:
-            logger.debug(f'merge destination model alias: {destination_model_alias}')
-            logger.debug('merge getting contextual file type effective working directory')
-            file_type = file_utils.get_contextual_file_type(effective_cwd)
-            logger.debug(f'contextual file type is {file_type}')
-        except Exception as e:
-            raise TrestleError(str(e))
+        file_type = file_utils.get_contextual_file_type(effective_cwd)
+        trace.log(f'contextual file type is {file_type}')
+
         file_ext = FileContentType.to_file_extension(file_type)
         # Destination model filename
         destination_model_path = (
             effective_cwd / f'{classname_to_alias(destination_model_alias, AliasMode.JSON)}{file_ext}'
         )
-        logger.debug(f'destination model filename is {destination_model_path}')
+        trace.log(f'destination model filename is {destination_model_path}')
         destination_model_type, _ = ModelUtils.get_stripped_model_type(destination_model_path, trestle_root)
 
         destination_model_object: OscalBaseModel = None
         if destination_model_path.exists():
-            logger.debug('dest filename exists so read it')
+            trace.log('dest filename exists so read it')
             destination_model_object = destination_model_type.oscal_read(destination_model_path)
         # 2. If target is wildcard, load distributed destination model and replace destination model.
         # Handle WILDCARD '*' match. Return plan to load the destination model, with its distributed attributes
         if target_model_alias == '*':
-            logger.debug('handle target model alias wildcard')
+            trace.log('handle target model alias wildcard')
             collection_type = None
             if destination_model_type.is_collection_container():
                 collection_type = destination_model_type.get_collection_type()
@@ -133,7 +131,7 @@ class MergeCmd(CommandPlusDocs):
             plan.add_action(delete_target_action)
             return plan
 
-        logger.debug(f'get dest model with fields stripped: {target_model_alias}')
+        trace.log(f'get dest model with fields stripped: {target_model_alias}')
         # Get destination model without the target field stripped
         merged_model_type, _ = ModelUtils.get_stripped_model_type(destination_model_path, trestle_root,
                                                                   aliases_not_to_be_stripped=[target_model_alias])
@@ -146,37 +144,34 @@ class MergeCmd(CommandPlusDocs):
                 f'Target model not found. Possibly merge of the elements not allowed at this point. {str(e)}'
             )
         target_model_path = effective_cwd / destination_model_alias
-        logger.debug(
-            f'look for target model path {target_model_path} at dest alias {destination_model_alias} rel to cwd'
-        )
+        trace.log(f'look for target model path {target_model_path} at dest alias {destination_model_alias} rel to cwd')
+
         # target_model filename - depends whether destination model is decomposed or not
         if target_model_path.exists():
-            logger.debug(
-                f'target model path does exist so target path is subdir with target alias {target_model_alias}'
-            )
+            trace.log(f'target model path does exist so target path is subdir with target alias {target_model_alias}')
             target_model_path = target_model_path / target_model_alias
         else:
-            logger.debug(f'target model filename does not exist so target path is target alias {target_model_alias}')
+            trace.log(f'target model filename does not exist so target path is target alias {target_model_alias}')
             target_model_path = target_model_path / target_model_alias  # FIXME this is same as above
-        logger.debug(f'final target model path is {target_model_path}')
+        trace.log(f'final target model path is {target_model_path}')
 
         # if target model is a file then handle file. If file doesn't exist, handle the directory,
         # but in this case it's a list or a dict collection type
         target_model_filename = target_model_path.with_suffix(file_ext)
         if target_model_filename.exists():
-            logger.debug(f'target model path with extension does exist so load distrib {target_model_filename}')
+            trace.log(f'target model path with extension does exist so load distrib {target_model_filename}')
             _, _, target_model_object = ModelUtils.load_distributed(target_model_filename, trestle_root)
         else:
             target_model_filename = Path(target_model_path)
-            logger.debug(f'target model path plus extension does not exist so load distrib {target_model_filename}')
-            logger.debug(f'get collection type for model type {target_model_type}')
+            trace.log(f'target model path plus extension does not exist so load distrib {target_model_filename}')
+            trace.log(f'get collection type for model type {target_model_type}')
             collection_type = type_utils.get_origin(target_model_type)
-            logger.debug(f'load {target_model_filename} as collection type {collection_type}')
+            trace.log(f'load {target_model_filename} as collection type {collection_type}')
             _, _, target_model_object = ModelUtils.load_distributed(target_model_filename,
                                                                     trestle_root, collection_type)
 
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
-            logger.debug('loaded object has dict and root so set target model object to root contents')
+            trace.log('loaded object has dict and root so set target model object to root contents')
             target_model_object = target_model_object.__dict__['__root__']
         # 4. Insert target model into destination model.
         merged_dict = {}
@@ -186,15 +181,15 @@ class MergeCmd(CommandPlusDocs):
         merged_model_object = merged_model_type(**merged_dict)  # type: ignore
         merged_destination_element = Element(merged_model_object)
         # 5. Create action  plan
-        logger.debug(f'create path action clear content: {destination_model_path}')
+        trace.log(f'create path action clear content: {destination_model_path}')
         reset_destination_action = CreatePathAction(destination_model_path, clear_content=True)
-        logger.debug(f'write file action {destination_model_path}')
+        trace.log(f'write file action {destination_model_path}')
         write_destination_action = WriteFileAction(
             destination_model_path, merged_destination_element, content_type=file_type
         )
         # FIXME this will delete metadata.json but it will leave metadata/roles/roles.*
         # need to clean up all lower dirs
-        logger.debug(f'remove path action {target_model_filename}')
+        trace.log(f'remove path action {target_model_filename}')
         delete_target_action = RemovePathAction(target_model_filename)
 
         plan: Plan = Plan()

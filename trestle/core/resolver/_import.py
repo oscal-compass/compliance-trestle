@@ -68,7 +68,7 @@ class Import(Pipeline.Filter):
                 ][0]
 
             except Exception as e:
-                logger.error(f'Profile resolution failed for resource with uuid: {self._import.href}')
+                logger.debug(f'Profile resolution failed for resource with uuid: {self._import.href}')
                 raise TrestleError(
                     f'Back matter resource resolution needed for profile import failed with error: {str(e)}'
                 )

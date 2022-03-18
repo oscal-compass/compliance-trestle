@@ -119,7 +119,7 @@ class SSPGenerate(AuthorCommonCommand):
 
             return CmdReturnCodes.SUCCESS.value
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while writing markdown from catalog')
 
 
@@ -294,7 +294,7 @@ class SSPAssemble(AuthorCommonCommand):
 
             return CmdReturnCodes.SUCCESS.value
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while assembling SSP')
 
 
@@ -319,7 +319,7 @@ class SSPFilter(AuthorCommonCommand):
             trestle_root = pathlib.Path(args.trestle_root)
 
             return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, args.version)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
 
     def filter_ssp(

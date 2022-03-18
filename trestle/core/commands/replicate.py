@@ -16,10 +16,9 @@
 """Trestle Replicate Command."""
 import argparse
 import logging
-import traceback
 
 from trestle.common import const, file_utils, log
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -42,9 +41,7 @@ class ReplicateCmd(CommandPlusDocs):
 
         self.add_argument('model', help='Choose OSCAL model', choices=const.MODEL_TYPE_LIST)
         self.add_argument('-n', '--name', help='Name of model to replicate.', type=str, required=True)
-
         self.add_argument('-o', '--output', help='Name of replicated model.', type=str, required=True)
-
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -52,14 +49,8 @@ class ReplicateCmd(CommandPlusDocs):
         try:
             log.set_log_level_from_args(args)
             return self.replicate_object(args.model, args)
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while replicating model: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while replicating model: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error while replicating model')
 
     @classmethod
     def replicate_object(cls, model_alias: str, args: argparse.Namespace) -> int:
@@ -77,8 +68,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 1 Bad working directory if not running from current working directory
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if not trestle_root or not file_utils.is_valid_project_root(trestle_root):
-            logger.error(f'Given directory: {trestle_root} is not a trestle project.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Given directory: {trestle_root} is not a trestle project.')
 
         plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
@@ -87,32 +77,21 @@ class ReplicateCmd(CommandPlusDocs):
         input_file_stem = trestle_root / plural_path / args.name / model_alias
         content_type = FileContentType.path_to_content_type(input_file_stem)
         if content_type == FileContentType.UNKNOWN:
-            logger.error(f'Input file {args.name} has no json or yaml file at expected location {input_file_stem}.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(
+                f'Input file {args.name} has no json or yaml file at expected location {input_file_stem}.'
+            )
 
         input_file = input_file_stem.with_suffix(FileContentType.to_file_extension(content_type))
 
         # 3 Distributed load from file
-
-        try:
-            _, model_alias, model_instance = ModelUtils.load_distributed(input_file, trestle_root)
-        except TrestleError as err:
-            logger.debug(f'load_distributed() failed: {err}')
-            logger.warning(f'Replicate failed, error loading file: {err}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-        except PermissionError as err:
-            logger.debug(f'load_distributed() failed: {err}')
-            logger.warning(f'Replicate failed, access permission error loading file: {err}')
-            return CmdReturnCodes.AUTH_ERROR.value
+        _, model_alias, model_instance = ModelUtils.load_distributed(input_file, trestle_root)
 
         rep_model_path = trestle_root / plural_path / args.output / (
             model_alias + FileContentType.to_file_extension(content_type)
         )
 
         if rep_model_path.exists():
-            logger.error(f'OSCAL file to be replicated here: {rep_model_path} exists.')
-            logger.error('Aborting trestle replicate.')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'OSCAL file to be replicated here: {rep_model_path} exists.')
 
         if args.regenerate:
             logger.debug(f'regenerating uuids for model {input_file}')
@@ -129,11 +108,6 @@ class ReplicateCmd(CommandPlusDocs):
         replicate_plan.add_action(create_action)
         replicate_plan.add_action(write_action)
 
-        try:
-            replicate_plan.execute()
-        except TrestleError as err:
-            logger.debug(f'replicate_plan.execute() failed: {err}')
-            logger.error(f'Replicate failed, error in executing replication operation: {err}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+        replicate_plan.execute()
 
         return CmdReturnCodes.SUCCESS.value

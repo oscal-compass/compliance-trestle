@@ -29,7 +29,7 @@ I can write a comment in here and you can even edit on the same line.
 import datetime
 import logging
 import pathlib
-from typing import Any, Dict, List, Optional, Type, Union, cast
+from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
@@ -279,7 +279,7 @@ class OscalBaseModel(TrestleBaseModel):
             write_file.close()
 
     @classmethod
-    def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
+    def oscal_read(cls, path: pathlib.Path) -> Optional['OscalBaseModel']:
         """
         Read OSCAL objects.
 
@@ -316,16 +316,16 @@ class OscalBaseModel(TrestleBaseModel):
             raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:
             if not len(obj) == 1:
-                logger.error('Provided oscal file does not have a single top level key wrapping it.')
-                logger.error(f'It has {len(obj)} keys.')
-                raise err.TrestleError('Invalid OSCAL file structure, multiple base keys.')
+                raise err.TrestleError(
+                    f'Invalid OSCAL file structure, oscal file '
+                    f'does not have a single top level key wrapping it. It has {len(obj)} keys.'
+                )
             parsed = cls.parse_obj(obj[alias])
         except KeyError:
-            logger.error(f'Provided oscal file does not have top level key: {alias}')
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
-            logger.error(f'Failed to parse OSCAL object: {e}')
             raise err.TrestleError(f'Error parsing file {path} {str(e)}')
+
         return parsed
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
@@ -418,7 +418,7 @@ class OscalBaseModel(TrestleBaseModel):
         return False
 
     @classmethod
-    def get_collection_type(cls) -> Union[Type[List[Any]], Type[Dict[Any, Any]]]:
+    def get_collection_type(cls) -> Optional[type]:
         """
         If the type wraps an collection, return the collection type.
 

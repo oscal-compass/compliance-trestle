@@ -100,9 +100,7 @@ class FetcherBase(ABC):
                 self._do_fetch()
                 return True
             except Exception as e:
-                logger.error(f'Unable to update cache for {self._uri}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}') from e
+                raise TrestleError(f'Cache update failure for {self._uri}: {e}.') from e
         return False
 
     def get_raw(self, force_update=False) -> Dict[str, Any]:
@@ -115,9 +113,7 @@ class FetcherBase(ABC):
             try:
                 raw_data = file_utils.load_file(self._cached_object_path)
             except Exception as e:
-                logger.error(f'Cannot fs.load_file {self._cached_object_path}')
-                logger.debug(e)
-                raise TrestleError(f'Cache get failure for {self._uri}') from e
+                raise TrestleError(f'Cache get failure for {self._uri}: {e}.') from e
         return raw_data
 
     def get_oscal_with_model_type(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
@@ -128,16 +124,14 @@ class FetcherBase(ABC):
         """
         self._update_cache(force_update)
         cache_file = self._cached_object_path
-        if cache_file.exists():
-            try:
-                return model_type.oscal_read(cache_file)
-            except Exception as e:
-                logger.error(f'get_oscal failed, error loading cache file for {self._uri} as {model_type}')
-                logger.debug(e)
-                raise TrestleError(f'get_oscal failure for {self._uri}') from e
-        else:
-            logger.error(f'get_oscal error, no cached file for {self._uri}')
+        if not cache_file.exists():
             raise TrestleError(f'get_oscal failure for {self._uri}')
+
+        try:
+            return model_type.oscal_read(cache_file)
+        except Exception as e:
+            logger.debug(f'get_oscal failed, error loading cache file for {self._uri} as {model_type}')
+            raise TrestleError(f'get_oscal failure for {self._uri}: {e}.') from e
 
     def get_oscal(self, force_update=False) -> Tuple[OscalBaseModel, str]:
         """Retrieve the cached file and model name without knowing its model type."""
@@ -229,52 +223,35 @@ class HTTPSFetcher(FetcherBase):
         if u.username != '' and u.username is not None:
             # This also checks for invalid environment variable name (IEEE 1003.1)
             if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':
-                logger.error(
-                    'Malformed URI, '
-                    f'username must refer to an environment variable using moustache {self._uri}'
-                )
                 raise TrestleError(
                     'Cache request for invalid input URI: '
                     f'username must refer to an environment variable using moustache {self._uri}'
                 )
             username_var = u.username[2:-2]
             if username_var not in os.environ:
-                logger.error(f'Malformed URI, username not found in the environment {self._uri}')
                 raise TrestleError(
                     f'Cache request for invalid input URI: username not found in the environment {self._uri}'
                 )
             self._username = os.environ[username_var]
         if u.password != '' and u.password is not None:  # noqa S105
             if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.password) or u.password == '{{_}}':  # noqa S105
-                logger.error(
-                    f'Malformed URI, password must refer to an environment variable using moustache {self._uri}'
-                )
                 raise TrestleError(
                     'Cache request for invalid input URI: '
                     f'password must refer to an environment variable using moustache {self._uri}'
                 )
             password_var = u.password[2:-2]
             if password_var not in os.environ:
-                logger.error(f'Malformed URI, password not found in the environment {self._uri}')
                 raise TrestleError(
                     'Cache request for invalid input URI: '
                     f'password not found in the environment {self._uri}'
                 )
             self._password = os.environ[password_var]
         if self._username and (self._password == '' or self._password is None):  # noqa S105
-            logger.error(
-                'Malformed URI, username found but valid password not found '
-                f'via environment variable in URI {self._uri}'
-            )
             raise TrestleError(
                 f'Cache request for invalid input URI: username found '
                 f'but password not found via environment variable {self._uri}'
             )
         if self._password and not self._username:
-            logger.error(
-                f'Malformed URI, password found '
-                f'but valid username environment variable missing in URI {self._uri}'
-            )
             raise TrestleError(
                 f'Cache request for invalid input URI: password found '
                 f'but username not found via environment variable {self._uri}'
@@ -304,7 +281,6 @@ class HTTPSFetcher(FetcherBase):
         try:
             response = requests.get(self._url, auth=auth, verify=verify)
         except Exception as e:
-            logger.error(f'Error connecting to {self._url}: {e}')
             raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
 
         if response.status_code == 200:
@@ -365,9 +341,7 @@ class SFTPFetcher(FetcherBase):
         try:
             client.load_system_host_keys()
         except Exception as e:
-            logger.error('Error loading system host keys.')
-            logger.debug(e)
-            raise TrestleError(f'Cache update failure for {self._uri}')
+            raise TrestleError(f'Cache update failure for {self._uri}: {e}.')
         # Use the supplied private key file if given, or look for keys in default path.
         if 'SSH_KEY' in os.environ:
             pkey = paramiko.RSAKey.from_private_key(StringIO(os.environ['SSH_KEY']))
@@ -387,24 +361,18 @@ class SFTPFetcher(FetcherBase):
                 port=22 if not u.port else u.port,
             )
         except Exception as e:
-            logger.error(f'Error connecting SSH for {u.hostname}')
-            logger.debug(e)
-            raise TrestleError(f'Cache update failure to connect via SSH: {u.hostname}')
+            raise TrestleError(f'Cache update failure to connect via SSH: {u.hostname}: {e}.')
 
         try:
             sftp_client = client.open_sftp()
         except Exception as e:
-            logger.error(f'Error opening sftp session for {u.hostname}')
-            logger.debug(e)
-            raise TrestleError(f'Cache update failure to open sftp for {u.hostname}')
+            raise TrestleError(f'Cache update failure to open sftp for {u.hostname}: {e}.')
 
         localpath = self._cached_object_path
         try:
             sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
         except Exception as e:
-            logger.error(f'Error getting remote resource {self._uri} into cache {localpath}')
-            logger.debug(e)
-            raise TrestleError(f'Cache update failure for {self._uri}')
+            raise TrestleError(f'Error getting remote resource {self._uri} into cache {localpath}: {e}')
 
 
 # For passing variables:
