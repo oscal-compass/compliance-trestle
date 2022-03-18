@@ -363,7 +363,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
         if regenerate:
             new_profile, _, _ = regenerate_uuids(new_profile)
-        ModelUtils.update_timestamp(new_profile)
+        ModelUtils.update_last_modified(new_profile)
 
         if new_profile_dir.exists():
             logger.info('Creating profile from markdown and destination profile directory exists, so updating.')

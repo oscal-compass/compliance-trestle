@@ -213,7 +213,7 @@ class CatalogAssemble(AuthorCommonCommand):
 
         if regenerate:
             md_catalog, _, _ = regenerate_uuids(md_catalog)
-        ModelUtils.update_timestamp(md_catalog)
+        ModelUtils.update_last_modified(md_catalog)
 
         if new_cat_dir.exists():
             logger.info('Creating catalog from markdown and destination catalog directory exists, so overwriting.')

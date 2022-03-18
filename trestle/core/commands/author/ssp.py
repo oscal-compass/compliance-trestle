@@ -287,7 +287,7 @@ class SSPAssemble(AuthorCommonCommand):
 
             if args.regenerate:
                 ssp, _, _ = regenerate_uuids(ssp)
-            ModelUtils.update_timestamp(ssp)
+            ModelUtils.update_last_modified(ssp)
 
             # write out the ssp as json
             ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, FileContentType.JSON)
@@ -387,7 +387,7 @@ class SSPFilter(AuthorCommonCommand):
             ssp, _, _ = regenerate_uuids(ssp)
         if version:
             ssp.metadata.version = com.Version(__root__=version)
-        ModelUtils.update_timestamp(ssp)
+        ModelUtils.update_last_modified(ssp)
 
         ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
 
