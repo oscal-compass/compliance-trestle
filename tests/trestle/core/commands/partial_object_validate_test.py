@@ -63,7 +63,7 @@ def test_partial_object_validate(
 
 
 @pytest.mark.parametrize(benchmark_args, bechmark_values_failed)
-def test_partial_object_validate_failed(
+def test_partial_object_validate_fail(
     sample_file: pathlib.Path, element_path: str, rc: int, testdata_dir: pathlib.Path
 ) -> None:
     """Test partial object validation with various combinations."""
