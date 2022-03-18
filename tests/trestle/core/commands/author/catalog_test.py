@@ -152,9 +152,29 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     catalog_generate = CatalogGenerate()
     catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, {}, False)
     CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version)
-    assembled_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_cat_name, cat.Catalog)
+    assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
+        tmp_trestle_dir,
+        assembled_cat_name,
+        cat.Catalog
+    )
     assert assembled_cat.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(assembled_cat) < test_utils.NEW_MODEL_AGE_SECONDS
+
+    creation_time = assembled_cat_path.stat().st_mtime
+
+    # assemble same way again and confirm no new write
+    CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
+    )
+
+    assert creation_time == assembled_cat_path.stat().st_mtime
+
+    # change version and confirm write
+    CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx'
+    )
+
+    assert creation_time < assembled_cat_path.stat().st_mtime
 
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:

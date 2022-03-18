@@ -141,9 +141,7 @@ class SSPAssemble(AuthorCommonCommand):
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
-    def _merge_imp_reqs(
-        self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement], regenerate: bool
-    ) -> None:
+    def _merge_imp_reqs(self, ssp: ossp.SystemSecurityPlan, imp_reqs: List[ossp.ImplementedRequirement]) -> None:
         """
         Merge the new imp_reqs into the ssp and optionally regenerate uuids.
 
@@ -178,16 +176,16 @@ class SSPAssemble(AuthorCommonCommand):
                                     by_comp.uuid = orig_by_comp.uuid
                                     break
 
+        changed = ssp.control_implementation.implemented_requirements != imp_reqs
         ssp.control_implementation.implemented_requirements = imp_reqs
-        if regenerate:
-            ssp, _, _ = regenerate_uuids(ssp)
-        ModelUtils.update_timestamp(ssp)
+        return changed
 
-    def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> None:
+    def _generate_roles_in_metadata(self, ssp: ossp.SystemSecurityPlan) -> bool:
         """Find all roles referenced by imp reqs and create role in metadata as needed."""
         metadata = ssp.metadata
         metadata.roles = as_list(metadata.roles)
         known_role_ids = [role.id for role in metadata.roles]
+        changed = False
         for imp_req in ssp.control_implementation.implemented_requirements:
             role_ids = [resp_role.role_id for resp_role in as_list(imp_req.responsible_roles)]
             for role_id in role_ids:
@@ -195,7 +193,9 @@ class SSPAssemble(AuthorCommonCommand):
                     role = com.Role(id=role_id, title=role_id)
                     metadata.roles.append(role)
                     known_role_ids.append(role_id)
+                    changed = True
         metadata.roles = none_if_empty(metadata.roles)
+        return changed
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -204,14 +204,24 @@ class SSPAssemble(AuthorCommonCommand):
 
             md_path = trestle_root / args.markdown
 
+            # the original, reference ssp name defaults to same as output if name not specified
+            # thus in cyclic editing you are reading and writing same json ssp
             orig_ssp_name = args.output
             if args.name:
                 orig_ssp_name = args.name
             new_ssp_name = args.output
-            # if ssp already exists - load it rather than make new one
+            # if orig ssp exists - need to load it rather than instantiate new one
             orig_ssp_path = ModelUtils.path_for_top_level_model(
                 trestle_root, orig_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
             )
+
+            # if output ssp already exists, load it to see if new one is different
+            existing_ssp: Optional[ossp.SystemSecurityPlan] = None
+            new_ssp_path = ModelUtils.path_for_top_level_model(
+                trestle_root, new_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
+            )
+            if new_ssp_path.exists():
+                _, _, existing_ssp = ModelUtils.load_distributed(new_ssp_path, trestle_root)
 
             ssp: ossp.SystemSecurityPlan
             comp_dict: Dict[str, ossp.SystemComponent] = {}
@@ -224,7 +234,7 @@ class SSPAssemble(AuthorCommonCommand):
                     comp_dict[component.title] = component
                 # read the new imp reqs from markdown and have them reference existing components
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
-                self._merge_imp_reqs(ssp, imp_reqs, args.regenerate)
+                self._merge_imp_reqs(ssp, imp_reqs)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
@@ -251,13 +261,33 @@ class SSPAssemble(AuthorCommonCommand):
 
             # now that we know the complete list of needed components, add them to the sys_imp
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
-            ssp.system_implementation.components = []
+            component_list: List[ossp.SystemComponent] = []
             for comp in comp_dict.values():
-                ssp.system_implementation.components.append(comp)
+                component_list.append(comp)
+            if ssp.system_implementation.components:
+                # reconstruct list with same order as existing, but add/remove components as needed
+                new_list: List[ossp.SystemComponent] = []
+                for comp in ssp.system_implementation.components:
+                    if comp in component_list:
+                        new_list.append(comp)
+                for comp in component_list:
+                    if comp not in new_list:
+                        new_list.append(comp)
+                ssp.system_implementation.components = new_list
+            elif component_list:
+                ssp.system_implementation.components = component_list
             self._generate_roles_in_metadata(ssp)
 
             if args.version:
                 ssp.metadata.version = com.Version(__root__=args.version)
+
+            if existing_ssp == ssp:
+                logger.info('No changes to assembled ssp so ssp not written out.')
+                return CmdReturnCodes.SUCCESS.value
+
+            if args.regenerate:
+                ssp, _, _ = regenerate_uuids(ssp)
+            ModelUtils.update_last_modified(ssp)
 
             # write out the ssp as json
             ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, FileContentType.JSON)
@@ -357,7 +387,7 @@ class SSPFilter(AuthorCommonCommand):
             ssp, _, _ = regenerate_uuids(ssp)
         if version:
             ssp.metadata.version = com.Version(__root__=version)
-        ModelUtils.update_timestamp(ssp)
+        ModelUtils.update_last_modified(ssp)
 
         ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)
 

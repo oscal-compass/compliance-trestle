@@ -72,10 +72,19 @@ multi_guidance_dict = {
     'text': multi_guidance_text
 }
 
-all_sections = (
+all_sections_str = (
     'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,my_guidance:My Guidance,'
     'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra'
 )
+
+all_sections_dict = {
+    'ImplGuidance': 'Implementation Guidance',
+    'ExpectedEvidence': 'Expected Evidence',
+    'my_guidance': 'My Guidance',
+    'a_guidance': 'A Guidance',
+    'b_guidance': 'B Guidance',
+    'NeededExtra': 'Needed Extra'
+}
 
 
 def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict[str, str]) -> None:
@@ -129,7 +138,7 @@ def test_profile_generate_assemble(
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
-        test_args.extend(['-s', all_sections])
+        test_args.extend(['-s', all_sections_str])
         monkeypatch.setattr(sys, 'argv', test_args)
         assert Trestle().run() == 0
 
@@ -148,7 +157,7 @@ def test_profile_generate_assemble(
         if add_header:
             yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        sections_dict = sections_to_dict(all_sections)
+        sections_dict = sections_to_dict(all_sections_str)
         profile_generate.generate_markdown(
             tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
         )
@@ -350,3 +359,43 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     test_args = 'trestle author profile-generate -n my_prof -o profiles -v'.split()
     monkeypatch.setattr(sys, 'argv', test_args)
     assert Trestle().run() == 1
+
+
+def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test blocking overwrite if no change to assembled profile relative to one it would overwrite."""
+    _, _, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir)
+
+    # generate the markdown and assemble
+    profile_generate = ProfileGenerate()
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
+
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None
+    ) == 0
+
+    # note the file timestamp, then regenerate and assemble again
+    orig_time = profile_path.stat().st_mtime
+
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
+
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None
+    ) == 0
+
+    # the timestamp should be the same, indicating the file was not written
+    new_time = profile_path.stat().st_mtime
+
+    assert new_time == orig_time
+
+    # now generate again but with different section title, causing change in generated profile markdown
+    new_sections = {'ImplGuidance': 'Different Title'}
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, new_sections, None)
+
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None
+    ) == 0
+
+    # the timestamp should now be different
+    new_time = profile_path.stat().st_mtime
+
+    assert new_time != orig_time
