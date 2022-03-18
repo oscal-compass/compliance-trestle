@@ -133,7 +133,6 @@ nav:
       - trestle_base_model: api_reference/trestle.core.trestle_base_model.md
       - validator: api_reference/trestle.core.validator.md
       - validator_factory: api_reference/trestle.core.validator_factory.md
-      - validator_helper: api_reference/trestle.core.validator_helper.md
     - oscal:
       - assessment_plan: api_reference/trestle.oscal.assessment_plan.md
       - assessment_results: api_reference/trestle.oscal.assessment_results.md

@@ -35,7 +35,6 @@ from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.core.validator_helper import regenerate_uuids
 
 logger = logging.getLogger(__name__)
 
@@ -286,7 +285,7 @@ class SSPAssemble(AuthorCommonCommand):
                 return CmdReturnCodes.SUCCESS.value
 
             if args.regenerate:
-                ssp, _, _ = regenerate_uuids(ssp)
+                ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
             ModelUtils.update_last_modified(ssp)
 
             # write out the ssp as json
@@ -384,7 +383,7 @@ class SSPFilter(AuthorCommonCommand):
 
         ssp.control_implementation = control_imp
         if regenerate:
-            ssp, _, _ = regenerate_uuids(ssp)
+            ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
         if version:
             ssp.metadata.version = com.Version(__root__=version)
         ModelUtils.update_last_modified(ssp)
