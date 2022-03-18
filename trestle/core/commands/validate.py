@@ -17,14 +17,12 @@
 
 import argparse
 import logging
-import traceback
 
 import trestle.common.log as log
 import trestle.core.validator_factory as vfact
 from trestle.common.const import ARG_VALIDATE, VAL_MODE_ALL
-from trestle.common.err import TrestleError
+from trestle.common.err import handle_generic_command_exception
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.commands.common.return_codes import CmdReturnCodes
 
 logger = logging.getLogger(__name__)
 
@@ -39,19 +37,11 @@ class ValidateCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
-            logger.debug('Entering trestle validate.')
-
             log.set_log_level_from_args(args)
 
             mode_args = argparse.Namespace(mode=VAL_MODE_ALL)
             validator = vfact.validator_factory.get(mode_args)
 
             return validator.validate(args)
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while validating contents of a trestle model: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while validating contents of a trestle model: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error while validating contents of a trestle model')

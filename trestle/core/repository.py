@@ -208,7 +208,6 @@ class Repository:
         desired_model_path = desired_model_path.resolve()
 
         if desired_model_path.exists():
-            logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
             raise TrestleError(f'OSCAL file to be created here: {desired_model_path} exists.')
 
         content_type = FileContentType.to_content_type(pathlib.Path(desired_model_path).suffix)
@@ -280,7 +279,6 @@ class Repository:
         desired_model_dir = self._root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
-            logger.error(f'Model {name} does not exist.')
             raise TrestleError(f'Model {name} does not exist.')
 
         return ManagedOSCAL(self._root_dir, model_type, name)
@@ -295,7 +293,6 @@ class Repository:
         desired_model_dir = self._root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
-            logger.error(f'Model {name} does not exist.')
             raise TrestleError(f'Model {name} does not exist.')
         shutil.rmtree(desired_model_dir)
 

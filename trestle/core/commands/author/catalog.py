@@ -78,7 +78,7 @@ class CatalogGenerate(AuthorCommonCommand):
             return self.generate_markdown(
                 trestle_root, catalog_path, markdown_path, yaml_header, args.overwrite_header_values
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error occurred when generating markdown for catalog')
 
     def generate_markdown(
@@ -144,7 +144,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 regenerate=args.regenerate,
                 version=args.version
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error occurred while assembling catalog')
 
     @staticmethod

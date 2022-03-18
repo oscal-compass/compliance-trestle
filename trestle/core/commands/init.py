@@ -25,7 +25,7 @@ from pkg_resources import resource_filename
 import trestle.common.const as const
 import trestle.common.log as log
 from trestle.common import file_utils
-from trestle.common.err import TrestleError
+from trestle.common.err import TrestleError, TrestleRootError, handle_generic_command_exception
 from trestle.core.commands.command_docs import CommandBase
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 
@@ -39,13 +39,14 @@ class InitCmd(CommandBase):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Create a trestle project in the current directory."""
-        log.set_log_level_from_args(args)
-        dir_path: pathlib.Path = args.trestle_root
-        if not dir_path.exists() or not dir_path.is_dir():
-            logger.error(f'Initialization failed. Given directory {dir_path} does not exist or is not a directory.')
-            return CmdReturnCodes.TRESTLE_ROOT_ERROR.value
-
         try:
+            log.set_log_level_from_args(args)
+            dir_path: pathlib.Path = args.trestle_root
+            if not dir_path.exists() or not dir_path.is_dir():
+                raise TrestleRootError(
+                    f'Initialization failed. Given directory {dir_path} does not exist or is not a directory.'
+                )
+
             # Create directories
             self._create_directories(dir_path)
 
@@ -54,10 +55,10 @@ class InitCmd(CommandBase):
 
             logger.info(f'Initialized trestle project successfully in {dir_path}')
 
-        except TrestleError as err:
-            logger.warning(f'Initialization failed: {err}')
-            return CmdReturnCodes.COMMAND_ERROR.value
-        return CmdReturnCodes.SUCCESS.value
+            return CmdReturnCodes.SUCCESS.value
+
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Failed to initialize Trestle working directory.')
 
     def _create_directories(self, root: pathlib.Path) -> None:
         """Create the directory tree if it does not exist."""

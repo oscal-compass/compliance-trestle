@@ -120,7 +120,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 sections_dict,
                 args.required_sections
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
 
     def generate_markdown(
@@ -213,7 +213,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 required_sections=args.required_sections,
                 allowed_sections=args.allowed_sections
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
 
     @staticmethod
