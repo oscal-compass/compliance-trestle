@@ -211,8 +211,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 remarks=Remarks(__root__=str(goal_name_id))
             )
             props = [prop1, prop2]
-            control_id, status = self.catalog_helper.find_control_id(control)
-            if control_id is None:
+            control_id, _ = self.catalog_interface.get_control_id_and_status(control)
+            if not control_id:
                 logger.info(f'row {row} control {control} not found in catalog')
                 control_id = control
             # implemented_requirement

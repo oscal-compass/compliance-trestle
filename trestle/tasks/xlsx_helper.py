@@ -17,15 +17,17 @@
 import logging
 import pathlib
 import string
-from typing import Any, Dict, Iterator, List
+from typing import Any, Dict, Iterator, List, Tuple
 
 from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from openpyxl.utils import get_column_letter
 
 from trestle import __version__
-from trestle.common.catalog_helper import CatalogHelper
+from trestle.common.err import TrestleError
 from trestle.common.list_utils import is_ordered_sublist
+from trestle.core.catalog_interface import CatalogInterface
+from trestle.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)
@@ -127,10 +129,12 @@ class XlsxHelper:
             if catalog_file is None:
                 logger.error('config missing "catalog-file"')
                 return False
-            task.catalog_helper = CatalogHelper(catalog_file)
-            if not task.catalog_helper.exists():
-                logger.error('"catalog-file" not found')
-                return False
+            try:
+                catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
+                logger.debug(f'catalog: {catalog_file}')
+            except Exception as e:  # pragma: no cover
+                raise TrestleError(f'Error loading catalog {catalog_file}: {e}')
+            task.catalog_interface = CatalogInterface(catalog)
         # required for profile
         if task.name == 'xlsx-to-oscal-profile':
             profile_title = task._config.get('profile-title')
@@ -318,7 +322,7 @@ class XlsxHelper:
             raise RuntimeError(f'row {row} col {col} missing component name')
         return value
 
-    def get_parameter_name_and_description(self, row: int) -> (str, str):
+    def get_parameter_name_and_description(self, row: int) -> Tuple[str, str]:
         """Get parameter_name and description from work_sheet."""
         name = None
         description = None
@@ -414,7 +418,7 @@ class XlsxHelper:
                     retval = mc_range.start_cell.value
         return retval
 
-    def _normalize_control(self, control: str) -> (str, List[str]):
+    def _normalize_control(self, control: str) -> Tuple[str, List[str]]:
         """Remove parenthesized characters from controls."""
         statements = []
         for i in string.ascii_lowercase:
