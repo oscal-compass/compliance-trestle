@@ -23,11 +23,17 @@ def test_is_ordered_sublist() -> None:
     assert list_utils.is_ordered_sublist(['a', 'b', 'c'], ['x', 'a', 'b', 'y', 'c', 'z']) is False
 
 
-def test_join_str_to_list_dicts() -> None:
-    """Test join_str_to_list_dicts method."""
+def test_join_key_to_list_dicts() -> None:
+    """Test join_key_to_list_dicts method."""
     d1 = {'a': [1, 2], 'b': [3, 4], 'c': [5], 'd': [8, 9]}
     d2 = {'a': [2, 1], 'b': [3], 'c': [6, 7], 'e': [0]}
     d3 = {'a': [1, 2, 2, 1], 'b': [3, 4, 3], 'c': [5, 6, 7], 'd': [8, 9], 'e': [0]}
-    d4 = list_utils.join_str_to_list_dicts(d1, d2)
+    d4 = list_utils.join_key_to_list_dicts(d1, d2)
+    assert d4 == d3
+    assert d4 != d1
+    d1 = {1: [1, 2], 2: [3, 4], '3': [5], 'd': [8, 9]}
+    d2 = {1: [2, 1], 2: [3], '3': [6, 7], 'e': [0]}
+    d3 = {1: [1, 2, 2, 1], 2: [3, 4, 3], '3': [5, 6, 7], 'd': [8, 9], 'e': [0]}
+    d4 = list_utils.join_key_to_list_dicts(d1, d2)
     assert d4 == d3
     assert d4 != d1

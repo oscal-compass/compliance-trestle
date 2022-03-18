@@ -23,7 +23,7 @@ import traceback
 import uuid
 from typing import Any, Dict, List, Optional, ValuesView
 
-from trestle.common.list_utils import join_str_to_list_dicts
+from trestle.common.list_utils import join_key_to_list_dicts
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
@@ -488,7 +488,7 @@ class TaniumOscalFactory():
             rval_list = pool.map(self._batch_observations, range(self._batch_workers))
             # gather observations from the sundry batch workers
             for partial_observation_map in rval_list:
-                self._observation_map = join_str_to_list_dicts(self._observation_map, partial_observation_map)
+                self._observation_map = join_key_to_list_dicts(self._observation_map, partial_observation_map)
 
     @property
     def components(self) -> List[SystemComponent]:
