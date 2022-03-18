@@ -585,7 +585,8 @@ class TaniumOscalFactory():
         if self._result is None:
             self._derive_components()
             self._derive_inventory()
-            self._derive_common_property_accounting()
+            if self._aggregate:
+                self._derive_common_property_accounting()
             self._derive_observations()
         results = []
         for component in self.components:
