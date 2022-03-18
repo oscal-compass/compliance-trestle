@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for models util module."""
+"""Tests for validator helper functionality that was moved to model_utils."""
 
 import pathlib
 from uuid import uuid4
