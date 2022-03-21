@@ -199,7 +199,7 @@ class ControlIOWriter():
         if part.prose and part.name not in skip_section_list:
             return part.id, part.name, part.title
         if part.parts:
-            for part in part.parts:
+            for part in part.parts:  # pragma: no cover
                 id_, name, title = ControlIOWriter._find_section_info(part, skip_section_list)
                 if id_:
                     return id_, name, title

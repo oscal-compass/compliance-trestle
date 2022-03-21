@@ -267,7 +267,7 @@ class ProfileAssemble(AuthorCommonCommand):
             if not profile.modify:
                 profile.modify = prof.Modify()
             new_set_params: List[prof.SetParameter] = []
-            for key, param_dict in param_dict.items():
+            for key, param_dict in param_dict.items():  # pragma: no cover
                 if param_dict:
                     param_dict['id'] = key
                     param = ModelUtils.dict_to_parameter(param_dict)

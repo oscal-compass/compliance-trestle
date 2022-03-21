@@ -161,7 +161,7 @@ class CatalogInterface():
         controls: List[cat.Control] = []
         if group.controls:
             controls.extend(self._get_all_controls_in_list(group.controls, recurse))
-        for group in as_list(group.groups):
+        for group in as_list(group.groups):  # pragma: no cover
             if group.controls:
                 controls.extend(self._get_all_controls_in_group(group, recurse))
         return controls
