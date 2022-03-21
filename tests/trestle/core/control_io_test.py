@@ -41,7 +41,11 @@ case_2 = 'indent jump back 2'
 case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
-control_text = """# xy-9 - \[My Group Title\] Fancy Control
+control_text = """---
+sort-id: xy-09
+---
+
+# xy-9 - \[My Group Title\] Fancy Control
 
 ## Control Statement
 
@@ -106,7 +110,7 @@ def test_read_write_controls(
 ) -> None:
     """Test read and write of controls via markdown."""
     dummy_title = 'dummy title'
-    control = cat.Control(id='ac-1', title=dummy_title)
+    control = cat.Control(id='ac-1', title=dummy_title, props=[common.Property(name='sort-id', value='ac-01')])
     statement_part = common.Part(id='ac-1_smt', name='statement')
     prop = common.Property(name='label', value='a')
     part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose', props=[prop])
@@ -316,7 +320,7 @@ def test_control_with_components() -> None:
         comp_dict[comp_name] = comp
 
     # confirm that the header content was inserted into the props of the imp_req
-    imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
+    sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
     assert len(imp_req.props) == 12
     assert len(imp_req.statements) == 3
     assert len(imp_req.statements[0].by_components) == 3
