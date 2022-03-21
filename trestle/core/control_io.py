@@ -1186,8 +1186,9 @@ class ControlIOReader():
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
-        # query header for mapping of short to long section names
+        # extract the sort_id if present in header
         sort_id = header.get('sort-id', control_id)
+        # query header for mapping of short to long section names
         sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
         found_sections: List[str] = []
         ii = 0
