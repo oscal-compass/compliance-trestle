@@ -162,9 +162,9 @@ class CatalogInterface():
         controls: List[cat.Control] = []
         if group.controls:
             controls.extend(self._get_all_controls_in_list(group.controls, recurse))
-        for group in as_list(group.groups):
-            if group.controls:
-                controls.extend(self._get_all_controls_in_group(group, recurse))
+        for sub_group in as_list(group.groups):
+            if sub_group.controls:
+                controls.extend(self._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
