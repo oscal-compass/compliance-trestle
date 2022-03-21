@@ -162,9 +162,9 @@ class CatalogInterface():
         controls: List[cat.Control] = []
         if group.controls:
             controls.extend(self._get_all_controls_in_list(group.controls, recurse))
-        for group in as_list(group.groups):
-            if group.controls:
-                controls.extend(self._get_all_controls_in_group(group, recurse))
+        for sub_group in as_list(group.groups):
+            if sub_group.controls:
+                controls.extend(self._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
@@ -189,6 +189,14 @@ class CatalogInterface():
         if param_id in self._param_control_map:
             return self.get_control(self._param_control_map[param_id])
         return None
+
+    def get_control_id_and_status(self, control_name: str) -> Tuple[str, str]:
+        """Get the control id and status using the control name."""
+        for control in self.get_all_controls_from_dict():
+            if ControlIOWriter.get_label(control).strip().lower() == control_name.strip().lower():
+                status = ControlIOWriter.get_prop(control, 'status')
+                return control.id, status
+        return '', ''
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
@@ -659,6 +667,7 @@ class CatalogInterface():
                 # if the list of controls has no group id it also has no title and is just the controls of the catalog
                 self._catalog.controls = control_list
         self._catalog.groups = groups if groups else None
+        self._create_control_dict()
         return self._catalog
 
     @staticmethod
