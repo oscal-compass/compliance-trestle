@@ -64,10 +64,10 @@ class ControlIOWriter():
         return wrapped
 
     @staticmethod
-    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
-        """Get the label from the props of a part or control."""
+    def get_prop(part_control: Union[common.Part, cat.Control], prop_name: str) -> str:
+        """Get the property with that name."""
         for prop in as_list(part_control.props):
-            if prop.name == 'label':
+            if prop.name.strip().lower() == prop_name.strip().lower():
                 return prop.value.strip()
         return ''
 
@@ -78,6 +78,11 @@ class ControlIOWriter():
             if prop.name == 'sort-id':
                 return prop.value.strip()
         return None if allow_none else control.id
+
+    @staticmethod
+    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
+        """Get the label from the props of a part or control."""
+        return ControlIOWriter.get_prop(part_control, 'label')
 
     def _get_part(self, part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
         """

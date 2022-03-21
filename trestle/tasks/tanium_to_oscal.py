@@ -60,6 +60,8 @@ class TaniumToOscal(TaskBase):
         logger.info('  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.')
         logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.')
         logger.info('  cpus-min  = (optional) the desired minimum number of CPUs to employ.')
+        logger.info('  aggregate = (optional) True indicates employ properties aggregation, default is True.')
+        logger.info('  caching   = (optional) True indicates employ object caching, default is True.')
         logger.info(
             '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
         )
@@ -141,6 +143,8 @@ class TaniumToOscal(TaskBase):
             'blocksize': self._config.getint('blocksize', 10000),
             'cpus_max': self._config.getint('cpus-max', 1),
             'cpus_min': self._config.getint('cpus-min', 1),
+            'aggregate': self._config.getboolean('aggregate', True),
+            'caching': self._config.getboolean('caching', True),
             'checking': self._config.getboolean('checking', False),
         }
         # insure output dir exists
