@@ -317,3 +317,5 @@ VALUES = 'values'
 SECTIONS_TAG = 'x-trestle-sections'
 
 EDITABLE_CONTENT = 'Editable Content'
+
+SORT_ID = 'sort-id'

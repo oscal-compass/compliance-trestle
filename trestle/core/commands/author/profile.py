@@ -253,12 +253,13 @@ class ProfileAssemble(AuthorCommonCommand):
         return changed
 
     @staticmethod
-    def _replace_modify_set_params(profile: prof.Profile, param_dict: Dict[str, Any]) -> bool:
+    def _replace_modify_set_params(
+        profile: prof.Profile, param_dict: Dict[str, Any], param_map: Dict[str, str]
+    ) -> bool:
         """
         Replace the set_params in the profile with list and values from markdown.
 
         Notes:
-            Need to check values in the original catalogs and only create SetParameters for values that change.
             Returns whether or not change was made.
         """
         changed = False
@@ -275,7 +276,10 @@ class ProfileAssemble(AuthorCommonCommand):
                     )
             if profile.modify.set_parameters != new_set_params:
                 changed = True
-            profile.modify.set_parameters = new_set_params
+            # sort the params first by control sorting then by param_id
+            profile.modify.set_parameters = sorted(
+                new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
+            )
         return changed
 
     @staticmethod
@@ -325,7 +329,7 @@ class ProfileAssemble(AuthorCommonCommand):
         # then overwrite the Adds in the existing profile with the new ones
         # keep track if any changes were made
         md_dir = trestle_root / md_name
-        found_alters, param_dict = CatalogInterface.read_additional_content(md_dir, required_sections_list)
+        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(md_dir, required_sections_list)
         if allowed_sections:
             for alter in found_alters:
                 for add in alter.adds:
@@ -334,7 +338,7 @@ class ProfileAssemble(AuthorCommonCommand):
                             raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
         ProfileAssemble._replace_alter_adds(new_profile, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(new_profile, param_dict)
+            ProfileAssemble._replace_modify_set_params(new_profile, param_dict, param_map)
 
         new_profile_dir = trestle_root / f'profiles/{new_profile_name}'
         new_profile_path = new_profile_dir / 'profile.json'

@@ -16,7 +16,6 @@
 import copy
 import logging
 import pathlib
-import re
 from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.common.const as const
@@ -580,53 +579,6 @@ class CatalogInterface():
             sorted_id_map[key] = id_map[key]
         return sorted_id_map
 
-    @staticmethod
-    def _get_sorted_control_paths(group_path: pathlib.Path) -> List[pathlib.Path]:
-        """
-        Find sorted list of paths to control md files in this group dir.
-
-        Parse control id and sort based on assumed pattern label-digits.frac.extra
-        The extra part is treated as an arbitrary string.
-        In the worst case this results in ordinary string sorting.
-        """
-        control_paths = list(group_path.glob('*.md'))
-        control_map = {}
-        for control_path in control_paths:
-            control_id = control_path.stem
-            # set the label to be the control_id at start
-            # if the id doesn't fit the expected pattern it will just be sorted alphabetically based on the id string
-            label = control_id
-            digits = 0
-            frac = 0
-            extra = ''
-            # now try to break off ac as label from ac-11.21xy
-            if '-' in control_id:
-                dash_split = control_id.split('-', 1)
-                label = dash_split[0]
-                remainder = dash_split[1]
-                # now try to extract 11 and 21
-                matches = re.search(r'([0-9]+)\.([0-9]+)(.*)', remainder)
-                if matches:
-                    tup = matches.groups()
-                    digits = int(tup[0])
-                    frac = int(tup[1])
-                    extra = tup[2]
-                else:
-                    # look for 11 with no decimal
-                    # this is needed so ac-2 comes before ac-11
-                    matches = re.search(r'([0-9]+)(.*)', remainder)
-                    if matches:
-                        tup = matches.groups()
-                        digits = int(tup[0])
-                        # extra will now contain xy
-                        extra = tup[1]
-                    else:
-                        extra = remainder
-            # create the 4 keys used for sorting
-            control_map[control_path] = (label, digits, frac, extra)
-
-        return sorted(control_paths, key=lambda x: control_map[x])
-
     def read_catalog_from_markdown(self, md_path: pathlib.Path, set_parameters: bool) -> cat.Catalog:
         """
         Read the groups and catalog controls from the given directory.
@@ -639,14 +591,14 @@ class CatalogInterface():
         groups: List[cat.Group] = []
         # read each group dir
         for group_id, group_dir in id_map.items():
-            control_list = []
+            control_list_raw = []
             group_title = ''
             # Need to get group title from at least one control in this directory
             # All controls in dir should have same group title
             # Set group title to the first one found and warn if different non-empty title appears
             # Controls with empty group titles are tolerated but at least one title must be present or warning given
             # The special group with no name that has the catalog as parent is just a list and has no title
-            for control_path in CatalogInterface._get_sorted_control_paths(group_dir):
+            for control_path in group_dir.glob('*.md'):
                 control, control_group_title = ControlIOReader.read_control(control_path, set_parameters)
                 if control_group_title:
                     if group_title:
@@ -656,7 +608,8 @@ class CatalogInterface():
                             )
                     else:
                         group_title = control_group_title
-                control_list.append(control)
+                control_list_raw.append(control)
+            control_list = sorted(control_list_raw, key=lambda control: ControlIOWriter.get_sort_id(control))
             if group_id:
                 if not group_title:
                     logger.warning(f'No group title found in controls for group {group_id}')
@@ -686,31 +639,39 @@ class CatalogInterface():
             As the controls are read into the catalog the needed components are added if not already available.
             avail_comps provides the mapping of component name to the actual component.
         """
-        imp_reqs: List[ossp.ImplementedRequirement] = []
+        imp_req_map: Dict[str, ossp.ImplementRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
-            for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                imp_reqs.append(ControlIOReader.read_implemented_requirement(control_file, avail_comps))
-        return imp_reqs
+            for control_file in group_path.glob('*.md'):
+                sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_file, avail_comps)
+                imp_req_map[sort_id] = imp_req
+        return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path,
-                                required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, Any]]:
-        """Read all markdown controls and return list of alters plus control param dict."""
-        new_alters: List[prof.Alter] = []
+    def read_additional_content(
+        md_path: pathlib.Path, required_sections_list: List[str]
+    ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
+        """Read all markdown controls and return list of alters plus control param dict and param sort map."""
+        alters_map: Dict[str, prof.Alter] = {}
         final_param_dict: Dict[str, Any] = {}
+        param_sort_map: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
-            for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
+            for control_file in group_path.glob('*.md'):
+                sort_id, control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
                     control_file,
                     required_sections_list
                 )
-                new_alters.extend(control_alters)
+                alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():
                     # if profile_values are present, overwrite values with them
                     if const.PROFILE_VALUES in param_dict:
                         param_dict[const.VALUES] = param_dict.pop(const.PROFILE_VALUES)
                         final_param_dict[param_id] = param_dict
-        return new_alters, final_param_dict
+                        param_sort_map[param_id] = sort_id
+        new_alters: List[prof.Alter] = []
+        # fill the alters according to the control sorting order
+        for key in sorted(alters_map.keys()):
+            new_alters.extend(alters_map[key])
+        return new_alters, final_param_dict, param_sort_map
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""

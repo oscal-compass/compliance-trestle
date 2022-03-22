@@ -72,6 +72,14 @@ class ControlIOWriter():
         return ''
 
     @staticmethod
+    def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
+        """Get the sort-id for the control."""
+        for prop in as_list(control.props):
+            if prop.name == const.SORT_ID:
+                return prop.value.strip()
+        return None if allow_none else control.id
+
+    @staticmethod
     def get_label(part_control: Union[common.Part, cat.Control]) -> str:
         """Get the label from the props of a part or control."""
         return ControlIOWriter.get_prop(part_control, 'label')
@@ -464,8 +472,14 @@ class ControlIOWriter():
         self._sections_dict = sections_dict
 
         merged_header = copy.deepcopy(header)
-        if yaml_header:
-            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
+        # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
+        # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
+        # in the markdown header
+        yaml_header = yaml_header if yaml_header else {}
+        sort_id = ControlIOWriter.get_sort_id(control, True)
+        if sort_id and const.SORT_ID not in yaml_header:
+            yaml_header[const.SORT_ID] = sort_id
+        ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
 
         # merge any provided sections with sections in the header, with overwrite
         header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
@@ -1069,7 +1083,7 @@ class ControlIOReader():
     @staticmethod
     def read_implemented_requirement(
         control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent]
-    ) -> ossp.ImplementedRequirement:
+    ) -> Tuple[str, ossp.ImplementedRequirement]:
         """
         Get the implementated requirement associated with given control and link to existing components or new ones.
 
@@ -1078,7 +1092,7 @@ class ControlIOReader():
             avail_comps: dictionary of known components keyed by component name
 
         Returns:
-            The one implemented requirement for this control.
+            Tuple: The control sort-id and the one implemented requirement for this control.
 
         Notes:
             Each statement may have several responses, with each response in a by_component for a specific component.
@@ -1125,7 +1139,8 @@ class ControlIOReader():
 
         imp_req.statements = list(statement_map.values())
         ControlIOReader._insert_header_content(imp_req, header, control_id)
-        return imp_req
+        sort_id = header.get(const.SORT_ID, control_id)
+        return sort_id, imp_req
 
     @staticmethod
     def _read_added_part(ii: int, lines: List[str], control_id: str,
@@ -1173,11 +1188,13 @@ class ControlIOReader():
 
     @staticmethod
     def read_new_alters_and_params(control_path: pathlib.Path,
-                                   required_sections_list: List[str]) -> Tuple[List[prof.Alter], Dict[str, Any]]:
+                                   required_sections_list: List[str]) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
+        # extract the sort_id if present in header
+        sort_id = header.get(const.SORT_ID, control_id)
         # query header for mapping of short to long section names
         sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
         found_sections: List[str] = []
@@ -1212,7 +1229,7 @@ class ControlIOReader():
         header_params = header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
-        return new_alters, param_dict
+        return sort_id, new_alters, param_dict
 
     @staticmethod
     def param_values_as_str_list(param: common.Parameter) -> List[str]:
@@ -1364,4 +1381,7 @@ class ControlIOReader():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
                     control.params.append(param)
+        if const.SORT_ID in yaml_header:
+            control.props = control.props if control.props else []
+            control.props.append(common.Property(name=const.SORT_ID, value=yaml_header[const.SORT_ID]))
         return control, group_title
