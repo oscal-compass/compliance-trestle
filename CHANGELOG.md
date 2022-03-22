@@ -3,6 +3,40 @@
 
 <!--next-version-placeholder-->
 
+## v0.35.0 (2022-03-22)
+### Feature
+* Xlsx filter ([#1050](https://github.com/IBM/compliance-trestle/issues/1050)) ([`9f63412`](https://github.com/IBM/compliance-trestle/commit/9f6341257f755e49173050b4d0f2e32c75874610))
+* Xlsx-to-oscal-profile ([#1046](https://github.com/IBM/compliance-trestle/issues/1046)) ([`9695933`](https://github.com/IBM/compliance-trestle/commit/96959339818baaa06b0a9c00dedae81c9c99dcec))
+* Resolve UUID Imports During Profile Resolution, Not Only Explicit Imports ([#1023](https://github.com/IBM/compliance-trestle/issues/1023)) ([`ae803e7`](https://github.com/IBM/compliance-trestle/commit/ae803e74cda58694a294ccfe1e979f2993626ec8))
+* Aggregate properties as results level ([#997](https://github.com/IBM/compliance-trestle/issues/997)) ([`174aabe`](https://github.com/IBM/compliance-trestle/commit/174aabe401b9fbe35a10efcc9df159a3537d3c0d))
+* Validate OSCAL directories ([#990](https://github.com/IBM/compliance-trestle/issues/990)) ([`941e4fc`](https://github.com/IBM/compliance-trestle/commit/941e4fc6fe9e3c4700f4f7c43be849fb176fb57d))
+
+### Fix
+* Use control sort-id for sorting ([#1062](https://github.com/IBM/compliance-trestle/issues/1062)) ([`fb65bfb`](https://github.com/IBM/compliance-trestle/commit/fb65bfbaadca2240f535d7db057baed108ec0bf2))
+* Task tanium-to-oscal poor aggregation performance ([#1053](https://github.com/IBM/compliance-trestle/issues/1053)) ([`9ea118c`](https://github.com/IBM/compliance-trestle/commit/9ea118c472b83491a30bbeabe35afbc35fd4e96d))
+* Avoid write of new file if no changes after -assemble ([#1057](https://github.com/IBM/compliance-trestle/issues/1057)) ([`893eec6`](https://github.com/IBM/compliance-trestle/commit/893eec6afcf6eaaa9f831528995de267a0cabe6b))
+* Update timestamps for all assemble tools ([#1056](https://github.com/IBM/compliance-trestle/issues/1056)) ([`cccd7a2`](https://github.com/IBM/compliance-trestle/commit/cccd7a2e9399bf001ab101a405f370d92c1d000c))
+* Flake8 bandit reenable, remove transformcmd, empty config.ini ([#1055](https://github.com/IBM/compliance-trestle/issues/1055)) ([`a7543c2`](https://github.com/IBM/compliance-trestle/commit/a7543c24c80b6904a27a678aff3bce357fc44629))
+* More complete parameter info in yaml headers ([#1049](https://github.com/IBM/compliance-trestle/issues/1049)) ([`7a3b098`](https://github.com/IBM/compliance-trestle/commit/7a3b098d2ef9f88f564908927240524021d5c768))
+* Block withdrawn controls from being written as markdown ([#1045](https://github.com/IBM/compliance-trestle/issues/1045)) ([`053ab0e`](https://github.com/IBM/compliance-trestle/commit/053ab0eac098104ed062acb80b4b65f419d37323))
+* Remove add command and incorporate it into the create command ([#1036](https://github.com/IBM/compliance-trestle/issues/1036)) ([`ddde5f5`](https://github.com/IBM/compliance-trestle/commit/ddde5f537158f5621f3d5d0a06791400076d4a4f))
+* Improve column heading matching. ([#1035](https://github.com/IBM/compliance-trestle/issues/1035)) ([`a51fa1e`](https://github.com/IBM/compliance-trestle/commit/a51fa1e9a953dd84e88c344b4d8368d90e9cea41))
+* Improve sections ([#1033](https://github.com/IBM/compliance-trestle/issues/1033)) ([`8e6c632`](https://github.com/IBM/compliance-trestle/commit/8e6c632237747e6e75cf24886418438a25ae46f1))
+* Consistent author commands and support for required-sections ([#1030](https://github.com/IBM/compliance-trestle/issues/1030)) ([`08953d1`](https://github.com/IBM/compliance-trestle/commit/08953d19a2144f98051b33917eca534521de115c))
+* Profile params ([#1015](https://github.com/IBM/compliance-trestle/issues/1015)) ([`30c0ec1`](https://github.com/IBM/compliance-trestle/commit/30c0ec1097140c9e88bc43f46a2ccc7a1273f81e))
+* 2 bugs xlsx-to-oscal-component-definition ([#1017](https://github.com/IBM/compliance-trestle/issues/1017)) ([`81d4bf2`](https://github.com/IBM/compliance-trestle/commit/81d4bf2682dacaba3ee09061a790e8a2c15564a4))
+* Updated documentation for trestle ([#1006](https://github.com/IBM/compliance-trestle/issues/1006)) ([`8d3187d`](https://github.com/IBM/compliance-trestle/commit/8d3187dd27cbf2fec0eab787bf6b19ddceebf519))
+* Missing params in generated catalog and better hidden file handling on windows ([#999](https://github.com/IBM/compliance-trestle/issues/999)) ([`c4550f5`](https://github.com/IBM/compliance-trestle/commit/c4550f541c53327bac3ad38f1feaf262d0b9be27))
+* Second stage code cleanup and dead code removal ([#993](https://github.com/IBM/compliance-trestle/issues/993)) ([`79b2f61`](https://github.com/IBM/compliance-trestle/commit/79b2f61baac7adbf69e1474a5e218d664bec65ff))
+* Cleanup phase I including split of profile_resolver ([#991](https://github.com/IBM/compliance-trestle/issues/991)) ([`39134aa`](https://github.com/IBM/compliance-trestle/commit/39134aad2ee55e60a89f59c691dc145008b77206))
+* Allow trace logging with verbose level 2 ([#989](https://github.com/IBM/compliance-trestle/issues/989)) ([`7b4b349`](https://github.com/IBM/compliance-trestle/commit/7b4b34955020ff5f2608c0f9af84520f45cb86f7))
+* README documentation improvements ([#987](https://github.com/IBM/compliance-trestle/issues/987)) ([`0ad4996`](https://github.com/IBM/compliance-trestle/commit/0ad499611c3fd6a0c0e8dc258bb1dd8190e4bfba))
+* Change verbose assignments from boolean to integer ([#988](https://github.com/IBM/compliance-trestle/issues/988)) ([`6aed714`](https://github.com/IBM/compliance-trestle/commit/6aed7142334af6ee97345248224d05de875eae12))
+
+### Documentation
+* Ssp tutorial update ([#1034](https://github.com/IBM/compliance-trestle/issues/1034)) ([`12ab44f`](https://github.com/IBM/compliance-trestle/commit/12ab44f39a15f8de0388cf7ffab3cce44bc396cf))
+* Fix typo personell->personnel. ([#1014](https://github.com/IBM/compliance-trestle/issues/1014)) ([`f3041be`](https://github.com/IBM/compliance-trestle/commit/f3041beea9ea6093bc7b462521c9cff325cf9f4b))
+
 ## v0.34.0 (2022-01-07)
 ### Feature
 * Add custom parameter wrapping to jinja ([#976](https://github.com/IBM/compliance-trestle/issues/976)) ([`4289ca0`](https://github.com/IBM/compliance-trestle/commit/4289ca0bd1cac83146a4f9080e0eb7f766d78db3))
