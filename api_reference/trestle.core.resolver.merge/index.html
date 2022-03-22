@@ -1,0 +1,3493 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.resolver.merge/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+    
+    
+      
+        <title>merge - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trestle.core.resolver.merge" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Compliance Trestle" class="md-header__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              merge
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Trestle overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python_trestle_setup/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/trestle_sample_workflow/" class="md-nav__link">
+        Intro to trestle workflow
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/continuous-compliance/continuous-compliance/" class="md-nav__link">
+        Compliance posture
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/" class="md-nav__link">
+        SSP, Catalog, and Profile Authoring
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
+        Transformer construction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.cis-to-catalog/transformation/" class="md-nav__link">
+        Task - cis-to-catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.cis-to-component-definition/transformation/" class="md-nav__link">
+        Task - cis-to-component-definition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.tanuim-to-oscal/transformation/" class="md-nav__link">
+        Task - tanium-to-oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/work_with_authoring_versions/" class="md-nav__link">
+        Work with authoring versions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Trestle command-line interface (CLI)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Trestle command-line interface (CLI)
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        CLI for OSCAL documents
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trestle_author/" class="md-nav__link">
+        CLI for authoring governed content
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trestle_author_jinja/" class="md-nav__link">
+        CLI for jinja template processing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Contributing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Contributing overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/trestle_oscal_object_model/" class="md-nav__link">
+        Trestle's object model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/plugins/" class="md-nav__link">
+        Trestle plugin mechanism
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../errors/" class="md-nav__link">
+        Known limitations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../demonstrations-content/" class="md-nav__link">
+        Demos
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Plugins
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Plugins" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Plugins
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../plugins/compliance-trestle-fedramp/" class="md-nav__link">
+        FedRAMP validation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/third-party-result-schema-SCC/" class="md-nav__link">
+        Integrating with IBM SCC
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2" type="checkbox" id="__nav_10_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2">
+          trestle API reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle API reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_2" type="checkbox" id="__nav_10_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_2">
+          common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="common" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          common
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.common_types/" class="md-nav__link">
+        common_types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.file_utils/" class="md-nav__link">
+        file_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.list_utils/" class="md-nav__link">
+        list_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.model_utils/" class="md-nav__link">
+        model_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.str_utils/" class="md-nav__link">
+        str_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.common.type_utils/" class="md-nav__link">
+        type_utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3" type="checkbox" id="__nav_10_2_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3">
+          core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.all_validator/" class="md-nav__link">
+        all_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.catalog_interface/" class="md-nav__link">
+        catalog_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_4" type="checkbox" id="__nav_10_2_3_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_4">
+          commands
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_4_3" type="checkbox" id="__nav_10_2_3_4_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_4_3">
+          author
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="author" data-md-level="5">
+        <label class="md-nav__title" for="__nav_10_2_3_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          author
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.command/" class="md-nav__link">
+        command
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.consts/" class="md-nav__link">
+        consts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.docs/" class="md-nav__link">
+        docs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.folders/" class="md-nav__link">
+        folders
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.headers/" class="md-nav__link">
+        headers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.jinja/" class="md-nav__link">
+        jinja
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_4_3_11" type="checkbox" id="__nav_10_2_3_4_3_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_4_3_11">
+          versioning
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="versioning" data-md-level="6">
+        <label class="md-nav__title" for="__nav_10_2_3_4_3_11">
+          <span class="md-nav__icon md-icon"></span>
+          versioning
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.versioning.template_versioning/" class="md-nav__link">
+        template_versioning
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_4_5" type="checkbox" id="__nav_10_2_3_4_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_4_5">
+          common
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="common" data-md-level="5">
+        <label class="md-nav__title" for="__nav_10_2_3_4_5">
+          <span class="md-nav__icon md-icon"></span>
+          common
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.common.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.common.return_codes/" class="md-nav__link">
+        return_codes
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.describe/" class="md-nav__link">
+        describe
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.href/" class="md-nav__link">
+        href
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.partial_object_validate/" class="md-nav__link">
+        partial_object_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_io/" class="md-nav__link">
+        control_io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.draw_io/" class="md-nav__link">
+        draw_io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.jinja/" class="md-nav__link">
+        jinja
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_10" type="checkbox" id="__nav_10_2_3_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_10">
+          markdown
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="markdown" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_3_10">
+          <span class="md-nav__icon md-icon"></span>
+          markdown
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_api/" class="md-nav__link">
+        markdown_api
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_const/" class="md-nav__link">
+        markdown_const
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_node/" class="md-nav__link">
+        markdown_node
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_processor/" class="md-nav__link">
+        markdown_processor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.markdown_validator/" class="md-nav__link">
+        markdown_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.markdown.md_writer/" class="md-nav__link">
+        md_writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_11" type="checkbox" id="__nav_10_2_3_11" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_11">
+          models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_3_11">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.pipeline/" class="md-nav__link">
+        pipeline
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.profile_resolver/" class="md-nav__link">
+        profile_resolver
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.refs_validator/" class="md-nav__link">
+        refs_validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_17" type="checkbox" id="__nav_10_2_3_17" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_17">
+          remote
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="remote" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_3_17">
+          <span class="md-nav__icon md-icon"></span>
+          remote
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.remote.cache/" class="md-nav__link">
+        cache
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.repository/" class="md-nav__link">
+        repository
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_19" type="checkbox" id="__nav_10_2_3_19" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_3_19">
+          resolver
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="resolver" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_3_19">
+          <span class="md-nav__icon md-icon"></span>
+          resolver
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          merge
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        merge
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge" class="md-nav__link">
+    merge
+  </a>
+  
+    <nav class="md-nav" aria-label="merge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.CATALOG_EXCLUDE" class="md-nav__link">
+    CATALOG_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.CONTROL_EXCLUDE" class="md-nav__link">
+    CONTROL_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.ID" class="md-nav__link">
+    ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.ITEM_EXCLUDE_MAP" class="md-nav__link">
+    ITEM_EXCLUDE_MAP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.NAME" class="md-nav__link">
+    NAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.PARAMETER_EXCLUDE" class="md-nav__link">
+    PARAMETER_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.PART_EXCLUDE" class="md-nav__link">
+    PART_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.PROPERTY_EXCLUDE" class="md-nav__link">
+    PROPERTY_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge-classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge" class="md-nav__link">
+    Merge
+  </a>
+  
+    <nav class="md-nav" aria-label="Merge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge.process" class="md-nav__link">
+    process()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.resolver.modify/" class="md-nav__link">
+        modify
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.resolver.prune/" class="md-nav__link">
+        prune
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.ssp_io/" class="md-nav__link">
+        ssp_io
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.trestle_base_model/" class="md-nav__link">
+        trestle_base_model
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.validator/" class="md-nav__link">
+        validator
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_4" type="checkbox" id="__nav_10_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_4">
+          oscal
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_5" type="checkbox" id="__nav_10_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_5">
+          tasks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.cis_to_catalog/" class="md-nav__link">
+        cis_to_catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.cis_to_component_definition/" class="md-nav__link">
+        cis_to_component_definition
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
+        profile_to_osco
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.xlsx_helper/" class="md-nav__link">
+        xlsx_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.xlsx_to_oscal_cd/" class="md-nav__link">
+        xlsx_to_oscal_cd
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.xlsx_to_oscal_profile/" class="md-nav__link">
+        xlsx_to_oscal_profile
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_6" type="checkbox" id="__nav_10_2_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_6">
+          transforms
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          transforms
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_6_1" type="checkbox" id="__nav_10_2_6_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10_2_6_1">
+          implementations
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+        <label class="md-nav__title" for="__nav_10_2_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          implementations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.transforms.implementations.osco/" class="md-nav__link">
+        osco
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.transforms.implementations.tanium/" class="md-nav__link">
+        tanium
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.transforms.results/" class="md-nav__link">
+        results
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.transforms.transformer_factory/" class="md-nav__link">
+        transformer_factory
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.transforms.transformer_helper/" class="md-nav__link">
+        transformer_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.transforms.transformer_singleton/" class="md-nav__link">
+        transformer_singleton
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge" class="md-nav__link">
+    merge
+  </a>
+  
+    <nav class="md-nav" aria-label="merge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.CATALOG_EXCLUDE" class="md-nav__link">
+    CATALOG_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.CONTROL_EXCLUDE" class="md-nav__link">
+    CONTROL_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.ID" class="md-nav__link">
+    ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.ITEM_EXCLUDE_MAP" class="md-nav__link">
+    ITEM_EXCLUDE_MAP
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.NAME" class="md-nav__link">
+    NAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.PARAMETER_EXCLUDE" class="md-nav__link">
+    PARAMETER_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.PART_EXCLUDE" class="md-nav__link">
+    PART_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.PROPERTY_EXCLUDE" class="md-nav__link">
+    PROPERTY_EXCLUDE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge-classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge" class="md-nav__link">
+    Merge
+  </a>
+  
+    <nav class="md-nav" aria-label="Merge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.resolver.merge.Merge.process" class="md-nav__link">
+    process()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+  <h1>merge</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 class="doc doc-heading" id="trestle.core.resolver.merge">
+        <code>trestle.core.resolver.merge</code>
+
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge" title="Permanent link">¤</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>Create resolved catalog from profile.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.CATALOG_EXCLUDE">
+<code class="highlight language-python"><span class="n">CATALOG_EXCLUDE</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.CATALOG_EXCLUDE" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.CONTROL_EXCLUDE">
+<code class="highlight language-python"><span class="n">CONTROL_EXCLUDE</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.CONTROL_EXCLUDE" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.ID">
+<code class="highlight language-python"><span class="n">ID</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.ID" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.ITEM_EXCLUDE_MAP">
+<code class="highlight language-python"><span class="n">ITEM_EXCLUDE_MAP</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.ITEM_EXCLUDE_MAP" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.NAME">
+<code class="highlight language-python"><span class="n">NAME</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.NAME" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.PARAMETER_EXCLUDE">
+<code class="highlight language-python"><span class="n">PARAMETER_EXCLUDE</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.PARAMETER_EXCLUDE" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.PART_EXCLUDE">
+<code class="highlight language-python"><span class="n">PART_EXCLUDE</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.PART_EXCLUDE" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.PROPERTY_EXCLUDE">
+<code class="highlight language-python"><span class="n">PROPERTY_EXCLUDE</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.PROPERTY_EXCLUDE" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.logger">
+<code class="highlight language-python"><span class="n">logger</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.logger" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+<h3 id="trestle.core.resolver.merge-classes">Classes<a class="headerlink" href="#trestle.core.resolver.merge-classes" title="Permanent link">¤</a></h3>
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.resolver.merge.Merge">
+        <code>
+Merge            (<a class="autorefs autorefs-internal" title="trestle.core.pipeline.Pipeline.Filter" href="../trestle.core.pipeline/#trestle.core.pipeline.Pipeline.Filter">Filter</a>)
+        </code>
+
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.Merge" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Merge the incoming catalogs according to rules in the profile.</p>
+<p>The incoming catalogs have already been pruned based on the import.
+Now the controls must be gathered, merged, and grouped based on the merge settings.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/resolver/merge.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Merge</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">.</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge the incoming catalogs according to rules in the profile.</span>
+
+<span class="sd">    The incoming catalogs have already been pruned based on the import.</span>
+<span class="sd">    Now the controls must be gathered, merged, and grouped based on the merge settings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the class with the profile.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;merge filter initialize&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">profile</span>
+
+    <span class="k">def</span> <span class="nf">_get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">OBT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">id_</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">id_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">id_</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">id_</span>
+
+    <span class="k">def</span> <span class="nf">_merge_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">src</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">],</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">added_items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">merge_method</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">keep</span><span class="p">:</span>
+            <span class="n">dest</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">src</span><span class="p">:</span>
+            <span class="c1"># if there is an exact copy of this in dest then ignore it</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dest</span><span class="p">:</span>
+                <span class="n">merged</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">item_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_id</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">item_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">dest</span><span class="p">:</span>
+                        <span class="n">other_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_id</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">other_id</span> <span class="o">==</span> <span class="n">item_id</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">merge_method</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_merge_items</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">)</span>
+                            <span class="n">merged</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">break</span>
+                <span class="c1"># it isn&#39;t already in dest and no match was found for merge, so append</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">merged</span><span class="p">:</span>
+                    <span class="n">added_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">dest</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">added_items</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_merge_attrs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OBT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">]],</span> <span class="n">src</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OBT</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OBT</span><span class="p">]],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Merge this attr of src into the attr of dest.&quot;&quot;&quot;</span>
+        <span class="n">src_attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">src_attr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">item_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">ITEM_EXCLUDE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item_type</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="k">return</span>
+        <span class="n">dest_attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dest_attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">merge_method</span> <span class="o">==</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">use_first</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">dest_attr</span> <span class="o">==</span> <span class="n">src_attr</span> <span class="ow">and</span> <span class="n">merge_method</span> <span class="o">!=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">keep</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dest_attr</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_merge_lists</span><span class="p">(</span><span class="n">dest_attr</span><span class="p">,</span> <span class="n">src_attr</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">src_attr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_merge_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">OBT</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">OBT</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Merge two items recursively.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">__fields_set__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_merge_attrs</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_group_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Get flattened content of group and its groups recursively.&quot;&quot;&quot;</span>
+        <span class="n">controls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">controls</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">as_list</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">params</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sub_group</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">new_controls</span><span class="p">,</span> <span class="n">new_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_contents</span><span class="p">(</span><span class="n">sub_group</span><span class="p">)</span>
+                <span class="n">controls</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_controls</span><span class="p">)</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">controls</span><span class="p">,</span> <span class="n">params</span>
+
+    <span class="k">def</span> <span class="nf">_flatten_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">as_is</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Flatten the groups of the catalog if as_is is False.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">as_is</span> <span class="ow">or</span> <span class="n">catalog</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">catalog</span>
+
+        <span class="c1"># as_is is False so flatten the controls into a single list</span>
+        <span class="n">catalog</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+        <span class="n">catalog</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">as_list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="n">new_controls</span><span class="p">,</span> <span class="n">new_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_contents</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">catalog</span><span class="o">.</span><span class="n">controls</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_controls</span><span class="p">)</span>
+            <span class="n">catalog</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_params</span><span class="p">)</span>
+        <span class="n">catalog</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+        <span class="n">catalog</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">catalog</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">catalog</span>
+
+    <span class="k">def</span> <span class="nf">_merge_two_catalogs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="p">,</span> <span class="n">as_is</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
+        <span class="c1"># merge_method is use_first, merge, or keep</span>
+        <span class="c1"># if as_is is false, the result is flattened</span>
+
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_catalog</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">as_is</span><span class="p">)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_catalog</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">as_is</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_merge_items</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dest</span>
+
+    <span class="k">def</span> <span class="nf">_merge_catalog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merged</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">],</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Merge the controls in the catalog into merged catalog.&quot;&quot;&quot;</span>
+        <span class="c1"># no merge means keep, including dups</span>
+        <span class="c1"># same for merge with no combine</span>
+        <span class="c1"># groups are merged only if separate directive such as as-is is given</span>
+        <span class="c1"># use-first is a merge combination rule</span>
+        <span class="c1"># merge is a merge combination rule for controls.  groups are not merged by this rule</span>
+        <span class="c1"># merge/as-is and merge/custom are used for merging groups</span>
+        <span class="c1"># if neither as-is nor custom is specified - just get single list of controls</span>
+        <span class="c1"># unstructured controls should appear after any loose params</span>
+
+        <span class="c1"># make copies to avoid changing input objects</span>
+        <span class="n">local_cat</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">local_merged</span> <span class="o">=</span> <span class="n">merged</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">merged</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">merge_method</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">keep</span>
+        <span class="n">as_is</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">merge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">merge</span><span class="o">.</span><span class="n">custom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Profile with custom merge is not supported.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">merge</span><span class="o">.</span><span class="n">as_is</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">as_is</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">merge</span><span class="o">.</span><span class="n">as_is</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">merge</span><span class="o">.</span><span class="n">combine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Profile has merge but no combine so defaulting to combine/merge.&#39;</span><span class="p">)</span>
+                <span class="n">merge_method</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">merge</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">merge_combine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="o">.</span><span class="n">merge</span><span class="o">.</span><span class="n">combine</span>
+                <span class="k">if</span> <span class="n">merge_combine</span><span class="o">.</span><span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Profile has merge combine but no method.  Defaulting to merge.&#39;</span><span class="p">)</span>
+                    <span class="n">merge_method</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">merge</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">merge_method</span> <span class="o">=</span> <span class="n">merge_combine</span><span class="o">.</span><span class="n">method</span>
+
+        <span class="k">if</span> <span class="n">local_merged</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten_catalog</span><span class="p">(</span><span class="n">local_cat</span><span class="p">,</span> <span class="n">as_is</span><span class="p">)</span>
+
+        <span class="c1"># merge the incoming catalog with merged based on merge_method and as_is</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_two_catalogs</span><span class="p">(</span><span class="n">local_merged</span><span class="p">,</span> <span class="n">local_cat</span><span class="p">,</span> <span class="n">merge_method</span><span class="p">,</span> <span class="n">as_is</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipelines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pipeline</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Merge the incoming catalogs.</span>
+
+<span class="sd">        This pulls from import and iterates over the incoming catalogs.</span>
+<span class="sd">        The way groups, lists of controls, and controls themselves get merged is specified by the profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">merged</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;merge entering process with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span><span class="si">}</span><span class="s1"> pipelines&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pipeline</span> <span class="ow">in</span> <span class="n">pipelines</span><span class="p">:</span>
+            <span class="n">catalog</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+            <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_catalog</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">catalog</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">merged</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<h5 id="trestle.core.resolver.merge.Merge-methods">Methods<a class="headerlink" href="#trestle.core.resolver.merge.Merge-methods" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.resolver.merge.Merge.__init__">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.resolver.merge.Merge.__init__" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize the class with the profile.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/resolver/merge.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">:</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Initialize the class with the profile.&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;merge filter initialize&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">profile</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.resolver.merge.Merge.process">
+<code class="highlight language-python"><span class="n">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipelines</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.resolver.merge.Merge.process" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Merge the incoming catalogs.</p>
+<p>This pulls from import and iterates over the incoming catalogs.
+The way groups, lists of controls, and controls themselves get merged is specified by the profile.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/resolver/merge.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipelines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pipeline</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge the incoming catalogs.</span>
+
+<span class="sd">    This pulls from import and iterates over the incoming catalogs.</span>
+<span class="sd">    The way groups, lists of controls, and controls themselves get merged is specified by the profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">merged</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;merge entering process with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span><span class="si">}</span><span class="s1"> pipelines&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">pipeline</span> <span class="ow">in</span> <span class="n">pipelines</span><span class="p">:</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_catalog</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">catalog</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">merged</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+<p>handler: python</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../trestle.core.repository/" class="md-footer__link md-footer__link--prev" aria-label="Previous: repository" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              repository
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../trestle.core.resolver.modify/" class="md-footer__link md-footer__link--next" aria-label="Next: modify" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              modify
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      
+    
+  </body>
+</html>
