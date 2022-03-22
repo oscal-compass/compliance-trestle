@@ -29,7 +29,7 @@ I can write a comment in here and you can even edit on the same line.
 import datetime
 import logging
 import pathlib
-from typing import Any, Dict, List, Optional, Type, Union, cast
+from typing import Any, Dict, List, Optional, Type, cast
 
 import orjson
 
@@ -39,11 +39,12 @@ from pydantic.parse import load_file
 
 from ruamel.yaml import YAML
 
-import trestle.core.const as const
-import trestle.core.err as err
+import trestle.common.const as const
+import trestle.common.err as err
+from trestle.common.str_utils import AliasMode, classname_to_alias
+from trestle.common.type_utils import get_origin, is_collection_field_type
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.core.utils import classname_to_alias, get_origin, is_collection_field_type
 
 logger = logging.getLogger(__name__)
 
@@ -213,9 +214,9 @@ class OscalBaseModel(TrestleBaseModel):
         raw_dict = self.dict(by_alias=True, exclude_none=True)
         # Additional check to avoid root serialization
         if '__root__' in raw_dict.keys():
-            result[classname_to_alias(class_name, 'json')] = raw_dict['__root__']
+            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict['__root__']
         else:
-            result[classname_to_alias(class_name, 'json')] = raw_dict
+            result[classname_to_alias(class_name, AliasMode.JSON)] = raw_dict
         return result
 
     def oscal_serialize_json_bytes(self, pretty: bool = False, wrapped: bool = True) -> bytes:
@@ -278,7 +279,7 @@ class OscalBaseModel(TrestleBaseModel):
             write_file.close()
 
     @classmethod
-    def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
+    def oscal_read(cls, path: pathlib.Path) -> Optional['OscalBaseModel']:
         """
         Read OSCAL objects.
 
@@ -290,7 +291,7 @@ class OscalBaseModel(TrestleBaseModel):
             The oscal object read into trestle oscal models.
         """
         # Create the wrapper model.
-        alias = classname_to_alias(cls.__name__, 'json')
+        alias = classname_to_alias(cls.__name__, AliasMode.JSON)
 
         content_type = FileContentType.to_content_type(path.suffix)
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
@@ -315,16 +316,16 @@ class OscalBaseModel(TrestleBaseModel):
             raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:
             if not len(obj) == 1:
-                logger.error('Provided oscal file does not have a single top level key wrapping it.')
-                logger.error(f'It has {len(obj)} keys.')
-                raise err.TrestleError('Invalid OSCAL file structure, multiple base keys.')
+                raise err.TrestleError(
+                    f'Invalid OSCAL file structure, oscal file '
+                    f'does not have a single top level key wrapping it. It has {len(obj)} keys.'
+                )
             parsed = cls.parse_obj(obj[alias])
         except KeyError:
-            logger.error(f'Provided oscal file does not have top level key: {alias}')
             raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
-            logger.error(f'Failed to parse OSCAL object: {e}')
             raise err.TrestleError(f'Error parsing file {path} {str(e)}')
+
         return parsed
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
@@ -417,7 +418,7 @@ class OscalBaseModel(TrestleBaseModel):
         return False
 
     @classmethod
-    def get_collection_type(cls) -> Union[Type[List[Any]], Type[Dict[Any, Any]]]:
+    def get_collection_type(cls) -> Optional[type]:
         """
         If the type wraps an collection, return the collection type.
 

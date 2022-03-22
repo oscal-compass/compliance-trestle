@@ -24,9 +24,9 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest
 
 import trestle.cli
+import trestle.common.const as const
+import trestle.common.err as err
 import trestle.core.commands.task as taskcmd
-import trestle.core.const as const
-import trestle.core.err as err
 from trestle.tasks.base_task import PassFail
 
 

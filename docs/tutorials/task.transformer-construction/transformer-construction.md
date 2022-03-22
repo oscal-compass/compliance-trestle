@@ -432,7 +432,7 @@ Table of approximate lines of code.
 ## *Contributing*
 
 Consider contributing your transformer to
-[trestle](https://github.com/IBM/compliance-trestle/blob/develop/CONTRIBUTING.md)
+[trestle](../../contributing/mkdocs_contributing.md)
 or
 [auditree-arboretum](https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/CONTRIBUTING.md)
 or

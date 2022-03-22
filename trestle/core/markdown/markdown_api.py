@@ -18,8 +18,8 @@ import logging
 import pathlib
 from typing import Optional
 
-from trestle.core import const
-from trestle.core.err import TrestleError
+from trestle.common import const
+from trestle.common.err import TrestleError
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
@@ -60,8 +60,7 @@ class MarkdownAPI:
                 md_header_to_validate
             )
         except TrestleError as e:
-            logger.error(f'Error while loading markdown template {md_template_path}.')
-            raise e
+            raise TrestleError(f'Error while loading markdown template {md_template_path}: {e}.')
 
     def validate_instance(self, md_instance_path: pathlib.Path) -> bool:
         """Validate a given markdown instance against a template."""
@@ -70,7 +69,6 @@ class MarkdownAPI:
         instance_header, instance_tree = self.processor.process_markdown(md_instance_path)
         return self.validator.is_valid_against_template(md_instance_path, instance_header, instance_tree)
 
-    # TODO-Ekat place all markdown writer functionality to one place
     def write_markdown_with_header(self, path, header, md_body) -> None:
         """Write markdown with the YAML header."""
         try:
@@ -81,5 +79,4 @@ class MarkdownAPI:
                 md_file.write('---\n\n')
                 md_file.write(md_body)
         except IOError as e:
-            logger.error(f'Error while writing markdown file: {e}')
             raise TrestleError(f'Error while writing markdown file: {e}')

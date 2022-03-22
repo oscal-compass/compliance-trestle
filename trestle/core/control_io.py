@@ -18,23 +18,35 @@ import pathlib
 import re
 import string
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
-from trestle.core import const
+from trestle.common import const
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.core.utils import as_list, none_if_empty, spaces_and_caps_to_snake
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
+
+
+class ParameterRep(Enum):
+    """Enum for ways to represent a parameter."""
+
+    LEAVE_MOUSTACHE = 0
+    VALUE_OR_STRING_NONE = 1
+    LABEL_OR_CHOICES = 2
+    VALUE_OR_LABEL_OR_CHOICES = 3
 
 
 class ControlIOWriter():
@@ -52,13 +64,25 @@ class ControlIOWriter():
         return wrapped
 
     @staticmethod
-    def _get_label(part: common.Part) -> str:
-        """Get the label from the props of a part."""
-        if part.props is not None:
-            for prop in part.props:
-                if prop.name == 'label':
-                    return prop.value.strip()
+    def get_prop(part_control: Union[common.Part, cat.Control], prop_name: str) -> str:
+        """Get the property with that name."""
+        for prop in as_list(part_control.props):
+            if prop.name.strip().lower() == prop_name.strip().lower():
+                return prop.value.strip()
         return ''
+
+    @staticmethod
+    def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
+        """Get the sort-id for the control."""
+        for prop in as_list(control.props):
+            if prop.name == const.SORT_ID:
+                return prop.value.strip()
+        return None if allow_none else control.id
+
+    @staticmethod
+    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
+        """Get the label from the props of a part or control."""
+        return ControlIOWriter.get_prop(part_control, 'label')
 
     def _get_part(self, part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
         """
@@ -72,7 +96,8 @@ class ControlIOWriter():
             # the options here are to force the label to be the part.id or the part.label
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
             # here we choose the latter and extract the final element
-            label = part.id.split('.')[-1]
+            label = ControlIOWriter.get_label(part)
+            label = part.id.split('.')[-1] if not label else label
             wrapped_label = self._wrap_label(label)
             pad = '' if wrapped_label == '' or not part.prose else ' '
             prose = '' if part.prose is None else part.prose
@@ -132,7 +157,8 @@ class ControlIOWriter():
     def _add_control_statement_ssp(self, control: cat.Control) -> None:
         """Add the control statement and items to the markdown SSP."""
         self._md_file.new_paragraph()
-        label = self._get_label(control) if self._get_label(control) != '' else control.id.upper()
+        label = self.get_label(control)
+        label = label if label else control.id.upper()
         title = f'{label} - {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
@@ -152,66 +178,73 @@ class ControlIOWriter():
                     return
 
     @staticmethod
-    def _get_control_section_part(part: common.Part, section: str) -> str:
+    def _get_control_section_part(part: common.Part, section_name: str) -> str:
         """Get the prose for a named section in the control."""
         prose = ''
-        if part.name == section and part.prose is not None:
+        if part.name == section_name and part.prose is not None:
             prose = ControlIOWriter._gap_join(prose, part.prose)
         if part.parts:
             for sub_part in part.parts:
-                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(sub_part, section))
+                prose = ControlIOWriter._gap_join(
+                    prose, ControlIOWriter._get_control_section_part(sub_part, section_name)
+                )
         return prose
 
     @staticmethod
-    def _get_control_section(control: cat.Control, section: str) -> str:
+    def _get_control_section_prose(control: cat.Control, section_name: str) -> str:
         prose = ''
         if control.parts:
             for part in control.parts:
-                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(part, section))
+                prose = ControlIOWriter._gap_join(prose, ControlIOWriter._get_control_section_part(part, section_name))
         return prose
 
     @staticmethod
-    def _find_section_info(part: common.Part, section_list: List[str]):
+    def _find_section_info(part: common.Part, skip_section_list: List[str]) -> Tuple[str, str, str]:
         """Find section not in list."""
-        if part.prose and part.name not in section_list:
-            return part.id, part.name
+        if part.prose and part.name not in skip_section_list:
+            return part.id, part.name, part.title
         if part.parts:
-            for part in part.parts:
-                id_, name = ControlIOWriter._find_section_info(part, section_list)
+            for sub_part in part.parts:
+                id_, name, title = ControlIOWriter._find_section_info(sub_part, skip_section_list)
                 if id_:
-                    return id_, name
-        return '', ''
+                    return id_, name, title
+        return '', '', ''
 
     @staticmethod
-    def _find_section(control: cat.Control, section_list: List[str]) -> Tuple[str, str]:
+    def _find_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str]:
         """Find next section not in list."""
         if control.parts:
             for part in control.parts:
-                id_, name = ControlIOWriter._find_section_info(part, section_list)
+                id_, name, title = ControlIOWriter._find_section_info(part, skip_section_list)
                 if id_:
-                    return id_, name
-        return '', ''
-
-    @staticmethod
-    def _get_section(control: cat.Control, section_list: List[str]) -> Tuple[str, str, str]:
-        """Get sections that are not in the list."""
-        id_, name = ControlIOWriter._find_section(control, section_list)
-        if id_:
-            return id_, name, ControlIOWriter._get_control_section(control, name)
+                    return id_, name, title
         return '', '', ''
 
-    def _add_sections(self, control: cat.Control) -> None:
+    @staticmethod
+    def _get_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str, str]:
+        """Get sections that are not in the list."""
+        id_, name, title = ControlIOWriter._find_section(control, skip_section_list)
+        if id_:
+            return id_, name, title, ControlIOWriter._get_control_section_prose(control, name)
+        return '', '', '', ''
+
+    def _add_sections(self, control: cat.Control, allowed_sections: Optional[List[str]]) -> None:
         """Add the extra control sections after the main ones."""
         skip_section_list = ['statement', 'item', 'objective']
         while True:
-            name, id_, prose = self._get_section(control, skip_section_list)
+            _, name, title, prose = self._get_section(control, skip_section_list)
             if not name:
                 return
+            if allowed_sections and name not in allowed_sections:
+                skip_section_list.append(name)
+                continue
             if prose:
-                skip_section_list.append(id_)
-                if self._sections and id_ in self._sections:
-                    id_ = self._sections[id_]
-                self._md_file.new_header(level=2, title=f'Control {id_}')
+                # section title will be from the section_dict, the part title, or the part name in that order
+                # this way the user-provided section title can override the part title
+                section_title = self._sections_dict.get(name, title) if self._sections_dict else title
+                section_title = section_title if section_title else name
+                skip_section_list.append(name)
+                self._md_file.new_header(level=2, title=f'Control {section_title}')
                 self._md_file.new_line(prose)
                 self._md_file.new_paragraph()
 
@@ -222,7 +255,9 @@ class ControlIOWriter():
             for line in existing_text[part_label]:
                 self._md_file.new_line(line)
 
-    def _add_response(self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]]) -> None:
+    def _add_implementation_response_prompts(
+        self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]]
+    ) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
@@ -245,10 +280,9 @@ class ControlIOWriter():
                                 # insert extra line to make mdformat happy
                                 self._md_file._add_line_raw('')
                             self._md_file.new_hr()
-                            part_label = self._get_label(prt)
                             # if no label guess the label from the sub-part id
-                            if not part_label:
-                                part_label = prt.id.split('.')[-1]
+                            part_label = self.get_label(prt)
+                            part_label = prt.id.split('.')[-1] if not part_label else part_label
                             self._md_file.new_header(level=2, title=f'Implementation {part_label}')
                             added_content = False
                             for comp_name, prose_dict in comp_dict.items():
@@ -285,7 +319,7 @@ class ControlIOWriter():
                                     adds.append((part.name, part.prose))
         return adds
 
-    def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> None:
+    def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> List[str]:
         adds = ControlIOWriter._get_adds(control.id, profile)
         has_content = len(adds) > 0
 
@@ -298,7 +332,10 @@ class ControlIOWriter():
             '<!-- If the profile makes additions to the control, they will appear below. -->'  # noqa E501
         )
         self._md_file.new_line(
-            '<!-- The above may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'  # noqa E501
+            '<!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->'  # noqa E501
+        )
+        self._md_file.new_line(
+            '<!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. -->'  # noqa E501
         )
         self._md_file.new_line(
             '<!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->'  # noqa E501
@@ -318,10 +355,15 @@ class ControlIOWriter():
         # next is to make mdformat happy
         self._md_file._add_line_raw('')
 
+        added_sections: List[str] = []
+
         for add in adds:
             name, prose = add
-            self._md_file.new_header(level=2, title=f'Control {name}')
+            title = self._sections_dict.get(name, name) if self._sections_dict else name
+            self._md_file.new_header(level=2, title=f'Control {title}')
             self._md_file.new_paraline(prose)
+            added_sections.append(name)
+        return added_sections
 
     @staticmethod
     def get_part_prose(control: cat.Control, part_name: str) -> str:
@@ -333,24 +375,51 @@ class ControlIOWriter():
         return prose.strip()
 
     @staticmethod
-    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], preserve_dest_values: bool) -> None:
+    def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
         """
         Merge dict src into dest.
 
         New items are always added from src to dest.
-        Items present in both will not override dest if preserve_dest_values is True.
+        Items present in both will be overriden dest if overwrite_header_values is True.
         """
         for key in src.keys():
             if key in dest:
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
-                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], preserve_dest_values)
+                    ControlIOWriter.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
                 # otherwise override dest if needed
-                elif not preserve_dest_values:
+                elif overwrite_header_values:
                     dest[key] = src[key]
             else:
                 # if the item was not already in dest, add it from src
                 dest[key] = src[key]
+
+    def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
+        """Add prompts for any required sections that haven't already been written out."""
+        missing_sections = set(required_sections).difference(added_sections)
+        for section in missing_sections:
+            section_title = self._sections_dict.get(section, section)
+            self._md_file.new_header(2, f'Control {section_title}')
+            self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
+
+    @staticmethod
+    def is_withdrawn(control: cat.Control) -> bool:
+        """
+        Determine if control is marked Withdrawn.
+
+        Args:
+            control: The control that may be marked withdrawn.
+
+        Returns:
+            True if marked withdrawn, false otherwise.
+
+        This is determined by property with name 'status' with value 'Withdrawn'.
+        """
+        for prop in as_list(control.props):
+            if prop.name and prop.value:
+                if prop.name.lower().strip() == 'status' and prop.value.lower().strip() == 'withdrawn':
+                    return True
+        return False
 
     def write_control(
         self,
@@ -358,11 +427,13 @@ class ControlIOWriter():
         control: cat.Control,
         group_title: str,
         yaml_header: Optional[Dict],
-        sections: Optional[Dict[str, str]],
+        sections_dict: Optional[Dict[str, str]],
         additional_content: bool,
         prompt_responses: bool,
         profile: Optional[prof.Profile],
-        preserve_header_values: bool,
+        overwrite_header_values: bool,
+        required_sections: Optional[List[str]],
+        allowed_sections: Optional[List[str]]
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -372,29 +443,50 @@ class ControlIOWriter():
             control: The control to write as markdown
             group_title: Title of the group containing the control
             yaml_header: Optional dict to be written as markdown yaml header
-            sections: Optional string lookup dict mapping section abbrev. to pretty version for display
+            sections_dict: Optional dict mapping short section names to long
             additional_content: Should the additional content be printed corresponding to profile adds
             prompt_responses: Should the markdown include prompts for implementation detail responses
             profile: Profile containing the adds making up additional content
-            preserve_header_values: Retain existing values in markdown header content but add new content
+            overwrite_header_values: Overwrite existing values in markdown header content but add new content
+            required_sections: List of required sections that may need prompting for content
+            allowed_sections: List of allowed sections that will appear in markdown
 
         Returns:
             None
 
         Notes:
             The filename is constructed from the control's id, so only the markdown directory is required.
-            If a yaml header is present in the file, new values in provided header replace those in the markdown header.
-            But if preserve_header_values then don't change any existing values, but allow addition of new content.
-            The above only applies to generic header content and not sections of type x-trestle-
+            If a yaml header is present in the file, new values in provided header will not replace those in the
+            markdown header unless overwrite_header_values is true.  If it is true then overwrite any existing values,
+            but in all cases new items from the provided header will be added to the markdown header.
+            If the markdown file already exists, its current header and prose are read.
+            Controls are checked if they are marked withdrawn, and if so they are not written out.
         """
+        if ControlIOWriter.is_withdrawn(control):
+            logger.debug(f'Not writing out control {control.id} since it is marked Withdrawn.')
+            return
         control_file = dest_path / (control.id + '.md')
+        # first read the existing markdown header and content if it exists
         existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
         self._md_file = MDWriter(control_file)
-        self._sections = sections
+        self._sections_dict = sections_dict
 
         merged_header = copy.deepcopy(header)
-        if yaml_header:
-            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, preserve_header_values)
+        # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
+        # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
+        # in the markdown header
+        yaml_header = yaml_header if yaml_header else {}
+        sort_id = ControlIOWriter.get_sort_id(control, True)
+        if sort_id and const.SORT_ID not in yaml_header:
+            yaml_header[const.SORT_ID] = sort_id
+        ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
+
+        # merge any provided sections with sections in the header, with overwrite
+        header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
+        if sections_dict:
+            header_sections_dict.update(sections_dict)
+        if header_sections_dict:
+            merged_header[const.SECTIONS_TAG] = header_sections_dict
 
         self._add_yaml_header(merged_header)
 
@@ -402,24 +494,32 @@ class ControlIOWriter():
 
         self._add_control_objective(control)
 
-        self._add_sections(control)
+        # add allowed sections to the markdown
+        self._add_sections(control, allowed_sections)
 
+        # only used for ssp-generate
         if prompt_responses:
-            self._add_response(control, existing_text)
+            self._add_implementation_response_prompts(control, existing_text)
 
+        # only used for profile-generate
+        # add sections corresponding to added parts in the profile
+        added_sections: List[str] = []
         if additional_content:
-            self._add_additional_content(control, profile)
+            added_sections = self._add_additional_content(control, profile)
+
+        if required_sections:
+            self._prompt_required_sections(required_sections, added_sections)
 
         self._md_file.write_out()
 
     def get_control_statement(self, control: cat.Control) -> List[str]:
-        """Get back the formatted control from a catalog."""
+        """Get the control statement as formatted markdown from a control."""
         self._md_file = MDWriter(None)
         self._add_control_statement_ssp(control)
         return self._md_file.get_lines()
 
     def get_params(self, control: cat.Control) -> List[str]:
-        """Get parameters for control."""
+        """Get parameters of a control as a markdown table for ssp_io."""
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
@@ -427,7 +527,12 @@ class ControlIOWriter():
             self._md_file = MDWriter(None)
             self._md_file.new_paragraph()
             self._md_file.set_indent_level(-1)
-            self._md_file.new_table([[key, param_dict[key]] for key in param_dict.keys()], ['Parameter ID', 'Value'])
+            self._md_file.new_table(
+                [
+                    [key, ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
+                    for key in param_dict.keys()
+                ], ['Parameter ID', 'Value']
+            )
             self._md_file.set_indent_level(-1)
             return self._md_file.get_lines()
 
@@ -457,27 +562,21 @@ class ControlIOReader():
         return new_label
 
     @staticmethod
-    def param_values_as_string(set_param: prof.SetParameter) -> str:
-        """Convert param values to single string."""
-        return 'None' if not set_param.values else ', '.join(v.__root__ for v in set_param.values)
-
-    @staticmethod
     def _load_control_lines_and_header(control_file: pathlib.Path) -> Tuple[List[str], Dict[str, Any]]:
         lines: List[str] = []
         try:
             content = control_file.open('r', encoding=const.FILE_ENCODING).read()
         except UnicodeDecodeError as e:
-            logger.error('utf-8 decoding failed.')
-            logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
-            logger.debug(f'Underlying exception {e}')
-            raise TrestleError('Unable to load file due to utf-8 encoding issues.')
+            logger.debug(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
+            raise TrestleError(f'Unable to load file due to utf-8 encoding issues: {e}')
         try:
             fm = frontmatter.loads(content)
         except Exception as e:
-            logger.error(f'Error parsing yaml header from file {control_file}')
-            logger.error('This is most likely due to an incorrect yaml structure.')
-            logger.debug(f'Underlying error: {str(e)}')
-            raise TrestleError(f'Failure parsing yaml header on file {control_file}')
+            logger.error(
+                f'Error parsing yaml header from file {control_file}. '
+                f'This is most likely due to an incorrect yaml structure.'
+            )
+            raise TrestleError(f'Failure parsing yaml header on file {control_file}: {e}')
         raw_lines = fm.content.split('\n')
         header = fm.metadata
         # Any fully blank lines will be retained but as empty strings
@@ -493,17 +592,19 @@ class ControlIOReader():
     @staticmethod
     def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
         """Process the title line and extract the control id, group title (in brackets) and control title."""
-        if line.count('-') < 2:
-            raise TrestleError(f'Markdown control title format error: {line}')
-        control_id = line.split()[1]
-        first_dash = line.find('-')
-        title_line = line[first_dash + 1:]
-        group_title_start = title_line.find('\[')
-        group_title_end = title_line.find('\]')
+        if line.count('-') == 0:
+            raise TrestleError(f'Markdown control title format error, missing - after control id: {line}')
+        split_line = line.split()
+        if len(split_line) < 3 or split_line[2] != '-':
+            raise TrestleError(f'Cannot parse control markdown title for control_id group and title: {line}')
+        # first token after the #
+        control_id = split_line[1]
+        group_title_start = line.find('\[')
+        group_title_end = line.find('\]')
         if group_title_start < 0 or group_title_end < 0 or group_title_start > group_title_end:
             raise TrestleError(f'unable to read group title for control {control_id}')
-        group_title = title_line[group_title_start + 2:group_title_end].strip()
-        control_title = title_line[group_title_end + 2:].strip()
+        group_title = line[group_title_start + 2:group_title_end].strip()
+        control_title = line[group_title_end + 2:].strip()
         return control_id, group_title, control_title
 
     @staticmethod
@@ -643,9 +744,9 @@ class ControlIOReader():
                 # id_text is the part id and needs to be as a label property value
                 # if none is there then create one from previous part, or use default
                 if not id_text:
-                    prev_label = ControlIOWriter._get_label(parts[-1]) if parts else ''
+                    prev_label = ControlIOWriter.get_label(parts[-1]) if parts else ''
                     id_text = ControlIOReader._create_next_label(prev_label, indent)
-                id_ = ControlIOReader._strip_to_make_ncname(parent_id + '.' + id_text)
+                id_ = ControlIOReader._strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
                 name = 'objective' if id_.find('_obj') > 0 else 'item'
                 prop = common.Property(name='label', value=id_text)
                 part = common.Part(name=name, id=id_, prose=prose, props=[prop])
@@ -747,7 +848,7 @@ class ControlIOReader():
             if line and not line.startswith(prefix):
                 # the control has no sections to read, so exit the loop
                 break
-            label = line[len(prefix):].lstrip()
+            label = line[len(prefix):].strip()
             prose = ''
             ii += 1
             while 0 <= ii < len(lines) and not lines[ii].startswith(prefix) and not lines[ii].startswith(
@@ -755,7 +856,10 @@ class ControlIOReader():
                 prose = '\n'.join([prose, lines[ii]])
                 ii += 1
             if prose:
-                id_ = ControlIOReader._strip_to_make_ncname(control_id + '_smt.' + label)
+                if label.lower() == 'guidance':
+                    id_ = ControlIOReader._strip_to_make_ncname(control_id + '_gdn')
+                else:
+                    id_ = ControlIOReader._strip_to_make_ncname(control_id + '_' + label)
                 label = ControlIOReader._strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
@@ -890,8 +994,7 @@ class ControlIOReader():
                         ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
 
         except TrestleError as e:
-            logger.error(f'Error occurred reading {control_file}')
-            raise e
+            raise TrestleError(f'Error occurred reading {control_file}: {e}')
         return comp_dict, yaml_header
 
     @staticmethod
@@ -980,7 +1083,7 @@ class ControlIOReader():
     @staticmethod
     def read_implemented_requirement(
         control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent]
-    ) -> ossp.ImplementedRequirement:
+    ) -> Tuple[str, ossp.ImplementedRequirement]:
         """
         Get the implementated requirement associated with given control and link to existing components or new ones.
 
@@ -989,7 +1092,7 @@ class ControlIOReader():
             avail_comps: dictionary of known components keyed by component name
 
         Returns:
-            The one implemented requirement for this control.
+            Tuple: The control sort-id and the one implemented requirement for this control.
 
         Notes:
             Each statement may have several responses, with each response in a by_component for a specific component.
@@ -1036,11 +1139,17 @@ class ControlIOReader():
 
         imp_req.statements = list(statement_map.values())
         ControlIOReader._insert_header_content(imp_req, header, control_id)
-        return imp_req
+        sort_id = header.get(const.SORT_ID, control_id)
+        return sort_id, imp_req
 
     @staticmethod
-    def _read_added_part(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
+    def _read_added_part(ii: int, lines: List[str], control_id: str,
+                         sections_dict: Dict[str, str]) -> Tuple[int, Optional[common.Part]]:
         """Read a single part indicated by ## Control foo."""
+        snake_dict: Dict[str, str] = {}
+        # create reverse lookup of long snake name to short name needed for part
+        for key, value in sections_dict.items():
+            snake_dict[spaces_and_caps_to_snake(value)] = key
         while 0 <= ii < len(lines):
             # look for ## Control foo - then read prose
             line = lines[ii]
@@ -1048,8 +1157,13 @@ class ControlIOReader():
             if line:
                 if not line.startswith(prefix):
                     raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
-                part_name_raw = line[len(prefix):]
-                part_name = spaces_and_caps_to_snake(part_name_raw)
+                part_name_long_raw = line[len(prefix):].strip()
+                part_name_snake = spaces_and_caps_to_snake(part_name_long_raw)
+                # if the long name isn't there use the snake version for the part
+                # otherwise the part will have the desired short name for the corresponding section
+                part_name = snake_dict.get(part_name_snake, part_name_snake)
+                # use sections dict to find correct title otherwise use the title from the markdown
+                part_title = sections_dict.get(part_name, part_name_long_raw)
                 prose_lines = []
                 ii += 1
                 have_content = False
@@ -1067,75 +1181,165 @@ class ControlIOReader():
                     # strip leading / trailing new lines.
                     prose = prose.strip('\n')
                     id_ = f'{control_id}_{part_name}'
-                    part = common.Part(id=id_, name=part_name, prose=prose)
+                    part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
                     return ii, part
             ii += 1
         return -1, None
 
     @staticmethod
-    def read_new_alters_and_params(control_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
-        """Get parts for the markdown control corresponding to Editable Content - if any."""
+    def read_new_alters_and_params(control_path: pathlib.Path,
+                                   required_sections_list: List[str]) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
+        """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
-        param_dict: Dict[str, str] = {}
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
+        # extract the sort_id if present in header
+        sort_id = header.get(const.SORT_ID, control_id)
+        # query header for mapping of short to long section names
+        sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
+        found_sections: List[str] = []
         ii = 0
         while 0 <= ii < len(lines):
             line = lines[ii]
             if line.startswith(f'# {const.EDITABLE_CONTENT}'):
                 ii += 1
                 while 0 <= ii < len(lines):
-                    ii, part = ControlIOReader._read_added_part(ii, lines, control_id)
+                    ii, part = ControlIOReader._read_added_part(ii, lines, control_id, sections_dict)
                     if ii < 0:
                         break
+                    # if section is required and it hasn't been edited with prose raise error
+                    if part.name in required_sections_list and part.prose.startswith(
+                            const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
+                        missing_section = sections_dict.get(part.name, part.name)
+                        raise TrestleError(
+                            f'Control {control_id} is missing prose for required section {missing_section}'
+                        )
                     alter = prof.Alter(
                         control_id=control_id,
                         adds=[prof.Add(parts=[part], position='after', by_id=f'{control_id}_smt')]
                     )
                     new_alters.append(alter)
+                    found_sections.append(part.name)
             else:
                 ii += 1
+        missing_sections = set(required_sections_list) - set(found_sections)
+        if missing_sections:
+            raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
+        param_dict: Dict[str, Any] = {}
         header_params = header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
-        return new_alters, param_dict
+        return sort_id, new_alters, param_dict
 
     @staticmethod
-    def get_control_param_dict(control: cat.Control,
-                               values_only: bool,
-                               params_format: Optional[str] = None) -> Dict[str, str]:
-        """Get a dict of the parameters in a control and their values."""
-        param_dict: Dict[str, str] = {}
-        params: List[common.Parameter] = as_list(control.params)
-        for param in params:
-            value_str = 'No value found'
-            if param.label:
-                value_str = param.label
-            if param.values:
-                values = [val.__root__ for val in param.values]
-                if len(values) == 1:
-                    value_str = values[0]
-                else:
-                    value_str = f"[{', '.join(value for value in values)}]"
-            # if there isn't an actual value then ignore this param
-            elif values_only:
-                continue
-            if params_format:
-                if params_format.count('.') > 1:
-                    raise TrestleError(
-                        f'Additional text {params_format} '
-                        f'for the parameters cannot contain multiple dots (.)'
-                    )
-                value_str = params_format.replace('.', value_str)
-            param_dict[param.id] = value_str
+    def param_values_as_str_list(param: common.Parameter) -> List[str]:
+        """Convert param values to list of strings."""
+        return [val.__root__ for val in as_list(param.values)]
+
+    @staticmethod
+    def param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
+        """Convert param values to string with optional brackets."""
+        if not param.values:
+            return None
+        values_str = ', '.join(ControlIOReader.param_values_as_str_list(param))
+        return f'[{values_str}]' if brackets else values_str
+
+    @staticmethod
+    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> Optional[str]:
+        """Convert parameter selection to str."""
+        if param.select:
+            how_many = param.select.how_many.name if param.select.how_many else ''
+            choices_str = ', '.join(as_list(param.select.choice))
+            choices_str = f'[{choices_str}]' if brackets else choices_str
+            return f'choose {how_many} {choices_str}' if verbose else choices_str
+        return None
+
+    @staticmethod
+    def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+        """Convert param label or choices to string, using choices if present."""
+        if param.select:
+            return ControlIOReader.param_selection_as_str(param, verbose, brackets)
+        if param.label:
+            return param.label
+        return param.id
+
+    @staticmethod
+    def param_to_str(
+        param: common.Parameter,
+        param_rep: ParameterRep,
+        verbose=False,
+        brackets=False,
+        params_format: Optional[str] = None,
+    ) -> Optional[str]:
+        """
+        Convert parameter to string based on best available representation.
+
+        Args:
+            param_rep: how to represent the parameter
+            verbose: provide verbose text for selection choices
+            brackets: add brackets around the lists of items
+            params_format: a string containing a single dot that represents a form of highlighting around the param
+
+        Returns:
+            formatted string or None
+        """
+        param_str = None
+        if param_rep == ParameterRep.VALUE_OR_STRING_NONE:
+            param_str = ControlIOReader.param_values_as_str(param)
+            param_str = param_str if param_str else 'None'
+        elif param_rep == ParameterRep.LABEL_OR_CHOICES:
+            param_str = ControlIOReader.param_label_choices_as_str(param, verbose, brackets)
+        elif param_rep == ParameterRep.VALUE_OR_LABEL_OR_CHOICES:
+            param_str = ControlIOReader.param_values_as_str(param)
+            if not param_str:
+                param_str = ControlIOReader.param_label_choices_as_str(param, verbose, brackets)
+        if param_str and params_format:
+            if params_format.count('.') > 1:
+                raise TrestleError(
+                    f'Additional text {params_format} '
+                    f'for the parameters cannot contain multiple dots (.)'
+                )
+            param_str = params_format.replace('.', param_str)
+        return param_str
+
+    @staticmethod
+    def str_to_param(param: common.Parameter, param_str: str) -> None:
+        """Replace parameter contents with contents in string."""
+        # this is a simple version that replaces the values but it can be more elaborate
+        param.values = [common.ParameterValue(__root__=param_str)]
+
+    @staticmethod
+    def get_control_param_dict(
+        control: cat.Control,
+        values_only: bool,
+    ) -> Dict[str, common.Parameter]:
+        """
+        Create mapping of param id's to params.
+
+        Args:
+            control: the control containing params of interest
+            values_only: only add params to the dict that have actual values
+
+        Returns:
+            Dictionary of param_id mapped to param
+
+        Notes:
+            Warning is given if there is a parameter with no ID
+        """
+        param_dict: Dict[str, common.Parameter] = {}
+        for param in as_list(control.params):
+            if not param.id:
+                logger.warning(f'Control {control.id} has parameter with no id.  Ignoring.')
+            if param.values or not values_only:
+                param_dict[param.id] = param
         return param_dict
 
     @staticmethod
-    def read_control(control_path: pathlib.Path) -> Tuple[cat.Control, str]:
+    def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
         """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
-        _, control_tree = md_api.processor.process_markdown(control_path)
+        yaml_header, control_tree = md_api.processor.process_markdown(control_path)
         control_titles = list(control_tree.get_all_headers_for_level(1))
         if len(control_titles) == 0:
             raise TrestleError(f'Control markdown: {control_path} contains no control title.')
@@ -1169,4 +1373,15 @@ class ControlIOReader():
                 _, control.parts = ControlIOReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
+        if set_parameters:
+            params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
+            if params:
+                control.params = []
+                for id_, param_dict in params.items():
+                    param_dict['id'] = id_
+                    param = ModelUtils.dict_to_parameter(param_dict)
+                    control.params.append(param)
+        if const.SORT_ID in yaml_header:
+            control.props = control.props if control.props else []
+            control.props.append(common.Property(name=const.SORT_ID, value=yaml_header[const.SORT_ID]))
         return control, group_title

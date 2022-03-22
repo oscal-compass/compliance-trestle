@@ -23,13 +23,18 @@ import pytest
 
 from tests import test_utils
 
+from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
-from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
+from trestle.core.catalog_interface import CatalogInterface
+from trestle.core.control_io import ParameterRep
+from trestle.core.models.file_content_type import FileContentType
+from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
+from trestle.core.resolver.merge import Merge
+from trestle.core.resolver.modify import Modify
 from trestle.oscal import catalog as cat
 from trestle.oscal import common as com
 from trestle.oscal import profile as prof
-from trestle.utils import fs
 
 
 def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:
@@ -44,7 +49,9 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    prof_a_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
     # added part ac-1_expevid from prof a
@@ -145,7 +152,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     method = prof.Method.merge
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
 
     # merge into empty catalog
     merged = gens.generate_sample_model(cat.Catalog)
@@ -167,7 +174,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     method = prof.Method.use_first
     combine = prof.Combine(method=method)
     profile.merge = prof.Merge(combine=combine)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
     assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
@@ -175,7 +182,7 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
 
     # now force a merge with keep
     profile.merge = None
-    merge_keep = ProfileResolver.Merge(profile)
+    merge_keep = Merge(profile)
     merged_keep = merge_keep._merge_catalog(new_merged, sample_catalog_rich_controls)
     assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 10
 
@@ -186,23 +193,30 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
         ('ac-2_smt.1', 'hello', 'ac-2_smt.1', 'hello'), ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there', 'hello there'),
         ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there', ' hello there'),
         ('ac-2_smt.1', 'hello', ' xac-2_smt.1 there', ' xac-2_smt.1 there'),
-        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.1', ' hello there hello'),
-        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10', ' hello there ac-2_smt.10')
+        ('ac-2_smt.1', 'hello', 'ac-2_smt.1 there ac-2_smt.1', 'hello there hello'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10', ' hello there my 10 str'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there ac-2_smt.10x', ' hello there ac-2_smt.10x'),
+        ('ac-2_smt.1', 'hello', ' ac-2_smt.1 there _ac-2_smt.10', ' hello there _ac-2_smt.10')
     ]
 )
 def test_replace_params(param_id, param_text, prose, result) -> None:
     """Test cases of replacing param in string."""
-    param_dict = {param_id: param_text}
-    assert ProfileResolver.Modify._replace_id_with_text(prose, param_dict) == result
+    param = com.Parameter(id=param_id, values=[com.ParameterValue(__root__=param_text)])
+    param_10 = com.Parameter(id='ac-2_smt.10', values=[com.ParameterValue(__root__='my 10 str')])
+    param_dict = {param_id: param, 'ac-1_smt.10': param_10}
+    assert Modify._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
 
 
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
     id_1 = 'ac-2_smt.1'
+    param_1 = com.Parameter(id=id_1, values=[com.ParameterValue(__root__='the cat')])
     id_10 = 'ac-2_smt.10'
+    param_10 = com.Parameter(id=id_10, values=[com.ParameterValue(__root__='well fed')])
+
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
-    param_dict = {id_1: 'the cat', id_10: 'well fed'}
-    new_text = ProfileResolver.Modify._replace_params(param_text, param_dict)
+    param_dict = {id_1: param_1, id_10: param_10}
+    new_text = Modify._replace_params(param_text, param_dict)
     assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
 
 
@@ -210,9 +224,11 @@ def test_parameter_resolution(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether expected order of operations is preserved for parameter substution."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_e_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_e', prof.Profile, fs.FileContentType.JSON)
+    prof_e_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_e', prof.Profile, FileContentType.JSON
+    )
     profile_e_parameter_string = '## Override value ##'
-    profile_a_value = 'all alert personell'
+    profile_a_value = 'all alert personnel'
 
     # based on 800-53 rev 5
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_e_path)
@@ -233,7 +249,7 @@ def test_merge_params() -> None:
     # kill remarks to confirm it is filled in by merge
     params[0].remarks = None
     profile = gens.generate_sample_model(prof.Profile)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
     merge._merge_items(params[0], params[1], prof.Method.merge)
     assert params[0]
     # the contraints in each are identical so they don't merge
@@ -253,7 +269,7 @@ def test_merge_two_catalogs() -> None:
     combine = prof.Combine(method=method)
     profile = gens.generate_sample_model(prof.Profile)
     profile.merge = prof.Merge(combine=combine)
-    merge = ProfileResolver.Merge(profile)
+    merge = Merge(profile)
     merge._merge_two_catalogs(cat_1, cat_2, method, True)
     assert cat_1
     assert len(cat_1.controls) == 7
@@ -264,7 +280,9 @@ def test_merge_two_catalogs() -> None:
 def test_add_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test all types of property additions."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_f_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_f', prof.Profile, fs.FileContentType.JSON)
+    prof_f_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_f', prof.Profile, FileContentType.JSON
+    )
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_f_path)
     interface = CatalogInterface(cat)
     ac_3 = interface.get_control('ac-3')
@@ -291,7 +309,9 @@ def test_add_props_before_after_ok(tmp_trestle_dir: pathlib.Path) -> None:
     Properties added with before or after will default to starting or ending.
     """
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_g_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_g', prof.Profile, fs.FileContentType.JSON)
+    prof_g_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_g', prof.Profile, FileContentType.JSON
+    )
     _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_g_path)
 
 
@@ -299,7 +319,9 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     """Test get all groups from the catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    prof_a_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     cat_interface = CatalogInterface(catalog)
 
@@ -316,6 +338,6 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     assert statement_label == '2.'
     assert part.id == 'ac-1_smt.c.2'
 
-    cat_path = cat_interface.get_control_path('ac-2')
+    cat_path = cat_interface._get_control_path('ac-2')
     assert cat_path[0] == 'ac'
     assert len(cat_path) == 1

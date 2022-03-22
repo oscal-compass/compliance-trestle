@@ -4,7 +4,7 @@ This plugin provides functionality for validating an SSP for FedRAMP compliance.
 
 ## `trestle fedramp-validate`
 
-This command allow users to validate existing OSCAL SSP file (in JSON or YAML format) for FedRAMP complaince. For example, `trestle fedramp-validate -f /local_dir/ssp.json -o report/` will validate `ssp.json` file for fedramp complaince and store the validation reports in `report` folder.
+This command allows users to validate existing OSCAL SSP file (in JSON or YAML format) for FedRAMP compliance. For example, `trestle fedramp-validate -f /local_dir/ssp.json -o report/` will validate `ssp.json` file for fedramp complaince and store the validation reports in `report` folder.
 
 The following options are supported:
 

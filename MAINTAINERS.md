@@ -1,4 +1,4 @@
-Trestle was designed and opensourced by a team based at [IBM Research - Australia](https://www.research.ibm.com/labs/australia/) and others around the world.  The list includes:
+Trestle was designed and opensourced by a team based at [IBM Research](https://www.research.ibm.com/) and others around the world.  The list includes:
 
 Christopher Butler - [butler54](https://github.com/butler54)
 

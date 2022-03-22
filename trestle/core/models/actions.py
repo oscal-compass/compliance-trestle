@@ -21,9 +21,9 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Optional
 
-import trestle.core.const as const
-from trestle.core.err import TrestleError
-from trestle.utils import fs, trash
+import trestle.common.const as const
+from trestle.common import file_utils, trash
+from trestle.common.err import TrestleError
 
 from .elements import Element, ElementPath
 from .file_content_type import FileContentType
@@ -233,7 +233,7 @@ class CreatePathAction(Action):
         """
         sub_path = sub_path.resolve()
 
-        self._trestle_project_root = fs.get_trestle_project_root(sub_path)
+        self._trestle_project_root = file_utils.extract_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
             raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
 
@@ -339,7 +339,7 @@ class RemovePathAction(Action):
         if not isinstance(sub_path, pathlib.Path):
             raise TrestleError('Sub path must be of type pathlib.Path')
 
-        self._trestle_project_root = fs.get_trestle_project_root(sub_path)
+        self._trestle_project_root = file_utils.extract_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
             raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project.')
 

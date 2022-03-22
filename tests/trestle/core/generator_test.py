@@ -27,8 +27,8 @@ from pydantic import ConstrainedStr
 
 import pytest
 
-import trestle.core.const as const
-import trestle.core.err as err
+import trestle.common.const as const
+import trestle.common.err as err
 import trestle.core.generators as gens
 import trestle.oscal as oscal
 import trestle.oscal.assessment_results as ar

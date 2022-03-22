@@ -17,17 +17,18 @@
 import pathlib
 from typing import Any, List, Optional, Type, Union
 
-from trestle.core import const, utils
+from trestle.common import const, str_utils, type_utils
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.utils import fs
 
 
 def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
-    if utils.is_collection_field_type(model_type):
+    if type_utils.is_collection_field_type(model_type):
         return False
     if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
         return True
@@ -126,7 +127,7 @@ def parse_chain(
             # at this point sub_model may be a list of items
             # new element path is needed only if any of the items contains the desired part
             if p != ElementPath.WILDCARD:
-                new_attrib = utils.dash_to_underscore(p)
+                new_attrib = str_utils.dash_to_underscore(p)
                 if isinstance(sub_model, list):
                     for item in sub_model:
                         # go into the list and find one with requested part
@@ -146,7 +147,7 @@ def parse_chain(
         # If path has wildcard and it does not refer to a list, then there can be nothing after *
         if element_path.get_last() == ElementPath.WILDCARD:
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
-            parent_model = fs.get_singular_alias(full_path_str, relative_path)
+            parent_model = ModelUtils.get_singular_alias(full_path_str, relative_path)
             # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
             # If it has __root__ it may mean it contains a list of objects and should be split as a list
             if isinstance(sub_model, OscalBaseModel):
@@ -161,7 +162,7 @@ def parse_chain(
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue
-                        new_alias = utils.underscore_to_dash(key)
+                        new_alias = str_utils.underscore_to_dash(key)
                         new_path = full_path_str + '.' + new_alias
                         if not split_is_too_fine(new_path, model_obj):
                             # to add parts of an element, need to add two links
@@ -220,6 +221,6 @@ def parse_element_arg(
 def to_model_file_name(model_obj: OscalBaseModel, file_prefix: str, content_type: FileContentType) -> str:
     """Return the file name for the item."""
     file_ext = FileContentType.to_file_extension(content_type)
-    model_type = utils.classname_to_alias(type(model_obj).__name__, 'json')
+    model_type = classname_to_alias(type(model_obj).__name__, AliasMode.JSON)
     file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
     return file_name

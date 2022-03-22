@@ -16,18 +16,17 @@
 import copy
 import logging
 import pathlib
-import re
-from typing import Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
-from pydantic import BaseModel
-
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
+from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_list
+from trestle.common.model_utils import ModelUtils
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.core.utils import as_list
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -71,17 +70,17 @@ class CatalogInterface():
     def __init__(self, catalog: Optional[cat.Catalog] = None) -> None:
         """Initialize the interface with the catalog."""
         self._catalog = catalog
-        self._param_dict: Dict[str, str] = {}
+        self._param_control_map: Dict[str, str] = {}
         self._control_dict = self._create_control_dict() if catalog else None
 
-    def _add_params_to_dict(self, control: cat.Control) -> None:
+    def _add_params_to_map(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
         for param in as_list(control.params):
-            if param.id in self._param_dict:
+            if param.id in self._param_control_map:
                 logger.warning(
-                    f'Duplicate param id {param.id} in control {control.id} and {self._param_dict[param.id]}.'
+                    f'Duplicate param id {param.id} in control {control.id} and {self._param_control_map[param.id]}.'
                 )
-            self._param_dict[param.id] = control.id
+            self._param_control_map[param.id] = control.id
 
     def _add_sub_controls(
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
@@ -142,7 +141,7 @@ class CatalogInterface():
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
         for handle in control_dict.values():
-            self._add_params_to_dict(handle.control)
+            self._add_params_to_map(handle.control)
         return control_dict
 
     def _get_all_controls_in_list(self, controls: List[cat.Control], recurse: bool) -> List[cat.Control]:
@@ -162,9 +161,9 @@ class CatalogInterface():
         controls: List[cat.Control] = []
         if group.controls:
             controls.extend(self._get_all_controls_in_list(group.controls, recurse))
-        for group in as_list(group.groups):
-            if group.controls:
-                controls.extend(self._get_all_controls_in_group(group, recurse))
+        for sub_group in as_list(group.groups):
+            if sub_group.controls:
+                controls.extend(self._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
@@ -186,12 +185,29 @@ class CatalogInterface():
 
     def get_control_by_param_id(self, param_id: str) -> Optional[cat.Control]:
         """Get control from catalog that has this param id using the dict."""
-        if param_id in self._param_dict:
-            return self.get_control(self._param_dict[param_id])
+        if param_id in self._param_control_map:
+            return self.get_control(self._param_control_map[param_id])
         return None
 
+    def get_control_id_and_status(self, control_name: str) -> Tuple[str, str]:
+        """Get the control id and status using the control name."""
+        for control in self.get_all_controls_from_dict():
+            if ControlIOWriter.get_label(control).strip().lower() == control_name.strip().lower():
+                status = ControlIOWriter.get_prop(control, 'status')
+                return control.id, status
+        return '', ''
+
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
-        """Get the prose for a named part in the control."""
+        """
+        Get the prose for a named part in the control.
+
+        Args:
+            control_id: id of the control
+            part_name: name of the part
+
+        Returns:
+            Single string concatenating prose from all parts and sub-parts in control with that name.
+        """
         control = self.get_control(control_id)
         return ControlIOWriter.get_part_prose(control, part_name)
 
@@ -259,7 +275,7 @@ class CatalogInterface():
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
                     if part:
-                        label = self.get_label(part)
+                        label = ControlIOWriter.get_label(part)
                         found_part = part
                         break
 
@@ -279,6 +295,15 @@ class CatalogInterface():
 
         return None
 
+    def delete_withdrawn_controls(self) -> None:
+        """Delete all withdrawn controls from the catalog."""
+        delete_list = []
+        for control in self.get_all_controls_from_dict():
+            if ControlIOWriter.is_withdrawn(control):
+                delete_list.append(control.id)
+        for id_ in delete_list:
+            self.delete_control(id_)
+
     @staticmethod
     def _get_groups_from_group(group: cat.Group) -> Iterator[cat.Group]:
         yield group
@@ -286,17 +311,6 @@ class CatalogInterface():
             for new_group in group.groups:
                 for res in CatalogInterface._get_groups_from_group(new_group):
                     yield res
-
-    @staticmethod
-    def get_label(object_with_props: BaseModel) -> str:
-        """Get the label from an object with properties (such as a control)."""
-        label = ''
-        if object_with_props.props:
-            for prop in as_list(object_with_props.props):
-                if prop.name == 'label':
-                    label = prop.value
-                    break
-        return label
 
     def get_group_info_by_control(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control from the dict."""
@@ -306,13 +320,17 @@ class CatalogInterface():
             self._control_dict[control_id].group_class
         )
 
-    def get_control_path(self, control_id: str) -> List[str]:
+    def _get_control_path(self, control_id: str) -> List[str]:
         """Return the path into the catalog for this control."""
         return self._control_dict[control_id].path
 
     def replace_control(self, control: cat.Control) -> None:
         """Replace the control in the control_dict after modifying it."""
         self._control_dict[control.id].control = control
+
+    def delete_control(self, control_id: str) -> None:
+        """Delete the control from the control_dict based on id."""
+        self._control_dict.pop(control_id, None)
 
     def get_catalog(self, update=True) -> cat.Catalog:
         """Safe method to get catalog after forced update from catalog dict."""
@@ -321,15 +339,25 @@ class CatalogInterface():
         return self._catalog
 
     def _update_all_controls_in_list(self, controls: List[cat.Control]) -> List[cat.Control]:
-        """Given a list of controls, create fresh list pulled from the control dict."""
+        """
+        Given a list of controls, create fresh list pulled from the control dict.
+
+        Args:
+            controls: a list of controls in the original catalog
+
+        Returns:
+            The new list of updated controls, possibly with some missing if they have been removed from the dict
+        """
         new_list: List[cat.Control] = []
         for control in controls:
             # first update the control itself by getting it from the dict
             control = self.get_control(control.id)
-            # then update any controls it contains from the dict
-            if control.controls:
-                control.controls = self._update_all_controls_in_list(control.controls)
-            new_list.append(control)
+            # no warning given if control not found in dict.  it is assumed to have been removed from the catalog.
+            if control is not None:
+                # then update any controls it contains from the dict
+                if control.controls:
+                    control.controls = self._update_all_controls_in_list(control.controls)
+                new_list.append(control)
         return new_list
 
     def _update_all_controls_in_group(self, group: cat.Group) -> None:
@@ -370,20 +398,46 @@ class CatalogInterface():
         return hits
 
     @staticmethod
-    def get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
+    def setparam_to_param(param_id: str, set_param: prof.SetParameter) -> common.Parameter:
+        """
+        Convert setparameter to parameter.
+
+        Args:
+            param_id: the id of the parameter
+            set_param: the set_parameter from a profile
+
+        Returns:
+            a Parameter with param_id and content from the SetParameter
+        """
+        return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
+
+    @staticmethod
+    def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
         """Get the full mapping of param_id to modified value for this profile."""
-        set_param_dict: Dict[str, str] = {}
+        set_param_dict: Dict[str, common.Parameter] = {}
         if not profile.modify:
             return set_param_dict
         for set_param in as_list(profile.modify.set_parameters):
-            value_str = ControlIOReader.param_values_as_string(set_param)
-            set_param_dict[set_param.param_id] = value_str
+            param = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
+            set_param_dict[set_param.param_id] = param
         return set_param_dict
 
     @staticmethod
-    def get_profile_param_dict(control: cat.Control, profile_param_dict: Dict[str, str]) -> Dict[str, str]:
-        """Get the list of params for this control and any set by the profile."""
-        param_dict = ControlIOReader.get_control_param_dict(control, False)
+    def _get_profile_param_dict(
+        control: cat.Control, profile_param_dict: Dict[str, common.Parameter], values_only: bool
+    ) -> Dict[str, common.Parameter]:
+        """
+        Get the dict of params for this control including possible overrides made by the profile modifications.
+
+        Args:
+            control: The control being queried
+            profile_param_dict: The full dict of params and modified values made by the profile
+
+        Returns:
+            mapping of param ids to their final parameter states after possible modify by the profile setparameters
+        """
+        # get the mapping of param_id's to params for this control, excluding those with no value set
+        param_dict = ControlIOReader.get_control_param_dict(control, values_only)
         for key in param_dict.keys():
             if key in profile_param_dict:
                 param_dict[key] = profile_param_dict[key]
@@ -393,32 +447,102 @@ class CatalogInterface():
         self,
         md_path: pathlib.Path,
         yaml_header: dict,
-        sections: Optional[Dict[str, str]],
-        responses: bool,
+        sections_dict: Optional[Dict[str, str]],
+        prompt_responses: bool,
         additional_content: bool = False,
         profile: Optional[prof.Profile] = None,
-        preserve_header_values: bool = False,
-        set_parameters: bool = False
+        overwrite_header_values: bool = False,
+        set_parameters: bool = False,
+        required_sections: Optional[str] = None,
+        allowed_sections: Optional[str] = None
     ) -> None:
-        """Write out the catalog controls from dict as markdown to the given directory."""
+        """
+        Write out the catalog controls from dict as markdown files to the specified directory.
+
+        Args:
+            md_path: Path to directory in which to write the markdown
+            yaml_header: Dictionary to write into the yaml header of the controls
+            sections_dict: Optional dict mapping section short names to long
+            prompt_responses: Whether to prompt for responses in the control markdown
+            additional_content: Should the additional content be printed corresponding to profile adds
+            profile: Optional profile containing the adds making up additional content
+            overwrite_header_values: Overwrite existing values in markdown header content but add new content
+            set_parameters: Set header values based on params in the control and in the profile
+            required_sections: Optional string containing list of sections that should be prompted for prose
+            allowed_sections: Optional string containing list of sections that should be included in markdown
+
+        Returns:
+            None
+        """
         writer = ControlIOWriter()
+        required_section_list = required_sections.split(',') if required_sections else []
+        allowed_section_list = allowed_sections.split(',') if allowed_sections else []
 
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
-        if set_parameters:
-            full_profile_param_dict = CatalogInterface.get_full_profile_param_dict(profile)
+        # get the list of SetParams for this profile
+        full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
+            # make copy of incoming yaml header
             new_header = copy.deepcopy(yaml_header)
+            # here we do special handling of how set-parameters merge with the yaml header
             if set_parameters:
-                param_dict = CatalogInterface.get_profile_param_dict(control, full_profile_param_dict)
-                if param_dict:
-                    new_header[const.SET_PARAMS_TAG] = param_dict
+                # get all params for this control
+                control_param_dict = ControlIOReader.get_control_param_dict(control, False)
+                set_param_dict: Dict[str, str] = {}
+                for param_id, param_dict in control_param_dict.items():
+                    # if the param is in the profile set_params, load its contents first and mark as profile-values
+                    if param_id in full_profile_param_dict:
+                        # get the param from the profile set_param
+                        param = full_profile_param_dict[param_id]
+                        # assign its contents to the dict
+                        new_dict = ModelUtils.parameter_to_dict(param, True)
+                        profile_values = new_dict.get(const.VALUES, None)
+                        if profile_values:
+                            new_dict[const.PROFILE_VALUES] = profile_values
+                            new_dict.pop(const.VALUES)
+                        # then insert the original, incoming values as values
+                        if param_id in control_param_dict:
+                            orig_param = control_param_dict[param_id]
+                            orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                            new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                            # merge contents from the two sources with priority to the profile-param
+                            for item in ['select', 'label']:
+                                if item in orig_dict and item not in new_dict:
+                                    new_dict[item] = orig_dict[item]
+                    else:
+                        new_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                    new_dict.pop('id')
+                    set_param_dict[param_id] = new_dict
+                if set_param_dict:
+                    if const.SET_PARAMS_TAG not in new_header:
+                        new_header[const.SET_PARAMS_TAG] = {}
+                    if overwrite_header_values:
+                        # update the control params with new values
+                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                            if key in control_param_dict:
+                                set_param_dict[key] = value
+                    else:
+                        # update the control params with any values in yaml header not set in control
+                        # need to maintain order in the set_param_dict
+                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                            if key in control_param_dict and key not in set_param_dict:
+                                set_param_dict[key] = value
+                    new_header[const.SET_PARAMS_TAG] = set_param_dict
+                elif const.SET_PARAMS_TAG in new_header:
+                    # need to cull any params that are not in control
+                    pop_list: List[str] = []
+                    for key in new_header[const.SET_PARAMS_TAG].keys():
+                        if key not in control_param_dict:
+                            pop_list.append(key)
+                    for pop in pop_list:
+                        new_header[const.SET_PARAMS_TAG].pop(pop)
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path
-            control_path = catalog_interface.get_control_path(control.id)
+            control_path = catalog_interface._get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():
@@ -428,11 +552,13 @@ class CatalogInterface():
                 control,
                 group_title,
                 new_header,
-                sections,
+                sections_dict,
                 additional_content,
-                responses,
+                prompt_responses,
                 profile,
-                preserve_header_values
+                overwrite_header_values,
+                required_section_list,
+                allowed_section_list
             )
 
     @staticmethod
@@ -453,54 +579,7 @@ class CatalogInterface():
             sorted_id_map[key] = id_map[key]
         return sorted_id_map
 
-    @staticmethod
-    def _get_sorted_control_paths(group_path: pathlib.Path) -> List[pathlib.Path]:
-        """
-        Find sorted list of paths to control md files in this group dir.
-
-        Parse control id and sort based on assumed pattern label-digits.frac.extra
-        The extra part is treated as an arbitrary string.
-        In the worst case this results in ordinary string sorting.
-        """
-        control_paths = list(group_path.glob('*.md'))
-        control_map = {}
-        for control_path in control_paths:
-            control_id = control_path.stem
-            # set the label to be the control_id at start
-            # if the id doesn't fit the expected pattern it will just be sorted alphabetically based on the id string
-            label = control_id
-            digits = 0
-            frac = 0
-            extra = ''
-            # now try to break off ac as label from ac-11.21xy
-            if '-' in control_id:
-                dash_split = control_id.split('-', 1)
-                label = dash_split[0]
-                remainder = dash_split[1]
-                # now try to extract 11 and 21
-                matches = re.search(r'([0-9]+)\.([0-9]+)(.*)', remainder)
-                if matches:
-                    tup = matches.groups()
-                    digits = int(tup[0])
-                    frac = int(tup[1])
-                    extra = tup[2]
-                else:
-                    # look for 11 with no decimal
-                    # this is needed so ac-2 comes before ac-11
-                    matches = re.search(r'([0-9]+)(.*)', remainder)
-                    if matches:
-                        tup = matches.groups()
-                        digits = int(tup[0])
-                        # extra will now contain xy
-                        extra = tup[1]
-                    else:
-                        extra = remainder
-            # create the 4 keys used for sorting
-            control_map[control_path] = (label, digits, frac, extra)
-
-        return sorted(control_paths, key=lambda x: control_map[x])
-
-    def read_catalog_from_markdown(self, md_path: pathlib.Path) -> cat.Catalog:
+    def read_catalog_from_markdown(self, md_path: pathlib.Path, set_parameters: bool) -> cat.Catalog:
         """
         Read the groups and catalog controls from the given directory.
 
@@ -512,15 +591,15 @@ class CatalogInterface():
         groups: List[cat.Group] = []
         # read each group dir
         for group_id, group_dir in id_map.items():
-            control_list = []
+            control_list_raw = []
             group_title = ''
             # Need to get group title from at least one control in this directory
             # All controls in dir should have same group title
             # Set group title to the first one found and warn if different non-empty title appears
             # Controls with empty group titles are tolerated but at least one title must be present or warning given
             # The special group with no name that has the catalog as parent is just a list and has no title
-            for control_path in CatalogInterface._get_sorted_control_paths(group_dir):
-                control, control_group_title = ControlIOReader.read_control(control_path)
+            for control_path in group_dir.glob('*.md'):
+                control, control_group_title = ControlIOReader.read_control(control_path, set_parameters)
                 if control_group_title:
                     if group_title:
                         if control_group_title != group_title:
@@ -529,7 +608,8 @@ class CatalogInterface():
                             )
                     else:
                         group_title = control_group_title
-                control_list.append(control)
+                control_list_raw.append(control)
+            control_list = sorted(control_list_raw, key=lambda control: ControlIOWriter.get_sort_id(control))
             if group_id:
                 if not group_title:
                     logger.warning(f'No group title found in controls for group {group_id}')
@@ -540,6 +620,7 @@ class CatalogInterface():
                 # if the list of controls has no group id it also has no title and is just the controls of the catalog
                 self._catalog.controls = control_list
         self._catalog.groups = groups if groups else None
+        self._create_control_dict()
         return self._catalog
 
     @staticmethod
@@ -558,84 +639,39 @@ class CatalogInterface():
             As the controls are read into the catalog the needed components are added if not already available.
             avail_comps provides the mapping of component name to the actual component.
         """
-        imp_reqs: List[ossp.ImplementedRequirement] = []
+        imp_req_map: Dict[str, ossp.ImplementRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
-            for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                imp_reqs.append(ControlIOReader.read_implemented_requirement(control_file, avail_comps))
-        return imp_reqs
+            for control_file in group_path.glob('*.md'):
+                sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_file, avail_comps)
+                imp_req_map[sort_id] = imp_req
+        return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 
     @staticmethod
-    def read_additional_content(md_path: pathlib.Path) -> Tuple[List[prof.Alter], Dict[str, str]]:
-        """Read all markdown controls and return list of alters."""
+    def read_additional_content(
+        md_path: pathlib.Path, required_sections_list: List[str]
+    ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
+        """Read all markdown controls and return list of alters plus control param dict and param sort map."""
+        alters_map: Dict[str, prof.Alter] = {}
+        final_param_dict: Dict[str, Any] = {}
+        param_sort_map: Dict[str, str] = {}
+        for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
+            for control_file in group_path.glob('*.md'):
+                sort_id, control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
+                    control_file,
+                    required_sections_list
+                )
+                alters_map[sort_id] = control_alters
+                for param_id, param_dict in control_param_dict.items():
+                    # if profile_values are present, overwrite values with them
+                    if const.PROFILE_VALUES in param_dict:
+                        param_dict[const.VALUES] = param_dict.pop(const.PROFILE_VALUES)
+                        final_param_dict[param_id] = param_dict
+                        param_sort_map[param_id] = sort_id
         new_alters: List[prof.Alter] = []
-        param_dict: Dict[str, str] = {}
-        for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
-            for control_file in CatalogInterface._get_sorted_control_paths(group_path):
-                control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(control_file)
-                new_alters.extend(control_alters)
-                param_dict.update(control_param_dict)
-        return new_alters, param_dict
-
-    @staticmethod
-    def part_equivalent(a: common.Part, b: common.Part) -> bool:
-        """Check if individual parts are equivalent."""
-        # id's may be different because we create the id ourselves on read
-        # FIXME should not need strip
-        if a.name != b.name:
-            return False
-        if (a.prose is None) != (b.prose is None):
-            return False
-        if a.prose:
-            if a.prose.strip() != b.prose.strip():
-                return False
-        if (a.parts is None) != (b.parts is None):
-            return False
-        if a.parts:
-            if not CatalogInterface.parts_equivalent(a.parts, b.parts):
-                return False
-        return True
-
-    @staticmethod
-    def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
-        """Check if lists of parts are equivalent."""
-        if len(a) != len(b):
-            return False
-        for pair in zip(a, b):
-            if not CatalogInterface.part_equivalent(pair[0], pair[1]):
-                return False
-        return True
-
-    @staticmethod
-    def controls_equivalent(a: cat.Control, b: cat.Control) -> bool:
-        """Check if the controls are equivalent."""
-        if a.id != b.id:
-            logging.error(f'ids differ: |{a.id}| |{b.id}|')
-            return False
-        if a.title != b.title:
-            return False
-        if (a.parts is None) != (b.parts is None):
-            return False
-        if a.parts:
-            if not CatalogInterface.parts_equivalent(a.parts, b.parts):
-                return False
-        # FIXME cannot check controls until markdown lists sub-controls
-        return True
-
-    def equivalent_to(self, catalog: cat.Catalog) -> bool:
-        """Test equivalence of catalog dict contents in various ways."""
-        other = CatalogInterface(catalog)
-        if other.get_count_of_controls_in_dict() != self.get_count_of_controls_in_dict():
-            logging.error('count of controls is different')
-            return False
-        for a in self.get_all_controls_from_dict():
-            try:
-                b = other.get_control(a.id)
-            except Exception as e:
-                logging.error(f'error finding control {a.id} {e}')
-            if not self.controls_equivalent(a, b):
-                logging.error(f'controls differ: {a.id}')
-                return False
-        return True
+        # fill the alters according to the control sorting order
+        for key in sorted(alters_map.keys()):
+            new_alters.extend(alters_map[key])
+        return new_alters, final_param_dict, param_sort_map
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""
@@ -645,6 +681,76 @@ class CatalogInterface():
             if not control.control.parts:
                 continue
             for part in control.control.parts:
-                if part.name not in sections:
+                if part.name not in sections and part.name != 'statement':
                     sections.append(part.name)
         return sections
+
+    @staticmethod
+    def merge_controls(dest: cat.Control, src: cat.Control, replace_params: bool) -> None:
+        """
+        Merge the src control into dest.
+
+        Args:
+            dest: destination control into which content will be added
+            src: source control with new content
+            replace_params: replace the control params with the new ones
+        """
+        dest.parts = src.parts
+        if replace_params:
+            dest.params = src.params
+
+    def _find_control_in_group(self, group_id: str) -> Tuple[str, ControlHandle]:
+        """
+        Find a representative control for this group and its control handle.
+
+        This is a simple way to get group info (title etc.) given only group id.
+        It is not intended for high performance loops.  Use only as needed.
+        """
+        for control_id, control_handle in self._control_dict.items():
+            if control_handle.group_id == group_id:
+                return control_id, control_handle
+        raise TrestleError(f'No controls found for group {group_id}')
+
+    def merge_catalog(self, catalog: cat.Catalog, replace_params: bool) -> None:
+        """
+        Merge the provided new catalog controls into the original catalog in this catalog interface.
+
+        Args:
+            catalog: catalog containing controls that are merged into the current catalog of the interface
+            replace_params: replace all params in the control with the new ones
+
+        Notes:
+            This is mainly to support the reading of a catalog from markdown.  It allows retention of content such as
+            metadata and backmatter, along with labels and other parameter attributes that aren't in markdown.
+            The list of controls and group structure is specified by the markdown structure - but this doesn't allow
+            controls to contain controls.  Group lists are specified per directory.
+
+            Reading the markdown tells you groups and controls in them - and groups in groups.
+            Controls cannot change groups.  If the control was in the original json, its parts are replaced,
+            including its parameters.  Only values may be specified.  If no value specified, the value is unset in json.
+        """
+        cat_interface = CatalogInterface(catalog)
+        for src in cat_interface.get_all_controls_from_dict():
+            group_id, _, _ = cat_interface.get_group_info_by_control(src.id)
+            dest = self.get_control(src.id)
+            if dest:
+                dest_group, _, _ = self.get_group_info_by_control(dest.id)
+                if dest_group != group_id:
+                    raise TrestleError(f'Markdown for control {src.id} has different group id.')
+                CatalogInterface.merge_controls(dest, src, replace_params)
+                self.replace_control(dest)
+            else:
+                # need to add the control knowing its group must already exist
+                # get group info from an arbitrary control already present in group
+                _, control_handle = self._find_control_in_group(group_id)
+                # add the control and its handle to the param_dict
+                self._control_dict[src.id] = control_handle
+
+        # now need to cull any controls that are not in the src catalog
+        handled_ids = set(cat_interface._control_dict.keys())
+        orig_ids = set(self._control_dict.keys())
+        extra_ids = orig_ids.difference(handled_ids)
+        for extra_id in extra_ids:
+            self._control_dict.pop(extra_id)
+
+        self.update_catalog_controls()

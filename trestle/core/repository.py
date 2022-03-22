@@ -20,24 +20,24 @@ import logging
 import os
 import pathlib
 import shutil
-from typing import List, Type
+from typing import List, Optional, Type
 
+import trestle.common.const as const
 import trestle.core.commands.assemble as assemblecmd
 import trestle.core.commands.merge as mergecmd
 import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
-import trestle.core.const as const
+from trestle.common import file_utils, log
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
-from trestle.core.utils import classname_to_alias
-from trestle.utils import fs
-from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
@@ -47,26 +47,26 @@ class ManagedOSCAL:
 
     def __init__(self, root_dir: pathlib.Path, model_type: Type[OscalBaseModel], name: str) -> None:
         """Initialize repository OSCAL model object."""
-        if not fs.is_valid_project_root(root_dir):
+        if not file_utils.is_valid_project_root(root_dir):
             raise TrestleError(f'Provided root directory {str(root_dir)} is not a valid Trestle root directory.')
-        self.root_dir = root_dir
-        self.model_type = model_type
-        self.model_name = name
+        self._root_dir = root_dir
+        self._model_type = model_type
+        self._model_name = name
 
         # set model alais and dir
-        self.model_alias = classname_to_alias(self.model_type.__name__, 'json')
+        self.model_alias = classname_to_alias(self._model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(self.model_alias) is None:
             raise TrestleError(f'Given model {self.model_alias} is not a top level model.')
 
-        plural_path = fs.model_type_to_model_dir(self.model_alias)
-        self.model_dir = self.root_dir / plural_path / self.model_name
+        plural_path = ModelUtils.model_type_to_model_dir(self.model_alias)
+        self.model_dir = self._root_dir / plural_path / self._model_name
 
         if not self.model_dir.exists() or not self.model_dir.is_dir():
-            raise TrestleError(f'Model dir {self.model_name} does not exist.')
+            raise TrestleError(f'Model dir {self._model_name} does not exist.')
 
         file_content_type = FileContentType.path_to_content_type(self.model_dir / self.model_alias)
         if file_content_type == FileContentType.UNKNOWN:
-            raise TrestleError(f'Model file for model {self.model_name} does not exist.')
+            raise TrestleError(f'Model file for model {self._model_name} does not exist.')
         self.file_content_type = file_content_type
 
         filepath = pathlib.Path(
@@ -78,14 +78,14 @@ class ManagedOSCAL:
 
     def read(self) -> OscalBaseModel:
         """Read OSCAL model from repository."""
-        logger.debug(f'Reading model {self.model_name}.')
-        _, _, model = load_distributed(self.filepath, self.root_dir)
+        logger.debug(f'Reading model {self._model_name}.')
+        _, _, model = ModelUtils.load_distributed(self.filepath, self._root_dir)
         return model
 
     def write(self, model: OscalBaseModel) -> bool:
         """Write OSCAL model to repository."""
-        logger.debug(f'Writing model {self.model_name}.')
-        model_alias = classname_to_alias(model.__class__.__name__, 'json')
+        logger.debug(f'Writing model {self._model_name}.')
+        model_alias = classname_to_alias(model.__class__.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
@@ -106,7 +106,7 @@ class ManagedOSCAL:
 
         import_plan.execute()
 
-        logger.debug(f'Model {self.model_name} written to repository')
+        logger.debug(f'Model {self._model_name} written to repository')
         return True
 
     def split(self, model_file: pathlib.Path, elements: List[str]) -> bool:
@@ -117,7 +117,7 @@ class ManagedOSCAL:
 
         Elements should be specified relative to model file, e.g., 'metadata.props.*'
         """
-        logger.debug(f'Splitting model {self.model_name}, file {model_file}.')
+        logger.debug(f'Splitting model {self._model_name}, file {model_file}.')
         # input model_file should be relative to the model dir
         model_file_path = self.model_dir / model_file
         model_file_path = model_file_path.resolve()
@@ -135,23 +135,23 @@ class ManagedOSCAL:
 
         success = False
         try:
-            ret = splitcmd.SplitCmd().perform_split(file_parent, filename, elems, self.root_dir)
+            ret = splitcmd.SplitCmd().perform_split(file_parent, filename, elems, self._root_dir)
             if ret == 0:
                 success = True
         except Exception as e:
             raise TrestleError(f'Error in splitting model: {e}')
 
-        logger.debug(f'Model {self.model_name}, file {model_file} splitted successfully.')
+        logger.debug(f'Model {self._model_name}, file {model_file} splitted successfully.')
         return success
 
-    def merge(self, elements: List[str], parent_model_dir: pathlib.Path = None) -> bool:
+    def merge(self, elements: List[str], parent_model_dir: Optional[pathlib.Path] = None) -> bool:
         """Merge OSCAL elements in repository.
 
         The parent_model_dir specifies the parent model direcotry in which to merge relative to main model dir.
         For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog'
         dir that contains the 'metadata.json' file or the 'metadata' directory
         """
-        logger.debug(f'Merging model {self.model_name}, parent dir {parent_model_dir}.')
+        logger.debug(f'Merging model {self._model_name}, parent dir {parent_model_dir}.')
         if parent_model_dir is None:
             effective_cwd = self.model_dir
         else:
@@ -160,20 +160,20 @@ class ManagedOSCAL:
         success = True
         try:
             for elem in elements:
-                plan = mergecmd.MergeCmd.merge(effective_cwd, ElementPath(elem), self.root_dir)
+                plan = mergecmd.MergeCmd.merge(effective_cwd, ElementPath(elem), self._root_dir)
                 plan.execute()
 
         except Exception as e:
             raise TrestleError(f'Error in merging model: {e}')
 
-        logger.debug(f'Model {self.model_name} merged successfully.')
+        logger.debug(f'Model {self._model_name} merged successfully.')
         return success
 
     def validate(self) -> bool:
         """Validate OSCAL model in repository."""
-        logger.debug(f'Validating model {self.model_name}.')
-        repo = Repository(self.root_dir)
-        success = repo.validate_model(self.model_type, self.model_name)
+        logger.debug(f'Validating model {self._model_name}.')
+        repo = Repository(self._root_dir)
+        success = repo.validate_model(self._model_type, self._model_name)
         return success
 
 
@@ -189,26 +189,25 @@ class Repository:
 
     def __init__(self, root_dir: pathlib.Path) -> None:
         """Initialize trestle repository object."""
-        if not fs.is_valid_project_root(root_dir):
-            raise TrestleError(f'Provided root directory {str(root_dir)} is not a valid Trestle root directory.')
-        self.root_dir = root_dir
+        if not file_utils.is_valid_project_root(root_dir):
+            raise TrestleError(f'Provided root directory {root_dir} is not a valid Trestle root directory.')
+        self._root_dir = root_dir
 
     def import_model(self, model: OscalBaseModel, name: str, content_type='json') -> ManagedOSCAL:
         """Import OSCAL object into trestle repository."""
         logger.debug(f'Importing model {name} of type {model.__class__.__name__}.')
-        model_alias = classname_to_alias(model.__class__.__name__, 'json')
+        model_alias = classname_to_alias(model.__class__.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
         # Work out output directory and file
-        plural_path = fs.model_type_to_model_dir(model_alias)
+        plural_path = ModelUtils.model_type_to_model_dir(model_alias)
 
-        desired_model_dir = self.root_dir / plural_path
+        desired_model_dir = self._root_dir / plural_path
         desired_model_path = desired_model_dir / name / (model_alias + '.' + content_type)
         desired_model_path = desired_model_path.resolve()
 
         if desired_model_path.exists():
-            logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
             raise TrestleError(f'OSCAL file to be created here: {desired_model_path} exists.')
 
         content_type = FileContentType.to_content_type(pathlib.Path(desired_model_path).suffix)
@@ -251,11 +250,11 @@ class Repository:
 
         # all well; model was imported and validated successfully
         logger.debug(f'Model {name} of type {model.__class__.__name__} imported successfully.')
-        return ManagedOSCAL(self.root_dir, model.__class__, name)
+        return ManagedOSCAL(self._root_dir, model.__class__, name)
 
     def load_and_import_model(self, model_path: pathlib.Path, name: str, content_type='json') -> ManagedOSCAL:
         """Load the model at the specified path into trestle with the specified name."""
-        fetcher = cache.FetcherFactory.get_fetcher(self.root_dir, str(model_path))
+        fetcher = cache.FetcherFactory.get_fetcher(self._root_dir, str(model_path))
         model, _ = fetcher.get_oscal(True)
 
         return self.import_model(model, name, content_type)
@@ -263,44 +262,42 @@ class Repository:
     def list_models(self, model_type: Type[OscalBaseModel]) -> List[str]:
         """List models of a given type in trestle repository."""
         logger.debug(f'Listing models of type {model_type.__name__}.')
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
-        models = fs.get_models_of_type(model_alias, self.root_dir)
+        models = ModelUtils.get_models_of_type(model_alias, self._root_dir)
 
         return models
 
     def get_model(self, model_type: Type[OscalBaseModel], name: str) -> ManagedOSCAL:
         """Get a specific OSCAL model from repository."""
         logger.debug(f'Getting model {name} of type {model_type.__name__}.')
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
-        plural_path = fs.model_type_to_model_dir(model_alias)
-        desired_model_dir = self.root_dir / plural_path / name
+        plural_path = ModelUtils.model_type_to_model_dir(model_alias)
+        desired_model_dir = self._root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
-            logger.error(f'Model {name} does not exist.')
             raise TrestleError(f'Model {name} does not exist.')
 
-        return ManagedOSCAL(self.root_dir, model_type, name)
+        return ManagedOSCAL(self._root_dir, model_type, name)
 
     def delete_model(self, model_type: Type[OscalBaseModel], name: str) -> bool:
         """Delete an OSCAL model from repository."""
         logger.debug(f'Deleting model {name} of type {model_type.__name__}.')
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
-        plural_path = fs.model_type_to_model_dir(model_alias)
-        desired_model_dir = self.root_dir / plural_path / name
+        plural_path = ModelUtils.model_type_to_model_dir(model_alias)
+        desired_model_dir = self._root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
-            logger.error(f'Model {name} does not exist.')
             raise TrestleError(f'Model {name} does not exist.')
         shutil.rmtree(desired_model_dir)
 
         # remove model from dist directory if it exists
-        dist_model_dir = self.root_dir / const.TRESTLE_DIST_DIR / plural_path
+        dist_model_dir = self._root_dir / const.TRESTLE_DIST_DIR / plural_path
         file_content_type = FileContentType.path_to_content_type(dist_model_dir / name)
         if file_content_type != FileContentType.UNKNOWN:
             file_path = pathlib.Path(
@@ -317,16 +314,13 @@ class Repository:
         logger.debug(f'Assembling model {name} of type {model_type.__name__}.')
         success = False
 
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = True
-        else:
-            verbose = False
+        verbose = log.get_current_verbosity_level(logger)
         args = argparse.Namespace(
-            type=model_alias, name=name, extension=extension, trestle_root=self.root_dir, verbose=verbose
+            type=model_alias, name=name, extension=extension, trestle_root=self._root_dir, verbose=verbose
         )
 
         try:
@@ -344,15 +338,12 @@ class Repository:
         logger.debug(f'Validating model {name} of type {model_type.__name__}.')
         success = False
 
-        model_alias = classname_to_alias(model_type.__name__, 'json')
+        model_alias = classname_to_alias(model_type.__name__, AliasMode.JSON)
         if parser.to_full_model_name(model_alias) is None:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = True
-        else:
-            verbose = False
-        args = argparse.Namespace(type=model_alias, name=name, trestle_root=self.root_dir, verbose=verbose)
+        verbose = log.get_current_verbosity_level(logger)
+        args = argparse.Namespace(type=model_alias, name=name, trestle_root=self._root_dir, verbose=verbose)
 
         try:
             ret = validatecmd.ValidateCmd()._run(args)

@@ -25,7 +25,7 @@
         {
           "param-id": "ac-1_prm_1",
             "values": [
-              "all alert personell"
+              "all alert personnel"
             ]
         },
         {  "param-id": "ac-1_prm_2",
@@ -70,7 +70,7 @@
         },
         {  "param-id": "ac-2_prm_3",
             "values": [
-              "authorized personell"
+              "authorized personnel"
             ]
         },
         {  "param-id": "ac-2_prm_4",
@@ -80,7 +80,7 @@
         },
         {  "param-id": "ac-2_prm_5",
             "values": [
-              "personell"
+              "personnel"
             ]
         },
         {  "param-id": "ac-2_prm_6",
@@ -130,7 +130,14 @@
                 {
                   "id": "ac-1_last_lev2",
                   "name": "ImplGuidance",
-                  "prose": "New part inside subpart at the end"
+                  "prose": "New part inside subpart at the end",
+                  "parts": [
+                    {
+                      "id": "ac-1_last_lev2_b",
+                      "name": "ImplGuidance",
+                      "prose": "New part at second level of part with no by_id"
+                    }
+                  ]
                 }
               ]
             }

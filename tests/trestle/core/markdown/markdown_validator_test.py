@@ -19,7 +19,7 @@ from typing import Any, Dict
 
 import pytest
 
-import trestle.core.err as err
+import trestle.common.err as err
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 

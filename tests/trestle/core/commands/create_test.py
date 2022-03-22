@@ -23,10 +23,9 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
-import tests.test_utils as test_utils
-
 from trestle.cli import Trestle
-from trestle.core import const
+from trestle.common import const
+from trestle.common.err import TrestleError
 from trestle.core.commands import create
 from trestle.oscal.catalog import Catalog
 
@@ -40,9 +39,9 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monke
     testargs_root = ['trestle', 'create']
     for subcommand in subcommand_list:
         name_stem = f'random_named_{subcommand}'
-        test_args = testargs_root + [subcommand] + ['-o', name_stem]
+        test_args = testargs_root + ['-t', subcommand] + ['-o', name_stem]
         if include_optional:
-            test_args += ['-iof']
+            test_args += [const.IOF_SHORT]
         monkeypatch.setattr(sys, 'argv', test_args)
         rc = Trestle().run()
         assert rc == 0
@@ -58,9 +57,8 @@ def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
     args = argparse.Namespace(
         trestle_root=tmp_empty_cwd, extension='json', output='catalog', verbose=0, include_optional_fields=False
     )
-    rc = create.CreateCmd.create_object('catalog', Catalog, args)
-    # check for non zero return code.
-    assert rc > 0
+    with pytest.raises(TrestleError):
+        create.CreateCmd.create_object('catalog', Catalog, args)
 
 
 def test_fail_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
@@ -70,14 +68,14 @@ def test_fail_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     )
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     assert rc == 0
-    rc = create.CreateCmd.create_object('catalog', Catalog, args)
-    assert rc > 0
+    with pytest.raises(TrestleError):
+        create.CreateCmd.create_object('catalog', Catalog, args)
 
 
 def test_broken_args(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test behaviour on broken arguments."""
     # must be done using sys patching.
-    testargs_root = ['trestle', 'create']
+    testargs_root = ['trestle', 'create', '-t']
     monkeypatch.setattr(sys, 'argv', testargs_root)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         Trestle().run()
@@ -86,36 +84,22 @@ def test_broken_args(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) ->
     testargs = testargs_root + ['catalog']
     # missing command
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        Trestle().run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code > 0
+    rc = Trestle().run()
+    assert rc > 0
     # missing mandatory args
     testargs = testargs + ['-x', 'json']
     monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        Trestle().run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code > 0
+    rc = Trestle().run()
+    assert rc > 0
     testargs = testargs + ['-o', 'output']
     # correct behavior
     monkeypatch.setattr(sys, 'argv', testargs)
     rc = Trestle().run()
     assert rc == 0
     # correct behavior
-    testargs[2] = 'bad_name'
+    testargs[3] = 'bad_name'
     monkeypatch.setattr(sys, 'argv', testargs)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         Trestle().run()
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code > 0
-
-
-def test_execute_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Ensure create plan failure will return clean return codes from run."""
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, extension='json', output='my_catalog', verbose=0, include_optional_fields=False
-    )
-    monkeypatch.setattr('trestle.core.models.plans.Plan.execute', test_utils.patch_raise_exception)
-    rc = create.CreateCmd.create_object('catalog', Catalog, args)
-    assert rc == 1

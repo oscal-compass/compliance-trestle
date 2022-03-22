@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 
 

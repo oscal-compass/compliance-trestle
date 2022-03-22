@@ -17,25 +17,25 @@
 import argparse
 import logging
 import pathlib
-import traceback
 from typing import Dict, List, Tuple
 
-import trestle.utils.log as log
-from trestle.core import const
-from trestle.core import utils
+import trestle.common.log as log
+from trestle.common import const, file_utils, trash
+from trestle.common.err import TrestleError, handle_generic_command_exception
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common import cmd_utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.trestle_base_model import TrestleBaseModel
-from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
+trace = log.Trace(logger)
 
 
 class AliasTracker(TrestleBaseModel):
@@ -85,7 +85,7 @@ class SplitCmd(CommandPlusDocs):
         """Split an OSCAL file into elements."""
         try:
             log.set_log_level_from_args(args)
-            logger.debug('Entering trestle split.')
+            trace.log('Entering trestle split.')
             # get the Model
             args_raw: Dict[str, str] = args.__dict__
 
@@ -93,20 +93,13 @@ class SplitCmd(CommandPlusDocs):
             elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
             file_name = ''
-            file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
-                const.ARG_FILE]
+            file_name = '' if not args_raw[const.ARG_FILE] else args_raw[const.ARG_FILE]
             # cwd must be in the model directory if file to split is not specified
             effective_cwd = pathlib.Path.cwd()
 
             return self.perform_split(effective_cwd, file_name, elements_clean, args.trestle_root)
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while performing a split operation: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while performing a split operation: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error while performing a split operation')
 
     @classmethod
     def perform_split(
@@ -129,10 +122,9 @@ class SplitCmd(CommandPlusDocs):
         else:
             # cwd must be in the model directory if file to split is not specified
             # find top directory for this model based on trestle root and cwd
-            model_dir = fs.get_project_model_path(effective_cwd)
+            model_dir = file_utils.extract_project_model_path(effective_cwd)
             if model_dir is None:
-                logger.warning('Current directory must be within a model directory if file is not specified')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError('Current directory must be within a model directory if file is not specified')
 
             content_type: FileContentType = FileContentType.dir_to_content_type(model_dir)
 
@@ -145,8 +137,8 @@ class SplitCmd(CommandPlusDocs):
                 file_path = element_path.find_last_file_in_path(content_type, model_dir)
                 # now make the element path relative to the model file to be loaded
                 if file_path is None or element_path.make_relative(file_path.relative_to(model_dir)) != 0:
-                    logger.warning(f'Unable to match element path with files in model directory {element_path}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                    raise TrestleError(f'Unable to match element path with files in model directory {element_path}')
+
                 file_path_list.append((file_path, element_path.to_string()))
 
         # match paths to corresponding files since several paths may be split from the same file
@@ -161,22 +153,21 @@ class SplitCmd(CommandPlusDocs):
                 file_path_dict[key] = f'{current_path},{path}'
 
         for raw_file_name, element_path in file_path_dict.items():
-            file_path = fs.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
+            file_path = file_utils.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
             # this makes assumptions that the path is relative.
             if not file_path.exists():
-                logger.error(f'File {file_path} does not exist.')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError(f'File {file_path} does not exist.')
+
             content_type = FileContentType.to_content_type(file_path.suffix)
 
             # find the base directory of the file
             base_dir = file_path.parent
-            model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
+            model_type, _ = ModelUtils.get_stripped_model_type(file_path, trestle_root)
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
             if cmd_utils.split_is_too_fine(element_path, model):
-                logger.warning('Cannot split the model to the level of uuids, strings, etc.')
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError('Cannot split the model to the level of uuids, strings, etc.')
 
             # use the model itself to resolve any wildcards and create list of element paths
             logger.debug(f'split calling parse_element_args on {element_path}')
@@ -200,9 +191,8 @@ class SplitCmd(CommandPlusDocs):
             try:
                 split_plan.execute()
             except Exception as e:
-                logger.error(f'Split has failed with error: {e}.')
                 trash.recover(file_path, True)
-                return CmdReturnCodes.COMMAND_ERROR.value
+                raise TrestleError(f'Split has failed with error: {e}.')
 
         return CmdReturnCodes.SUCCESS.value
 
@@ -217,7 +207,7 @@ class SplitCmd(CommandPlusDocs):
         """Create split actions of sub model."""
         actions: List[Action] = []
         file_name = cmd_utils.to_model_file_name(sub_model_item, file_prefix, content_type)
-        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
+        model_type = classname_to_alias(type(sub_model_item).__name__, AliasMode.JSON)
         sub_model_file = sub_model_dir / file_name
         actions.append(CreatePathAction(sub_model_file))
         actions.append(WriteFileAction(sub_model_file, Element(sub_model_item, model_type), content_type))
@@ -410,7 +400,7 @@ class SplitCmd(CommandPlusDocs):
                     root_file = base_dir / element_path.to_root_path(content_type)
 
                 split_plan.add_action(CreatePathAction(root_file))
-                wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, 'json')
+                wrapper_alias = classname_to_alias(stripped_model.__class__.__name__, AliasMode.JSON)
                 split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
 
         # return the end of the current path chain
@@ -473,7 +463,7 @@ class SplitCmd(CommandPlusDocs):
         else:
             root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file, True))
-        wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+        wrapper_alias = classname_to_alias(stripped_root.__class__.__name__, AliasMode.JSON)
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 
         return split_plan

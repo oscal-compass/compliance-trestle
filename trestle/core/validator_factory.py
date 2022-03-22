@@ -17,8 +17,8 @@
 
 from ilcli import Command
 
-from trestle.core import all_validator, duplicates_validator, oscal_version_validator, refs_validator
-from trestle.core import const
+from trestle.common import const
+from trestle.core import all_validator, duplicates_validator, refs_validator
 from trestle.core.object_factory import ObjectFactory
 
 # Create the singleton validator factory
@@ -28,7 +28,6 @@ validator_factory: ObjectFactory = ObjectFactory()
 validator_factory.register_object(const.VAL_MODE_DUPLICATES, duplicates_validator.DuplicatesValidator())
 validator_factory.register_object(const.VAL_MODE_REFS, refs_validator.RefsValidator())
 validator_factory.register_object(const.VAL_MODE_ALL, all_validator.AllValidator())
-validator_factory.register_object(const.VAL_MODE_OSCAL_VERSION, oscal_version_validator.OSCALVersionValidator())
 
 
 def init_arguments(cmd: Command) -> None:

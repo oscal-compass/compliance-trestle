@@ -30,7 +30,7 @@ from tests import test_utils
 import trestle.core.generators as gens
 import trestle.oscal.common as common
 from trestle.cli import Trestle
-from trestle.core.err import TrestleError
+from trestle.common.err import TrestleError
 from trestle.oscal import catalog as cat
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile
@@ -147,7 +147,9 @@ def sample_catalog_rich_controls():
     """Return a catalog with controls in groups and in the catalog itself."""
     catalog_obj = gens.generate_sample_model(cat.Catalog)
 
-    control_a = cat.Control(id='control_a', title='this is control a')
+    param_0 = common.Parameter(id='param_0', values=[common.ParameterValue(__root__='param_0_val')])
+    param_1 = common.Parameter(id='param_1', values=[common.ParameterValue(__root__='param_1_val')])
+    control_a = cat.Control(id='control_a', title='this is control a', params=[param_0, param_1])
     control_b = cat.Control(id='control_b', title='this is control b')
     group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
     catalog_obj.groups = [group]

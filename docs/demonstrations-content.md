@@ -20,7 +20,7 @@ This demonstration uses trestle as an SDK for generating OSCAL files. This demon
 
 ## arc42 architectural template enforcement using trestle author.
 
-[arc42](https://arc42.org/) have created a set open-source architecture documentation templates. This [demonstration](https://github.com/IBM/compliance-trestle-demos/tree/develop/arc42-author-demo)
+[arc42](https://arc42.org/) have created a set of open-source architecture documentation templates. This [demonstration](https://github.com/IBM/compliance-trestle-arc42-demo)
 uses `trestle author` to enforce use of the (modified) arc42 templates.
 
 A CICD pipeline (using github actions) is used for this demonstration. The full repository, including working CICD is [here](https://github.com/IBM/compliance-trestle-arc42-demo). Read more about the demo [here](https://github.com/IBM/compliance-trestle-arc42-demo).
@@ -35,9 +35,9 @@ The Centre for Internet Security (CIS) produce a number of cross industry standa
 
 ## Creating an SSP using trestle author.
 
-`trestle author ssp-generate` and `trestle author ssp-author` allow users to generate first a set of markdown documents to allow easy editing of control responses and second to reassemble that information up into an OSCAL ssp document. [This is a 'baseline' demonstration](https://github.com/IBM/compliance-trestle-demos/tree/develop/ssp_author_demo) with more sophisticated updates expected in the near term.
+`trestle author ssp-generate` and `trestle author ssp-assemble` allow users to generate first a set of markdown documents to allow easy editing of control responses and second to reassemble that information up into an OSCAL ssp document. [This is a 'baseline' demonstration](https://github.com/IBM/compliance-trestle-demos/tree/develop/ssp_author_demo) with more sophisticated updates expected in the near term.
 
-## Trestle repository api (`trestle.core.repository`)
+## Trestle Repository API (`trestle.core.repository`)
 
 `trestle.core.repository` is an API which abstracts users from the file system of a trestle repository. It provides a way for external developers to access a trestle repository without relying on presumptions (such as cwd being within the repository). Find the demo [here](https://github.com/IBM/compliance-trestle-demos/tree/develop/trestle_repo_api_examples).
 

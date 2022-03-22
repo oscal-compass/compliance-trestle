@@ -17,27 +17,52 @@ import argparse
 import logging
 import pathlib
 import shutil
-import traceback
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
-import trestle.core.const as const
+import trestle.common.const as const
+import trestle.common.log as log
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
-import trestle.utils.fs as fs
-import trestle.utils.log as log
+from trestle.common import file_utils
+from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOReader
-from trestle.core.err import TrestleError, TrestleNotFoundError
+from trestle.core.control_io import ParameterRep
 from trestle.core.profile_resolver import ProfileResolver
-from trestle.core.utils import as_list
-from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
+
+
+def sections_to_dict(sections: Optional[str]) -> Dict[str, str]:
+    """
+    Convert sections string to dict mapping short to long names.
+
+    Args:
+        sections: String containing comma-sep pars of short_name:long_name for sections
+
+    Returns:
+        Dict mapping short names to long names
+
+    Notes:
+        If the long name is not provided (single string and no :) the long name is same as short name.
+        This is needed to map the internal part name for a guidance section to its long name in the formatted markdown.
+    """
+    sections_dict: Dict[str, str] = {}
+    if sections:
+        section_pairs = sections.strip("'").split(',')
+        # section pair is a single string possibly containing : and is either short_name:long_name or just short_name
+        for section_pair in section_pairs:
+            if ':' in section_pair:
+                section_tuple = section_pair.split(':')
+                sections_dict[section_tuple[0].strip()] = section_tuple[1].strip()
+            else:
+                sections_dict[section_pair] = section_pair
+    return sections_dict
 
 
 class ProfileGenerate(AuthorCommonCommand):
@@ -50,33 +75,37 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
-        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument(
-            '-phv',
-            '--preserve-header-values',
-            help=const.HELP_PRESERVE_HEADER_VALUES,
+            '-ohv',
+            '--overwrite-header-values',
+            help=const.HELP_OVERWRITE_HEADER_VALUES,
             required=False,
             action='store_true',
             default=False
         )
+        self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
+        self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
-            trestle_root = args.trestle_root
-            if not fs.allowed_task_name(args.output):
-                logger.warning(f'{args.output} is not an allowed directory name')
-                return CmdReturnCodes.COMMAND_ERROR.value
+            trestle_root: pathlib.Path = args.trestle_root
+            if not file_utils.is_directory_name_allowed(args.output):
+                raise TrestleError(f'{args.output} is not an allowed directory name')
 
             yaml_header: dict = {}
-            if 'yaml_header' in args and args.yaml_header is not None:
+            if args.yaml_header:
                 try:
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
                     yaml = YAML()
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
-                    logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                    raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
+
+            # combine command line sections with any in the yaml header, with priority to command line
+            sections_dict: Optional[Dict[str, str]] = None
+            if args.sections:
+                sections_dict = sections_to_dict(args.sections)
 
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
@@ -87,13 +116,12 @@ class ProfileGenerate(AuthorCommonCommand):
                 profile_path,
                 markdown_path,
                 yaml_header,
-                args.preserve_header_values,
-                args.set_parameters
+                args.overwrite_header_values,
+                sections_dict,
+                args.required_sections
             )
-        except Exception as e:
-            logger.error(f'Generation of the profile markdown failed with error: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
 
     def generate_markdown(
         self,
@@ -101,8 +129,9 @@ class ProfileGenerate(AuthorCommonCommand):
         profile_path: pathlib.Path,
         markdown_path: pathlib.Path,
         yaml_header: dict,
-        preserve_header_values: bool,
-        set_parameters: bool
+        overwrite_header_values: bool,
+        sections_dict: Optional[Dict[str, str]],
+        required_sections: Optional[str]
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -110,24 +139,39 @@ class ProfileGenerate(AuthorCommonCommand):
             trestle_root: Root directory of the trestle workspace
             profile_path: Path of the profile json file
             markdown_path: Path to the directory into which the markdown will be written
-            set_parameters: Generate list of control parameters in yaml headers, with values if set by this profile
+            yaml_header: Dict to merge into the yaml header of the control markdown
+            overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
+            sections_dict: Optional dict mapping section short names to long
+            required_sections: Optional comma-sep list of sections that get prompted for prose if not in the profile
 
         Returns:
             0 on success, 1 on error
         """
         try:
-            _, _, profile = load_distributed(profile_path, trestle_root)
-            catalog = ProfileResolver().get_resolved_profile_catalog(trestle_root, profile_path, True)
+            if sections_dict and 'statement' in sections_dict:
+                logger.warning('statement is not allowed as a section name.')
+                return CmdReturnCodes.COMMAND_ERROR.value
+            _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)
+            catalog = ProfileResolver().get_resolved_profile_catalog(
+                trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
+            )
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
-                markdown_path, yaml_header, None, False, True, profile, preserve_header_values, set_parameters
+                md_path=markdown_path,
+                yaml_header=yaml_header,
+                sections_dict=sections_dict,
+                prompt_responses=False,
+                additional_content=True,
+                profile=profile,
+                overwrite_header_values=overwrite_header_values,
+                set_parameters=True,
+                required_sections=required_sections,
+                allowed_sections=None
             )
         except TrestleNotFoundError as e:
-            logger.warning(f'Profile {profile_path} not found, error {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Profile {profile_path} not found, error {e}')
         except TrestleError as e:
-            logger.warning(f'Error generating the catalog as markdown: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+            raise TrestleError(f'Error generating the catalog as markdown: {e}')
         return CmdReturnCodes.SUCCESS.value
 
 
@@ -147,25 +191,43 @@ class ProfileAssemble(AuthorCommonCommand):
         output_help_str = 'Name of the output generated json Profile (ok to overwrite original)'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
+        self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
+        self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
+        self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
+        self.add_argument('-as', '--allowed-sections', help=const.HELP_ALLOWED_SECTIONS, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
+            # the original profile model name defaults to being the same as the new one
             prof_name = args.output if not args.name else args.name
-            return self.assemble_profile(trestle_root, prof_name, args.markdown, args.output, args.set_parameters)
-        except Exception as e:
-            logger.error(f'Assembly of markdown to profile failed with error: {e}')
-            logger.debug(traceback.format_exc())
-            return CmdReturnCodes.COMMAND_ERROR.value
+            return self.assemble_profile(
+                trestle_root=trestle_root,
+                orig_profile_name=prof_name,
+                md_name=args.markdown,
+                new_profile_name=args.output,
+                set_parameters=args.set_parameters,
+                regenerate=args.regenerate,
+                version=args.version,
+                required_sections=args.required_sections,
+                allowed_sections=args.allowed_sections
+            )
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
 
     @staticmethod
-    def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> None:
-        """Replace the alter adds in the orig_profile with the new ones."""
+    def _replace_alter_adds(profile: prof.Profile, alters: List[prof.Alter]) -> bool:
+        """Replace the alter adds in the orig_profile with the new ones and return True if changed."""
+        changed = False
         if not profile.modify:
             profile.modify = prof.Modify(alters=alters)
+            if alters:
+                changed = True
         elif not profile.modify.alters:
             profile.modify.alters = alters
+            if alters:
+                changed = True
         else:
             alter_dict = {}
             # if an alter has adds - remove them up front and build dict of alters by control id
@@ -175,9 +237,7 @@ class ProfileAssemble(AuthorCommonCommand):
             # now go through new alters and add them to each control in dict by control id
             for new_alter in alters:
                 alter = alter_dict.get(new_alter.control_id, None)
-                if alter is None:
-                    alter_dict[new_alter.control_id] = alter
-                else:
+                if alter:
                     # even though we removed adds at start, we may have added one already
                     if alter.adds:
                         alter.adds.extend(new_alter.adds)
@@ -187,63 +247,136 @@ class ProfileAssemble(AuthorCommonCommand):
                     alter_dict[new_alter.control_id] = alter
             # get the new list of alters from the dict and update profile
             new_alters = list(alter_dict.values())
+            if profile.modify.alters != new_alters:
+                changed = True
             profile.modify.alters = new_alters
+        return changed
 
     @staticmethod
-    def _replace_modify_set_params(profile: prof.Profile, param_dict: Dict[str, str]) -> None:
+    def _replace_modify_set_params(
+        profile: prof.Profile, param_dict: Dict[str, Any], param_map: Dict[str, str]
+    ) -> bool:
+        """
+        Replace the set_params in the profile with list and values from markdown.
+
+        Notes:
+            Returns whether or not change was made.
+        """
+        changed = False
         if param_dict:
             if not profile.modify:
                 profile.modify = prof.Modify()
-            profile.modify.set_parameters = as_list(profile.modify.set_parameters)
-            orig_param_dict = {}
-            for set_param in profile.modify.set_parameters:
-                orig_param_dict[set_param.param_id] = ControlIOReader.param_values_as_string(set_param)
-            orig_param_dict.update(param_dict)
-            new_set_params = []
-            for key, value in orig_param_dict.items():
-                if value:
-                    new_set_params.append(prof.SetParameter(param_id=key, values=[com.ParameterValue(__root__=value)]))
-            profile.modify.set_parameters = new_set_params
+            new_set_params: List[prof.SetParameter] = []
+            for key, sub_param_dict in param_dict.items():
+                if sub_param_dict:
+                    sub_param_dict['id'] = key
+                    param = ModelUtils.dict_to_parameter(sub_param_dict)
+                    new_set_params.append(
+                        prof.SetParameter(param_id=key, label=param.label, values=param.values, select=param.select)
+                    )
+            if profile.modify.set_parameters != new_set_params:
+                changed = True
+            # sort the params first by control sorting then by param_id
+            profile.modify.set_parameters = sorted(
+                new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
+            )
+        return changed
 
     @staticmethod
     def assemble_profile(
-        trestle_root: pathlib.Path, orig_profile_name: str, md_name: str, new_profile_name: str, set_parameters: bool
+        trestle_root: pathlib.Path,
+        orig_profile_name: str,
+        md_name: str,
+        new_profile_name: str,
+        set_parameters: bool,
+        regenerate: bool,
+        version: Optional[str],
+        required_sections: Optional[str],
+        allowed_sections: Optional[List[str]]
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
 
         Args:
             trestle_root: The trestle root directory
-            orig_profile_name: Optional name of original profile used to generate the markdown (default is md_name)
+            orig_profile_name: Optional name of profile used to generate the markdown (default is new_profile_name)
             md_name: The name of the directory containing the markdown control files for the profile
             new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
-            set_parameters: Use the parameters in the yaml header to specify values for parameters in the profile
+            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
+            regenerate: Whether to regenerate the uuid's in the profile
+            version: Optional version for the assembled profile
+            required_sections: Optional List of required sections in assembled profile, as comma-separated short names
+            allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
 
         Returns:
             0 on success, 1 otherwise
 
+        Notes:
+            There must already be a json profile model and it will either be updated or a new json profile created.
+            The generated markdown shows the current values for parameters of controls being imported, as set by
+            the original catalog and any intermediate profiles.  It also shows the current SetParameters being applied
+            by this profile.  That list of SetParameters can be edited by changing the assigned values and adding or
+            removing SetParameters from that list.  During assembly that list will be used to create the SetParameters
+            in the assembled profile if the --set-parameters option is specified.
         """
-        md_dir = trestle_root / md_name
+        # first load the original json profile but call it 'new' because it is being updated with new items
         profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'
-        _, _, orig_profile = load_distributed(profile_path, trestle_root, prof.Profile)
+        _, _, new_profile = ModelUtils.load_distributed(profile_path, trestle_root)
+
+        required_sections_list = required_sections.split(',') if required_sections else []
+
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
-        found_alters, param_dict = CatalogInterface.read_additional_content(md_dir)
-        ProfileAssemble._replace_alter_adds(orig_profile, found_alters)
+        # keep track if any changes were made
+        md_dir = trestle_root / md_name
+        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(md_dir, required_sections_list)
+        if allowed_sections:
+            for alter in found_alters:
+                for add in alter.adds:
+                    for part in add.parts:
+                        if part.name not in allowed_sections:
+                            raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
+        ProfileAssemble._replace_alter_adds(new_profile, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(orig_profile, param_dict)
+            ProfileAssemble._replace_modify_set_params(new_profile, param_dict, param_map)
 
-        new_prof_dir = trestle_root / f'profiles/{new_profile_name}'
+        new_profile_dir = trestle_root / f'profiles/{new_profile_name}'
+        new_profile_path = new_profile_dir / 'profile.json'
 
-        if new_prof_dir.exists():
+        if version:
+            new_profile.metadata.version = com.Version(__root__=version)
+
+        if new_profile_path.exists():
+            # first do simple and fast tests of changes so that the full equality check is only done as last resort
+            _, _, existing_profile = ModelUtils.load_distributed(new_profile_path, trestle_root)
+            # need special handling in case modify is None in either or both profiles
+            no_changes = not existing_profile.modify and not new_profile.modify
+            both_modifies_present = existing_profile.modify and new_profile.modify
+            if both_modifies_present:
+                no_changes = (
+                    existing_profile.modify.alters == new_profile.modify.alters
+                    and existing_profile.modify.set_parameters == new_profile.modify.set_parameters
+                )
+            if no_changes and existing_profile.metadata.version != new_profile.metadata.version:
+                no_changes = False
+            # at this point if no known changes then do the full and possibly expensive comparison to confirm
+            if no_changes and existing_profile == new_profile:
+                logger.info('Assembled profile has no changes so no update of existing file.')
+                return CmdReturnCodes.SUCCESS.value
+
+        if regenerate:
+            new_profile, _, _ = ModelUtils.regenerate_uuids(new_profile)
+        ModelUtils.update_last_modified(new_profile)
+
+        if new_profile_dir.exists():
             logger.info('Creating profile from markdown and destination profile directory exists, so updating.')
             try:
-                shutil.rmtree(str(new_prof_dir))
+                shutil.rmtree(str(new_profile_dir))
             except OSError as e:
-                raise TrestleError(f'OSError deleting existing catalog directory with rmtree {new_prof_dir}: {e}')
+                raise TrestleError(f'OSError deleting existing catalog directory with rmtree {new_profile_dir}: {e}')
         try:
-            new_prof_dir.mkdir()
-            orig_profile.oscal_write(new_prof_dir / 'profile.json')
+            new_profile_dir.mkdir()
+            new_profile.oscal_write(new_profile_dir / 'profile.json')
         except OSError as e:
-            raise TrestleError(f'OSError writing profile from markdown to {new_prof_dir}: {e}')
+            raise TrestleError(f'OSError writing profile from markdown to {new_profile_dir}: {e}')
         return CmdReturnCodes.SUCCESS.value

@@ -20,8 +20,7 @@ import logging
 import pathlib
 import pkgutil
 
-from trestle.core import const
-from trestle.core.commands.add import AddCmd
+from trestle.common import const, log
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
 from trestle.core.commands.command_docs import CommandBase
@@ -39,7 +38,6 @@ from trestle.core.commands.split import SplitCmd
 from trestle.core.commands.task import TaskCmd
 from trestle.core.commands.validate import ValidateCmd
 from trestle.core.commands.version import VersionCmd
-from trestle.utils import log
 
 logger = logging.getLogger('trestle')
 
@@ -48,7 +46,6 @@ class Trestle(CommandBase):
     """Manage OSCAL files in a human friendly manner."""
 
     subcommands = [
-        AddCmd,
         AssembleCmd,
         AuthorCmd,
         CreateCmd,

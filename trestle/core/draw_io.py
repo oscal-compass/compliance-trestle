@@ -24,8 +24,8 @@ from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes on
 
 import defusedxml.ElementTree
 
-import trestle.core.const as const
-from trestle.core.err import TrestleError
+import trestle.common.const as const
+from trestle.common.err import TrestleError
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 logger = logging.getLogger(__name__)
@@ -48,16 +48,13 @@ class DrawIO():
     def _load(self) -> None:
         """Load the file."""
         if not self.file_path.exists() or self.file_path.is_dir():
-            logger.error(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
             raise TrestleError(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
         try:
             self.raw_xml = defusedxml.ElementTree.parse(self.file_path, forbid_dtd=True)
         except Exception as e:
-            logger.error(f'Exception loading Element tree from file: {e}')
             raise TrestleError(f'Exception loading Element tree from file: {e}')
         self.mx_file = self.raw_xml.getroot()
         if not self.mx_file.tag == 'mxfile':
-            logger.error('DrawIO file is not a draw io file (mxfile)')
             raise TrestleError('DrawIO file is not a draw io file (mxfile)')
         self.diagrams = []
         for diagram in list(self.mx_file):

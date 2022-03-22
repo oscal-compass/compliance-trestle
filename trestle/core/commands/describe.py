@@ -18,17 +18,16 @@
 import argparse
 import logging
 import pathlib
-import traceback
 from typing import List
 
-import trestle.utils.log as log
+import trestle.common.log as log
+from trestle.common.err import TrestleError, TrestleIncorrectArgsError, handle_generic_command_exception
+from trestle.common.model_utils import ModelUtils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common import cmd_utils as utils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -54,27 +53,18 @@ class DescribeCmd(CommandPlusDocs):
 
             log.set_log_level_from_args(args)
 
-            if 'file' in args and args.file:
+            if args.file:
                 model_file = pathlib.Path(args.file)
 
-                element = '' if 'element' not in args or args.element is None else args.element.strip("'")
-                try:
-                    results = self.describe(model_file.resolve(), element, args.trestle_root)
-                    return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value
-                except Exception as error:
-                    logger.error(f'Unexpected error: {error}')
-                    return CmdReturnCodes.COMMAND_ERROR.value
+                element = '' if not args.element else args.element.strip("'")
+                results = self.describe(model_file.resolve(), element, args.trestle_root)
 
-            logger.warning('No file specified for command describe.')
-            return CmdReturnCodes.INCORRECT_ARGS.value
-        except TrestleError as e:
-            logger.debug(traceback.format_exc())
-            logger.error(f'Error while describing contents of a model: {e}')
-            return CmdReturnCodes.COMMAND_ERROR.value
+                return CmdReturnCodes.SUCCESS.value if len(results) > 0 else CmdReturnCodes.COMMAND_ERROR.value
+            else:
+                raise TrestleIncorrectArgsError('No file specified for command describe.')
+
         except Exception as e:  # pragma: no cover
-            logger.debug(traceback.format_exc())
-            logger.error(f'Unexpected error while describing contents of a model: {e}')
-            return CmdReturnCodes.UNKNOWN_ERROR.value
+            return handle_generic_command_exception(e, logger, 'Error while describing contents of a model')
 
     @classmethod
     def _clean_type_string(cls, text: str) -> str:
@@ -112,7 +102,7 @@ class DescribeCmd(CommandPlusDocs):
         """
         # figure out the model type so we can read it
         try:
-            model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
+            model_type, _ = ModelUtils.get_stripped_model_type(file_path, trestle_root)
             model: OscalBaseModel = model_type.oscal_read(file_path)
         except TrestleError as e:
             logger.warning(f'Error loading model {file_path} to describe: {e}')

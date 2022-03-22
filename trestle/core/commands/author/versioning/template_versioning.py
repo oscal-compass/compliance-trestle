@@ -20,13 +20,13 @@ import shutil
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-from pkg_resources import resource_filename, resource_listdir
+from pkg_resources import resource_filename
 
+from trestle.common import file_utils
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER, TRESTLE_RESOURCES
 from trestle.core.draw_io import DrawIO
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,9 @@ class TemplateVersioning:
         TemplateVersioning._check_if_exists_and_dir(task_path)
 
         try:
-            all_files_wo_version = list(filter(lambda p: p.is_file(), fs.iterdir_without_hidden_files(task_path)))
+            all_files_wo_version = list(
+                filter(lambda p: p.is_file(), file_utils.iterdir_without_hidden_files(task_path))
+            )
 
             new_dir = Path(f'{task_path}/{START_TEMPLATE_VERSION}')
             new_dir.mkdir(parents=True, exist_ok=True)
@@ -86,10 +88,8 @@ class TemplateVersioning:
                     p.unlink()
 
         except OSError as e:
-            logger.error(f'Error while updating template folder: {e}')
             raise TrestleError(f'Error while updating template folder: {e}')
         except Exception as e:
-            logger.error(f'Unexpected error while updating template folder: {e}')
             raise TrestleError(f'Unexpected error while updating template folder: {e}')
 
     @staticmethod
@@ -202,7 +202,6 @@ class TemplateVersioning:
             else:
                 raise TrestleError(f'Unsupported template file extension {generic_template.suffix}')
         except OSError as e:
-            logger.error(f'Error while updating template folder: {e}')
             raise TrestleError(f'Error while updating template folder: {e}')
 
     @staticmethod
@@ -218,19 +217,6 @@ class TemplateVersioning:
             return True
         else:
             return False
-
-    @staticmethod
-    def _build_dotted_path(dotted_path: str, all_paths: List[str]) -> None:
-        """Traverse template resources and collect all versions."""
-        are_all_files = True
-        for r in resource_listdir(dotted_path, ''):
-            p = Path(resource_filename(dotted_path, r))
-            if p.is_dir() and '__pycache__' not in str(p):
-                TemplateVersioning._build_dotted_path(dotted_path + '.' + r, all_paths)
-                are_all_files = False
-
-        if are_all_files:
-            all_paths.append(dotted_path)
 
     @staticmethod
     def _check_if_exists_and_dir(task_path: Path) -> None:

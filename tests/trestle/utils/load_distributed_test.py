@@ -16,13 +16,16 @@
 """Tests for trestle load_distributed module."""
 
 import shutil
+from typing import Dict
+
+import pytest
 
 from tests import test_utils
 
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import Role
-from trestle.utils import fs
-from trestle.utils.load_distributed import _load_list, load_distributed
 
 
 def test_load_list(testdata_dir, tmp_trestle_dir):
@@ -40,14 +43,15 @@ def test_load_list(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_roles = _load_list(catalog_dir / 'metadata' / 'roles',
-                                                                     tmp_trestle_dir)
+    actual_model_type, actual_model_alias, actual_roles = ModelUtils._load_list(catalog_dir / 'metadata' / 'roles',
+                                                                                tmp_trestle_dir)
 
     expected_roles = [
         Role.oscal_read(catalog_dir / 'metadata/roles/00000__role.json'),
         Role.oscal_read(catalog_dir / 'metadata/roles/00001__role.json')
     ]
-    expected_model_type, _ = fs.get_stripped_model_type((catalog_dir / 'metadata/roles').resolve(), tmp_trestle_dir)
+    expected_model_type, _ = ModelUtils.get_stripped_model_type((catalog_dir / 'metadata/roles')
+                                                                .resolve(), tmp_trestle_dir)
 
     assert actual_model_type.__signature__ == expected_model_type.__signature__
     assert actual_model_alias == 'catalog.metadata.roles'
@@ -69,7 +73,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, _, actual_groups = _load_list(catalog_dir / 'groups', tmp_trestle_dir)
+    actual_model_type, _, actual_groups = ModelUtils._load_list(catalog_dir / 'groups', tmp_trestle_dir)
 
     # load_list is expected to return a list of array, instead of an instance of Groups class
     expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')).__root__
@@ -78,7 +82,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
 
 
 def test_load_distributed(testdata_dir, tmp_trestle_dir):
-    """Test massive distributed load, that includes recusive load, list and dict."""
+    """Test massive distributed load, that includes recursive load and list."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
@@ -92,10 +96,16 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_model_instance = load_distributed(catalog_file, tmp_trestle_dir)
+    actual_model_type, actual_model_alias, actual_model_instance = ModelUtils.load_distributed(
+        catalog_file, tmp_trestle_dir)
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 
     assert actual_model_type == Catalog
     assert actual_model_alias == 'catalog'
     assert test_utils.models_are_equivalent(expected_model_instance, actual_model_instance)
+
+    # confirm it fails attempting to load collection type that is not a list
+    with pytest.raises(TrestleError):
+        actual_model_type, actual_model_alias, actual_model_instance = ModelUtils.load_distributed(
+            catalog_file, tmp_trestle_dir, Dict)

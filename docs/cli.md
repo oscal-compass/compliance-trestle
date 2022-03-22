@@ -2,7 +2,7 @@
 
 The trestle CLI has three primary use cases:
 
-- Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle add`, `trestle split`, `trestle merge`.
+- Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 - Allow governance of markdown documents so they conform to specific style or structure requirements.
 
@@ -10,13 +10,13 @@ To support each of these use cases trestle creates an opinionated directory stru
 
 ## Opinionated directory structure
 
-Trestle relies on an opinionated directory structure, similar to `git`, `go`, or `auditree`, to manage the workflow. Most trestle commands are restricted to working within an initialized directory tree.
+Trestle relies on an opinionated directory structure (trestle workspace), similar to `git`, `go`, or `auditree`, to manage the workflow. Most trestle commands are restricted to working within an initialized directory tree.
 
 The directory structure setup by trestle has three major elements:
 
 - A `.trestle` hidden folder.
 - A `dist` folder.
-- Folders for each of the OSCAL schemas.
+- Folders for each of the top level OSCAL models.
 
 The outline of the schema is below:
 
@@ -26,6 +26,7 @@ The outline of the schema is below:
 ├── dist
 │   ├── catalogs
 │   ├── profiles
+│   ├── component-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
@@ -40,6 +41,8 @@ The outline of the schema is below:
 ```
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuration files, caches and templates.
+
+`dist` directory will contain the assembled version of the top level models located on the source model directories.
 
 The bulk of the folder structure is used to represent each of the *top level schemas* or *top level models* such as `catalogs` and `profiles`. For each of these directories the following root structure is maintained:
 
@@ -62,11 +65,11 @@ which appears, for a catalog a user decides is titled nist-800-53, as:
 
 ```
 
-`dist` directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.
+In most of the places in the documentation we use `json` format for specifying model files, but they are equally applicable to `yaml` format also. The default format is `json`, and `yaml` is supported on best effort basis. Within one model directory the two different formats should not be mixed.
 
 ### Support for subdivided document structures
 
-The files constructed by OSCAL can run into the tens of thousands of lines of yaml or formatted json. At this size the
+The files constructed by OSCAL can run into tens of thousands of lines of yaml or formatted json. At this size the
 files become completely unmanageable for users. To combat this, trestle can `trestle split` a file into many smaller files and later merge those split files together.
 
 Directory structures such as the one below can represent OSCAL document structures. Users are strongly encourage to rely on split and merge to code these structures.
@@ -106,11 +109,11 @@ Users can query the contents of files using `trestle describe`, and probe the co
 ...
 ```
 
-## Specifing attributes / elements within trestle commands.
+## Specifying attributes / elements within trestle commands.
 
 OSCAL models are rich and contain multiple nested data structures. Given this, a mechanism is required to address _elements_ /_attributes_ within an oscal object.
 
-This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestles underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
+This accessing method is called 'element path' and is similar to _jsonPath_. Commands provide element path by a `-e` argument where available, e.g. trestle split -f catalog.json -e 'catalog.metadata.\*'. This path is used whenever specifying an attribute or model, rather than exposing trestle's underlying object model name. Users can refer to [NIST's json outline](https://pages.nist.gov/OSCAL/reference/latest/complete/json-outline/) to understand object names in trestle.
 
 ### Rules for element path
 
@@ -119,7 +122,7 @@ This accessing method is called 'element path' and is similar to _jsonPath_. Com
 1. Element paths are relative to the file.
    1. e.g. For `metadata.json` roles would be referred to as `metadata.roles`, from the catalog file that would be `catalog.metadata.roles`
 1. Arrays can be handled by a wild card `*` or a numerical index for a specific index.
-   1. `catalog.groups.*` to refer to each oscal group
+   1. `catalog.groups.*` to refer to each group in a catalog
    1. `catalog.groups.*.controls.*` to refer to 'for each control under a top level group'
    1. For NIST 800-53 `catalog.groups.0.controls.0.`
 1. On \*nix platforms if using the wildcard the element path argument should be wrapped in quotes to prevent problems with the shell interpreting the wild card before trestle can
@@ -136,7 +139,7 @@ Trestle provides utilities for converting from element path to trestle's python 
 
 ## `trestle init`
 
-This command will create a trestle project in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
+This command will create (initialize) a trestle workspace in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
 
 ```text
 .
@@ -144,6 +147,7 @@ This command will create a trestle project in the current directory with the nec
 ├── dist
 │   ├── catalogs
 │   ├── profiles
+│   ├── component-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
@@ -159,13 +163,13 @@ This command will create a trestle project in the current directory with the nec
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands.
 
-`dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
+`dist` directory will contain the merged or assembled version of the top level models located on the source model directories which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
 
 Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the `trestle` commands and subcommands MUST NOT be changed manually.
 
 ## `trestle create`
 
-This command will create a bare-bones sample file for one of the OSCAL models.  For example, `trestle create catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
+This command will create a bare-bones sample file for one of the top level OSCAL models, and it can also create new elements within an existing file.  For example, `trestle create -t catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
 
 ```text
 .
@@ -176,26 +180,47 @@ This command will create a bare-bones sample file for one of the OSCAL models.  
 ...
 ```
 
-The following subcommands are currently supported:
+The `-t` specifies the type of the model to create, which can be one of catalog, profile, component-definition, system-security-plan, assessment-plan, assessment-results, plan-of-action-and-milestones.  Each type will be created in its corresponding directory, such as catalogs, profiles, etc.
 
-- `trestle create catalog`: creates a directory structure containing a sample OSCAL catalog model under the `catalogs` folder.
-- `trestle create profile`: creates a directory structure containing a sample OSCAL profile model under the `profiles` folder.
-- `trestle create component-definition`: creates a directory structure containing a sample component-definition model under the `component-definitions` folder.
-- `trestle create system-security-plan`: creates a directory structure containing a sample system-security-plan model under the `system-security-plans` folder.
-- `trestle create assessment-plan`: creates a directory structure containing a sample assessment-plan under the `assessment-plans` folder.
-- `trestle create assessment-result`: creates a directory structure containing a sample assessment-result under the `assessment-results` folder.
-- `trestle create plan-of-action-and-milestone`: creates a directory structure containing a sample plan-of-action-and-milestone under the `plan-of-action-and-milestones` folder.
-
-The following options are supported:
+The following additional options are supported:
 
 - `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
 
-The initial level of decomposition of each type of model varies according to the model type.
-This default or reference decomposition behaviour can be changed by modifying the rules in a `.trestle/config file`. These rules can be written as a sequence of `trestle split` commands.
-
 Passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
+
+In addition, `trestle create` can create new components within an existing file by specifying the existing file name and the corresponding element path to create within that file.
+
+For example,
+
+`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle create -f ./catalog.json -e catalog.metadata.roles `
+
+will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
+
+```json
+{
+  "roles": [
+    {
+      "id": "REPLACE_ME",
+      "title": "REPLACE_ME"
+    }
+  ]
+}
+```
+
+Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
+
+```yaml
+  - DateTime: <Current date-time>
+  - Boolean: false
+  - Integer: 0
+  - String: REPLACE_ME
+  - Float/Double: 0.00
+  - Id field: Auto generated UUID
+```
+
+Again, passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer version of the element being created, by including optional fields.
 
 ## `trestle import`
 
@@ -240,7 +265,7 @@ If the element is of JSON/YAML type array list and you want trestle to create a 
 
 If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
 
-Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if we do `trestle split -f catalog.json -e 'catalog.*'` we end up with:
+Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if you do `trestle split -f catalog.json -e 'catalog.*'` you end up with:
 
 ```text
 catalogs
@@ -252,7 +277,7 @@ catalogs
  ┃ ┗ catalog.json
 ```
 
-If I then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` I would end up with:
+If you then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` you would end up with:
 
 ```text
 catalogs
@@ -266,7 +291,7 @@ catalogs
  ┃ ┗ catalog.json
 ```
 
-If instead I had specified `-e 'metadata.roles.*'` I would get:
+If instead you had specified `-e 'metadata.roles.*'` you would get:
 
 ```text
 my_catalog
@@ -298,9 +323,7 @@ The following option is required:
 
 - `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json` or the split `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`.
-If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component
-split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
+For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json` or the split `catalog` directory exists, the property `metadata` from `metadata.json` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
 
 ## `trestle describe`
 
@@ -361,14 +384,13 @@ Note that the type of the file is now `stripped.Catalog` and it no longer contai
 
 ## `trestle partial-object-validate`
 
-OSCAL objects are extremely large. Some systems may only be able to produce partial OSCAL objects. For example
-the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
+OSCAL objects may be extremely large. Some systems may only be able to produce partial OSCAL objects. For example, the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
 
 `trestle partial-object-validate` allows the validation of any sub-element/attribute using element path.
 
-Using the example above `trestle partial-object-validate -f results.json -e asssesment-results.results`.
+Using the example above `trestle partial-object-validate -f results.json -e assessment-results.results`.
 
-The file is not required to be in the trestle project or required to be a specific file name.
+The file is not required to be in the trestle directory or required to be a specific file name.
 
 ### Example valid element-paths
 
@@ -390,7 +412,7 @@ trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 
 Similarly, if the item imported is a profile, a corresponding href should point to a json file in the `profiles` directory.
 
-Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the trestle root directory to the actual
+Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the top level models directory to the actual
 catalog file.  The profile itself, which is having its imports modified, is just indicated by its name with the `-n` option.
 
 If the profile has more than one import, you can display the corresponding hrefs with:
@@ -422,53 +444,15 @@ This command assembles all contents (files and directories) representing a speci
 
 `$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53`
 
-will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
-
-## `trestle add`
-
-This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example,
-
-`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles `
-
-will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
-
-```json
-{
-  "roles": [
-    {
-      "id": "REPLACE_ME",
-      "title": "REPLACE_ME"
-    }
-  ]
-}
-```
-
-Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
-
-```yaml
-  - DateTime: <Current date-time>
-  - Boolean: false
-  - Integer: 0
-  - String: REPLACE_ME
-  - Float/Double: 0.00
-  - Id field: Auto generated UUID
-```
-
-Passing `-iof` or `--include-optional-fields` will make `trestle add` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
+will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON (e.g. based on the file extension), however, the output will be generated as YAML/JSON as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
 ## `trestle remove`
 
-The trestle remove command is the reversal of `trestle add`.
+The trestle remove command is the reversal of `trestle create -f filename.json -e element_path`, as it will remove the corresponding element from the specified file.
 
 ## `trestle validate`
 
-Trestle validate is designed to perform a function to ensure integrity of a set of OSCAL files. This can be as simple as
-a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
-remote system state.
-
-Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE
-
-Trestle validates files according to a number of criteria, and it can operate on one or more files specified in different ways.
+Trestle validate checks the integrity of one or more OSCAL files in a number of ways.
 
 `validate` returns a non-zero return code if there is any validation problem detected in a file.
 
@@ -476,21 +460,25 @@ The current list of validation modes that get checked internally are:
 
 | Mode          | Purpose                                                               |
 | ------------- | --------------------------------------------------------------------- |
-| duplicates    | Identify if duplicate uuid's are present                              |
+| duplicates    | Detect whether disallowed duplicate uuid's are present                |
 | oscal_version | Confirm that the oscal version of the file is supported               |
 | refs          | Confirm that all references in responsible parties are found in roles |
 
-In addition to validating a single file you can validate all files of a given type with the `-t` option:
+You can validate a single model file by specifying its full path:
+
+`trestle validate -f catalogs/my_cat/catalog.json`
+
+or by specifying its model name and type:
+
+`trestle validate -t catalog -n my_cat`
+
+In addition to validating a single file you can validate all files of a given type with the `-t` option and no file name:
 
 `trestle validate -t catalog`
 
 And you can validate all models with the `-a` option:
 
 `trestle validate -a`
-
-Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
-
-`trestle validate -t catalog -n my_catalog`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 
@@ -665,7 +653,7 @@ ssg-rhel7-ds-cis-111.222.333.444-pod:
 
 **metadata format**
 
-The *oscal_metadata.yaml* file comprises one or more mappings. Below is shown the
+The *oscal-metadata.yaml* file comprises one or more mappings. Below is shown the
 format of a single mapping. The items in angle brackets are to be replaced with
 desired values for augmenting the produced OSCAL.
 
@@ -1214,9 +1202,9 @@ Example output directory contents listing:
 
 </details>
 
-## `trestle task xlsx-to-component-definition`
+## `trestle task xlsx-to-oscal-cd`
 
-The *trestle task xlsx-to-component-definition* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
+The *trestle task xlsx-to-oscal-cd* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
 Specify in the config:
 
 <ul>
@@ -1237,16 +1225,16 @@ Specify in the config:
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task xlsx-to-oscal-cd -c /home/user/task-xlsx-to-oscal-cd.config`
 
 <span style="color:green">
 Example config:
 </span>
 
-*/home/user/task.config*
+*/home/user/task-xlsx-to-oscal-cd.config*
 
 ```conf
-[task.xlsx-to-oscal-component-definition]
+[task.xlsx-to-oscal-cd]
 
 catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
 spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
@@ -1284,7 +1272,7 @@ Example spread-sheet-file:
 Example component-definition.json:
 </span>
 
-[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
+[/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
 
 ### spread sheet to component definition mapping
 
@@ -1378,3 +1366,57 @@ th, td {
     </ul>
 </table>
 </details>
+
+## `trestle task xlsx-to-oscal-profile`
+
+The *trestle task xlsx-to-oscal-profile* command facilitates transformation of an excel spread sheet into an OSCAL profile.json file.
+Specify in the config:
+
+<ul>
+<li> the href URL of the spread sheet
+<li> file system location of spread sheet file
+<li> work sheet name in the spread sheet file
+<li> output directory to write the profile.json file
+<li> whether or not to overwrite an existing profile.json file
+<li> the profile title
+</ul>
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+`$TRESTLE_BASEDIR$ trestle task xlsx-to-oscal-profile -c /home/user/task-xlsx-to-oscal-profile.config`
+
+<span style="color:green">
+Example config:
+</span>
+
+*/home/user/task-xlsx-to-oscal-profile.config*
+
+```conf
+[task.xlsx-to-oscal-profile]
+
+spread-sheet-url = https://github.mycorp.com/spread-sheets/best_practices_controls.xlsx
+spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
+work-sheet-name = best_practices_controls
+output-dir = /home/user/compliance/data/tasks/xlsx/output
+output-overwrite = true
+
+profile-title = IBM Best Practices SCC GOALS
+```
+
+**spread-sheet-file**
+
+<span style="color:green">
+Example spread-sheet-file:
+</span>
+
+[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+
+**output**
+
+<span style="color:green">
+Example profile.json:
+</span>
+
+[/home/user/compliance/data/tasks/xlsx/output/profile.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/profile.json)

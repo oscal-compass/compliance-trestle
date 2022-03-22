@@ -21,25 +21,28 @@ import os
 import pathlib
 import shutil
 import sys
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
 from trestle.cli import Trestle
-from trestle.core import const, generators, utils
+from trestle.common import const, file_utils, list_utils, str_utils
+from trestle.common.common_types import TopLevelOscalModel
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
+from trestle.common.str_utils import AliasMode
+from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.common_types import TopLevelOscalModel
-from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.repository import Repository
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
 from trestle.oscal import profile as prof
-from trestle.utils import fs
 
-if os.name == 'nt':  # pragma: no cover
+if file_utils.is_windows():  # pragma: no cover
     import win32api
     import win32con
 
@@ -61,6 +64,8 @@ COMPONENT_DEF_DIR = 'component-definitions'
 
 NIST_EXAMPLES = pathlib.Path('nist-content/examples')
 NIST_SAMPLE_CD_JSON = NIST_EXAMPLES / 'component-definition' / 'json' / 'example-component.json'
+
+NEW_MODEL_AGE_SECONDS = 100
 
 
 def clean_tmp_path(tmp_path: pathlib.Path):
@@ -97,7 +102,7 @@ def prepare_trestle_project_dir(
     """Prepare a temp directory with an example OSCAL model."""
     ensure_trestle_config_dir(repo_dir)
 
-    model_alias = utils.classname_to_alias(model_obj.__class__.__name__, 'json')
+    model_alias = str_utils.classname_to_alias(model_obj.__class__.__name__, AliasMode.JSON)
 
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = repo_dir / models_dir_name / 'my_test_model'
@@ -131,7 +136,7 @@ def create_trestle_project_with_model(
 
         i = ImportCmd()
         args = argparse.Namespace(
-            trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
+            trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=0, regenerate=False
         )
         assert i._run(args) == 0
     except Exception as e:
@@ -143,6 +148,7 @@ def create_trestle_project_with_model(
 
 def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
     """Given 2 lists, check if the items in both the lists are same, regardless of order."""
+    # can't use set comparison for lists of unhashable objects
     list1 = list(list1)  # make a mutable copy
     try:
         for elem in list2:
@@ -153,9 +159,10 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
 
 
 def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalModel) -> bool:
-    """Test if models are equivalent except for last modified."""
+    """Test if models are equivalent except for last modified and uuid."""
     # this will change the second model as a side-effect
     model_b.metadata.last_modified = model_a.metadata.last_modified
+    model_b.uuid = model_a.uuid
     return model_a == model_b
 
 
@@ -168,34 +175,40 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
                 lines_b = file_b.readlines()
                 nlines = len(lines_a)
                 if nlines != len(lines_b):
-                    logger.info(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
+                    logger.error(f'n lines differ: {len(lines_a)} vs. {len(lines_b)}')
                     return False
                 for ii in range(nlines):
                     if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        logger.info('lines differ:')
-                        logger.info(lines_a[ii])
-                        logger.info(lines_b[ii])
+                        logger.error('lines differ:')
+                        logger.error(lines_a[ii])
+                        logger.error(lines_b[ii])
                         return False
     except Exception:
         return False
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
+def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) -> bool:
     r"""Insert text lines after line containing tag.
 
     Return True on success, False tag not found.
     Text is a string with appropriate \n line endings.
+    If tag is none just add at end of file.
     """
-    lines: List[str] = []
-    with file_path.open('r') as f:
-        lines = f.readlines()
-    for ii, line in enumerate(lines):
-        if line.find(tag) >= 0:
-            lines.insert(ii + 1, text)
-            with file_path.open('w') as f:
-                f.writelines(lines)
-            return True
+    if tag:
+        lines: List[str] = []
+        with file_path.open('r') as f:
+            lines = f.readlines()
+        for ii, line in enumerate(lines):
+            if line.find(tag) >= 0:
+                lines.insert(ii + 1, text)
+                with file_path.open('w') as f:
+                    f.writelines(lines)
+                return True
+    else:
+        with file_path.open('a') as f:
+            f.writelines(text)
+        return True
     return False
 
 
@@ -206,24 +219,26 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
         lines = f.readlines()
     found_tag = False
     for line in lines:
-        if line.find(tag) >= 0:
+        if not found_tag and tag in line:
             found_tag = True
             continue
-        if found_tag and line.find(text) >= 0:
+        if found_tag and text in line:
             return True
     return False
 
 
-def delete_line_in_file(file_path: pathlib.Path, tag: str) -> bool:
-    """Delete a line in a file containing tag."""
-    lines: List[str] = []
-    with file_path.open('r') as f:
-        lines = f.readlines()
+def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> bool:
+    """Delete a run of lines in a file containing tag."""
+    f = file_path.open('r')
+    lines = f.readlines()
+    f.close()
     for ii, line in enumerate(lines):
-        if line.find(tag) >= 0:
-            del lines[ii]
-            with file_path.open('w') as f:
-                f.writelines(lines)
+        if tag in line:
+            del lines[ii:(ii + extra_lines + 1)]
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
             return True
     return False
 
@@ -346,14 +361,17 @@ def setup_for_ssp(
     """Create the markdown ssp content from catalog and profile."""
     setup_for_multi_profile(tmp_trestle_dir, big_profile, import_nist_cat)
 
+    # leave out guidance:Guidance
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         profile=prof_name,
         output=output_name,
-        verbose=True,
+        verbose=0,
         sections=sections,
-        preserve_header_values=False
+        overwrite_header_values=False,
+        yaml_header=None,
+        allowed_sections=None
     )
 
     yaml_path = YAML_TEST_DATA_PATH / 'good_simple.yaml'
@@ -369,7 +387,7 @@ def make_file_hidden(file_path: pathlib.Path, if_dot=False) -> None:
 
     if_dot will make the change only if the filename is of the form .*
     """
-    if os.name == 'nt':
+    if file_utils.is_windows():
         if not if_dot or file_path.stem.startswith('.'):
             atts = win32api.GetFileAttributes(str(file_path))
             win32api.SetFileAttributes(str(file_path), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
@@ -413,7 +431,7 @@ def make_hidden_file(file_path: pathlib.Path) -> None:
 
 def get_model_uuid(trestle_root: pathlib.Path, model_name: str, model_class: TopLevelOscalModel) -> str:
     """Load the model and extract its uuid."""
-    model, _ = fs.load_top_level_model(trestle_root, model_name, model_class)
+    model, _ = ModelUtils.load_top_level_model(trestle_root, model_name, model_class)
     return model.uuid
 
 
@@ -429,4 +447,75 @@ def create_profile_in_trestle_dir(trestle_root: pathlib.Path, catalog_name: str,
     profile = generators.generate_sample_model(prof.Profile)
     import_ = prof.Import(href=f'{const.TRESTLE_HREF_HEADING}catalogs/{catalog_name}/catalog.json', include_all={})
     profile.imports = [import_]
-    fs.save_top_level_model(profile, trestle_root, profile_name, fs.FileContentType.JSON)
+    ModelUtils.save_top_level_model(profile, trestle_root, profile_name, FileContentType.JSON)
+
+
+def get_valid_parts(parts: List[common.Part]) -> List[common.Part]:
+    """Get list of valid parts in list without recursion."""
+    return [part for part in parts if part.id and part.prose] if parts else []
+
+
+def get_total_valid_parts_count(parts: List[common.Part]) -> int:
+    """Get total count of valid parts in parts list."""
+    parts = get_valid_parts(parts)
+    count = len(parts)
+    for part in parts:
+        count += get_total_valid_parts_count(part.parts)
+    return count
+
+
+def parts_equivalent(a: List[common.Part], b: List[common.Part]) -> bool:
+    """Check the total count of valid parts is the same, with recursion."""
+    n_a = get_total_valid_parts_count(a)
+    n_b = get_total_valid_parts_count(b)
+    if n_a != n_b:
+        logger.error(f'count of parts is different: {n_a} vs. {n_b}')
+        return False
+    return True
+
+
+def controls_equivalent(a: cat.Control, b: cat.Control, strong: bool = True) -> bool:
+    """Check if the controls are equivalent."""
+    if a.id != b.id:
+        logger.error(f'control ids differ: |{a.id}| |{b.id}|')
+        return False
+    if a.title != b.title:
+        logger.error(f'control {a.id} titles differ: |{a.title}| |{b.title}|')
+        return False
+    if not parts_equivalent(a.parts, b.parts):
+        logger.error(f'control {a.id} parts are not equivalent')
+        return False
+
+    if strong:
+        n_params_a = len(list_utils.as_list(a.params))
+        n_params_b = len(list_utils.as_list(b.params))
+        if n_params_a != n_params_b:
+            logger.error(f'control {a.id} has different param counts: {n_params_a} vs. {n_params_b}')
+            return False
+    a_param_values = [param.values for param in list_utils.as_list(a.params) if param.values is not None]
+    a_vals = [param_value.__root__ for param_values in a_param_values for param_value in param_values]
+    b_param_values = [param.values for param in list_utils.as_list(b.params) if param.values is not None]
+    b_vals = [param_value.__root__ for param_values in b_param_values for param_value in param_values]
+
+    # sub-controls are not checked here
+    if a_vals == b_vals:
+        return True
+    logger.error(f'control param vals are different for {a.id}: {a_vals} vs. {b_vals}')
+    return False
+
+
+def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog, strong=True) -> bool:
+    """Test equivalence of catalog dict contents in various ways."""
+    cat_int_b = CatalogInterface(cat_b)
+    if cat_int_b.get_count_of_controls_in_dict() != cat_int_a.get_count_of_controls_in_dict():
+        logger.error('count of controls is different')
+        return False
+    for a in cat_int_a.get_all_controls_from_dict():
+        try:
+            b = cat_int_b.get_control(a.id)
+        except Exception as e:
+            logger.error(f'error finding control {a.id} {e}')
+        if not controls_equivalent(a, b, strong):
+            logger.error(f'controls differ: {a.id}')
+            return False
+    return True

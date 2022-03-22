@@ -26,21 +26,26 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.core import const
+from trestle.common import const
+from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOReader, ControlIOWriter
-from trestle.core.err import TrestleError
+from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import common
-from trestle.utils import fs
 
 case_1 = 'indent_normal'
 case_2 = 'indent jump back 2'
 case_3 = 'indent end abrupt'
 case_4 = 'no items'
 
-control_text = """# xy-9 - \[My Group Title\] Fancy Control
+control_text = """---
+sort-id: xy-09
+---
+
+# xy-9 - \[My Group Title\] Fancy Control
 
 ## Control Statement
 
@@ -105,7 +110,7 @@ def test_read_write_controls(
 ) -> None:
     """Test read and write of controls via markdown."""
     dummy_title = 'dummy title'
-    control = cat.Control(id='ac-1', title=dummy_title)
+    control = cat.Control(id='ac-1', title=dummy_title, props=[common.Property(name=const.SORT_ID, value='ac-01')])
     statement_part = common.Part(id='ac-1_smt', name='statement')
     prop = common.Property(name='label', value='a')
     part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose', props=[prop])
@@ -136,8 +141,8 @@ end of text
 """
 
     sec_2_text = 'Simple line of prose'
-    sec_1 = common.Part(id='ac-1_smt.guidance', name='guidance', prose=sec_1_text.strip('\n'))
-    sec_2 = common.Part(id='ac-1_smt.extra', name='extra', prose=sec_2_text.strip('\n'))
+    sec_1 = common.Part(id='ac-1_gdn', name='guidance', prose=sec_1_text.strip('\n'))
+    sec_2 = common.Part(id='ac-1_extra', name='extra', prose=sec_2_text.strip('\n'))
 
     if control_prose:
         statement_part.prose = 'ac-1_smt prose'
@@ -163,11 +168,13 @@ end of text
         control.parts.extend([sec_1, sec_2])
 
     writer = ControlIOWriter()
-    writer.write_control(tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False)
+    writer.write_control(
+        tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False, None, None
+    )
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlIOReader()
-    new_control, group_title = reader.read_control(md_path)
+    new_control, group_title = reader.read_control(md_path, False)
     new_control.title = dummy_title
     assert group_title == 'My Group Title'
     assert len(new_control.parts) == len(control.parts)
@@ -183,13 +190,13 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     with open(md_path, 'w') as f:
         f.write(control_text)
     # read it in as markdown to an OSCAL control in memory
-    control, group_title = ControlIOReader.read_control(md_path)
+    control, group_title = ControlIOReader.read_control(md_path, True)
     assert group_title == 'My Group Title'
     sub_dir = tmp_path / 'sub_dir'
     sub_dir.mkdir(exist_ok=True)
     # write it out as markdown in a separate directory to avoid name clash
     control_writer = ControlIOWriter()
-    control_writer.write_control(sub_dir, control, 'My Group Title', None, None, False, False, None, False)
+    control_writer.write_control(sub_dir, control, 'My Group Title', None, None, False, False, None, False, None, None)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -197,12 +204,12 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
 def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
     """Test reading a control that doesn't have a part label in statement."""
     md_file = testdata_dir / 'author/controls/control_no_labels.md'
-    control, group_title = ControlIOReader.read_control(md_file)
+    control, group_title = ControlIOReader.read_control(md_file, True)
     assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'c'
     assert control.parts[0].parts[2].parts[0].props[0].value == '1'
     md_file = testdata_dir / 'author/controls/control_some_labels.md'
-    control, group_title = ControlIOReader.read_control(md_file)
+    control, group_title = ControlIOReader.read_control(md_file, True)
     assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'aa'
     assert control.parts[0].parts[2].parts[1].props[0].value == 'abc13'
@@ -235,7 +242,7 @@ def test_create_next_label(prev_label, next_label, indent) -> None:
 def test_control_failures(tmp_path: pathlib.Path) -> None:
     """Test various failure modes."""
     part = common.Part(name='foo')
-    assert ControlIOWriter._get_label(part) == ''
+    assert ControlIOWriter.get_label(part) == ''
 
     assert ControlIOReader._strip_to_make_ncname('1a@foo') == 'afoo'
     with pytest.raises(TrestleError):
@@ -264,13 +271,13 @@ def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
         ControlIOReader._load_control_lines_and_header(bad_file)
 
 
-@pytest.mark.parametrize('preserve_dest_values', [True, False])
-def test_merge_dicts_deep(preserve_dest_values) -> None:
+@pytest.mark.parametrize('overwrite_header_values', [True, False])
+def test_merge_dicts_deep(overwrite_header_values) -> None:
     """Test deep merge of dicts."""
     dest = {'trestle': {'foo': {'hello': 1}}, 'fedramp': {'roles': [5, 6], 'values': 8}, 'orig': 11}
     src = {'trestle': {'foo': {'hello': 3}, 'bar': 4}, 'fedramp': {'roles': 7, 'values': 10}, 'extra': 12}
-    ControlIOWriter.merge_dicts_deep(dest, src, preserve_dest_values)
-    if preserve_dest_values:
+    ControlIOWriter.merge_dicts_deep(dest, src, overwrite_header_values)
+    if not overwrite_header_values:
         assert dest['trestle'] == {'foo': {'hello': 1}, 'bar': 4}
         assert dest['fedramp'] == {'roles': [5, 6], 'values': 8}
         assert dest['orig'] == 11
@@ -286,12 +293,12 @@ def test_merge_dicts_deep_empty() -> None:
     """Test that empty items are left alone."""
     dest = {'foo': ''}
     src = {'foo': 'fancy value'}
-    ControlIOWriter.merge_dicts_deep(dest, src, True)
+    ControlIOWriter.merge_dicts_deep(dest, src, False)
     assert dest['foo'] == ''
     dest['foo'] = None
-    ControlIOWriter.merge_dicts_deep(dest, src, True)
-    assert dest['foo'] is None
     ControlIOWriter.merge_dicts_deep(dest, src, False)
+    assert dest['foo'] is None
+    ControlIOWriter.merge_dicts_deep(dest, src, True)
     assert dest['foo'] == 'fancy value'
 
 
@@ -313,7 +320,7 @@ def test_control_with_components() -> None:
         comp_dict[comp_name] = comp
 
     # confirm that the header content was inserted into the props of the imp_req
-    imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
+    sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
     assert len(imp_req.props) == 12
     assert len(imp_req.statements) == 3
     assert len(imp_req.statements[0].by_components) == 3
@@ -330,24 +337,42 @@ def test_control_bad_components(md_file: str) -> None:
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     """Test getting the param dict of a control."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_a_path = fs.path_for_top_level_model(tmp_trestle_dir, 'test_profile_a', prof.Profile, fs.FileContentType.JSON)
+    prof_a_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    )
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     catalog_interface = CatalogInterface(catalog)
     control = catalog_interface.get_control('ac-1')
     param_dict = ControlIOReader.get_control_param_dict(control, False)
     # confirm profile value is used
-    assert param_dict['ac-1_prm_1'] == 'all alert personell'
+    assert ControlIOReader.param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
     # confirm original param label is used since no value was assigned
-    assert param_dict['ac-1_prm_7'] == 'organization-defined events'
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'organization-defined events'
+    param = control.params[0]
+    param.values = None
+    param.select = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['choice 1', 'choice 2'])
+    param_dict = ControlIOReader.get_control_param_dict(control, False)
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+    ) == 'choice 1, choice 2'
 
 
-@pytest.mark.parametrize('preserve_header_values', [True, False])
-def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.Path) -> None:
+@pytest.mark.parametrize('overwrite_header_values', [True, False])
+def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.Path) -> None:
     """Test write/read of control header params."""
+    # orig file just has one param ac-1_prm_3
     src_control_path = pathlib.Path('tests/data/author/controls/control_with_components_and_params.md')
+    # header has two params - 3 and 4
     header = {
         const.SET_PARAMS_TAG: {
-            'ac-1_prm_3': 'new prm_3 val from input header', 'ac-1_prm_4': 'new prm_4 val from input header'
+            'ac-1_prm_3': {
+                'values': 'new prm_3 val from input header'
+            },
+            'ac-1_prm_4': {
+                'values': 'new prm_4 val from input header'
+            }
         },
         'foo': 'new bar',
         'new-reviewer': 'James',
@@ -357,30 +382,36 @@ def test_write_control_header_params(preserve_header_values, tmp_path: pathlib.P
     control_path = tmp_path / 'ac-1.md'
     shutil.copyfile(src_control_path, control_path)
     markdown_processor = MarkdownProcessor()
+    # header_1 should have one param: 3
     header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_1.keys()) == 8
-    orig_control_read, group_title = ControlIOReader.read_control(control_path)
+    orig_control_read, group_title = ControlIOReader.read_control(control_path, True)
     assert group_title == 'Access Control'
     control_writer = ControlIOWriter()
     # write the control back out with the test header
     control_writer.write_control(
-        tmp_path, orig_control_read, group_title, header, None, False, False, None, preserve_header_values
+        tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values, None, None
     )
+    # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_2.keys()) == 9
     assert header_2['new-reviewer'] == 'James'
     assert len(header_2[const.SET_PARAMS_TAG]) == 2
-    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_4']
-    if preserve_header_values:
-        assert 'orig' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+    assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_4']['values']
+    if not overwrite_header_values:
+        assert 'orig' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']['values']
         assert header_2['foo'] == 'bar'
         assert header_2['special'] == ''
         assert header_2['none-thing'] is None
     else:
-        assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']
+        assert 'new' in header_2[const.SET_PARAMS_TAG]['ac-1_prm_3']['values']
         assert header_2['foo'] == 'new bar'
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
-    new_control_read, group_title = ControlIOReader.read_control(control_path)
-    assert group_title == 'Access Control'
-    assert new_control_read == orig_control_read
+        assert 'orig' in orig_control_read.params[0].values[0].__root__
+    new_control_read, _ = ControlIOReader.read_control(control_path, True)
+    # insert the new param in the orig control so we can compare the two controls
+    orig_control_read.params.append(new_control_read.params[1])
+    if overwrite_header_values:
+        orig_control_read.params[0] = new_control_read.params[0]
+    assert test_utils.controls_equivalent(orig_control_read, new_control_read)

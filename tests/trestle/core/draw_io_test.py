@@ -21,8 +21,8 @@ from uuid import uuid4
 
 import pytest
 
+from trestle.common.err import TrestleError
 from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_validator import MarkdownValidator
 
 

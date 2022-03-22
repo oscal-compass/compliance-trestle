@@ -9,7 +9,7 @@
     },
     "imports": [
       {
-        "href": "trestle://catalogs/nist_cat/catalog.json",
+        "href": "#657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
         "include-controls": [
           {
             "with-ids": [
@@ -32,12 +32,13 @@
         {
           "param_id": "ac-1_prm_1",
             "values": [
-              "all personell"
+              "all personnel"
             ]
         },
         {  "param_id": "ac-1_prm_2",
             "values": [
-              "A thorough"
+              "Organization-level",
+              "System-level"
             ]
         },
         {  "param_id": "ac-1_prm_3",
@@ -60,11 +61,6 @@
               "monthly"
             ]
         },
-        {  "param_id": "ac-1_prm_7",
-            "values": [
-              "conferences"
-            ]
-        },
         {  "param_id": "ac-2_prm_1",
             "values": [
               "passwords"
@@ -77,7 +73,7 @@
         },
         {  "param_id": "ac-2_prm_3",
             "values": [
-              "authorized personell"
+              "authorized personnel"
             ]
         },
         {  "param_id": "ac-2_prm_4",
@@ -87,7 +83,7 @@
         },
         {  "param_id": "ac-2_prm_5",
             "values": [
-              "personell"
+              "personnel"
             ]
         },
         {  "param_id": "ac-2_prm_6",
@@ -151,6 +147,18 @@
                   "prose": "Daily logs."
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    "back_matter": {
+      "resources": [
+        {
+          "uuid": "657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
+          "rlinks": [
+            {
+              "href": "trestle://catalogs/nist_cat/catalog.json"
             }
           ]
         }

@@ -25,6 +25,7 @@ import ilcli
 import trestle.cli
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.oscal import catalog as oscatalog
+from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,11 @@ def prune_lists(input_model: trestle.core.base_model.OscalBaseModel, list_cap: i
 def add_needed_controls(input_model: oscatalog, main_cat: oscatalog) -> None:
     """Put back some of the original controls."""
     input_model.groups[0].controls = main_cat.groups[0].controls[:6]
+
+
+def set_some_param_values(catalog: oscatalog) -> None:
+    """Set some param values for testing."""
+    catalog.groups[0].controls[0].params[0].values = [common.ParameterValue(__root__='Param_1_value_in_catalog')]
 
 
 class SimplifyCatalog(ilcli.Command):
@@ -87,6 +93,8 @@ class SimplifyCatalog(ilcli.Command):
         simplified_catalog_file = pathlib.Path(args.output[0])
 
         add_needed_controls(catalog, orig_catalog)
+
+        set_some_param_values(catalog)
 
         try:
             catalog.oscal_write(simplified_catalog_file)

@@ -24,9 +24,11 @@ from typing import Any, Dict, List, Type, TypeVar, Union, cast
 import pydantic.networks
 from pydantic import ConstrainedStr
 
-import trestle.core.const as const
-import trestle.core.err as err
-import trestle.core.utils as utils
+import trestle.common.const as const
+import trestle.common.err as err
+import trestle.common.type_utils as utils
+from trestle.common import str_utils
+from trestle.common.str_utils import AliasMode
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal import OSCAL_VERSION
 
@@ -128,15 +130,19 @@ def generate_sample_model(
 
     model_dict = {}
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
+    # the only time dict ever appears is with include_all, which is handled specially
+    # the only type of collection possible after OSCAL 1.0.0 is list
     if safe_is_sub(model, OscalBaseModel):
         for field in model.__fields__:
+            if field == 'include_all':
+                if include_optional:
+                    model_dict[field] = {}
+                continue
             outer_type = model.__fields__[field].outer_type_
-            # Check for unions. This is awkward due to allow support for python 3.7
-            # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
+            # next appears to be needed for python 3.7
             if utils.get_origin(outer_type) == Union:
                 outer_type = outer_type.__args__[0]
             if model.__fields__[field].required or effective_optional:
-                """ FIXME: This type_ could be a List or a Dict """
                 # FIXME could be ForwardRef('SystemComponentStatus')
                 if utils.is_collection_field_type(outer_type):
                     inner_type = utils.get_inner_type(outer_type)
@@ -156,13 +162,12 @@ def generate_sample_model(
                     # E.g. we need the type of the container.
                     if field == '__root__' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
-                            outer_type, utils.classname_to_alias(model.__name__, 'field')
+                            outer_type, str_utils.classname_to_alias(model.__name__, AliasMode.FIELD)
                         )
                     else:
                         model_dict[field] = generate_sample_value_by_type(outer_type, field)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
-        # There is set of circumstances where a m
         if model_type is list:
             return [generate_sample_value_by_type(model, '')]
         if model_type is dict:

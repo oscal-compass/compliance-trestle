@@ -17,7 +17,8 @@ x-trestle-fedramp-props:
     - id: foo
     - id: bar
 x-trestle-set-params:
-  param-id: param_value
+  param-id:
+    values: param_value
 x-trestle-evidence:
   named-evidence: location
 x-trestle-dependent-on:
@@ -32,7 +33,7 @@ reviewed-by:
 
 ## Control Statement
 
-- \[a\] Develop, document, and disseminate to all alert personell:
+- \[a\] Develop, document, and disseminate to all alert personnel:
 
   - \[1\]  A thorough access control policy that:
 

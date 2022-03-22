@@ -1,6 +1,6 @@
 # Compliance-trestle (also known as `trestle`)
 
-![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux-orange.svg)
+![[OS Compatibility](#prerequisites)](https://img.shields.io/badge/platform-osx%20%7C%20linux%20%7C%20windows-orange.svg)
 ![[Python](https://www.python.org/downloads/)](https://img.shields.io/badge/python-v3.7+-blue.svg)
 ![[Pre-commit](https://github.com/pre-commit/pre-commit)](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
 ![[Code Coverage](https://sonarcloud.io/dashboard?id=compliance-trestle)](https://sonarcloud.io/api/project_badges/measure?project=compliance-trestle&metric=coverage)
@@ -71,12 +71,12 @@ Compliance trestle is currently beta. The expectation is that in ongoing work th
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [contributing](contributing/overview) to get started.
+Our project welcomes external contributions. Please consult [contributing](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
 
 ## License & Authors
 
-If you would like to see the detailed LICENSE click [here](LICENSE).
-Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](https://github.com/IBM/compliance-trestle/blob/develop/MAINTAINERS.md) for the core team.
+If you would like to see the detailed LICENSE click [here](https://ibm.github.io/compliance-trestle/license/).
+Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](https://ibm.github.io/compliance-trestle/maintainers/) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.

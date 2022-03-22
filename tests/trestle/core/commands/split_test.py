@@ -27,19 +27,18 @@ from tests import test_utils
 
 import trestle.cli
 from trestle.cli import Trestle
-from trestle.core import const
-from trestle.core import utils
+from trestle.common import const, str_utils, trash
+from trestle.common.err import TrestleError
+from trestle.common.str_utils import AliasMode
 from trestle.core.commands.common import cmd_utils
 from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.split import SplitCmd
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.oscal import catalog as oscatalog
 from trestle.oscal import common, component
-from trestle.utils import trash
 
 
 def test_split_model_plans(tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition) -> None:
@@ -160,7 +159,7 @@ def test_subsequent_split_model_plans(
     root_file = component_def_dir / element_paths[0].to_root_path(content_type)
     metadata_field_alias = element_paths[0].get_element_name()
     stripped_root = element.get().stripped_instance(stripped_fields_aliases=[metadata_field_alias])
-    root_wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+    root_wrapper_alias = str_utils.classname_to_alias(stripped_root.__class__.__name__, AliasMode.JSON)
 
     first_plan = Plan()
     first_plan.add_action(CreatePathAction(metadata_file))
@@ -229,7 +228,7 @@ def test_split_multi_level_dict_plans(
     for index, comp_obj in enumerate(components):
         # individual target dir
         component_element = Element(comp_obj)
-        model_type = utils.classname_to_alias(type(comp_obj).__name__, 'json')
+        model_type = str_utils.classname_to_alias(type(comp_obj).__name__, AliasMode.JSON)
         dir_prefix = str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
         component_dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
         component_file = components_dir / f'{component_dir_name}{file_ext}'
@@ -239,7 +238,7 @@ def test_split_multi_level_dict_plans(
         component_ctrl_dir = components_dir / element_paths[1].to_file_path(root_dir=component_dir_name)
 
         for i, component_ctrl_impl in enumerate(component_ctrl_impls):
-            model_type = utils.classname_to_alias(type(component_ctrl_impl).__name__, 'json')
+            model_type = str_utils.classname_to_alias(type(component_ctrl_impl).__name__, AliasMode.JSON)
             file_prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
             file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
             file_path = component_ctrl_dir / file_name
@@ -673,17 +672,19 @@ def test_no_file_given(
 
     # no file given and cwd not in trestle directory should fail
     os.chdir(tmp_path)
-    args = argparse.Namespace(element='catalog.groups', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(file=None, element='catalog.groups', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 1
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.groups,catalog.metadata', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(
+        file=None, element='catalog.groups,catalog.metadata', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups.json').exists()
     assert (catalog_dir / 'catalog/metadata.json').exists()
 
     os.chdir('./catalog')
-    args = argparse.Namespace(element='groups.*', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(file=None, element='groups.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups/00000__group.json').exists()
 
@@ -692,7 +693,7 @@ def test_no_file_given(
     assert SplitCmd()._run(args) == 0
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
+    args = argparse.Namespace(file=None, element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)

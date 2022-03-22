@@ -20,8 +20,8 @@ import re
 from typing import Any, Dict, List, Optional
 
 import trestle.core.markdown.markdown_const as md_const
+from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER
-from trestle.core.err import TrestleError
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)

@@ -26,7 +26,7 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.const as const
+import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.cli import Trestle
@@ -171,7 +171,11 @@ def test_role_refs_validator(
 def test_oscal_version_validator(
     tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int, monkeypatch: MonkeyPatch
 ) -> None:
-    """Test oscal version validator."""
+    """
+    Test oscal version validator.
+
+    There is no actual validator for oscal version but it happens in base_model when a file is loaded.
+    """
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
     sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
