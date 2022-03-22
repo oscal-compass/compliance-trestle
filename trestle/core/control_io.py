@@ -72,10 +72,10 @@ class ControlIOWriter():
         return ''
 
     @staticmethod
-    def get_sort_id(control: cat.Control, allow_none=False) -> str:
+    def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
         """Get the sort-id for the control."""
         for prop in as_list(control.props):
-            if prop.name == 'sort-id':
+            if prop.name == const.SORT_ID:
                 return prop.value.strip()
         return None if allow_none else control.id
 
@@ -472,12 +472,14 @@ class ControlIOWriter():
         self._sections_dict = sections_dict
 
         merged_header = copy.deepcopy(header)
-        if yaml_header:
-            ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
-        # only enter a sort_id if it is the true sort_id
+        # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
+        # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
+        # in the markdown header
+        yaml_header = yaml_header if yaml_header else {}
         sort_id = ControlIOWriter.get_sort_id(control, True)
-        if sort_id:
-            merged_header['sort-id'] = sort_id
+        if sort_id and const.SORT_ID not in yaml_header:
+            yaml_header[const.SORT_ID] = sort_id
+        ControlIOWriter.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
 
         # merge any provided sections with sections in the header, with overwrite
         header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
@@ -1137,7 +1139,7 @@ class ControlIOReader():
 
         imp_req.statements = list(statement_map.values())
         ControlIOReader._insert_header_content(imp_req, header, control_id)
-        sort_id = header.get('sort-id', control_id)
+        sort_id = header.get(const.SORT_ID, control_id)
         return sort_id, imp_req
 
     @staticmethod
@@ -1192,7 +1194,7 @@ class ControlIOReader():
         new_alters: List[prof.Alter] = []
         lines, header = ControlIOReader._load_control_lines_and_header(control_path)
         # extract the sort_id if present in header
-        sort_id = header.get('sort-id', control_id)
+        sort_id = header.get(const.SORT_ID, control_id)
         # query header for mapping of short to long section names
         sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
         found_sections: List[str] = []
@@ -1379,7 +1381,7 @@ class ControlIOReader():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
                     control.params.append(param)
-        if 'sort-id' in yaml_header:
+        if const.SORT_ID in yaml_header:
             control.props = control.props if control.props else []
-            control.props.append(common.Property(name='sort-id', value=yaml_header['sort-id']))
+            control.props.append(common.Property(name=const.SORT_ID, value=yaml_header[const.SORT_ID]))
         return control, group_title

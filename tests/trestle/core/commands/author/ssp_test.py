@@ -90,11 +90,11 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     assert test_utils.confirm_text_in_file(ac_1, '## Control', '## Control Guidance') != specify_sections
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
-    expected_header['sort-id'] = 'ac-01'
+    expected_header[const.SORT_ID] = 'ac-01'
     assert tree is not None
     assert expected_header == header
     header, tree = md_api.processor.process_markdown(ac_2)
-    expected_header['sort-id'] = 'ac-02'
+    expected_header[const.SORT_ID] = 'ac-02'
     assert tree is not None
     assert expected_header == header
 
@@ -147,10 +147,10 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    assert header == {'sort-id': 'ac-01'}
+    assert header == {const.SORT_ID: 'ac-01'}
     header, tree = md_api.processor.process_markdown(ac_2)
     assert tree is not None
-    assert header == {'sort-id': 'ac-02'}
+    assert header == {const.SORT_ID: 'ac-02'}
 
 
 def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
@@ -183,7 +183,7 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
 
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
-    yaml_header['sort-id'] = 'ac-01'
+    yaml_header[const.SORT_ID] = 'ac-01'
     assert tree is not None
     # remove the sections that were added to original header so we can check other changes in header
     header.pop(const.SECTIONS_TAG)
