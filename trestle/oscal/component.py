@@ -50,7 +50,7 @@ class Statement(OscalBaseModel):
     ) = Field(
         ...,
         alias='statement-id',
-        description='A human-oriented identifier reference to a control statement.',
+        description='A reference to a control statement by its identifier',
         title='Control Statement Reference',
     )
     uuid: constr(
@@ -58,7 +58,7 @@ class Statement(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
+        'A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Control Statement Reference Universally Unique Identifier',
     )
     description: str = Field(
@@ -98,7 +98,7 @@ class SetParameter(OscalBaseModel):
         ...,
         alias='param-id',
         description=
-        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
+        "A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
     values: List[common.Value] = Field(...)
@@ -118,7 +118,7 @@ class IncorporatesComponent(OscalBaseModel):
     ) = Field(
         ...,
         alias='component-uuid',
-        description='A machine-oriented identifier reference to a component.',
+        description='A reference to a component by its identifier',
         title='Component Reference',
     )
     description: str = Field(
@@ -152,22 +152,19 @@ class ImplementedRequirement(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a specific control implementation elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Control Implementation Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='A unique identifier for a specific control implementation.',
+                     title='Control Implementation Identifier',
+                 )
     control_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
         alias='control-id',
-        description=
-        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
+        description='A reference to a control with a corresponding id value.',
         title='Control Identifier Reference',
     )
     description: str = Field(
@@ -192,14 +189,12 @@ class ControlImplementation(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference a set of implemented controls elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation set can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Control Implementation Set Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='A unique identifier for the set of implemented controls.',
+                     title='Control Implementation Set Identifier',
+                 )
     source: str = Field(
         ...,
         description=
@@ -226,14 +221,12 @@ class Capability(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this capability elsewhere in this or other OSCAL instances. The locally defined UUID of the capability can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Capability Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='A unique identifier for a capability.',
+                     title='Capability Identifier',
+                 )
     name: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description="The capability's human-readable name.",
@@ -267,14 +260,12 @@ class SystemComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='The unique identifier for the component.',
+                     title='Component Identifier',
+                 )
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
@@ -315,14 +306,12 @@ class DefinedComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='The unique identifier for the component.',
+                     title='Component Identifier',
+                 )
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
@@ -364,7 +353,7 @@ class ComponentDefinition(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component definition elsewhere in this or other OSCAL instances. The locally defined UUID of the component definition can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        'A globally unique identifier for this component definition instance. This UUID should be changed when this document is revised.',
         title='Component Definition Universally Unique Identifier',
     )
     metadata: common.Metadata

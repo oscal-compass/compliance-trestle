@@ -50,7 +50,7 @@ class Control(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A human-oriented, locally unique identifier with instance scope that can be used to reference this control elsewhere in this and other OSCAL instances (e.g., profiles). This id should be assigned per-subject, which means it should be consistently used to identify the same control across revisions of the document.',
+        "A unique identifier for a specific control instance that can be used to reference the control in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same control across minor revisions of the document.",
         title='Control Identifier',
     )
     class_: Optional[constr(
@@ -88,7 +88,7 @@ class Group(OscalBaseModel):
     )] = Field(
         None,
         description=
-        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined group elsewhere in in this and other OSCAL instances (e.g., profiles). This id should be assigned per-subject, which means it should be consistently used to identify the same group across revisions of the document.',
+        "A unique identifier for a specific group instance that can be used to reference the group within this and in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same group across minor revisions of the document.",
         title='Group Identifier',
     )
     class_: Optional[constr(
@@ -126,7 +126,7 @@ class Catalog(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier with cross-instance scope for this catalog instance. This UUID should be changed when this document is revised.',
+        'A globally unique identifier for this catalog instance. This UUID should be changed when this document is revised.',
         title='Catalog Universally Unique Identifier',
     )
     metadata: common.Metadata
