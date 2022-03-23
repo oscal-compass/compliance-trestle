@@ -202,6 +202,16 @@ def test_catalog_interface_groups() -> None:
     assert len(groups) == 4
 
 
+def test_get_sorted_controls_in_group(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test get sorted controls in group."""
+    catalog_interface = CatalogInterface(simplified_nist_catalog)
+    controls = catalog_interface.get_sorted_controls_in_group('ac')
+    ids = [control.id for control in controls]
+    # confirm that the list is not alphabetical but is numeric since it uses the control sort-ids for order
+    ref_ids = ['ac-1', 'ac-2', 'ac-2.1', 'ac-2.2', 'ac-2.3', 'ac-2.4', 'ac-2.5', 'ac-2.6', 'ac-2.7', 'ac-2.8', 'ac-2.9']
+    assert ids[:11] == ref_ids
+
+
 @pytest.mark.parametrize('replace_params', [True, False])
 def test_catalog_interface_merge_controls(replace_params: bool, sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test merging of controls."""
