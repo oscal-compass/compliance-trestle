@@ -248,7 +248,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
     def _add_set_parameter_values(
         self, row: int, parameter_name: str, parameter_values: str, control_implementation: ControlImplementation
     ) -> None:
-        """Add set parameter."""
+        """Add set parameter values (the set of choices)."""
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_values is not None:
@@ -266,7 +266,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         parameter_value_default: str,
         implemented_requirement: ImplementedRequirement
     ) -> None:
-        """Add set parameter."""
+        """Add set parameter default (the "recommended" value)."""
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_value_default is not None:
