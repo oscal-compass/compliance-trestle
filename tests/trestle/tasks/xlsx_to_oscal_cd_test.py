@@ -72,7 +72,7 @@ def test_xlsx_execute(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     list_dir = os.listdir(d_produced)
-    assert len(list_dir) == 2
+    assert len(list_dir) == 1
     assert d_expected != d_produced
     for fn in list_dir:
         f_expected = d_expected / fn

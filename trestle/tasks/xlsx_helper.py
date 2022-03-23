@@ -328,13 +328,17 @@ class XlsxHelper:
         description = None
         col = self._get_column_letter(self._column.rename_parameter_opt_parm)
         combined_values = self._work_sheet[col + str(row)].value
+        switch = 0
         if combined_values is not None:
             if '\n' in combined_values:
                 parameter_parts = combined_values.split('\n')
+                switch = 1
             elif ' ' in combined_values:
                 parameter_parts = combined_values.split(' ', 1)
+                switch = 2
             else:
                 parameter_parts = combined_values
+                switch = 3
             if len(parameter_parts) == 2:
                 name = parameter_parts[1].strip()
                 description = parameter_parts[0].strip()
@@ -343,6 +347,10 @@ class XlsxHelper:
                 if name != sname:
                     self._add_row(row, self.rows_invalid_parameter_name)
             else:
+                
+                logger.info(f'combined_values: {combined_values} {switch}')
+                logger.info(f'len: {len(parameter_parts)}')
+                
                 logger.info(f'row {row} col {col} invalid value')
         if name is None:
             self._add_row(row, self.rows_missing_parameters)
@@ -372,9 +380,14 @@ class XlsxHelper:
                 continue
             cell_tokens = cell_value.split()
             # find columns of interest
-            if cell_tokens in [[self._column.control_id], [self._column.control_text], [self._column.version],
-                               [self._column.goal_name_id]]:
-                self._add_column(cell_tokens[0], column, 1)
+            if self._column.control_id in cell_tokens:
+                self._add_column(self._column.control_id, column, 1)
+            elif self._column.control_text in cell_tokens:
+                self._add_column(self._column.control_text, column, 1)
+            elif self._column.version in cell_tokens:
+                self._add_column(self._column.version, column, 1)
+            elif self._column.goal_name_id in cell_tokens:
+                self._add_column(self._column.goal_name_id, column, 1)
             elif cell_tokens == self._column.tokens_parameter_opt_parm:
                 self._add_column(self._column.rename_parameter_opt_parm, column, 1)
             elif cell_tokens == self._column.tokens_values_alternatives:
