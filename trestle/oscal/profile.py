@@ -66,7 +66,8 @@ class SetParameter(OscalBaseModel):
     ) = Field(
         ...,
         alias='param-id',
-        description="Indicates the value of the 'id' flag on a target parameter; i.e. which parameter to set",
+        description=
+        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined parameter elsewhere in this or other OSCAL instances. When referenced from another OSCAL instance, this identifier must be referenced in the context of the containing resource (e.g., import-profile). This id should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Parameter ID',
     )
     class_: Optional[constr(
@@ -84,7 +85,8 @@ class SetParameter(OscalBaseModel):
     )] = Field(
         None,
         alias='depends-on',
-        description='Another parameter invoking this one',
+        description=
+        '**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.',
         title='Depends on',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -233,15 +235,6 @@ class Combine(OscalBaseModel):
     )
 
 
-class AsIs(OscalBaseModel):
-    __root__: bool = Field(
-        ...,
-        description=
-        'An As-is element indicates that the controls should be structured in resolution as they are structured in their source catalogs. It does not contain any elements or attributes.',
-        title='As is',
-    )
-
-
 class Add(OscalBaseModel):
     """
     Specifies contents to be added into controls, in resolution
@@ -283,13 +276,14 @@ class Alter(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    control_id: Optional[constr(
+    control_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
-        None,
+    ) = Field(
+        ...,
         alias='control-id',
-        description='A reference to a control with a corresponding id value.',
+        description=
+        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     removes: Optional[List[Remove]] = Field(None)
@@ -376,7 +370,7 @@ class Group(OscalBaseModel):
     )] = Field(
         None,
         description=
-        "A unique identifier for a specific group instance that can be used to reference the group within this and in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same group across minor revisions of the document.",
+        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined group elsewhere in this or other OSCAL instances. When referenced from another OSCAL instance, this identifier must be referenced in the context of the containing resource (e.g., import-profile). This id should be assigned per-subject, which means it should be consistently used to identify the same group across revisions of the document.',
         title='Group Identifier',
     )
     class_: Optional[constr(
@@ -415,15 +409,31 @@ class Custom(OscalBaseModel):
 
 class Merge(OscalBaseModel):
     """
-    A Merge element merges controls in resolution.
+    A Merge element provides structuring directives that drive how controls are organized after resolution.
     """
 
     class Config:
         extra = Extra.forbid
 
-    combine: Optional[Combine] = None
-    as_is: Optional[AsIs] = Field(None, alias='as-is')
-    custom: Optional[Custom] = None
+    combine: Optional[Combine] = Field(
+        None,
+        description=
+        'A Combine element defines whether and how to combine multiple (competing) versions of the same control',
+        title='Combination rule',
+    )
+    flat: Optional[Dict[str, Any]] = Field(None, description='Use the flat structuring method.', title='Flat')
+    as_is: Optional[bool] = Field(
+        None,
+        alias='as-is',
+        description=
+        'An As-is element indicates that the controls should be structured in resolution as they are structured in their source catalogs. It does not contain any elements or attributes.',
+        title='As-Is Structuring Directive',
+    )
+    custom: Optional[Custom] = Field(
+        None,
+        description='A Custom element frames a structure for embedding represented controls in resolution.',
+        title='Custom grouping',
+    )
 
 
 class Profile(OscalBaseModel):
@@ -439,8 +449,8 @@ class Profile(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier for this profile instance. This UUID should be changed when this document is revised.',
-        title='Catalog Universally Unique Identifier',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this profile elsewhere in this or other OSCAL instances. The locally defined UUID of the profile can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This identifier should be assigned per-subject, which means it should be consistently used to identify the same profile across revisions of the document.',
+        title='Profile Universally Unique Identifier',
     )
     metadata: common.Metadata
     imports: List[Import] = Field(...)

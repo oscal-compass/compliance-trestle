@@ -211,7 +211,7 @@ class TelephoneNumber(OscalBaseModel):
 
 class SystemId(OscalBaseModel):
     """
-    A unique identifier for the system described by this system security plan.
+    A human-oriented, globally unique identifier with cross-instance scope that can be used to reference this system identification property elsewhere in this or other OSCAL instances. When referencing an externally defined system identification, the system identification must be used in the context of the external / imported OSCAL instance (e.g., uri-reference). This string should be assigned per-subject, which means it should be consistently used to identify the same system across revisions of the document.
     """
 
     class Config:
@@ -251,7 +251,7 @@ class Source(OscalBaseModel):
         ...,
         alias='task-uuid',
         description=
-        'Uniquely identifies an assessment activity to be performed as part of the event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference (in this or other OSCAL instances) an assessment activity to be performed as part of the event. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Task Universally Unique Identifier',
     )
 
@@ -281,7 +281,7 @@ class RoleId(OscalBaseModel):
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
-        description='A reference to the roles served by the user.',
+        description='A human-oriented identifier reference to roles served by the user.',
         title='Role Identifier Reference',
     )
 
@@ -317,7 +317,7 @@ class RelatedRisk(OscalBaseModel):
                       ) = Field(
                           ...,
                           alias='risk-uuid',
-                          description='References an risk defined in the list of risks.',
+                          description='A machine-oriented identifier reference to a risk defined in the list of risks.',
                           title='Risk Universally Unique Identifier Reference',
                       )
 
@@ -335,7 +335,7 @@ class RelatedObservation1(OscalBaseModel):
     ) = Field(
         ...,
         alias='observation-uuid',
-        description='References an observation defined in the list of observations.',
+        description='A machine-oriented identifier reference to an observation defined in the list of observations.',
         title='Observation Universally Unique Identifier Reference',
     )
 
@@ -371,7 +371,7 @@ class Property(OscalBaseModel):
     )] = Field(
         None,
         description=
-        'A unique identifier that can be used to reference this property elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this defined property elsewhere in this or other OSCAL instances. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Property Universally Unique Identifier',
     )
     ns: Optional[AnyUrl] = Field(
@@ -432,7 +432,7 @@ class Protocol(OscalBaseModel):
     )] = Field(
         None,
         description=
-        'A globally unique identifier that can be used to reference this service protocol entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this service protocol information elsewhere in this or other OSCAL instances. The locally defined UUID of the service protocol can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Service Protocol Information Universally Unique Identifier',
     )
     name: constr(regex=r'^\S(.*\S)?$') = Field(
@@ -450,12 +450,14 @@ class Protocol(OscalBaseModel):
 
 
 class PartyUuid(OscalBaseModel):
-    __root__: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                     ) = Field(
-                         ...,
-                         description='References a party defined in metadata.',
-                         title='Party Reference',
-                     )
+    __root__: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented identifier reference to another party defined in metadata. The UUID of the party in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
+        title='Party Reference',
+    )
 
 
 class ParameterValue(OscalBaseModel):
@@ -515,7 +517,7 @@ class MemberOfOrganization(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'Identifies that the party object is a member of the organization associated with the provided UUID.',
+        'A machine-oriented identifier reference to another party (person or organization) that this subject is associated with. The UUID of the party in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
         title='Organizational Affiliation',
     )
 
@@ -528,13 +530,14 @@ class LoggedBy(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    party_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                       ) = Field(
-                           ...,
-                           alias='party-uuid',
-                           description='A pointer to the party who is making the log entry.',
-                           title='Party UUID Reference',
-                       )
+    party_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='party-uuid',
+        description='A machine-oriented identifier reference to the party who is making the log entry.',
+        title='Party UUID Reference',
+    )
     role_id: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -547,12 +550,14 @@ class LoggedBy(OscalBaseModel):
 
 
 class LocationUuid(OscalBaseModel):
-    __root__: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                     ) = Field(
-                         ...,
-                         description='References a location defined in metadata.',
-                         title='Location Reference',
-                     )
+    __root__: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented identifier reference to a location defined in the metadata section of this or another OSCAL instance. The UUID of the location in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
+        title='Location Reference',
+    )
 
 
 class Link(OscalBaseModel):
@@ -720,7 +725,7 @@ class EmailAddress(OscalBaseModel):
 
 class DocumentId(OscalBaseModel):
     """
-    A document identifier qualified by an identifier scheme. A document identifier provides a globally unique identifier for a group of documents that are to be treated as different versions of the same document. If this element does not appear, or if the value of this element is empty, the value of "document-id" is equal to the value of the "uuid" flag of the top-level root element.
+    A document identifier qualified by an identifier scheme. A document identifier provides a globally unique identifier with a cross-instance scope that is used for a group of documents that are to be treated as different versions of the same document. If this element does not appear, or if the value of this element is empty, the value of "document-id" is equal to the value of the "uuid" flag of the top-level root element.
     """
 
     class Config:
@@ -747,7 +752,7 @@ class Dependency(OscalBaseModel):
                       ) = Field(
                           ...,
                           alias='task-uuid',
-                          description='References a unique task by UUID.',
+                          description='A machine-oriented identifier reference to a unique task.',
                           title='Task Universally Unique Identifier Reference',
                       )
     remarks: Optional[Remarks] = None
@@ -868,7 +873,7 @@ class AssessmentSubjectPlaceholder(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'Uniquely identifies a set of assessment subjects that will be identified by a task or an activity that is part of a task.',
+        'A machine-oriented, globally unique identifier for a set of assessment subjects that will be identified by a task or an activity that is part of a task. The locally defined UUID of the assessment subject placeholder can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Subject Placeholder Universally Unique Identifier',
     )
     description: Optional[str] = Field(
@@ -895,7 +900,7 @@ class AssessmentPart(OscalBaseModel):
     )] = Field(
         None,
         description=
-        "A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this part elsewhere in this or other OSCAL instances. The locally defined UUID of the part can be used to reference the data item locally or globally (e.g., in an ported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Part Identifier',
     )
     name: constr(
@@ -950,7 +955,7 @@ class AssessmentMethod(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'Uniquely identifies this defined assessment method. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given assessment method across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment method elsewhere in this or other OSCAL instances. The locally defined UUID of the assessment method can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Assessment Method Universally Unique Identifier',
     )
     description: Optional[str] = Field(
@@ -1032,12 +1037,14 @@ class SystemUser(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
-                     ...,
-                     description='The unique identifier for the user class.',
-                     title='User Universally Unique Identifier',
-                 )
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this user class elsewhere in this or other OSCAL instances. The locally defined UUID of the system user can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='User Universally Unique Identifier',
+    )
     title: Optional[str] = Field(
         None,
         description='A name given to the user, which may be used by a tool for display and navigation.',
@@ -1063,7 +1070,7 @@ class SystemUser(OscalBaseModel):
 
 class SubjectReference(OscalBaseModel):
     """
-    A pointer to a resource based on its universally unique identifier (UUID). Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else.
+    A human-oriented identifier reference to a resource. Use type to indicate whether the identified resource is a component, inventory item, location, user, or something else.
     """
 
     class Config:
@@ -1074,7 +1081,8 @@ class SubjectReference(OscalBaseModel):
     ) = Field(
         ...,
         alias='subject-uuid',
-        description="A pointer to a component, inventory-item, location, party, user, or resource using it's UUID.",
+        description=
+        "A machine-oriented identifier reference to a component, inventory-item, location, party, user, or resource using it's UUID.",
         title='Subject Universally Unique Identifier Reference',
     )
     type: constr(
@@ -1108,7 +1116,7 @@ class MitigatingFactor(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'Uniquely identifies this mitigating factor. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given mitigating factor across revisions.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this mitigating factor elsewhere in this or other OSCAL instances. The locally defined UUID of the mitigating factor can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Mitigating Factor Universally Unique Identifier',
     )
     implementation_uuid: Optional[constr(
@@ -1116,7 +1124,8 @@ class MitigatingFactor(OscalBaseModel):
     )] = Field(
         None,
         alias='implementation-uuid',
-        description='Points to an implementation statement in the SSP.',
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this implementation statement elsewhere in this or other OSCAL instancess. The locally defined UUID of the implementation statement can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Implementation UUID',
     )
     description: str = Field(
@@ -1142,7 +1151,8 @@ class SelectSubjectById(OscalBaseModel):
     ) = Field(
         ...,
         alias='subject-uuid',
-        description="A pointer to a component, inventory-item, location, party, user, or resource using it's UUID.",
+        description=
+        "A machine-oriented identifier reference to a component, inventory-item, location, party, user, or resource using it's UUID.",
         title='Subject Universally Unique Identifier Reference',
     )
     type: constr(
@@ -1207,7 +1217,7 @@ class Role(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        "A unique identifier for a specific role instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same role across minor revisions of the document.",
+        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined role elsewhere in this or other OSCAL instances. When referenced from another OSCAL instance, the locally defined ID of the Role from the imported OSCAL instance must be referenced in the context of the containing resource (e.g., import, import-component-definition, import-profile, import-ssp or import-ap). This ID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Role Identifier',
     )
     title: str = Field(
@@ -1267,7 +1277,7 @@ class Resource(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this defined resource elsewhere in this or other OSCAL instances. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1322,7 +1332,7 @@ class Revision(OscalBaseModel):
     )
     published: Optional[Published] = None
     last_modified: Optional[LastModified] = Field(None, alias='last-modified')
-    version: Optional[Version] = None
+    version: Version
     oscal_version: Optional[OscalVersion] = Field(None, alias='oscal-version')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
@@ -1343,7 +1353,7 @@ class ResponsibleRole(OscalBaseModel):
     ) = Field(
         ...,
         alias='role-id',
-        description='The role that is responsible for the business function.',
+        description='A human-oriented identifier reference to roles responsible for the business function.',
         title='Responsible Role ID',
     )
     props: Optional[List[Property]] = Field(None)
@@ -1366,7 +1376,7 @@ class ResponsibleParty(OscalBaseModel):
     ) = Field(
         ...,
         alias='role-id',
-        description='The role that the party is responsible for.',
+        description='A human-oriented identifier reference to roles served by the user.',
         title='Responsible Role',
     )
     party_uuids: List[PartyUuid] = Field(..., alias='party-uuids')
@@ -1388,7 +1398,7 @@ class RequiredAsset(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'Uniquely identifies this required asset. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given required asset across revisions.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this required asset elsewhere in this or other OSCAL instances. The locally defined UUID of the asset can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Required Universally Unique Identifier',
     )
     subjects: Optional[List[SubjectReference]] = Field(None)
@@ -1443,7 +1453,7 @@ class Party(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given party across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this defined party elsewhere in this or other OSCAL instances. The locally defined UUID of the party can be used to reference the data item locally or globally (e.g., from an importing OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Party Universally Unique Identifier',
     )
     type: Type = Field(
@@ -1487,7 +1497,7 @@ class Part(OscalBaseModel):
     )] = Field(
         None,
         description=
-        "A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
+        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined part elsewhere in this or other OSCAL instances. When referenced from another OSCAL instance, this identifier must be referenced in the context of the containing resource (e.g., import-profile). This id should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Part Identifier',
     )
     name: constr(
@@ -1543,7 +1553,8 @@ class LocalObjective(OscalBaseModel):
     ) = Field(
         ...,
         alias='control-id',
-        description='A reference to a control with a corresponding id value.',
+        description=
+        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     description: Optional[str] = Field(
@@ -1589,7 +1600,7 @@ class Parameter(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        "A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
+        'A human-oriented, locally unique identifier with cross-instance scope that can be used to reference this defined parameter elsewhere in this or other OSCAL instances. When referenced from another OSCAL instance, this identifier must be referenced in the context of the containing resource (e.g., import-profile). This id should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Parameter Identifier',
     )
     class_: Optional[constr(
@@ -1607,7 +1618,8 @@ class Parameter(OscalBaseModel):
     )] = Field(
         None,
         alias='depends-on',
-        description='Another parameter invoking this one',
+        description=
+        '**(deprecated)** Another parameter invoking this one. This construct has been deprecated and should not be used.',
         title='Depends on',
     )
     props: Optional[List[Property]] = Field(None)
@@ -1639,13 +1651,14 @@ class OriginActor(OscalBaseModel):
         extra = Extra.forbid
 
     type: Type3 = Field(..., description='The kind of actor.', title='Actor Type')
-    actor_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                       ) = Field(
-                           ...,
-                           alias='actor-uuid',
-                           description='A pointer to the tool or person based on the associated type.',
-                           title='Actor Universally Unique Identifier Reference',
-                       )
+    actor_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='actor-uuid',
+        description='A machine-oriented identifier reference to the tool or person based on the associated type.',
+        title='Actor Universally Unique Identifier Reference',
+    )
     role_id: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1672,7 +1685,7 @@ class Location(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this defined location elsewhere in this or other OSCAL instances. The locally defined UUID of the location can be used to reference the data item locally or globally (e.g., from an importing OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1730,7 +1743,8 @@ class ImplementedComponent(OscalBaseModel):
     ) = Field(
         ...,
         alias='component-uuid',
-        description='A reference to a component that is implemented as part of an inventory item.',
+        description=
+        'A machine-oriented identifier reference to a component that is implemented as part of an inventory item.',
         title='Component Universally Unique Identifier Reference',
     )
     props: Optional[List[Property]] = Field(None)
@@ -1752,7 +1766,7 @@ class InventoryItem(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this inventory item elsewhere in this or other OSCAL instances. The locally defined UUID of the inventory item can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Inventory Item Universally Unique Identifier',
     )
     description: str = Field(
@@ -1780,7 +1794,8 @@ class IdentifiedSubject(OscalBaseModel):
     ) = Field(
         ...,
         alias='subject-placeholder-uuid',
-        description='References a unique assessment subject placeholder defined by this task.',
+        description=
+        'A machine-oriented identifier reference to a unique assessment subject placeholder defined by this task.',
         title='Assessment Subject Placeholder Universally Unique Identifier Reference',
     )
     subjects: List[AssessmentSubject] = Field(...)
@@ -1798,7 +1813,7 @@ class RelatedTask(OscalBaseModel):
                       ) = Field(
                           ...,
                           alias='task-uuid',
-                          description='References a unique task by UUID.',
+                          description='A machine-oriented identifier reference to a unique task.',
                           title='Task Universally Unique Identifier Reference',
                       )
     props: Optional[List[Property]] = Field(None)
@@ -1827,7 +1842,7 @@ class RelatedResponse(OscalBaseModel):
     ) = Field(
         ...,
         alias='response-uuid',
-        description='References a unique risk response by UUID.',
+        description='A machine-oriented identifier reference to a unique risk response.',
         title='Response Universally Unique Identifier Reference',
     )
     props: Optional[List[Property]] = Field(None)
@@ -1849,7 +1864,7 @@ class AssociatedActivity(OscalBaseModel):
     ) = Field(
         ...,
         alias='activity-uuid',
-        description='References an activity defined in the list of activities.',
+        description='A machine-oriented identifier reference to an activity defined in the list of activities.',
         title='Activity Universally Unique Identifier Reference',
     )
     props: Optional[List[Property]] = Field(None)
@@ -1867,12 +1882,14 @@ class Task(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
-                     ...,
-                     description='Uniquely identifies this assessment task.',
-                     title='Task Universally Unique Identifier',
-                 )
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this task elsewhere in this or other OSCAL instances. The locally defined UUID of the task can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Task Universally Unique Identifier',
+    )
     type: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1911,7 +1928,8 @@ class UsesComponent(OscalBaseModel):
     ) = Field(
         ...,
         alias='component-uuid',
-        description='A reference to a component that is implemented as part of an inventory item.',
+        description=
+        'A machine-oriented identifier reference to a component that is implemented as part of an inventory item.',
         title='Component Universally Unique Identifier Reference',
     )
     props: Optional[List[Property]] = Field(None)
@@ -1928,12 +1946,14 @@ class AssessmentPlatform(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
-                     ...,
-                     description='Uniquely identifies this assessment Platform.',
-                     title='Assessment Platform Universally Unique Identifier',
-                 )
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment platform elsewhere in this or other OSCAL instances. The locally defined UUID of the assessment platform can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Assessment Platform Universally Unique Identifier',
+    )
     title: Optional[str] = Field(
         None,
         description='The title or name for the assessment platform.',

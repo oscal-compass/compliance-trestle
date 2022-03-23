@@ -99,6 +99,8 @@ def generate_sample_value_by_type(
     if type_ == Any:
         # Return empty dict - aka users can put whatever they want here.
         return {}
+    if type_ == Dict[str, Any]:  # added for OSCAL 1.0.1 patch
+        return {'REPLACE_ME': 'REPLACE_ME'}
     raise err.TrestleError(f'Fatal: Bad type in model {type_}')
 
 
