@@ -328,17 +328,13 @@ class XlsxHelper:
         description = None
         col = self._get_column_letter(self._column.rename_parameter_opt_parm)
         combined_values = self._work_sheet[col + str(row)].value
-        switch = 0
         if combined_values is not None:
             if '\n' in combined_values:
                 parameter_parts = combined_values.split('\n')
-                switch = 1
             elif ' ' in combined_values:
                 parameter_parts = combined_values.split(' ', 1)
-                switch = 2
             else:
                 parameter_parts = combined_values
-                switch = 3
             if len(parameter_parts) == 2:
                 name = parameter_parts[1].strip()
                 description = parameter_parts[0].strip()
@@ -347,10 +343,6 @@ class XlsxHelper:
                 if name != sname:
                     self._add_row(row, self.rows_invalid_parameter_name)
             else:
-                
-                logger.info(f'combined_values: {combined_values} {switch}')
-                logger.info(f'len: {len(parameter_parts)}')
-                
                 logger.info(f'row {row} col {col} invalid value')
         if name is None:
             self._add_row(row, self.rows_missing_parameters)
