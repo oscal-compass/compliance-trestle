@@ -29,6 +29,8 @@ logger.addHandler(logging.StreamHandler())
 
 def load_git():
     """Load git submodule for oscal."""
+    # NOTE: this should only be done if the latest nist content is desired
+    # otherwise trestle 1.0.0 should track the corresponding submodule it is bound to
     logger.info('git add and update oscal modules')
     try:
         check_call('git submodule add https://github.com/usnistgov/OSCAL.git nist-source'.split())
@@ -102,7 +104,7 @@ def generate_models():
 
 def main():
     """Load git and generate models."""
-    load_git()
+    # at this point should load_git() if latest oscal schemas are needed
     generate_models()
     logger.info('DONE')
 
