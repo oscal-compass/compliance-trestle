@@ -595,7 +595,7 @@ class ModelUtils:
             if choices and values:
                 for value in values:
                     if value not in choices:
-                        raise TrestleError(f'Value provided for parameter, {value} is not in choices: {choices}.')
+                        logger.warning(f"Parameter {param_dict['id']} has value \"{value}\" not in choices: {choices}.")
         return common.Parameter(**param_dict)
 
     @staticmethod

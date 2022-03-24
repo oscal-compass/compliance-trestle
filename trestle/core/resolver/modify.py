@@ -251,6 +251,7 @@ class Modify(Pipeline.Filter):
         Find the control with the param_id in it and set the parameter value.
 
         This does not recurse because expectation is that only top level params will be set.
+        It modifies controls in the control_dict not the catalog.
         """
         control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
         if control is None:
@@ -283,6 +284,22 @@ class Modify(Pipeline.Filter):
         for control in self._catalog_interface.get_all_controls_from_dict():
             self._replace_control_prose(control, param_dict, self._params_format, self._param_rep)
 
+    def _set_choices_in_controls(self, set_param_list: List[prof.SetParameter]) -> None:
+        """Set values for all choices in all controls that have param references in them."""
+        param_dict: Dict[str, common.Parameter] = {}
+        for set_param in set_param_list:
+            param_dict[set_param.param_id] = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
+        for control in self._catalog_interface.get_all_controls_from_dict():
+            for param in as_list(control.params):
+                if param.select:
+                    new_choices: List[str] = []
+                    for choice in as_list(param.select.choice):
+                        new_choice = self._replace_params(choice, param_dict)
+                        new_choices.append(new_choice)
+                        if new_choice != choice:
+                            logger.info(f'substituted for {choice} vs. {new_choice}')
+                    param.select.choice = new_choices
+
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
         """Modify the controls based on the profile."""
         logger.debug(f'modify specify catalog {catalog.metadata.title} for profile {self._profile.metadata.title}')
@@ -293,6 +310,7 @@ class Modify(Pipeline.Filter):
             # change all parameter values
             if self._profile.modify.set_parameters and not self._block_params:
                 set_param_list = self._profile.modify.set_parameters
+                self._set_choices_in_controls(set_param_list)
                 for set_param in set_param_list:
                     self._set_parameter_in_control(set_param)
             alters = self._profile.modify.alters
