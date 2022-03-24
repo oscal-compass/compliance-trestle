@@ -43,6 +43,8 @@ from trestle.tasks.xlsx_helper import get_trestle_version
 
 logger = logging.getLogger(__name__)
 
+key_sep = sep = '|'
+
 
 class XlsxToOscalComponentDefinition(TaskBase):
     """
@@ -103,8 +105,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             logger.error(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # initialize
-        self.component_names = []
-        self.defined_components = []
+        self.defined_components = {}
         # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
@@ -128,7 +129,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         component_definition = ComponentDefinition(
             uuid=str(uuid.uuid4()),
             metadata=metadata,
-            components=self.defined_components,
+            components=list(self.defined_components.values()),
         )
         # write OSCAL ComponentDefinition to file
         if self._verbose:
@@ -140,6 +141,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _process_rows(self, responsible_roles: List[ResponsibleRole]) -> None:
         """Process spread sheet rows."""
+        ci_map = {}
         for row in self.xlsx_helper.row_generator():
             # quit when first row with no goal_id encountered
             goal_name_id = self.xlsx_helper.get_goal_name_id(row)
@@ -148,32 +150,39 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 continue
             # component
             component_name = self.xlsx_helper.get_component_name(row)
-            defined_component = self._get_defined_component(component_name)
+            component_type = 'Service'
+            defined_component = self._get_defined_component(component_name, component_type)
             # parameter
             parameter_name, parameter_description = self.xlsx_helper.get_parameter_name_and_description(row)
-            # implemented requirements
-            self.implemented_requirements = []
-            self._add_implemented_requirements(
-                row, controls, component_name, parameter_name, responsible_roles, goal_name_id
-            )
             # control implementations
-            control_implementation = ControlImplementation(
-                uuid=str(uuid.uuid4()),
-                source=self._get_catalog_url(),
-                description=component_name + ' implemented controls for ' + self._get_catalog_title()
-                + '. It includes assessment asset configuration for CICD."',
-                implemented_requirements=self.implemented_requirements,
+            source = self._get_catalog_url()
+            description = component_name + ' implemented controls for ' + self._get_catalog_title(
+            ) + '. It includes assessment asset configuration for CICD.'
+            key = source + key_sep + description
+            control_implementation = ci_map.get(key)
+            if not control_implementation:
+                ci_map[key] = ControlImplementation(
+                    uuid=str(uuid.uuid4()),
+                    source=source,
+                    description=description,
+                    implemented_requirements=[],
+                )
+                control_implementation = ci_map[key]
+                if defined_component.control_implementations is None:
+                    defined_component.control_implementations = []
+                defined_component.control_implementations.append(control_implementation)
+            # implemented requirements
+            self._add_implemented_requirements(
+                row, control_implementation, controls, component_name, parameter_name, responsible_roles, goal_name_id
             )
             # keep alternative parameter values at control implementation level
             parameter_values = self.xlsx_helper.get_parameter_values(row)
             self._add_set_parameter_values(row, parameter_name, parameter_values, control_implementation)
-            if defined_component.control_implementations is None:
-                defined_component.control_implementations = []
-            defined_component.control_implementations.append(control_implementation)
 
     def _add_implemented_requirements(
         self,
         row: int,
+        control_implementation: ControlImplementation,
         controls: Dict[str, List[str]],
         component_name: str,
         parameter_name: str,
@@ -217,7 +226,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             # add set_parameter
             self._add_set_parameter_default(row, parameter_name, parameter_value_default, implemented_requirement)
             # implemented_requirements
-            self.implemented_requirements.append(implemented_requirement)
+            control_implementation.implemented_requirements.append(implemented_requirement)
 
     def _add_statements(
         self,
@@ -252,8 +261,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_values is not None:
-                values = [parameter_values]
-                set_parameter = SetParameter(param_id=parameter_name, values=values)
+                set_parameter = SetParameter(param_id=parameter_name, values=parameter_values)
                 set_parameters = [set_parameter]
                 if control_implementation.set_parameters is None:
                     control_implementation.set_parameters = []
@@ -270,30 +278,28 @@ class XlsxToOscalComponentDefinition(TaskBase):
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_value_default is not None:
+                if implemented_requirement.set_parameters is None:
+                    implemented_requirement.set_parameters = []
                 values = [parameter_value_default]
                 set_parameter = SetParameter(param_id=parameter_name, values=values)
                 set_parameters = [set_parameter]
-                implemented_requirement.set_parameters = set_parameters
+                implemented_requirement.set_parameters.append(set_parameters)
 
-    def _get_defined_component(self, component_name: str) -> DefinedComponent:
+    def _get_defined_component(self, component_name: str, component_type: str) -> DefinedComponent:
         """Get defined component."""
-        if component_name not in self.component_names:
+        key = component_name + key_sep + component_type
+        defined_component = self.defined_components.get(key)
+        if not defined_component:
             # create new component
-            self.component_names.append(component_name)
             component_title = component_name
             component_description = component_name
             defined_component = DefinedComponent(
                 uuid=str(uuid.uuid4()),
                 description=component_description,
                 title=component_title,
-                type='Service',
+                type=component_type,
             )
-            self.defined_components.append(defined_component)
-        else:
-            # find existing component
-            for defined_component in self.defined_components:
-                if component_name == defined_component.title:
-                    break
+            self.defined_components[key] = defined_component
         return defined_component
 
     def _build_roles(self) -> List[Role]:

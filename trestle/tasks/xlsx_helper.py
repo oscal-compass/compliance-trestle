@@ -114,6 +114,9 @@ class XlsxHelper:
         text1 = '  filter-column     = '
         text2 = '(optional) column heading of yes/no values; process only "yes" rows.'
         logger.info(text1 + text2)
+        text1 = '  analysis-level    = '
+        text2 = '(optional) integer.'
+        logger.info(text1 + text2)
 
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
@@ -123,6 +126,7 @@ class XlsxHelper:
         # config verbosity
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
+        self.anaylsis_level = int(task._config.get('analysis-level', 0))
         # required for component-definition
         if task.name == 'xlsx-to-oscal-cd':
             catalog_file = task._config.get('catalog-file')
@@ -256,6 +260,7 @@ class XlsxHelper:
             value = value.replace(',[]', '')
             value = value.replace('[', '')
             value = value.replace(']', '')
+            value = value.split(',')
         return value
 
     def _get_goal_text(self, row: int) -> str:
@@ -320,7 +325,7 @@ class XlsxHelper:
         value = self._work_sheet[col + str(row)].value
         if value is None:
             raise RuntimeError(f'row {row} col {col} missing component name')
-        return value
+        return value.strip()
 
     def get_parameter_name_and_description(self, row: int) -> Tuple[str, str]:
         """Get parameter_name and description from work_sheet."""
@@ -449,9 +454,9 @@ class XlsxHelper:
             logger.info(f'rows invalid parameter_name: {self.rows_invalid_parameter_name}')
         if self.rows_missing_controls:
             logger.info(f'rows missing controls: {self.rows_missing_controls}')
-        if self.rows_missing_parameters:
+        if self.anaylsis_level > 0 and self.rows_missing_parameters:
             logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
-        if self.rows_missing_parameters_values:
+        if self.anaylsis_level > 0 and self.rows_missing_parameters_values:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
         if self.rows_filtered:
             logger.info(f'rows filtered: {self.rows_filtered}')
