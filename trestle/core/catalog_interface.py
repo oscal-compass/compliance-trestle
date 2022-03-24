@@ -166,6 +166,15 @@ class CatalogInterface():
                 controls.extend(self._get_all_controls_in_group(sub_group, recurse))
         return controls
 
+    def get_sorted_controls_in_group(self, group_id: str) -> List[cat.Control]:
+        """Get the list of controls in a group sorted by the control sort-id."""
+        controls: List[cat.Control] = []
+        for control in self.get_all_controls_from_dict():
+            grp_id, _, _ = self.get_group_info_by_control(control.id)
+            if grp_id == group_id:
+                controls.append(control)
+        return sorted(controls, key=lambda control: ControlIOWriter.get_sort_id(control))
+
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
         """Find all children of this control."""
         children: List[str] = []
@@ -220,6 +229,9 @@ class CatalogInterface():
 
         Returns:
             iterator of the controls in the catalog
+
+        Notes:
+            This follows the actual structure of the catalog and groups
         """
         if self._catalog.groups:
             for group in self._catalog.groups:
@@ -244,15 +256,17 @@ class CatalogInterface():
         return len(list(self.get_all_controls_from_catalog(recurse)))
 
     def get_group_ids(self) -> List[str]:
-        """Get all the group id's as strings in a list."""
-        return list(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
+        """Get all the group id's as a list of sorted strings."""
+        return sorted(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
 
-    def get_all_groups_from_catalog(self) -> Iterator[cat.Group]:
-        """Retrieve all groups in the catalog."""
+    def get_all_groups_from_catalog(self) -> List[cat.Group]:
+        """Retrieve all groups in the catalog sorted by group_id."""
+        groups: List[cat.Group] = []
         if self._catalog.groups:
             for my_group in self._catalog.groups:
                 for res in CatalogInterface._get_groups_from_group(my_group):
-                    yield res
+                    groups.append(res)
+        return sorted(groups, key=lambda group: group.id)
 
     def get_statement_label_if_exists(self, control_id: str,
                                       statement_id: str) -> Tuple[Optional[str], Optional[common.Part]]:
