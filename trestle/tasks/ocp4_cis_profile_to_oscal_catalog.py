@@ -45,19 +45,19 @@ class Node(BaseModel):
     description: Optional[str] = Field(None)
 
 
-class CisToCatalog(TaskBase):
+class Ocp4CisProfileToOscalCatalog(TaskBase):
     """
-    Task to CIS to catalog from standard (e.g. CIS benchmark).
+    Task to transform OCP4 CIS profile to OSCAL catalog.
 
     Attributes:
         name: Name of the task.
     """
 
-    name = 'cis-to-catalog'
+    name = 'ocp4-cis-profile-to-oscal-catalog'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task cis-to-catalog.
+        Initialize trestle task ocp4-cis-profile-to-oscal-catalog.
 
         Args:
             config_object: Config section associated with the task.
@@ -72,7 +72,7 @@ class CisToCatalog(TaskBase):
         logger.info('')
         logger.info('Purpose: Create catalog from standard (e.g. CIS benchmark).')
         logger.info('')
-        logger.info('Configuration flags sit under [task.cis-to-catalog]:')
+        logger.info('Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:')
         text1 = '  input-dir              = '
         text2 = '(required) location to read the compliance-as-code profile files.'
         logger.info(text1 + text2)

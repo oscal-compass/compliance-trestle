@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""cis-to-component-definition task tests."""
+"""ocp4-cis-profile-to-oscal-cd task tests."""
 
 import configparser
 import os
@@ -24,7 +24,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests.test_utils import text_files_equal
 
 import trestle
-import trestle.tasks.cis_to_component_definition as cis_to_component_definition
+import trestle.tasks.ocp4_cis_profile_to_oscal_cd as ocp4_cis_profile_to_oscal_cd
 from trestle.tasks.base_task import TaskOutcome
 
 
@@ -43,43 +43,43 @@ def monkey_trestle_version():
     return '0.21.0'
 
 
-def test_cis_to_component_definition_print_info(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.print_info()
     assert retval is None
 
 
-def test_cis_to_component_definition_simulate(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_cis_to_component_definition_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_execute(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -93,19 +93,19 @@ def test_cis_to_component_definition_execute(tmp_path: pathlib.Path, monkeypatch
         assert (result)
 
 
-def test_cis_to_component_definition_execute_selected_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute selected rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['selected-rules'] = 'tests/data/tasks/cis-to-component-definition/extras/selected_rules2.json'
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    section['selected-rules'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/selected_rules2.json'
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -119,19 +119,19 @@ def test_cis_to_component_definition_execute_selected_rules2(tmp_path: pathlib.P
         assert (result)
 
 
-def test_cis_to_component_definition_execute_enabled_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute enabled rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['enabled-rules'] = 'tests/data/tasks/cis-to-component-definition/extras/enabled_rules2.json'
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    section['enabled-rules'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/enabled_rules2.json'
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -145,19 +145,19 @@ def test_cis_to_component_definition_execute_enabled_rules2(tmp_path: pathlib.Pa
         assert (result)
 
 
-def test_cis_to_component_definition_execute_enabled_rules3(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules3(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test execute enabled rules call."""
     monkeypatch.setattr(uuid, 'uuid4', monkey_uuid_1)
     monkeypatch.setattr(trestle, '__version__', monkey_trestle_version())
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(tmp_path)
-    section['enabled-rules'] = 'tests/data/tasks/cis-to-component-definition/extras/enabled_rules3.json'
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    section['enabled-rules'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/extras/enabled_rules3.json'
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     tgt.set_timestamp('2021-07-19T14:03:03.000+00:00')
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
@@ -166,146 +166,146 @@ def test_cis_to_component_definition_execute_enabled_rules3(tmp_path: pathlib.Pa
     assert d_expected != d_produced
 
 
-def test_cis_to_component_definition_bogus_config(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_bogus_config(tmp_path: pathlib.Path):
     """Test execute call bogus config."""
     section = None
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_list(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_list(tmp_path: pathlib.Path):
     """Test execute call missing profile-list."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section.pop('profile-list')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_component_name(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_component_name(tmp_path: pathlib.Path):
     """Test execute call missing component-name."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section.pop('component-name')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_type(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_type(tmp_path: pathlib.Path):
     """Test execute call missing profile-type."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section.pop('profile-type')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_ns(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_ns(tmp_path: pathlib.Path):
     """Test execute call missing profile-ns."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section.pop('profile-ns')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_key(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_key(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
         section.pop(f'profile-file.{profile}')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_file(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_file(tmp_path: pathlib.Path):
     """Test execute missing profile-file."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
         section[f'profile-file.{profile}'] = '/foobar'
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
 
 
-def test_cis_to_component_definition_missing_profile_url(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_url(tmp_path: pathlib.Path):
     """Test execute missinf profile-url."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
         section.pop(f'profile-url.{profile}')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_profile_title(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_profile_title(tmp_path: pathlib.Path):
     """Test execute call missing profile-title."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     profile_list = section['profile-list'].split()
     for profile in profile_list:
         section.pop(f'profile-title.{profile}')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_output_dir(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_missing_output_dir(tmp_path: pathlib.Path):
     """Test execute call missing output-dir."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section.pop('output-dir')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_no_overwrite(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_no_overwrite(tmp_path: pathlib.Path):
     """Test execute no overwrite."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition.config')
+    config_path = pathlib.Path('tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd.config')
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     section['output-overwrite'] = 'false'
@@ -313,14 +313,16 @@ def test_cis_to_component_definition_no_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_duplicate_rule(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_duplicate_rule(tmp_path: pathlib.Path):
     """Test execute duplicate rule exists."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     section['output-overwrite'] = 'false'
@@ -328,82 +330,94 @@ def test_cis_to_component_definition_duplicate_rule(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test _get_cis_rules exception."""
-    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_rules_section(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_missing_rules_section(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing section selected-rules."""
-    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section.pop('selected-rules')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_rules_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_missing_rules_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing file enabled-rules."""
-    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section['enabled-rules'] = '/foobar'
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_parameters_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_key(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing file enabled-rules."""
-    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section.pop('rule-to-parameters-map')
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_missing_parameters_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_cd_missing_parameters_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test missing file enabled-rules."""
-    monkeypatch.setattr(cis_to_component_definition.CisToComponentDefinition, '_get_cis_rules', monkey_exception)
+    monkeypatch.setattr(ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD, '_get_cis_rules', monkey_exception)
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition2.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd2.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section['rule-to-parameters-map'] = '/foobar'
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_component_definition_bogus_rules_file(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_cd_bogus_rules_file(tmp_path: pathlib.Path):
     """Test bogus rules."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-component-definition/test-cis-to-component-definition3.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-cd/test-ocp4-cis-profile-to-oscal-cd3.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-component-definition']
+    section = config['task.ocp4-cis-profile-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_component_definition.CisToComponentDefinition(section)
+    tgt = ocp4_cis_profile_to_oscal_cd.Ocp4CisProfileToOscalCD(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

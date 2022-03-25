@@ -44,19 +44,19 @@ from trestle.tasks.base_task import TaskOutcome
 logger = logging.getLogger(__name__)
 
 
-class CisToComponentDefinition(TaskBase):
+class Ocp4CisProfileToOscalCD(TaskBase):
     """
-    Task to CIS to component definition from standard (e.g. CIS benchmark).
+    Task to transform OCP4 CIS profile to OSCAL component definition.
 
     Attributes:
         name: Name of the task.
     """
 
-    name = 'cis-to-component-definition'
+    name = 'ocp4-cis-profile-to-oscal-cd'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task cis-to-component-definition.
+        Initialize trestle task ocp4-cis-profile-to-oscal-cd.
 
         Args:
             config_object: Config section associated with the task.
@@ -75,7 +75,7 @@ class CisToComponentDefinition(TaskBase):
         logger.info('')
         logger.info('Purpose: Create component definition from standard (e.g. CIS benchmark).')
         logger.info('')
-        logger.info('Configuration flags sit under [task.cis-to-component-definition]:')
+        logger.info('Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:')
         text1 = '  component-name         = '
         text2 = 'component name, e.g. OSCO.'
         logger.info(text1 + text2)

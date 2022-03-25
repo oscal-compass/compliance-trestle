@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""cis-to-catalog task tests."""
+"""ocp4-cis-profile-to-oscal-catalog task tests."""
 
 import configparser
 import os
@@ -20,7 +20,7 @@ import pathlib
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import trestle.tasks.cis_to_catalog as cis_to_catalog
+import trestle.tasks.ocp4_cis_profile_to_oscal_catalog as ocp4_cis_profile_to_oscal_catalog
 from trestle.oscal.catalog import Catalog
 from trestle.tasks.base_task import TaskOutcome
 
@@ -36,39 +36,45 @@ def monkey_get_filelist(self, idir):
     return filelist
 
 
-def test_cis_to_catalog_print_info(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.print_info()
     assert retval is None
 
 
-def test_cis_to_catalog_simulate(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_simulate(tmp_path: pathlib.Path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_cis_to_catalog_execute(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_execute(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     _validate(tmp_path)
@@ -101,47 +107,53 @@ def _validate(tmp_path: pathlib.Path):
     assert group.controls[1].title == '2.2 Ensure that the --client-cert-auth argument is set to true'
 
 
-def test_cis_to_catalog_config_missing(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_config_missing(tmp_path: pathlib.Path):
     """Test config missing."""
     section = None
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_catalog_config_missing_key(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_config_missing_key(tmp_path: pathlib.Path):
     """Test config missing key."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     section.pop('output-dir')
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_catalog_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_catalog_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test _parse exception."""
-    monkeypatch.setattr(cis_to_catalog.CisToCatalog, '_parse', monkey_exception)
+    monkeypatch.setattr(ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog, '_parse', monkey_exception)
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_catalog_no_overwrite(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_no_overwrite(tmp_path: pathlib.Path):
     """Test no overwrite."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     section['output-dir'] = str(tmp_path)
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     section['output-overwrite'] = 'false'
@@ -149,40 +161,48 @@ def test_cis_to_catalog_no_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_catalog_no_input(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_no_input(tmp_path: pathlib.Path):
     """Test no input."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
     idir = str(tmp_path)
     ipth = pathlib.Path(idir) / 'foobar'
     ipth.mkdir(exist_ok=True, parents=True)
     section['input-dir'] = str(ipth.resolve())
-    tgt = cis_to_catalog.CisToCatalog(section)
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_catalog_no_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_ocp4_cis_profile_to_oscal_catalog_no_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test no file."""
-    monkeypatch.setattr(cis_to_catalog.CisToCatalog, '_get_filelist', monkey_get_filelist)
+    monkeypatch.setattr(
+        ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog, '_get_filelist', monkey_get_filelist
+    )
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
-    tgt = cis_to_catalog.CisToCatalog(section)
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_cis_to_catalog_input_bogus(tmp_path: pathlib.Path):
+def test_ocp4_cis_profile_to_oscal_catalog_input_bogus(tmp_path: pathlib.Path):
     """Test no input."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/cis-to-catalog/test-cis-to-catalog.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/test-ocp4-cis-profile-to-oscal-catalog.config'
+    )
     config.read(config_path)
-    section = config['task.cis-to-catalog']
-    section['input-dir'] = 'tests/data/tasks/cis-to-catalog/input-bogus'
-    tgt = cis_to_catalog.CisToCatalog(section)
+    section = config['task.ocp4-cis-profile-to-oscal-catalog']
+    section['input-dir'] = 'tests/data/tasks/ocp4-cis-profile-to-oscal-catalog/input-bogus'
+    tgt = ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

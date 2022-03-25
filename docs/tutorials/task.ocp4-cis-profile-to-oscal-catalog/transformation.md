@@ -40,13 +40,13 @@ Make these changes:
 - View configuration information.
 
 ```
-(venv.trestle)$ trestle task cis-to-catalog -i
-trestle.core.commands.task:102 WARNING: Config file was not configured with the appropriate section for the task: "[task.cis-to-catalog]"
-Help information for cis-to-catalog task.
+(venv.trestle)$ trestle task ocp4-cis-profile-to-oscal-catalog -i
+trestle.core.commands.task:102 WARNING: Config file was not configured with the appropriate section for the task: "[task.ocp4-cis-profile-to-oscal-catalog]"
+Help information for ocp4-cis-profile-to-oscal-catalog task.
 
 Purpose: Create catalog from from standard (e.g. CIS benchmark).
 
-Configuration flags sit under [task.cis-to-catalog]:
+Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:
   input-dir              = (required) location to read the compliance-as-code profile files.
   output-dir             = (required) location to write the generated catalog.json file.
   output-overwrite       = (optional) true [default] or false; replace existing output when true.
@@ -70,17 +70,17 @@ Configuration flags sit under [task.cis-to-catalog]:
 - Fetch trestle task file.
 
 ```
-(venv.trestle)$ curl 'https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-catalog/demo-cis-to-catalog.config' > adjunct-data/task-files/demo-cis-to-catalog.config
+(venv.trestle)$ curl 'https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.ocp4-cis-profile-to-oscal-catalog/demo-ocp4-cis-profile-to-oscal-catalog.config' > adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
 ```
 
 <details>
-<summary>demo-cis-to-catalog.config</summary>
+<summary>demo-ocp4-cis-profile-to-oscal-catalog.config</summary>
 
 ```
-[task.cis-to-catalog]
+[task.ocp4-cis-profile-to-oscal-catalog]
 
 input-dir = adjunct-data/cis-benchmarks
-output-dir = catalogs/cis
+output-dir = catalogs/ocp4-cis
 ```
 
 </details>
@@ -88,19 +88,19 @@ output-dir = catalogs/cis
 - Perform and validate the transform.
 
 ```
-(venv.trestle)$ trestle task cis-to-catalog -c adjunct-data/task-files/demo-cis-to-catalog.config
-output: catalogs/cis/catalog.json
-Task: cis-to-catalog executed successfully.
+(venv.trestle)$ trestle task ocp4-cis-profile-to-oscal-catalog -c adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
+output: catalogs/ocp4-cis/catalog.json
+Task: ocp4-cis-profile-to-oscal-catalog executed successfully.
 
 (venv.trestle)$ trestle validate --all
-VALID: Model /home/<user>/trestle.workspace/catalog/cis/catalog.json passed the Validator to confirm the model passes all registered validation tests.
+VALID: Model /home/<user>/trestle.workspace/catalogs/ocp4-cis/catalog.json passed the Validator to confirm the model passes all registered validation tests.
 
 ```
 
 - View the generated OSCAL.
 
 ```
-(venv.trestle)$ cat catlog/cis/catalog.json
+(venv.trestle)$ cat catlogs/ocp4-cis/catalog.json
 ```
 
 <details>

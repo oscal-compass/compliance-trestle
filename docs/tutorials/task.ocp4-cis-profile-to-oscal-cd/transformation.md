@@ -40,13 +40,13 @@ Make these changes:
 - View configuration information.
 
 ```shell
-(venv.trestle)$ trestle task cis-to-component-definition -i
-trestle.core.commands.task:99 WARNING: Config file was not configured with the appropriate section for the task: "[task.cis-to-component-definition]"
-Help information for cis-to-component-definition task.
+(venv.trestle)$ trestle task ocp4-cis-profile-to-oscal-cd -i
+trestle.core.commands.task:99 WARNING: Config file was not configured with the appropriate section for the task: "[task.ocp4-cis-profile-to-oscal-cd]"
+Help information for ocp4-cis-profile-to-oscal-cd task.
 
 Purpose: Create component definition from standard (e.g. CIS benchmark).
 
-Configuration flags sit under [task.cis-to-component-definition]:
+Configuration flags sit under [task.ocp4-cis-profile-to-oscal-cd]:
   component-name         = component name, e.g. OSCO.
   org-name               = organization name, e.g. International Business Machines.
   org-remarks            = organization remarks, e.g. IBM.
@@ -93,16 +93,16 @@ Notes:
 - Fetch trestle config and task files.
 
 ```shell
-(venv.trestle)$ curl 'https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-component-definition/demo-cis-to-component-definition.config' > adjunct-data/config-files/demo-cis-to-component-definition.config
-(venv.trestle)$ curl 'https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.cis-to-component-definition/selected_rules.json' > adjunct-data/task-files/selected_rules.json
-(venv.trestle)$ curl 'https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.cis-to-component-definition/enabled_rules.json' > adjunct-data/task-files/enabled_rules.json
+(venv.trestle)$ curl 'https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/demo-ocp4-cis-profile-to-oscal-cd.config' > adjunct-data/config-files/demo-ocp4-cis-profile-to-oscal-cd.config
+(venv.trestle)$ curl 'https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/selected_rules.json' > adjunct-data/task-files/selected_rules.json
+(venv.trestle)$ curl 'https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/enabled_rules.json' > adjunct-data/task-files/enabled_rules.json
 ```
 
 <details>
-<summary>demo-cis-to-component-definition.config</summary>
+<summary>demo-ocp4-cis-profile-to-oscal-cd.config</summary>
 
 ```shell
-[task.cis-to-component-definition]
+[task.ocp4-cis-profile-to-oscal-cd]
 
 component-name = OSCO
 
@@ -111,7 +111,7 @@ folder-cac = adjunct-data/cis-benchmarks/content
 org-name = International Business Machines
 org-remarks = IBM
 
-output-dir = component-definitions/cis
+output-dir = component-definitions/ocp4-cis
 
 profile-name = OCP4 CIS-benchmark v4
 profile-mnemonic = ocp4-cis-node
@@ -192,19 +192,19 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 - Perform and validate the transform.
 
 ```shell
-(venv.trestle)$ trestle task cis-to-component-definition -c adjunct-data/config-files/demo-cis-to-component-definition.config
-output: component-definitions/cis/component-definition.json
-Task: cis-to-component-definition executed successfully.
+(venv.trestle)$ trestle task ocp4-cis-profile-to-oscal-cd -c adjunct-data/config-files/demo-ocp4-cis-profile-to-oscal-cd.config
+output: component-definitions/ocp4-cis/component-definition.json
+Task: ocp4-cis-profile-to-oscal-cd executed successfully.
 
 (venv.trestle)$ trestle validate --all
-VALID: Model /home/<user>/trestle.workspace/component-definitions/cis/component-definition.json passed the Validator to confirm the model passes all registered validation tests.
+VALID: Model /home/<user>/trestle.workspace/component-definitions/ocp4-cis/component-definition.json passed the Validator to confirm the model passes all registered validation tests.
 
 ```
 
 - View the generated OSCAL.
 
 ```shell
-(venv.trestle)$ cat component-definitions/cis/component-definition.json
+(venv.trestle)$ cat component-definitions/ocp4-cis/component-definition.json
 ```
 
 <details>
