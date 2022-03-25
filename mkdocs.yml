@@ -26,7 +26,7 @@ nav:
   - Transformer construction: tutorials/task.transformer-construction/transformer-construction.md
   - Task - ocp4-cis-profile-to-oscal-catalog: tutorials/task.ocp4-cis-profile-to-oscal-catalog/transformation.md
   - Task - ocp4-cis-profile-to-oscal-cd: tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation.md
-  - Task - tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
+  - Task - tanium-report-to-oscal-ar: tutorials/task.tanium-report-to-oscal-ar/transformation.md
   - Work with authoring versions: tutorials/work_with_authoring_versions.md
 - Trestle command-line interface (CLI):
   - CLI for OSCAL documents: cli.md
