@@ -202,7 +202,6 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
 
     def _get_key(self, name: str) -> (int, int, int):
         """Convert name to desired sortable key."""
-        key = 0
         parts = name.split('.')
         if len(parts) == 1:
             key = (int(parts[0]), 0, 0)
@@ -210,6 +209,10 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             key = (int(parts[0]), int(parts[1]), 0)
         elif len(parts) == 3:
             key = (int(parts[0]), int(parts[1]), int(parts[2]))
+        else:
+            text = f'Unexpected value: {name}'
+            logger.error(text)
+            raise RuntimeError(text)
         return key
 
     def _get_root_nodes(self) -> ValuesView[Node]:
@@ -231,11 +234,6 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             if len(dots) <= depth:
                 continue
             depth = len(dots)
-            if depth in [1, 2, 3]:
-                continue
-            text = f'Unexpected value: {name}'
-            logger.error(text)
-            raise RuntimeError(text)
         return depth
 
     def _add_controls(self, group: Group, prefix: str, depth: int):
