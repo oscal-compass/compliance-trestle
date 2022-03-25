@@ -26,7 +26,7 @@ from ruamel.yaml import YAML
 from trestle.oscal.profile import Profile
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.osco import ProfileToOscoTransformer
+from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer
 
 logger = logging.getLogger(__name__)
 
@@ -39,11 +39,11 @@ class ProfileToOsco(TaskBase):
         name: Name of the task.
     """
 
-    name = 'profile-to-osco'
+    name = 'oscal-profile-to-osco-profile'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task profile-to-osco.
+        Initialize trestle task oscal-profile-to-osco-profile.
 
         Args:
             config_object: Config section associated with the task.
@@ -59,7 +59,7 @@ class ProfileToOsco(TaskBase):
             + 'into Open Shift Compliance Operator (OSCO) .yaml file.'
         )
         logger.info('')
-        logger.info('Configuration flags sit under [task.profile-to-osco]:')
+        logger.info('Configuration flags sit under [task.oscal-profile-to-osco-profile]:')
         logger.info('  input-file = (required) path of the input file comprising OSCAL profile.')
         logger.info('  output-dir = (required) path of the output directory comprising synthesized .yaml file.')
         logger.info(
@@ -127,7 +127,7 @@ class ProfileToOsco(TaskBase):
         # read input
         profile = Profile.oscal_read(input_path)
         # transform
-        transformer = ProfileToOscoTransformer()
+        transformer = OscalProfileToOscoProfileTransformer()
         ydata = json.loads(transformer.transform(profile))
         # write output
         yaml = YAML(typ='safe')

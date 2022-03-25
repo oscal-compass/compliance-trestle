@@ -23,124 +23,142 @@ from ruamel.yaml import YAML
 
 from tests.test_utils import text_files_equal
 
-import trestle.tasks.profile_to_osco as profile_to_osco
+import trestle.tasks.oscal_profile_to_osco_profile as oscal_profile_to_osco_profile
 from trestle.oscal.profile import Profile
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.osco import ProfileToOscoTransformer
+from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer
 
 
-def test_profile_to_osco_print_info(tmp_path):
+def test_oscal_profile_to_osco_profile_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco.config')
+    config_path = pathlib.Path('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile.config')
     config.read(config_path)
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     section['output-dir'] = str(tmp_path)
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.print_info()
     assert retval is None
 
 
-def test_profile_to_osco_simulate(tmp_path):
+def test_oscal_profile_to_osco_profile_simulate(tmp_path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco.config')
+    config_path = pathlib.Path('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile.config')
     config.read(config_path)
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     section['output-dir'] = str(tmp_path)
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_profile_to_osco_execute(tmp_path):
+def test_oscal_profile_to_osco_profile_execute(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco.config')
+    config_path = pathlib.Path('tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile.config')
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_0_1_39_parms_no(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_0_1_39_parms_no(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.39-parms-no.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-0.1.39-parms-no.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_0_1_39_parms_yes(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_0_1_39_parms_yes(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.39-parms-yes.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-0.1.39-parms-yes.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_0_1_40_parms_no(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_0_1_40_parms_no(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.40-parms-no.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-0.1.40-parms-no.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_0_1_40_parms_yes(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_0_1_40_parms_yes(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.1.40-parms-yes.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-0.1.40-parms-yes.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_0_2_0_parms_no(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_0_2_0_parms_no(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-0.2.0-parms-no.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-0.2.0-parms-no.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_1_0_0_parms_yes(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_1_0_0_parms_yes(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-1.0.0-parms-yes.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-1.0.0-parms-yes.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_parms_no(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_parms_no(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-parms-no.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-parms-no.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_parms_yes(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_parms_yes(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-parms-yes.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-parms-yes.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def test_profile_to_osco_execute_osco_scc(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_osco_scc(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-scc.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-scc.config'
+    )
     config.read(config_path)
-    _test_profile_to_osco_execute_common(tmp_path, config)
+    _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config)
 
 
-def _test_profile_to_osco_execute_common(tmp_path, config):
+def _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config):
     """Test execute call."""
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(d_produced)
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
@@ -156,59 +174,67 @@ def _test_profile_to_osco_execute_common(tmp_path, config):
         assert (result)
 
 
-def test_profile_to_osco_execute_bogus_profile(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_bogus_profile(tmp_path):
     """Test execute call bogus profile."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-bogus.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-bogus.config'
+    )
     config.read(config_path)
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     section['output-dir'] = str(tmp_path)
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_profile_to_osco_execute_bogus_config(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_bogus_config(tmp_path):
     """Test execute call bogus config."""
     section = None
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_profile_to_osco_execute_no_input_file(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_no_input_file(tmp_path):
     """Test execute call no input file."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-no-input-file.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-no-input-file.config'
+    )
     config.read(config_path)
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     section['output-dir'] = str(tmp_path)
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_profile_to_osco_execute_no_output_dir(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_no_output_dir(tmp_path):
     """Test execute call no output file."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-no-output-dir.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-no-output-dir.config'
+    )
     config.read(config_path)
-    section = config['task.profile-to-osco']
-    tgt = profile_to_osco.ProfileToOsco(section)
+    section = config['task.oscal-profile-to-osco-profile']
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
 
-def test_profile_to_osco_execute_no_overwrite(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_no_overwrite(tmp_path):
     """Test execute call no overwrite."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-no-overwrite.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-no-overwrite.config'
+    )
     config.read(config_path)
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
     section['output-dir'] = str(d_produced)
-    tgt = profile_to_osco.ProfileToOsco(section)
+    tgt = oscal_profile_to_osco_profile.ProfileToOsco(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
@@ -226,12 +252,14 @@ def test_profile_to_osco_execute_no_overwrite(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_profile_to_osco_execute_set(tmp_path):
+def test_oscal_profile_to_osco_profile_execute_set(tmp_path):
     """Test execute call with set variables."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-set.config')
+    config_path = pathlib.Path(
+        'tests/data/tasks/oscal-profile-to-osco-profile/oscal-profile-to-osco-profile-set.config'
+    )
     config.read(config_path)
-    section = config['task.profile-to-osco']
+    section = config['task.oscal-profile-to-osco-profile']
     input_file = section['input-file']
     input_path = pathlib.Path(input_file)
     f_expected = pathlib.Path(section['output-dir'], 'osco-profile.yaml')
@@ -241,7 +269,7 @@ def test_profile_to_osco_execute_set(tmp_path):
     # read input
     profile = Profile.oscal_read(input_path)
     # transform
-    transformer = ProfileToOscoTransformer(
+    transformer = OscalProfileToOscoProfileTransformer(
         extends='extends', api_version='api_version', kind='kind', name='name', namespace='namespace'
     )
     ydata = json.loads(transformer.transform(profile))

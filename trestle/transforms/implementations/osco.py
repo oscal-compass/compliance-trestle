@@ -571,8 +571,8 @@ def _remove_namespace(subject: str) -> str:
     return subject.rsplit('}').pop()
 
 
-class ProfileToOscoTransformer(FromOscalTransformer):
-    """Interface for Profile to Osco transformer."""
+class OscalProfileToOscoProfileTransformer(FromOscalTransformer):
+    """Interface for Oscal Profile to Osco Profile transformer."""
 
     def __init__(
         self,
