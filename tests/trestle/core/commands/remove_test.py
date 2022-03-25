@@ -185,7 +185,7 @@ def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Ca
 
 
 def test_run_failure_required_element(
-    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
 ):
     """Test failure of _run on RemoveCmd in specifying a required element for removal."""
     # Create a temporary catalog file with responsible-parties
@@ -246,7 +246,11 @@ def test_run_failure_filenotfounderror(
 
 
 def test_run_failure_plan_execute(
-    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch, caplog: pytest.LogCaptureFixture
+    tmp_path: pathlib.Path,
+    keep_cwd: pathlib.Path,
+    sample_catalog_minimal: Catalog,
+    monkeypatch: MonkeyPatch,
+    caplog: pytest.LogCaptureFixture
 ):
     """Test failure plan execute() in _run on RemoveCmd."""
     # Plant this specific logged error for failing execution in mock_execute:
