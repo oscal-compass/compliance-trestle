@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 
 class Ocp4CisProfileToOscalCD(TaskBase):
     """
-    Task to transform OCP4 CIS profile to OSCAL component definition.
+    Task to transform OCP4 CIS profile to OSCAL component-definition.
 
     Attributes:
         name: Name of the task.
