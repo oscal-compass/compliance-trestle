@@ -154,7 +154,7 @@ class XlsxToOscalProfile(TaskBase):
                 usage=usage,
             )
             if values is not None:
-                set_parameter.values = values.split(',')
+                set_parameter.values = values
             set_parameters.append(set_parameter)
         return set_parameters
 
