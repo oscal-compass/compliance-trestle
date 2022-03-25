@@ -92,6 +92,7 @@ class Trestle(CommandBase):
         self.add_argument(
             '-tr', '--trestle-root', help='Path of trestle root dir', type=pathlib.Path, default=pathlib.Path.cwd()
         )
+        logger.info(f'set trestle_root to {pathlib.Path.cwd()}')
 
 
 def run() -> None:
