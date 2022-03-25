@@ -303,3 +303,24 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     assert path_a.exists()
     path_b = tmp_path / group_id / (control_b.id + '.md')
     assert not path_b.exists()
+
+
+def test_params_in_choice(
+    tmp_trestle_dir: pathlib.Path, simplified_nist_catalog: cat.Catalog, simplified_nist_profile: prof.Profile
+) -> None:
+    """Confirm that parameters in choices are substituted properly."""
+    cat_name = 'simplified_nist_catalog'
+    prof_name = 'simplified_nist_profile'
+    ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
+    ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
+    prof_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    cat_interface = CatalogInterface(catalog)
+    control = cat_interface.get_control('ac-4.4')
+    val_1 = 'blocking the flow of the encrypted information'
+    val_2 = 'terminating communications sessions attempting to pass encrypted information'
+    val_3 = 'hacking the system'
+    assert control.params[1].values[0].__root__ == val_1
+    assert control.params[1].values[1].__root__ == val_2
+    assert control.params[1].select.choice[3] == val_3
+    assert control.params[2].values[0].__root__ == val_3

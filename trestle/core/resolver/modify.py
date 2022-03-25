@@ -104,7 +104,7 @@ class Modify(Pipeline.Filter):
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
                 param_str = ControlIOReader.param_to_str(param, param_rep, False, False, params_format)
-                text = text.replace(staches[i], param_str, 1)
+                text = text.replace(staches[i], param_str, 1).strip()
             else:
                 logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         return text
@@ -264,13 +264,16 @@ class Modify(Pipeline.Filter):
             raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
         index = param_ids.index(set_param.param_id)
         param = control.params[index]
-        param.values = set_param.values
-        param.constraints = set_param.constraints
-        param.guidelines = set_param.guidelines
-        param.links = set_param.links
-        param.props = set_param.props
-        param.select = set_param.select
-        param.usage = set_param.usage
+        # the items in the set_parameter will only overwrite if they are not None
+        # thus you cannot unset something that is already set
+        # this is particularly important for retaining the select and its choices
+        param.values = set_param.values if set_param.values else param.values
+        param.constraints = set_param.constraints if set_param.constraints else param.constraints
+        param.guidelines = set_param.guidelines if set_param.guidelines else param.guidelines
+        param.links = set_param.links if set_param.links else param.links
+        param.props = set_param.props if set_param.props else param.props
+        param.select = set_param.select if set_param.select else param.select
+        param.usage = set_param.usage if set_param.usage else param.usage
         control.params[index] = param
         self._catalog_interface.replace_control(control)
 
@@ -296,8 +299,6 @@ class Modify(Pipeline.Filter):
                     for choice in as_list(param.select.choice):
                         new_choice = self._replace_params(choice, param_dict)
                         new_choices.append(new_choice)
-                        if new_choice != choice:
-                            logger.info(f'substituted for {choice} vs. {new_choice}')
                     param.select.choice = new_choices
 
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:

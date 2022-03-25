@@ -56,7 +56,7 @@
     },
     "imports": [
       {
-        "href": "NIST_SP-800-53_rev5_catalog.xml",
+        "href": "trestle://catalogs/simplified_nist_catalog/catalog.json",
         "include-controls": [
           {
             "with-ids": [
@@ -70,6 +70,7 @@
               "ac-2.13",
               "ac-3",
               "ac-4",
+              "ac-4.4",
               "ac-5"
             ]
           }
@@ -78,6 +79,23 @@
     ],
     "merge": {
       "as-is": true
+    },
+    "modify": {
+      "set-parameters": [
+        {
+          "param_id": "ac-4.4_prm_2",
+          "values": [
+            "blocking the flow of the encrypted information",
+            "terminating communications sessions attempting to pass encrypted information"
+          ]
+        },
+        {
+          "param_id": "ac-4.4_prm_3",
+          "values": [
+            "hacking the system"
+          ]
+        }
+      ]
     }
   }
 }
