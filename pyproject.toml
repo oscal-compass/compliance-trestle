@@ -1,8 +1,8 @@
 # Added to aide with eventual transition away from setup.py
 [build-system]
 requires = [
-    "setuptools >= 35.0.2<60.10.0",
-    "setuptools_scm >= 2.0.0"
+    "setuptools >= 35.0.2, < 60.10.0",
+    "setuptools_scm >= 2.0.0, < 3"
 ]
 build-backend = "setuptools.build_meta"
 
