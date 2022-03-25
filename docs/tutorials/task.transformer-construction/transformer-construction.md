@@ -18,7 +18,7 @@ The objective here is to transform your compliance data into valid OSCAL, in par
 
 Examples of existing transformers  included with trestle are for the
 OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_to_oscal.py) and
-[Tanium](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium_to_oscal.py).
+[Tanium](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium-result-to-oscal-ar.py).
 
 ## *Overview*
 
@@ -401,7 +401,7 @@ There are 2 transformers in trestle.
 The [osco-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_to_oscal.py)
 transformer emits OSCAL Observations, the simplest partial result.
 
-The [tanium-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium_to_oscal.py)
+The [tanium-result-to-oscal-ar](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/tanium-result-to-oscal-ar.py)
 transformer emits OSCAL Findings, a more complex partial result.
 
 Table of approximate lines of code.

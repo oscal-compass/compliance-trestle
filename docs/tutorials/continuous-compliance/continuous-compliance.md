@@ -33,7 +33,7 @@ The bad news is that a transformer to [OSCAL](https://pages.nist.gov/OSCAL) is n
 
 However, there is plenty of good news:
 
-- a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py), [OpenShift Compliance Operator to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py)
+- a transformer for your Cloud Service type may already exist, such as: [Tanium to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium-result-to-oscal-ar.py), [OpenShift Compliance Operator to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py)
 - once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
 - writing a transformer is fairly easy: just a few lines of Python code using [trestle](https://ibm.github.io/compliance-trestle/) as a foundation
 

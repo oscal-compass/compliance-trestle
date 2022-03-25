@@ -16,13 +16,13 @@
 
 from trestle.transforms.implementations.osco import OscalProfileToOscoProfileTransformer
 from trestle.transforms.implementations.osco import OscoTransformer
-from trestle.transforms.implementations.tanium import TaniumTransformer
+from trestle.transforms.implementations.tanium import TaniumReportToOscalARTransformer
 from trestle.transforms.transformer_factory import TransformerFactory
 
 transformer_factory = TransformerFactory()
 
 # results
 transformer_factory.register_transformer('osco', OscoTransformer)
-transformer_factory.register_transformer('tanium', TaniumTransformer)
+transformer_factory.register_transformer('tanium', TaniumReportToOscalARTransformer)
 # profiles
 transformer_factory.register_transformer('oscal-profile-to-osco-profile', OscalProfileToOscoProfileTransformer)

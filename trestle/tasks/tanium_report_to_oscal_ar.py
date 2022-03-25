@@ -28,7 +28,7 @@ from trestle.transforms.implementations.tanium import TaniumTransformer
 logger = logging.getLogger(__name__)
 
 
-class TaniumToOscal(TaskBase):
+class TaniumReportToOscalAR(TaskBase):
     """
     Task to convert Tanium report to OSCAL json.
 
@@ -36,11 +36,11 @@ class TaniumToOscal(TaskBase):
         name: Name of the task.
     """
 
-    name = 'tanium-to-oscal'
+    name = 'tanium-result-to-oscal-ar'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task tanium-to-oscal.
+        Initialize trestle task tanium-result-to-oscal-ar.
 
         Args:
             config_object: Config section associated with the task.
@@ -56,7 +56,7 @@ class TaniumToOscal(TaskBase):
             + 'and serialize to a file.'
         )
         logger.info('')
-        logger.info('Configuration flags sit under [task.tanium-to-oscal]:')
+        logger.info('Configuration flags sit under [task.tanium-result-to-oscal-ar]:')
         logger.info('  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.')
         logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.')
         logger.info('  cpus-min  = (optional) the desired minimum number of CPUs to employ.')

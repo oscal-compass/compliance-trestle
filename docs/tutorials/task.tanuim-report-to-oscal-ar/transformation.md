@@ -155,17 +155,17 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 
 </details>
 
-- Fetch sample trestle tanium-to-oscal config file. It informs the trestle command where to read input and write output.
+- Fetch sample trestle tanium-result-to-oscal-ar config file. It informs the trestle command where to read input and write output.
 
 ```bash
-(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-to-oscal.config' > tanium/demo-tanium-to-oscal.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config' > tanium/demo-tanium-result-to-oscal-ar.config
 ```
 
 <details>
-<summary>sample: demo-tanium-to-oscal.config</summary>
+<summary>sample: demo-tanium-result-to-oscal-ar.config</summary>
 
 ```conf
-[task.tanium-to-oscal]
+[task.tanium-result-to-oscal-ar]
 
 input-dir =  tests/data/tasks/tanium/input
 output-dir = tests/data/tasks/tanium/runtime
@@ -178,12 +178,12 @@ output-dir = tests/data/tasks/tanium/runtime
 
 ```bash
 (venv.trestle)$ cd tanium
-(venv.trestle)$ trestle task tanium-to-oscal -c demo-tanium-to-oscal.config 
+(venv.trestle)$ trestle task tanium-result-to-oscal-ar -c demo-tanium-result-to-oscal-ar.config 
 input: tests/data/tasks/tanium/input/Tanium.doc-json
 output: tests/data/tasks/tanium/runtime/Tanium.oscal.json
 inventory: 1
 observations: 9
-Task: tanium-to-oscal executed successfully.
+Task: tanium-result-to-oscal-ar executed successfully.
 ```
 
 - View the generated OSCAL.

@@ -43,7 +43,7 @@ from trestle.transforms.transformer_helper import PropertyManager
 logger = logging.getLogger(__name__)
 
 
-class TaniumTransformer(ResultsTransformer):
+class TaniumReportToOscalARTransformer(ResultsTransformer):
     """Interface for Tanium transformer."""
 
     def __init__(self) -> None:
@@ -111,6 +111,10 @@ class TaniumTransformer(ResultsTransformer):
         self._analysis = tanium_oscal_factory.analysis
         self._analysis.append(f'transform time: {ts1-ts0}')
         return results
+
+
+class TaniumTransformer(TaniumReportToOscalARTransformer):
+    """Deprecated."""
 
 
 class RuleUse():
