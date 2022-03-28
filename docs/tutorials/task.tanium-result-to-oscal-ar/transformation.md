@@ -84,7 +84,7 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 (venv.trestle)$ mkdir -p tanium/tests/data/tasks/tanium/input
 ```
 
-- Fetch sample Tanium data file. It is a "raw" Tanium report for which a transformation to OSCAL is desired.
+- Fetch sample Tanium data file. It is a "raw" Tanium result for which a transformation to OSCAL is desired.
 
 ```bash
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.comply-nist-results' > tanium/tests/data/tasks/tanium/input/Tanium.doc-json
@@ -887,7 +887,7 @@ Task: tanium-result-to-oscal-ar executed successfully.
 <br>
 
 <span style="color:green">
-Congratulations! You have bridged Tanium data into an OSCAL Assessment Results Findings report using compliance-trestle.
+Congratulations! You have bridged Tanium data into an OSCAL Assessment Results using compliance-trestle.
 </span>
 
 <br>

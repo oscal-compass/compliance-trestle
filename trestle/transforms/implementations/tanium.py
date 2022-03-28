@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Facilitate Tanium report to NIST OSCAL transformation."""
+"""Facilitate Tanium result to NIST OSCAL transformation."""
 
 import datetime
 import json
@@ -43,7 +43,7 @@ from trestle.transforms.transformer_helper import PropertyManager
 logger = logging.getLogger(__name__)
 
 
-class TaniumReportToOscalARTransformer(ResultsTransformer):
+class TaniumResultToOscalARTransformer(ResultsTransformer):
     """Interface for Tanium transformer."""
 
     def __init__(self) -> None:
@@ -113,7 +113,7 @@ class TaniumReportToOscalARTransformer(ResultsTransformer):
         return results
 
 
-class TaniumTransformer(TaniumReportToOscalARTransformer):
+class TaniumTransformer(TaniumResultToOscalARTransformer):
     """Legacy class name."""
 
 

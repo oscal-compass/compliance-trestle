@@ -23,24 +23,24 @@ from typing import Optional
 from trestle.common import const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
-from trestle.transforms.implementations.osco import OscoTransformer
+from trestle.transforms.implementations.tanium import TaniumTransformer
 
 logger = logging.getLogger(__name__)
 
 
-class OscoToOscal(TaskBase):
+class TaniumResultToOscalAR(TaskBase):
     """
-    Task to convert Osco report to OSCAL json.
+    Task to convert Tanium result to OSCAL json.
 
     Attributes:
         name: Name of the task.
     """
 
-    name = 'osco-to-oscal'
+    name = 'tanium-result-to-oscal-ar'
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task osco-to-oscal.
+        Initialize trestle task tanium-result-to-oscal-ar.
 
         Args:
             config_object: Config section associated with the task.
@@ -52,15 +52,20 @@ class OscoToOscal(TaskBase):
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
         logger.info(
-            'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) '
-            + 'partial results files.'
+            'Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) results objects'
+            + 'and serialize to a file.'
         )
         logger.info('')
-        logger.info('Configuration flags sit under [task.osco-to-oscal]:')
+        logger.info('Configuration flags sit under [task.tanium-result-to-oscal-ar]:')
+        logger.info('  blocksize = (optional) the desired number Tanuim result input lines to process per CPU.')
+        logger.info('  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.')
+        logger.info('  cpus-min  = (optional) the desired minimum number of CPUs to employ.')
+        logger.info('  aggregate = (optional) True indicates employ properties aggregation, default is True.')
+        logger.info('  caching   = (optional) True indicates employ object caching, default is True.')
         logger.info(
             '  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.'
         )
-        logger.info('  input-dir = (required) the path of the input directory comprising Osco reports.')
+        logger.info('  input-dir = (required) the path of the input directory comprising Tanium results.')
         logger.info(
             '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
         )
@@ -70,13 +75,13 @@ class OscoToOscal(TaskBase):
         )
         logger.info(
             '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as '
-            + ' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco '
-            + ' report is used if present, otherwise current time is used.'
+            + '2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Tanium '
+            + 'result is used if present, otherwise current time is used.'
         )
         logger.info('')
         logger.info(
-            'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL '
-            + 'partial results format.'
+            'Operation: A transformation is performed on one or more Tanium input files to produce output in '
+            + 'OSCAL partial results format.'
         )
 
     def simulate(self) -> TaskOutcome:
@@ -94,7 +99,7 @@ class OscoToOscal(TaskBase):
         try:
             return self._transform_work()
         except Exception:
-            logger.error(traceback.format_exc())
+            logger.info(traceback.format_exc())
             mode = ''
             if self._simulate:
                 mode = 'simulated-'
@@ -102,15 +107,15 @@ class OscoToOscal(TaskBase):
 
     def _transform_work(self) -> TaskOutcome:
         """
-        Perform transformation work steps.
+        Perform the transformation work.
 
-        Work steps: read input, process, write output, display analysis
+        Transformation work steps: read input, process, write output, display analysis.
         """
         mode = ''
         if self._simulate:
             mode = 'simulated-'
         if not self._config:
-            logger.error('config missing')
+            logger.error('Config missing')
             return TaskOutcome(mode + 'failure')
         # config required input & output dirs
         try:
@@ -129,31 +134,34 @@ class OscoToOscal(TaskBase):
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
-                OscoTransformer.set_timestamp(timestamp)
+                TaniumTransformer.set_timestamp(timestamp)
             except Exception:
                 logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
         # config optional performance
         modes = {
+            'blocksize': self._config.getint('blocksize', 10000),
+            'cpus_max': self._config.getint('cpus-max', 1),
+            'cpus_min': self._config.getint('cpus-min', 1),
+            'aggregate': self._config.getboolean('aggregate', True),
+            'caching': self._config.getboolean('caching', True),
             'checking': self._config.getboolean('checking', False),
         }
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
         for ifile in sorted(ipth.iterdir()):
-            if ifile.suffix not in ['.json', '.jsn', '.yaml', '.yml', '.xml']:
-                continue
             blob = self._read_file(ifile)
-            osco_transformer = OscoTransformer()
-            osco_transformer.set_modes(modes)
-            results = osco_transformer.transform(blob)
+            tanium_transformer = TaniumTransformer()
+            tanium_transformer.set_modes(modes)
+            results = tanium_transformer.transform(blob)
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
             if not self._overwrite and pathlib.Path(ofile).exists():
                 logger.error(f'output: {ofile} already exists')
                 return TaskOutcome(mode + 'failure')
             self._write_file(results, ofile)
-            self._show_analysis(osco_transformer)
+            self._show_analysis(tanium_transformer)
         return TaskOutcome(mode + 'success')
 
     def _read_file(self, ifile: str):
@@ -161,7 +169,7 @@ class OscoToOscal(TaskBase):
         if not self._simulate:
             if self._verbose:
                 logger.info(f'input: {ifile}')
-        with open(ifile, encoding=const.FILE_ENCODING) as fp:
+        with open(ifile, 'r', encoding=const.FILE_ENCODING) as fp:
             blob = fp.read()
         return blob
 
@@ -172,10 +180,10 @@ class OscoToOscal(TaskBase):
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
 
-    def _show_analysis(self, osco_transformer: OscoTransformer) -> None:
+    def _show_analysis(self, tanium_transformer: TaniumTransformer) -> None:
         """Show analysis."""
         if not self._simulate:
             if self._verbose:
-                analysis = osco_transformer.analysis
+                analysis = tanium_transformer.analysis
                 for line in analysis:
                     logger.info(line)

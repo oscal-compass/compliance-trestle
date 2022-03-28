@@ -44,7 +44,7 @@ from trestle.transforms.transformer_helper import TransformerHelper
 logger = logging.getLogger(__name__)
 
 
-class OscoTransformer(ResultsTransformer):
+class OscoResultToOscalARTransformer(ResultsTransformer):
     """Interface for Osco transformer."""
 
     def __init__(self) -> None:
@@ -137,6 +137,10 @@ class OscoTransformer(ResultsTransformer):
         return results
 
 
+class OscoTransformer(OscoResultToOscalARTransformer):
+    """Legacy class name."""
+
+
 class RuleUse():
     """Represents one rule of OSCO data."""
 
@@ -169,8 +173,8 @@ class RuleUse():
         return rval
 
 
-class ComplianceOperatorReport():
-    """Represents one report of OSCO data."""
+class ComplianceOperatorResult():
+    """Represents one result of OSCO data."""
 
     def __init__(self, osco_xml: str) -> None:
         """Initialize given specified args."""
@@ -541,9 +545,9 @@ class OscalResultsFactory():
         props.append(Property.construct(name='id', value=rule_use.id_, ns=self._ns, class_='scc_predefined_profile'))
         return props
 
-    def _process(self, co_report: ComplianceOperatorReport) -> None:
+    def _process(self, co_result: ComplianceOperatorResult) -> None:
         """Process ingested data."""
-        rule_use_generator = co_report.rule_use_generator()
+        rule_use_generator = co_result.rule_use_generator()
         for rule_use in rule_use_generator:
             self._component_extract(rule_use)
             self._inventory_extract(rule_use)
@@ -562,8 +566,8 @@ class OscalResultsFactory():
         """Process OSCO xml."""
         if not osco_xml.startswith('<?xml'):
             osco_xml = bz2.decompress(base64.b64decode(osco_xml))
-        co_report = ComplianceOperatorReport(osco_xml)
-        self._process(co_report)
+        co_result = ComplianceOperatorResult(osco_xml)
+        self._process(co_result)
 
 
 def _remove_namespace(subject: str) -> str:
