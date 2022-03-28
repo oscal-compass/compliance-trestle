@@ -84,6 +84,9 @@
       "set-parameters": [
         {
           "param_id": "ac-1_prm_1",
+          "class": "newclassfromprof",
+          "depends-on": "newdependsonfromprof",
+          "usage": "new usage from prof",
           "props": [
             {
               "name": "param_1_prop",
@@ -132,6 +135,12 @@
           "param_id": "loose_2",
           "values": [
             "loose_2_val_from_prof"
+          ]
+        },
+        {
+          "param_id": "bad_param_id",
+          "values": [
+            "this will cause warning"
           ]
         }
       ]
