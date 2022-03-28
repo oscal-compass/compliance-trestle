@@ -152,6 +152,9 @@ def sample_catalog_rich_controls():
     control_a = cat.Control(id='control_a', title='this is control a', params=[param_0, param_1])
     control_b = cat.Control(id='control_b', title='this is control b')
     group = cat.Group(id='xy', title='The xy control group', controls=[control_a, control_b])
+    control_s = cat.Control(id='control_s', title='this is control s')
+    sub_group = cat.Group(id='sub', title='The sub group', controls=[control_s])
+    group.groups = [sub_group]
     catalog_obj.groups = [group]
 
     part = common.Part(id='cpart', name='name.c.part')

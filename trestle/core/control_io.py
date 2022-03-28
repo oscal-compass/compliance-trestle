@@ -655,7 +655,7 @@ class ControlIOReader():
                 if indent >= 0:
                     # extract text after -
                     start = indent + 1
-                    while start < len(line) and line[start] != ' ':
+                    while start < len(line) and line[start] == ' ':
                         start += 1
                     if start >= len(line):
                         raise TrestleError(f'Invalid line {line}')
@@ -845,7 +845,7 @@ class ControlIOReader():
 
     @staticmethod
     def _read_sections(ii: int, lines: List[str], control_id: str,
-                       control_parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
+                       control_parts: List[common.Part]) -> Tuple[int, Optional[List[common.Part]]]:
         """Read all sections following the section separated by ## Control."""
         new_parts = []
         prefix = '## Control '
@@ -875,12 +875,9 @@ class ControlIOReader():
                 label = ControlIOReader._strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
-            if control_parts:
-                control_parts.extend(new_parts)
-            else:
-                control_parts = new_parts
-        if not control_parts:
-            control_parts = None
+            control_parts = [] if not control_parts else control_parts
+            control_parts.extend(new_parts)
+        control_parts = none_if_empty(control_parts)
         return ii, control_parts
 
     @staticmethod

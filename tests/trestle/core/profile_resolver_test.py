@@ -158,16 +158,21 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     merged = gens.generate_sample_model(cat.Catalog)
     new_merged = merge._merge_catalog(merged, sample_catalog_rich_controls)
     catalog_interface = CatalogInterface(new_merged)
-    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 6
 
     # add part to first control and merge, then make sure it is there
     part = com.Part(name='foo', title='added part')
     control_id = sample_catalog_rich_controls.controls[0].id
     cat_with_added_part = copy.deepcopy(sample_catalog_rich_controls)
     cat_with_added_part.controls[0].parts.append(part)
+    # add extra control in group and make sure it is handled properly
+    n_controls = len(cat_with_added_part.groups[0].controls)
+    new_control = copy.deepcopy(cat_with_added_part.groups[0].controls[n_controls - 1])
+    new_control.id = new_control.id + 'b'
+    cat_with_added_part.groups[0].controls.append(new_control)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
-    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 7
     assert catalog_interface.get_control(control_id).parts[-1].name == 'foo'
 
     # add part to first control and merge but with use-first.  The part should not be there at end.
@@ -177,14 +182,14 @@ def test_profile_resolver_merge(sample_catalog_rich_controls: cat.Catalog) -> No
     merge = Merge(profile)
     final_merged = merge._merge_catalog(sample_catalog_rich_controls, cat_with_added_part)
     catalog_interface = CatalogInterface(final_merged)
-    assert catalog_interface.get_count_of_controls_in_catalog(True) == 5
+    assert catalog_interface.get_count_of_controls_in_catalog(True) == 7
     assert len(catalog_interface.get_control(control_id).parts) == 1
 
     # now force a merge with keep
     profile.merge = None
     merge_keep = Merge(profile)
     merged_keep = merge_keep._merge_catalog(new_merged, sample_catalog_rich_controls)
-    assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 10
+    assert CatalogInterface(merged_keep).get_count_of_controls_in_catalog(True) == 12
 
 
 @pytest.mark.parametrize(

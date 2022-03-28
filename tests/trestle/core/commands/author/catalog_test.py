@@ -181,7 +181,7 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test the catalog interface with complex controls."""
     interface = CatalogInterface(sample_catalog_rich_controls)
     n_controls = interface.get_count_of_controls_in_catalog(True)
-    assert n_controls == 5
+    assert n_controls == 6
 
     control = interface.get_control('control_d1')
     new_title = 'updated d1'
