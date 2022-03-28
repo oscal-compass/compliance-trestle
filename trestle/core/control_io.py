@@ -47,6 +47,7 @@ class ParameterRep(Enum):
     VALUE_OR_STRING_NONE = 1
     LABEL_OR_CHOICES = 2
     VALUE_OR_LABEL_OR_CHOICES = 3
+    VALUE_OR_EMPTY_STRING = 4
 
 
 class ControlIOWriter():
@@ -518,8 +519,8 @@ class ControlIOWriter():
         self._add_control_statement_ssp(control)
         return self._md_file.get_lines()
 
-    def get_params(self, control: cat.Control) -> List[str]:
-        """Get parameters of a control as a markdown table for ssp_io."""
+    def get_params(self, control: cat.Control, label_column=False) -> List[str]:
+        """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
@@ -527,12 +528,23 @@ class ControlIOWriter():
             self._md_file = MDWriter(None)
             self._md_file.new_paragraph()
             self._md_file.set_indent_level(-1)
-            self._md_file.new_table(
-                [
-                    [key, ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
-                    for key in param_dict.keys()
-                ], ['Parameter ID', 'Value']
-            )
+            if label_column:
+                self._md_file.new_table(
+                    [
+                        [
+                            key,
+                            ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
+                            ControlIOReader.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES),
+                        ] for key in param_dict.keys()
+                    ], ['Parameter ID', 'Values', 'Label']
+                )
+            else:
+                self._md_file.new_table(
+                    [
+                        [key, ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
+                        for key in param_dict.keys()
+                    ], ['Parameter ID', 'Values']
+                )
             self._md_file.set_indent_level(-1)
             return self._md_file.get_lines()
 
@@ -1293,7 +1305,11 @@ class ControlIOReader():
             param_str = ControlIOReader.param_values_as_str(param)
             if not param_str:
                 param_str = ControlIOReader.param_label_choices_as_str(param, verbose, brackets)
-        if param_str and params_format:
+        elif param_rep == ParameterRep.VALUE_OR_EMPTY_STRING:
+            param_str = ControlIOReader.param_values_as_str(param, brackets)
+            if not param_str:
+                param_str = ''
+        if param_str is not None and params_format:
             if params_format.count('.') > 1:
                 raise TrestleError(
                     f'Additional text {params_format} '

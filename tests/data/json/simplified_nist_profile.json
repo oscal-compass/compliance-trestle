@@ -83,6 +83,39 @@
     "modify": {
       "set-parameters": [
         {
+          "param_id": "ac-1_prm_1",
+          "props": [
+            {
+              "name": "param_1_prop",
+              "value": "prop value from prof"
+            },
+            {
+              "name": "param_1_prop_2",
+              "value": "new prop value from prof"
+            }
+          ],
+          "links": [
+            {
+              "href": "#123456789",
+              "text": "new text from prof"
+            },
+            {
+              "href": "#new_link",
+              "text": "new link text"
+            }
+          ],
+          "constraints": [
+            {
+              "description": "new constraint"
+            }
+          ],
+          "guidelines": [
+            {
+              "prose": "new guideline"
+            }
+          ]
+        },
+        {
           "param_id": "ac-4.4_prm_2",
           "values": [
             "blocking the flow of the encrypted information",
@@ -93,6 +126,12 @@
           "param_id": "ac-4.4_prm_3",
           "values": [
             "hacking the system"
+          ]
+        },
+        {
+          "param_id": "loose_2",
+          "values": [
+            "loose_2_val_from_prof"
           ]
         }
       ]

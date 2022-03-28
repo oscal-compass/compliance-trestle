@@ -51,7 +51,23 @@ def add_needed_controls(input_model: oscatalog, main_cat: oscatalog) -> None:
 
 def set_some_param_values(catalog: oscatalog) -> None:
     """Set some param values for testing."""
-    catalog.groups[0].controls[0].params[0].values = [common.ParameterValue(__root__='Param_1_value_in_catalog')]
+    param = catalog.groups[0].controls[0].params[0]
+    param.props = [common.Property(name='param_1_prop', value='prop value')]
+    param.values = [common.ParameterValue(__root__='Param_1_value_in_catalog')]
+    param.links = [common.Link(href='#123456789', text='orig link text')]
+    param.constraints = [common.ParameterConstraint(description='orig constraint desc')]
+    param.guidelines = [common.ParameterGuideline(prose='original guideline')]
+
+
+def add_loose_params(catalog: oscatalog) -> None:
+    """Add some loose params."""
+    param_1 = common.Parameter(
+        id='loose_1', label='loose_1_label', values=[common.ParameterValue(__root__='loose_1_value')]
+    )
+    param_2 = common.Parameter(
+        id='loose_2', label='loose_2_label', values=[common.ParameterValue(__root__='loose_2_value')]
+    )
+    catalog.params = [param_1, param_2]
 
 
 class SimplifyCatalog(ilcli.Command):
@@ -95,6 +111,8 @@ class SimplifyCatalog(ilcli.Command):
         add_needed_controls(catalog, orig_catalog)
 
         set_some_param_values(catalog)
+
+        add_loose_params(catalog)
 
         try:
             catalog.oscal_write(simplified_catalog_file)

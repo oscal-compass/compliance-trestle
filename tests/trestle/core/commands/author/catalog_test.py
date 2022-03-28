@@ -324,3 +324,13 @@ def test_params_in_choice(
     assert control.params[1].values[1].__root__ == val_2
     assert control.params[1].select.choice[3] == val_3
     assert control.params[2].values[0].__root__ == val_3
+    assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_prof'
+
+    control = cat_interface.get_control('ac-1')
+    param = control.params[0]
+    assert param.props[0].value == 'prop value from prof'
+    assert param.props[1].value == 'new prop value from prof'
+    assert param.links[0].text == 'new text from prof'
+    assert param.links[1].text == 'new link text'
+    assert param.constraints[1].description == 'new constraint'
+    assert param.guidelines[1].prose == 'new guideline'

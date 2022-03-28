@@ -248,34 +248,82 @@ class Modify(Pipeline.Filter):
 
     def _set_parameter_in_control(self, set_param: prof.SetParameter) -> None:
         """
-        Find the control with the param_id in it and set the parameter value.
+        Find the control with the param_id in it and set the parameter contents.
 
-        This does not recurse because expectation is that only top level params will be set.
         It modifies controls in the control_dict not the catalog.
+        Parameters are either bound to a control or are 'loose' and bound to the catalog itself.
         """
         control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
-        if control is None:
-            raise TrestleError(
-                f'Set parameter object in profile does not have a corresponding param-id: "{set_param.param_id}"'
-            )
-        control.params = as_list(control.params)
-        param_ids = [param.id for param in control.params]
-        if set_param.param_id not in param_ids:
-            raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
-        index = param_ids.index(set_param.param_id)
-        param = control.params[index]
-        # the items in the set_parameter will only overwrite if they are not None
-        # thus you cannot unset something that is already set
-        # this is particularly important for retaining the select and its choices
-        param.values = set_param.values if set_param.values else param.values
-        param.constraints = set_param.constraints if set_param.constraints else param.constraints
-        param.guidelines = set_param.guidelines if set_param.guidelines else param.guidelines
-        param.links = set_param.links if set_param.links else param.links
-        param.props = set_param.props if set_param.props else param.props
-        param.select = set_param.select if set_param.select else param.select
-        param.usage = set_param.usage if set_param.usage else param.usage
-        control.params[index] = param
-        self._catalog_interface.replace_control(control)
+        loose_param = False
+        if control:
+            control.params = as_list(control.params)
+            param_ids = [param.id for param in control.params]
+            if set_param.param_id not in param_ids:
+                raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
+            index = param_ids.index(set_param.param_id)
+            param = control.params[index]
+        else:
+            loose_param_ids = [param.id for param in as_list(self._catalog_interface.loose_params)]
+            if set_param.param_id in loose_param_ids:
+                index = loose_param_ids.index(set_param.param_id)
+                param = self._catalog_interface.loose_params[index]
+                loose_param = True
+            else:
+                logger.warning(f'SetParameter for param_id {set_param.param_id} not found in catalog')
+                return
+
+        # rules here follow https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/
+        # see 'Modify Phase' and Setting Parameters
+
+        # these overwrite
+        if set_param.class_:
+            param.class_ = set_param.class_
+        if set_param.depends_on:
+            param.depends_on = set_param.depends_on
+        if set_param.label:
+            param.label = set_param.label
+        if set_param.usage:
+            param.usage = set_param.usage
+        if set_param.values:
+            param.values = set_param.values
+        if set_param.select:
+            param.select = set_param.select
+
+        # these append
+        if set_param.constraints:
+            if not param.constraints:
+                param.constraints = []
+            param.constraints.extend(set_param.constraints)
+        if set_param.guidelines:
+            if not param.guidelines:
+                param.guidelines = []
+            param.guidelines.extend(set_param.guidelines)
+
+        # these replace or append
+        if set_param.props:
+            new_props = as_list(param.props)
+            names = [prop.name for prop in new_props]
+            for prop in set_param.props:
+                if prop.name in names:
+                    new_props[names.index(prop.name)] = prop
+                else:
+                    new_props.append(prop)
+            param.props = new_props
+        if set_param.links:
+            new_links = as_list(param.links)
+            hrefs = [link.href for link in new_links]
+            for link in set_param.links:
+                if link.href in hrefs:
+                    new_links[hrefs.index(link.href)] = link
+                else:
+                    new_links.append(link)
+            param.links = new_links
+
+        if loose_param:
+            self._catalog_interface.loose_params[index] = param
+        else:
+            control.params[index] = param
+            self._catalog_interface.replace_control(control)
 
     def _change_prose_with_param_values(self):
         """Go through all controls and change prose based on param values."""
