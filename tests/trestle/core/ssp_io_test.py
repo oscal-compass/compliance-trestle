@@ -20,11 +20,13 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests.test_utils import execute_command_and_assert, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS
 from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.remote import cache
 from trestle.core.ssp_io import SSPMarkdownWriter
+from trestle.oscal.common import Property
 from trestle.oscal.ssp import SystemSecurityPlan
 
 prof_name = 'main_profile'
@@ -41,6 +43,10 @@ def setup_test(tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path,
     ssp_json = testdata_dir / 'author/ssp/ssp_example.json'
     fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(ssp_json))
     ssp_obj, parent_alias = fetcher.get_oscal(True)
+    ssp_obj.control_implementation.implemented_requirements[0].props = [
+        Property(name=IMPLEMENTATION_STATUS, value='good'),
+        Property(name=CONTROL_ORIGINATION, value='sourced'),
+    ]
 
     assert parent_alias == 'system-security-plan'
 
