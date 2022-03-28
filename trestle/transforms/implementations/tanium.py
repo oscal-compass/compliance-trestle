@@ -114,7 +114,7 @@ class TaniumReportToOscalARTransformer(ResultsTransformer):
 
 
 class TaniumTransformer(TaniumReportToOscalARTransformer):
-    """Deprecated."""
+    """Legacy class name."""
 
 
 class RuleUse():
