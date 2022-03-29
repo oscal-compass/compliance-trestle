@@ -201,13 +201,15 @@ class Prune(Pipeline.Filter):
         new_resources = none_if_empty(new_resources)
         new_groups = none_if_empty(new_groups)
         cat_controls = none_if_empty(cat_controls)
+        new_params = self._catalog.params
 
         new_cat = cat.Catalog(
             uuid=str(uuid4()),
             metadata=self._catalog.metadata,
             back_matter=common.BackMatter(resources=new_resources),
             controls=cat_controls,
-            groups=new_groups
+            groups=new_groups,
+            params=new_params
         )
 
         return new_cat

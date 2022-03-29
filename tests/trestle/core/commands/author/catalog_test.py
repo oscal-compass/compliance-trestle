@@ -181,7 +181,7 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test the catalog interface with complex controls."""
     interface = CatalogInterface(sample_catalog_rich_controls)
     n_controls = interface.get_count_of_controls_in_catalog(True)
-    assert n_controls == 5
+    assert n_controls == 6
 
     control = interface.get_control('control_d1')
     new_title = 'updated d1'
@@ -303,3 +303,75 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     assert path_a.exists()
     path_b = tmp_path / group_id / (control_b.id + '.md')
     assert not path_b.exists()
+
+
+def test_params_in_choice(
+    tmp_trestle_dir: pathlib.Path, simplified_nist_catalog: cat.Catalog, simplified_nist_profile: prof.Profile
+) -> None:
+    """Confirm that parameters in choices are substituted properly."""
+    # the nist simplified profile defines ac-4.4_prm_3, which is in the choices of ac-4.4_prm_2
+    cat_name = 'simplified_nist_catalog'
+    prof_name = 'simplified_nist_profile'
+    ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
+    ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
+    prof_path = ModelUtils.full_path_for_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    cat_interface = CatalogInterface(catalog)
+    control = cat_interface.get_control('ac-4.4')
+    val_1 = 'blocking the flow of the encrypted information'
+    val_2 = 'terminating communications sessions attempting to pass encrypted information'
+    val_3 = 'hacking the system'
+    assert control.params[1].values[0].__root__ == val_1
+    assert control.params[1].values[1].__root__ == val_2
+    # confirm the choice text was set properly
+    assert control.params[1].select.choice[3] == val_3
+    assert control.params[2].values[0].__root__ == val_3
+    assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_prof'
+
+    control = cat_interface.get_control('ac-1')
+    param = control.params[0]
+    assert param.props[0].value == 'prop value from prof'
+    assert param.props[1].value == 'new prop value from prof'
+    assert param.links[0].text == 'new text from prof'
+    assert param.links[1].text == 'new link text'
+    assert param.constraints[1].description == 'new constraint'
+    assert param.guidelines[1].prose == 'new guideline'
+
+
+def test_pulled_params_in_choice(
+    tmp_trestle_dir: pathlib.Path, simplified_nist_catalog: cat.Catalog, simplified_nist_profile: prof.Profile
+) -> None:
+    """Confirm that parameters in choices are substituted properly and give lower priority to upstream subs."""
+    # the nist simplified profile defines ac-4.4_prm_3, which is in the choices of ac-4.4_prm_2
+    # but it is also set by the pulling profile, which should have final say
+    cat_name = 'simplified_nist_catalog'
+    prof_name = 'simplified_nist_profile'
+    ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
+    ModelUtils.save_top_level_model(simplified_nist_profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
+    pull_prof_name = 'pull_nist_profile'
+    prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON)
+    prof_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    cat_interface = CatalogInterface(catalog)
+    control = cat_interface.get_control('ac-4.4')
+    val_1 = 'blocking the flow of the encrypted information'
+    val_2 = 'terminating communications sessions attempting to pass encrypted information'
+    val_3 = 'from pulling profile'
+    assert control.params[1].values[0].__root__ == val_1
+    assert control.params[1].values[1].__root__ == val_2
+    # confirm the choice text was set properly
+    # the param value and the choice should be set by the pulling profile
+    assert control.params[2].values[0].__root__ == val_3
+    assert control.params[1].select.choice[3] == val_3
+    # this confirms the pulling profile sets the value of a loose apram
+    assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_pulling'
+
+    control = cat_interface.get_control('ac-1')
+    param = control.params[0]
+    assert param.props[0].value == 'prop value from prof'
+    assert param.props[1].value == 'new prop value from prof'
+    assert param.links[0].text == 'new text from prof'
+    assert param.links[1].text == 'new link text'
+    assert param.constraints[1].description == 'new constraint'
+    assert param.guidelines[1].prose == 'new guideline'

@@ -100,11 +100,11 @@ class Modify(Pipeline.Filter):
         for i, _ in enumerate(staches):
             # A moustache may refer to a param_id not listed in the control's params
             if param_ids[i] not in param_dict:
-                logger.warning(f'Control prose references param {param_ids[i]} not found in the control.')
+                logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
                 param_str = ControlIOReader.param_to_str(param, param_rep, False, False, params_format)
-                text = text.replace(staches[i], param_str, 1)
+                text = text.replace(staches[i], param_str, 1).strip()
             else:
                 logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         return text
@@ -143,10 +143,8 @@ class Modify(Pipeline.Filter):
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep)
-        for sub_control in as_list(control.controls):
-            prts: List[common.Part] = as_list(sub_control.parts)
-            for prt in prts:
-                Modify._replace_part_prose(sub_control, prt, param_dict, params_format, param_rep)
+        for param in as_list(control.params):
+            Modify._replace_param_choices(param, param_dict)
 
     @staticmethod
     def _add_contents_as_list(add: prof.Add) -> List[OBT]:
@@ -246,42 +244,114 @@ class Modify(Pipeline.Filter):
             if not Modify._add_to_parts(control.parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
 
-    def _set_parameter_in_control(self, set_param: prof.SetParameter) -> None:
-        """
-        Find the control with the param_id in it and set the parameter value.
+    @staticmethod
+    def _set_overwrite_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+        # these overwrite
+        if set_param.class_:
+            param.class_ = set_param.class_
+        if set_param.depends_on:
+            param.depends_on = set_param.depends_on
+        if set_param.label:
+            param.label = set_param.label
+        if set_param.usage:
+            param.usage = set_param.usage
+        if set_param.values:
+            param.values = set_param.values
+        if set_param.select:
+            param.select = set_param.select
 
-        This does not recurse because expectation is that only top level params will be set.
+    @staticmethod
+    def _set_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+        # these append
+        if set_param.constraints:
+            if not param.constraints:
+                param.constraints = []
+            param.constraints.extend(set_param.constraints)
+        if set_param.guidelines:
+            if not param.guidelines:
+                param.guidelines = []
+            param.guidelines.extend(set_param.guidelines)
+
+    @staticmethod
+    def _set_replaced_or_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+        # these replace or append
+        if set_param.props:
+            new_props = as_list(param.props)
+            names = [prop.name for prop in new_props]
+            for prop in set_param.props:
+                if prop.name in names:
+                    new_props[names.index(prop.name)] = prop
+                else:
+                    new_props.append(prop)
+            param.props = new_props
+        if set_param.links:
+            new_links = as_list(param.links)
+            hrefs = [link.href for link in new_links]
+            for link in set_param.links:
+                if link.href in hrefs:
+                    new_links[hrefs.index(link.href)] = link
+                else:
+                    new_links.append(link)
+            param.links = new_links
+
+    def _set_parameter_in_control_or_loose(self, set_param: prof.SetParameter) -> None:
         """
+        Find the control with the param_id in it and set the parameter contents.
+
+        It modifies controls in the control_dict not the catalog.
+        Parameters are either bound to a control or are 'loose' and bound to the catalog itself.
+        """
+        # find the target param in control or the catalog's loose ones, i.e. catalog.params
         control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
-        if control is None:
-            raise TrestleError(
-                f'Set parameter object in profile does not have a corresponding param-id: "{set_param.param_id}"'
-            )
-        control.params = as_list(control.params)
-        param_ids = [param.id for param in control.params]
-        if set_param.param_id not in param_ids:
-            raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
-        index = param_ids.index(set_param.param_id)
-        param = control.params[index]
-        param.values = set_param.values
-        param.constraints = set_param.constraints
-        param.guidelines = set_param.guidelines
-        param.links = set_param.links
-        param.props = set_param.props
-        param.select = set_param.select
-        param.usage = set_param.usage
-        control.params[index] = param
-        self._catalog_interface.replace_control(control)
+        loose_param = False
+        if control:
+            control.params = as_list(control.params)
+            param_ids = [param.id for param in control.params]
+            if set_param.param_id not in param_ids:
+                raise TrestleNotFoundError(f'Param id {set_param.param_id} not found in control {control.id}')
+            index = param_ids.index(set_param.param_id)
+            param = control.params[index]
+        else:
+            param = self._catalog_interface.loose_param_dict.get(set_param.param_id, None)
+            if param:
+                loose_param = True
+            else:
+                logger.warning(f'SetParameter for param_id {set_param.param_id} not found in catalog')
+                return
+
+        # rules here follow https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/
+        # see 'Modify Phase' and Setting Parameters
+
+        Modify._set_overwrite_items(param, set_param)
+        Modify._set_appended_items(param, set_param)
+        Modify._set_replaced_or_appended_items(param, set_param)
+
+        if loose_param:
+            self._catalog_interface.loose_param_dict[set_param.param_id] = param
+        else:
+            control.params[index] = param
+            self._catalog_interface.replace_control(control)
 
     def _change_prose_with_param_values(self):
         """Go through all controls and change prose based on param values."""
-        param_dict: Dict[str, common.Paramter] = {}
-        # build the full mapping of params to values
+        param_dict: Dict[str, common.Parameter] = {}
+        # build the full mapping of params to values from the catalog interface
         for control in self._catalog_interface.get_all_controls_from_dict():
             param_dict.update(ControlIOReader.get_control_param_dict(control, False))
+        param_dict.update(self._catalog_interface.loose_param_dict)
         # insert param values into prose of all controls
         for control in self._catalog_interface.get_all_controls_from_dict():
             self._replace_control_prose(control, param_dict, self._params_format, self._param_rep)
+
+    @staticmethod
+    def _replace_param_choices(param: common.Parameter, param_dict: Dict[str, common.Parameter]) -> None:
+        """Set values for all choices param that refer to params with values."""
+        if param.select:
+            new_choices: List[str] = []
+            for choice in as_list(param.select.choice):
+                new_choice = Modify._replace_params(choice, param_dict)
+                new_choices.append(new_choice)
+            param.select.choice = new_choices
 
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
         """Modify the controls based on the profile."""
@@ -294,7 +364,7 @@ class Modify(Pipeline.Filter):
             if self._profile.modify.set_parameters and not self._block_params:
                 set_param_list = self._profile.modify.set_parameters
                 for set_param in set_param_list:
-                    self._set_parameter_in_control(set_param)
+                    self._set_parameter_in_control_or_loose(set_param)
             alters = self._profile.modify.alters
 
         if alters is not None:

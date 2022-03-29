@@ -238,19 +238,19 @@ def test_parameter_to_dict() -> None:
     with pytest.raises(err.TrestleError):
         _ = ModelUtils.dict_to_parameter(dict_copy)
 
-    # confirm values must be among allowed choices or raise exception
+    # confirm values must be among allowed choices or give warning
     sel = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['one', 'two', 'three'])
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'five'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
-    with pytest.raises(err.TrestleError):
-        _ = ModelUtils.dict_to_parameter(param_dict)
+    new_param = ModelUtils.dict_to_parameter(param_dict)
+    assert param == new_param
 
-    # confirm only one item if HowMany is one or raise exception
+    # confirm only one item if HowMany is one or give warning
     sel = common.ParameterSelection(how_many=common.HowMany.one, choice=['one', 'two', 'three'])
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two', 'three'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
-    with pytest.raises(err.TrestleError):
-        _ = ModelUtils.dict_to_parameter(param_dict)
+    new_param = ModelUtils.dict_to_parameter(param_dict)
+    assert param == new_param
 
     # confirm special handling for one value works
     sel = common.ParameterSelection(how_many=common.HowMany.one, choice=['one', 'two', 'three'])

@@ -81,8 +81,8 @@ class SSPMarkdownWriter():
         )
         return self._build_tree_and_adjust(md_list.split('\n'), level)
 
-    def get_fedramp_control_tables(self, control_id: str, level: int) -> str:
-        """Get the fedramp metadata as markdown tables.
+    def get_fedramp_control_tables(self, control_id: str, level: int, label_column=False) -> str:
+        """Get the fedramp metadata as markdown tables, with optional third label column for params.
 
         The fedramp metadata has the following elements:
         - Responsible roles field
@@ -94,7 +94,7 @@ class SSPMarkdownWriter():
             tables as one coherent markdown blob.
         """
         resp_roles_table = self.get_responsible_roles_table(control_id, level)
-        params_values = self._parameter_table(control_id, level)
+        params_values = self._parameter_table(control_id, level, label_column)
         impl_status = self.get_fedramp_implementation_status(control_id, level)
         control_orig = self.get_fedramp_control_origination(control_id, level)
 
@@ -146,8 +146,8 @@ class SSPMarkdownWriter():
 
         return ''
 
-    def _parameter_table(self, control_id: str, level: int) -> str:
-        """Print Param_id | Default (aka label) | Value or set to 'none'."""
+    def _parameter_table(self, control_id: str, level: int, label_column=False) -> str:
+        """Print Param_id | ValueOrLabelOrChoices | Optional Label Column."""
         if not self._ssp:
             raise TrestleError('Cannot get parameter table, set SSP first.')
 
@@ -155,9 +155,13 @@ class SSPMarkdownWriter():
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
-        params_lines = writer.get_params(control)
+        params_lines = writer.get_params(control, label_column)
+        # need to make sure no params still have moustaches.  convert to brackets to avoid jinja complaints
+        clean_lines = []
+        for line in params_lines:
+            clean_lines.append(line.replace('{{', '[[').replace('}}', ']]'))
 
-        tree = MarkdownNode.build_tree_from_markdown(params_lines)
+        tree = MarkdownNode.build_tree_from_markdown(clean_lines)
         tree.change_header_level_by(level)
         return tree.content.raw_text
 
@@ -201,7 +205,7 @@ class SSPMarkdownWriter():
         md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
-    def get_control_response(self, control_id: str, level: int, write_empty_responses: bool = False) -> str:
+    def get_control_response(self, control_id: str, level: int, write_empty_responses=False) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
 

@@ -72,6 +72,8 @@ class CatalogInterface():
         self._catalog = catalog
         self._param_control_map: Dict[str, str] = {}
         self._control_dict = self._create_control_dict() if catalog else None
+        self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
+                                                              for param in as_list(catalog.params)} if catalog else {}
 
     def _add_params_to_map(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
@@ -392,6 +394,7 @@ class CatalogInterface():
                 self._update_all_controls_in_group(group)
         if self._catalog.controls:
             self._catalog.controls = self._update_all_controls_in_list(self._catalog.controls)
+        self._catalog.params = list(self.loose_param_dict.values())
 
     def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
         hits: List[str] = []
