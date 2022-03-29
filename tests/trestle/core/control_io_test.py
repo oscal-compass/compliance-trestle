@@ -356,7 +356,13 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     param_dict = ControlIOReader.get_control_param_dict(control, False)
     assert ControlIOReader.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'choice 1, choice 2'
+    ) == 'choice 1; choice 2'
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True
+    ) == 'Choose one or more: choice 1; choice 2'
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True, True
+    ) == 'Choose one or more: [choice 1; choice 2]'
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
@@ -415,3 +421,87 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     if overwrite_header_values:
         orig_control_read.params[0] = new_control_read.params[0]
     assert test_utils.controls_equivalent(orig_control_read, new_control_read)
+
+
+statement_text = """
+
+
+# xy-9 - \[My Group Title\] Fancy Control
+
+## Control Statement
+
+  The org:
+
+- \[a\] Creates:
+
+  - \[1\] Good stuff; and
+  - \[2\] Other good stuff; and
+
+
+## Control Objective
+
+  Confirm the org:
+
+- \[a_obj\]
+
+  - \[1_obj\]
+
+"""
+
+
+def test_read_control_statement():
+    """Test read control statement."""
+    _, part = ControlIOReader._read_control_statement(0, statement_text.split('\n'), 'xy-9')
+    assert part.prose == 'The org:'
+
+
+def test_read_control_objective():
+    """Test read control objective."""
+    _, part = ControlIOReader._read_control_objective(13, statement_text.split('\n'), 'xy-9')
+    assert part.prose == 'Confirm the org:'
+
+    _, part = ControlIOReader._read_control_objective(16, statement_text.split('\n'), 'xy-9')
+    assert part is None
+
+
+section_text = """
+## What is the solution
+
+foo
+"""
+
+
+def test_read_sections():
+    """Test read control sections."""
+    _, parts = ControlIOReader._read_sections(0, section_text.split('\n'), 'xy-9', [])
+    assert parts is None
+
+
+indent_text = """
+    -   Hello
+
+"""
+
+
+def test_indent_label():
+    """Test indent and label routines."""
+    _, b, _ = ControlIOReader._get_next_indent(0, indent_text.split('\n'))
+    assert b == 4
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._get_next_indent(0, ['    -'])
+
+    assert ControlIOReader._create_next_label('foo-', 0) == 'foo-a'
+    assert ControlIOReader._create_next_label('foo-a', 0) == 'foo-b'
+
+
+def test_parse_control_title_failures():
+    """Test parse control title failures."""
+    with pytest.raises(TrestleError):
+        ControlIOReader._parse_control_title_line('')
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._parse_control_title_line('foo - bar')
+
+    with pytest.raises(TrestleError):
+        ControlIOReader._parse_control_title_line('foo-1 and - bar')
