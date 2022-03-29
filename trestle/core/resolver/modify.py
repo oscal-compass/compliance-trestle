@@ -143,10 +143,8 @@ class Modify(Pipeline.Filter):
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep)
-        for sub_control in as_list(control.controls):
-            prts: List[common.Part] = as_list(sub_control.parts)
-            for prt in prts:
-                Modify._replace_part_prose(sub_control, prt, param_dict, params_format, param_rep)
+        for param in as_list(control.params):
+            Modify._replace_param_choices(param, param_dict)
 
     @staticmethod
     def _add_contents_as_list(add: prof.Add) -> List[OBT]:
@@ -246,13 +244,14 @@ class Modify(Pipeline.Filter):
             if not Modify._add_to_parts(control.parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
 
-    def _set_parameter_in_control(self, set_param: prof.SetParameter) -> None:
+    def _set_parameter_in_control_or_loose(self, set_param: prof.SetParameter) -> None:
         """
         Find the control with the param_id in it and set the parameter contents.
 
         It modifies controls in the control_dict not the catalog.
         Parameters are either bound to a control or are 'loose' and bound to the catalog itself.
         """
+        # find the target param in control or loose
         control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
         loose_param = False
         if control:
@@ -263,10 +262,8 @@ class Modify(Pipeline.Filter):
             index = param_ids.index(set_param.param_id)
             param = control.params[index]
         else:
-            loose_param_ids = [param.id for param in as_list(self._catalog_interface.loose_params)]
-            if set_param.param_id in loose_param_ids:
-                index = loose_param_ids.index(set_param.param_id)
-                param = self._catalog_interface.loose_params[index]
+            param = self._catalog_interface.loose_param_dict.get(set_param.param_id, None)
+            if param:
                 loose_param = True
             else:
                 logger.warning(f'SetParameter for param_id {set_param.param_id} not found in catalog')
@@ -320,34 +317,31 @@ class Modify(Pipeline.Filter):
             param.links = new_links
 
         if loose_param:
-            self._catalog_interface.loose_params[index] = param
+            self._catalog_interface.loose_param_dict[set_param.param_id] = param
         else:
             control.params[index] = param
             self._catalog_interface.replace_control(control)
 
     def _change_prose_with_param_values(self):
         """Go through all controls and change prose based on param values."""
-        param_dict: Dict[str, common.Paramter] = {}
+        param_dict: Dict[str, common.Parameter] = {}
         # build the full mapping of params to values from the catalog interface
         for control in self._catalog_interface.get_all_controls_from_dict():
             param_dict.update(ControlIOReader.get_control_param_dict(control, False))
+        param_dict.update(self._catalog_interface.loose_param_dict)
         # insert param values into prose of all controls
         for control in self._catalog_interface.get_all_controls_from_dict():
             self._replace_control_prose(control, param_dict, self._params_format, self._param_rep)
 
-    def _set_choices_in_controls(self, set_param_list: List[prof.SetParameter]) -> None:
-        """Set values for all choices in all controls that have param references in them."""
-        param_dict: Dict[str, common.Parameter] = {}
-        for set_param in set_param_list:
-            param_dict[set_param.param_id] = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
-        for control in self._catalog_interface.get_all_controls_from_dict():
-            for param in as_list(control.params):
-                if param.select:
-                    new_choices: List[str] = []
-                    for choice in as_list(param.select.choice):
-                        new_choice = self._replace_params(choice, param_dict)
-                        new_choices.append(new_choice)
-                    param.select.choice = new_choices
+    @staticmethod
+    def _replace_param_choices(param: common.Parameter, param_dict: Dict[str, common.Parameter]) -> None:
+        """Set values for all choices param that refer to params with values."""
+        if param.select:
+            new_choices: List[str] = []
+            for choice in as_list(param.select.choice):
+                new_choice = Modify._replace_params(choice, param_dict)
+                new_choices.append(new_choice)
+            param.select.choice = new_choices
 
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
         """Modify the controls based on the profile."""
@@ -359,9 +353,8 @@ class Modify(Pipeline.Filter):
             # change all parameter values
             if self._profile.modify.set_parameters and not self._block_params:
                 set_param_list = self._profile.modify.set_parameters
-                self._set_choices_in_controls(set_param_list)
                 for set_param in set_param_list:
-                    self._set_parameter_in_control(set_param)
+                    self._set_parameter_in_control_or_loose(set_param)
             alters = self._profile.modify.alters
 
         if alters is not None:
