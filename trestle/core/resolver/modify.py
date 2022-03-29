@@ -244,6 +244,56 @@ class Modify(Pipeline.Filter):
             if not Modify._add_to_parts(control.parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
 
+    @staticmethod
+    def _set_overwrite_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+        # these overwrite
+        if set_param.class_:
+            param.class_ = set_param.class_
+        if set_param.depends_on:
+            param.depends_on = set_param.depends_on
+        if set_param.label:
+            param.label = set_param.label
+        if set_param.usage:
+            param.usage = set_param.usage
+        if set_param.values:
+            param.values = set_param.values
+        if set_param.select:
+            param.select = set_param.select
+
+    @staticmethod
+    def _set_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+        # these append
+        if set_param.constraints:
+            if not param.constraints:
+                param.constraints = []
+            param.constraints.extend(set_param.constraints)
+        if set_param.guidelines:
+            if not param.guidelines:
+                param.guidelines = []
+            param.guidelines.extend(set_param.guidelines)
+
+    @staticmethod
+    def _set_replaced_or_appended_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
+        # these replace or append
+        if set_param.props:
+            new_props = as_list(param.props)
+            names = [prop.name for prop in new_props]
+            for prop in set_param.props:
+                if prop.name in names:
+                    new_props[names.index(prop.name)] = prop
+                else:
+                    new_props.append(prop)
+            param.props = new_props
+        if set_param.links:
+            new_links = as_list(param.links)
+            hrefs = [link.href for link in new_links]
+            for link in set_param.links:
+                if link.href in hrefs:
+                    new_links[hrefs.index(link.href)] = link
+                else:
+                    new_links.append(link)
+            param.links = new_links
+
     def _set_parameter_in_control_or_loose(self, set_param: prof.SetParameter) -> None:
         """
         Find the control with the param_id in it and set the parameter contents.
@@ -251,7 +301,7 @@ class Modify(Pipeline.Filter):
         It modifies controls in the control_dict not the catalog.
         Parameters are either bound to a control or are 'loose' and bound to the catalog itself.
         """
-        # find the target param in control or loose
+        # find the target param in control or the catalog's loose ones, i.e. catalog.params
         control = self._catalog_interface.get_control_by_param_id(set_param.param_id)
         loose_param = False
         if control:
@@ -272,49 +322,9 @@ class Modify(Pipeline.Filter):
         # rules here follow https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/
         # see 'Modify Phase' and Setting Parameters
 
-        # these overwrite
-        if set_param.class_:
-            param.class_ = set_param.class_
-        if set_param.depends_on:
-            param.depends_on = set_param.depends_on
-        if set_param.label:
-            param.label = set_param.label
-        if set_param.usage:
-            param.usage = set_param.usage
-        if set_param.values:
-            param.values = set_param.values
-        if set_param.select:
-            param.select = set_param.select
-
-        # these append
-        if set_param.constraints:
-            if not param.constraints:
-                param.constraints = []
-            param.constraints.extend(set_param.constraints)
-        if set_param.guidelines:
-            if not param.guidelines:
-                param.guidelines = []
-            param.guidelines.extend(set_param.guidelines)
-
-        # these replace or append
-        if set_param.props:
-            new_props = as_list(param.props)
-            names = [prop.name for prop in new_props]
-            for prop in set_param.props:
-                if prop.name in names:
-                    new_props[names.index(prop.name)] = prop
-                else:
-                    new_props.append(prop)
-            param.props = new_props
-        if set_param.links:
-            new_links = as_list(param.links)
-            hrefs = [link.href for link in new_links]
-            for link in set_param.links:
-                if link.href in hrefs:
-                    new_links[hrefs.index(link.href)] = link
-                else:
-                    new_links.append(link)
-            param.links = new_links
+        Modify._set_overwrite_items(param, set_param)
+        Modify._set_appended_items(param, set_param)
+        Modify._set_replaced_or_appended_items(param, set_param)
 
         if loose_param:
             self._catalog_interface.loose_param_dict[set_param.param_id] = param
