@@ -177,7 +177,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             )
             # keep alternative parameter values at control implementation level
             parameter_values = self.xlsx_helper.get_parameter_values(row)
-            self._add_set_parameter_values(row, parameter_name, parameter_values, control_implementation)
+            self._add_set_parameter_values(parameter_name, parameter_values, control_implementation)
 
     def _add_implemented_requirements(
         self,
@@ -224,7 +224,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             # add statements
             self._add_statements(row, control, controls, component_name, implemented_requirement)
             # add set_parameter
-            self._add_set_parameter_default(row, parameter_name, parameter_value_default, implemented_requirement)
+            self._add_set_parameter_default(parameter_name, parameter_value_default, implemented_requirement)
             # implemented_requirements
             control_implementation.implemented_requirements.append(implemented_requirement)
 
@@ -255,7 +255,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             implemented_requirement.statements = statements
 
     def _add_set_parameter_values(
-        self, row: int, parameter_name: str, parameter_values: str, control_implementation: ControlImplementation
+        self, parameter_name: str, parameter_values: str, control_implementation: ControlImplementation
     ) -> None:
         """Add set parameter values (the set of choices)."""
         if parameter_name is not None:
@@ -268,11 +268,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 control_implementation.set_parameters.append(set_parameters)
 
     def _add_set_parameter_default(
-        self,
-        row: int,
-        parameter_name: str,
-        parameter_value_default: str,
-        implemented_requirement: ImplementedRequirement
+        self, parameter_name: str, parameter_value_default: str, implemented_requirement: ImplementedRequirement
     ) -> None:
         """Add set parameter default (the "recommended" value)."""
         if parameter_name is not None:
