@@ -164,11 +164,10 @@ class TaniumResultToOscalAR(TaskBase):
             self._show_analysis(tanium_transformer)
         return TaskOutcome(mode + 'success')
 
-    def _read_file(self, ifile: str):
+    def _read_file(self, ifile: str) -> str:
         """Read raw input file."""
-        if not self._simulate:
-            if self._verbose:
-                logger.info(f'input: {ifile}')
+        if not self._simulate and self._verbose:
+            logger.info(f'input: {ifile}')
         with open(ifile, 'r', encoding=const.FILE_ENCODING) as fp:
             blob = fp.read()
         return blob
@@ -182,8 +181,7 @@ class TaniumResultToOscalAR(TaskBase):
 
     def _show_analysis(self, tanium_transformer: TaniumTransformer) -> None:
         """Show analysis."""
-        if not self._simulate:
-            if self._verbose:
-                analysis = tanium_transformer.analysis
-                for line in analysis:
-                    logger.info(line)
+        if not self._simulate and self._verbose:
+            analysis = tanium_transformer.analysis
+            for line in analysis:
+                logger.info(line)
