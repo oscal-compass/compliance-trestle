@@ -356,7 +356,13 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     param_dict = ControlIOReader.get_control_param_dict(control, False)
     assert ControlIOReader.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
-    ) == 'choice 1, choice 2'
+    ) == 'choice 1; choice 2'
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True
+    ) == 'Choose one or more: choice 1; choice 2'
+    assert ControlIOReader.param_to_str(
+        param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True, True
+    ) == 'Choose one or more: [choice 1; choice 2]'
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])

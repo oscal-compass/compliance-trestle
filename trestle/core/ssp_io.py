@@ -156,8 +156,12 @@ class SSPMarkdownWriter():
         if not control:
             return ''
         params_lines = writer.get_params(control, label_column)
+        # need to make sure no params still have moustaches.  convert to brackets to avoid jinja complaints
+        clean_lines = []
+        for line in params_lines:
+            clean_lines.append(line.replace('{{', '[[').replace('}}', ']]'))
 
-        tree = MarkdownNode.build_tree_from_markdown(params_lines)
+        tree = MarkdownNode.build_tree_from_markdown(clean_lines)
         tree.change_header_level_by(level)
         return tree.content.raw_text
 
@@ -201,7 +205,7 @@ class SSPMarkdownWriter():
         md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
-    def get_control_response(self, control_id: str, level: int, write_empty_responses: bool = False) -> str:
+    def get_control_response(self, control_id: str, level: int, write_empty_responses=False) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
 

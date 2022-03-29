@@ -74,9 +74,9 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
 
     md_text2 = ssp_writer._parameter_table('ac-2', 1, True)
     assert md_text2
-    assert '| Label |' in md_text2
+    assert '| Label or Choices |' in md_text2
 
-    md_text3 = ssp_writer.get_fedramp_control_tables('ac-2', 1)
+    md_text3 = ssp_writer.get_fedramp_control_tables('ac-2', 1, 1)
     assert md_text3
 
     md_text4 = ssp_writer.get_control_part('ac-2', 'item', 1)

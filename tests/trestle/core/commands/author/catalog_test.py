@@ -309,6 +309,7 @@ def test_params_in_choice(
     tmp_trestle_dir: pathlib.Path, simplified_nist_catalog: cat.Catalog, simplified_nist_profile: prof.Profile
 ) -> None:
     """Confirm that parameters in choices are substituted properly."""
+    # the nist profile defines ac-4.4_prm_3, which is in the choices of ac-4.4_prm_2
     cat_name = 'simplified_nist_catalog'
     prof_name = 'simplified_nist_profile'
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
@@ -322,6 +323,7 @@ def test_params_in_choice(
     val_3 = 'hacking the system'
     assert control.params[1].values[0].__root__ == val_1
     assert control.params[1].values[1].__root__ == val_2
+    # confirm the choice text was set properly
     assert control.params[1].select.choice[3] == val_3
     assert control.params[2].values[0].__root__ == val_3
     assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_prof'

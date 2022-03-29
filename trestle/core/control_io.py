@@ -534,9 +534,9 @@ class ControlIOWriter():
                         [
                             key,
                             ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
-                            ControlIOReader.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES),
+                            ControlIOReader.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES, True),
                         ] for key in param_dict.keys()
-                    ], ['Parameter ID', 'Values', 'Label']
+                    ], ['Parameter ID', 'Values', 'Label or Choices']
                 )
             else:
                 self._md_file.new_table(
@@ -1254,23 +1254,25 @@ class ControlIOReader():
         return f'[{values_str}]' if brackets else values_str
 
     @staticmethod
-    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> Optional[str]:
+    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
         """Convert parameter selection to str."""
-        if param.select:
-            how_many = param.select.how_many.name if param.select.how_many else ''
-            choices_str = ', '.join(as_list(param.select.choice))
+        if param.select and param.select.choice:
+            how_many_str = ''
+            if param.select.how_many:
+                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
+            choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
-            return f'choose {how_many} {choices_str}' if verbose else choices_str
-        return None
+            choices_str = f'Choose {how_many_str}: {choices_str}' if verbose else choices_str
+            return choices_str
+        return ''
 
     @staticmethod
     def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
         """Convert param label or choices to string, using choices if present."""
-        if param.select:
-            return ControlIOReader.param_selection_as_str(param, verbose, brackets)
-        if param.label:
-            return param.label
-        return param.id
+        choices = ControlIOReader.param_selection_as_str(param, verbose, brackets)
+        text = choices if choices else param.label
+        text = text if text else param.id
+        return text
 
     @staticmethod
     def param_to_str(

@@ -100,7 +100,7 @@ class Modify(Pipeline.Filter):
         for i, _ in enumerate(staches):
             # A moustache may refer to a param_id not listed in the control's params
             if param_ids[i] not in param_dict:
-                logger.warning(f'Control prose references param {param_ids[i]} not found in the control.')
+                logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
                 param_str = ControlIOReader.param_to_str(param, param_rep, False, False, params_format)
@@ -328,7 +328,7 @@ class Modify(Pipeline.Filter):
     def _change_prose_with_param_values(self):
         """Go through all controls and change prose based on param values."""
         param_dict: Dict[str, common.Paramter] = {}
-        # build the full mapping of params to values
+        # build the full mapping of params to values from the catalog interface
         for control in self._catalog_interface.get_all_controls_from_dict():
             param_dict.update(ControlIOReader.get_control_param_dict(control, False))
         # insert param values into prose of all controls
