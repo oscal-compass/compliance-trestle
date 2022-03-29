@@ -364,6 +364,7 @@ def test_pulled_params_in_choice(
     # the param value and the choice should be set by the pulling profile
     assert control.params[2].values[0].__root__ == val_3
     assert control.params[1].select.choice[3] == val_3
+    # this confirms the pulling profile sets the value of a loose apram
     assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_pulling'
 
     control = cat_interface.get_control('ac-1')
