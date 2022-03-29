@@ -40,11 +40,17 @@ class MonkeyBusiness():
         return uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e')
 
 
+def setup_config(path: str):
+    """Config."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path(path)
+    config.read(config_path)
+    return config
+
+
 def test_osco_print_info(tmp_path):
     """Test print_info call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -54,9 +60,7 @@ def test_osco_print_info(tmp_path):
 
 def test_osco_simulate(tmp_path):
     """Test simulate call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -67,9 +71,7 @@ def test_osco_simulate(tmp_path):
 
 def test_osco_simulate_compressed(tmp_path):
     """Test simulate call with compressed OSCO xml data."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-compressed.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-compressed.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -88,9 +90,7 @@ def test_osco_simulate_no_config(tmp_path):
 
 def test_osco_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -107,9 +107,7 @@ def test_osco_simulate_no_overwrite(tmp_path):
 
 def test_osco_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     config.remove_option('task.osco-result-to-oscal-ar', 'input-dir')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
@@ -121,9 +119,7 @@ def test_osco_simulate_no_input_dir(tmp_path):
 
 def test_osco_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     config.remove_option('task.osco-result-to-oscal-ar', 'output-dir')
     section = config['task.osco-result-to-oscal-ar']
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -134,9 +130,7 @@ def test_osco_simulate_no_ouput_dir(tmp_path):
 
 def test_osco_simulate_input_fetcher(tmp_path):
     """Test simulate call OSCO fetcher json data."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-fetcher.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-fetcher.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -147,9 +141,7 @@ def test_osco_simulate_input_fetcher(tmp_path):
 
 def test_osco_simulate_input_bad_yaml(tmp_path):
     """Test simulate call OSCO bad yaml data."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-bad-yaml.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-bad-yaml.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -163,9 +155,7 @@ def test_osco_execute(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -187,9 +177,7 @@ def test_osco_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -212,9 +200,7 @@ def test_osco_execute_1_3_5(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-1.3.5.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-1.3.5.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -236,9 +222,7 @@ def test_osco_execute_1_3_5_checking(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-1.3.5.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-1.3.5.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -261,9 +245,7 @@ def test_osco_execute_compressed(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-compressed.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-compressed.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -299,9 +281,7 @@ def execute_no_overwrite_part1(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -323,9 +303,7 @@ def execute_no_overwrite_part2(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock2)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     section['output-overwrite'] = 'false'
     section['output-dir'] = str(tmp_path)
@@ -336,9 +314,7 @@ def execute_no_overwrite_part2(tmp_path, monkeypatch: MonkeyPatch):
 
 def test_osco_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     config.remove_option('task.osco-result-to-oscal-ar', 'input-dir')
     section = config['task.osco-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
@@ -350,9 +326,7 @@ def test_osco_execute_no_input_dir(tmp_path):
 
 def test_osco_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     config.remove_option('task.osco-result-to-oscal-ar', 'output-dir')
     section = config['task.osco-result-to-oscal-ar']
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -363,9 +337,7 @@ def test_osco_execute_no_ouput_dir(tmp_path):
 
 def test_osco_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar.config')
     section = config['task.osco-result-to-oscal-ar']
     section['timestamp'] = str('bogus')
     tgt = osco_result_to_oscal_ar.OscoResultToOscalAR(section)
@@ -379,9 +351,7 @@ def test_osco_execute_input_fetcher(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-fetcher.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-fetcher.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -403,9 +373,7 @@ def test_osco_execute_input_xml_rhel7(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-rhel7.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-rhel7.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -427,9 +395,7 @@ def test_osco_execute_input_xml_ocp4(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-ocp4.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-xml-ocp4.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
@@ -451,9 +417,7 @@ def test_osco_execute_input_configmaps(tmp_path, monkeypatch: MonkeyPatch):
     monkeybusiness = MonkeyBusiness()
     monkeypatch.setattr(uuid, 'uuid4', monkeybusiness.uuid_mock1)
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-result-to-oscal-ar-configmaps.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/osco/test-osco-result-to-oscal-ar-configmaps.config')
     section = config['task.osco-result-to-oscal-ar']
     d_expected = pathlib.Path(section['output-dir'])
     d_produced = tmp_path
