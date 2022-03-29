@@ -91,26 +91,26 @@ class ProfileToOsco(TaskBase):
         try:
             return self._execute()
         except Exception:
-            logger.error(traceback.format_exc())
+            logger.warning(traceback.format_exc())
             return TaskOutcome('failure')
 
     def _execute(self) -> TaskOutcome:
         """Perform transformation."""
         # check config
         if not self._config:
-            logger.error('config missing')
+            logger.warning('config missing')
             return TaskOutcome('failure')
         # input-file
         input_file = self._config.get('input-file')
         if input_file is None:
-            logger.error('config missing "input-file"')
+            logger.warning('config missing "input-file"')
             return TaskOutcome('failure')
         logger.info(f'input-file: {input_file}')
         input_path = pathlib.Path(input_file)
         # output-dir
         output_dir = self._config.get('output-dir')
         if output_dir is None:
-            logger.error('config missing "output-dir"')
+            logger.warning('config missing "output-dir"')
             return TaskOutcome('failure')
         output_path = pathlib.Path(output_dir)
         # insure output dir exists
@@ -122,7 +122,7 @@ class ProfileToOsco(TaskBase):
         # overwrite
         overwrite = self._config.getboolean('output-overwrite', True)
         if not overwrite and pathlib.Path(output_filepath).exists():
-            logger.error(f'output-file: {output_filepath} already exists')
+            logger.warning(f'output-file: {output_filepath} already exists')
             return TaskOutcome('failure')
         # read input
         profile = Profile.oscal_read(input_path)

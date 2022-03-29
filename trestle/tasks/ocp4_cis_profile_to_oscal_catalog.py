@@ -98,7 +98,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
     def _execute(self) -> TaskOutcome:
         """Wrap the execute for exception handling."""
         if not self._config:
-            logger.error('config missing')
+            logger.warning('config missing')
             return TaskOutcome('failure')
         try:
             idir = self._config['input-dir']
@@ -118,14 +118,14 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
         oname = 'catalog.json'
         ofile = opth / oname
         if not overwrite and pathlib.Path(ofile).exists():
-            logger.error(f'output: {ofile} already exists')
+            logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # metadata links (optional)
         metadata_links = self._config.get('metadata-links')
         # get list or <name>.profile files
         filelist = self._get_filelist(idir)
         if len(filelist) < 1:
-            logger.error(f'input: {idir} no .profile file found')
+            logger.warning(f'input: {idir} no .profile file found')
             return TaskOutcome('failure')
         # initialize node list
         self._node_map = {}
@@ -176,7 +176,7 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             f.close()
             return content
         except Exception as e:
-            logger.error(f'unable to process {fp.name}')
+            logger.warning(f'unable to process {fp.name}')
             raise e
 
     def _parse(self, lines: List[str]) -> None:
@@ -211,7 +211,6 @@ class Ocp4CisProfileToOscalCatalog(TaskBase):
             key = (int(parts[0]), int(parts[1]), int(parts[2]))
         else:
             text = f'Unexpected value: {name}'
-            logger.error(text)
             raise RuntimeError(text)
         return key
 

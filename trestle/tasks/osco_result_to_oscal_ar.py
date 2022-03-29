@@ -94,7 +94,7 @@ class OscoResultToOscalAR(TaskBase):
         try:
             return self._transform_work()
         except Exception:
-            logger.error(traceback.format_exc())
+            logger.debug(traceback.format_exc())
             mode = ''
             if self._simulate:
                 mode = 'simulated-'
@@ -110,7 +110,7 @@ class OscoResultToOscalAR(TaskBase):
         if self._simulate:
             mode = 'simulated-'
         if not self._config:
-            logger.error('config missing')
+            logger.warning('config missing')
             return TaskOutcome(mode + 'failure')
         # config required input & output dirs
         try:
@@ -131,7 +131,7 @@ class OscoResultToOscalAR(TaskBase):
             try:
                 OscoTransformer.set_timestamp(timestamp)
             except Exception:
-                logger.error('config invalid "timestamp"')
+                logger.warning('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
         # config optional performance
         modes = {
@@ -150,7 +150,7 @@ class OscoResultToOscalAR(TaskBase):
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
             if not self._overwrite and pathlib.Path(ofile).exists():
-                logger.error(f'output: {ofile} already exists')
+                logger.warning(f'output: {ofile} already exists')
                 return TaskOutcome(mode + 'failure')
             self._write_file(results, ofile)
             self._show_analysis(osco_transformer)

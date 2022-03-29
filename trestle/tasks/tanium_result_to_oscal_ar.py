@@ -115,7 +115,7 @@ class TaniumResultToOscalAR(TaskBase):
         if self._simulate:
             mode = 'simulated-'
         if not self._config:
-            logger.error('Config missing')
+            logger.warning('Config missing')
             return TaskOutcome(mode + 'failure')
         # config required input & output dirs
         try:
@@ -136,7 +136,7 @@ class TaniumResultToOscalAR(TaskBase):
             try:
                 TaniumTransformer.set_timestamp(timestamp)
             except Exception:
-                logger.error('config invalid "timestamp"')
+                logger.warning('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
         # config optional performance
         modes = {
@@ -158,7 +158,7 @@ class TaniumResultToOscalAR(TaskBase):
             oname = ifile.stem + '.oscal' + '.json'
             ofile = opth / oname
             if not self._overwrite and pathlib.Path(ofile).exists():
-                logger.error(f'output: {ofile} already exists')
+                logger.warning(f'output: {ofile} already exists')
                 return TaskOutcome(mode + 'failure')
             self._write_file(results, ofile)
             self._show_analysis(tanium_transformer)

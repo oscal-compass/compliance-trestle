@@ -63,11 +63,17 @@ class MonkeyBusiness():
         return str(self._seed_result2) + '-ca25-4eec-8152-506286489d9a'
 
 
+def setup_config(path: str):
+    """Config."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path(path)
+    config.read(config_path)
+    return config
+
+
 def test_tanium_print_info(tmp_path):
     """Test print_info call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -77,9 +83,7 @@ def test_tanium_print_info(tmp_path):
 
 def test_tanium_simulate(tmp_path):
     """Test simulate call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -98,9 +102,7 @@ def test_tanium_simulate_no_config(tmp_path):
 
 def test_tanium_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -117,9 +119,7 @@ def test_tanium_simulate_no_overwrite(tmp_path):
 
 def test_tanium_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     config.remove_option('task.tanium-result-to-oscal-ar', 'input-dir')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
@@ -131,9 +131,7 @@ def test_tanium_simulate_no_input_dir(tmp_path):
 
 def test_tanium_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     config.remove_option('task.tanium-result-to-oscal-ar', 'output-dir')
     section = config['task.tanium-result-to-oscal-ar']
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -144,9 +142,7 @@ def test_tanium_simulate_no_ouput_dir(tmp_path):
 
 def test_tanium_simulate_bad_input_file(tmp_path):
     """Test simulate with bad input file call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     config.remove_option('task.tanium-result-to-oscal-ar', 'input-dir')
     config.set('task.tanium-result-to-oscal-ar', 'input-dir', 'tests/data/tasks/tanium/input-bad')
     section = config['task.tanium-result-to-oscal-ar']
@@ -166,9 +162,7 @@ def test_tanium_execute(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     section['cpus-max'] = '1'
@@ -190,9 +184,7 @@ def test_tanium_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     section['cpus-max'] = '1'
@@ -215,9 +207,7 @@ def test_tanium_execute_one_file(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -233,9 +223,7 @@ def test_tanium_execute_blocksize(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_inventory', monkeybusiness.uuid_inventory)
     monkeypatch.setattr(tanium, '_uuid_observation', monkeybusiness.uuid_observation)
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     section['blocksize'] = '0'
@@ -253,9 +241,7 @@ def test_tanium_execute_cpus(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_inventory', monkeybusiness.uuid_inventory)
     monkeypatch.setattr(tanium, '_uuid_observation', monkeybusiness.uuid_observation)
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     # set values for number of CPUs to unattainable numbers forcing code to chose reasonable ones.
@@ -291,9 +277,7 @@ def execute_no_overwrite_dir_part1(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_inventory', monkeybusiness.uuid_inventory)
     monkeypatch.setattr(tanium, '_uuid_observation', monkeybusiness.uuid_observation)
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     section['cpus-max'] = '1'
@@ -310,9 +294,7 @@ def execute_no_overwrite_dir_part2(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_inventory', monkeybusiness.uuid_inventory)
     monkeypatch.setattr(tanium, '_uuid_observation', monkeybusiness.uuid_observation)
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-overwrite'] = 'false'
     section['output-dir'] = str(tmp_path)
@@ -324,9 +306,7 @@ def execute_no_overwrite_dir_part2(tmp_path, monkeypatch: MonkeyPatch):
 
 def test_tanium_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     config.remove_option('task.tanium-result-to-oscal-ar', 'input-dir')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
@@ -338,9 +318,7 @@ def test_tanium_execute_no_input_dir(tmp_path):
 
 def test_tanium_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     config.remove_option('task.tanium-result-to-oscal-ar', 'output-dir')
     section = config['task.tanium-result-to-oscal-ar']
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -351,9 +329,7 @@ def test_tanium_execute_no_ouput_dir(tmp_path):
 
 def test_tanium_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['timestamp'] = str('bogus')
     tgt = tanium_result_to_oscal_ar.TaniumResultToOscalAR(section)
@@ -371,9 +347,7 @@ def test_tanium_execute_override_timestamp(tmp_path, monkeypatch: MonkeyPatch):
     monkeypatch.setattr(tanium, '_uuid_result', monkeybusiness.uuid_result)
     tanium.TaniumTransformer.set_timestamp('2020-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2020-02-24T19:31:13+00:00'
-    config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
-    config.read(config_path)
+    config = setup_config('tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config')
     section = config['task.tanium-result-to-oscal-ar']
     section['output-dir'] = str(tmp_path)
     section['cpus-max'] = '1'

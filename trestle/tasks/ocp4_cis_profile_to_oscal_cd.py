@@ -167,7 +167,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
 
     def _execute(self) -> TaskOutcome:
         if not self._config:
-            logger.error('config missing')
+            logger.warning('config missing')
             return TaskOutcome('failure')
         try:
             component_name = self._config['component-name']
@@ -209,7 +209,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
         oname = 'component-definition.json'
         ofile = opth / oname
         if not overwrite and pathlib.Path(ofile).exists():
-            logger.error(f'output: {ofile} already exists')
+            logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # fetch rule to parameters map
         self._rule_to_parm_map = self._get_parameters_map('rule-to-parameters-map')
@@ -358,7 +358,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             logger.debug(f'key {e.args[0]} missing')
             parameters_map = {}
         except Exception:
-            logger.error(f'unable to process {self._config[config_key]}')
+            logger.warning(f'unable to process {self._config[config_key]}')
             parameters_map = {}
         return parameters_map
 
@@ -378,7 +378,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             logger.debug(f'key {e.args[0]} missing')
             filter_rules = []
         except Exception:
-            logger.error(f'unable to process {self._config[config_key]}')
+            logger.warning(f'unable to process {self._config[config_key]}')
             filter_rules = []
         return filter_rules
 
@@ -394,7 +394,7 @@ class Ocp4CisProfileToOscalCD(TaskBase):
             rules = self._parse_cis_rules(content)
             f.close()
         except Exception:
-            logger.error(f'unable to process {filename}')
+            logger.warning(f'unable to process {filename}')
             rules = {}
         return rules
 
@@ -508,7 +508,6 @@ class Ocp4CisProfileToOscalCD(TaskBase):
                         break
         if title is None:
             msg = f'unable to find "{dir_name}"'
-            logger.error(msg)
             raise RuntimeError(msg)
         title = title.strip().strip("'").strip('"')
         logger.debug(f'{title}')

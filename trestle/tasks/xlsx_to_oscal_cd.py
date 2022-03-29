@@ -102,7 +102,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         oname = 'component-definition.json'
         ofile = opth / oname
         if not self._overwrite and pathlib.Path(ofile).exists():
-            logger.error(f'output: {ofile} already exists')
+            logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # initialize
         self.defined_components = {}
