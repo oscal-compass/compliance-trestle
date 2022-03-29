@@ -486,15 +486,15 @@ Note that when you `Import` a file it will perform a full validation on it first
 
 Open Shift Compliance Operator and Tanium are supported as 3rd party tools.
 
-## `trestle task osco-to-oscal`
+## `trestle task osco-result-to-oscal-ar`
 
-The *trestle task osco-to-oscal* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
+The *trestle task osco-result-to-oscal-ar* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
 
 <span style="color:green">
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task osco-result-to-oscal-ar -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -503,7 +503,7 @@ Example config:
 */home/user/task.config*
 
 ```conf
-[task.osco-to-oscal]
+[task.osco-result-to-oscal-ar]
 
 input-dir =  /home/user/git/evidence/osco/input
 output-dir = /home/user/git/evidence/oscal/output
