@@ -341,18 +341,18 @@ class ModelUtils:
         trestle_root: pathlib.Path,
         model_name: str,
         model_class: Type[TopLevelOscalModel],
-    ) -> pathlib.Path:
+    ) -> Optional[pathlib.Path]:
         """
         Find the full path of an existing model given its name and model type but no file content type.
 
         Use this method when you need the path of a model but you don't know the file content type.
-        This method should only be called if the model needs to exist already in the trestle directory.
+        Returns None if neither json nor yaml file can be found.
         If you do know the file content type, use path_for_top_level_model instead.
         """
         root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         file_content_type = FileContentType.path_to_content_type(root_model_path)
         if not FileContentType.is_readable_file(file_content_type):
-            raise TrestleError(f'Unable to load model {model_name} as json or yaml.')
+            return None
         return root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
     @staticmethod
@@ -773,3 +773,16 @@ class ModelUtils:
         new_object, uuid_lut = ModelUtils._regenerate_uuids_in_place(object_of_interest, {})
         new_object, n_refs_updated = ModelUtils._update_new_uuid_refs(new_object, uuid_lut)
         return new_object, uuid_lut, n_refs_updated
+
+    @staticmethod
+    def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalModel) -> bool:
+        """Test if models are equivalent except for last modified and uuid."""
+        # set b's extra properties to those of a then later undo so the models are not changed by this routine
+        b_last_modified = model_b.metadata.last_modified
+        model_b.metadata.last_modified = model_a.metadata.last_modified
+        b_uuid = model_b.uuid
+        model_b.uuid = model_a.uuid
+        equivalent = model_a == model_b
+        model_b.metadata.last_modified = b_last_modified
+        model_b.uuid = b_uuid
+        return equivalent
