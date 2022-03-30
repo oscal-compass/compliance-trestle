@@ -33,6 +33,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_io import ParameterRep
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
 logger = logging.getLogger(__name__)
@@ -200,13 +201,11 @@ class ProfileAssemble(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
-            # the original profile model name defaults to being the same as the new one
-            prof_name = args.output if not args.name else args.name
             return self.assemble_profile(
                 trestle_root=trestle_root,
-                orig_profile_name=prof_name,
+                parent_prof_name=args.name,
                 md_name=args.markdown,
-                new_profile_name=args.output,
+                assem_prof_name=args.output,
                 set_parameters=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
@@ -285,9 +284,9 @@ class ProfileAssemble(AuthorCommonCommand):
     @staticmethod
     def assemble_profile(
         trestle_root: pathlib.Path,
-        orig_profile_name: str,
+        parent_prof_name: str,
         md_name: str,
-        new_profile_name: str,
+        assem_prof_name: str,
         set_parameters: bool,
         regenerate: bool,
         version: Optional[str],
@@ -299,9 +298,9 @@ class ProfileAssemble(AuthorCommonCommand):
 
         Args:
             trestle_root: The trestle root directory
-            orig_profile_name: Optional name of profile used to generate the markdown (default is new_profile_name)
+            parent_prof_name: Optional name of profile used to generate the markdown (default is assem_prof_name)
             md_name: The name of the directory containing the markdown control files for the profile
-            new_profile_name: The name of the new json profile.  It can be the same as original to overwrite
+            assem_prof_name: The name of the assembled profile.  It can be the same as the parent to overwrite
             set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
@@ -312,16 +311,29 @@ class ProfileAssemble(AuthorCommonCommand):
             0 on success, 1 otherwise
 
         Notes:
-            There must already be a json profile model and it will either be updated or a new json profile created.
-            The generated markdown shows the current values for parameters of controls being imported, as set by
+            There must already be a profile model and it will either be updated or a new json profile created.
+            The generated markdown has the current values for parameters of controls being imported, as set by
             the original catalog and any intermediate profiles.  It also shows the current SetParameters being applied
             by this profile.  That list of SetParameters can be edited by changing the assigned values and adding or
             removing SetParameters from that list.  During assembly that list will be used to create the SetParameters
             in the assembled profile if the --set-parameters option is specified.
         """
-        # first load the original json profile but call it 'new' because it is being updated with new items
-        profile_path = trestle_root / f'profiles/{orig_profile_name}/profile.json'
-        _, _, new_profile = ModelUtils.load_distributed(profile_path, trestle_root)
+        md_dir = trestle_root / md_name
+        if not md_dir.exists():
+            raise TrestleError(f'Markdown directory {md_name} does not exist.')
+
+        if not parent_prof_name:
+            parent_prof_name = assem_prof_name
+
+        try:
+            parent_prof, parent_prof_path = ModelUtils.load_top_level_model(
+                trestle_root,
+                parent_prof_name,
+                prof.Profile
+            )
+        except Exception as e:
+            raise TrestleError(f'Error loading original profile {parent_prof_name}: {e}')
+        new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
         required_sections_list = required_sections.split(',') if required_sections else []
 
@@ -336,47 +348,38 @@ class ProfileAssemble(AuthorCommonCommand):
                     for part in add.parts:
                         if part.name not in allowed_sections:
                             raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
-        ProfileAssemble._replace_alter_adds(new_profile, found_alters)
+        ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(new_profile, param_dict, param_map)
-
-        new_profile_dir = trestle_root / f'profiles/{new_profile_name}'
-        new_profile_path = new_profile_dir / 'profile.json'
+            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
 
         if version:
-            new_profile.metadata.version = com.Version(__root__=version)
+            parent_prof.metadata.version = com.Version(__root__=version)
 
-        if new_profile_path.exists():
-            # first do simple and fast tests of changes so that the full equality check is only done as last resort
-            _, _, existing_profile = ModelUtils.load_distributed(new_profile_path, trestle_root)
-            # need special handling in case modify is None in either or both profiles
-            no_changes = not existing_profile.modify and not new_profile.modify
-            both_modifies_present = existing_profile.modify and new_profile.modify
-            if both_modifies_present:
-                no_changes = (
-                    existing_profile.modify.alters == new_profile.modify.alters
-                    and existing_profile.modify.set_parameters == new_profile.modify.set_parameters
-                )
-            if no_changes and existing_profile.metadata.version != new_profile.metadata.version:
-                no_changes = False
-            # at this point if no known changes then do the full and possibly expensive comparison to confirm
-            if no_changes and existing_profile == new_profile:
+        assem_prof_path = ModelUtils.path_for_top_level_model(
+            trestle_root, assem_prof_name, prof.Profile, new_content_type
+        )
+
+        if assem_prof_path.exists():
+            _, _, existing_prof = ModelUtils.load_distributed(assem_prof_path, trestle_root)
+            if ModelUtils.models_are_equivalent(existing_prof, parent_prof):
                 logger.info('Assembled profile has no changes so no update of existing file.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
-            new_profile, _, _ = ModelUtils.regenerate_uuids(new_profile)
-        ModelUtils.update_last_modified(new_profile)
+            parent_prof, _, _ = ModelUtils.regenerate_uuids(parent_prof)
+        ModelUtils.update_last_modified(parent_prof)
 
-        if new_profile_dir.exists():
+        if assem_prof_path.parent.exists():
             logger.info('Creating profile from markdown and destination profile directory exists, so updating.')
             try:
-                shutil.rmtree(str(new_profile_dir))
+                shutil.rmtree(str(assem_prof_path.parent))
             except OSError as e:
-                raise TrestleError(f'OSError deleting existing catalog directory with rmtree {new_profile_dir}: {e}')
+                raise TrestleError(
+                    f'OSError deleting existing catalog directory with rmtree {assem_prof_path.parent}: {e}'
+                )
         try:
-            new_profile_dir.mkdir()
-            new_profile.oscal_write(new_profile_dir / 'profile.json')
+            assem_prof_path.parent.mkdir()
+            parent_prof.oscal_write(assem_prof_path)
         except OSError as e:
-            raise TrestleError(f'OSError writing profile from markdown to {new_profile_dir}: {e}')
+            raise TrestleError(f'OSError writing profile from markdown to {assem_prof_path.parent}: {e}')
         return CmdReturnCodes.SUCCESS.value
