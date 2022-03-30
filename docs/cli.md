@@ -384,7 +384,7 @@ Note that the type of the file is now `stripped.Catalog` and it no longer contai
 
 ## `trestle partial-object-validate`
 
-OSCAL objects may be extremely large. Some systems may only be able to produce partial OSCAL objects. For example, the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
+OSCAL objects may be extremely large. Some systems may only be able to produce partial OSCAL objects. For example, the tanium-result-to-oscal-ar task produces the `results` attribute of an `assessment-results` object.
 
 `trestle partial-object-validate` allows the validation of any sub-element/attribute using element path.
 
@@ -486,15 +486,15 @@ Note that when you `Import` a file it will perform a full validation on it first
 
 Open Shift Compliance Operator and Tanium are supported as 3rd party tools.
 
-## `trestle task osco-to-oscal`
+## `trestle task osco-result-to-oscal-ar`
 
-The *trestle task osco-to-oscal* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
+The *trestle task osco-result-to-oscal-ar* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
 
 <span style="color:green">
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task osco-result-to-oscal-ar -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -503,7 +503,7 @@ Example config:
 */home/user/task.config*
 
 ```conf
-[task.osco-to-oscal]
+[task.osco-result-to-oscal-ar]
 
 input-dir =  /home/user/git/evidence/osco/input
 output-dir = /home/user/git/evidence/oscal/output
@@ -800,9 +800,9 @@ Example output OSCAL Observations file contents (snippet):
 
 </details>
 
-## `trestle task tanium-to-oscal`
+## `trestle task tanium-result-to-oscal-ar`
 
-The *trestle task tanium-to-oscal* command facilitates transformation of Tanuim reports, each
+The *trestle task tanium-result-to-oscal-ar* command facilitates transformation of Tanuim reports, each
 input file comprising individual lines consumable as *json*, into OSCAL partial results *.json* files.
 Specify required config parameters to indicate the location of the input and the output.
 Specify optional config parameter *output-overwrite* to indicate whether overwriting of existing output is permitted.
@@ -812,7 +812,7 @@ Specify optional config parameter *timestamp* as ISO 8601 formated string (e.g.,
 Example command invocation:
 </span>
 
-`$TRESTLE_BASEDIR$ trestle task tanium-to-oscal -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task tanium-result-to-oscal-ar -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -821,7 +821,7 @@ Example config:
 */home/user/task.config*
 
 ```conf
-[task.tanium-to-oscal]
+[task.tanium-result-to-oscal-ar]
 
 input-dir =  /home/user/git/compliance/tanium/input
 output-dir = /home/user/git/compliance/oscal/output

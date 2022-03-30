@@ -121,7 +121,7 @@ class XlsxHelper:
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
         if not task._config:
-            logger.error('config missing')
+            logger.warning('config missing')
             return False
         # config verbosity
         quiet = task._config.get('quiet', False)
@@ -131,7 +131,7 @@ class XlsxHelper:
         if task.name == 'xlsx-to-oscal-cd':
             catalog_file = task._config.get('catalog-file')
             if catalog_file is None:
-                logger.error('config missing "catalog-file"')
+                logger.warning('config missing "catalog-file"')
                 return False
             try:
                 catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
@@ -143,25 +143,25 @@ class XlsxHelper:
         if task.name == 'xlsx-to-oscal-profile':
             profile_title = task._config.get('profile-title')
             if profile_title is None:
-                logger.error('config missing "profile-title"')
+                logger.warning('config missing "profile-title"')
                 return False
             spread_sheet_url = task._config.get('spread-sheet-url')
             if spread_sheet_url is None:
-                logger.error('config missing "spread-sheet-url"')
+                logger.warning('config missing "spread-sheet-url"')
                 return False
         # optional
         self._column.filter_column = task._config.get('filter-column', None)
         # config spread sheet
         spread_sheet = task._config.get('spread-sheet-file')
         if spread_sheet is None:
-            logger.error('config missing "spread-sheet"')
+            logger.warning('config missing "spread-sheet"')
             return False
         if not pathlib.Path(spread_sheet).exists():
-            logger.error('"spread-sheet" not found')
+            logger.warning('"spread-sheet" not found')
             return False
         sheet_name = task._config.get('work-sheet-name')
         if sheet_name is None:
-            logger.error('config missing "work-sheet-name"')
+            logger.warning('config missing "work-sheet-name"')
             return False
         # announce spreadsheet
         if task._verbose:
