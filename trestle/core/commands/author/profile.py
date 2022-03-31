@@ -325,14 +325,7 @@ class ProfileAssemble(AuthorCommonCommand):
         if not parent_prof_name:
             parent_prof_name = assem_prof_name
 
-        try:
-            parent_prof, parent_prof_path = ModelUtils.load_top_level_model(
-                trestle_root,
-                parent_prof_name,
-                prof.Profile
-            )
-        except Exception as e:
-            raise TrestleError(f'Error loading original profile {parent_prof_name}: {e}')
+        parent_prof, parent_prof_path = ModelUtils.load_top_level_model(trestle_root, parent_prof_name, prof.Profile)
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
         required_sections_list = required_sections.split(',') if required_sections else []
@@ -362,7 +355,7 @@ class ProfileAssemble(AuthorCommonCommand):
         if assem_prof_path.exists():
             _, _, existing_prof = ModelUtils.load_distributed(assem_prof_path, trestle_root)
             if ModelUtils.models_are_equivalent(existing_prof, parent_prof):
-                logger.info('Assembled profile has no changes so no update of existing file.')
+                logger.info('Assembled profile is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
@@ -370,16 +363,9 @@ class ProfileAssemble(AuthorCommonCommand):
         ModelUtils.update_last_modified(parent_prof)
 
         if assem_prof_path.parent.exists():
-            logger.info('Creating profile from markdown and destination profile directory exists, so updating.')
-            try:
-                shutil.rmtree(str(assem_prof_path.parent))
-            except OSError as e:
-                raise TrestleError(
-                    f'OSError deleting existing catalog directory with rmtree {assem_prof_path.parent}: {e}'
-                )
-        try:
-            assem_prof_path.parent.mkdir()
-            parent_prof.oscal_write(assem_prof_path)
-        except OSError as e:
-            raise TrestleError(f'OSError writing profile from markdown to {assem_prof_path.parent}: {e}')
+            logger.info('Creating profile from markdown and destination profile exists, so updating.')
+            shutil.rmtree(str(assem_prof_path.parent))
+
+        assem_prof_path.parent.mkdir(parents=True, exist_ok=True)
+        parent_prof.oscal_write(assem_prof_path)
         return CmdReturnCodes.SUCCESS.value
