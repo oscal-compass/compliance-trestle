@@ -205,10 +205,7 @@ class CatalogAssemble(AuthorCommonCommand):
         # the parent can be a separate catalog or the destination assembled catalog if it exists
         # but this is the catalog that the markdown is merged into in memory
         if parent_cat_name:
-            try:
-                parent_cat, parent_cat_path = ModelUtils.load_top_level_model(trestle_root, parent_cat_name, Catalog)
-            except Exception as e:
-                raise TrestleError(f'Error loading original catalog {parent_cat_name}: {e}')
+            parent_cat, parent_cat_path = ModelUtils.load_top_level_model(trestle_root, parent_cat_name, Catalog)
             parent_cat_interface = CatalogInterface(parent_cat)
             # merge the just-read md catalog into the original json
             parent_cat_interface.merge_catalog(md_catalog, set_parameters)
@@ -234,16 +231,9 @@ class CatalogAssemble(AuthorCommonCommand):
         assem_cat_path = ModelUtils.path_for_top_level_model(trestle_root, assem_cat_name, Catalog, new_content_type)
 
         if assem_cat_path.parent.exists():
-            logger.info('Creating catalog from markdown and destination catalog directory exists, so overwriting.')
-            try:
-                shutil.rmtree(str(assem_cat_path.parent))
-            except OSError as e:
-                raise TrestleError(
-                    f'OSError deleting existing catalog directory with rmtree {assem_cat_path.parent}: {e}'
-                )
-        try:
-            assem_cat_path.parent.mkdir()
-            md_catalog.oscal_write(assem_cat_path.parent / 'catalog.json')
-        except OSError as e:
-            raise TrestleError(f'OSError writing catalog from markdown to {assem_cat_path.parent}: {e}')
+            logger.info('Creating catalog from markdown and destination catalog exists, so updating.')
+            shutil.rmtree(str(assem_cat_path.parent))
+
+        assem_cat_path.parent.mkdir(parents=True, exist_ok=True)
+        md_catalog.oscal_write(assem_cat_path.parent / 'catalog.json')
         return CmdReturnCodes.SUCCESS.value
