@@ -29,6 +29,7 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_io import ControlIOReader, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -102,13 +103,15 @@ def test_catalog_generate_assemble(
         if add_header:
             yaml = YAML(typ='safe')
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
+        assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
+            tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False
+        )
         assert (markdown_path / 'ac/ac-1.md').exists()
         _change_params(ac1_path, new_prose, make_change)
         if dir_exists:
             assembled_cat_dir.mkdir()
         orig_cat_name = cat_name if use_orig_cat else None
-        CatalogAssemble.assemble_catalog(
+        assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
             tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters, False, ''
         )
 
@@ -150,8 +153,12 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     sample_catalog_rich_controls.oscal_write(catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     catalog_generate = CatalogGenerate()
-    catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, {}, False)
-    CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version)
+    assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
+        tmp_trestle_dir, catalog_path, markdown_path, {}, False
+    )
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version
+    )
     assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         assembled_cat_name,
@@ -163,14 +170,21 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     creation_time = assembled_cat_path.stat().st_mtime
 
     # assemble same way again and confirm no new write
-    CatalogAssemble.assemble_catalog(
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
 
+    # assemble same way again but without parent specified and confirm no new write
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
+    )
+
+    assert creation_time == assembled_cat_path.stat().st_mtime
+
     # change version and confirm write
-    CatalogAssemble.assemble_catalog(
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx'
     )
 

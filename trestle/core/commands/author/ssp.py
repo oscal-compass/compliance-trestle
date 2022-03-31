@@ -209,24 +209,26 @@ class SSPAssemble(AuthorCommonCommand):
             if args.name:
                 orig_ssp_name = args.name
             new_ssp_name = args.output
-            # if orig ssp exists - need to load it rather than instantiate new one
-            orig_ssp_path = ModelUtils.path_for_top_level_model(
-                trestle_root, orig_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
-            )
+
+            new_file_content_type = FileContentType.JSON
 
             # if output ssp already exists, load it to see if new one is different
             existing_ssp: Optional[ossp.SystemSecurityPlan] = None
-            new_ssp_path = ModelUtils.path_for_top_level_model(
-                trestle_root, new_ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON
-            )
-            if new_ssp_path.exists():
+            new_ssp_path = ModelUtils.full_path_for_top_level_model(trestle_root, new_ssp_name, ossp.SystemSecurityPlan)
+            if new_ssp_path:
                 _, _, existing_ssp = ModelUtils.load_distributed(new_ssp_path, trestle_root)
+                new_file_content_type = FileContentType.path_to_content_type(new_ssp_path)
 
             ssp: ossp.SystemSecurityPlan
             comp_dict: Dict[str, ossp.SystemComponent] = {}
 
+            # if orig ssp exists - need to load it rather than instantiate new one
+            orig_ssp_path = ModelUtils.full_path_for_top_level_model(
+                trestle_root, orig_ssp_name, ossp.SystemSecurityPlan
+            )
+
             # need to load imp_reqs from markdown but need component first
-            if orig_ssp_path.exists():
+            if orig_ssp_path:
                 # load the existing json ssp
                 _, _, ssp = ModelUtils.load_distributed(orig_ssp_path, trestle_root)
                 for component in ssp.system_implementation.components:
@@ -234,6 +236,7 @@ class SSPAssemble(AuthorCommonCommand):
                 # read the new imp reqs from markdown and have them reference existing components
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
                 self._merge_imp_reqs(ssp, imp_reqs)
+                new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
@@ -280,7 +283,7 @@ class SSPAssemble(AuthorCommonCommand):
             if args.version:
                 ssp.metadata.version = com.Version(__root__=args.version)
 
-            if existing_ssp == ssp:
+            if ModelUtils.models_are_equivalent(existing_ssp, ssp):
                 logger.info('No changes to assembled ssp so ssp not written out.')
                 return CmdReturnCodes.SUCCESS.value
 
@@ -289,7 +292,7 @@ class SSPAssemble(AuthorCommonCommand):
             ModelUtils.update_last_modified(ssp)
 
             # write out the ssp as json
-            ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, FileContentType.JSON)
+            ModelUtils.save_top_level_model(ssp, trestle_root, new_ssp_name, new_file_content_type)
 
             return CmdReturnCodes.SUCCESS.value
 
