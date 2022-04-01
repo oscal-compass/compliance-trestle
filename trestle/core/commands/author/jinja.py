@@ -22,7 +22,7 @@ import re
 import uuid
 from typing import Any, Dict, Optional
 
-from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader
+from jinja2 import ChoiceLoader, DictLoader, Environment, FileSystemLoader, Template
 
 from ruamel.yaml import YAML
 
@@ -128,8 +128,6 @@ class JinjaCmd(CommandPlusDocs):
                     parameters_formatting=args.param_formatting
                 )
 
-            return CmdReturnCodes.SUCCESS.value
-
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while generating markdown via Jinja template')
 
@@ -169,6 +167,7 @@ class JinjaCmd(CommandPlusDocs):
         # create boolean dict
         if operator.xor(bool(ssp), bool(profile)):
             raise TrestleIncorrectArgsError('Both SSP and profile should be provided or not at all')
+
         if ssp:
             # name lookup
             ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
@@ -187,23 +186,7 @@ class JinjaCmd(CommandPlusDocs):
             lut['control_io_writer'] = ControlIOWriter()
             lut['ssp_md_writer'] = ssp_writer
 
-            new_output = template.render(**lut)
-            output = ''
-            # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
-            error_countdown = JinjaCmd.max_recursion_depth
-            while new_output != output and error_countdown > 0:
-                error_countdown = error_countdown - 1
-                output = new_output
-                random_name = uuid.uuid4()  # Should be random and not used.
-                dict_loader = DictLoader({str(random_name): new_output})
-                jinja_env = Environment(
-                    loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                    extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
-                    autoescape=True,
-                    trim_blocks=True
-                )
-                template = jinja_env.get_template(str(random_name))
-                new_output = template.render(**lut)
+            output = JinjaCmd.render_template(template, lut, template_folder)
 
             output_file = trestle_root / r_output_file
             if number_captions:
@@ -219,7 +202,7 @@ class JinjaCmd(CommandPlusDocs):
         r_input_file: pathlib.Path,
         r_output_file: pathlib.Path,
         profile: Optional[str],
-        lut: [Dict[str, Any]],
+        lut: Dict[str, Any],
         parameters_formatting: Optional[str] = None
     ) -> int:
         """Output profile as multiple markdown files using Jinja."""
@@ -258,28 +241,35 @@ class JinjaCmd(CommandPlusDocs):
             lut['control'] = control
             lut['profile'] = profile
             lut['group_title'] = group_title
-            new_output = template.render(**lut)
-            output = ''
-            # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
-            error_countdown = JinjaCmd.max_recursion_depth
-            while new_output != output and error_countdown > 0:
-                error_countdown = error_countdown - 1
-                output = new_output
-                random_name = uuid.uuid4()  # Should be random and not used.
-                dict_loader = DictLoader({str(random_name): new_output})
-                jinja_env = Environment(
-                    loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
-                    extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
-                    autoescape=True,
-                    trim_blocks=True
-                )
-                template = jinja_env.get_template(str(random_name))
-                new_output = template.render(**lut)
+            output = JinjaCmd.render_template(template, lut, template_folder)
 
             output_file = trestle_root / group_dir / pathlib.Path(control.id + '.md')
             output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         return CmdReturnCodes.SUCCESS.value
+
+    @staticmethod
+    def render_template(template: Template, lut: Dict[str, Any], template_folder: pathlib.Path) -> str:
+        """Render template."""
+        new_output = template.render(**lut)
+        output = ''
+        # This recursion allows nesting within expressions (e.g. an expression can contain jinja templates).
+        error_countdown = JinjaCmd.max_recursion_depth
+        while new_output != output and error_countdown > 0:
+            error_countdown = error_countdown - 1
+            output = new_output
+            random_name = uuid.uuid4()  # Should be random and not used.
+            dict_loader = DictLoader({str(random_name): new_output})
+            jinja_env = Environment(
+                loader=ChoiceLoader([dict_loader, FileSystemLoader(template_folder)]),
+                extensions=[MDCleanInclude, MDSectionInclude, MDDatestamp],
+                autoescape=True,
+                trim_blocks=True
+            )
+            template = jinja_env.get_template(str(random_name))
+            new_output = template.render(**lut)
+
+        return output
 
 
 def _number_captions(md_body: str) -> str:

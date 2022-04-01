@@ -189,3 +189,28 @@ def test_jinja_profile_docs(
             assert node1
             node2 = tree.get_node_for_key('## Control Statement Header')
             assert node2
+
+
+def test_jinja_profile_docs_fails(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test jinja docs generate fails."""
+    input_template = 'profile_to_docs.md.jinja'
+
+    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
+    ssp_cmd = SSPGenerate()
+    assert ssp_cmd._run(args) == 0
+
+    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
+    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
+
+    for file_name in os.listdir(testdata_dir / 'jinja'):
+        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
+        if os.path.isfile(full_file_name):
+            shutil.copy(full_file_name, tmp_trestle_dir)
+
+    command_jinja = f'trestle author jinja -i {input_template} -o controls --docs-profile'
+    execute_command_and_assert(command_jinja, 2, monkeypatch)
+
+    command_jinja = f'trestle author jinja -i {input_template} -o controls -ssp ssp_json -p main_profile --docs-profile'
+    execute_command_and_assert(command_jinja, 2, monkeypatch)
