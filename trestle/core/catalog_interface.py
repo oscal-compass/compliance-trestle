@@ -531,12 +531,9 @@ class CatalogInterface():
                         if param_id in control_param_dict:
                             orig_param = control_param_dict[param_id]
                             orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                            # pull only the values from the actual control dict
+                            # all the other elements are from the profile set_param
                             new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
-                            # only write details if in set_param of the profile
-                            for item in ['select', 'label', 'choice', 'how-many']:
-                                if item in new_dict and item not in param.__fields_set__:
-                                    new_dict.pop(item)
-
                     else:
                         new_dict = ModelUtils.parameter_to_dict(param_dict, True)
                     new_dict.pop('id')
