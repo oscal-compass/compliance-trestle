@@ -217,34 +217,34 @@ class JinjaCmd(CommandPlusDocs):
         catalog_interface = CatalogInterface(resolved_catalog)
 
         # Generate a single markdown page for each control per each group
-        for control in catalog_interface.get_all_controls_from_catalog(True):
-            _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
-            # control could be in sub-group of group so build path to it
-            group_dir = r_output_file
-            control_path = catalog_interface.get_control_path(control.id)
-            for sub_dir in control_path:
-                group_dir = group_dir / sub_dir
-                if not group_dir.exists():
-                    group_dir.mkdir(parents=True, exist_ok=True)
+        for group in catalog_interface.get_all_groups_from_catalog():
+            for control in catalog_interface.get_sorted_controls_in_group(group.id):
+                _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
+                group_dir = r_output_file
+                control_path = catalog_interface.get_control_path(control.id)
+                for sub_dir in control_path:
+                    group_dir = group_dir / sub_dir
+                    if not group_dir.exists():
+                        group_dir.mkdir(parents=True, exist_ok=True)
 
-            control_writer = ControlIOWriter()
+                control_writer = ControlIOWriter()
 
-            jinja_env = Environment(
-                loader=FileSystemLoader(template_folder),
-                extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
-                trim_blocks=True,
-                autoescape=True
-            )
-            template = jinja_env.get_template(str(r_input_file))
-            lut['catalog_interface'] = catalog_interface
-            lut['control_writer'] = control_writer
-            lut['control'] = control
-            lut['profile'] = profile
-            lut['group_title'] = group_title
-            output = JinjaCmd.render_template(template, lut, template_folder)
+                jinja_env = Environment(
+                    loader=FileSystemLoader(template_folder),
+                    extensions=[MDSectionInclude, MDCleanInclude, MDDatestamp],
+                    trim_blocks=True,
+                    autoescape=True
+                )
+                template = jinja_env.get_template(str(r_input_file))
+                lut['catalog_interface'] = catalog_interface
+                lut['control_writer'] = control_writer
+                lut['control'] = control
+                lut['profile'] = profile
+                lut['group_title'] = group_title
+                output = JinjaCmd.render_template(template, lut, template_folder)
 
-            output_file = trestle_root / group_dir / pathlib.Path(control.id + '.md')
-            output_file.open('w', encoding=const.FILE_ENCODING).write(output)
+                output_file = trestle_root / group_dir / pathlib.Path(control.id + '.md')
+                output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         return CmdReturnCodes.SUCCESS.value
 
