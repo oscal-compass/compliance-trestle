@@ -2,6 +2,7 @@ Test SSP
 <!--
 1. Adjust md_clean_include (or make it md_adjust_include) to adjust max header level
 2. (CB) - Add ssp_renderer to jinja.py vars
+3. Decide if you want just Values column or separate 'Values' and 'Label or Choices' by setting false to true for table
 -->
 
 # A
@@ -21,19 +22,17 @@ Test SSP
 ## {{ group.title }} \({{ group.id|upper }}\)
 {% endif %}
 
-{% for control in catalog_interface._control_dict.values() %}
-{% if control.group_id ==  group.id %}
-{# ### {{ control_io_writer.get_label(control.control) }}: {{ control.control.title}}
+{% for control in catalog_interface.get_sorted_controls_in_group(group.id) %}
+{# ### {{ control_io_writer.get_label(control) }}: {{ control.title}}
 
 #### Control Statement #}
-{{ ssp_md_writer.get_control_statement(control.control.id, 2) }}
+{{ ssp_md_writer.get_control_statement(control.id, 2) }}
 
-#### {{ control_io_writer.get_label(control.control) }} Summary information
-{{ ssp_md_writer.get_fedramp_control_tables(control.control.id, 4) }}
+#### {{ control_io_writer.get_label(control) }} Summary information
+{{ ssp_md_writer.get_fedramp_control_tables(control.id, 4, false) }}
 
 #### Implementation
-{{ ssp_md_writer.get_control_response(control.control.id, 4)}}
+{{ ssp_md_writer.get_control_response(control.id, 4)}}
 
-{% endif %}
 {% endfor %}
 {% endfor %}
