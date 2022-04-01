@@ -31,9 +31,10 @@
       "set_parameters": [
         {
           "param_id": "ac-1_prm_1",
-            "values": [
-              "all personnel"
-            ]
+          "label": "label from profile",
+          "values": [
+            "all personnel"
+          ]
         },
         {  "param_id": "ac-1_prm_2",
             "values": [

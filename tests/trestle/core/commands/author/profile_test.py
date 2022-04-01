@@ -92,6 +92,8 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict
     assert control_path.exists()
     assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if set_parameters:
+        assert test_utils.delete_line_in_file(control_path, 'label:')
+        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
         # delete profile values for 4, then replace value for 3 with new value
         assert test_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
         assert test_utils.delete_line_in_file(control_path, 'weekly')
@@ -239,6 +241,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
         assert len(set_params) == 14
         assert set_params[0].values[0].__root__ == 'all personnel'
+        assert set_params[0].label == 'label from edit'
         assert set_params[1].param_id == 'ac-1_prm_2'
         assert set_params[1].values[0].__root__ == 'Organization-level'
         assert set_params[1].values[1].__root__ == 'System-level'
@@ -249,7 +252,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
             assert set_params[3].label == 'meetings cancelled'
         else:
             assert set_params[3].values[0].__root__ == 'all meetings'
-            assert set_params[3].label == 'organization-defined events'
+            assert set_params[3].label is None
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
