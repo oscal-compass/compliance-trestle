@@ -145,12 +145,17 @@ class ControlIOWriter():
         gap = '\n' if a_clean else ''
         return a_clean + gap + b_clean
 
-    def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
+    def _add_control_statement(
+        self, control: cat.Control, group_title: str, sections_dict: Optional[Dict[str, str]] = None
+    ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
         title = f'{control.id} - \[{group_title}\] {control.title}'
+        header_title = 'Control Statement'
+        if sections_dict and sections_dict['statement']:
+            header_title = sections_dict['statement']
         self._md_file.new_header(level=1, title=title)
-        self._md_file.new_header(level=2, title='Control Statement')
+        self._md_file.new_header(level=2, title=header_title)
         self._md_file.set_indent_level(-1)
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
@@ -167,12 +172,15 @@ class ControlIOWriter():
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
 
-    def _add_control_objective(self, control: cat.Control) -> None:
+    def _add_control_objective(self, control: cat.Control, sections_dict: Optional[Dict[str, str]] = None) -> None:
         if control.parts:
             for part in control.parts:
                 if part.name == 'objective':
                     self._md_file.new_paragraph()
-                    self._md_file.new_header(level=2, title='Control Objective')
+                    heading_title = 'Control Objective'
+                    if sections_dict and sections_dict['objective']:
+                        heading_title = sections_dict['objective']
+                    self._md_file.new_header(level=2, title=heading_title)
                     self._md_file.set_indent_level(-1)
                     self._add_part_and_its_items(control, 'objective', 'objective')
                     self._md_file.set_indent_level(-1)
@@ -422,7 +430,7 @@ class ControlIOWriter():
                     return True
         return False
 
-    def write_control(
+    def write_control_for_editing(
         self,
         dest_path: pathlib.Path,
         control: cat.Control,
@@ -513,19 +521,48 @@ class ControlIOWriter():
 
         self._md_file.write_out()
 
+    def write_control_with_sections(
+        self,
+        control: cat.Control,
+        group_title: str,
+        sections: List[str],
+        sections_dict: Optional[Dict[str, str]] = None,
+        label_column: bool = True
+    ) -> str:
+        """Write the control into markdown file with specified sections."""
+        self._md_file = MDWriter(None)
+        self._sections_dict = sections_dict
+
+        for section in sections:
+            if 'statement' == section:
+                self._add_control_statement(control, group_title, sections_dict)
+
+            elif 'objective' == section:
+                self._add_control_objective(control, sections_dict)
+
+            elif 'table_of_parameters' == section:
+                self.get_params(control, label_column, self._md_file)
+
+        self._add_sections(control, sections)
+
+        return '\n'.join(self._md_file._lines)
+
     def get_control_statement(self, control: cat.Control) -> List[str]:
         """Get the control statement as formatted markdown from a control."""
         self._md_file = MDWriter(None)
         self._add_control_statement_ssp(control)
         return self._md_file.get_lines()
 
-    def get_params(self, control: cat.Control, label_column=False) -> List[str]:
+    def get_params(self, control: cat.Control, label_column=False, md_file=None) -> List[str]:
         """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
         if param_dict:
-            self._md_file = MDWriter(None)
+            if md_file:
+                self._md_file = md_file
+            else:
+                self._md_file = MDWriter(None)
             self._md_file.new_paragraph()
             self._md_file.set_indent_level(-1)
             if label_column:
