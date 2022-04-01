@@ -336,7 +336,7 @@ class CatalogInterface():
             self._control_dict[control_id].group_class
         )
 
-    def _get_control_path(self, control_id: str) -> List[str]:
+    def get_control_path(self, control_id: str) -> List[str]:
         """Return the path into the catalog for this control."""
         return self._control_dict[control_id].path
 
@@ -559,12 +559,12 @@ class CatalogInterface():
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = md_path
-            control_path = catalog_interface._get_control_path(control.id)
+            control_path = catalog_interface.get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():
                     group_dir.mkdir(parents=True, exist_ok=True)
-            writer.write_control(
+            writer.write_control_for_editing(
                 group_dir,
                 control,
                 group_title,
