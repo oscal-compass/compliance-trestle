@@ -429,8 +429,8 @@ class CatalogInterface():
         return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
 
     @staticmethod
-    def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, str]:
-        """Get the full mapping of param_id to modified value for this profile."""
+    def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, common.Parameter]:
+        """Get the full mapping of param_id to modified value for this profiles set_params."""
         set_param_dict: Dict[str, common.Parameter] = {}
         if not profile.modify:
             return set_param_dict
@@ -490,6 +490,12 @@ class CatalogInterface():
 
         Returns:
             None
+
+        Notes:
+            The header should capture current values for parameters.
+            Special handling is needed if a profile is provided, in which case the header should only have details
+            captured in the set_params of the profile.  label, select, choice, how-many should only appear if they
+            are specified explicitly in the profile's set_parameters.
         """
         writer = ControlIOWriter()
         required_section_list = required_sections.split(',') if required_sections else []
@@ -498,7 +504,8 @@ class CatalogInterface():
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
-        # get the list of SetParams for this profile
+        # get the list of params for this profile from its set_params
+        # this is just from the set_params
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
@@ -524,11 +531,9 @@ class CatalogInterface():
                         if param_id in control_param_dict:
                             orig_param = control_param_dict[param_id]
                             orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                            # pull only the values from the actual control dict
+                            # all the other elements are from the profile set_param
                             new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
-                            # merge contents from the two sources with priority to the profile-param
-                            for item in ['select', 'label']:
-                                if item in orig_dict and item not in new_dict:
-                                    new_dict[item] = orig_dict[item]
                     else:
                         new_dict = ModelUtils.parameter_to_dict(param_dict, True)
                     new_dict.pop('id')
