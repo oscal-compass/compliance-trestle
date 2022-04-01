@@ -226,6 +226,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     edit_files(ac21_path, False, multi_guidance_dict)
 
     if success:
+        # always doing set_params True
         assert ProfileAssemble.assemble_profile(
             tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections, None
         ) == 0
@@ -241,6 +242,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
         assert len(set_params) == 14
         assert set_params[0].values[0].__root__ == 'all personnel'
+        # the label is present in the header so it ends up in the set_parameter
         assert set_params[0].label == 'label from edit'
         assert set_params[1].param_id == 'ac-1_prm_2'
         assert set_params[1].values[0].__root__ == 'Organization-level'
