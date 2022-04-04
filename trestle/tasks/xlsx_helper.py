@@ -52,10 +52,8 @@ class Column():
     filter_column = None
 
     tokens_nist_mappings = nist_mappings.split()
-
     tokens_parameter_opt_parm = parameter_opt_parm.split()
     rename_parameter_opt_parm = 'ParameterName'
-
     tokens_values_alternatives = values_alternatives.split()
     rename_values_alternatives = 'ParameterValue'
 
