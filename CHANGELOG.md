@@ -3,6 +3,25 @@
 
 <!--next-version-placeholder-->
 
+## v0.36.0 (2022-04-04)
+### Feature
+* Add ability to generate multiple markdown files using Jinja ([#1077](https://github.com/IBM/compliance-trestle/issues/1077)) ([`f41fc9f`](https://github.com/IBM/compliance-trestle/commit/f41fc9fe3df95985f50ef29e09be07962fc8a7e9))
+
+### Fix
+* Profile tools now handle choice and label properly ([#1078](https://github.com/IBM/compliance-trestle/issues/1078)) ([`4d9363a`](https://github.com/IBM/compliance-trestle/commit/4d9363ab827cc3d26a032336b35a50feec9a59ad))
+* Jinja control loops sort controls better ([#1076](https://github.com/IBM/compliance-trestle/issues/1076)) ([`d89128b`](https://github.com/IBM/compliance-trestle/commit/d89128b83deddcd64dfab00d0a7ddcabe8415349))
+* Catalog name confusion and overwrite of same assembled files ([#1074](https://github.com/IBM/compliance-trestle/issues/1074)) ([`1ba9a35`](https://github.com/IBM/compliance-trestle/commit/1ba9a35dee356e3b8df0fedbad30d9a420fa4e79))
+* Trestle transformation tasks naming convention. ([#1071](https://github.com/IBM/compliance-trestle/issues/1071)) ([`d179d78`](https://github.com/IBM/compliance-trestle/commit/d179d78671f2926c1651ad1eaa8f906f8c2aaefb))
+* Delay choice subst ([#1072](https://github.com/IBM/compliance-trestle/issues/1072)) ([`16cf5e4`](https://github.com/IBM/compliance-trestle/commit/16cf5e4374ce5f304cd491d1dc1e30de07e6a293))
+* Param choice substitution works properly ([#1070](https://github.com/IBM/compliance-trestle/issues/1070)) ([`181f586`](https://github.com/IBM/compliance-trestle/commit/181f58697ef18b114dd339e0ac903ee52bfa6c97))
+* Use set-parms of CD ctl-impl for alternatives; discard catalog hack ([#1068](https://github.com/IBM/compliance-trestle/issues/1068)) ([`d9e75e7`](https://github.com/IBM/compliance-trestle/commit/d9e75e78b53851232adc635eca4f224e4c05d81a))
+* Fix Jinja dependency version ([#1069](https://github.com/IBM/compliance-trestle/issues/1069)) ([`34c703a`](https://github.com/IBM/compliance-trestle/commit/34c703abca210c9e2c2d4675822119214f1bf3e5))
+* Added methods in catalog interface to sort controls by sort-id ([#1067](https://github.com/IBM/compliance-trestle/issues/1067)) ([`dd04292`](https://github.com/IBM/compliance-trestle/commit/dd04292d41090fb951b5a6284356e41c6a07d62a))
+* Lock oscal to release-1.0.0 ([#1065](https://github.com/IBM/compliance-trestle/issues/1065)) ([`1e6b554`](https://github.com/IBM/compliance-trestle/commit/1e6b5547ed53b82e45f0c9478cc91970c8980d29))
+
+### Documentation
+* Update ssp and profile authoring document ([#1075](https://github.com/IBM/compliance-trestle/issues/1075)) ([`4211529`](https://github.com/IBM/compliance-trestle/commit/42115298bb835885eb6662d8dabfcd68e05b1f59))
+
 ## v0.35.0 (2022-03-22)
 ### Feature
 * Xlsx filter ([#1050](https://github.com/IBM/compliance-trestle/issues/1050)) ([`9f63412`](https://github.com/IBM/compliance-trestle/commit/9f6341257f755e49173050b4d0f2e32c75874610))
