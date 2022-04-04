@@ -125,3 +125,38 @@ Trestle provides custom jinja tags for use specifically with markdown: `mdsectio
 
 1. `format` where a python [datetime strftime format string](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes) is provided to format the output. E.g. `{% md_datestamp format='%B %d, %Y' %}` results in `December 28, 2021` being inserted.
 1. `newline` is a boolean to control the addition of a double newline after the inserted date string. For example `{% md_datestamp newline=false %}` inserts a date in the default format, without additional newlines.
+
+## Generate controls as individual markdown pages.
+
+Trestle's Jinja functionality allows its users to generate individual markdown pages for each control from a resolved profile catalog. Such functionality can be used later on to pack individual pages into docs of various formats.
+
+When `--docs-profile` or `-dp` flag is provided as part of the `trestle author jinja` command, the provided Jinja template will be used to generate a markdown page for each control in each group.
+
+For example, suppose we would like to generate the markdown page for each control that would contain `Control Objective`, `Control Statement`, `Expected Evidence`, `Implementation Guidance` and say `Table of Parameters` used for this control.
+To achieve that, we can create a simple Jinja template that would be used to generate each page:
+
+```
+# Control Page
+
+{{ control_writer.write_control_with_sections(
+   control, group_title, 
+   ['statement', 'objective', 'expected_evidence', 'implementation_guidance', 'table_of_parameters'], 
+   {
+      'statement':'Control Statement',
+      'objective':'Control Objective', 
+      'expected_evidence':'Expected Evidence', 
+      'implementation_guidance':'Implementation Guidance', 
+      'table_of_parameters':'Control Parameters'
+   }
+   ) 
+}}
+```
+
+The template above, would call a control writer that would print the required sections (specified in the list) with the provided headers (specified in the dictionary).
+
+We can then generate individual markdown pages by executing:
+`trestle author jinja -i profile_to_docs.md.jinja -o controls -p some_profile -dp`
+
+This will create a folder named `controls`, that would contain a folder per each group and a markdown file per each control in that group. Each markdown file would be formatted using the Jinja template above.
+
+The generated markdown files can then be assembled to the docs of the desired format by adding an indexing page.

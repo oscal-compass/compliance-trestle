@@ -47,6 +47,7 @@ class ParameterRep(Enum):
     VALUE_OR_STRING_NONE = 1
     LABEL_OR_CHOICES = 2
     VALUE_OR_LABEL_OR_CHOICES = 3
+    VALUE_OR_EMPTY_STRING = 4
 
 
 class ControlIOWriter():
@@ -144,12 +145,17 @@ class ControlIOWriter():
         gap = '\n' if a_clean else ''
         return a_clean + gap + b_clean
 
-    def _add_control_statement(self, control: cat.Control, group_title: str) -> None:
+    def _add_control_statement(
+        self, control: cat.Control, group_title: str, sections_dict: Optional[Dict[str, str]] = None
+    ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
         title = f'{control.id} - \[{group_title}\] {control.title}'
+        header_title = 'Control Statement'
+        if sections_dict and sections_dict['statement']:
+            header_title = sections_dict['statement']
         self._md_file.new_header(level=1, title=title)
-        self._md_file.new_header(level=2, title='Control Statement')
+        self._md_file.new_header(level=2, title=header_title)
         self._md_file.set_indent_level(-1)
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
@@ -166,12 +172,15 @@ class ControlIOWriter():
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
 
-    def _add_control_objective(self, control: cat.Control) -> None:
+    def _add_control_objective(self, control: cat.Control, sections_dict: Optional[Dict[str, str]] = None) -> None:
         if control.parts:
             for part in control.parts:
                 if part.name == 'objective':
                     self._md_file.new_paragraph()
-                    self._md_file.new_header(level=2, title='Control Objective')
+                    heading_title = 'Control Objective'
+                    if sections_dict and sections_dict['objective']:
+                        heading_title = sections_dict['objective']
+                    self._md_file.new_header(level=2, title=heading_title)
                     self._md_file.set_indent_level(-1)
                     self._add_part_and_its_items(control, 'objective', 'objective')
                     self._md_file.set_indent_level(-1)
@@ -421,7 +430,7 @@ class ControlIOWriter():
                     return True
         return False
 
-    def write_control(
+    def write_control_for_editing(
         self,
         dest_path: pathlib.Path,
         control: cat.Control,
@@ -512,27 +521,67 @@ class ControlIOWriter():
 
         self._md_file.write_out()
 
+    def write_control_with_sections(
+        self,
+        control: cat.Control,
+        group_title: str,
+        sections: List[str],
+        sections_dict: Optional[Dict[str, str]] = None,
+        label_column: bool = True
+    ) -> str:
+        """Write the control into markdown file with specified sections."""
+        self._md_file = MDWriter(None)
+        self._sections_dict = sections_dict
+
+        for section in sections:
+            if 'statement' == section:
+                self._add_control_statement(control, group_title, sections_dict)
+
+            elif 'objective' == section:
+                self._add_control_objective(control, sections_dict)
+
+            elif 'table_of_parameters' == section:
+                self.get_params(control, label_column, self._md_file)
+
+        self._add_sections(control, sections)
+
+        return '\n'.join(self._md_file._lines)
+
     def get_control_statement(self, control: cat.Control) -> List[str]:
         """Get the control statement as formatted markdown from a control."""
         self._md_file = MDWriter(None)
         self._add_control_statement_ssp(control)
         return self._md_file.get_lines()
 
-    def get_params(self, control: cat.Control) -> List[str]:
-        """Get parameters of a control as a markdown table for ssp_io."""
+    def get_params(self, control: cat.Control, label_column=False, md_file=None) -> List[str]:
+        """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
         reader = ControlIOReader()
         param_dict = reader.get_control_param_dict(control, False)
 
         if param_dict:
-            self._md_file = MDWriter(None)
+            if md_file:
+                self._md_file = md_file
+            else:
+                self._md_file = MDWriter(None)
             self._md_file.new_paragraph()
             self._md_file.set_indent_level(-1)
-            self._md_file.new_table(
-                [
-                    [key, ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
-                    for key in param_dict.keys()
-                ], ['Parameter ID', 'Value']
-            )
+            if label_column:
+                self._md_file.new_table(
+                    [
+                        [
+                            key,
+                            ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
+                            ControlIOReader.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES, True),
+                        ] for key in param_dict.keys()
+                    ], ['Parameter ID', 'Values', 'Label or Choices']
+                )
+            else:
+                self._md_file.new_table(
+                    [
+                        [key, ControlIOReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
+                        for key in param_dict.keys()
+                    ], ['Parameter ID', 'Values']
+                )
             self._md_file.set_indent_level(-1)
             return self._md_file.get_lines()
 
@@ -643,7 +692,7 @@ class ControlIOReader():
                 if indent >= 0:
                     # extract text after -
                     start = indent + 1
-                    while start < len(line) and line[start] != ' ':
+                    while start < len(line) and line[start] == ' ':
                         start += 1
                     if start >= len(line):
                         raise TrestleError(f'Invalid line {line}')
@@ -833,7 +882,7 @@ class ControlIOReader():
 
     @staticmethod
     def _read_sections(ii: int, lines: List[str], control_id: str,
-                       control_parts: List[common.Part]) -> Tuple[int, List[common.Part]]:
+                       control_parts: List[common.Part]) -> Tuple[int, Optional[List[common.Part]]]:
         """Read all sections following the section separated by ## Control."""
         new_parts = []
         prefix = '## Control '
@@ -863,12 +912,9 @@ class ControlIOReader():
                 label = ControlIOReader._strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
-            if control_parts:
-                control_parts.extend(new_parts)
-            else:
-                control_parts = new_parts
-        if not control_parts:
-            control_parts = None
+            control_parts = [] if not control_parts else control_parts
+            control_parts.extend(new_parts)
+        control_parts = none_if_empty(control_parts)
         return ii, control_parts
 
     @staticmethod
@@ -1245,23 +1291,25 @@ class ControlIOReader():
         return f'[{values_str}]' if brackets else values_str
 
     @staticmethod
-    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> Optional[str]:
+    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
         """Convert parameter selection to str."""
-        if param.select:
-            how_many = param.select.how_many.name if param.select.how_many else ''
-            choices_str = ', '.join(as_list(param.select.choice))
+        if param.select and param.select.choice:
+            how_many_str = ''
+            if param.select.how_many:
+                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
+            choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
-            return f'choose {how_many} {choices_str}' if verbose else choices_str
-        return None
+            choices_str = f'Choose {how_many_str}: {choices_str}' if verbose else choices_str
+            return choices_str
+        return ''
 
     @staticmethod
     def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
         """Convert param label or choices to string, using choices if present."""
-        if param.select:
-            return ControlIOReader.param_selection_as_str(param, verbose, brackets)
-        if param.label:
-            return param.label
-        return param.id
+        choices = ControlIOReader.param_selection_as_str(param, verbose, brackets)
+        text = choices if choices else param.label
+        text = text if text else param.id
+        return text
 
     @staticmethod
     def param_to_str(
@@ -1293,7 +1341,11 @@ class ControlIOReader():
             param_str = ControlIOReader.param_values_as_str(param)
             if not param_str:
                 param_str = ControlIOReader.param_label_choices_as_str(param, verbose, brackets)
-        if param_str and params_format:
+        elif param_rep == ParameterRep.VALUE_OR_EMPTY_STRING:
+            param_str = ControlIOReader.param_values_as_str(param, brackets)
+            if not param_str:
+                param_str = ''
+        if param_str is not None and params_format:
             if params_format.count('.') > 1:
                 raise TrestleError(
                     f'Additional text {params_format} '

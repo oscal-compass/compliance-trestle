@@ -20,15 +20,10 @@ import logging
 import pathlib
 import traceback
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import Link
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Parameter
-from trestle.oscal.common import ParameterGuideline
-from trestle.oscal.common import ParameterValue
 from trestle.oscal.common import Party
 from trestle.oscal.common import Property
 from trestle.oscal.common import Remarks
@@ -47,6 +42,8 @@ from trestle.tasks.xlsx_helper import XlsxHelper
 from trestle.tasks.xlsx_helper import get_trestle_version
 
 logger = logging.getLogger(__name__)
+
+key_sep = sep = '|'
 
 
 class XlsxToOscalComponentDefinition(TaskBase):
@@ -105,13 +102,10 @@ class XlsxToOscalComponentDefinition(TaskBase):
         oname = 'component-definition.json'
         ofile = opth / oname
         if not self._overwrite and pathlib.Path(ofile).exists():
-            logger.error(f'output: {ofile} already exists')
+            logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # initialize
-        self.component_names = []
-        self.defined_components = []
-        self.parameters = {}
-        self.parameter_helper = None
+        self.defined_components = {}
         # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
@@ -135,7 +129,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         component_definition = ComponentDefinition(
             uuid=str(uuid.uuid4()),
             metadata=metadata,
-            components=self.defined_components,
+            components=list(self.defined_components.values()),
         )
         # write OSCAL ComponentDefinition to file
         if self._verbose:
@@ -143,15 +137,11 @@ class XlsxToOscalComponentDefinition(TaskBase):
         component_definition.oscal_write(pathlib.Path(ofile))
         # issues
         self._report_issues()
-        # <hack>
-        # create a catalog containing the parameters,
-        # since parameters are not supported in OSCAL 1.0.0 component definition
-        self._write_catalog()
-        # </hack>
         return TaskOutcome('success')
 
     def _process_rows(self, responsible_roles: List[ResponsibleRole]) -> None:
         """Process spread sheet rows."""
+        ci_map = {}
         for row in self.xlsx_helper.row_generator():
             # quit when first row with no goal_id encountered
             goal_name_id = self.xlsx_helper.get_goal_name_id(row)
@@ -160,31 +150,39 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 continue
             # component
             component_name = self.xlsx_helper.get_component_name(row)
-            defined_component = self._get_defined_component(component_name)
+            component_type = 'Service'
+            defined_component = self._get_defined_component(component_name, component_type)
             # parameter
             parameter_name, parameter_description = self.xlsx_helper.get_parameter_name_and_description(row)
-            self._add_parameter(row, component_name, parameter_name, parameter_description)
-            # implemented requirements
-            self.implemented_requirements = []
-            self._add_implemented_requirements(
-                row, controls, component_name, parameter_name, responsible_roles, goal_name_id
-            )
             # control implementations
-            control_implementation = ControlImplementation(
-                uuid=str(uuid.uuid4()),
-                source=self._get_catalog_url(),
-                description=component_name + ' implemented controls for ' + self._get_catalog_title()
-                + '. It includes assessment asset configuration for CICD."',
-                implemented_requirements=self.implemented_requirements,
-            )
-            if defined_component.control_implementations is None:
-                defined_component.control_implementations = [control_implementation]
-            else:
+            source = self._get_catalog_url()
+            description = component_name + ' implemented controls for ' + self._get_catalog_title(
+            ) + '. It includes assessment asset configuration for CICD.'
+            key = source + key_sep + description
+            control_implementation = ci_map.get(key)
+            if not control_implementation:
+                ci_map[key] = ControlImplementation(
+                    uuid=str(uuid.uuid4()),
+                    source=source,
+                    description=description,
+                    implemented_requirements=[],
+                )
+                control_implementation = ci_map[key]
+                if defined_component.control_implementations is None:
+                    defined_component.control_implementations = []
                 defined_component.control_implementations.append(control_implementation)
+            # implemented requirements
+            self._add_implemented_requirements(
+                row, control_implementation, controls, component_name, parameter_name, responsible_roles, goal_name_id
+            )
+            # keep alternative parameter values at control implementation level
+            parameter_values = self.xlsx_helper.get_parameter_values(row)
+            self._add_set_parameter_values(parameter_name, parameter_values, control_implementation)
 
     def _add_implemented_requirements(
         self,
         row: int,
+        control_implementation: ControlImplementation,
         controls: Dict[str, List[str]],
         component_name: str,
         parameter_name: str,
@@ -226,27 +224,9 @@ class XlsxToOscalComponentDefinition(TaskBase):
             # add statements
             self._add_statements(row, control, controls, component_name, implemented_requirement)
             # add set_parameter
-            self._add_set_parameter(row, parameter_name, parameter_value_default, implemented_requirement)
+            self._add_set_parameter_default(parameter_name, parameter_value_default, implemented_requirement)
             # implemented_requirements
-            self.implemented_requirements.append(implemented_requirement)
-
-    def _add_parameter(self, row: int, component_name: str, parameter_name: str, parameter_description: str) -> None:
-        """Add_parameter."""
-        usage = self.xlsx_helper.get_parameter_usage(row)
-        if parameter_name is not None:
-            parameter_name = parameter_name.strip()
-            values = self.xlsx_helper.get_parameter_values(row)
-            guidelines = self._get_guidelines(values)
-            href = self._get_namespace() + '/' + component_name.replace(' ', '%20')
-            self.parameter_helper = ParameterHelper(
-                values=values,
-                id_=parameter_name,
-                label=parameter_description,
-                href=href,
-                usage=usage,
-                guidelines=guidelines,
-            )
-            self.parameters[str(uuid.uuid4())] = self.parameter_helper.get_parameter()
+            control_implementation.implemented_requirements.append(implemented_requirement)
 
     def _add_statements(
         self,
@@ -274,41 +254,48 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 statements.append(statement)
             implemented_requirement.statements = statements
 
-    def _add_set_parameter(
-        self,
-        row: int,
-        parameter_name: str,
-        parameter_value_default: str,
-        implemented_requirement: ImplementedRequirement
+    def _add_set_parameter_values(
+        self, parameter_name: str, parameter_values: str, control_implementation: ControlImplementation
     ) -> None:
-        """Add set parameter."""
+        """Add set parameter values (the set of choices)."""
+        if parameter_name is not None:
+            parameter_name = parameter_name.replace(' ', '_')
+            if parameter_values is not None:
+                set_parameter = SetParameter(param_id=parameter_name, values=parameter_values)
+                set_parameters = [set_parameter]
+                if control_implementation.set_parameters is None:
+                    control_implementation.set_parameters = []
+                control_implementation.set_parameters.append(set_parameters)
+
+    def _add_set_parameter_default(
+        self, parameter_name: str, parameter_value_default: str, implemented_requirement: ImplementedRequirement
+    ) -> None:
+        """Add set parameter default (the "recommended" value)."""
         if parameter_name is not None:
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_value_default is not None:
+                if implemented_requirement.set_parameters is None:
+                    implemented_requirement.set_parameters = []
                 values = [parameter_value_default]
                 set_parameter = SetParameter(param_id=parameter_name, values=values)
                 set_parameters = [set_parameter]
-                implemented_requirement.set_parameters = set_parameters
+                implemented_requirement.set_parameters.append(set_parameters)
 
-    def _get_defined_component(self, component_name: str) -> DefinedComponent:
+    def _get_defined_component(self, component_name: str, component_type: str) -> DefinedComponent:
         """Get defined component."""
-        if component_name not in self.component_names:
+        key = component_name + key_sep + component_type
+        defined_component = self.defined_components.get(key)
+        if not defined_component:
             # create new component
-            self.component_names.append(component_name)
             component_title = component_name
             component_description = component_name
             defined_component = DefinedComponent(
                 uuid=str(uuid.uuid4()),
                 description=component_description,
                 title=component_title,
-                type='Service',
+                type=component_type,
             )
-            self.defined_components.append(defined_component)
-        else:
-            # find existing component
-            for defined_component in self.defined_components:
-                if component_name == defined_component.title:
-                    break
+            self.defined_components[key] = defined_component
         return defined_component
 
     def _build_roles(self) -> List[Role]:
@@ -372,25 +359,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """Report issues."""
         self.xlsx_helper.report_issues()
 
-    def _write_catalog(self) -> None:
-        """Create a catalog containing the parameters."""
-        if self.parameter_helper is not None:
-            tdir = self._config.get('output-dir')
-            tdir = tdir.replace('component-definitions', 'catalogs')
-            tpth = pathlib.Path(tdir)
-            # insure output dir exists
-            tpth.mkdir(exist_ok=True, parents=True)
-            tname = 'catalog.json'
-            tfile = tpth / tname
-            self.parameter_helper.write_parameters_catalog(
-                parameters=self.parameters,
-                timestamp=self._timestamp,
-                oscal_version=OSCAL_VERSION,
-                version=get_trestle_version(),
-                ofile=tfile,
-                verbose=self._verbose,
-            )
-
     def _get_org_name(self) -> str:
         """Get org-name from config."""
         value = self._config.get('org-name')
@@ -439,91 +407,3 @@ class XlsxToOscalComponentDefinition(TaskBase):
     def _get_goal_version(self) -> str:
         """Fix goal_version at 1.0."""
         return '1.0'
-
-    def _get_guidelines(self, values: str) -> str:
-        """Get guidelines based on values."""
-        type_ = self._get_type(values)
-        value = 'The first listed value option is set by default in the system '
-        value += 'unless set-parameter is used to satisfy a control requirements. '
-        value += f'Type {type_}.'
-        return value
-
-    def _get_type(self, values: str) -> str:
-        """Get type based on values."""
-        if self._is_int(values):
-            value = 'Integer'
-        elif self._is_float(values):
-            value = 'Float'
-        else:
-            value = 'String'
-        return value
-
-    def _is_int(self, values: str) -> bool:
-        """Determine if string represents list of int."""
-        try:
-            for value in values.split(','):
-                int(value)
-            retval = True
-        except Exception:
-            retval = False
-        return retval
-
-    def _is_float(self, values: str) -> bool:
-        """Determine if string represents list of float."""
-        try:
-            for value in values.split(','):
-                float(value)
-            retval = True
-        except Exception:
-            retval = False
-        return retval
-
-
-class ParameterHelper():
-    """Parameter Helper class is a temporary hack because Component Definition does not support Parameters."""
-
-    def __init__(self, values: Any, id_: str, label: str, href: str, usage: str, guidelines: str) -> None:
-        """Initialize."""
-        self._parameter_values = ParameterValue(__root__=str(values))
-        self._id = id_
-        self._label = label
-        self._links = [Link(href=href)]
-        self._usage = usage
-        self._guidelines = ParameterGuideline(prose=guidelines)
-
-    def get_parameter(self) -> Parameter:
-        """Get parameter."""
-        parameter = Parameter(
-            id=self._id,
-            label=self._label,
-            links=self._links,
-            usage=self._usage,
-            guidelines=[self._guidelines],
-            values=[self._parameter_values]
-        )
-        return parameter
-
-    def write_parameters_catalog(
-        self,
-        parameters: Dict[str, Parameter],
-        timestamp: str,
-        oscal_version: str,
-        version: str,
-        ofile: str,
-        verbose: bool,
-    ) -> None:
-        """Write parameters catalog."""
-        parameter_metadata = Metadata(
-            title='Component Parameters',
-            last_modified=timestamp,
-            oscal_version=oscal_version,
-            version=version,
-        )
-        parameter_catalog = Catalog(
-            uuid=str(uuid.uuid4()),
-            metadata=parameter_metadata,
-            params=list(parameters.values()),
-        )
-        if verbose:
-            logger.info(f'output: {ofile}')
-        parameter_catalog.oscal_write(pathlib.Path(ofile))

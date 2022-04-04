@@ -158,14 +158,6 @@ def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
     return not list1
 
 
-def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalModel) -> bool:
-    """Test if models are equivalent except for last modified and uuid."""
-    # this will change the second model as a side-effect
-    model_b.metadata.last_modified = model_a.metadata.last_modified
-    model_b.uuid = model_a.uuid
-    return model_a == model_b
-
-
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     """Determine if files are equal, ignoring newline style."""
     try:

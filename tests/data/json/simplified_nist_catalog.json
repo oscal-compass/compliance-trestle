@@ -68,6 +68,22 @@
         }
       ]
     },
+    "params": [
+      {
+        "id": "loose_1",
+        "label": "loose_1_label",
+        "values": [
+          "loose_1_value"
+        ]
+      },
+      {
+        "id": "loose_2",
+        "label": "loose_2_label",
+        "values": [
+          "loose_2_value"
+        ]
+      }
+    ],
     "groups": [
       {
         "id": "ac",
@@ -81,7 +97,29 @@
             "params": [
               {
                 "id": "ac-1_prm_1",
+                "props": [
+                  {
+                    "name": "param_1_prop",
+                    "value": "prop value"
+                  }
+                ],
+                "links": [
+                  {
+                    "href": "#123456789",
+                    "text": "orig link text"
+                  }
+                ],
                 "label": "organization-defined personnel or roles",
+                "constraints": [
+                  {
+                    "description": "orig constraint desc"
+                  }
+                ],
+                "guidelines": [
+                  {
+                    "prose": "original guideline"
+                  }
+                ],
                 "values": [
                   "Param_1_value_in_catalog"
                 ]

@@ -347,7 +347,7 @@ def test_import_from_url(tmp_trestle_dir: pathlib.Path) -> None:
     test_catalog = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog.json'
     catalog_data = Catalog.oscal_read(test_catalog)
 
-    assert test_utils.models_are_equivalent(catalog_data, imported_catalog)
+    assert ModelUtils.models_are_equivalent(catalog_data, imported_catalog)
 
 
 def test_import_from_nist(tmp_trestle_dir: pathlib.Path) -> None:

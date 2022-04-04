@@ -102,14 +102,15 @@ class Merge(Pipeline.Filter):
         if attr in ITEM_EXCLUDE_MAP.get(item_type, []):
             return
         dest_attr = getattr(dest, attr, None)
-        if dest_attr is not None and merge_method == prof.Method.use_first:
+        if dest_attr and isinstance(dest_attr, list):
+            self._merge_lists(dest_attr, src_attr, merge_method)
+            setattr(dest, attr, dest_attr)
+            return
+        if dest_attr and merge_method == prof.Method.use_first:
             return
         if dest_attr == src_attr and merge_method != prof.Method.keep:
             return
-        if isinstance(dest_attr, list):
-            self._merge_lists(dest_attr, src_attr, merge_method)
-        else:
-            setattr(dest, attr, src_attr)
+        setattr(dest, attr, src_attr)
 
     def _merge_items(self, dest: OBT, src: OBT, merge_method: prof.Method) -> None:
         """Merge two items recursively."""

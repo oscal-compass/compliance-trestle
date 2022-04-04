@@ -32,7 +32,7 @@ from trestle.common import file_utils
 def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     """Test init happy path."""
     os.chdir(tmp_path)
-    testargs = ['trestle', 'init']
+    testargs = ['trestle', 'init', '-v']
     monkeypatch.setattr(sys, 'argv', testargs)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         cli.run()

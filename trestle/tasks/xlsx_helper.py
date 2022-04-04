@@ -114,20 +114,24 @@ class XlsxHelper:
         text1 = '  filter-column     = '
         text2 = '(optional) column heading of yes/no values; process only "yes" rows.'
         logger.info(text1 + text2)
+        text1 = '  analysis-level    = '
+        text2 = '(optional) integer.'
+        logger.info(text1 + text2)
 
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
         if not task._config:
-            logger.error('config missing')
+            logger.warning('config missing')
             return False
         # config verbosity
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
+        self.anaylsis_level = int(task._config.get('analysis-level', 0))
         # required for component-definition
         if task.name == 'xlsx-to-oscal-cd':
             catalog_file = task._config.get('catalog-file')
             if catalog_file is None:
-                logger.error('config missing "catalog-file"')
+                logger.warning('config missing "catalog-file"')
                 return False
             try:
                 catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
@@ -139,25 +143,25 @@ class XlsxHelper:
         if task.name == 'xlsx-to-oscal-profile':
             profile_title = task._config.get('profile-title')
             if profile_title is None:
-                logger.error('config missing "profile-title"')
+                logger.warning('config missing "profile-title"')
                 return False
             spread_sheet_url = task._config.get('spread-sheet-url')
             if spread_sheet_url is None:
-                logger.error('config missing "spread-sheet-url"')
+                logger.warning('config missing "spread-sheet-url"')
                 return False
         # optional
         self._column.filter_column = task._config.get('filter-column', None)
         # config spread sheet
         spread_sheet = task._config.get('spread-sheet-file')
         if spread_sheet is None:
-            logger.error('config missing "spread-sheet"')
+            logger.warning('config missing "spread-sheet"')
             return False
         if not pathlib.Path(spread_sheet).exists():
-            logger.error('"spread-sheet" not found')
+            logger.warning('"spread-sheet" not found')
             return False
         sheet_name = task._config.get('work-sheet-name')
         if sheet_name is None:
-            logger.error('config missing "work-sheet-name"')
+            logger.warning('config missing "work-sheet-name"')
             return False
         # announce spreadsheet
         if task._verbose:
@@ -256,6 +260,7 @@ class XlsxHelper:
             value = value.replace(',[]', '')
             value = value.replace('[', '')
             value = value.replace(']', '')
+            value = value.split(',')
         return value
 
     def _get_goal_text(self, row: int) -> str:
@@ -320,7 +325,7 @@ class XlsxHelper:
         value = self._work_sheet[col + str(row)].value
         if value is None:
             raise RuntimeError(f'row {row} col {col} missing component name')
-        return value
+        return value.strip()
 
     def get_parameter_name_and_description(self, row: int) -> Tuple[str, str]:
         """Get parameter_name and description from work_sheet."""
@@ -372,9 +377,14 @@ class XlsxHelper:
                 continue
             cell_tokens = cell_value.split()
             # find columns of interest
-            if cell_tokens in [[self._column.control_id], [self._column.control_text], [self._column.version],
-                               [self._column.goal_name_id]]:
-                self._add_column(cell_tokens[0], column, 1)
+            if self._column.control_id in cell_tokens:
+                self._add_column(self._column.control_id, column, 1)
+            elif self._column.control_text in cell_tokens:
+                self._add_column(self._column.control_text, column, 1)
+            elif self._column.version in cell_tokens:
+                self._add_column(self._column.version, column, 1)
+            elif self._column.goal_name_id in cell_tokens:
+                self._add_column(self._column.goal_name_id, column, 1)
             elif cell_tokens == self._column.tokens_parameter_opt_parm:
                 self._add_column(self._column.rename_parameter_opt_parm, column, 1)
             elif cell_tokens == self._column.tokens_values_alternatives:
@@ -444,9 +454,9 @@ class XlsxHelper:
             logger.info(f'rows invalid parameter_name: {self.rows_invalid_parameter_name}')
         if self.rows_missing_controls:
             logger.info(f'rows missing controls: {self.rows_missing_controls}')
-        if self.rows_missing_parameters:
+        if self.anaylsis_level > 0 and self.rows_missing_parameters:
             logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
-        if self.rows_missing_parameters_values:
+        if self.anaylsis_level > 0 and self.rows_missing_parameters_values:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
         if self.rows_filtered:
             logger.info(f'rows filtered: {self.rows_filtered}')

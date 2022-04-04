@@ -29,7 +29,7 @@ from trestle.core.repository import ManagedOSCAL, Repository
 def test_repo(tmp_trestle_dir: pathlib.Path) -> None:
     """Test creating Repository object."""
     repo = Repository(tmp_trestle_dir)
-    assert repo._root_dir == tmp_trestle_dir
+    assert repo.root_dir == tmp_trestle_dir
 
 
 def test_repo_invalid_root(tmp_path: pathlib.Path) -> None:
@@ -45,9 +45,9 @@ def test_import(tmp_trestle_dir: pathlib.Path) -> None:
 
     repo = Repository(tmp_trestle_dir)
     managed_oscal = repo.import_model(catalog_data, 'imported')
-    assert managed_oscal._root_dir == tmp_trestle_dir
-    assert managed_oscal._model_name == 'imported'
-    assert managed_oscal._model_type == catalog_data.__class__
+    assert managed_oscal.root_dir == tmp_trestle_dir
+    assert managed_oscal.model_name == 'imported'
+    assert managed_oscal.model_type == catalog_data.__class__
     assert managed_oscal.filepath.exists()
 
 
@@ -131,7 +131,7 @@ def test_get(tmp_trestle_dir: pathlib.Path) -> None:
     repo = Repository(tmp_trestle_dir)
     repo.import_model(catalog_data, 'imported')
     managed_oscal = repo.get_model(cat.Catalog, 'imported')
-    assert managed_oscal._model_name == 'imported'
+    assert managed_oscal.model_name == 'imported'
 
 
 def test_get_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:

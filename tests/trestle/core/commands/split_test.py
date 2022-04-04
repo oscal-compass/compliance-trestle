@@ -29,6 +29,7 @@ import trestle.cli
 from trestle.cli import Trestle
 from trestle.common import const, str_utils, trash
 from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 from trestle.core.commands.common import cmd_utils
 from trestle.core.commands.merge import MergeCmd
@@ -480,7 +481,7 @@ def test_split_comp_def(
     assert MergeCmd()._run(args) == 0
 
     new_model = component.ComponentDefinition.oscal_read(compdef_file)
-    assert test_utils.models_are_equivalent(new_model, original_model)
+    assert ModelUtils.models_are_equivalent(new_model, original_model)
 
 
 def test_split_stop_at_string(
@@ -555,7 +556,7 @@ def test_split_tutorial_workflow(
     assert MergeCmd()._run(args) == 0
 
     new_model = oscatalog.Catalog.oscal_read(catalog_file)
-    assert test_utils.models_are_equivalent(orig_model, new_model)
+    assert ModelUtils.models_are_equivalent(orig_model, new_model)
 
 
 @pytest.mark.parametrize(
@@ -593,7 +594,7 @@ def test_split_catalog_star(
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
-    assert test_utils.models_are_equivalent(orig_model, new_model)
+    assert ModelUtils.models_are_equivalent(orig_model, new_model)
 
 
 def test_split_deep(
@@ -621,7 +622,7 @@ def test_split_deep(
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
-    assert test_utils.models_are_equivalent(orig_model, new_model)
+    assert ModelUtils.models_are_equivalent(orig_model, new_model)
 
 
 def test_split_relative_path(
@@ -652,7 +653,7 @@ def test_split_relative_path(
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
-    assert test_utils.models_are_equivalent(orig_model, new_model)
+    assert ModelUtils.models_are_equivalent(orig_model, new_model)
 
 
 def test_no_file_given(
@@ -697,4 +698,4 @@ def test_no_file_given(
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
-    assert test_utils.models_are_equivalent(orig_model, new_model)
+    assert ModelUtils.models_are_equivalent(orig_model, new_model)

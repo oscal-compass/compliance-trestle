@@ -72,7 +72,7 @@
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "SYSTEM implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
+            "description": "SYSTEM implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -129,7 +129,25 @@
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
+            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "set-parameters": [
+              [
+                {
+                  "param-id": "no_of_admins_for_cloudant_db",
+                  "values": [
+                    "3"
+                  ]
+                }
+              ],
+              [
+                {
+                  "param-id": "no_of_service_id_admins_for_cloudant_db",
+                  "values": [
+                    "3"
+                  ]
+                }
+              ]
+            ],
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -152,12 +170,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -202,12 +222,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -252,12 +274,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -302,12 +326,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -330,14 +356,7 @@
                     ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
-            "implemented-requirements": [
+              },
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "ac-2",
@@ -359,12 +378,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_service_id_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_service_id_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -409,12 +430,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_service_id_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_service_id_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -459,12 +482,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_service_id_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_service_id_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -509,12 +534,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "no_of_service_id_admins_for_cloudant_db",
-                    "values": [
-                      "3"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "no_of_service_id_admins_for_cloudant_db",
+                      "values": [
+                        "3"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -551,7 +578,7 @@
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "CIS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
+            "description": "CIS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -739,454 +766,6 @@
                     "value": "1.0",
                     "class": "scc_goal_version",
                     "remarks": "cis_tls_configured"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
-        "title": "IKS ",
-        "description": "IKS ",
-        "control-implementations": [
-          {
-            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "IKS  implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
-            "implemented-requirements": [
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "ac-17.2",
-                "description": "ac-17(2)",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "kubernetes_service_ingress_tls_configured",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "kubernetes_service_ingress_tls_configured"
-                  }
-                ],
-                "set-parameters": [
-                  {
-                    "param-id": "iks_ingress_tls_versions",
-                    "values": [
-                      "1.2"
-                    ]
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "sc-8",
-                "description": "sc-8",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "kubernetes_service_ingress_tls_configured",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "kubernetes_service_ingress_tls_configured"
-                  }
-                ],
-                "set-parameters": [
-                  {
-                    "param-id": "iks_ingress_tls_versions",
-                    "values": [
-                      "1.2"
-                    ]
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "sc-8.1",
-                "description": "sc-8(1)",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "kubernetes_service_ingress_tls_configured",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "kubernetes_service_ingress_tls_configured"
-                  }
-                ],
-                "set-parameters": [
-                  {
-                    "param-id": "iks_ingress_tls_versions",
-                    "values": [
-                      "1.2"
-                    ]
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "sc-13",
-                "description": "sc-13",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "kubernetes_service_ingress_tls_configured",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "kubernetes_service_ingress_tls_configured"
-                  }
-                ],
-                "set-parameters": [
-                  {
-                    "param-id": "iks_ingress_tls_versions",
-                    "values": [
-                      "1.2"
-                    ]
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "sc-23",
-                "description": "sc-23",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "kubernetes_service_ingress_tls_configured",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "kubernetes_service_ingress_tls_configured"
-                  }
-                ],
-                "set-parameters": [
-                  {
-                    "param-id": "iks_ingress_tls_versions",
-                    "values": [
-                      "1.2"
-                    ]
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
-        "title": "VPC",
-        "description": "VPC",
-        "control-implementations": [
-          {
-            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "VPC implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
-            "implemented-requirements": [
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "ac-4",
-                "description": "ac-4",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "vpc_no_inbound_ports_public",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "vpc_no_inbound_ports_public"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "cm-2",
-                "description": "cm-2",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "vpc_no_inbound_ports_public",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "vpc_no_inbound_ports_public"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "sc-7",
-                "description": "sc-7",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "vpc_no_inbound_ports_public",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "vpc_no_inbound_ports_public"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              },
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "sc-7.3",
-                "description": "sc-7(3)",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "vpc_no_inbound_ports_public",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "vpc_no_inbound_ports_public"
                   }
                 ],
                 "responsible-roles": [
@@ -1224,8 +803,279 @@
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "IKS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
+            "description": "IKS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "set-parameters": [
+              [
+                {
+                  "param-id": "iks_ingress_tls_versions",
+                  "values": [
+                    "1.2",
+                    "1.3"
+                  ]
+                }
+              ]
+            ],
             "implemented-requirements": [
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "ac-17.2",
+                "description": "ac-17(2)",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "kubernetes_service_ingress_tls_configured",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "kubernetes_service_ingress_tls_configured"
+                  }
+                ],
+                "set-parameters": [
+                  [
+                    {
+                      "param-id": "iks_ingress_tls_versions",
+                      "values": [
+                        "1.2"
+                      ]
+                    }
+                  ]
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "sc-8",
+                "description": "sc-8",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "kubernetes_service_ingress_tls_configured",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "kubernetes_service_ingress_tls_configured"
+                  }
+                ],
+                "set-parameters": [
+                  [
+                    {
+                      "param-id": "iks_ingress_tls_versions",
+                      "values": [
+                        "1.2"
+                      ]
+                    }
+                  ]
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "sc-8.1",
+                "description": "sc-8(1)",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "kubernetes_service_ingress_tls_configured",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "kubernetes_service_ingress_tls_configured"
+                  }
+                ],
+                "set-parameters": [
+                  [
+                    {
+                      "param-id": "iks_ingress_tls_versions",
+                      "values": [
+                        "1.2"
+                      ]
+                    }
+                  ]
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "sc-13",
+                "description": "sc-13",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "kubernetes_service_ingress_tls_configured",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "kubernetes_service_ingress_tls_configured"
+                  }
+                ],
+                "set-parameters": [
+                  [
+                    {
+                      "param-id": "iks_ingress_tls_versions",
+                      "values": [
+                        "1.2"
+                      ]
+                    }
+                  ]
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "sc-23",
+                "description": "sc-23",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "kubernetes_service_ingress_tls_configured",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "kubernetes_service_ingress_tls_configured"
+                  }
+                ],
+                "set-parameters": [
+                  [
+                    {
+                      "param-id": "iks_ingress_tls_versions",
+                      "values": [
+                        "1.2"
+                      ]
+                    }
+                  ]
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "cm-2",
@@ -1464,13 +1314,220 @@
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
         "type": "Service",
+        "title": "VPC",
+        "description": "VPC",
+        "control-implementations": [
+          {
+            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "VPC implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "implemented-requirements": [
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "ac-4",
+                "description": "ac-4",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "vpc_no_inbound_ports_public",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "vpc_no_inbound_ports_public"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "cm-2",
+                "description": "cm-2",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "vpc_no_inbound_ports_public",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "vpc_no_inbound_ports_public"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "sc-7",
+                "description": "sc-7",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "vpc_no_inbound_ports_public",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "vpc_no_inbound_ports_public"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                "control-id": "sc-7.3",
+                "description": "sc-7(3)",
+                "props": [
+                  {
+                    "name": "goal_name_id",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "vpc_no_inbound_ports_public",
+                    "class": "scc_goal_name_id",
+                    "remarks": "Ensure Virtual Private Cloud (VPC) security groups have no inbound ports open to the internet (0.0.0.0/0)"
+                  },
+                  {
+                    "name": "goal_version",
+                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
+                    "value": "1.0",
+                    "class": "scc_goal_version",
+                    "remarks": "vpc_no_inbound_ports_public"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+        "type": "Service",
         "title": "TOOLCHAIN",
         "description": "TOOLCHAIN",
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
+            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
+            "set-parameters": [
+              [
+                {
+                  "param-id": "source_code_scaning_vulnerability_threashhold",
+                  "values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "critical"
+                  ]
+                }
+              ],
+              [
+                {
+                  "param-id": "source_code_scaning_vulnerability_threashhold",
+                  "values": [
+                    "low",
+                    "medium",
+                    "high",
+                    "critical"
+                  ]
+                }
+              ]
+            ],
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1493,12 +1550,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "source_code_scaning_vulnerability_threashhold",
-                    "values": [
-                      "low"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "source_code_scaning_vulnerability_threashhold",
+                      "values": [
+                        "low"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -1550,12 +1609,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "source_code_scaning_vulnerability_threashhold",
-                    "values": [
-                      "low"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "source_code_scaning_vulnerability_threashhold",
+                      "values": [
+                        "low"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -1607,12 +1668,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "source_code_scaning_vulnerability_threashhold",
-                    "values": [
-                      "low"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "source_code_scaning_vulnerability_threashhold",
+                      "values": [
+                        "low"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -1657,12 +1720,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "source_code_scaning_vulnerability_threashhold",
-                    "values": [
-                      "low"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "source_code_scaning_vulnerability_threashhold",
+                      "values": [
+                        "low"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
@@ -1685,14 +1750,7 @@
                     ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
-            "implemented-requirements": [
+              },
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
                 "control-id": "zz-1",
@@ -1714,12 +1772,14 @@
                   }
                 ],
                 "set-parameters": [
-                  {
-                    "param-id": "source_code_scaning_vulnerability_threashhold",
-                    "values": [
-                      "low"
-                    ]
-                  }
+                  [
+                    {
+                      "param-id": "source_code_scaning_vulnerability_threashhold",
+                      "values": [
+                        "low"
+                      ]
+                    }
+                  ]
                 ],
                 "responsible-roles": [
                   {
