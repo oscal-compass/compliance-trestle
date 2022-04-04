@@ -376,6 +376,7 @@ class XlsxHelper:
             if cell_value is None:
                 continue
             cell_tokens = cell_value.split()
+            normalized_cell_value = ' '.join(cell_tokens)
             # find columns of interest
             if self._column.control_id in cell_tokens:
                 self._add_column(self._column.control_id, column, 1)
@@ -385,13 +386,15 @@ class XlsxHelper:
                 self._add_column(self._column.version, column, 1)
             elif self._column.goal_name_id in cell_tokens:
                 self._add_column(self._column.goal_name_id, column, 1)
+            # parameters and alternatives (exact tokens match)
             elif cell_tokens == self._column.tokens_parameter_opt_parm:
                 self._add_column(self._column.rename_parameter_opt_parm, column, 1)
             elif cell_tokens == self._column.tokens_values_alternatives:
                 self._add_column(self._column.rename_values_alternatives, column, 1)
-            elif self._column.filter_column == cell_value:
+            # filter column (exact string match)
+            elif self._column.filter_column == normalized_cell_value:
                 self._add_column(self._column.filter_column, column, 1)
-            # multi
+            # nist mappings and resource title (multiple columns match)
             elif is_ordered_sublist(self._column.tokens_nist_mappings, cell_tokens):
                 self._add_column(self._column.nist_mappings, column, 0)
             elif self._column.resource_title in cell_tokens:
