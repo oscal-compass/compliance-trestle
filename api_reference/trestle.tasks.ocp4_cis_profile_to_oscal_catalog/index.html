@@ -10,18 +10,18 @@
       
       
       
-        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.cis_to_catalog/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_catalog/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
     
     
       
-        <title>cis_to_catalog - Compliance Trestle</title>
+        <title>ocp4_cis_profile_to_oscal_catalog - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.644de097.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#trestle.tasks.cis_to_catalog" class="md-skip">
+        <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              cis_to_catalog
+              ocp4_cis_profile_to_oscal_catalog
             
           </span>
         </div>
@@ -159,7 +159,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +204,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -334,8 +334,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/task.cis-to-catalog/transformation/" class="md-nav__link">
-        Task - cis-to-catalog
+      <a href="../../tutorials/task.ocp4-cis-profile-to-oscal-catalog/transformation/" class="md-nav__link">
+        Task - ocp4-cis-profile-to-oscal-catalog
       </a>
     </li>
   
@@ -348,8 +348,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/task.cis-to-component-definition/transformation/" class="md-nav__link">
-        Task - cis-to-component-definition
+      <a href="../../tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation/" class="md-nav__link">
+        Task - ocp4-cis-profile-to-oscal-cd
       </a>
     </li>
   
@@ -362,8 +362,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/task.tanuim-to-oscal/transformation/" class="md-nav__link">
-        Task - tanium-to-oscal
+      <a href="../../tutorials/task.tanium-result-to-oscal-ar/transformation/" class="md-nav__link">
+        Task - tanium-result-to-oscal-ar
       </a>
     </li>
   
@@ -2330,12 +2330,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          cis_to_catalog
+          ocp4_cis_profile_to_oscal_catalog
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        cis_to_catalog
+        ocp4_cis_profile_to_oscal_catalog
       </a>
       
         
@@ -2352,22 +2352,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog" class="md-nav__link">
-    cis_to_catalog
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog" class="md-nav__link">
+    ocp4_cis_profile_to_oscal_catalog
   </a>
   
-    <nav class="md-nav" aria-label="cis_to_catalog">
+    <nav class="md-nav" aria-label="ocp4_cis_profile_to_oscal_catalog">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.logger" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.logger" class="md-nav__link">
     logger
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog-classes" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -2375,68 +2375,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog" class="md-nav__link">
-    CisToCatalog
-  </a>
-  
-    <nav class="md-nav" aria-label="CisToCatalog">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.name" class="md-nav__link">
-    name
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog-methods" class="md-nav__link">
-    Methods
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.__init__" class="md-nav__link">
-    __init__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.execute" class="md-nav__link">
-    execute()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.print_info" class="md-nav__link">
-    print_info()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.simulate" class="md-nav__link">
-    simulate()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.Node" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node" class="md-nav__link">
     Node
   </a>
   
@@ -2444,16 +2383,77 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.Node.description" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.description" class="md-nav__link">
     description
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.Node.name" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.name" class="md-nav__link">
     name
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog" class="md-nav__link">
+    Ocp4CisProfileToOscalCatalog
+  </a>
+  
+    <nav class="md-nav" aria-label="Ocp4CisProfileToOscalCatalog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.execute" class="md-nav__link">
+    execute()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.print_info" class="md-nav__link">
+    print_info()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.simulate" class="md-nav__link">
+    simulate()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2487,8 +2487,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.cis_to_component_definition/" class="md-nav__link">
-        cis_to_component_definition
+      <a href="../trestle.tasks.ocp4_cis_profile_to_oscal_cd/" class="md-nav__link">
+        ocp4_cis_profile_to_oscal_cd
       </a>
     </li>
   
@@ -2501,8 +2501,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.osco_to_oscal/" class="md-nav__link">
-        osco_to_oscal
+      <a href="../trestle.tasks.oscal_profile_to_osco_profile/" class="md-nav__link">
+        oscal_profile_to_osco_profile
       </a>
     </li>
   
@@ -2515,8 +2515,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
-        profile_to_osco
+      <a href="../trestle.tasks.osco_result_to_oscal_ar/" class="md-nav__link">
+        osco_result_to_oscal_ar
       </a>
     </li>
   
@@ -2529,8 +2529,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.tanium_to_oscal/" class="md-nav__link">
-        tanium_to_oscal
+      <a href="../trestle.tasks.tanium_result_to_oscal_ar/" class="md-nav__link">
+        tanium_result_to_oscal_ar
       </a>
     </li>
   
@@ -2788,22 +2788,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog" class="md-nav__link">
-    cis_to_catalog
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog" class="md-nav__link">
+    ocp4_cis_profile_to_oscal_catalog
   </a>
   
-    <nav class="md-nav" aria-label="cis_to_catalog">
+    <nav class="md-nav" aria-label="ocp4_cis_profile_to_oscal_catalog">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.logger" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.logger" class="md-nav__link">
     logger
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog-classes" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -2811,68 +2811,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog" class="md-nav__link">
-    CisToCatalog
-  </a>
-  
-    <nav class="md-nav" aria-label="CisToCatalog">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.name" class="md-nav__link">
-    name
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog-methods" class="md-nav__link">
-    Methods
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.__init__" class="md-nav__link">
-    __init__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.execute" class="md-nav__link">
-    execute()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.print_info" class="md-nav__link">
-    print_info()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.CisToCatalog.simulate" class="md-nav__link">
-    simulate()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.Node" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node" class="md-nav__link">
     Node
   </a>
   
@@ -2880,16 +2819,77 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.Node.description" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.description" class="md-nav__link">
     description
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.cis_to_catalog.Node.name" class="md-nav__link">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.name" class="md-nav__link">
     name
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog" class="md-nav__link">
+    Ocp4CisProfileToOscalCatalog
+  </a>
+  
+    <nav class="md-nav" aria-label="Ocp4CisProfileToOscalCatalog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.execute" class="md-nav__link">
+    execute()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.print_info" class="md-nav__link">
+    print_info()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.simulate" class="md-nav__link">
+    simulate()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2922,18 +2922,18 @@
                 
 
 
-  <h1>cis_to_catalog</h1>
+  <h1>ocp4_cis_profile_to_oscal_catalog</h1>
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 class="doc doc-heading" id="trestle.tasks.cis_to_catalog">
-        <code>trestle.tasks.cis_to_catalog</code>
+<h2 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog">
+        <code>trestle.tasks.ocp4_cis_profile_to_oscal_catalog</code>
 
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog" title="Permanent link">¤</a></h2>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -2952,11 +2952,11 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.logger">
+<h4 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.logger">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.logger" title="Permanent link">¤</a></h4>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.logger" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2965,24 +2965,118 @@
   </div>
 
 
-<h3 id="trestle.tasks.cis_to_catalog-classes">Classes<a class="headerlink" href="#trestle.tasks.cis_to_catalog-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog-classes">Classes<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog-classes" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.CisToCatalog">
+<h4 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node">
         <code>
-CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.tasks.base_task.TaskBase" href="../trestle.tasks.base_task/#trestle.tasks.base_task.TaskBase">TaskBase</a>)
+Node            (<span title="pydantic.main.BaseModel">BaseModel</span>)
+        </code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Representation of CIS profile entry.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_catalog.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representation of CIS profile entry.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.description">
+<code class="highlight language-python"><span class="n">description</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.description" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.name">
+<code class="highlight language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Node.name" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h4 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog">
+        <code>
+Ocp4CisProfileToOscalCatalog            (<a class="autorefs autorefs-internal" title="trestle.tasks.base_task.TaskBase" href="../trestle.tasks.base_task/#trestle.tasks.base_task.TaskBase">TaskBase</a>)
         </code>
 
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog" title="Permanent link">¤</a></h4>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
-      <p>Task to CIS to catalog from standard (e.g. CIS benchmark).</p>
+      <p>Task to transform OCP4 CIS profile to OSCAL catalog.</p>
 
 <p><strong>Attributes:</strong></p>
 <table>
@@ -3002,20 +3096,20 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/cis_to_catalog.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">CisToCatalog</span><span class="p">(</span><span class="n">TaskBase</span><span class="p">):</span>
+          <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_catalog.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Ocp4CisProfileToOscalCatalog</span><span class="p">(</span><span class="n">TaskBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Task to CIS to catalog from standard (e.g. CIS benchmark).</span>
+<span class="sd">    Task to transform OCP4 CIS profile to OSCAL catalog.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Name of the task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;cis-to-catalog&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ocp4-cis-profile-to-oscal-catalog&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">configparser</span><span class="o">.</span><span class="n">SectionProxy</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize trestle task cis-to-catalog.</span>
+<span class="sd">        Initialize trestle task ocp4-cis-profile-to-oscal-catalog.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_object: Config section associated with the task.</span>
@@ -3030,7 +3124,7 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Purpose: Create catalog from standard (e.g. CIS benchmark).&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.cis-to-catalog]:&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:&#39;</span><span class="p">)</span>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  input-dir              = &#39;</span>
         <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) location to read the compliance-as-code profile files.&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
@@ -3056,7 +3150,7 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Wrap the execute for exception handling.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config missing&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">idir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;input-dir&#39;</span><span class="p">]</span>
@@ -3076,14 +3170,14 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
         <span class="n">oname</span> <span class="o">=</span> <span class="s1">&#39;catalog.json&#39;</span>
         <span class="n">ofile</span> <span class="o">=</span> <span class="n">opth</span> <span class="o">/</span> <span class="n">oname</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
         <span class="c1"># metadata links (optional)</span>
         <span class="n">metadata_links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metadata-links&#39;</span><span class="p">)</span>
         <span class="c1"># get list or &lt;name&gt;.profile files</span>
         <span class="n">filelist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filelist</span><span class="p">(</span><span class="n">idir</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filelist</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">idir</span><span class="si">}</span><span class="s1"> no .profile file found&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">idir</span><span class="si">}</span><span class="s1"> no .profile file found&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
         <span class="c1"># initialize node list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_node_map</span> <span class="o">=</span> <span class="p">{}</span>
@@ -3134,7 +3228,7 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
             <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">content</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unable to process </span><span class="si">{</span><span class="n">fp</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unable to process </span><span class="si">{</span><span class="n">fp</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">e</span>
 
     <span class="k">def</span> <span class="nf">_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -3160,7 +3254,6 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
 
     <span class="k">def</span> <span class="nf">_get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert name to desired sortable key.&quot;&quot;&quot;</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -3168,6 +3261,9 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
             <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unexpected value: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">key</span>
 
     <span class="k">def</span> <span class="nf">_get_root_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValuesView</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
@@ -3189,11 +3285,6 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dots</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">depth</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">depth</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dots</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">depth</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
-                <span class="k">continue</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unexpected value: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">depth</span>
 
     <span class="k">def</span> <span class="nf">_add_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="n">Group</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -3248,11 +3339,11 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.CisToCatalog.name">
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.name">
 <code class="highlight language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog.name" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.name" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3263,24 +3354,24 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
 
 
 
-<h5 id="trestle.tasks.cis_to_catalog.CisToCatalog-methods">Methods<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog-methods" title="Permanent link">¤</a></h5>
+<h5 id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog-methods">Methods<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog-methods" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.CisToCatalog.__init__">
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.__init__">
 <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog.__init__" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.__init__" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
-      <p>Initialize trestle task cis-to-catalog.</p>
+      <p>Initialize trestle task ocp4-cis-profile-to-oscal-catalog.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -3302,10 +3393,10 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/cis_to_catalog.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_catalog.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">configparser</span><span class="o">.</span><span class="n">SectionProxy</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initialize trestle task cis-to-catalog.</span>
+<span class="sd">    Initialize trestle task ocp4-cis-profile-to-oscal-catalog.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        config_object: Config section associated with the task.</span>
@@ -3325,18 +3416,18 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.CisToCatalog.execute">
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.execute">
 <code class="highlight language-python"><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog.execute" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.execute" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Provide an actual outcome.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/cis_to_catalog.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_catalog.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -3356,25 +3447,25 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.CisToCatalog.print_info">
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.print_info">
 <code class="highlight language-python"><span class="n">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog.print_info" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.print_info" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Print the help string.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/cis_to_catalog.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_catalog.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Help information for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> task.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Purpose: Create catalog from standard (e.g. CIS benchmark).&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.cis-to-catalog]:&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:&#39;</span><span class="p">)</span>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  input-dir              = &#39;</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(required) location to read the compliance-as-code profile files.&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
@@ -3396,18 +3487,18 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.CisToCatalog.simulate">
+<h6 class="doc doc-heading" id="trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.simulate">
 <code class="highlight language-python"><span class="n">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.CisToCatalog.simulate" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.ocp4_cis_profile_to_oscal_catalog.Ocp4CisProfileToOscalCatalog.simulate" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Provide a simulated outcome.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/cis_to_catalog.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/ocp4_cis_profile_to_oscal_catalog.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-success&#39;</span><span class="p">)</span>
@@ -3416,100 +3507,6 @@ CisToCatalog            (<a class="autorefs autorefs-internal" title="trestle.ta
     </div>
 
   </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h4 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.Node">
-        <code>
-Node            (<span title="pydantic.main.BaseModel">BaseModel</span>)
-        </code>
-
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
-  </span>
-
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.Node" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Representation of CIS profile entry.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/tasks/cis_to_catalog.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Representation of CIS profile entry.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.Node.description">
-<code class="highlight language-python"><span class="n">description</span><span class="p">:</span> <span class="nb">str</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
-  </span>
-
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.Node.description" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h6 class="doc doc-heading" id="trestle.tasks.cis_to_catalog.Node.name">
-<code class="highlight language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
-  </span>
-
-<a class="headerlink" href="#trestle.tasks.cis_to_catalog.Node.name" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-    </div>
-
-  </div>
-
-
-
 
 
 
@@ -3563,13 +3560,13 @@ Node            (<span title="pydantic.main.BaseModel">BaseModel</span>)
       
       
         
-        <a href="../trestle.tasks.cis_to_component_definition/" class="md-footer__link md-footer__link--next" aria-label="Next: cis_to_component_definition" rel="next">
+        <a href="../trestle.tasks.ocp4_cis_profile_to_oscal_cd/" class="md-footer__link md-footer__link--next" aria-label="Next: ocp4_cis_profile_to_oscal_cd" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              cis_to_component_definition
+              ocp4_cis_profile_to_oscal_cd
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -3599,10 +3596,10 @@ Node            (<span title="pydantic.main.BaseModel">BaseModel</span>)
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c44cc438.min.js"></script>
       
     
   </body>

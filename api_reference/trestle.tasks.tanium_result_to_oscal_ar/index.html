@@ -10,18 +10,18 @@
       
       
       
-        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.tanium_to_oscal/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.tanium_result_to_oscal_ar/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
     
     
       
-        <title>tanium_to_oscal - Compliance Trestle</title>
+        <title>tanium_result_to_oscal_ar - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.644de097.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#trestle.tasks.tanium_to_oscal" class="md-skip">
+        <a href="#trestle.tasks.tanium_result_to_oscal_ar" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              tanium_to_oscal
+              tanium_result_to_oscal_ar
             
           </span>
         </div>
@@ -159,7 +159,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +204,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -334,8 +334,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/task.cis-to-catalog/transformation/" class="md-nav__link">
-        Task - cis-to-catalog
+      <a href="../../tutorials/task.ocp4-cis-profile-to-oscal-catalog/transformation/" class="md-nav__link">
+        Task - ocp4-cis-profile-to-oscal-catalog
       </a>
     </li>
   
@@ -348,8 +348,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/task.cis-to-component-definition/transformation/" class="md-nav__link">
-        Task - cis-to-component-definition
+      <a href="../../tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation/" class="md-nav__link">
+        Task - ocp4-cis-profile-to-oscal-cd
       </a>
     </li>
   
@@ -362,8 +362,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/task.tanuim-to-oscal/transformation/" class="md-nav__link">
-        Task - tanium-to-oscal
+      <a href="../../tutorials/task.tanium-result-to-oscal-ar/transformation/" class="md-nav__link">
+        Task - tanium-result-to-oscal-ar
       </a>
     </li>
   
@@ -2322,8 +2322,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.cis_to_catalog/" class="md-nav__link">
-        cis_to_catalog
+      <a href="../trestle.tasks.ocp4_cis_profile_to_oscal_catalog/" class="md-nav__link">
+        ocp4_cis_profile_to_oscal_catalog
       </a>
     </li>
   
@@ -2336,8 +2336,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.cis_to_component_definition/" class="md-nav__link">
-        cis_to_component_definition
+      <a href="../trestle.tasks.ocp4_cis_profile_to_oscal_cd/" class="md-nav__link">
+        ocp4_cis_profile_to_oscal_cd
       </a>
     </li>
   
@@ -2350,8 +2350,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.osco_to_oscal/" class="md-nav__link">
-        osco_to_oscal
+      <a href="../trestle.tasks.oscal_profile_to_osco_profile/" class="md-nav__link">
+        oscal_profile_to_osco_profile
       </a>
     </li>
   
@@ -2364,8 +2364,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.tasks.profile_to_osco/" class="md-nav__link">
-        profile_to_osco
+      <a href="../trestle.tasks.osco_result_to_oscal_ar/" class="md-nav__link">
+        osco_result_to_oscal_ar
       </a>
     </li>
   
@@ -2386,12 +2386,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          tanium_to_oscal
+          tanium_result_to_oscal_ar
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        tanium_to_oscal
+        tanium_result_to_oscal_ar
       </a>
       
         
@@ -2408,22 +2408,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal" class="md-nav__link">
-    tanium_to_oscal
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar" class="md-nav__link">
+    tanium_result_to_oscal_ar
   </a>
   
-    <nav class="md-nav" aria-label="tanium_to_oscal">
+    <nav class="md-nav" aria-label="tanium_result_to_oscal_ar">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.logger" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.logger" class="md-nav__link">
     logger
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal-classes" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -2431,22 +2431,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal" class="md-nav__link">
-    TaniumToOscal
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR" class="md-nav__link">
+    TaniumResultToOscalAR
   </a>
   
-    <nav class="md-nav" aria-label="TaniumToOscal">
+    <nav class="md-nav" aria-label="TaniumResultToOscalAR">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.name" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.name" class="md-nav__link">
     name
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal-methods" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR-methods" class="md-nav__link">
     Methods
   </a>
   
@@ -2454,28 +2454,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.__init__" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.execute" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.execute" class="md-nav__link">
     execute()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.print_info" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.print_info" class="md-nav__link">
     print_info()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.simulate" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.simulate" class="md-nav__link">
     simulate()
   </a>
   
@@ -2761,22 +2761,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal" class="md-nav__link">
-    tanium_to_oscal
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar" class="md-nav__link">
+    tanium_result_to_oscal_ar
   </a>
   
-    <nav class="md-nav" aria-label="tanium_to_oscal">
+    <nav class="md-nav" aria-label="tanium_result_to_oscal_ar">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.logger" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.logger" class="md-nav__link">
     logger
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal-classes" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -2784,22 +2784,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal" class="md-nav__link">
-    TaniumToOscal
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR" class="md-nav__link">
+    TaniumResultToOscalAR
   </a>
   
-    <nav class="md-nav" aria-label="TaniumToOscal">
+    <nav class="md-nav" aria-label="TaniumResultToOscalAR">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.name" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.name" class="md-nav__link">
     name
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal-methods" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR-methods" class="md-nav__link">
     Methods
   </a>
   
@@ -2807,28 +2807,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.__init__" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.execute" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.execute" class="md-nav__link">
     execute()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.print_info" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.print_info" class="md-nav__link">
     print_info()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.simulate" class="md-nav__link">
+  <a href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.simulate" class="md-nav__link">
     simulate()
   </a>
   
@@ -2868,18 +2868,18 @@
                 
 
 
-  <h1>tanium_to_oscal</h1>
+  <h1>tanium_result_to_oscal_ar</h1>
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal">
-        <code>trestle.tasks.tanium_to_oscal</code>
+<h2 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar">
+        <code>trestle.tasks.tanium_result_to_oscal_ar</code>
 
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal" title="Permanent link">¤</a></h2>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -2898,11 +2898,11 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.logger">
+<h4 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.logger">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.logger" title="Permanent link">¤</a></h4>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.logger" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2911,24 +2911,24 @@
   </div>
 
 
-<h3 id="trestle.tasks.tanium_to_oscal-classes">Classes<a class="headerlink" href="#trestle.tasks.tanium_to_oscal-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.tasks.tanium_result_to_oscal_ar-classes">Classes<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar-classes" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.TaniumToOscal">
+<h4 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR">
         <code>
-TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.tasks.base_task.TaskBase" href="../trestle.tasks.base_task/#trestle.tasks.base_task.TaskBase">TaskBase</a>)
+TaniumResultToOscalAR            (<a class="autorefs autorefs-internal" title="trestle.tasks.base_task.TaskBase" href="../trestle.tasks.base_task/#trestle.tasks.base_task.TaskBase">TaskBase</a>)
         </code>
 
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal" title="Permanent link">¤</a></h4>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
-      <p>Task to convert Tanium report to OSCAL json.</p>
+      <p>Task to convert Tanium result to OSCAL json.</p>
 
 <p><strong>Attributes:</strong></p>
 <table>
@@ -2948,20 +2948,20 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/tanium_to_oscal.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TaniumToOscal</span><span class="p">(</span><span class="n">TaskBase</span><span class="p">):</span>
+          <summary>Source code in <code>trestle/tasks/tanium_result_to_oscal_ar.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">TaniumResultToOscalAR</span><span class="p">(</span><span class="n">TaskBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Task to convert Tanium report to OSCAL json.</span>
+<span class="sd">    Task to convert Tanium result to OSCAL json.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Name of the task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;tanium-to-oscal&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;tanium-result-to-oscal-ar&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">configparser</span><span class="o">.</span><span class="n">SectionProxy</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize trestle task tanium-to-oscal.</span>
+<span class="sd">        Initialize trestle task tanium-result-to-oscal-ar.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            config_object: Config section associated with the task.</span>
@@ -2977,8 +2977,8 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
             <span class="o">+</span> <span class="s1">&#39;and serialize to a file.&#39;</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-to-oscal]:&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-result-to-oscal-ar]:&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  blocksize = (optional) the desired number Tanuim result input lines to process per CPU.&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  cpus-min  = (optional) the desired minimum number of CPUs to employ.&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  aggregate = (optional) True indicates employ properties aggregation, default is True.&#39;</span><span class="p">)</span>
@@ -2986,7 +2986,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s1">&#39;  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.&#39;</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium reports.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium results.&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span>
         <span class="p">)</span>
@@ -2997,7 +2997,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as &#39;</span>
             <span class="o">+</span> <span class="s1">&#39;2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Tanium &#39;</span>
-            <span class="o">+</span> <span class="s1">&#39;report is used if present, otherwise current time is used.&#39;</span>
+            <span class="o">+</span> <span class="s1">&#39;result is used if present, otherwise current time is used.&#39;</span>
         <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -3036,7 +3036,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;simulated-&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Config missing&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Config missing&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
         <span class="c1"># config required input &amp; output dirs</span>
         <span class="k">try</span><span class="p">:</span>
@@ -3057,7 +3057,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">TaniumTransformer</span><span class="o">.</span><span class="n">set_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;config invalid &quot;timestamp&quot;&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config invalid &quot;timestamp&quot;&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
         <span class="c1"># config optional performance</span>
         <span class="n">modes</span> <span class="o">=</span> <span class="p">{</span>
@@ -3079,17 +3079,16 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
             <span class="n">oname</span> <span class="o">=</span> <span class="n">ifile</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;.oscal&#39;</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span>
             <span class="n">ofile</span> <span class="o">=</span> <span class="n">opth</span> <span class="o">/</span> <span class="n">oname</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overwrite</span> <span class="ow">and</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">ofile</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1"> already exists&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;failure&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_file</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ofile</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_show_analysis</span><span class="p">(</span><span class="n">tanium_transformer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="n">mode</span> <span class="o">+</span> <span class="s1">&#39;success&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_read_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ifile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Read raw input file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">ifile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">blob</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">blob</span>
@@ -3103,11 +3102,10 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
 
     <span class="k">def</span> <span class="nf">_show_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tanium_transformer</span><span class="p">:</span> <span class="n">TaniumTransformer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Show analysis.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
-                <span class="n">analysis</span> <span class="o">=</span> <span class="n">tanium_transformer</span><span class="o">.</span><span class="n">analysis</span>
-                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">analysis</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">analysis</span> <span class="o">=</span> <span class="n">tanium_transformer</span><span class="o">.</span><span class="n">analysis</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">analysis</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -3124,11 +3122,11 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.TaniumToOscal.name">
+<h6 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.name">
 <code class="highlight language-python"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.name" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.name" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3139,24 +3137,24 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
 
 
 
-<h5 id="trestle.tasks.tanium_to_oscal.TaniumToOscal-methods">Methods<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal-methods" title="Permanent link">¤</a></h5>
+<h5 id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR-methods">Methods<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR-methods" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.TaniumToOscal.__init__">
+<h6 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.__init__">
 <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.__init__" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.__init__" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
-      <p>Initialize trestle task tanium-to-oscal.</p>
+      <p>Initialize trestle task tanium-result-to-oscal-ar.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -3178,10 +3176,10 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/tanium_to_oscal.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/tanium_result_to_oscal_ar.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_object</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">configparser</span><span class="o">.</span><span class="n">SectionProxy</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initialize trestle task tanium-to-oscal.</span>
+<span class="sd">    Initialize trestle task tanium-result-to-oscal-ar.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        config_object: Config section associated with the task.</span>
@@ -3199,18 +3197,18 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.TaniumToOscal.execute">
+<h6 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.execute">
 <code class="highlight language-python"><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.execute" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.execute" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Provide an actual outcome.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/tanium_to_oscal.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/tanium_result_to_oscal_ar.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="o">=</span> <span class="kc">False</span>
@@ -3227,18 +3225,18 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.TaniumToOscal.print_info">
+<h6 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.print_info">
 <code class="highlight language-python"><span class="n">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.print_info" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.print_info" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Print the help string.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/tanium_to_oscal.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/tanium_result_to_oscal_ar.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Help information for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> task.&#39;</span><span class="p">)</span>
@@ -3248,8 +3246,8 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
         <span class="o">+</span> <span class="s1">&#39;and serialize to a file.&#39;</span>
     <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-to-oscal]:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  blocksize = (optional) the desired number Tanuim report input lines to process per CPU.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-result-to-oscal-ar]:&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  blocksize = (optional) the desired number Tanuim result input lines to process per CPU.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  cpus-max  = (optional) the desired maximum number of CPUs to employ, default is 1.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  cpus-min  = (optional) the desired minimum number of CPUs to employ.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  aggregate = (optional) True indicates employ properties aggregation, default is True.&#39;</span><span class="p">)</span>
@@ -3257,7 +3255,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;  checking  = (optional) True indicates perform strict checking of OSCAL properties, default is False.&#39;</span>
     <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium reports.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium results.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span>
     <span class="p">)</span>
@@ -3268,7 +3266,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as &#39;</span>
         <span class="o">+</span> <span class="s1">&#39;2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Tanium &#39;</span>
-        <span class="o">+</span> <span class="s1">&#39;report is used if present, otherwise current time is used.&#39;</span>
+        <span class="o">+</span> <span class="s1">&#39;result is used if present, otherwise current time is used.&#39;</span>
     <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -3287,18 +3285,18 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
 
 
 
-<h6 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.TaniumToOscal.simulate">
+<h6 class="doc doc-heading" id="trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.simulate">
 <code class="highlight language-python"><span class="n">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.TaniumToOscal.simulate" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.tasks.tanium_result_to_oscal_ar.TaniumResultToOscalAR.simulate" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
       <p>Provide a simulated outcome.</p>
 
         <details class="quote">
-          <summary>Source code in <code>trestle/tasks/tanium_to_oscal.py</code></summary>
+          <summary>Source code in <code>trestle/tasks/tanium_result_to_oscal_ar.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="o">=</span> <span class="kc">True</span>
@@ -3345,7 +3343,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../trestle.tasks.profile_to_osco/" class="md-footer__link md-footer__link--prev" aria-label="Previous: profile_to_osco" rel="prev">
+        <a href="../trestle.tasks.osco_result_to_oscal_ar/" class="md-footer__link md-footer__link--prev" aria-label="Previous: osco_result_to_oscal_ar" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -3354,7 +3352,7 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
               <span class="md-footer__direction">
                 Previous
               </span>
-              profile_to_osco
+              osco_result_to_oscal_ar
             </div>
           </div>
         </a>
@@ -3397,10 +3395,10 @@ TaniumToOscal            (<a class="autorefs autorefs-internal" title="trestle.t
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c44cc438.min.js"></script>
       
     
   </body>

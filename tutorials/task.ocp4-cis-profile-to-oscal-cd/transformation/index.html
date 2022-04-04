@@ -10,18 +10,18 @@
       
       
       
-        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/task.cis-to-catalog/transformation/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.5">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
     
     
       
-        <title>Task - cis-to-catalog - Compliance Trestle</title>
+        <title>Task - ocp4-cis-profile-to-oscal-cd - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.2d9f7617.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.644de097.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-catalog-transformer" class="md-skip">
+        <a href="#tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-component-definition-transformer" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Task - cis-to-catalog
+              Task - ocp4-cis-profile-to-oscal-cd
             
           </span>
         </div>
@@ -159,7 +159,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +204,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -334,6 +334,20 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../../task.ocp4-cis-profile-to-oscal-catalog/transformation/" class="md-nav__link">
+        Task - ocp4-cis-profile-to-oscal-catalog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -346,12 +360,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Task - cis-to-catalog
+          Task - ocp4-cis-profile-to-oscal-cd
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Task - cis-to-catalog
+        Task - ocp4-cis-profile-to-oscal-cd
       </a>
       
         
@@ -405,22 +419,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../task.cis-to-component-definition/transformation/" class="md-nav__link">
-        Task - cis-to-component-definition
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../task.tanuim-to-oscal/transformation/" class="md-nav__link">
-        Task - tanium-to-oscal
+      <a href="../../task.tanium-result-to-oscal-ar/transformation/" class="md-nav__link">
+        Task - tanium-result-to-oscal-ar
       </a>
     </li>
   
@@ -2373,8 +2373,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.tasks.cis_to_catalog/" class="md-nav__link">
-        cis_to_catalog
+      <a href="../../../api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_catalog/" class="md-nav__link">
+        ocp4_cis_profile_to_oscal_catalog
       </a>
     </li>
   
@@ -2387,8 +2387,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.tasks.cis_to_component_definition/" class="md-nav__link">
-        cis_to_component_definition
+      <a href="../../../api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_cd/" class="md-nav__link">
+        ocp4_cis_profile_to_oscal_cd
       </a>
     </li>
   
@@ -2401,8 +2401,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
-        osco_to_oscal
+      <a href="../../../api_reference/trestle.tasks.oscal_profile_to_osco_profile/" class="md-nav__link">
+        oscal_profile_to_osco_profile
       </a>
     </li>
   
@@ -2415,8 +2415,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.tasks.profile_to_osco/" class="md-nav__link">
-        profile_to_osco
+      <a href="../../../api_reference/trestle.tasks.osco_result_to_oscal_ar/" class="md-nav__link">
+        osco_result_to_oscal_ar
       </a>
     </li>
   
@@ -2429,8 +2429,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
-        tanium_to_oscal
+      <a href="../../../api_reference/trestle.tasks.tanium_result_to_oscal_ar/" class="md-nav__link">
+        tanium_result_to_oscal_ar
       </a>
     </li>
   
@@ -2724,8 +2724,8 @@
                 
 
 
-<h1 id="tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-catalog-transformer">Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Catalog transformer<a class="headerlink" href="#tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-catalog-transformer" title="Permanent link">¤</a></h1>
-<p>Here are step by step instructions for setup and transformation of <a href="https://github.com/ComplianceAsCode/content">ComplianceAsCode</a> profile data files into <a href="https://www.nist.gov/">NIST</a> standard <a href="https://pages.nist.gov/OSCAL/">OSCAL</a> <a href="https://pages.nist.gov/OSCAL/reference/latest/catalog/json-outline/">Catalog</a> using the <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a> tool.</p>
+<h1 id="tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-component-definition-transformer">Tutorial: Setup for and use of ComplianceAsCode profile to OSCAL Component Definition transformer<a class="headerlink" href="#tutorial-setup-for-and-use-of-complianceascode-profile-to-oscal-component-definition-transformer" title="Permanent link">¤</a></h1>
+<p>Here are step by step instructions for setup and transformation of <a href="https://github.com/ComplianceAsCode/content">ComplianceAsCode</a> profile data files into <a href="https://www.nist.gov/">NIST</a> standard <a href="https://pages.nist.gov/OSCAL/">OSCAL</a> <a href="https://pages.nist.gov/OSCAL/reference/latest/component-definition/json-outline/">Component Definition</a> using the <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a> tool.</p>
 <h2 id="objective"><em>Objective</em><a class="headerlink" href="#objective" title="Permanent link">¤</a></h2>
 <p>How to transform one or more <code>.profile</code> compliance files into a standardized <code>OSCAL.json</code> file.</p>
 <p>There are 2 short steps shown below.
@@ -2751,46 +2751,148 @@ Make these changes:
 <ul>
 <li>Navigate to trestle workspace.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ cd trestle.workspace
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> trestle.workspace
 </code></pre></div>
 <ul>
 <li>View configuration information.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ trestle task cis-to-catalog -i
-trestle.core.commands.task:102 WARNING: Config file was not configured with the appropriate section for the task: &quot;[task.cis-to-catalog]&quot;
-Help information for cis-to-catalog task.
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle task ocp4-cis-profile-to-oscal-cd -i
+trestle.core.commands.task:99 WARNING: Config file was not configured with the appropriate section <span class="k">for</span> the task: <span class="s2">&quot;[task.ocp4-cis-profile-to-oscal-cd]&quot;</span>
+Help information <span class="k">for</span> ocp4-cis-profile-to-oscal-cd task.
 
-Purpose: Create catalog from from standard (e.g. CIS benchmark).
+Purpose: Create component definition from standard <span class="o">(</span>e.g. CIS benchmark<span class="o">)</span>.
 
-Configuration flags sit under [task.cis-to-catalog]:
-  input-dir              = (required) location to read the compliance-as-code profile files.
-  output-dir             = (required) location to write the generated catalog.json file.
-  output-overwrite       = (optional) true [default] or false; replace existing output when true.
+Configuration flags sit under <span class="o">[</span>task.ocp4-cis-profile-to-oscal-cd<span class="o">]</span>:
+  component-name         <span class="o">=</span> component name, e.g. OSCO.
+  org-name               <span class="o">=</span> organization name, e.g. International Business Machines.
+  org-remarks            <span class="o">=</span> organization remarks, e.g. IBM.
+  folder-cac             <span class="o">=</span> folder containing compliance-as-code artifacts, e.g adjunct-data/cis-benchmarks/content.
+  output-dir             <span class="o">=</span> location to write the generated component-definition.json file.
+  profile-name           <span class="o">=</span> profile name, e.g. OCP4 CIS-benchmark v4.
+  profile-mnemonic       <span class="o">=</span> profile mnemonic, e.g. ocp4-cis-node.
+  profile-ns             <span class="o">=</span> profile ns, e.g. http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud.
+  profile-version        <span class="o">=</span> profile version, e.g. <span class="m">1</span>.1.
+  profile-check-version  <span class="o">=</span> profile check version, e.g. <span class="m">0</span>.1.58.
+  profile-type           <span class="o">=</span> profile type, e.g. OCP4.
+  profile-list           <span class="o">=</span> profile list is blank separated list of <span class="s2">&quot;&lt;suffix&gt;&quot;</span> <span class="k">for</span> config entries: 
+                           profile-file.&lt;suffix&gt;, profile-title.&lt;suffix&gt;, profile-url.&lt;suffix&gt;, e.g. cis cis-node.
+  profile-file.&lt;suffix&gt;  <span class="o">=</span> path of the profile file to ingest, e.g. <span class="si">${</span><span class="nv">folder</span><span class="p">-cac</span><span class="si">}</span>/products/ocp4/profiles/cis-node.profile.
+  profile-title.&lt;suffix&gt; <span class="o">=</span> title of the profile, e.g. CIS Red Hat OpenShift Container Platform <span class="m">4</span> Benchmark.
+  profile-url.&lt;suffix&gt;   <span class="o">=</span> URL of the profile, e.g. https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile.
+  rule-to-parameters-map <span class="o">=</span> map file <span class="k">for</span> set-parameters, e.g. adjunct-data/task-files/rule2var.json.
+  selected-rules         <span class="o">=</span> file with list of selected rules, e.g. adjunct-data/task-files/selected_rules.json.
+  enabled-rules          <span class="o">=</span> file with list of enabled rules, e.g. adjunct-data/task-files/enabled_rules.json.
+
+Notes:
+<span class="m">1</span>. If a control has selected rules but no enabled rules, <span class="k">then</span> all those selected are included.
+<span class="m">2</span>. If a control has selected and enabled rules, <span class="k">then</span> only those enabled are included.
+<span class="m">3</span>. If a control has no selected rules, <span class="k">then</span> none are included regardless of enabled.
 </code></pre></div>
 <ul>
 <li>Create data folders.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ mkdir -p adjunct-data/cis-benchmarks
-(venv.trestle)$ mkdir -p adjunct-data/trestle-configs
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/cis-benchmarks
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/config-files
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ mkdir -p adjunct-data/task-files
 </code></pre></div>
 <ul>
-<li>Fetch ComplianceAsCode profile data.</li>
+<li>Fetch ComplianceAsCode data.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile&#39; &gt; adjunct-data/cis-benchmarks/cis-node.profile
-(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/ComplianceAsCode/content/master/products/ocp4/profiles/cis-node.profile&#39; &gt; adjunct-data/cis-benchmarks/cis.profile
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> adjunct-data/cis-benchmarks/
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ git clone https://github.com/ComplianceAsCode/content.git
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ <span class="nb">cd</span> -
 </code></pre></div>
 <ul>
-<li>Fetch trestle task file.</li>
+<li>Fetch trestle config and task files.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.cis-to-catalog/demo-cis-to-catalog.config&#39; &gt; adjunct-data/task-files/demo-cis-to-catalog.config
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/demo-ocp4-cis-profile-to-oscal-cd.config&#39;</span> &gt; adjunct-data/config-files/demo-ocp4-cis-profile-to-oscal-cd.config
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/selected_rules.json&#39;</span> &gt; adjunct-data/task-files/selected_rules.json
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ curl <span class="s1">&#39;https://github.com/IBM/compliance-trestle/blob/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/enabled_rules.json&#39;</span> &gt; adjunct-data/task-files/enabled_rules.json
 </code></pre></div>
 <details>
-<summary>demo-cis-to-catalog.config</summary>
+<summary>demo-ocp4-cis-profile-to-oscal-cd.config</summary>
 
-<div class="highlight"><pre><span></span><code>[task.cis-to-catalog]
+<div class="highlight"><pre><span></span><code><span class="o">[</span>task.ocp4-cis-profile-to-oscal-cd<span class="o">]</span>
 
-input-dir = adjunct-data/cis-benchmarks
-output-dir = catalogs/cis
+component-name <span class="o">=</span> OSCO
+
+folder-cac <span class="o">=</span> adjunct-data/cis-benchmarks/content
+
+org-name <span class="o">=</span> International Business Machines
+org-remarks <span class="o">=</span> IBM
+
+output-dir <span class="o">=</span> component-definitions/ocp4-cis
+
+profile-name <span class="o">=</span> OCP4 CIS-benchmark v4
+profile-mnemonic <span class="o">=</span> ocp4-cis-node
+profile-ns <span class="o">=</span> http://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud
+profile-version <span class="o">=</span> <span class="m">1</span>.1
+profile-check-version <span class="o">=</span> <span class="m">0</span>.1.58
+
+profile-type <span class="o">=</span> OCP4
+profile-list <span class="o">=</span> cis-node cis
+
+profile-file.cis-node <span class="o">=</span> <span class="si">${</span><span class="nv">folder</span><span class="p">-cac</span><span class="si">}</span>/products/ocp4/profiles/cis-node.profile
+profile-url.cis-node <span class="o">=</span> https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile
+profile-title.cis-node <span class="o">=</span> CIS Red Hat OpenShift Container Platform <span class="m">4</span> Benchmark
+
+profile-file.cis <span class="o">=</span> <span class="si">${</span><span class="nv">folder</span><span class="p">-cac</span><span class="si">}</span>/products/ocp4/profiles/cis.profile
+profile-url.cis <span class="o">=</span> https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile
+profile-title.cis <span class="o">=</span> CIS Red Hat OpenShift Container Platform <span class="m">4</span> Benchmark
+
+selected-rules  <span class="o">=</span> adjunct-data/task-files/selected_rules.json
+enabled-rules  <span class="o">=</span> adjunct-data/task-files/enabled_rules.json
+</code></pre></div>
+
+</details>
+
+<details>
+<summary>selected_rules.json</summary>
+
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_kube_apiserver&quot;</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+</details>
+
+<details>
+<summary>enabled_rules.json</summary>
+
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_cni_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_multus_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_cni_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_cni_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_multus_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_multus_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_memory_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_nodefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_nodefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_imagefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_soft_imagefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_memory_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_nodefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_nodefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_imagefs_available&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_eviction_thresholds_set_hard_imagefs_inodesfree&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;etcd_unique_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_kubelet_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_kubelet_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_kubelet_conf&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_permissions_worker_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_owner_worker_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;file_groupowner_worker_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_anonymous_auth&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_configure_client_ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_enable_streaming_connections&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_enable_iptables_util_chains&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_disable_hostname_override&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_configure_event_creation&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s2">&quot;kubelet_configure_tls_cipher_suites&quot;</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 </details>
@@ -2798,625 +2900,233 @@ output-dir = catalogs/cis
 <ul>
 <li>Perform and validate the transform.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ trestle task cis-to-catalog -c adjunct-data/task-files/demo-cis-to-catalog.config
-output: catalogs/cis/catalog.json
-Task: cis-to-catalog executed successfully.
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle task ocp4-cis-profile-to-oscal-cd -c adjunct-data/config-files/demo-ocp4-cis-profile-to-oscal-cd.config
+output: component-definitions/ocp4-cis/component-definition.json
+Task: ocp4-cis-profile-to-oscal-cd executed successfully.
 
-(venv.trestle)$ trestle validate --all
-VALID: Model /home/&lt;user&gt;/trestle.workspace/catalog/cis/catalog.json passed the Validator to confirm the model passes all registered validation tests.
+<span class="o">(</span>venv.trestle<span class="o">)</span>$ trestle validate --all
+VALID: Model /home/&lt;user&gt;/trestle.workspace/component-definitions/ocp4-cis/component-definition.json passed the Validator to confirm the model passes all registered validation tests.
 </code></pre></div>
 <ul>
 <li>View the generated OSCAL.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ cat catlog/cis/catalog.json
+<div class="highlight"><pre><span></span><code><span class="o">(</span>venv.trestle<span class="o">)</span>$ cat component-definitions/ocp4-cis/component-definition.json
 </code></pre></div>
 <details>
-<summary>catalog.json</summary>
+<summary>component-definition.json</summary>
 
-<div class="highlight"><pre><span></span><code>{
-  &quot;catalog&quot;: {
-    &quot;uuid&quot;: &quot;19543ebf-4667-48b7-be47-d51154f16fda&quot;,
-    &quot;metadata&quot;: {
-      &quot;title&quot;: &quot;CIS Red Hat OpenShift Container Platform 4 Benchmark&quot;,
-      &quot;last-modified&quot;: &quot;2021-12-03T13:52:21+00:00&quot;,
-      &quot;version&quot;: &quot;0.29.0&quot;,
-      &quot;oscal-version&quot;: &quot;1.0.0&quot;,
-      &quot;links&quot;: [
-        {
-          &quot;href&quot;: &quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile&quot;
-        },
-        {
-          &quot;href&quot;: &quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile&quot;
-        }
-      ]
-    },
-    &quot;groups&quot;: [
-      {
-        &quot;title&quot;: &quot;1 Control Plane Components&quot;,
-        &quot;groups&quot;: [
-          {
-            &quot;title&quot;: &quot;1.1 Master Node Configuration Files&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-1.1.1&quot;,
-                &quot;title&quot;: &quot;1.1.1 Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.2&quot;,
-                &quot;title&quot;: &quot;1.1.2 Ensure that the API server pod specification file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.3&quot;,
-                &quot;title&quot;: &quot;1.1.3 Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.4&quot;,
-                &quot;title&quot;: &quot;1.1.4 Ensure that the controller manager pod specification file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.5&quot;,
-                &quot;title&quot;: &quot;1.1.5 Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.6&quot;,
-                &quot;title&quot;: &quot;1.1.6 Ensure that the scheduler pod specification file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.7&quot;,
-                &quot;title&quot;: &quot;1.1.7 Ensure that the etcd pod specification file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.8&quot;,
-                &quot;title&quot;: &quot;1.1.8 Ensure that the etcd pod specification file ownership is set to root:root (Automated)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.9&quot;,
-                &quot;title&quot;: &quot;1.1.9 Ensure that the Container Network Interface file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.10&quot;,
-                &quot;title&quot;: &quot;1.1.10 Ensure that the Container Network Interface file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.11&quot;,
-                &quot;title&quot;: &quot;1.1.11 Ensure that the etcd data directory permissions are set to 700 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.12&quot;,
-                &quot;title&quot;: &quot;1.1.12 Ensure that the etcd data directory ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.13&quot;,
-                &quot;title&quot;: &quot;1.1.13 Ensure that the admin.conf file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.14&quot;,
-                &quot;title&quot;: &quot;1.1.14 Ensure that the admin.conf file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.15&quot;,
-                &quot;title&quot;: &quot;1.1.15 Ensure that the scheduler.conf file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.16&quot;,
-                &quot;title&quot;: &quot;1.1.16 Ensure that the scheduler.conf file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.17&quot;,
-                &quot;title&quot;: &quot;1.1.17 Ensure that the controller-manager.conf file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.18&quot;,
-                &quot;title&quot;: &quot;1.1.18 Ensure that the controller-manager.conf file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.19&quot;,
-                &quot;title&quot;: &quot;1.1.19 Ensure that the OpenShift PKI directory and file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.20&quot;,
-                &quot;title&quot;: &quot;1.1.20 Ensure that the OpenShift PKI certificate file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.1.21&quot;,
-                &quot;title&quot;: &quot;1.1.21 Ensure that the OpenShift PKI key file permissions are set to 600&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;1.2 API Server&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-1.2.1&quot;,
-                &quot;title&quot;: &quot;1.2.1 Ensure that the --anonymous-auth argument is set to false&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.2&quot;,
-                &quot;title&quot;: &quot;1.2.2 Ensure that the --basic-auth-file argument is not set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.3&quot;,
-                &quot;title&quot;: &quot;1.2.3 Ensure that the --token-auth-file parameter is not set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.4&quot;,
-                &quot;title&quot;: &quot;1.2.4 Ensure that the --kubelet-https argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.5&quot;,
-                &quot;title&quot;: &quot;1.2.5 Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.6&quot;,
-                &quot;title&quot;: &quot;1.2.6 Ensure that the --kubelet-certificate-authority argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.7&quot;,
-                &quot;title&quot;: &quot;1.2.7 Ensure that the --authorization-mode argument is not set to AlwaysAllow&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.8&quot;,
-                &quot;title&quot;: &quot;1.2.8 Ensure that the --authorization-mode argument includes Node&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.9&quot;,
-                &quot;title&quot;: &quot;1.2.9 Ensure that the --authorization-mode argument includes RBAC&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.10&quot;,
-                &quot;title&quot;: &quot;1.2.10 Ensure that the admission control plugin EventRateLimit is set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.11&quot;,
-                &quot;title&quot;: &quot;1.2.11 Ensure that the admission control plugin AlwaysAdmit is not set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.12&quot;,
-                &quot;title&quot;: &quot;1.2.12 Ensure that the admission control plugin AlwaysPullImages is set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.13&quot;,
-                &quot;title&quot;: &quot;1.2.13 Ensure that the admission control plugin SecurityContextDeny is not set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.14&quot;,
-                &quot;title&quot;: &quot;1.2.14 Ensure that the admission control plugin ServiceAccount is set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.15&quot;,
-                &quot;title&quot;: &quot;1.2.15 Ensure that the admission control plugin NamespaceLifecycle is set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.16&quot;,
-                &quot;title&quot;: &quot;1.2.16 Ensure that the admission control plugin PodSecurityPolicy is set (Automated)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.17&quot;,
-                &quot;title&quot;: &quot;1.2.17 Ensure that the admission control plugin NodeRestriction is set (Automated)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.18&quot;,
-                &quot;title&quot;: &quot;1.2.18 Ensure that the --insecure-bind-address argument is not set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.19&quot;,
-                &quot;title&quot;: &quot;1.2.19 Ensure that the --insecure-port argument is set to 0&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.20&quot;,
-                &quot;title&quot;: &quot;1.2.20 Ensure that the --secure-port argument is not set to 0&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.21&quot;,
-                &quot;title&quot;: &quot;1.2.21 Ensure that the --profiling argument is set to false&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.22&quot;,
-                &quot;title&quot;: &quot;1.2.22 Ensure that the --audit-log-path argument is set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.23&quot;,
-                &quot;title&quot;: &quot;1.2.23 Ensure that the audit logs are forwarded off the cluster for retention&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.24&quot;,
-                &quot;title&quot;: &quot;1.2.24 Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.25&quot;,
-                &quot;title&quot;: &quot;1.2.25 Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.26&quot;,
-                &quot;title&quot;: &quot;1.2.26 Ensure that the --request-timeout argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.27&quot;,
-                &quot;title&quot;: &quot;1.2.27 Ensure that the --service-account-lookup argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.28&quot;,
-                &quot;title&quot;: &quot;1.2.28 Ensure that the --service-account-key-file argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.29&quot;,
-                &quot;title&quot;: &quot;1.2.29 Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.30&quot;,
-                &quot;title&quot;: &quot;1.2.30 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.31&quot;,
-                &quot;title&quot;: &quot;1.2.31 Ensure that the --client-ca-file argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.32&quot;,
-                &quot;title&quot;: &quot;1.2.32 Ensure that the --etcd-cafile argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.33&quot;,
-                &quot;title&quot;: &quot;1.2.33 Ensure that the --encryption-provider-config argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.34&quot;,
-                &quot;title&quot;: &quot;1.2.34 Ensure that encryption providers are appropriately configured&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.2.35&quot;,
-                &quot;title&quot;: &quot;1.2.35 Ensure that the API Server only makes use of Strong Cryptographic Ciphers&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;1.3 Controller Manager&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-1.3.1&quot;,
-                &quot;title&quot;: &quot;1.3.1 Ensure that garbage collection is configured as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.3.2&quot;,
-                &quot;title&quot;: &quot;1.3.2 Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.3.3&quot;,
-                &quot;title&quot;: &quot;1.3.3 Ensure that the --use-service-account-credentials argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.3.4&quot;,
-                &quot;title&quot;: &quot;1.3.4 Ensure that the --service-account-private-key-file argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.3.5&quot;,
-                &quot;title&quot;: &quot;1.3.5 Ensure that the --root-ca-file argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.3.6&quot;,
-                &quot;title&quot;: &quot;1.3.6 Ensure that the RotateKubeletServerCertificate argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.3.7&quot;,
-                &quot;title&quot;: &quot;1.3.7 Ensure that the --bind-address argument is set to 127.0.0.1&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;1.4 Scheduler&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-1.4.1&quot;,
-                &quot;title&quot;: &quot;1.4.1 Ensure that the --profiling argument is set to false  (info only)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-1.4.2&quot;,
-                &quot;title&quot;: &quot;1.4.2 Ensure that the --bind-address argument is set to 127.0.0.1&quot;
-              }
-            ]
-          }
-        ]
-      },
-      {
-        &quot;title&quot;: &quot;2 etcd&quot;,
-        &quot;controls&quot;: [
-          {
-            &quot;id&quot;: &quot;CIS-2.1&quot;,
-            &quot;title&quot;: &quot;2.1 Ensure that the --cert-file and --key-file arguments are set as appropriate&quot;
-          },
-          {
-            &quot;id&quot;: &quot;CIS-2.2&quot;,
-            &quot;title&quot;: &quot;2.2 Ensure that the --client-cert-auth argument is set to true&quot;
-          },
-          {
-            &quot;id&quot;: &quot;CIS-2.3&quot;,
-            &quot;title&quot;: &quot;2.3 Ensure that the --auto-tls argument is not set to true&quot;
-          },
-          {
-            &quot;id&quot;: &quot;CIS-2.4&quot;,
-            &quot;title&quot;: &quot;2.4 Ensure that the --peer-cert-file and --peer-key-file arguments are set as appropriate&quot;
-          },
-          {
-            &quot;id&quot;: &quot;CIS-2.5&quot;,
-            &quot;title&quot;: &quot;2.5 Ensure that the --peer-client-cert-auth argument is set to true&quot;
-          },
-          {
-            &quot;id&quot;: &quot;CIS-2.6&quot;,
-            &quot;title&quot;: &quot;2.6 Ensure that the --peer-auto-tls argument is not set to true&quot;
-          },
-          {
-            &quot;id&quot;: &quot;CIS-2.7&quot;,
-            &quot;title&quot;: &quot;2.7 Ensure that a unique Certificate Authority is used for etcd&quot;
-          }
-        ]
-      },
-      {
-        &quot;title&quot;: &quot;3 Control Plane Configuration&quot;,
-        &quot;groups&quot;: [
-          {
-            &quot;title&quot;: &quot;3.1 Authentication and Authorization&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-3.1.1&quot;,
-                &quot;title&quot;: &quot;3.1.1 Client certificate authentication should not be used for users&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;3.2 Logging&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-3.2.1&quot;,
-                &quot;title&quot;: &quot;3.2.1 Ensure that a minimal audit policy is created&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-3.2.2&quot;,
-                &quot;title&quot;: &quot;3.2.2 Ensure that the audit policy covers key security concerns&quot;
-              }
-            ]
-          }
-        ]
-      },
-      {
-        &quot;title&quot;: &quot;4 Worker Nodes&quot;,
-        &quot;groups&quot;: [
-          {
-            &quot;title&quot;: &quot;4.1 Worker node configuration&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-4.1.1&quot;,
-                &quot;title&quot;: &quot;4.1.1 Ensure that the kubelet service file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.2&quot;,
-                &quot;title&quot;: &quot;4.1.2 Ensure that the kubelet service file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.3&quot;,
-                &quot;title&quot;: &quot;4.1.3 If proxy kubeconfig file exists ensure permissions are set to 644 or more restrictive (Automated)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.4&quot;,
-                &quot;title&quot;: &quot;4.1.4 If proxy kubeconfig file exists ensure ownership is set to root:root (Manual)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.5&quot;,
-                &quot;title&quot;: &quot;4.1.5 Ensure that the --kubeconfig kubelet.conf file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.6&quot;,
-                &quot;title&quot;: &quot;4.1.6 Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.7&quot;,
-                &quot;title&quot;: &quot;4.1.7 Ensure that the certificate authorities file permissions are set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.8&quot;,
-                &quot;title&quot;: &quot;4.1.8 Ensure that the client certificate authorities file ownership is set to root:root&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.9&quot;,
-                &quot;title&quot;: &quot;4.1.9 Ensure that the kubelet --config configuration file has permissions set to 644 or more restrictive&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.1.10&quot;,
-                &quot;title&quot;: &quot;4.1.10 Ensure that the kubelet configuration file ownership is set to root:root&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;4.2 Kubelet&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-4.2.1&quot;,
-                &quot;title&quot;: &quot;4.2.1 Ensure that the --anonymous-auth argument is set to false&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.2&quot;,
-                &quot;title&quot;: &quot;4.2.2 Ensure that the --authorization-mode argument is not set to AlwaysAllow&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.3&quot;,
-                &quot;title&quot;: &quot;4.2.3 Ensure that the --client-ca-file argument is set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.4&quot;,
-                &quot;title&quot;: &quot;4.2.4 Ensure that the --read-only-port argument is set to 0&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.5&quot;,
-                &quot;title&quot;: &quot;4.2.5 Ensure that the --streaming-connection-idle-timeout argument is not set to 0&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.6&quot;,
-                &quot;title&quot;: &quot;4.2.6 Ensure that the --protect-kernel-defaults argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.7&quot;,
-                &quot;title&quot;: &quot;4.2.7 Ensure that the --make-iptables-util-chains argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.8&quot;,
-                &quot;title&quot;: &quot;4.2.8 Ensure that the --hostname-override argument is not set&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.9&quot;,
-                &quot;title&quot;: &quot;4.2.9 Ensure that the --event-qps argument is set to 0 or a level which ensures appropriate event capture&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.10&quot;,
-                &quot;title&quot;: &quot;4.2.10 Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.11&quot;,
-                &quot;title&quot;: &quot;4.2.11 Ensure that the --rotate-certificates argument is not set to false&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.12&quot;,
-                &quot;title&quot;: &quot;4.2.12 Verify that the RotateKubeletServerCertificate argument is set to true&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-4.2.13&quot;,
-                &quot;title&quot;: &quot;4.2.13 Ensure that the Kubelet only makes use of Strong Cryptographic Ciphers&quot;
-              }
-            ]
-          }
-        ]
-      },
-      {
-        &quot;title&quot;: &quot;5 Policies&quot;,
-        &quot;groups&quot;: [
-          {
-            &quot;title&quot;: &quot;5.1 RBAC and Service Accounts&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-5.1.1&quot;,
-                &quot;title&quot;: &quot;5.1.1 Ensure that the cluster-admin role is only used where required&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.1.2&quot;,
-                &quot;title&quot;: &quot;5.1.2 Minimize access to secrets (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.1.3&quot;,
-                &quot;title&quot;: &quot;5.1.3 Minimize wildcard use in Roles and ClusterRoles (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.1.4&quot;,
-                &quot;title&quot;: &quot;5.1.4 Minimize access to create pods (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.1.5&quot;,
-                &quot;title&quot;: &quot;5.1.5 Ensure that default service accounts are not actively used. (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.1.6&quot;,
-                &quot;title&quot;: &quot;5.1.6 Ensure that Service Account Tokens are only mounted where necessary (info)&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;5.2 Pod Security Policies / Security Context Constraints&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-5.2.1&quot;,
-                &quot;title&quot;: &quot;5.2.1 Minimize the admission of privileged containers (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.2&quot;,
-                &quot;title&quot;: &quot;5.2.2 Minimize the admission of containers wishing to share the host process ID namespace (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.3&quot;,
-                &quot;title&quot;: &quot;5.2.3 Minimize the admission of containers wishing to share the host IPC namespace (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.4&quot;,
-                &quot;title&quot;: &quot;5.2.4 Minimize the admission of containers wishing to share the host network namespace (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.5&quot;,
-                &quot;title&quot;: &quot;5.2.5 Minimize the admission of containers with allowPrivilegeEscalation (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.6&quot;,
-                &quot;title&quot;: &quot;5.2.6 Minimize the admission of root containers (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.7&quot;,
-                &quot;title&quot;: &quot;5.2.7 Minimize the admission of containers with the NET_RAW capability (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.8&quot;,
-                &quot;title&quot;: &quot;5.2.8 Minimize the admission of containers with added capabilities (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.2.9&quot;,
-                &quot;title&quot;: &quot;5.2.9 Minimize the admission of containers with capabilities assigned (info)&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;5.3 Network Policies and CNI&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-5.3.1&quot;,
-                &quot;title&quot;: &quot;5.3.1 Ensure that the CNI in use supports Network Policies (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.3.2&quot;,
-                &quot;title&quot;: &quot;5.3.2 Ensure that all Namespaces have Network Policies defined&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;5.4 Secrets Management&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-5.4.1&quot;,
-                &quot;title&quot;: &quot;5.4.1 Prefer using secrets as files over secrets as environment variables (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.4.2&quot;,
-                &quot;title&quot;: &quot;5.4.2 Consider external secret storage (info)&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;5.5 Extensible Admission Control&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-5.5.1&quot;,
-                &quot;title&quot;: &quot;5.5.1 Configure Image Provenance using ImagePolicyWebhook admission controller&quot;
-              }
-            ]
-          },
-          {
-            &quot;title&quot;: &quot;5.6 General Policies&quot;,
-            &quot;controls&quot;: [
-              {
-                &quot;id&quot;: &quot;CIS-5.6.1&quot;,
-                &quot;title&quot;: &quot;5.6.1 Create administrative boundaries between resources using namespaces (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.6.2&quot;,
-                &quot;title&quot;: &quot;5.6.2 Ensure Seccomp Profile Pod Definitions (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.6.3&quot;,
-                &quot;title&quot;: &quot;5.6.3 Apply Security Context to your Pods and Containers (info)&quot;
-              },
-              {
-                &quot;id&quot;: &quot;CIS-5.6.4&quot;,
-                &quot;title&quot;: &quot;5.6.4 The Default Namespace should not be used (info)&quot;
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-}
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;component-definition&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d1b961ee-188b-42b9-943d-e11dc260f9dc&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Component definition for OCP4 profiles&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;last-modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2022-01-06T22:43:59+00:00&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.33.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;oscal-version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Indicates the organization that created this content.&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Indicates the organization for which this content was created..&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Indicates the organization responsible for all content represented in the \&quot;document\&quot;.&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;parties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;International Business Machines&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IBM&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Customer&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization to be customized at account creation only for their Component Definition&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ISV&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;organization to be customized at ISV subscription only for their Component Definition&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">],</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;responsible-parties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="p">]</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;components&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;e2ee2b93-6103-42de-b615-65b0b3ff2dc4&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Service&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OSCO&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OSCO&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;control-implementations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">          </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;f9c2699a-2d2c-4ee2-87f3-042d1a9b3a79&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_name&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OCP4 CIS-benchmark v4&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_profile_name&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_mnemonic&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ocp4-cis-node&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_profile_mnemonic&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_version&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_profile_version&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;profile_check_version&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.58&quot;</span><span class="w"></span>
+<span class="w">              </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">],</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;implemented-requirements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;97142b13-bc30-4e72-be7f-36de9149a679&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CIS-1.1.1&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file permissions are set to 644 or more restrictive&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify Permissions on the Kubernetes API Server Pod Specification File&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">],</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0690e2a7-b228-4954-93fe-c1d55936cfa8&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify User Who Owns The Kubernetes API Server Pod Specification File&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">],</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">              </span><span class="p">},</span><span class="w"></span>
+<span class="w">              </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;18c61fb2-8603-440d-9d9a-8d6d1e232cd3&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;control-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CIS-1.1.2&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ensure that the API server pod specification file ownership is set to root:root&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;props&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XCCDF_rule&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://ibm.github.io/compliance-trestle/schemas/oscal/ibm-cloud&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scc_goal_name_id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;remarks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify Group Who Owns The Kubernetes API Server Pod Specification File&quot;</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">],</span><span class="w"></span>
+<span class="w">                </span><span class="nt">&quot;responsible-roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-by&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prepared-for&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;851b55f0-5ba6-4684-8a48-5dad22ba2625&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;150f9eb7-7fa5-4989-b9be-bc3cba220354&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">},</span><span class="w"></span>
+<span class="w">                  </span><span class="p">{</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;role-id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;content-approver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                    </span><span class="nt">&quot;party-uuids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">                      </span><span class="s2">&quot;d00dff65-e4ae-4344-a206-1e298eff9066&quot;</span><span class="w"></span>
+<span class="w">                    </span><span class="p">]</span><span class="w"></span>
+<span class="w">                  </span><span class="p">}</span><span class="w"></span>
+<span class="w">                </span><span class="p">]</span><span class="w"></span>
+<span class="w">              </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="p">]</span><span class="w"></span>
+<span class="w">          </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">]</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
 </details>
@@ -3441,7 +3151,7 @@ Congratulations! You have completed this tutorial.
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../../task.transformer-construction/transformer-construction/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Transformer construction" rel="prev">
+        <a href="../../task.ocp4-cis-profile-to-oscal-catalog/transformation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Task - ocp4-cis-profile-to-oscal-catalog" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -3450,20 +3160,20 @@ Congratulations! You have completed this tutorial.
               <span class="md-footer__direction">
                 Previous
               </span>
-              Transformer construction
+              Task - ocp4-cis-profile-to-oscal-catalog
             </div>
           </div>
         </a>
       
       
         
-        <a href="../../task.cis-to-component-definition/transformation/" class="md-footer__link md-footer__link--next" aria-label="Next: Task - cis-to-component-definition" rel="next">
+        <a href="../../task.tanium-result-to-oscal-ar/transformation/" class="md-footer__link md-footer__link--next" aria-label="Next: Task - tanium-result-to-oscal-ar" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Task - cis-to-component-definition
+              Task - tanium-result-to-oscal-ar
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -3493,10 +3203,10 @@ Congratulations! You have completed this tutorial.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.annotate"], "search": "../../../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.467223ff.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c44cc438.min.js"></script>
       
     
   </body>
