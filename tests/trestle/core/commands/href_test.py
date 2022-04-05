@@ -23,6 +23,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests import test_utils
 
 from trestle.cli import Trestle
+from trestle.common.model_utils import ModelUtils
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import profile
 
@@ -62,7 +63,7 @@ def test_href_cmd(
     # restore orig href to confirm models are otherwise equivalent
     # only thing different should be last-modified
     new_profile.imports[0].href = orig_href
-    assert test_utils.models_are_equivalent(new_profile, simplified_nist_profile)
+    assert ModelUtils.models_are_equivalent(new_profile, simplified_nist_profile)
 
 
 def test_href_failures(

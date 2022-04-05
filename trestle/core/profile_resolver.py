@@ -37,7 +37,20 @@ class ProfileResolver():
         params_format: Optional[str] = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) -> cat.Catalog:
-        """Create the resolved profile catalog given a profile path."""
+        """
+        Create the resolved profile catalog given a profile path.
+
+        Args:
+            trestle_root: root directory of the trestle project
+            profile_path: path of the profile being resolved
+            block_adds: prevent the application of adds in the final profile
+            block_params: prevent the application of setparams in the final profile
+            params_format: optional pattern with dot to wrap the param string, where dot represents the param string
+            param_rep: desired way to convert params to strings
+
+        Returns:
+            The resolved profile catalog
+        """
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
         # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.

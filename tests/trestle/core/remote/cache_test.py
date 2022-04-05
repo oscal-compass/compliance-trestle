@@ -29,12 +29,11 @@ from paramiko import SSHClient
 
 import pytest
 
-from tests.test_utils import models_are_equivalent
-
 import trestle.common.const as const
 import trestle.common.err as err
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
+from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
@@ -73,9 +72,9 @@ def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir)
     fetcher._update_cache()
     fetched_data = fetcher.get_oscal_with_model_type(Catalog)
-    assert models_are_equivalent(fetched_data, catalog_data)
+    assert ModelUtils.models_are_equivalent(fetched_data, catalog_data)
     fetched_data, _ = fetcher.get_oscal()
-    assert models_are_equivalent(fetched_data, catalog_data)
+    assert ModelUtils.models_are_equivalent(fetched_data, catalog_data)
 
 
 def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -101,7 +100,7 @@ def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the local fetcher for an object with an aboslute path."""
     fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir, False, True)
     fetched_data, _ = fetcher.get_oscal()
-    assert models_are_equivalent(fetched_data, catalog_data)
+    assert ModelUtils.models_are_equivalent(fetched_data, catalog_data)
 
 
 def test_https_fetcher_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

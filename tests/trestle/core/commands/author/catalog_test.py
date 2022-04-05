@@ -29,6 +29,7 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_io import ControlIOReader, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -102,13 +103,15 @@ def test_catalog_generate_assemble(
         if add_header:
             yaml = YAML(typ='safe')
             yaml_header = yaml.load(yaml_header_path.open('r'))
-        catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False)
+        assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
+            tmp_trestle_dir, catalog_path, markdown_path, yaml_header, False
+        )
         assert (markdown_path / 'ac/ac-1.md').exists()
         _change_params(ac1_path, new_prose, make_change)
         if dir_exists:
             assembled_cat_dir.mkdir()
         orig_cat_name = cat_name if use_orig_cat else None
-        CatalogAssemble.assemble_catalog(
+        assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
             tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters, False, ''
         )
 
@@ -150,8 +153,12 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     sample_catalog_rich_controls.oscal_write(catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     catalog_generate = CatalogGenerate()
-    catalog_generate.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, {}, False)
-    CatalogAssemble.assemble_catalog(tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version)
+    assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
+        tmp_trestle_dir, catalog_path, markdown_path, {}, False
+    )
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version
+    )
     assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         assembled_cat_name,
@@ -163,14 +170,21 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     creation_time = assembled_cat_path.stat().st_mtime
 
     # assemble same way again and confirm no new write
-    CatalogAssemble.assemble_catalog(
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
 
+    # assemble same way again but without parent specified and confirm no new write
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
+    )
+
+    assert creation_time == assembled_cat_path.stat().st_mtime
+
     # change version and confirm write
-    CatalogAssemble.assemble_catalog(
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx'
     )
 
@@ -342,8 +356,13 @@ def test_pulled_params_in_choice(
     tmp_trestle_dir: pathlib.Path, simplified_nist_catalog: cat.Catalog, simplified_nist_profile: prof.Profile
 ) -> None:
     """Confirm that parameters in choices are substituted properly and give lower priority to upstream subs."""
-    # the nist simplified profile defines ac-4.4_prm_3, which is in the choices of ac-4.4_prm_2
+    # the nist catalog defines ac-4.4_prm_3, which is referenced by the choices of ac-4.4_prm_2
+    # the nist simplified profile itself defines ac-4.4_prm_3 and thereby defines the choices in ac-4.4_prm_2
     # but it is also set by the pulling profile, which should have final say
+    # in addition, both the simplified profile and the pulling profile define the desired values for ac-4.4_prm_2
+    # the provided values need to be a subset of the choice options
+    # the pulling profile should dictate what happens in a generate-assemble cycle for values and choices
+    # so the generated markdown needs to substitute current set-param values into the choices instead of holding back
     cat_name = 'simplified_nist_catalog'
     prof_name = 'simplified_nist_profile'
     ModelUtils.save_top_level_model(simplified_nist_catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
@@ -352,21 +371,27 @@ def test_pulled_params_in_choice(
     prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, pull_prof_name, prof.Profile, FileContentType.JSON)
     prof_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(test_utils.JSON_TEST_DATA_PATH / (pull_prof_name + '.json'), prof_path)
+
+    # get the resolved profile catalog
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     cat_interface = CatalogInterface(catalog)
+
+    # check values
     control = cat_interface.get_control('ac-4.4')
     val_1 = 'blocking the flow of the encrypted information'
-    val_2 = 'terminating communications sessions attempting to pass encrypted information'
-    val_3 = 'from pulling profile'
+    val_2 = 'from pulling profile'
     assert control.params[1].values[0].__root__ == val_1
     assert control.params[1].values[1].__root__ == val_2
-    # confirm the choice text was set properly
+
+    # confirm the choice text was handled properly
     # the param value and the choice should be set by the pulling profile
-    assert control.params[2].values[0].__root__ == val_3
-    assert control.params[1].select.choice[3] == val_3
-    # this confirms the pulling profile sets the value of a loose apram
+    assert control.params[2].values[0].__root__ == val_2
+    assert control.params[1].select.choice[3] == val_2
+
+    # this confirms the pulling profile sets the value of a loose param
     assert catalog.params[1].values[0].__root__ == 'loose_2_val_from_pulling'
 
+    # confirm other attributes are as expected
     control = cat_interface.get_control('ac-1')
     param = control.params[0]
     assert param.props[0].value == 'prop value from prof'

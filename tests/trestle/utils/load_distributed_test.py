@@ -103,7 +103,7 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
 
     assert actual_model_type == Catalog
     assert actual_model_alias == 'catalog'
-    assert test_utils.models_are_equivalent(expected_model_instance, actual_model_instance)
+    assert ModelUtils.models_are_equivalent(expected_model_instance, actual_model_instance)
 
     # confirm it fails attempting to load collection type that is not a list
     with pytest.raises(TrestleError):

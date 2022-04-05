@@ -343,6 +343,6 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     assert statement_label == '2.'
     assert part.id == 'ac-1_smt.c.2'
 
-    cat_path = cat_interface._get_control_path('ac-2')
+    cat_path = cat_interface.get_control_path('ac-2')
     assert cat_path[0] == 'ac'
     assert len(cat_path) == 1
