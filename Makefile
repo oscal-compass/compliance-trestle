@@ -62,7 +62,7 @@ test-bdist:: clean
 release::
 	git config --global user.name "semantic-release (via Github actions)"
 	git config --global user.email "semantic-release@github-actions"
-	semantic-release publish
+	semantic-release publish --prerelease
 
 gen-oscal::
 	python ./scripts/gen_oscal.py
