@@ -56,7 +56,7 @@ Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:
 
 ```
 (venv.trestle)$ mkdir -p adjunct-data/cis-benchmarks
-(venv.trestle)$ mkdir -p adjunct-data/trestle-configs
+(venv.trestle)$ mkdir -p adjunct-data/task-files
 ```
 
 - Fetch ComplianceAsCode profile data.
@@ -70,7 +70,7 @@ Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:
 - Fetch trestle task file.
 
 ```
-(venv.trestle)$ curl 'https://https://github.com/IBM/compliance-trestle/blob/develop/docs/tutorials/task.ocp4-cis-profile-to-oscal-catalog/demo-ocp4-cis-profile-to-oscal-catalog.config' > adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
+(venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-catalog/demo-ocp4-cis-profile-to-oscal-catalog.config' > adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
 ```
 
 <details>
