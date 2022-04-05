@@ -3389,10 +3389,8 @@ Column        </code>
     <span class="n">filter_column</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">tokens_nist_mappings</span> <span class="o">=</span> <span class="n">nist_mappings</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-
     <span class="n">tokens_parameter_opt_parm</span> <span class="o">=</span> <span class="n">parameter_opt_parm</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">rename_parameter_opt_parm</span> <span class="o">=</span> <span class="s1">&#39;ParameterName&#39;</span>
-
     <span class="n">tokens_values_alternatives</span> <span class="o">=</span> <span class="n">values_alternatives</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">rename_values_alternatives</span> <span class="o">=</span> <span class="s1">&#39;ParameterValue&#39;</span>
 
@@ -4060,6 +4058,7 @@ XlsxHelper        </code>
             <span class="k">if</span> <span class="n">cell_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">cell_tokens</span> <span class="o">=</span> <span class="n">cell_value</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">normalized_cell_value</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell_tokens</span><span class="p">)</span>
             <span class="c1"># find columns of interest</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_id</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -4069,13 +4068,15 @@ XlsxHelper        </code>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># parameters and alternatives (exact tokens match)</span>
             <span class="k">elif</span> <span class="n">cell_tokens</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">tokens_parameter_opt_parm</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rename_parameter_opt_parm</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">cell_tokens</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">tokens_values_alternatives</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rename_values_alternatives</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">filter_column</span> <span class="o">==</span> <span class="n">cell_value</span><span class="p">:</span>
+            <span class="c1"># filter column (exact string match)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">filter_column</span> <span class="o">==</span> <span class="n">normalized_cell_value</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">filter_column</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="c1"># multi</span>
+            <span class="c1"># nist mappings and resource title (multiple columns match)</span>
             <span class="k">elif</span> <span class="n">is_ordered_sublist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">tokens_nist_mappings</span><span class="p">,</span> <span class="n">cell_tokens</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">nist_mappings</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">resource_title</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
