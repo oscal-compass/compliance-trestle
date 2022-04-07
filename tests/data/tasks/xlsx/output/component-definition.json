@@ -131,22 +131,18 @@
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
             "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
             "set-parameters": [
-              [
-                {
-                  "param-id": "no_of_admins_for_cloudant_db",
-                  "values": [
-                    "3"
-                  ]
-                }
-              ],
-              [
-                {
-                  "param-id": "no_of_service_id_admins_for_cloudant_db",
-                  "values": [
-                    "3"
-                  ]
-                }
-              ]
+              {
+                "param-id": "no_of_admins_for_cloudant_db",
+                "values": [
+                  "3"
+                ]
+              },
+              {
+                "param-id": "no_of_service_id_admins_for_cloudant_db",
+                "values": [
+                  "3"
+                ]
+              }
             ],
             "implemented-requirements": [
               {
@@ -170,14 +166,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -222,14 +216,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -274,14 +266,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -326,14 +316,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -378,14 +366,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_service_id_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_service_id_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -430,14 +416,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_service_id_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_service_id_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -482,14 +466,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_service_id_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_service_id_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -534,14 +516,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "no_of_service_id_admins_for_cloudant_db",
-                      "values": [
-                        "3"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "no_of_service_id_admins_for_cloudant_db",
+                    "values": [
+                      "3"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -805,15 +785,13 @@
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
             "description": "IKS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
             "set-parameters": [
-              [
-                {
-                  "param-id": "iks_ingress_tls_versions",
-                  "values": [
-                    "1.2",
-                    "1.3"
-                  ]
-                }
-              ]
+              {
+                "param-id": "iks_ingress_tls_versions",
+                "values": [
+                  "1.2",
+                  "1.3"
+                ]
+              }
             ],
             "implemented-requirements": [
               {
@@ -837,14 +815,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "iks_ingress_tls_versions",
-                      "values": [
-                        "1.2"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "iks_ingress_tls_versions",
+                    "values": [
+                      "1.2"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -889,14 +865,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "iks_ingress_tls_versions",
-                      "values": [
-                        "1.2"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "iks_ingress_tls_versions",
+                    "values": [
+                      "1.2"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -941,14 +915,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "iks_ingress_tls_versions",
-                      "values": [
-                        "1.2"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "iks_ingress_tls_versions",
+                    "values": [
+                      "1.2"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -993,14 +965,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "iks_ingress_tls_versions",
-                      "values": [
-                        "1.2"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "iks_ingress_tls_versions",
+                    "values": [
+                      "1.2"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -1045,14 +1015,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "iks_ingress_tls_versions",
-                      "values": [
-                        "1.2"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "iks_ingress_tls_versions",
+                    "values": [
+                      "1.2"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -1505,28 +1473,24 @@
             "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
             "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
             "set-parameters": [
-              [
-                {
-                  "param-id": "source_code_scaning_vulnerability_threashhold",
-                  "values": [
-                    "low",
-                    "medium",
-                    "high",
-                    "critical"
-                  ]
-                }
-              ],
-              [
-                {
-                  "param-id": "source_code_scaning_vulnerability_threashhold",
-                  "values": [
-                    "low",
-                    "medium",
-                    "high",
-                    "critical"
-                  ]
-                }
-              ]
+              {
+                "param-id": "source_code_scaning_vulnerability_threashhold",
+                "values": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              },
+              {
+                "param-id": "source_code_scaning_vulnerability_threashhold",
+                "values": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              }
             ],
             "implemented-requirements": [
               {
@@ -1550,14 +1514,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "source_code_scaning_vulnerability_threashhold",
-                      "values": [
-                        "low"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "source_code_scaning_vulnerability_threashhold",
+                    "values": [
+                      "low"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -1609,14 +1571,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "source_code_scaning_vulnerability_threashhold",
-                      "values": [
-                        "low"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "source_code_scaning_vulnerability_threashhold",
+                    "values": [
+                      "low"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -1668,14 +1628,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "source_code_scaning_vulnerability_threashhold",
-                      "values": [
-                        "low"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "source_code_scaning_vulnerability_threashhold",
+                    "values": [
+                      "low"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -1720,14 +1678,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "source_code_scaning_vulnerability_threashhold",
-                      "values": [
-                        "low"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "source_code_scaning_vulnerability_threashhold",
+                    "values": [
+                      "low"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
@@ -1772,14 +1728,12 @@
                   }
                 ],
                 "set-parameters": [
-                  [
-                    {
-                      "param-id": "source_code_scaning_vulnerability_threashhold",
-                      "values": [
-                        "low"
-                      ]
-                    }
-                  ]
+                  {
+                    "param-id": "source_code_scaning_vulnerability_threashhold",
+                    "values": [
+                      "low"
+                    ]
+                  }
                 ],
                 "responsible-roles": [
                   {
