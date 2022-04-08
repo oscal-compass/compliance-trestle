@@ -262,10 +262,9 @@ class XlsxToOscalComponentDefinition(TaskBase):
             parameter_name = parameter_name.replace(' ', '_')
             if parameter_values is not None:
                 set_parameter = SetParameter(param_id=parameter_name, values=parameter_values)
-                set_parameters = [set_parameter]
                 if control_implementation.set_parameters is None:
                     control_implementation.set_parameters = []
-                control_implementation.set_parameters.append(set_parameters)
+                control_implementation.set_parameters.append(set_parameter)
 
     def _add_set_parameter_default(
         self, parameter_name: str, parameter_value_default: str, implemented_requirement: ImplementedRequirement
@@ -278,8 +277,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                     implemented_requirement.set_parameters = []
                 values = [parameter_value_default]
                 set_parameter = SetParameter(param_id=parameter_name, values=values)
-                set_parameters = [set_parameter]
-                implemented_requirement.set_parameters.append(set_parameters)
+                implemented_requirement.set_parameters.append(set_parameter)
 
     def _get_defined_component(self, component_name: str, component_type: str) -> DefinedComponent:
         """Get defined component."""
