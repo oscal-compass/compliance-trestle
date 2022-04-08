@@ -214,3 +214,7 @@ def test_jinja_profile_docs_fails(
 
     command_jinja = f'trestle author jinja -i {input_template} -o controls -ssp ssp_json -p main_profile --docs-profile'
     execute_command_and_assert(command_jinja, 2, monkeypatch)
+
+    input_template = 'profile_to_docs_invalid.md.jinja'
+    command_jinja = f'trestle author jinja -i {input_template} -o controls -p main_profile --docs-profile'
+    execute_command_and_assert(command_jinja, 1, monkeypatch)

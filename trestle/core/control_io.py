@@ -146,11 +146,17 @@ class ControlIOWriter():
         return a_clean + gap + b_clean
 
     def _add_control_statement(
-        self, control: cat.Control, group_title: str, sections_dict: Optional[Dict[str, str]] = None
+        self,
+        control: cat.Control,
+        group_title: str,
+        sections_dict: Optional[Dict[str, str]] = None,
+        capitalize_title=False
     ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
         title = f'{control.id} - \[{group_title}\] {control.title}'
+        if capitalize_title:
+            title = f'{control.id.upper()} - \[{group_title.title()}\] {control.title.title()}'
         header_title = 'Control Statement'
         if sections_dict and sections_dict['statement']:
             header_title = sections_dict['statement']
@@ -256,6 +262,16 @@ class ControlIOWriter():
                 self._md_file.new_header(level=2, title=f'Control {section_title}')
                 self._md_file.new_line(prose)
                 self._md_file.new_paragraph()
+
+    def _add_one_section(self, control: cat.Control, section: str) -> None:
+        """Add specific control section."""
+        prose = ControlIOWriter._get_control_section_prose(control, section)
+        if prose:
+            section_title = self._sections_dict.get(section) if self._sections_dict else section
+            section_title = section_title if section_title else section
+            self._md_file.new_header(level=2, title=f'Control {section_title}')
+            self._md_file.new_line(prose)
+            self._md_file.new_paragraph()
 
     def _insert_existing_text(self, part_label: str, existing_text: Dict[str, List[str]]) -> None:
         """Insert text captured in the previous markdown and reinsert to avoid overwrite."""
@@ -532,18 +548,20 @@ class ControlIOWriter():
         """Write the control into markdown file with specified sections."""
         self._md_file = MDWriter(None)
         self._sections_dict = sections_dict
+        if not isinstance(group_title, str):
+            raise TrestleError(f'Group title must be provided and be a string, instead received: {group_title}')
 
         for section in sections:
             if 'statement' == section:
-                self._add_control_statement(control, group_title, sections_dict)
+                self._add_control_statement(control, group_title, sections_dict, True)
 
             elif 'objective' == section:
                 self._add_control_objective(control, sections_dict)
 
             elif 'table_of_parameters' == section:
                 self.get_params(control, label_column, self._md_file)
-
-        self._add_sections(control, sections)
+            else:
+                self._add_one_section(control, section)
 
         return '\n'.join(self._md_file._lines)
 
