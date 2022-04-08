@@ -7,7 +7,14 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
+[tool.trestle]
+version = "1.0.0-rc.0"
+
+[tool.semantic_release]
+version_toml = "pyproject.toml:tool.trestle.version"
+prerelease_tag = "rc"
+branch = "v1.0.0-rc"
+upload_to_pypi = "true"
 
 [tool.pytest.ini_options]
 minversion = "6.2"
