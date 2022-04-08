@@ -177,7 +177,7 @@ def test_jinja_profile_docs(
         if os.path.isfile(full_file_name):
             shutil.copy(full_file_name, tmp_trestle_dir)
 
-    command_import = f'trestle author jinja -i {input_template} -o controls -p main_profile --docs-profile'
+    command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     for md_control in (tmp_trestle_dir / 'controls' / 'ac').iterdir():
@@ -189,6 +189,8 @@ def test_jinja_profile_docs(
             assert node1
             node2 = tree.get_node_for_key('## Control Statement Header')
             assert node2
+            node3 = tree.get_node_for_key('## Control Expected Evidence Header')
+            assert node3
 
 
 def test_jinja_profile_docs_fails(
