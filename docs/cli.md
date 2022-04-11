@@ -1204,13 +1204,13 @@ Example output directory contents listing:
 
 ## `trestle task xlsx-to-oscal-cd`
 
-The *trestle task xlsx-to-oscal-cd* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
+The *trestle task xlsx-to-oscal-cd* command facilitates transformation of an excel spreadsheet into an OSCAL component-definition.json file.
 Specify in the config:
 
 <ul>
 <li> location of catalog file
-<li> location of spread sheet file
-<li> work sheet name in the spread sheet file
+<li> location of spreadsheet file
+<li> work sheet name in the spreadsheet file
 <li> output directory to write the component-definition.json file
 <li> whether or not to overwrite an existing component-definition.json file
 <li> the organization name
@@ -1274,7 +1274,7 @@ Example component-definition.json:
 
 [/home/user/compliance/data/tasks/xlsx/output/component-definition.json](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
 
-### spread sheet to component definition mapping
+### spreadsheet to component definition mapping
 
 <details>
 <summary>display mapping table</summary>
@@ -1291,7 +1291,7 @@ th, td {
 
 <table>
 <tr>
-<th>spread sheet column name
+<th>spreadsheet column name
 <th>component definition path
 <th>comments
 <tr>
@@ -1342,7 +1342,7 @@ th, td {
     <li>implemented_requirement.property[name='goal_version'].value
     </ul>
 <td><ul>
-    <li>Value from spread sheet is not currently used. 
+    <li>Value from spreadsheet is not currently used. 
     <li>Value '1.0' is hard coded.
     </ul>
 <tr>
@@ -1369,13 +1369,13 @@ th, td {
 
 ## `trestle task xlsx-to-oscal-profile`
 
-The *trestle task xlsx-to-oscal-profile* command facilitates transformation of an excel spread sheet into an OSCAL profile.json file.
+The *trestle task xlsx-to-oscal-profile* command facilitates transformation of an excel spreadsheet into an OSCAL profile.json file.
 Specify in the config:
 
 <ul>
-<li> the href URL of the spread sheet
-<li> file system location of spread sheet file
-<li> work sheet name in the spread sheet file
+<li> the href URL of the spreadsheet
+<li> file system location of spreadsheet file
+<li> work sheet name in the spreadsheet file
 <li> output directory to write the profile.json file
 <li> whether or not to overwrite an existing profile.json file
 <li> the profile title
