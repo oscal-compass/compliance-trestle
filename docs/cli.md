@@ -250,7 +250,7 @@ Once a file has been imported it can be split into a rich tree of sub-components
 
 ## `trestle replicate`
 
-This command allows users to replicate a certain OSCAL model (file and directory structure). For example `trestle replicate catalog -i cat1 -o cat11` will replicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
+This command allows users to replicate a certain OSCAL model (file and directory structure). For example `trestle replicate catalog -n cat1 -o cat11` will replicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
 
 ## `trestle split`
 
@@ -442,7 +442,7 @@ Authorization for `sftp://` access relies on the user's private key being either
 
 This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example,
 
-`$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53`
+`$TRESTLE_BASEDIR$ trestle assemble catalog -n nist800-53`
 
 will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON (e.g. based on the file extension), however, the output will be generated as YAML/JSON as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
@@ -1237,8 +1237,8 @@ Example config:
 [task.xlsx-to-oscal-cd]
 
 catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
-spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
-work-sheet-name = best_practices_controls
+spread-sheet-file = /home/user/compliance/data/spread-sheet/good.xlsx
+work-sheet-name = example_best_practices_controls
 output-dir = /home/user/compliance/data/tasks/xlsx/output
 output-overwrite = true
 
@@ -1264,7 +1264,7 @@ Example catalog-file:
 Example spread-sheet-file:
 </span>
 
-[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
 
 **output**
 
@@ -1396,9 +1396,9 @@ Example config:
 ```conf
 [task.xlsx-to-oscal-profile]
 
-spread-sheet-url = https://github.mycorp.com/spread-sheets/best_practices_controls.xlsx
-spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
-work-sheet-name = best_practices_controls
+spread-sheet-url = https://github.mycorp.com/spread-sheets/good.xlsx
+spread-sheet-file = /home/user/compliance/data/spread-sheet/good.xlsx
+work-sheet-name = example_best_practices_controls
 output-dir = /home/user/compliance/data/tasks/xlsx/output
 output-overwrite = true
 
@@ -1411,7 +1411,7 @@ profile-title = IBM Best Practices SCC GOALS
 Example spread-sheet-file:
 </span>
 
-[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+[/home/user/compliance/data/spread-sheet/good.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
 
 **output**
 
