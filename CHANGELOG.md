@@ -3,6 +3,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.37.0 (2022-04-12)
+### Feature
+* Bump feature with added docs ([#1092](https://github.com/IBM/compliance-trestle/issues/1092)) ([`d1cdad3`](https://github.com/IBM/compliance-trestle/commit/d1cdad3360a122cfa9bcd7ea8c3252369966f49e))
+
+### Fix
+* Cherry pick all fixes from the prerelease hotfix branch ([#1090](https://github.com/IBM/compliance-trestle/issues/1090)) ([`06e1470`](https://github.com/IBM/compliance-trestle/commit/06e147088ec0808bd04f7a5f4a10dc1f13bb7275))
+* Improved filtering column matching. ([#1082](https://github.com/IBM/compliance-trestle/issues/1082)) ([`712822e`](https://github.com/IBM/compliance-trestle/commit/712822e387c592f667a763ede6f145590a9b088e))
+
+### Documentation
+* Small fixes to cli.md ([#1091](https://github.com/IBM/compliance-trestle/issues/1091)) ([`6206869`](https://github.com/IBM/compliance-trestle/commit/6206869f12a16150fccb652896c1743add1a8c59))
+
 ## v0.36.0 (2022-04-04)
 ### Feature
 * Add ability to generate multiple markdown files using Jinja ([#1077](https://github.com/IBM/compliance-trestle/issues/1077)) ([`f41fc9f`](https://github.com/IBM/compliance-trestle/commit/f41fc9fe3df95985f50ef29e09be07962fc8a7e9))
