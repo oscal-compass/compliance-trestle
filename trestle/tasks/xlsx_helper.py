@@ -52,10 +52,8 @@ class Column():
     filter_column = None
 
     tokens_nist_mappings = nist_mappings.split()
-
     tokens_parameter_opt_parm = parameter_opt_parm.split()
     rename_parameter_opt_parm = 'ParameterName'
-
     tokens_values_alternatives = values_alternatives.split()
     rename_values_alternatives = 'ParameterValue'
 
@@ -114,9 +112,6 @@ class XlsxHelper:
         text1 = '  filter-column     = '
         text2 = '(optional) column heading of yes/no values; process only "yes" rows.'
         logger.info(text1 + text2)
-        text1 = '  analysis-level    = '
-        text2 = '(optional) integer.'
-        logger.info(text1 + text2)
 
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
@@ -126,7 +121,6 @@ class XlsxHelper:
         # config verbosity
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
-        self.anaylsis_level = int(task._config.get('analysis-level', 0))
         # required for component-definition
         if task.name == 'xlsx-to-oscal-cd':
             catalog_file = task._config.get('catalog-file')
@@ -252,7 +246,7 @@ class XlsxHelper:
         """Get parameter_values from work_sheet."""
         col = self._get_column_letter(self._column.rename_values_alternatives)
         value = self._work_sheet[col + str(row)].value
-        if value is None:
+        if value is None and self.get_parameter_name(row) is not None:
             self._add_row(row, self.rows_missing_parameters_values)
         # massage into comma separated list of values
         else:
@@ -327,6 +321,10 @@ class XlsxHelper:
             raise RuntimeError(f'row {row} col {col} missing component name')
         return value.strip()
 
+    def get_parameter_name(self, row: int) -> Tuple[str, str]:
+        """Get parameter_name from work_sheet."""
+        return self.get_parameter_name_and_description(row)[0]
+
     def get_parameter_name_and_description(self, row: int) -> Tuple[str, str]:
         """Get parameter_name and description from work_sheet."""
         name = None
@@ -349,7 +347,7 @@ class XlsxHelper:
                     self._add_row(row, self.rows_invalid_parameter_name)
             else:
                 logger.info(f'row {row} col {col} invalid value')
-        if name is None:
+        if name is None and self.get_parameter_value_default(row) is not None:
             self._add_row(row, self.rows_missing_parameters)
         value = name, description
         return value
@@ -376,6 +374,7 @@ class XlsxHelper:
             if cell_value is None:
                 continue
             cell_tokens = cell_value.split()
+            normalized_cell_value = ' '.join(cell_tokens)
             # find columns of interest
             if self._column.control_id in cell_tokens:
                 self._add_column(self._column.control_id, column, 1)
@@ -385,13 +384,15 @@ class XlsxHelper:
                 self._add_column(self._column.version, column, 1)
             elif self._column.goal_name_id in cell_tokens:
                 self._add_column(self._column.goal_name_id, column, 1)
+            # parameters and alternatives (exact tokens match)
             elif cell_tokens == self._column.tokens_parameter_opt_parm:
                 self._add_column(self._column.rename_parameter_opt_parm, column, 1)
             elif cell_tokens == self._column.tokens_values_alternatives:
                 self._add_column(self._column.rename_values_alternatives, column, 1)
-            elif self._column.filter_column == cell_value:
+            # filter column (exact string match)
+            elif self._column.filter_column == normalized_cell_value:
                 self._add_column(self._column.filter_column, column, 1)
-            # multi
+            # nist mappings and resource title (multiple columns match)
             elif is_ordered_sublist(self._column.tokens_nist_mappings, cell_tokens):
                 self._add_column(self._column.nist_mappings, column, 0)
             elif self._column.resource_title in cell_tokens:
@@ -454,9 +455,9 @@ class XlsxHelper:
             logger.info(f'rows invalid parameter_name: {self.rows_invalid_parameter_name}')
         if self.rows_missing_controls:
             logger.info(f'rows missing controls: {self.rows_missing_controls}')
-        if self.anaylsis_level > 0 and self.rows_missing_parameters:
+        if self.rows_missing_parameters:
             logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
-        if self.anaylsis_level > 0 and self.rows_missing_parameters_values:
+        if self.rows_missing_parameters_values:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
         if self.rows_filtered:
             logger.info(f'rows filtered: {self.rows_filtered}')
