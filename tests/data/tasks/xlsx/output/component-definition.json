@@ -5,7 +5,7 @@
       "title": "Component definition for NIST Special Publication 800-53 Revision 4 profiles",
       "last-modified": "2021-07-19T14:03:03+00:00",
       "version": "0.21.0",
-      "oscal-version": "1.0.0",
+      "oscal-version": "1.0.2",
       "roles": [
         {
           "id": "prepared-by",

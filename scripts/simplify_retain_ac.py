@@ -78,6 +78,11 @@ class SimplifyCatalog(ilcli.Command):
     Changes made here should be coordinated with the corresponding manually created simplified_nist_profile.json
     Currently this creates one group of controls and ideally it should be made a bit more complex than that.
     The Makefile invokes this script as rule simplified-catalog and creates the test file simplified_nist_catalog.json
+
+    This should only be run with the NIST catalog based on OSCAL 1.0.0 and not OSCAL 1.0.2 because the controls used
+    by the tests were changed in terms of contents and parameter names.  Normally there is no need to regenerate this
+    catalog as long as it exercises the code paths as expected.  Regenerating based on the newer version of the NIST
+    catalog would require significant changes to the tests and expected results after operations.
     """
 
     def _init_arguments(self) -> None:
