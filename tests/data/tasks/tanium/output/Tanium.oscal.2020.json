@@ -6,7 +6,7 @@
       "description": "Tanium",
       "start": "2020-02-24T19:31:13+00:00",
       "end": "2020-02-24T19:31:13+00:00",
-      "prop": [
+      "props": [
         {
           "name": "Check_ID",
           "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
@@ -600,7 +600,7 @@
       "description": "Tanium",
       "start": "2020-02-24T19:31:13+00:00",
       "end": "2020-02-24T19:31:13+00:00",
-      "prop": [
+      "props": [
         {
           "name": "Check_ID_Benchmark",
           "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
@@ -17780,7 +17780,7 @@
       "description": "Tanium",
       "start": "2020-02-24T19:31:13+00:00",
       "end": "2020-02-24T19:31:13+00:00",
-      "prop": [
+      "props": [
         {
           "name": "Check_ID_Benchmark",
           "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",

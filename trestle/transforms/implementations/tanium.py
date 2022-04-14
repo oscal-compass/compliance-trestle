@@ -607,6 +607,6 @@ class TaniumOscalFactory():
                 observations=observations
             )
             component_ref = component.uuid
-            result.prop = self._get_properties(component_ref)
+            result.props = self._get_properties(component_ref)
             results.append(result)
         return results

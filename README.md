@@ -29,6 +29,16 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
 
+## Important Note:
+
+The current version of trestle supports NIST OSCAL 1.0.2.  There as a breaking change in OSCAL moving from
+version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development
+path of trestle requires OSCAL 1.0.2, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version
+is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.2 and trestle 1.0.0.
+
+OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the OSCAL 1.0.2 schema, with
+props instead of prop.  And all files created by trestle will be output as OSCAL version 1.0.2.
+
 ## Why Trestle
 
 Compliance suffers from being a complex topic that is hard to articulate simply. It involves complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
@@ -77,7 +87,7 @@ A collection of demos utilizing trestle can be found in the related project [com
 
 ## Development status
 
-Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.0, with active development continuing.
+Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.2, with active development continuing.
 
 ## Contributing to Trestle
 
