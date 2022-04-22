@@ -102,11 +102,14 @@ class XlsxToOscalProfile(TaskBase):
             oscal_version=OSCAL_VERSION,
             version=get_trestle_version(),
         )
-        import_ = Import(
-            href=self._get_spread_sheet_url(),
-            include_controls=self._get_include_controls(),
-        )
-        imports = [import_]
+        if self.xlsx_helper.profile_type == self.xlsx_helper.by_control:
+            imports = self._get_imports_by_control()
+        elif self.xlsx_helper.profile_type == self.xlsx_helper.by_rule:
+            imports = self._get_imports_by_rule()
+        elif self.xlsx_helper.profile_type == self.xlsx_helper.by_check:
+            imports = self._get_imports_by_check()
+        else:
+            imports = self._get_imports_by_goal()
         set_parameters = self._get_set_parameters()
         modify = Modify(set_parameters=set_parameters)
         profile = Profile(
@@ -123,20 +126,90 @@ class XlsxToOscalProfile(TaskBase):
         self._report_issues()
         return TaskOutcome('success')
 
-    def _get_include_controls(self) -> List[SelectControlById]:
-        """Get include controls from spread sheet."""
-        include_control = SelectControlById(with_ids=self._get_with_ids())
-        return [include_control]
+    def _get_imports_by_goal(self) -> List[Import]:
+        """Get imports by goal."""
+        return self._get_imports_by_check()
 
-    def _get_with_ids(self) -> List[str]:
-        """Get goal name ids from spread sheet."""
-        goal_name_id_list = []
+    def _get_imports_by_control(self) -> List[Import]:
+        """Get imports by control."""
+        import_ = Import(
+            href=self._get_spread_sheet_url(),
+            include_controls=[SelectControlById(with_ids=self._get_with_ids_by_control())],
+        )
+        imports = [import_]
+        return imports
+
+    def _get_imports_by_rule(self) -> List[Import]:
+        """Get imports by rule."""
+        import_ = Import(
+            href=self._get_spread_sheet_url(),
+            include_controls=[SelectControlById(with_ids=self._get_with_ids_by_rule())],
+        )
+        imports = [import_]
+        return imports
+
+    def _get_imports_by_check(self) -> List[Import]:
+        """Get imports by check."""
+        import_ = Import(
+            href=self._get_spread_sheet_url(),
+            include_controls=[SelectControlById(with_ids=self._get_with_ids_by_check())],
+        )
+        imports = [import_]
+        return imports
+
+    def _get_with_ids_by_control(self) -> List[str]:
+        """Get controls from spread sheet."""
+        control_list = []
         for row in self.xlsx_helper.row_generator():
             # quit when first row with no goal_id encountered
-            goal_name_id = self.xlsx_helper.get_goal_name_id_strict(row)
-            if goal_name_id is not None:
-                goal_name_id_list.append(goal_name_id)
-        return sorted(goal_name_id_list)
+            controls = self.xlsx_helper.get_controls(row)
+            if controls is not None:
+                for control in controls:
+                    control = self._oscal_namify(control)
+                    if control in control_list:
+                        continue
+                    control_list.append(control)
+        return sorted(control_list, key=self._control_sort_key)
+
+    def _get_with_ids_by_rule(self) -> List[str]:
+        """Get rules from spread sheet."""
+        rule_name_id_list = []
+        for row in self.xlsx_helper.row_generator():
+            # quit when first row with no goal_id encountered
+            rule_name_id = self.xlsx_helper.get_rule_name_id(row, strict=True)
+            if rule_name_id is not None:
+                if rule_name_id in rule_name_id_list:
+                    continue
+                rule_name_id_list.append(rule_name_id)
+        return sorted(rule_name_id_list)
+
+    def _get_with_ids_by_check(self) -> List[str]:
+        """Get check from spread sheet."""
+        check_name_id_list = []
+        for row in self.xlsx_helper.row_generator():
+            # quit when first row with no goal_id encountered
+            check_name_id = self.xlsx_helper.get_check_name_id(row, strict=True)
+            if check_name_id is not None:
+                if check_name_id in check_name_id_list:
+                    continue
+                check_name_id_list.append(check_name_id)
+        return sorted(check_name_id_list)
+
+    def _control_sort_key(self, control: str) -> (str, int, int):
+        """Fabricate sort key."""
+        k1 = control.split('-')[0]
+        k2 = int(control.split('-')[1].split('.')[0])
+        if '.' in control:
+            k3 = int(control.split('-')[1].split('.')[1])
+        else:
+            k3 = 0
+        return (k1, k2, k3)
+
+    def _oscal_namify(self, control: str) -> str:
+        """Rectify parenthesized numbers in controls."""
+        control = control.replace('(', '.')
+        control = control.replace(')', '')
+        return control
 
     def _get_set_parameters(self) -> List[SetParameter]:
         """Get set parameters from spread sheet."""

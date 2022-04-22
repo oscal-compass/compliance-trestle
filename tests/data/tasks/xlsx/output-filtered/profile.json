@@ -17,7 +17,6 @@
               "cis_tls_configured",
               "cloudant_admin_role_serviceid_maxcount",
               "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
-              "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
               "kubernetes_service_ingress_tls_configured",
               "kubernetes_service_latest_version"
             ]
