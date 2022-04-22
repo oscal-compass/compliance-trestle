@@ -83,7 +83,7 @@ class SetParameter(OscalBaseModel):
         ...,
         alias='param-id',
         description=
-        "A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
+        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
     values: List[common.Value] = Field(...)
@@ -142,7 +142,7 @@ class Satisfied(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this satisfied entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this satisfied control implementation entry elsewhere in this or other OSCAL instances. The locally defined UUID of the control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Satisfied Universally Unique Identifier',
     )
     responsibility_uuid: Optional[constr(
@@ -150,8 +150,9 @@ class Satisfied(OscalBaseModel):
     )] = Field(
         None,
         alias='responsibility-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
-        title='Provided UUID',
+        description=
+        'A machine-oriented identifier reference to a control implementation that satisfies a responsibility imposed by a leveraged system.',
+        title='Responsibility UUID',
     )
     description: str = Field(
         ...,
@@ -178,7 +179,7 @@ class Responsibility(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this responsibility entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this responsibility elsewhere in this or other OSCAL instances. The locally defined UUID of the responsibility can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Responsibility Universally Unique Identifier',
     )
     provided_uuid: Optional[constr(
@@ -186,7 +187,8 @@ class Responsibility(OscalBaseModel):
     )] = Field(
         None,
         alias='provided-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
+        description=
+        'A machine-oriented identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system.',
         title='Provided UUID',
     )
     description: str = Field(
@@ -214,7 +216,7 @@ class Provided(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this provided entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this provided entry elsewhere in this or other OSCAL instances. The locally defined UUID of the provided entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Provided Universally Unique Identifier',
     )
     description: str = Field(
@@ -242,7 +244,7 @@ class Inherited(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this inherited entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this inherited entry elsewhere in this or other OSCAL instances. The locally defined UUID of the inherited control implementation can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Inherited Universally Unique Identifier',
     )
     provided_uuid: Optional[constr(
@@ -250,7 +252,8 @@ class Inherited(OscalBaseModel):
     )] = Field(
         None,
         alias='provided-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
+        description=
+        'A machine-oriented identifier reference to an inherited control implementation that a leveraging system is inheriting from a leveraged system.',
         title='Provided UUID',
     )
     description: str = Field(
@@ -267,7 +270,8 @@ class Inherited(OscalBaseModel):
 class InformationTypeId(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
-        description='An identifier qualified by the given identification system used, such as NIST SP 800-60.',
+        description=
+        'A human-oriented, globally unique identifier qualified by the given identification system used, such as NIST SP 800-60. This identifier has cross-instance scope and can be used to reference this system elsewhere in this or other OSCAL instances. This id should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Information Type Systematized Identifier',
     )
 
@@ -317,17 +321,19 @@ class Diagram(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(..., description='The identifier for this diagram.', title='Diagram ID')
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this diagram elsewhere in this or other OSCAL instances. The locally defined UUID of the diagram can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Diagram ID',
+    )
     description: Optional[str] = Field(None, description='A summary of the diagram.', title='Diagram Description')
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     caption: Optional[str] = Field(None, description='A brief caption to annotate the diagram.', title='Caption')
-    remarks: Optional[str] = Field(
-        None,
-        description='Commentary about the diagram that enhances it.',
-        title='remarks field',
-    )
+    remarks: Optional[common.Remarks] = None
 
 
 class DateAuthorized(OscalBaseModel):
@@ -389,7 +395,7 @@ class ByComponent(OscalBaseModel):
     ) = Field(
         ...,
         alias='component-uuid',
-        description='A reference to the component that is implementing a given control or control statement.',
+        description='A machine-oriented identifier reference to the component that is implemeting a given control.',
         title='Component Universally Unique Identifier Reference',
     )
     uuid: constr(
@@ -397,7 +403,7 @@ class ByComponent(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this by-component entry elsewhere in this or other OSCAL instances. The locally defined UUID of the by-component entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='By-Component Universally Unique Identifier',
     )
     description: str = Field(
@@ -460,11 +466,7 @@ class AuthorizationBoundary(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     diagrams: Optional[List[Diagram]] = Field(None)
-    remarks: Optional[str] = Field(
-        None,
-        description="Commentary about the system's authorization boundary that enhances the diagram.",
-        title='remarks field',
-    )
+    remarks: Optional[common.Remarks] = None
 
 
 class Status1(OscalBaseModel):
@@ -499,12 +501,14 @@ class SystemComponent(OscalBaseModel):
     class Config:
         extra = Extra.forbid
 
-    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                 ) = Field(
-                     ...,
-                     description='The unique identifier for the component.',
-                     title='Component Identifier',
-                 )
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description=
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
+        title='Component Identifier',
+    )
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
@@ -551,7 +555,7 @@ class Statement(OscalBaseModel):
     ) = Field(
         ...,
         alias='statement-id',
-        description='A reference to a control statement by its identifier',
+        description='A human-oriented identifier reference to a control statement.',
         title='Control Statement Reference',
     )
     uuid: constr(
@@ -559,7 +563,7 @@ class Statement(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control statement elsewhere in this or other OSCAL instances. The UUID of the control statement in the source OSCAL instance is sufficient to reference the data item locally or globally (e.g., in an imported OSCAL instance).',
         title='Control Statement Reference Universally Unique Identifier',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -582,7 +586,7 @@ class ImplementedRequirement(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this control requirement elsewhere in this or other OSCAL instances. The locally defined UUID of the control requirement can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Control Requirement Universally Unique Identifier',
     )
     control_id: constr(
@@ -591,7 +595,8 @@ class ImplementedRequirement(OscalBaseModel):
     ) = Field(
         ...,
         alias='control-id',
-        description='A reference to a control with a corresponding id value.',
+        description=
+        'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',
         title='Control Identifier Reference',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -653,7 +658,7 @@ class LeveragedAuthorization(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier that can be used to reference this leveraged authorization entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope and can be used to reference this leveraged authorization elsewhere in this or other OSCAL instances. The locally defined UUID of the leveraged authorization can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Leveraged Authorization Universally Unique Identifier',
     )
     title: str = Field(
@@ -663,13 +668,14 @@ class LeveragedAuthorization(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    party_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-                       ) = Field(
-                           ...,
-                           alias='party-uuid',
-                           description='A reference to the party that manages the leveraged system.',
-                           title='party-uuid field',
-                       )
+    party_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='party-uuid',
+        description='A machine-oriented identifier reference to the party that manages the leveraged system.',
+        title='party-uuid field',
+    )
     date_authorized: DateAuthorized = Field(..., alias='date-authorized')
     remarks: Optional[common.Remarks] = None
 
@@ -734,7 +740,7 @@ class InformationType(OscalBaseModel):
     )] = Field(
         None,
         description=
-        'A globally unique identifier that can be used to reference this information type entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this information type elsewhere in this or other OSCAL instances. The locally defined UUID of the information type can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='Information Type Universally Unique Identifier',
     )
     title: str = Field(
@@ -842,7 +848,7 @@ class SystemSecurityPlan(OscalBaseModel):
     ) = Field(
         ...,
         description=
-        'A globally unique identifier for this catalog instance. This UUID should be changed when this document is revised.',
+        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this system security plan (SSP) elsewhere in this or other OSCAL instances. The locally defined UUID of the SSP can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance).This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
         title='System Security Plan Universally Unique Identifier',
     )
     metadata: common.Metadata
