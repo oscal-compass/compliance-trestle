@@ -143,27 +143,11 @@ class XlsxHelper:
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
         # required for component-definition
-        if task.name == 'xlsx-to-oscal-cd':
-            catalog_file = task._config.get('catalog-file')
-            if catalog_file is None:
-                logger.warning('config missing "catalog-file"')
-                return False
-            try:
-                catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
-                logger.debug(f'catalog: {catalog_file}')
-            except Exception as e:  # pragma: no cover
-                raise TrestleError(f'Error loading catalog {catalog_file}: {e}')
-            task.catalog_interface = CatalogInterface(catalog)
+        if not self.configure_cd(task):
+            return False
         # required for profile
-        if task.name == 'xlsx-to-oscal-profile':
-            profile_title = task._config.get('profile-title')
-            if profile_title is None:
-                logger.warning('config missing "profile-title"')
-                return False
-            spread_sheet_url = task._config.get('spread-sheet-url')
-            if spread_sheet_url is None:
-                logger.warning('config missing "spread-sheet-url"')
-                return False
+        if not self.configure_profile(task):
+            return False
         # optional
         self._column.filter_column = task._config.get('filter-column', None)
         # config spread sheet
@@ -191,6 +175,34 @@ class XlsxHelper:
             self._profile_type = None
         # load spread sheet
         self.load(spread_sheet, sheet_name)
+        return True
+
+    def configure_cd(self, task: TaskBase) -> bool:
+        """Configure cd."""
+        if task.name == 'xlsx-to-oscal-cd':
+            catalog_file = task._config.get('catalog-file')
+            if catalog_file is None:
+                logger.warning('config missing "catalog-file"')
+                return False
+            try:
+                catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
+                logger.debug(f'catalog: {catalog_file}')
+            except Exception as e:  # pragma: no cover
+                raise TrestleError(f'Error loading catalog {catalog_file}: {e}')
+            task.catalog_interface = CatalogInterface(catalog)
+        return True
+
+    def configure_profile(self, task: TaskBase) -> bool:
+        """Configure profile."""
+        if task.name == 'xlsx-to-oscal-profile':
+            profile_title = task._config.get('profile-title')
+            if profile_title is None:
+                logger.warning('config missing "profile-title"')
+                return False
+            spread_sheet_url = task._config.get('spread-sheet-url')
+            if spread_sheet_url is None:
+                logger.warning('config missing "spread-sheet-url"')
+                return False
         return True
 
     def load(self, spread_sheet: str, sheet_name: str) -> None:
