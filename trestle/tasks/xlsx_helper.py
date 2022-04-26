@@ -43,8 +43,10 @@ class Column():
 
     control_id = 'ControlId'
     control_text = 'ControlText'
-    version = 'Version'
     goal_name_id = 'goal_name_id'
+    goal_version = 'goal_version'
+    rule_name_id = 'rule_name_id'
+    rule_version = 'rule_version'
     nist_mappings = 'NIST Mappings'
     resource_title = 'ResourceTitle'
     parameter_opt_parm = 'Parameter [optional parameter]'
@@ -59,17 +61,21 @@ class Column():
 
     help_list = []
     text1 = '                      '
-    text2 = f'column "{control_id}" contains goal ID.'
+    text2 = f'column "{control_id}" contains control ID.'
     help_list.append(text1 + text2)
-    text2 = f'column "{control_text}" contains goal text.'
+    text2 = f'column "{control_text}" contains control text.'
     help_list.append(text1 + text2)
-    text2 = f'column "{version}" contains version.'
-    help_list.append(text1 + text2)
-    text2 = f'columns "{nist_mappings}" contain controls.'
+    text2 = f'columns "{nist_mappings}" contain NIST control mappings.'
     help_list.append(text1 + text2)
     text2 = f'column "{resource_title}" contains component name.'
     help_list.append(text1 + text2)
     text2 = f'column "{goal_name_id}" contains goal name.'
+    help_list.append(text1 + text2)
+    text2 = f'column "{goal_version}" contains goal version.'
+    help_list.append(text1 + text2)
+    text2 = f'column "{rule_name_id}" contains rule name.'
+    help_list.append(text1 + text2)
+    text2 = f'column "{rule_version}" contains rule version.'
     help_list.append(text1 + text2)
     text2 = f'column "{parameter_opt_parm}" contains parameter name + description, separated by newline.'
     help_list.append(text1 + text2)
@@ -79,6 +85,13 @@ class Column():
 
 class XlsxHelper:
     """Xlsx Helper common functions and assistance navigating spread sheet."""
+
+    by_goal = 'by-goal'
+    by_rule = 'by-rule'
+    by_control = 'by-control'
+    by_check = 'by-check'
+
+    profile_types = [by_goal, by_rule, by_control, by_check]
 
     def __init__(self) -> None:
         """Initialize."""
@@ -112,6 +125,14 @@ class XlsxHelper:
         text1 = '  filter-column     = '
         text2 = '(optional) column heading of yes/no values; process only "yes" rows.'
         logger.info(text1 + text2)
+        text1 = '  profile-type      = '
+        text2 = f'(optional) one of {self.profile_types}'
+        logger.info(text1 + text2)
+
+    @property
+    def profile_type(self) -> str:
+        """Profile type."""
+        return self._profile_type
 
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
@@ -122,27 +143,11 @@ class XlsxHelper:
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
         # required for component-definition
-        if task.name == 'xlsx-to-oscal-cd':
-            catalog_file = task._config.get('catalog-file')
-            if catalog_file is None:
-                logger.warning('config missing "catalog-file"')
-                return False
-            try:
-                catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
-                logger.debug(f'catalog: {catalog_file}')
-            except Exception as e:  # pragma: no cover
-                raise TrestleError(f'Error loading catalog {catalog_file}: {e}')
-            task.catalog_interface = CatalogInterface(catalog)
+        if not self.configure_cd(task):
+            return False
         # required for profile
-        if task.name == 'xlsx-to-oscal-profile':
-            profile_title = task._config.get('profile-title')
-            if profile_title is None:
-                logger.warning('config missing "profile-title"')
-                return False
-            spread_sheet_url = task._config.get('spread-sheet-url')
-            if spread_sheet_url is None:
-                logger.warning('config missing "spread-sheet-url"')
-                return False
+        if not self.configure_profile(task):
+            return False
         # optional
         self._column.filter_column = task._config.get('filter-column', None)
         # config spread sheet
@@ -160,8 +165,44 @@ class XlsxHelper:
         # announce spreadsheet
         if task._verbose:
             logger.info(f'input: {spread_sheet}')
+        # get profile type
+        if task.name == 'xlsx-to-oscal-profile':
+            self._profile_type = task._config.get('profile-type', self.profile_types[0])
+            if self._profile_type not in self.profile_types:
+                logger.warning(f'invalid "profile-type" {self._profile_type} ')
+                return False
+        else:
+            self._profile_type = None
         # load spread sheet
         self.load(spread_sheet, sheet_name)
+        return True
+
+    def configure_cd(self, task: TaskBase) -> bool:
+        """Configure cd."""
+        if task.name == 'xlsx-to-oscal-cd':
+            catalog_file = task._config.get('catalog-file')
+            if catalog_file is None:
+                logger.warning('config missing "catalog-file"')
+                return False
+            try:
+                catalog = Catalog.oscal_read(pathlib.Path(catalog_file))
+                logger.debug(f'catalog: {catalog_file}')
+            except Exception as e:  # pragma: no cover
+                raise TrestleError(f'Error loading catalog {catalog_file}: {e}')
+            task.catalog_interface = CatalogInterface(catalog)
+        return True
+
+    def configure_profile(self, task: TaskBase) -> bool:
+        """Configure profile."""
+        if task.name == 'xlsx-to-oscal-profile':
+            profile_title = task._config.get('profile-title')
+            if profile_title is None:
+                logger.warning('config missing "profile-title"')
+                return False
+            spread_sheet_url = task._config.get('spread-sheet-url')
+            if spread_sheet_url is None:
+                logger.warning('config missing "spread-sheet-url"')
+                return False
         return True
 
     def load(self, spread_sheet: str, sheet_name: str) -> None:
@@ -172,8 +213,11 @@ class XlsxHelper:
         self._work_sheet = self._wb[self._sheet_name]
         self._map_name_to_letters = {}
         # accumulators
+        self.rows_missing_control_id = []
         self.rows_missing_goal_name_id = []
         self.rows_invalid_goal_name_id = []
+        self.rows_missing_rule_name_id = []
+        self.rows_invalid_rule_name_id = []
         self.rows_invalid_parameter_name = []
         self.rows_missing_controls = []
         self.rows_missing_parameters = []
@@ -183,16 +227,31 @@ class XlsxHelper:
         self._map_columns()
 
     def row_generator(self) -> Iterator[int]:
-        """Generate rows until goal_id is None."""
+        """Generate rows until control_id is None."""
         row = 1
+        rows_skipped_consecutive = 0
+        # assume no more data when 100 consecutve rows no control id
+        rows_skipped_consecutive_limit = 100
         while True:
             row = row + 1
-            goal_id = self._get_goal_id(row)
-            if goal_id is None:
+            control_id = self._get_control_id(row)
+            goal_id = self.get_goal_name_id(row)
+            if control_id is None and goal_id is None:
+                rows_skipped_consecutive += 1
+                if rows_skipped_consecutive < rows_skipped_consecutive_limit:
+                    continue
+                logger.debug(f'break: {row} {rows_skipped_consecutive}')
                 break
+            if control_id is None:
+                self._add_row(row, self.rows_missing_control_id)
+                continue
+            if goal_id is None:
+                self._add_row(row, self.rows_missing_goal_name_id)
+                continue
             if self._is_filtered(row):
                 continue
             yield row
+            rows_skipped_consecutive = 0
 
     def _is_filtered(self, row) -> bool:
         """Return True if row is to be skipped."""
@@ -207,27 +266,38 @@ class XlsxHelper:
         self._add_row(row, self.rows_filtered)
         return True
 
-    def get_goal_name_id(self, row: int) -> str:
+    def get_goal_name_id(self, row: int, strict: bool = True) -> str:
         """Get goal_name_id from work_sheet."""
         col = self._get_column_letter(self._column.goal_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
             self._add_row(row, self.rows_missing_goal_name_id)
-            value = self._get_goal_id(row)
-        value = str(value).strip()
+        else:
+            value = str(value).strip()
+            if strict:
+                svalue = str(value).strip()
+                value = ''.join(str(svalue).split())
+                if value != svalue:
+                    self._add_row(row, self.rows_invalid_goal_name_id)
         return value
 
-    def get_goal_name_id_strict(self, row: int) -> str:
-        """Get goal_name_id from work_sheet (strict)."""
-        col = self._get_column_letter(self._column.goal_name_id)
+    def get_check_name_id(self, row: int, strict: bool = False) -> str:
+        """Get check_name_id from work_sheet."""
+        return self.get_goal_name_id(row, strict)
+
+    def get_rule_name_id(self, row: int, strict: bool = False) -> str:
+        """Get rule_name_id from work_sheet."""
+        col = self._get_column_letter(self._column.rule_name_id)
         value = self._work_sheet[col + str(row)].value
         if value is None:
-            self._add_row(row, self.rows_missing_goal_name_id)
+            self._add_row(row, self.rows_missing_rule_name_id)
         else:
-            svalue = str(value).strip()
-            value = ''.join(str(svalue).split())
-            if value != svalue:
-                self._add_row(row, self.rows_invalid_goal_name_id)
+            value = str(value).strip()
+            if strict:
+                svalue = str(value).strip()
+                value = ''.join(str(svalue).split())
+                if value != svalue:
+                    self._add_row(row, self.rows_invalid_rule_name_id)
         return value
 
     def get_parameter_usage(self, row: int) -> str:
@@ -352,8 +422,8 @@ class XlsxHelper:
         value = name, description
         return value
 
-    def _get_goal_id(self, row: int) -> int:
-        """Get goal_id from work_sheet."""
+    def _get_control_id(self, row: int) -> int:
+        """Get control_id from work_sheet."""
         col = self._get_column_letter(self._column.control_id)
         value = self._work_sheet[col + str(row)].value
         return value
@@ -380,10 +450,14 @@ class XlsxHelper:
                 self._add_column(self._column.control_id, column, 1)
             elif self._column.control_text in cell_tokens:
                 self._add_column(self._column.control_text, column, 1)
-            elif self._column.version in cell_tokens:
-                self._add_column(self._column.version, column, 1)
             elif self._column.goal_name_id in cell_tokens:
                 self._add_column(self._column.goal_name_id, column, 1)
+            elif self._column.goal_version in cell_tokens:
+                self._add_column(self._column.goal_version, column, 1)
+            elif self._column.rule_name_id in cell_tokens:
+                self._add_column(self._column.rule_name_id, column, 1)
+            elif self._column.rule_version in cell_tokens:
+                self._add_column(self._column.rule_version, column, 1)
             # parameters and alternatives (exact tokens match)
             elif cell_tokens == self._column.tokens_parameter_opt_parm:
                 self._add_column(self._column.rename_parameter_opt_parm, column, 1)
@@ -400,8 +474,10 @@ class XlsxHelper:
         # insure expected columns found
         for name in [self._column.control_id,
                      self._column.control_text,
-                     self._column.version,
+                     self._column.rule_name_id,
+                     self._column.rule_version,
                      self._column.goal_name_id,
+                     self._column.goal_version,
                      self._column.nist_mappings,
                      self._column.resource_title,
                      self._column.rename_parameter_opt_parm,
@@ -447,10 +523,14 @@ class XlsxHelper:
 
     def report_issues(self) -> None:
         """Report issues."""
-        if self.rows_missing_goal_name_id:
-            logger.info(f'rows missing goal_name_id: {self.rows_missing_goal_name_id}')
+        if self.rows_missing_control_id:
+            logger.info(f'rows missing control_id: {self.rows_missing_control_id}')
         if self.rows_invalid_goal_name_id:
             logger.info(f'rows invalid goal_name_id: {self.rows_invalid_goal_name_id}')
+        if self.rows_missing_rule_name_id:
+            logger.info(f'rows missing rule_name_id: {self.rows_missing_rule_name_id}')
+        if self.rows_invalid_rule_name_id:
+            logger.info(f'rows invalid rule_name_id: {self.rows_invalid_rule_name_id}')
         if self.rows_invalid_parameter_name:
             logger.info(f'rows invalid parameter_name: {self.rows_invalid_parameter_name}')
         if self.rows_missing_controls:

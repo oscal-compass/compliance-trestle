@@ -508,7 +508,8 @@ class Ocp4CisProfileToOscalCD(TaskBase):
                         break
         if title is None:
             msg = f'unable to find "{dir_name}"'
-            raise RuntimeError(msg)
+            logger.warning(msg)
+            title = 'no title'
         title = title.strip().strip("'").strip('"')
         logger.debug(f'{title}')
         return title

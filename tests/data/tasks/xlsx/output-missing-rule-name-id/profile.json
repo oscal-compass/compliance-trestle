@@ -2,7 +2,7 @@
   "profile": {
     "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
     "metadata": {
-      "title": "Profile for IBM Best Practices SCC GOALS",
+      "title": "Profile for Profile for IBM Best Practices SCC Rules",
       "last-modified": "2021-07-19T14:03:03+00:00",
       "version": "0.21.0",
       "oscal-version": "1.0.2"
@@ -13,14 +13,13 @@
         "include-controls": [
           {
             "with-ids": [
-              "appid_",
-              "cis_tls_configured",
-              "cloudant_admin_role_serviceid_maxcount",
-              "cloudant_admin_role_user_maxcount",
-              "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
-              "kubernetes_service_ingress_tls_configured",
-              "kubernetes_service_latest_version",
-              "vpc_no_inbound_ports_public"
+              "rule_appid_",
+              "rule_cis_tls_configured",
+              "rule_cloudant_admin_role_serviceid_maxcount",
+              "rule_continuous_delivery_toolchain_sourcecode_scan_severity_configured",
+              "rule_kubernetes_service_ingress_tls_configured",
+              "rule_kubernetes_service_latest_version",
+              "rule_vpc_no_inbound_ports_public"
             ]
           }
         ]
