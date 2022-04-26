@@ -104,20 +104,26 @@ class XlsxToOscalProfile(TaskBase):
         )
         if self.xlsx_helper.profile_type == self.xlsx_helper.by_control:
             imports = self._get_imports_by_control()
-        elif self.xlsx_helper.profile_type == self.xlsx_helper.by_rule:
-            imports = self._get_imports_by_rule()
-        elif self.xlsx_helper.profile_type == self.xlsx_helper.by_check:
-            imports = self._get_imports_by_check()
+            profile = Profile(
+                uuid=str(uuid.uuid4()),
+                metadata=metadata,
+                imports=imports,
+            )
         else:
-            imports = self._get_imports_by_goal()
-        set_parameters = self._get_set_parameters()
-        modify = Modify(set_parameters=set_parameters)
-        profile = Profile(
-            uuid=str(uuid.uuid4()),
-            metadata=metadata,
-            imports=imports,
-            modify=modify,
-        )
+            if self.xlsx_helper.profile_type == self.xlsx_helper.by_rule:
+                imports = self._get_imports_by_rule()
+            elif self.xlsx_helper.profile_type == self.xlsx_helper.by_check:
+                imports = self._get_imports_by_check()
+            else:
+                imports = self._get_imports_by_goal()
+            set_parameters = self._get_set_parameters()
+            modify = Modify(set_parameters=set_parameters)
+            profile = Profile(
+                uuid=str(uuid.uuid4()),
+                metadata=metadata,
+                imports=imports,
+                modify=modify,
+            )
         # write OSCAL Profile to file
         if self._verbose:
             logger.info(f'output: {ofile}')
