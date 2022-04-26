@@ -29,6 +29,16 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
 
+## Important Note:
+
+The current version of trestle supports NIST OSCAL 1.0.2.  There was a breaking change in OSCAL moving from
+version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development
+path of trestle requires OSCAL 1.0.2, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version
+is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.2 and trestle 1.0.0.
+
+OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the OSCAL 1.0.2 schema, with
+props instead of prop.  And all files created by trestle will be output as OSCAL version 1.0.2.
+
 ## Why Trestle
 
 Compliance suffers from being a complex topic that is hard to articulate simply. It involves complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
@@ -37,7 +47,7 @@ While it is possible to manage the description of controls and how an organisati
 
 Trestle aims to reduce or remove this barrier by bringing the maintenance of control descriptions into the DevOps domain. The goal is to have changes to the system (for example, updates to configuration management) easily related to the controls impacted, and to enable modification of those controls as required in concert with the system changes.
 
-Trestle implicitly provides a core opinionated workflow driven by its pipeline steps to allow standardized interlocks with other compliance tooling platforms.
+Trestle implicitly provides a core opinionated workflow driven by its pipeline to allow standardized interlocks with other compliance tooling platforms.
 
 ## Machine readable compliance format
 
@@ -48,8 +58,6 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 ## Supported OSCAL elements and extensions
 
 `trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes adding workflow around specific elements / objects that is opinionated.
-
-`trestle` supports OSCAL version `1.0.0` only at this stage.
 
 ## Supported file formats for OSCAL objects.
 
