@@ -2,612 +2,612 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ibm.github.io/compliance-trestle/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/cli/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/demonstrations-content/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/errors/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/license/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/maintainers/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/mkdocs_code_of_conduct/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/python_trestle_setup/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/trestle_author/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/trestle_author_jinja/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.cli/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.common_types/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.const/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.err/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.file_utils/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.list_utils/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.log/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.model_utils/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.str_utils/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.trash/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.common.type_utils/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.all_validator/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.base_model/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.catalog_interface/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.add/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.assemble/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.catalog/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.command/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.common/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.consts/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.docs/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.folders/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.headers/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.jinja/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.profile/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.ssp/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.versioning.template_versioning/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.command_docs/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.common.cmd_utils/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.common.return_codes/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.create/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.describe/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.href/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.import_/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.init/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.merge/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.partial_object_validate/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.remove/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.replicate/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.split/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.task/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.validate/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.version/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.control_io/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.draw_io/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.duplicates_validator/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.generators/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.jinja/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_api/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_const/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_node/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_processor/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.markdown_validator/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown.md_writer/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.actions/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.elements/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.file_content_type/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.interfaces/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.models.plans/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.object_factory/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.parser/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.pipeline/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.profile_resolver/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.refs_validator/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.remote.cache/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.repository/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.resolver.merge/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.resolver.modify/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.resolver.prune/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.ssp_io/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.trestle_base_model/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.validator/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.core.validator_factory/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.assessment_plan/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.assessment_results/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.catalog/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.common/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.component/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.poam/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.profile/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.ssp/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.base_task/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_catalog/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_cd/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.oscal_profile_to_osco_profile/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.osco_result_to_oscal_ar/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.tanium_result_to_oscal_ar/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.transform/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.xlsx_helper/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.xlsx_to_oscal_cd/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.xlsx_to_oscal_profile/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.implementations.osco/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.implementations.tanium/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.results/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.transformer_factory/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.transformer_helper/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/api_reference/trestle.transforms.transformer_singleton/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/contributing/DCO/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/contributing/plugins/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/contributing/trestle_oscal_object_model/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/contributing/website/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/plugins/compliance-trestle-fedramp/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/reference/third-party-result-schema-SCC/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/trestle_sample_workflow/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/work_with_authoring_versions/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/continuous-compliance/continuous-compliance/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/task.ocp4-cis-profile-to-oscal-catalog/transformation/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/task.tanium-result-to-oscal-ar/transformation/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ibm.github.io/compliance-trestle/tutorials/task.transformer-construction/transformer-construction/</loc>
-         <lastmod>2022-04-12</lastmod>
+         <lastmod>2022-04-27</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

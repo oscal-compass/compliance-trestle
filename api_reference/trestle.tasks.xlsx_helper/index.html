@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.xlsx_helper/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.120efc48.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c5ef100.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
@@ -2495,6 +2495,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.Column.goal_version" class="md-nav__link">
+    goal_version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.Column.help_list" class="md-nav__link">
     help_list
   </a>
@@ -2532,6 +2539,20 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.Column.resource_title" class="md-nav__link">
     resource_title
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.Column.rule_name_id" class="md-nav__link">
+    rule_name_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.Column.rule_version" class="md-nav__link">
+    rule_version
   </a>
   
 </li>
@@ -2578,13 +2599,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.xlsx_helper.Column.version" class="md-nav__link">
-    version
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2597,6 +2611,61 @@
   
     <nav class="md-nav" aria-label="XlsxHelper">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper-attributes" class="md-nav__link">
+    Attributes
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_check" class="md-nav__link">
+    by_check
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_control" class="md-nav__link">
+    by_control
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_goal" class="md-nav__link">
+    by_goal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_rule" class="md-nav__link">
+    by_rule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.profile_type" class="md-nav__link">
+    profile_type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.profile_types" class="md-nav__link">
+    profile_types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper-methods" class="md-nav__link">
@@ -2621,6 +2690,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.configure_cd" class="md-nav__link">
+    configure_cd()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.configure_profile" class="md-nav__link">
+    configure_profile()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_check_name_id" class="md-nav__link">
+    get_check_name_id()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_component_name" class="md-nav__link">
     get_component_name()
   </a>
@@ -2637,13 +2727,6 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id" class="md-nav__link">
     get_goal_name_id()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id_strict" class="md-nav__link">
-    get_goal_name_id_strict()
   </a>
   
 </li>
@@ -2686,6 +2769,13 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_parameter_values" class="md-nav__link">
     get_parameter_values()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_rule_name_id" class="md-nav__link">
+    get_rule_name_id()
   </a>
   
 </li>
@@ -3049,6 +3139,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.Column.goal_version" class="md-nav__link">
+    goal_version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.Column.help_list" class="md-nav__link">
     help_list
   </a>
@@ -3086,6 +3183,20 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.Column.resource_title" class="md-nav__link">
     resource_title
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.Column.rule_name_id" class="md-nav__link">
+    rule_name_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.Column.rule_version" class="md-nav__link">
+    rule_version
   </a>
   
 </li>
@@ -3132,13 +3243,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.xlsx_helper.Column.version" class="md-nav__link">
-    version
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -3151,6 +3255,61 @@
   
     <nav class="md-nav" aria-label="XlsxHelper">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper-attributes" class="md-nav__link">
+    Attributes
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_check" class="md-nav__link">
+    by_check
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_control" class="md-nav__link">
+    by_control
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_goal" class="md-nav__link">
+    by_goal
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.by_rule" class="md-nav__link">
+    by_rule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.profile_type" class="md-nav__link">
+    profile_type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.profile_types" class="md-nav__link">
+    profile_types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper-methods" class="md-nav__link">
@@ -3175,6 +3334,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.configure_cd" class="md-nav__link">
+    configure_cd()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.configure_profile" class="md-nav__link">
+    configure_profile()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_check_name_id" class="md-nav__link">
+    get_check_name_id()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_component_name" class="md-nav__link">
     get_component_name()
   </a>
@@ -3191,13 +3371,6 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id" class="md-nav__link">
     get_goal_name_id()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id_strict" class="md-nav__link">
-    get_goal_name_id_strict()
   </a>
   
 </li>
@@ -3240,6 +3413,13 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_parameter_values" class="md-nav__link">
     get_parameter_values()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.xlsx_helper.XlsxHelper.get_rule_name_id" class="md-nav__link">
+    get_rule_name_id()
   </a>
   
 </li>
@@ -3394,8 +3574,10 @@ Column        </code>
 
     <span class="n">control_id</span> <span class="o">=</span> <span class="s1">&#39;ControlId&#39;</span>
     <span class="n">control_text</span> <span class="o">=</span> <span class="s1">&#39;ControlText&#39;</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;Version&#39;</span>
     <span class="n">goal_name_id</span> <span class="o">=</span> <span class="s1">&#39;goal_name_id&#39;</span>
+    <span class="n">goal_version</span> <span class="o">=</span> <span class="s1">&#39;goal_version&#39;</span>
+    <span class="n">rule_name_id</span> <span class="o">=</span> <span class="s1">&#39;rule_name_id&#39;</span>
+    <span class="n">rule_version</span> <span class="o">=</span> <span class="s1">&#39;rule_version&#39;</span>
     <span class="n">nist_mappings</span> <span class="o">=</span> <span class="s1">&#39;NIST Mappings&#39;</span>
     <span class="n">resource_title</span> <span class="o">=</span> <span class="s1">&#39;ResourceTitle&#39;</span>
     <span class="n">parameter_opt_parm</span> <span class="o">=</span> <span class="s1">&#39;Parameter [optional parameter]&#39;</span>
@@ -3410,17 +3592,21 @@ Column        </code>
 
     <span class="n">help_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;                      &#39;</span>
-    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&quot; contains goal ID.&#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">control_id</span><span class="si">}</span><span class="s1">&quot; contains control ID.&#39;</span>
     <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
-    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">control_text</span><span class="si">}</span><span class="s1">&quot; contains goal text.&#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">control_text</span><span class="si">}</span><span class="s1">&quot; contains control text.&#39;</span>
     <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
-    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&quot; contains version.&#39;</span>
-    <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
-    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;columns &quot;</span><span class="si">{</span><span class="n">nist_mappings</span><span class="si">}</span><span class="s1">&quot; contain controls.&#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;columns &quot;</span><span class="si">{</span><span class="n">nist_mappings</span><span class="si">}</span><span class="s1">&quot; contain NIST control mappings.&#39;</span>
     <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">resource_title</span><span class="si">}</span><span class="s1">&quot; contains component name.&#39;</span>
     <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">goal_name_id</span><span class="si">}</span><span class="s1">&quot; contains goal name.&#39;</span>
+    <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">goal_version</span><span class="si">}</span><span class="s1">&quot; contains goal version.&#39;</span>
+    <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">rule_name_id</span><span class="si">}</span><span class="s1">&quot; contains rule name.&#39;</span>
+    <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">rule_version</span><span class="si">}</span><span class="s1">&quot; contains rule version.&#39;</span>
     <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;column &quot;</span><span class="si">{</span><span class="n">parameter_opt_parm</span><span class="si">}</span><span class="s1">&quot; contains parameter name + description, separated by newline.&#39;</span>
     <span class="n">help_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
@@ -3501,6 +3687,24 @@ Column        </code>
 
 
 <a class="headerlink" href="#trestle.tasks.xlsx_helper.Column.goal_name_id" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.Column.goal_version">
+<code class="highlight language-python"><span class="n">goal_version</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.Column.goal_version" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3622,6 +3826,42 @@ Column        </code>
 
 
 
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.Column.rule_name_id">
+<code class="highlight language-python"><span class="n">rule_name_id</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.Column.rule_name_id" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.Column.rule_version">
+<code class="highlight language-python"><span class="n">rule_version</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.Column.rule_version" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
 <h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.Column.text1">
 <code class="highlight language-python"><span class="n">text1</span></code>
 
@@ -3726,24 +3966,6 @@ Column        </code>
 
 
 
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.Column.version">
-<code class="highlight language-python"><span class="n">version</span></code>
-
-
-<a class="headerlink" href="#trestle.tasks.xlsx_helper.Column.version" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-    </div>
-
-  </div>
-
-
-
 
 
 
@@ -3778,6 +4000,13 @@ XlsxHelper        </code>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">XlsxHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Xlsx Helper common functions and assistance navigating spread sheet.&quot;&quot;&quot;</span>
 
+    <span class="n">by_goal</span> <span class="o">=</span> <span class="s1">&#39;by-goal&#39;</span>
+    <span class="n">by_rule</span> <span class="o">=</span> <span class="s1">&#39;by-rule&#39;</span>
+    <span class="n">by_control</span> <span class="o">=</span> <span class="s1">&#39;by-control&#39;</span>
+    <span class="n">by_check</span> <span class="o">=</span> <span class="s1">&#39;by-check&#39;</span>
+
+    <span class="n">profile_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">by_goal</span><span class="p">,</span> <span class="n">by_rule</span><span class="p">,</span> <span class="n">by_control</span><span class="p">,</span> <span class="n">by_check</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Initialize.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_column</span> <span class="o">=</span> <span class="n">Column</span><span class="p">()</span>
@@ -3810,6 +4039,14 @@ XlsxHelper        </code>
         <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  filter-column     = &#39;</span>
         <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(optional) column heading of yes/no values; process only &quot;yes&quot; rows.&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+        <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  profile-type      = &#39;</span>
+        <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;(optional) one of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_types</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">profile_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Profile type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span>
 
     <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Configure.&quot;&quot;&quot;</span>
@@ -3820,27 +4057,11 @@ XlsxHelper        </code>
         <span class="n">quiet</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">task</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">quiet</span>
         <span class="c1"># required for component-definition</span>
-        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-cd&#39;</span><span class="p">:</span>
-            <span class="n">catalog_file</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-file&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">catalog_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;catalog-file&quot;&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">catalog_file</span><span class="p">))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalog: </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading catalog </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">task</span><span class="o">.</span><span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configure_cd</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="c1"># required for profile</span>
-        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-profile&#39;</span><span class="p">:</span>
-            <span class="n">profile_title</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile-title&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">profile_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;profile-title&quot;&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
-            <span class="n">spread_sheet_url</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spread-sheet-url&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">spread_sheet_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;spread-sheet-url&quot;&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configure_profile</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="c1"># optional</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">filter_column</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filter-column&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="c1"># config spread sheet</span>
@@ -3858,8 +4079,44 @@ XlsxHelper        </code>
         <span class="c1"># announce spreadsheet</span>
         <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">spread_sheet</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># get profile type</span>
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-profile&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile-type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_types</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_types</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid &quot;profile-type&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># load spread sheet</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">spread_sheet</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">configure_cd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Configure cd.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-cd&#39;</span><span class="p">:</span>
+            <span class="n">catalog_file</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-file&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">catalog_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;catalog-file&quot;&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">catalog_file</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalog: </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading catalog </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">configure_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Configure profile.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-profile&#39;</span><span class="p">:</span>
+            <span class="n">profile_title</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile-title&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">profile_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;profile-title&quot;&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="n">spread_sheet_url</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spread-sheet-url&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">spread_sheet_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;spread-sheet-url&quot;&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spread_sheet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -3870,8 +4127,11 @@ XlsxHelper        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wb</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sheet_name</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_map_name_to_letters</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># accumulators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_parameter_name</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span> <span class="o">=</span> <span class="p">[]</span>
@@ -3881,16 +4141,31 @@ XlsxHelper        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">_map_columns</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">row_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Generate rows until goal_id is None.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Generate rows until control_id is None.&quot;&quot;&quot;</span>
         <span class="n">row</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">rows_skipped_consecutive</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># assume no more data when 100 consecutve rows no control id</span>
+        <span class="n">rows_skipped_consecutive_limit</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">row</span> <span class="o">=</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">goal_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">control_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_control_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">goal_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_goal_name_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">control_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rows_skipped_consecutive</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">rows_skipped_consecutive</span> <span class="o">&lt;</span> <span class="n">rows_skipped_consecutive_limit</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;break: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">rows_skipped_consecutive</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">break</span>
+            <span class="k">if</span> <span class="n">control_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_filtered</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="k">yield</span> <span class="n">row</span>
+            <span class="n">rows_skipped_consecutive</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">_is_filtered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return True if row is to be skipped.&quot;&quot;&quot;</span>
@@ -3905,27 +4180,38 @@ XlsxHelper        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_filtered</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get goal_name_id from work_sheet.&quot;&quot;&quot;</span>
         <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">)</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+                <span class="n">svalue</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">svalue</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">get_goal_name_id_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get goal_name_id from work_sheet (strict).&quot;&quot;&quot;</span>
-        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_check_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get check_name_id from work_sheet.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_goal_name_id</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_rule_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get rule_name_id from work_sheet.&quot;&quot;&quot;</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_name_id</span><span class="p">)</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">svalue</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">svalue</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+                <span class="n">svalue</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">svalue</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">get_parameter_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -4050,8 +4336,8 @@ XlsxHelper        </code>
         <span class="n">value</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">_get_goal_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get goal_id from work_sheet.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_get_control_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get control_id from work_sheet.&quot;&quot;&quot;</span>
         <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
         <span class="k">return</span> <span class="n">value</span>
@@ -4078,10 +4364,14 @@ XlsxHelper        </code>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_text</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_text</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">version</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_version</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_version</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_name_id</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_name_id</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_version</span> <span class="ow">in</span> <span class="n">cell_tokens</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_version</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="c1"># parameters and alternatives (exact tokens match)</span>
             <span class="k">elif</span> <span class="n">cell_tokens</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">tokens_parameter_opt_parm</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rename_parameter_opt_parm</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -4098,8 +4388,10 @@ XlsxHelper        </code>
         <span class="c1"># insure expected columns found</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_id</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">control_text</span><span class="p">,</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_name_id</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_version</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_version</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">nist_mappings</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">resource_title</span><span class="p">,</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rename_parameter_opt_parm</span><span class="p">,</span>
@@ -4145,10 +4437,14 @@ XlsxHelper        </code>
 
     <span class="k">def</span> <span class="nf">report_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Report issues.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing goal_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing control_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows invalid goal_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing rule_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows invalid rule_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_parameter_name</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows invalid parameter_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_parameter_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span><span class="p">:</span>
@@ -4168,6 +4464,119 @@ XlsxHelper        </code>
 
 
 
+
+<h5 id="trestle.tasks.xlsx_helper.XlsxHelper-attributes">Attributes<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper-attributes" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.by_check">
+<code class="highlight language-python"><span class="n">by_check</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.by_check" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.by_control">
+<code class="highlight language-python"><span class="n">by_control</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.by_control" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.by_goal">
+<code class="highlight language-python"><span class="n">by_goal</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.by_goal" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.by_rule">
+<code class="highlight language-python"><span class="n">by_rule</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.by_rule" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.profile_type">
+<code class="highlight language-python"><span class="n">profile_type</span><span class="p">:</span> <span class="nb">str</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.profile_type" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Profile type.</p>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.profile_types">
+<code class="highlight language-python"><span class="n">profile_types</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.profile_types" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
 
 
 
@@ -4229,27 +4638,11 @@ XlsxHelper        </code>
     <span class="n">quiet</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">task</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">quiet</span>
     <span class="c1"># required for component-definition</span>
-    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-cd&#39;</span><span class="p">:</span>
-        <span class="n">catalog_file</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-file&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">catalog_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;catalog-file&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">catalog_file</span><span class="p">))</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalog: </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading catalog </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configure_cd</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
     <span class="c1"># required for profile</span>
-    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-profile&#39;</span><span class="p">:</span>
-        <span class="n">profile_title</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile-title&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">profile_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;profile-title&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">spread_sheet_url</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spread-sheet-url&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">spread_sheet_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;spread-sheet-url&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">configure_profile</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
     <span class="c1"># optional</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">filter_column</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filter-column&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="c1"># config spread sheet</span>
@@ -4267,9 +4660,118 @@ XlsxHelper        </code>
     <span class="c1"># announce spreadsheet</span>
     <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input: </span><span class="si">{</span><span class="n">spread_sheet</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># get profile type</span>
+    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-profile&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile-type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_types</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_types</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid &quot;profile-type&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile_type</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1"># load spread sheet</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">spread_sheet</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.configure_cd">
+<code class="highlight language-python"><span class="n">configure_cd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.configure_cd" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Configure cd.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">configure_cd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Configure cd.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-cd&#39;</span><span class="p">:</span>
+        <span class="n">catalog_file</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;catalog-file&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">catalog_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;catalog-file&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">catalog_file</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalog: </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading catalog </span><span class="si">{</span><span class="n">catalog_file</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.configure_profile">
+<code class="highlight language-python"><span class="n">configure_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.configure_profile" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Configure profile.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">configure_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Configure profile.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;xlsx-to-oscal-profile&#39;</span><span class="p">:</span>
+        <span class="n">profile_title</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;profile-title&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">profile_title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;profile-title&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">spread_sheet_url</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spread-sheet-url&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spread_sheet_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;config missing &quot;spread-sheet-url&quot;&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.get_check_name_id">
+<code class="highlight language-python"><span class="n">get_check_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.get_check_name_id" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Get check_name_id from work_sheet.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_check_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get check_name_id from work_sheet.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_goal_name_id</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4367,7 +4869,7 @@ XlsxHelper        </code>
 
 
 <h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id">
-<code class="highlight language-python"><span class="n">get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id" title="Permanent link">¤</a></h6>
@@ -4378,50 +4880,19 @@ XlsxHelper        </code>
 
         <details class="quote">
           <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_goal_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Get goal_name_id from work_sheet.&quot;&quot;&quot;</span>
     <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">)</span>
     <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">value</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id_strict">
-<code class="highlight language-python"><span class="n">get_goal_name_id_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.get_goal_name_id_strict" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-      <p>Get goal_name_id from work_sheet (strict).</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_goal_name_id_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get goal_name_id from work_sheet (strict).&quot;&quot;&quot;</span>
-    <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">goal_name_id</span><span class="p">)</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
-    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">svalue</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">svalue</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+            <span class="n">svalue</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">svalue</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span>
 </code></pre></div>
         </details>
@@ -4644,6 +5115,44 @@ XlsxHelper        </code>
 
 
 
+<h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.get_rule_name_id">
+<code class="highlight language-python"><span class="n">get_rule_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.xlsx_helper.XlsxHelper.get_rule_name_id" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Get rule_name_id from work_sheet.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_rule_name_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get rule_name_id from work_sheet.&quot;&quot;&quot;</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_letter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column</span><span class="o">.</span><span class="n">rule_name_id</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span><span class="p">[</span><span class="n">col</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+            <span class="n">svalue</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">svalue</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
 <h6 class="doc doc-heading" id="trestle.tasks.xlsx_helper.XlsxHelper.load">
 <code class="highlight language-python"><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spread_sheet</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">)</span></code>
 
@@ -4664,8 +5173,11 @@ XlsxHelper        </code>
     <span class="bp">self</span><span class="o">.</span><span class="n">_work_sheet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wb</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sheet_name</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_map_name_to_letters</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># accumulators</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_parameter_name</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_parameters</span> <span class="o">=</span> <span class="p">[]</span>
@@ -4725,6 +5237,9 @@ XlsxHelper        </code>
     <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  filter-column     = &#39;</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="s1">&#39;(optional) column heading of yes/no values; process only &quot;yes&quot; rows.&#39;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
+    <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;  profile-type      = &#39;</span>
+    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;(optional) one of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_types</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">text1</span> <span class="o">+</span> <span class="n">text2</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4751,10 +5266,14 @@ XlsxHelper        </code>
           <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">report_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Report issues.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing goal_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing control_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows invalid goal_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_goal_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows missing rule_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_rule_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows invalid rule_name_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_rule_name_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_parameter_name</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;rows invalid parameter_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rows_invalid_parameter_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_controls</span><span class="p">:</span>
@@ -4785,21 +5304,36 @@ XlsxHelper        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Generate rows until goal_id is None.</p>
+      <p>Generate rows until control_id is None.</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/tasks/xlsx_helper.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">row_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Generate rows until goal_id is None.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generate rows until control_id is None.&quot;&quot;&quot;</span>
     <span class="n">row</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">rows_skipped_consecutive</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># assume no more data when 100 consecutve rows no control id</span>
+    <span class="n">rows_skipped_consecutive_limit</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">row</span> <span class="o">=</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">goal_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_goal_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">control_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_control_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">goal_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_goal_name_id</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">control_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rows_skipped_consecutive</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">rows_skipped_consecutive</span> <span class="o">&lt;</span> <span class="n">rows_skipped_consecutive_limit</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;break: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">rows_skipped_consecutive</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">break</span>
+        <span class="k">if</span> <span class="n">control_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_control_id</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">goal_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows_missing_goal_name_id</span><span class="p">)</span>
+            <span class="k">continue</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_filtered</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">yield</span> <span class="n">row</span>
+        <span class="n">rows_skipped_consecutive</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre></div>
         </details>
     </div>
@@ -4924,7 +5458,7 @@ XlsxHelper        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.6e54b5cd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.748e2769.min.js"></script>
       
     
   </body>

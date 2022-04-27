@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.oscal.poam/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.120efc48.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c5ef100.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
@@ -6371,7 +6371,7 @@ Activity            (<a class="autorefs autorefs-internal" title="trestle.core.b
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment activity elsewhere in this or other OSCAL instances. The locally defined UUID of the activity can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Assessment Activity Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -6589,7 +6589,7 @@ Activity            (<a class="autorefs autorefs-internal" title="trestle.core.b
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment activity elsewhere in this or other OSCAL instances. The locally defined UUID of the activity can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -6978,12 +6978,7 @@ ControlSelection            (<a class="autorefs autorefs-internal" title="trestl
     <span class="p">)</span>
     <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">include_all</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;include-all&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A key word to indicate all.&#39;</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">include_all</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">IncludeAll</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;include-all&#39;</span><span class="p">)</span>
     <span class="n">include_controls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;include-controls&#39;</span><span class="p">)</span>
     <span class="n">exclude_controls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;exclude-controls&#39;</span><span class="p">)</span>
     <span class="n">remarks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Remarks</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -7047,7 +7042,7 @@ ControlSelection            (<a class="autorefs autorefs-internal" title="trestl
 
 
 <h6 class="doc doc-heading" id="trestle.oscal.poam.ControlSelection.include_all">
-<code class="highlight language-python"><span class="n">include_all</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></code>
+<code class="highlight language-python"><span class="n">include_all</span><span class="p">:</span> <span class="n">IncludeAll</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -7057,7 +7052,6 @@ ControlSelection            (<a class="autorefs autorefs-internal" title="trestl
 
     <div class="doc doc-contents ">
 
-      <p>A key word to indicate all.</p>
     </div>
 
   </div>
@@ -7225,7 +7219,7 @@ Entry            (<a class="autorefs autorefs-internal" title="trestle.core.base
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies a risk log entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk log entry elsewhere in this or other OSCAL instances. The locally defined UUID of the risk log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Log Entry Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this risk log entry.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
@@ -7494,7 +7488,7 @@ Entry            (<a class="autorefs autorefs-internal" title="trestle.core.base
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies a risk log entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk log entry elsewhere in this or other OSCAL instances. The locally defined UUID of the risk log entry can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -7584,7 +7578,7 @@ FindingTarget            (<a class="autorefs autorefs-internal" title="trestle.c
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;target-id&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Identifies the specific target qualified by the type.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A machine-oriented identifier reference for a specific target qualified by the type.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Finding Target Identifier Reference&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -7764,7 +7758,7 @@ FindingTarget            (<a class="autorefs autorefs-internal" title="trestle.c
 
     <div class="doc doc-contents ">
 
-      <p>Identifies the specific target qualified by the type.</p>
+      <p>A machine-oriented identifier reference for a specific target qualified by the type.</p>
     </div>
 
   </div>
@@ -8189,7 +8183,7 @@ Observation            (<a class="autorefs autorefs-internal" title="trestle.cor
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given observation across revisions.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this observation.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Title&#39;</span><span class="p">)</span>
@@ -8504,7 +8498,7 @@ Observation            (<a class="autorefs autorefs-internal" title="trestle.cor
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given observation across revisions.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this observation elsewhere in this or other OSCAL instances. The locally defined UUID of the observation can be used to reference the data item locally or globally (e.g., in an imorted OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -8824,7 +8818,7 @@ PlanOfActionAndMilestones            (<a class="autorefs autorefs-internal" titl
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies this POA&amp;M. This UUID must be changed each time the content of the POA&amp;M changes.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with instancescope that can be used to reference this POA&amp;M instance in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;POA&amp;M Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">Metadata</span>
@@ -9033,7 +9027,7 @@ PlanOfActionAndMilestones            (<a class="autorefs autorefs-internal" titl
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies this POA&amp;M. This UUID must be changed each time the content of the POA&amp;M changes.</p>
+      <p>A machine-oriented, globally unique identifier with instancescope that can be used to reference this POA&amp;M instance in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -9117,7 +9111,7 @@ PoamItem            (<a class="autorefs autorefs-internal" title="trestle.core.b
     <span class="p">)]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies the POA&amp;M entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given POA&amp;M item across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&amp;M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;POA&amp;M Item Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -9335,7 +9329,7 @@ PoamItem            (<a class="autorefs autorefs-internal" title="trestle.core.b
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies the POA&amp;M entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given POA&amp;M item across revisions of the document.</p>
+      <p>A machine-oriented, globally unique identifier with instance scope that can be used to reference this POA&amp;M item entry in this OSCAL instance. This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -9419,7 +9413,7 @@ RelatedObservation            (<a class="autorefs autorefs-internal" title="tres
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;observation-uuid&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;References an observation defined in the list of observations.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A machine-oriented identifier reference to an observation defined in the list of observations.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Observation Universally Unique Identifier Reference&#39;</span><span class="p">,</span>
     <span class="p">)</span>
 </code></pre></div>
@@ -9450,7 +9444,7 @@ RelatedObservation            (<a class="autorefs autorefs-internal" title="tres
 
     <div class="doc doc-contents ">
 
-      <p>References an observation defined in the list of observations.</p>
+      <p>A machine-oriented identifier reference to an observation defined in the list of observations.</p>
     </div>
 
   </div>
@@ -9534,7 +9528,7 @@ Response            (<a class="autorefs autorefs-internal" title="trestle.core.b
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given remediation across revisions.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this remediation elsewhere in this or other OSCAL instances. The locally defined UUID of the risk response can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Remediation Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">lifecycle</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
@@ -9781,7 +9775,7 @@ Response            (<a class="autorefs autorefs-internal" title="trestle.core.b
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given remediation across revisions.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this remediation elsewhere in this or other OSCAL instances. The locally defined UUID of the risk response can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -10089,7 +10083,7 @@ Risk            (<a class="autorefs autorefs-internal" title="trestle.core.base_
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies this risk. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given risk across revisions.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk elsewhere in this or other OSCAL instances. The locally defined UUID of the risk can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this risk.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Risk Title&#39;</span><span class="p">)</span>
@@ -10106,10 +10100,7 @@ Risk            (<a class="autorefs autorefs-internal" title="trestle.core.base_
     <span class="p">)</span>
     <span class="n">props</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Property</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">links</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Link</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">status</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
-        <span class="n">regex</span><span class="o">=</span>
-        <span class="sa">r</span><span class="s1">&#39;^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$&#39;</span>
-    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Describes the status of the associated risk.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Status&#39;</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">common</span><span class="o">.</span><span class="n">RiskStatus</span>
     <span class="n">origins</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Origin1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">threat_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">ThreatId</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;threat-ids&#39;</span><span class="p">)</span>
     <span class="n">characterizations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Characterization</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -10381,7 +10372,7 @@ Risk            (<a class="autorefs autorefs-internal" title="trestle.core.base_
 
 
 <h6 class="doc doc-heading" id="trestle.oscal.poam.Risk.status">
-<code class="highlight language-python"><span class="n">status</span><span class="p">:</span> <span class="n">ConstrainedStrValue</span></code>
+<code class="highlight language-python"><span class="n">status</span><span class="p">:</span> <span class="n">RiskStatus</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-pydantic-field"><code>pydantic-field</code></small>
@@ -10392,7 +10383,6 @@ Risk            (<a class="autorefs autorefs-internal" title="trestle.core.base_
 
     <div class="doc doc-contents ">
 
-      <p>Describes the status of the associated risk.</p>
     </div>
 
   </div>
@@ -10459,7 +10449,7 @@ Risk            (<a class="autorefs autorefs-internal" title="trestle.core.base_
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies this risk. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given risk across revisions.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this risk elsewhere in this or other OSCAL instances. The locally defined UUID of the risk can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -10651,7 +10641,8 @@ SelectControlById            (<a class="autorefs autorefs-internal" title="trest
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;control-id&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A reference to a control with a corresponding id value.&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Control Identifier Reference&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">statement_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">StatementId</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;statement-ids&#39;</span><span class="p">)</span>
@@ -10683,7 +10674,7 @@ SelectControlById            (<a class="autorefs autorefs-internal" title="trest
 
     <div class="doc doc-contents ">
 
-      <p>A reference to a control with a corresponding id value.</p>
+      <p>A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).</p>
     </div>
 
   </div>
@@ -10790,7 +10781,7 @@ SetParameter            (<a class="autorefs autorefs-internal" title="trestle.co
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;param-id&#39;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s2">&quot;A reference to a parameter within a control, who&#39;s catalog has been imported into the current implementation context.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;A human-oriented reference to a parameter within a control, who&#39;s catalog has been imported into the current implementation context.&quot;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Parameter ID&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">Value</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -10823,7 +10814,7 @@ SetParameter            (<a class="autorefs autorefs-internal" title="trestle.co
 
     <div class="doc doc-contents ">
 
-      <p>A reference to a parameter within a control, who's catalog has been imported into the current implementation context.</p>
+      <p>A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.</p>
     </div>
 
   </div>
@@ -11456,7 +11447,7 @@ Step            (<a class="autorefs autorefs-internal" title="trestle.core.base_
     <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span>
-        <span class="s1">&#39;Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this step elsewhere in this or other OSCAL instances. The locally defined UUID of the step (in a series of steps) can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Step Universally Unique Identifier&#39;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The title for this step.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Step Title&#39;</span><span class="p">)</span>
@@ -11648,7 +11639,7 @@ Step            (<a class="autorefs autorefs-internal" title="trestle.core.base_
 
     <div class="doc doc-contents ">
 
-      <p>Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this step elsewhere in this or other OSCAL instances. The locally defined UUID of the step (in a series of steps) can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -11727,12 +11718,14 @@ SystemComponent            (<a class="autorefs autorefs-internal" title="trestle
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
 
-    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
-                 <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-                     <span class="o">...</span><span class="p">,</span>
-                     <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The unique identifier for the component.&#39;</span><span class="p">,</span>
-                     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Identifier&#39;</span><span class="p">,</span>
-                 <span class="p">)</span>
+    <span class="n">uuid</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^[0-9A-Fa-f]</span><span class="si">{8}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{4}</span><span class="s1">-4[0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[89ABab][0-9A-Fa-f]</span><span class="si">{3}</span><span class="s1">-[0-9A-Fa-f]</span><span class="si">{12}</span><span class="s1">$&#39;</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span>
+        <span class="s1">&#39;A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Component Identifier&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^\S(.*\S)?$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A category describing the purpose of the component.&#39;</span><span class="p">,</span>
@@ -12010,7 +12003,7 @@ SystemComponent            (<a class="autorefs autorefs-internal" title="trestle
 
     <div class="doc doc-contents ">
 
-      <p>The unique identifier for the component.</p>
+      <p>A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.</p>
     </div>
 
   </div>
@@ -12138,7 +12131,7 @@ Config        </code>
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.6e54b5cd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.748e2769.min.js"></script>
       
     
   </body>

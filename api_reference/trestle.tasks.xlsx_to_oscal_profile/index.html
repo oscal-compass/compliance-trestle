@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.xlsx_to_oscal_profile/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
     
     
       
@@ -21,7 +21,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.120efc48.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c5ef100.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
@@ -3028,19 +3028,28 @@ XlsxToOscalProfile            (<a class="autorefs autorefs-internal" title="tres
             <span class="n">oscal_version</span><span class="o">=</span><span class="n">OSCAL_VERSION</span><span class="p">,</span>
             <span class="n">version</span><span class="o">=</span><span class="n">get_trestle_version</span><span class="p">(),</span>
         <span class="p">)</span>
-        <span class="n">import_</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span>
-            <span class="n">href</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_spread_sheet_url</span><span class="p">(),</span>
-            <span class="n">include_controls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_include_controls</span><span class="p">(),</span>
-        <span class="p">)</span>
-        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="n">import_</span><span class="p">]</span>
-        <span class="n">set_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_set_parameters</span><span class="p">()</span>
-        <span class="n">modify</span> <span class="o">=</span> <span class="n">Modify</span><span class="p">(</span><span class="n">set_parameters</span><span class="o">=</span><span class="n">set_parameters</span><span class="p">)</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span>
-            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
-            <span class="n">imports</span><span class="o">=</span><span class="n">imports</span><span class="p">,</span>
-            <span class="n">modify</span><span class="o">=</span><span class="n">modify</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">profile_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">by_control</span><span class="p">:</span>
+            <span class="n">imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_imports_by_control</span><span class="p">()</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+                <span class="n">imports</span><span class="o">=</span><span class="n">imports</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">profile_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">by_rule</span><span class="p">:</span>
+                <span class="n">imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_imports_by_rule</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">profile_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">by_check</span><span class="p">:</span>
+                <span class="n">imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_imports_by_check</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_imports_by_goal</span><span class="p">()</span>
+            <span class="n">set_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_set_parameters</span><span class="p">()</span>
+            <span class="n">modify</span> <span class="o">=</span> <span class="n">Modify</span><span class="p">(</span><span class="n">set_parameters</span><span class="o">=</span><span class="n">set_parameters</span><span class="p">)</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span>
+                <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+                <span class="n">imports</span><span class="o">=</span><span class="n">imports</span><span class="p">,</span>
+                <span class="n">modify</span><span class="o">=</span><span class="n">modify</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="c1"># write OSCAL Profile to file</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -3049,20 +3058,90 @@ XlsxToOscalProfile            (<a class="autorefs autorefs-internal" title="tres
         <span class="bp">self</span><span class="o">.</span><span class="n">_report_issues</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;success&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_include_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get include controls from spread sheet.&quot;&quot;&quot;</span>
-        <span class="n">include_control</span> <span class="o">=</span> <span class="n">SelectControlById</span><span class="p">(</span><span class="n">with_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_with_ids</span><span class="p">())</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">include_control</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">_get_imports_by_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Import</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get imports by goal.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_imports_by_check</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_with_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get goal name ids from spread sheet.&quot;&quot;&quot;</span>
-        <span class="n">goal_name_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span> <span class="nf">_get_imports_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Import</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get imports by control.&quot;&quot;&quot;</span>
+        <span class="n">import_</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span>
+            <span class="n">href</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_spread_sheet_url</span><span class="p">(),</span>
+            <span class="n">include_controls</span><span class="o">=</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">(</span><span class="n">with_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_with_ids_by_control</span><span class="p">())],</span>
+        <span class="p">)</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="n">import_</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">imports</span>
+
+    <span class="k">def</span> <span class="nf">_get_imports_by_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Import</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get imports by rule.&quot;&quot;&quot;</span>
+        <span class="n">import_</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span>
+            <span class="n">href</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_spread_sheet_url</span><span class="p">(),</span>
+            <span class="n">include_controls</span><span class="o">=</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">(</span><span class="n">with_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_with_ids_by_rule</span><span class="p">())],</span>
+        <span class="p">)</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="n">import_</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">imports</span>
+
+    <span class="k">def</span> <span class="nf">_get_imports_by_check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Import</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get imports by check.&quot;&quot;&quot;</span>
+        <span class="n">import_</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span>
+            <span class="n">href</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_spread_sheet_url</span><span class="p">(),</span>
+            <span class="n">include_controls</span><span class="o">=</span><span class="p">[</span><span class="n">SelectControlById</span><span class="p">(</span><span class="n">with_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_with_ids_by_check</span><span class="p">())],</span>
+        <span class="p">)</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="n">import_</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">imports</span>
+
+    <span class="k">def</span> <span class="nf">_get_with_ids_by_control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get controls from spread sheet.&quot;&quot;&quot;</span>
+        <span class="n">control_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">row_generator</span><span class="p">():</span>
             <span class="c1"># quit when first row with no goal_id encountered</span>
-            <span class="n">goal_name_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">get_goal_name_id_strict</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">goal_name_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">goal_name_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">goal_name_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">goal_name_id_list</span><span class="p">)</span>
+            <span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">get_controls</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">controls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">controls</span><span class="p">:</span>
+                    <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oscal_namify</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">control_list</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">control_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">control_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_control_sort_key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_with_ids_by_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get rules from spread sheet.&quot;&quot;&quot;</span>
+        <span class="n">rule_name_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">row_generator</span><span class="p">():</span>
+            <span class="c1"># quit when first row with no goal_id encountered</span>
+            <span class="n">rule_name_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">get_rule_name_id</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rule_name_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rule_name_id</span> <span class="ow">in</span> <span class="n">rule_name_id_list</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">rule_name_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule_name_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rule_name_id_list</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_with_ids_by_check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get check from spread sheet.&quot;&quot;&quot;</span>
+        <span class="n">check_name_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">row_generator</span><span class="p">():</span>
+            <span class="c1"># quit when first row with no goal_id encountered</span>
+            <span class="n">check_name_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xlsx_helper</span><span class="o">.</span><span class="n">get_check_name_id</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">check_name_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">check_name_id</span> <span class="ow">in</span> <span class="n">check_name_id_list</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">check_name_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">check_name_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">check_name_id_list</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_control_sort_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fabricate sort key.&quot;&quot;&quot;</span>
+        <span class="n">k1</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">control</span><span class="p">:</span>
+            <span class="n">k3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k3</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">k3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_oscal_namify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rectify parenthesized numbers in controls.&quot;&quot;&quot;</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">control</span>
 
     <span class="k">def</span> <span class="nf">_get_set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SetParameter</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Get set parameters from spread sheet.&quot;&quot;&quot;</span>
@@ -3390,7 +3469,7 @@ XlsxToOscalProfile            (<a class="autorefs autorefs-internal" title="tres
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.6e54b5cd.min.js"></script>
+      <script src="../../assets/javascripts/bundle.748e2769.min.js"></script>
       
     
   </body>
