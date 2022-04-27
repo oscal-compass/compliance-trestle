@@ -3,6 +3,19 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0 (2022-04-27)
+### Feature
+* Updated to OSCAL 1.0.2 support ([#1097](https://github.com/IBM/compliance-trestle/issues/1097)) ([`a2aa3dd`](https://github.com/IBM/compliance-trestle/commit/a2aa3dd53e67096004ba4e202fef8c7586462888))
+
+### Fix
+* Various task transformer improvements ([#1100](https://github.com/IBM/compliance-trestle/issues/1100)) ([`c869f37`](https://github.com/IBM/compliance-trestle/commit/c869f37f9c942dc151ac729a6fa3506c375c9da7))
+
+### Breaking
+* pushed to OSCAL 1.0.2 ([`a2aa3dd`](https://github.com/IBM/compliance-trestle/commit/a2aa3dd53e67096004ba4e202fef8c7586462888))
+
+### Documentation
+* Update readme and index md files ([#1099](https://github.com/IBM/compliance-trestle/issues/1099)) ([`f0bd541`](https://github.com/IBM/compliance-trestle/commit/f0bd5412be6bb7b9f88dc2ee3f6b1608c12a9268))
+
 ## v0.37.0 (2022-04-12)
 ### Feature
 * Bump feature with added docs ([#1092](https://github.com/IBM/compliance-trestle/issues/1092)) ([`d1cdad3`](https://github.com/IBM/compliance-trestle/commit/d1cdad3360a122cfa9bcd7ea8c3252369966f49e))
