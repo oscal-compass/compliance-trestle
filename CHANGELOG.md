@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.1 (2022-04-27)
+### Fix
+* Bump readme refs to 1.0.x ([#1103](https://github.com/IBM/compliance-trestle/issues/1103)) ([`488cd40`](https://github.com/IBM/compliance-trestle/commit/488cd4003a97d0142cc65e91fa660dd2b83bd75b))
+
 ## v1.0.0 (2022-04-27)
 ### Feature
 * Updated to OSCAL 1.0.2 support ([#1097](https://github.com/IBM/compliance-trestle/issues/1097)) ([`a2aa3dd`](https://github.com/IBM/compliance-trestle/commit/a2aa3dd53e67096004ba4e202fef8c7586462888))
