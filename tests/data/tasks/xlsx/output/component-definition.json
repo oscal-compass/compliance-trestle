@@ -5,7 +5,7 @@
       "title": "Component definition for NIST Special Publication 800-53 Revision 4 profiles",
       "last-modified": "2021-07-19T14:03:03+00:00",
       "version": "0.21.0",
-      "oscal-version": "1.0.0",
+      "oscal-version": "1.0.2",
       "roles": [
         {
           "id": "prepared-by",
@@ -63,63 +63,6 @@
       ]
     },
     "components": [
-      {
-        "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-        "type": "Service",
-        "title": "SYSTEM",
-        "description": "SYSTEM",
-        "control-implementations": [
-          {
-            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
-            "description": "SYSTEM implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.",
-            "implemented-requirements": [
-              {
-                "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                "control-id": "cm-2",
-                "description": "cm-2",
-                "props": [
-                  {
-                    "name": "goal_name_id",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "3000036",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure the EU supported setting is enabled in account settings"
-                  },
-                  {
-                    "name": "goal_version",
-                    "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud",
-                    "value": "1.0",
-                    "class": "scc_goal_version",
-                    "remarks": "3000036"
-                  }
-                ],
-                "responsible-roles": [
-                  {
-                    "role-id": "prepared-by",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "prepared-for",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821",
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  },
-                  {
-                    "role-id": "content-approver",
-                    "party-uuids": [
-                      "56666738-0f9a-4e38-9aac-c0fad00a5821"
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
       {
         "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
         "type": "Service",

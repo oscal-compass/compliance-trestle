@@ -5,7 +5,7 @@
       "title": "Profile for IBM Best Practices SCC GOALS",
       "last-modified": "2021-07-19T14:03:03+00:00",
       "version": "0.21.0",
-      "oscal-version": "1.0.0"
+      "oscal-version": "1.0.2"
     },
     "imports": [
       {
@@ -16,7 +16,6 @@
               "appid_",
               "cis_tls_configured",
               "cloudant_admin_role_serviceid_maxcount",
-              "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
               "continuous_delivery_toolchain_sourcecode_scan_severity_configured",
               "kubernetes_service_ingress_tls_configured",
               "kubernetes_service_latest_version"

@@ -403,7 +403,7 @@ class OscalResultsFactory():
             reviewed_controls=self.reviewed_controls,
         )
         if self.result_properties:
-            prop.prop = self.result_properties
+            prop.props = self.result_properties
         if self.inventory:
             prop.local_definitions = self.local_definitions
         if self.observations:

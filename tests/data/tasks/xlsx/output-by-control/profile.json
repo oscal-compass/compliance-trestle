@@ -1,0 +1,43 @@
+{
+  "profile": {
+    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+    "metadata": {
+      "title": "Profile for Profile for IBM Best Practices SCC Controls",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2"
+    },
+    "imports": [
+      {
+        "href": "https://github.mycorp.com/spread-sheets/best_practices_controls.xlsx",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-2",
+              "ac-3",
+              "ac-4",
+              "ac-5",
+              "ac-6",
+              "ac-17.2",
+              "cm-2",
+              "cm-7",
+              "cm-8.1",
+              "cm-8.3",
+              "ra-5",
+              "sa-3",
+              "sc-7",
+              "sc-7.3",
+              "sc-8",
+              "sc-8.1",
+              "sc-13",
+              "sc-23",
+              "si-2.2",
+              "si-7.1",
+              "zz-1"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
