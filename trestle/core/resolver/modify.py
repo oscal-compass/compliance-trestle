@@ -105,6 +105,8 @@ class Modify(Pipeline.Filter):
                 param = param_dict[param_ids[i]]
                 param_str = ControlIOReader.param_to_str(param, param_rep, False, False, params_format)
                 text = text.replace(staches[i], param_str, 1).strip()
+                if param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
+                    logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
             else:
                 logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         return text
@@ -136,6 +138,8 @@ class Modify(Pipeline.Filter):
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) -> None:
         """Replace the control prose according to set_param."""
+        for param in as_list(control.params):
+            Modify._replace_param_choices(param, param_dict)
         for part in as_list(control.parts):
             if part.prose is not None:
                 fixed_prose = Modify._replace_params(part.prose, param_dict, params_format, param_rep)
@@ -143,8 +147,6 @@ class Modify(Pipeline.Filter):
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
                 Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep)
-        for param in as_list(control.params):
-            Modify._replace_param_choices(param, param_dict)
 
     @staticmethod
     def _add_contents_as_list(add: prof.Add) -> List[OBT]:
