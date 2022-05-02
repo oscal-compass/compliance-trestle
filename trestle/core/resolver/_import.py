@@ -39,6 +39,7 @@ class Import(Pipeline.Filter):
         self,
         trestle_root: pathlib.Path,
         import_: prof.Import,
+        uuid_chain: List[str],
         change_prose=False,
         block_adds: bool = False,
         block_params: bool = False,
@@ -49,6 +50,7 @@ class Import(Pipeline.Filter):
         """Initialize and store trestle root for cache access."""
         self._trestle_root = trestle_root
         self._import = import_
+        self._uuid_chain = uuid_chain
         self._block_adds = block_adds
         self._block_params = block_params
         self._change_prose = change_prose
@@ -89,6 +91,9 @@ class Import(Pipeline.Filter):
                 raise TrestleError(f'Improper model type {model_type} as profile import.')
 
             profile: prof.Profile = model
+            if profile.uuid in self._uuid_chain:
+                raise TrestleError(f'Profile {profile.metadata.title} is referenced in circular manner.')
+            self._uuid_chain.append(profile.uuid)
             resources = profile.back_matter.resources if profile.back_matter and profile.back_matter.resources else None
 
             pipelines: List[Pipeline] = []
@@ -96,7 +101,7 @@ class Import(Pipeline.Filter):
                 f'import pipelines for sub_imports of profile {self._import.href} with title {model.metadata.title}'
             )
             for sub_import in profile.imports:
-                import_filter = Import(self._trestle_root, sub_import, resources=resources)
+                import_filter = Import(self._trestle_root, sub_import, self._uuid_chain, resources=resources)
                 prune_filter = Prune(sub_import, profile)
                 pipeline = Pipeline([import_filter, prune_filter])
                 pipelines.append(pipeline)
