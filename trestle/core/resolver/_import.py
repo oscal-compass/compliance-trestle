@@ -91,6 +91,7 @@ class Import(Pipeline.Filter):
                 raise TrestleError(f'Improper model type {model_type} as profile import.')
 
             profile: prof.Profile = model
+            # profile uuid's must be unique or they may trigger circular reference warning
             if profile.uuid in self._uuid_chain:
                 raise TrestleError(f'Profile {profile.metadata.title} is referenced in circular manner.')
             self._uuid_chain.append(profile.uuid)
