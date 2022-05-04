@@ -52,8 +52,10 @@ test-verbose:
 	python -m pytest  -vv -n auto
 
 test-speed-measure:
-	python -m pytest -n auto --durations=30 
+	python -m pytest -n auto --durations=30
 
+test-fast:
+	python -m pytest -n auto --exitfirst -k "not fetcher and not from_nist and not from_url"
 
 test-bdist:: clean
 	. tests/manual_tests/test_binary.sh

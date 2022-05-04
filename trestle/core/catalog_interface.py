@@ -16,7 +16,7 @@
 import copy
 import logging
 import pathlib
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 
 import trestle.common.const as const
 import trestle.core.generators as gens
@@ -706,6 +706,16 @@ class CatalogInterface():
                 if part.name not in sections and part.name != 'statement':
                     sections.append(part.name)
         return sections
+
+    def find_needed_uuid_refs(self, needed_control_ids: Optional[List[str]] = None) -> Set[str]:
+        """Find all refs in the needed controls for this catalog."""
+        refs = set()
+        if needed_control_ids is None:
+            needed_control_ids = self.get_control_ids()
+        for control_id in needed_control_ids:
+            control = self.get_control(control_id)
+            refs.update(ControlIOWriter.find_uuid_refs(control))
+        return refs
 
     @staticmethod
     def merge_controls(dest: cat.Control, src: cat.Control, replace_params: bool) -> None:

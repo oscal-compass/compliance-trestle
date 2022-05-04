@@ -14,13 +14,11 @@
 """Create resolved catalog from profile."""
 
 import logging
-import re
 from typing import Dict, Iterator, List, Optional, Set
 from uuid import uuid4
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
-from trestle.common.const import MARKDOWN_URL_REGEX, UUID_REGEX
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import none_if_empty
 from trestle.core.catalog_interface import CatalogInterface
@@ -50,49 +48,6 @@ class Prune(Pipeline.Filter):
         """Set the catalog used by the catalog interface."""
         self._catalog_interface = CatalogInterface(catalog)
         self._catalog = catalog
-
-    def _find_uuid_refs(self, control_id: str) -> Set[str]:
-        """
-        Find all needed resource refs buried in control links and prose.
-
-        For any controls retained in the resolved profile catalog, if any
-        prose references a document by uuid, that reference needs to be in backmatter.
-        """
-        control = self._catalog_interface.get_control(control_id)
-        refs = set()
-        if control.links is not None:
-            for link in control.links:
-                uuid_str = link.href.replace('#', '')
-                refs.add(uuid_str)
-        if control.parts is not None:
-            for part in control.parts:
-                if part.prose is not None:
-                    # find the two parts, label and ref, in each markdown url
-                    # expecting form [label](#uuid)
-                    # but if it is a control ref it may be e.g. [CM-7](#cm-7)
-                    # for now label is not used
-                    # the ref may be a uuid or control id
-                    # currently only uuids are used to confirm needed presence in backmatter
-                    # note that prose may be multi-line but findall searches all lines
-                    matches = re.findall(MARKDOWN_URL_REGEX, part.prose)
-                    for match in matches:
-                        ref = match[1]
-                        if len(ref) > 1 and ref[0] == '#':
-                            uuid_match = re.findall(UUID_REGEX, ref[1:])
-                            # there should be only one uuid in the parens
-                            if uuid_match:
-                                refs.add(uuid_match[0])
-        if control.controls is not None:
-            for sub_control in control.controls:
-                refs.update(self._find_uuid_refs(sub_control.id))
-        return refs
-
-    def _find_all_uuid_refs(self, needed_control_ids: List[str]) -> Set[str]:
-        """Find all references needed by controls."""
-        refs = set()
-        for control_id in needed_control_ids:
-            refs.update(self._find_uuid_refs(control_id))
-        return refs
 
     def _controls_selected(self, select_list: Optional[List[prof.SelectControlById]]) -> List[str]:
         control_ids: List[str] = []
@@ -188,7 +143,7 @@ class Prune(Pipeline.Filter):
                 group_dict[group_id].controls.append(control)
 
         # find all referenced uuids - they should be 1:1 with those in backmatter
-        needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_control_ids)
+        needed_uuid_refs: Set[str] = self._catalog_interface.find_needed_uuid_refs(final_control_ids)
 
         # prune the list of resources to only those that are needed
         new_resources: Optional[List[common.Resource]] = []

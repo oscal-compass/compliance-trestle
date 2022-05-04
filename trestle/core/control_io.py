@@ -19,7 +19,7 @@ import re
 import string
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import frontmatter
 
@@ -79,6 +79,27 @@ class ControlIOWriter():
             if prop.name == const.SORT_ID:
                 return prop.value.strip()
         return None if allow_none else control.id
+
+    @staticmethod
+    def find_uuid_refs(control: cat.Control) -> Set[str]:
+        """Find all refs made in this control."""
+        refs = set()
+        uuid_strs: List[str] = []
+        if control.links is not None:
+            for link in control.links:
+                uuid_strs.append(link.href)
+        prose_list = ModelUtils.find_values_by_name(control, 'prose')
+        uuid_strs.extend(prose_list)
+        for uuid_str in uuid_strs:
+            matches = re.findall(const.MARKDOWN_URL_REGEX, uuid_str)
+            for match in matches:
+                ref = match[1]
+                if len(ref) > 1 and ref[0] == '#':
+                    uuid_match = re.findall(const.UUID_REGEX, ref[1:])
+                    # there should be only one uuid in the parens
+                    if uuid_match:
+                        refs.add(uuid_match[0])
+        return refs
 
     @staticmethod
     def get_label(part_control: Union[common.Part, cat.Control]) -> str:

@@ -30,6 +30,7 @@ import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.cli import Trestle
+from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator import Validator
@@ -167,9 +168,8 @@ def test_role_refs_validator(
     assert pytest_wrapped_e.value.code == code
 
 
-@pytest.mark.parametrize('code', [0])
 def test_oscal_version_validator(
-    tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int, monkeypatch: MonkeyPatch
+    tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
 ) -> None:
     """
     Test oscal version validator.
@@ -178,13 +178,14 @@ def test_oscal_version_validator(
     """
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
-    sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
+    mycat_path = mycat_dir / 'catalog.json'
+    sample_catalog_minimal.oscal_write(mycat_path)
     testcmd = 'trestle validate -t catalog'
     monkeypatch.setattr(sys, 'argv', testcmd.split())
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         cli.run()
     assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == code
+    assert pytest_wrapped_e.value.code == CmdReturnCodes.SUCCESS.value
 
 
 def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -192,10 +193,9 @@ def test_oscal_version_incorrect_validator(tmp_trestle_dir: pathlib.Path, monkey
     catalog_path = test_utils.JSON_TEST_DATA_PATH / 'minimal_catalog_bad_oscal_version.json'
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
-    catalog = mycat_dir / 'catalog.json'
-    catalog.touch()
-    shutil.copyfile(catalog_path, catalog)
-    testcmd = f'trestle validate -f {catalog}'
+    mycat_path = mycat_dir / 'catalog.json'
+    shutil.copyfile(catalog_path, mycat_path)
+    testcmd = f'trestle validate -f {mycat_path}'
     monkeypatch.setattr(sys, 'argv', testcmd.split())
     rc = Trestle().run()
     assert rc == 1
@@ -274,3 +274,13 @@ def test_validate_distributed(
         cli.run()
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
+
+
+def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
+    """Test validation of unique param ids in catalog."""
+    args = argparse.Namespace(mode=const.VAL_MODE_CATALOG)
+    validator = validator_factory.get(args)
+    assert validator.model_is_valid(sample_catalog_rich_controls)
+    param_0_id = sample_catalog_rich_controls.groups[0].controls[0].params[0].id
+    sample_catalog_rich_controls.groups[0].controls[0].params[1].id = param_0_id
+    assert not validator.model_is_valid(sample_catalog_rich_controls)

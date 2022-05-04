@@ -33,4 +33,6 @@ class DuplicatesValidator(Validator):
         returns:
             True (valid) if the model does not contain duplicate uuid's.
         """
-        return ModelUtils.has_no_duplicate_values_by_name(model, 'uuid')
+        if not ModelUtils.has_no_duplicate_values_by_name(model, 'uuid'):
+            return False
+        return ModelUtils.has_no_duplicate_values_by_name(model, 'param_id')

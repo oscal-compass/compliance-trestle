@@ -18,15 +18,17 @@
 from ilcli import Command
 
 from trestle.common import const
-from trestle.core import all_validator, duplicates_validator, refs_validator
+from trestle.core import all_validator, catalog_validator, duplicates_validator, links_validator, refs_validator
 from trestle.core.object_factory import ObjectFactory
 
 # Create the singleton validator factory
 validator_factory: ObjectFactory = ObjectFactory()
 
 # Register all validators here
+validator_factory.register_object(const.VAL_MODE_CATALOG, catalog_validator.CatalogValidator())
 validator_factory.register_object(const.VAL_MODE_DUPLICATES, duplicates_validator.DuplicatesValidator())
 validator_factory.register_object(const.VAL_MODE_REFS, refs_validator.RefsValidator())
+validator_factory.register_object(const.VAL_MODE_LINKS, links_validator.LinksValidator())
 validator_factory.register_object(const.VAL_MODE_ALL, all_validator.AllValidator())
 
 
