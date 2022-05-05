@@ -3,6 +3,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.2 (2022-05-05)
+### Fix
+* Check for circular imports during profile resolution ([#1107](https://github.com/IBM/compliance-trestle/issues/1107)) ([`81469db`](https://github.com/IBM/compliance-trestle/commit/81469dbcca3ffcb140ac09023b7de17671c4386b))
+* Prevent moustaches in resolved profile catalog ([#1106](https://github.com/IBM/compliance-trestle/issues/1106)) ([`f9edc81`](https://github.com/IBM/compliance-trestle/commit/f9edc8185db30330cfe33d3cf02ef55e90135692))
+* Add ability to remove group title ([#1114](https://github.com/IBM/compliance-trestle/issues/1114)) ([`4303d76`](https://github.com/IBM/compliance-trestle/commit/4303d760935b0f34a13cccf9caaac4e90a05de83))
+* Prevent blowfish warning due to new release of cryptography ([#1112](https://github.com/IBM/compliance-trestle/issues/1112)) ([`f13fe31`](https://github.com/IBM/compliance-trestle/commit/f13fe31ae4c790ef7b495c3f5418d3c26de96841))
+
 ## v1.0.1 (2022-04-27)
 ### Fix
 * Bump readme refs to 1.0.x ([#1103](https://github.com/IBM/compliance-trestle/issues/1103)) ([`488cd40`](https://github.com/IBM/compliance-trestle/commit/488cd4003a97d0142cc65e91fa660dd2b83bd75b))
