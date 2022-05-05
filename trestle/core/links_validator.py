@@ -45,19 +45,18 @@ class LinksValidator(Validator):
 
         # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
         prose_list = ModelUtils.find_values_by_name(model, 'prose')
-        for prose in prose_list:
-            matches = re.findall(const.MARKDOWN_URL_REGEX, prose)
-            uuid_strs.extend([match[1] for match in matches])
+        uuid_strs.extend(
+            [
+                match[1] for prose in prose_list for matches in re.findall(const.MARKDOWN_URL_REGEX, prose)
+                for match in matches
+            ]
+        )
 
         # collect the strings that start with # and are potential uuids
         uuid_strs = [uuid_str for uuid_str in uuid_strs if uuid_str and uuid_str[0] == '#']
 
         # go through all matches and build set of those that are uuids
-        refs = set()
-        for uuid_str in uuid_strs:
-            uuid_match = re.findall(const.UUID_REGEX, uuid_str[1:])
-            if uuid_match:
-                refs.add(uuid_match[0])
+        refs = {uuid_match[0] for uuid_str in uuid_strs for uuid_match in re.findall(const.UUID_REGEX, uuid_str[1:])}
 
         # find uuids in backmatter
         # should check for duplicates
