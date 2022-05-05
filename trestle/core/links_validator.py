@@ -15,17 +15,20 @@
 # limitations under the License.
 """Validate catalog by confirming control links match resources in backmatter."""
 import logging
+import re
+from typing import List
 
+import trestle.common.const as const
+import trestle.oscal.common as com
 from trestle.common.common_types import TopLevelOscalModel
-from trestle.core.catalog_interface import CatalogInterface
+from trestle.common.model_utils import ModelUtils
 from trestle.core.validator import Validator
-from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
 
 
 class LinksValidator(Validator):
-    """Validator to confirm all links in match resources in backmatter."""
+    """Validator to confirm all uuids in links and prose match resources in backmatter."""
 
     def model_is_valid(self, model: TopLevelOscalModel) -> bool:
         """
@@ -36,24 +39,42 @@ class LinksValidator(Validator):
         returns:
             Always returns True, but gives warning if links and resources are not one-to-one.
         """
-        if not isinstance(model, Catalog):
-            return True
-        catalog: Catalog = model
-        cat_interface = CatalogInterface(catalog)
-        uuids = cat_interface.find_needed_uuid_refs()
+        uuid_strs: List[str] = []
+
+        # links have href of form #foo or #uuid
+        links_list: List[List[com.Link]] = ModelUtils.find_values_by_name(model, 'links')
+        for links in links_list:
+            for link in links:
+                uuid_strs.append(link.href)
+
+        # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
+        prose_list = ModelUtils.find_values_by_name(model, 'prose')
+        for prose in prose_list:
+            matches = re.findall(const.MARKDOWN_URL_REGEX, prose)
+            # extract the potential #uuid string from each match
+            for match in matches:
+                uuid_strs.append(match[1])
+
+        # now go through all matches and build list of those that are uuids
+        refs = set()
+        for uuid_str in uuid_strs:
+            if uuid_str[0] == '#':
+                uuid_match = re.findall(const.UUID_REGEX, uuid_str[1:])
+                if uuid_match:
+                    refs.add(uuid_match[0])
 
         links = set()
-        if catalog.back_matter and catalog.back_matter.resources:
-            for res in catalog.back_matter.resources:
+        if model.back_matter and model.back_matter.resources:
+            for res in model.back_matter.resources:
                 links.add(res.uuid)
 
-        if uuids == links:
+        if refs == links:
             return True
-        in_uuids = uuids.difference(links)
-        if in_uuids:
-            logger.warning(f'Model references {len(uuids)} uuids and {len(in_uuids)} of them are not in resources.')
-            logger.debug(f'Model references {len(in_uuids)} uuids not in resources: {in_uuids}')
-        in_links = links.difference(uuids)
+        in_refs = refs.difference(links)
+        if in_refs:
+            logger.warning(f'Model references {len(refs)} uuids and {len(in_refs)} of them are not in resources.')
+            logger.debug(f'Model references {len(in_refs)} uuids not in resources: {in_refs}')
+        in_links = links.difference(refs)
         if in_links:
             logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.')
             logger.debug(f'Resources have {len(in_links)} not in referenced by model: {in_links}')
