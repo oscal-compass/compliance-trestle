@@ -171,13 +171,18 @@ class ControlIOWriter():
         control: cat.Control,
         group_title: str,
         sections_dict: Optional[Dict[str, str]] = None,
-        capitalize_title=False
+        capitalize_title=False,
+        print_group_title=True
     ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
         title = f'{control.id} - \[{group_title}\] {control.title}'
         if capitalize_title:
             title = f'{control.id.upper()} - \[{group_title.title()}\] {control.title.title()}'
+
+        if not print_group_title:
+            title = re.sub('-.*?]', ' -', title)
+
         header_title = 'Control Statement'
         if sections_dict and sections_dict['statement']:
             header_title = sections_dict['statement']
@@ -564,7 +569,8 @@ class ControlIOWriter():
         group_title: str,
         sections: List[str],
         sections_dict: Optional[Dict[str, str]] = None,
-        label_column: bool = True
+        label_column: bool = True,
+        add_group_to_title: bool = False
     ) -> str:
         """Write the control into markdown file with specified sections."""
         self._md_file = MDWriter(None)
@@ -574,7 +580,7 @@ class ControlIOWriter():
 
         for section in sections:
             if 'statement' == section:
-                self._add_control_statement(control, group_title, sections_dict, True)
+                self._add_control_statement(control, group_title, sections_dict, True, add_group_to_title)
 
             elif 'objective' == section:
                 self._add_control_objective(control, sections_dict)
