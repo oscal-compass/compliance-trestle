@@ -708,7 +708,7 @@ class CatalogInterface():
         return sections
 
     def find_needed_uuid_refs(self, needed_control_ids: Optional[List[str]] = None) -> Set[str]:
-        """Find all refs in the needed controls for this catalog."""
+        """Find all refs in the needed controls for this catalog based on links and prose."""
         refs = set()
         if needed_control_ids is None:
             needed_control_ids = self.get_control_ids()

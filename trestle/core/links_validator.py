@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class LinksValidator(Validator):
-    """Validator to confirm all links in controls match resources in backmatter."""
+    """Validator to confirm all links in match resources in backmatter."""
 
     def model_is_valid(self, model: TopLevelOscalModel) -> bool:
         """
@@ -34,24 +34,28 @@ class LinksValidator(Validator):
         args:
             model: A top level OSCAL model.
         returns:
-            True (valid) if it is not a catalog, or it is a catalog and its links are 1:1 with resources.
+            Always returns True, but gives warning if links and resources are not one-to-one.
         """
         if not isinstance(model, Catalog):
             return True
         catalog: Catalog = model
         cat_interface = CatalogInterface(catalog)
         uuids = cat_interface.find_needed_uuid_refs()
+
         links = set()
         if catalog.back_matter and catalog.back_matter.resources:
             for res in catalog.back_matter.resources:
                 links.add(res.uuid)
+
         if uuids == links:
             return True
         in_uuids = uuids.difference(links)
         if in_uuids:
-            logger.warning(f'Prose references {len(uuids)} uuids {len(in_uuids)} of them are not in resources.')
+            logger.warning(f'Model references {len(uuids)} uuids and {len(in_uuids)} of them are not in resources.')
+            logger.debug(f'Model references {len(in_uuids)} uuids not in resources: {in_uuids}')
         in_links = links.difference(uuids)
         if in_links:
-            logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by prose.')
-        # This validator is intended just to give warnings, so it currently always returns True
+            logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.')
+            logger.debug(f'Resources have {len(in_links)} not in referenced by model: {in_links}')
+        # This validator is intended just to give warnings, so it always returns True
         return True
