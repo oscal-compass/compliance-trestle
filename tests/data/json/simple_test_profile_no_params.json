@@ -1,0 +1,44 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "metadata": {
+      "title": "Trestle test profile",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "#657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2",
+              "ac-2.1",
+              "ac-4.4"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "combine": {
+        "method": "use-first"
+      },
+      "as-is": true
+    },
+    "back_matter": {
+      "resources": [
+        {
+          "uuid": "657e15f4-bee9-45fb-a43d-44d7f7f2abfa",
+          "rlinks": [
+            {
+              "href": "trestle://catalogs/nist_cat/catalog.json"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

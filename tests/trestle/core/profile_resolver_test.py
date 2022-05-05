@@ -17,12 +17,14 @@
 
 import copy
 import pathlib
+import shutil
 from typing import List, Tuple
 
 import pytest
 
 from tests import test_utils
 
+from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
 from trestle.core.catalog_interface import CatalogInterface
@@ -346,3 +348,37 @@ def test_get_control_and_group_info_from_catalog(tmp_trestle_dir: pathlib.Path) 
     cat_path = cat_interface.get_control_path('ac-2')
     assert cat_path[0] == 'ac'
     assert len(cat_path) == 1
+
+
+def test_profile_resolver_circular_ref(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test rejection of circular import refs."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+    prof_a_path = ModelUtils.path_for_top_level_model(
+        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
+    )
+    # add new import to profile_c so it reloads prof_a in circular manner
+    prof_c: prof.Profile
+    prof_c, prof_c_path = ModelUtils.load_top_level_model(tmp_trestle_dir, 'test_profile_c', prof.Profile)
+    imp = prof.Import(href='trestle://profiles/test_profile_a/profile.json')
+    prof_c.imports.append(imp)
+    prof_c.oscal_write(prof_c_path)
+    with pytest.raises(TrestleError):
+        _ = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+
+
+def test_profile_resolver_no_params(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test profile resolver when missing param values."""
+    prof_name = 'my_prof'
+    nist_catalog_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
+    trestle_cat_dir = tmp_trestle_dir / 'catalogs/nist_cat'
+    trestle_cat_dir.mkdir(exist_ok=True, parents=True)
+    shutil.copy(nist_catalog_path, trestle_cat_dir / 'catalog.json')
+    profile_dir = tmp_trestle_dir / f'profiles/{prof_name}'
+    profile_dir.mkdir(parents=True, exist_ok=True)
+    simple_prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile_no_params.json'
+    profile_path = profile_dir / 'profile.json'
+    shutil.copy(simple_prof_path, profile_path)
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+    catalog_str = catalog.oscal_serialize_json()
+    # make sure no moustaches remain that would confuse jinja
+    assert '{{' not in catalog_str
