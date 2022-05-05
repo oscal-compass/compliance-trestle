@@ -14,10 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate catalog by confirming control links match resources in backmatter."""
+import logging
+
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.validator import Validator
 from trestle.oscal.catalog import Catalog
+
+logger = logging.getLogger(__name__)
 
 
 class LinksValidator(Validator):
@@ -37,10 +41,17 @@ class LinksValidator(Validator):
         catalog: Catalog = model
         cat_interface = CatalogInterface(catalog)
         uuids = cat_interface.find_needed_uuid_refs()
-        if uuids:
-            return False
         links = set()
         if catalog.back_matter and catalog.back_matter.resources:
             for res in catalog.back_matter.resources:
                 links.add(res.uuid)
+        if uuids == links:
+            return True
+        in_uuids = uuids.difference(links)
+        if in_uuids:
+            logger.warning(f'Prose references {len(uuids)} uuids and the following are not in resources: {in_uuids}')
+        in_links = links.difference(uuids)
+        if in_links:
+            logger.warning(f'Resources have {len(links)} uuids and the following are not refd by prose: {in_links}')
+        # This validator is intended just to give warnings, so it currently always returns True
         return True
