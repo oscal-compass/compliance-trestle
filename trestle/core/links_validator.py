@@ -49,9 +49,9 @@ class LinksValidator(Validator):
             return True
         in_uuids = uuids.difference(links)
         if in_uuids:
-            logger.warning(f'Prose references {len(uuids)} uuids and the following are not in resources: {in_uuids}')
+            logger.warning(f'Prose references {len(uuids)} uuids {len(in_uuids)} of them are not in resources.')
         in_links = links.difference(uuids)
         if in_links:
-            logger.warning(f'Resources have {len(links)} uuids and the following are not refd by prose: {in_links}')
+            logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by prose.')
         # This validator is intended just to give warnings, so it currently always returns True
         return True

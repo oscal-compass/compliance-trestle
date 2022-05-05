@@ -82,23 +82,26 @@ class ControlIOWriter():
 
     @staticmethod
     def find_uuid_refs(control: cat.Control) -> Set[str]:
-        """Find all refs made in this control."""
-        refs = set()
+        """Find all refs made in this control in links and prose."""
         uuid_strs: List[str] = []
-        if control.links is not None:
+        # links have href of form #foo or #uuid
+        if control.links:
             for link in control.links:
                 uuid_strs.append(link.href)
         prose_list = ModelUtils.find_values_by_name(control, 'prose')
-        uuid_strs.extend(prose_list)
-        for uuid_str in uuid_strs:
-            matches = re.findall(const.MARKDOWN_URL_REGEX, uuid_str)
+        # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
+        for prose in prose_list:
+            matches = re.findall(const.MARKDOWN_URL_REGEX, prose)
+            # extract the potential #uuid string from each match
             for match in matches:
-                ref = match[1]
-                if len(ref) > 1 and ref[0] == '#':
-                    uuid_match = re.findall(const.UUID_REGEX, ref[1:])
-                    # there should be only one uuid in the parens
-                    if uuid_match:
-                        refs.add(uuid_match[0])
+                uuid_strs.append(match[1])
+        # now go through all matches and build list of those that are uuids
+        refs = set()
+        for uuid_str in uuid_strs:
+            if uuid_str[0] == '#':
+                uuid_match = re.findall(const.UUID_REGEX, uuid_str[1:])
+                if uuid_match:
+                    refs.add(uuid_match[0])
         return refs
 
     @staticmethod

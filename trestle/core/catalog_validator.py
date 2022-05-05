@@ -45,11 +45,11 @@ class CatalogValidator(Validator):
         for control in cat_interface.get_all_controls_from_dict():
             for param in as_list(control.params):
                 if param.id in param_ids:
-                    logger.warning(f'Catalog has duplicate parameter ids: {param.id} in control {control.id}')
+                    logger.warning(f'Catalog has duplicated parameter id: {param.id} in control {control.id}')
                     return False
                 param_ids.add(param.id)
         for param_id in cat_interface.loose_param_dict.keys():
             if param_id in param_ids:
-                logger.warning(f'Catalog has duplicate parameter ids: {param.id} in control {control.id}')
+                logger.warning(f'Catalog has duplicated parameter id: {param.id} in control {control.id}')
                 return False
         return True
