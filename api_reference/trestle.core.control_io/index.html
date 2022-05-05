@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.control_io/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.13">
     
     
       
@@ -21,10 +21,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.8c5ef100.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e411adfe.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
         
           
           
@@ -5095,13 +5095,18 @@ ControlIOWriter        </code>
         <span class="n">control</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span>
         <span class="n">group_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">capitalize_title</span><span class="o">=</span><span class="kc">False</span>
+        <span class="n">capitalize_title</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">print_group_title</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add the control statement and items to the md file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
         <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1"> - \[</span><span class="si">{</span><span class="n">group_title</span><span class="si">}</span><span class="s1">\] </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">capitalize_title</span><span class="p">:</span>
             <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1"> - \[</span><span class="si">{</span><span class="n">group_title</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1">\] </span><span class="si">{</span><span class="n">control</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">print_group_title</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*?]&#39;</span><span class="p">,</span> <span class="s1">&#39; -&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+
         <span class="n">header_title</span> <span class="o">=</span> <span class="s1">&#39;Control Statement&#39;</span>
         <span class="k">if</span> <span class="n">sections_dict</span> <span class="ow">and</span> <span class="n">sections_dict</span><span class="p">[</span><span class="s1">&#39;statement&#39;</span><span class="p">]:</span>
             <span class="n">header_title</span> <span class="o">=</span> <span class="n">sections_dict</span><span class="p">[</span><span class="s1">&#39;statement&#39;</span><span class="p">]</span>
@@ -5488,7 +5493,8 @@ ControlIOWriter        </code>
         <span class="n">group_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">label_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">label_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">add_group_to_title</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Write the control into markdown file with specified sections.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -5498,7 +5504,7 @@ ControlIOWriter        </code>
 
         <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;statement&#39;</span> <span class="o">==</span> <span class="n">section</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">add_group_to_title</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="s1">&#39;objective&#39;</span> <span class="o">==</span> <span class="n">section</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_objective</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">)</span>
@@ -6164,7 +6170,7 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
 
 
 <h6 class="doc doc-heading" id="trestle.core.control_io.ControlIOWriter.write_control_with_sections">
-<code class="highlight language-python"><span class="n">write_control_with_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">sections</span><span class="p">,</span> <span class="n">sections_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label_column</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">write_control_with_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">sections</span><span class="p">,</span> <span class="n">sections_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label_column</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">add_group_to_title</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.core.control_io.ControlIOWriter.write_control_with_sections" title="Permanent link">¤</a></h6>
@@ -6181,7 +6187,8 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
     <span class="n">group_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">sections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">label_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">label_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">add_group_to_title</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Write the control into markdown file with specified sections.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span> <span class="o">=</span> <span class="n">MDWriter</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -6191,7 +6198,7 @@ Controls are checked if they are marked withdrawn, and if so they are not writte
 
     <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
         <span class="k">if</span> <span class="s1">&#39;statement&#39;</span> <span class="o">==</span> <span class="n">section</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_statement</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">group_title</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">add_group_to_title</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="s1">&#39;objective&#39;</span> <span class="o">==</span> <span class="n">section</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_control_objective</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">)</span>
@@ -6441,7 +6448,7 @@ ParameterRep            (<span title="enum.Enum">Enum</span>)
     <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.748e2769.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ed9748b7.min.js"></script>
       
     
   </body>
