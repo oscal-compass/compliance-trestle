@@ -16,7 +16,7 @@
 import copy
 import logging
 import pathlib
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.common.const as const
 import trestle.core.generators as gens
@@ -707,16 +707,6 @@ class CatalogInterface():
                     sections.append(part.name)
         return sections
 
-    def find_needed_uuid_refs(self, needed_control_ids: Optional[List[str]] = None) -> Set[str]:
-        """Find all refs in the needed controls for this catalog based on links and prose."""
-        refs = set()
-        if needed_control_ids is None:
-            needed_control_ids = self.get_control_ids()
-        for control_id in needed_control_ids:
-            control = self.get_control(control_id)
-            refs.update(ControlIOWriter.find_uuid_refs(control))
-        return refs
-
     @staticmethod
     def merge_controls(dest: cat.Control, src: cat.Control, replace_params: bool) -> None:
         """
@@ -772,9 +762,11 @@ class CatalogInterface():
                 CatalogInterface.merge_controls(dest, src, replace_params)
                 self.replace_control(dest)
             else:
+                # this is a new control that isn't already in the merge destination
                 # need to add the control knowing its group must already exist
                 # get group info from an arbitrary control already present in group
                 _, control_handle = self._find_control_in_group(group_id)
+                control_handle.control = src
                 # add the control and its handle to the param_dict
                 self._control_dict[src.id] = control_handle
 

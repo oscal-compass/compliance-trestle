@@ -15,11 +15,8 @@
 # limitations under the License.
 """Validate catalog by confirming control links match resources in backmatter."""
 import logging
-import re
-from typing import List
+from typing import List, Set
 
-import trestle.common.const as const
-import trestle.oscal.common as com
 from trestle.common.common_types import TopLevelOscalModel
 from trestle.common.model_utils import ModelUtils
 from trestle.core.validator import Validator
@@ -39,31 +36,19 @@ class LinksValidator(Validator):
         returns:
             Always returns True, but gives warning if links and resources are not one-to-one.
         """
-        # links have href of form #foo or #uuid
-        links_list: List[List[com.Link]] = ModelUtils.find_values_by_name(model, 'links')
-        uuid_strs = [link.href for links in links_list for link in links]
-
-        # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
-        prose_list = ModelUtils.find_values_by_name(model, 'prose')
-        uuid_strs.extend(
-            [
-                match[1] for prose in prose_list for matches in re.findall(const.MARKDOWN_URL_REGEX, prose)
-                for match in matches
-            ]
-        )
-
-        # collect the strings that start with # and are potential uuids
-        uuid_strs = [uuid_str for uuid_str in uuid_strs if uuid_str and uuid_str[0] == '#']
-
-        # go through all matches and build set of those that are uuids
-        refs = {uuid_match[0] for uuid_str in uuid_strs for uuid_match in re.findall(const.UUID_REGEX, uuid_str[1:])}
+        refs = ModelUtils.find_uuid_refs(model)
 
         # find uuids in backmatter
-        # should check for duplicates
-        links = set()
+        links: List[str] = []
         if model.back_matter and model.back_matter.resources:
-            links.update([res.uuid for res in model.back_matter.resources])
+            links = [res.uuid for res in model.back_matter.resources]
+            seen: Set[str] = set()
+            dupes = [uuid for uuid in links if uuid in seen or seen.add(uuid)]
+            if dupes:
+                logger.warning(f'Backmatter has  {len(dupes)} duplicate link uuids.')
+                logger.debug(f'Backmatter has {len(dupes)} duplicate link uuids: {dupes}')
 
+        links = set(links)
         in_refs = refs.difference(links)
         if in_refs:
             logger.warning(f'Model references {len(refs)} uuids and {len(in_refs)} of them are not in resources.')

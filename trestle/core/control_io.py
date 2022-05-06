@@ -19,7 +19,7 @@ import re
 import string
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import frontmatter
 
@@ -79,30 +79,6 @@ class ControlIOWriter():
             if prop.name == const.SORT_ID:
                 return prop.value.strip()
         return None if allow_none else control.id
-
-    @staticmethod
-    def find_uuid_refs(control: cat.Control) -> Set[str]:
-        """Find all refs made in this control in links and prose."""
-        uuid_strs: List[str] = []
-        # links have href of form #foo or #uuid
-        if control.links:
-            for link in control.links:
-                uuid_strs.append(link.href)
-        prose_list = ModelUtils.find_values_by_name(control, 'prose')
-        # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
-        for prose in prose_list:
-            matches = re.findall(const.MARKDOWN_URL_REGEX, prose)
-            # extract the potential #uuid string from each match
-            for match in matches:
-                uuid_strs.append(match[1])
-        # now go through all matches and build list of those that are uuids
-        refs = set()
-        for uuid_str in uuid_strs:
-            if uuid_str[0] == '#':
-                uuid_match = re.findall(const.UUID_REGEX, uuid_str[1:])
-                if uuid_match:
-                    refs.add(uuid_match[0])
-        return refs
 
     @staticmethod
     def get_label(part_control: Union[common.Part, cat.Control]) -> str:

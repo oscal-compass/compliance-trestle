@@ -14,13 +14,14 @@
 """Create resolved catalog from profile."""
 
 import logging
-from typing import Dict, Iterator, List, Optional, Set
+from typing import Dict, Iterator, List, Optional
 from uuid import uuid4
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import none_if_empty
+from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import common
@@ -142,18 +143,9 @@ class Prune(Pipeline.Filter):
             else:
                 group_dict[group_id].controls.append(control)
 
-        # find all referenced uuids - they should be 1:1 with those in backmatter
-        needed_uuid_refs: Set[str] = self._catalog_interface.find_needed_uuid_refs(final_control_ids)
-
-        # prune the list of resources to only those that are needed
-        new_resources: Optional[List[common.Resource]] = []
-        if self._catalog.back_matter is not None and self._catalog.back_matter.resources is not None:
-            new_resources = [res for res in self._catalog.back_matter.resources if res.uuid in needed_uuid_refs]
-
         new_groups: Optional[List[cat.Group]] = list(group_dict.values())
 
         # should avoid empty lists so set to None if empty
-        new_resources = none_if_empty(new_resources)
         new_groups = none_if_empty(new_groups)
         cat_controls = none_if_empty(cat_controls)
         new_params = self._catalog.params
@@ -161,11 +153,21 @@ class Prune(Pipeline.Filter):
         new_cat = cat.Catalog(
             uuid=str(uuid4()),
             metadata=self._catalog.metadata,
-            back_matter=common.BackMatter(resources=new_resources),
+            back_matter=common.BackMatter(),
             controls=cat_controls,
             groups=new_groups,
             params=new_params
         )
+
+        # find all referenced uuids - they should be 1:1 with those in backmatter
+        needed_uuid_refs = ModelUtils.find_uuid_refs(new_cat)
+
+        # prune the list of resources to only those that are needed
+        new_resources: Optional[List[common.Resource]] = []
+        if self._catalog.back_matter and self._catalog.back_matter.resources:
+            new_resources = [res for res in self._catalog.back_matter.resources if res.uuid in needed_uuid_refs]
+        new_resources = none_if_empty(new_resources)
+        new_cat.back_matter.resources = new_resources
 
         return new_cat
 
