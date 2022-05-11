@@ -20,7 +20,7 @@ from uuid import uuid4
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import none_if_empty
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.pipeline import Pipeline
@@ -116,6 +116,20 @@ class Prune(Pipeline.Filter):
                 final_ids.append(control_id)
         return final_ids
 
+    def _re_insert_child_controls(self, control: cat.Control) -> cat.Control:
+        """Re insert this control and its children recursively."""
+        new_controls = []
+        for sub_control in as_list(control.controls):
+            new_control = self._re_insert_child_controls(sub_control)
+            new_controls.append(new_control)
+        control.controls = none_if_empty(new_controls)
+        return control
+
+    def _re_insert_children(self) -> None:
+        """Go through all controls in control dict and load child controls from control dict."""
+        for control in self._catalog_interface.get_all_controls_from_dict():
+            _ = self._re_insert_child_controls(control)
+
     def _prune_catalog(self) -> cat.Catalog:
         """Prune the controls in the current catalog."""
         if self._import is None:
@@ -125,6 +139,8 @@ class Prune(Pipeline.Filter):
 
         # if a control includes controls - only include those that we know are needed
         final_control_ids = self._prune_controls(needed_ids)
+
+        self._re_insert_children()
 
         cat_controls = []
 

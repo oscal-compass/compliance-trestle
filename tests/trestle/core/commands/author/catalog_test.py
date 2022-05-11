@@ -190,6 +190,33 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
 
     assert creation_time < assembled_cat_path.stat().st_mtime
 
+    control_text = """# control_q - \[The xy control group\] this is control q
+
+## Control Statement
+"""
+    # add a new markdown control and make sure it is assembled
+    control_path = tmp_trestle_dir / 'my_md/xy/control_q.md'
+    with open(control_path, 'w') as f:
+        f.write(control_text)
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
+    )
+
+    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    interface = CatalogInterface(catalog)
+    assert interface.get_count_of_controls_in_catalog(True) == 7
+
+    # delete a control with a child and reassemble to confirm it and child are gone from the catalog
+    d_path = tmp_trestle_dir / 'my_md/control_d.md'
+    d_path.unlink()
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
+    )
+
+    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    interface = CatalogInterface(catalog)
+    assert interface.get_count_of_controls_in_catalog(True) < 9
+
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test the catalog interface with complex controls."""

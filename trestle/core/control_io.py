@@ -66,7 +66,7 @@ class ControlIOWriter():
 
     @staticmethod
     def get_prop(part_control: Union[common.Part, cat.Control], prop_name: str) -> str:
-        """Get the property with that name."""
+        """Get the property with that name or return empty string."""
         for prop in as_list(part_control.props):
             if prop.name.strip().lower() == prop_name.strip().lower():
                 return prop.value.strip()

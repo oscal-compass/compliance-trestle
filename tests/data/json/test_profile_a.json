@@ -35,9 +35,6 @@
       }
     ],
     "merge": {
-      "combine": {
-        "method": "use-first"
-      },
       "as-is": true
     },
     "modify": {

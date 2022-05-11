@@ -652,7 +652,7 @@ class ModelUtils:
         # now print items
         for item, instances in items.items():
             if instances > 1:
-                logger.info(f'Duplicate detected of item {item} with {instances} instances.')
+                logger.warning(f'Duplicate detected of item {item} with {instances} instances.')
         return False
 
     @staticmethod
