@@ -464,8 +464,14 @@ class CatalogInterface():
         node.controls = none_if_empty(sorted(node.controls, key=lambda control: ControlIOWriter.get_sort_id(control)))
 
     def _delete_control_from_control(self, control: cat.Control, control_id: str) -> bool:
-        for control in as_list(control.controls):
-            if self._delete_control_from_control(control, control_id):
+        try:
+            index = [sub_control.id for sub_control in as_list(control.controls)].index(control_id)
+            del control.controls[index]
+            return True
+        except ValueError:
+            pass
+        for sub_control in as_list(control.controls):
+            if self._delete_control_from_control(control, sub_control.id):
                 return True
         return False
 
