@@ -360,10 +360,7 @@ class CatalogInterface():
 
     def get_control_path(self, control_id: str) -> List[str]:
         """Return the path into the markdown directory for this control."""
-        file_path = self._control_dict[control_id].path
-        if file_path[0] == '':
-            return ''
-        return file_path
+        return self._control_dict[control_id].path
 
     def replace_control(self, control: cat.Control) -> None:
         """
@@ -471,7 +468,7 @@ class CatalogInterface():
             new_list.append(new_control)
         self._catalog.controls = none_if_empty(new_list)
 
-        # now add any new controls that are discovered in the ddict
+        # now add any new controls that are discovered in the dict
         ids_in_catalog = CatalogInterface.get_control_ids_from_catalog(self._catalog)
         for control_handle in self._control_dict.values():
             if control_handle.control.id not in ids_in_catalog:

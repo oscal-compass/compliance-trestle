@@ -37,12 +37,13 @@ class Validator(ABC):
         return self.__doc__
 
     @abstractmethod
-    def model_is_valid(self, model: OscalBaseModel) -> bool:
+    def model_is_valid(self, model: OscalBaseModel, quiet: bool) -> bool:
         """
         Validate the model.
 
         args:
             model: An Oscal model that can be passed to the validator.
+            quiet: Don't report msgs unless invalid.
 
         returns:
             Whether or not the model passed this validation test.
@@ -67,10 +68,11 @@ class Validator(ABC):
                 except TrestleError as e:
                     logger.warning(f'File load error {e}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
-                if not self.model_is_valid(model):
+                if not self.model_is_valid(model, args.quiet):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
-                logger.info(f'VALID: Model {model_path} passed the {self.error_msg()}')
+                if not args.quiet:
+                    logger.info(f'VALID: Model {model_path} passed the {self.error_msg()}')
             return CmdReturnCodes.SUCCESS.value
 
         # validate all
@@ -82,18 +84,20 @@ class Validator(ABC):
                 extension_type = trestle.common.file_utils.get_contextual_file_type(model_dir)
                 model_path = model_dir / f'{mt[0]}{FileContentType.to_file_extension(extension_type)}'
                 _, _, model = ModelUtils.load_distributed(model_path, trestle_root)
-                if not self.model_is_valid(model):
+                if not self.model_is_valid(model, args.quiet):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
                     return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
-                logger.info(f'VALID: Model {model_path} passed the {self.error_msg()}')
+                if not args.quiet:
+                    logger.info(f'VALID: Model {model_path} passed the {self.error_msg()}')
             return CmdReturnCodes.SUCCESS.value
 
         # validate file
         if args.file:
             file_path = trestle_root / args.file
             _, _, model = ModelUtils.load_distributed(file_path, trestle_root)
-            if not self.model_is_valid(model):
+            if not self.model_is_valid(model, args.quiet):
                 logger.info(f'INVALID: Model {file_path} did not pass the {self.error_msg()}')
                 return CmdReturnCodes.OSCAL_VALIDATION_ERROR.value
-            logger.info(f'VALID: Model {file_path} passed the {self.error_msg()}')
+            if not args.quiet:
+                logger.info(f'VALID: Model {file_path} passed the {self.error_msg()}')
         return CmdReturnCodes.SUCCESS.value

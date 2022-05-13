@@ -463,6 +463,8 @@ The current list of validation modes that get checked internally are:
 | duplicates    | Detect whether disallowed duplicate uuid's are present                |
 | oscal_version | Confirm that the oscal version of the file is supported               |
 | refs          | Confirm that all references in responsible parties are found in roles |
+| catalog       | Confirm all parameter ids in a catalog are unique                     |
+| links         | Confirm referenced resources are 1:1 with resources in backmatter     |
 
 You can validate a single model file by specifying its full path:
 
@@ -481,6 +483,11 @@ And you can validate all models with the `-a` option:
 `trestle validate -a`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
+
+By default validate will display warning messages and a message indicating the file is valid, but you can suppress those messages with the `-q --quiet` option.
+
+The links validator is special because it always returns success that the file is valid - but it will list any inconsistencies it finds between the
+references to links, and corresponding links in the backmatter.
 
 ## `trestle tasks`
 

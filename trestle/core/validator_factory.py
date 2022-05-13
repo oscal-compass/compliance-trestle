@@ -39,3 +39,5 @@ def init_arguments(cmd: Command) -> None:
     group.add_argument('-t', '--type', choices=const.MODEL_TYPE_LIST, help='Validate one or all models of this type.')
     group.add_argument('-a', '--all', action='store_true', help='Validate all models in trestle directory.')
     cmd.add_argument('-n', '--name', help='Name of single model to validate (with --type specified).', required=False)
+    quiet_help = 'Do not report messages unless validation fails.'
+    cmd.add_argument('-q', '--quiet', action='store_true', help=quiet_help, required=False)

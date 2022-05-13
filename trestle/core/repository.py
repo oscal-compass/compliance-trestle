@@ -343,7 +343,7 @@ class Repository:
             raise TrestleError(f'Given model {model_alias} is not a top level model.')
 
         verbose = log.get_current_verbosity_level(logger)
-        args = argparse.Namespace(type=model_alias, name=name, trestle_root=self.root_dir, verbose=verbose)
+        args = argparse.Namespace(type=model_alias, name=name, trestle_root=self.root_dir, verbose=verbose, quiet=False)
 
         try:
             ret = validatecmd.ValidateCmd()._run(args)

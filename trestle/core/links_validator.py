@@ -27,12 +27,14 @@ logger = logging.getLogger(__name__)
 class LinksValidator(Validator):
     """Validator to confirm all uuids in links and prose match resources in backmatter."""
 
-    def model_is_valid(self, model: TopLevelOscalModel) -> bool:
+    def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
         """
         Test if the model is valid.
 
         args:
             model: A top level OSCAL model.
+            quiet: Don't report msgs unless invalid.
+
         returns:
             Always returns True, but gives warning if links and resources are not one-to-one.
         """
@@ -44,18 +46,18 @@ class LinksValidator(Validator):
             links = [res.uuid for res in model.back_matter.resources]
             seen: Set[str] = set()
             dupes = [uuid for uuid in links if uuid in seen or seen.add(uuid)]
-            if dupes:
+            if dupes and not quiet:
                 logger.warning(f'Backmatter has  {len(dupes)} duplicate link uuids.')
                 logger.debug(f'Backmatter has {len(dupes)} duplicate link uuids: {dupes}')
 
         links = set(links)
         in_refs = refs.difference(links)
-        if in_refs:
+        if in_refs and not quiet:
             logger.warning(f'Model references {len(refs)} uuids and {len(in_refs)} of them are not in resources.')
             logger.debug(f'Model references {len(in_refs)} uuids not in resources: {in_refs}')
 
         in_links = links.difference(refs)
-        if in_links:
+        if in_links and not quiet:
             logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.')
             logger.debug(f'Resources have {len(in_links)} not in referenced by model: {in_links}')
 

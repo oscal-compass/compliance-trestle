@@ -217,36 +217,36 @@ def test_oscal_incorrect_fields_validator(tmp_trestle_dir: pathlib.Path, monkeyp
 
 def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
     """Test a validator by invoking it directly without CLI."""
-    args = argparse.Namespace(mode=const.VAL_MODE_ALL)
+    args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator: Validator = validator_factory.get(args)
-    assert validator.model_is_valid(sample_catalog_minimal)
+    assert validator.model_is_valid(sample_catalog_minimal, True)
 
 
 def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) -> None:
     """Test validation of comp def with duplicate uuids."""
-    args = argparse.Namespace(mode=const.VAL_MODE_ALL)
+    args = argparse.Namespace(mode=const.VAL_MODE_ALL, quiet=True)
     validator = validator_factory.get(args)
 
     # confirm the comp_def is valid
-    assert validator.model_is_valid(sample_component_definition)
+    assert validator.model_is_valid(sample_component_definition, False)
 
     # force two components to have same uuid and confirm invalid
     sample_component_definition.components[1].uuid = sample_component_definition.components[0].uuid
-    assert not validator.model_is_valid(sample_component_definition)
+    assert not validator.model_is_valid(sample_component_definition, True)
 
     # restore uuid to unique value and confirm it is valid again
     sample_component_definition.components[1].uuid = str(uuid4())
-    assert validator.model_is_valid(sample_component_definition)
+    assert validator.model_is_valid(sample_component_definition, False)
 
     # add a control implementation to one of the components and confirm valid
     control_imp: ControlImplementation = generate_sample_model(ControlImplementation)
     sample_component_definition.components[1].control_implementations = [control_imp]
-    assert validator.model_is_valid(sample_component_definition)
+    assert validator.model_is_valid(sample_component_definition, True)
 
     # force the control implementation to have same uuid as the first component and confirm invalid
     sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
         0].uuid
-    assert not validator.model_is_valid(sample_component_definition)
+    assert not validator.model_is_valid(sample_component_definition, True)
 
 
 def test_validate_distributed(
@@ -280,7 +280,7 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     """Test validation of unique param ids in catalog."""
     args = argparse.Namespace(mode=const.VAL_MODE_CATALOG)
     validator = validator_factory.get(args)
-    assert validator.model_is_valid(sample_catalog_rich_controls)
+    assert validator.model_is_valid(sample_catalog_rich_controls, True)
     param_0_id = sample_catalog_rich_controls.groups[0].controls[0].params[0].id
     sample_catalog_rich_controls.groups[0].controls[0].params[1].id = param_0_id
-    assert not validator.model_is_valid(sample_catalog_rich_controls)
+    assert not validator.model_is_valid(sample_catalog_rich_controls, False)

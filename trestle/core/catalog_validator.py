@@ -28,12 +28,14 @@ logger = logging.getLogger(__name__)
 class CatalogValidator(Validator):
     """Validator to confirm all param ids in catalog are unique."""
 
-    def model_is_valid(self, model: TopLevelOscalModel) -> bool:
+    def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
         """
         Test if the model is valid.
 
         args:
             model: A top level OSCAL model.
+            quiet: Don't report msgs unless invalid.
+
         returns:
             True (valid) if it is not a catalog, or it is a catalog and its links are 1:1 with resources.
         """

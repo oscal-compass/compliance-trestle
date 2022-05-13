@@ -23,12 +23,13 @@ from trestle.core.validator import Validator
 class DuplicatesValidator(Validator):
     """Validator to check for duplicate uuids and param_ids in the model."""
 
-    def model_is_valid(self, model: OscalBaseModel) -> bool:
+    def model_is_valid(self, model: OscalBaseModel, quiet: bool) -> bool:
         """
         Test if the model is valid and contains no duplicate uuids or param_ids.
 
         args:
             model: An Oscal model that can be passed to the validator.
+            quiet: Don't report msgs unless invalid.
 
         returns:
             True (valid) if the model does not contain duplicate uuid's.
