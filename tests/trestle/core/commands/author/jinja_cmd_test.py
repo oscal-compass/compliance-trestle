@@ -177,7 +177,7 @@ def test_jinja_profile_docs_with_group_title(
     command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
-    md_control = list((tmp_trestle_dir / 'controls' / 'ac').iterdir())[0]
+    md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-2.md'
     with open(md_control) as md_file:
         contents = md_file.read()
         tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
