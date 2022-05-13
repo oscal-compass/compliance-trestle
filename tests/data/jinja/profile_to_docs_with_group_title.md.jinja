@@ -1,3 +1,13 @@
 # Control Page
 
-{{ control_writer.write_control_with_sections(control, group_title, ['statement', 'objective', 'ExpectedEvidence', 'ImplGuidance', 'table_of_parameters'], {'statement':'Control Statement Header', 'objective':'Control Objective Header', 'ExpectedEvidence':'Expected Evidence Header', 'ImplGuidance':'Implementation Guidance', 'table_of_parameters':'Table of Control Parameters'}, True, True) }}
+{{ control_writer.write_control_with_sections(control, group_title,
+['statement', 'objective', 'ExpectedEvidence', 'ImplGuidance', 'table_of_parameters'],
+{
+'statement':'Control Statement Header',
+'objective':'Control Objective Header',
+'ExpectedEvidence':'Expected Evidence Header',
+'ImplGuidance':'Implementation Guidance',
+'table_of_parameters':'Table of Control Parameters'
+},
+True, True)
+}}
