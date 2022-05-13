@@ -435,12 +435,10 @@ class CatalogInterface():
                     if group.id == group_id:
                         found_group = group
                         break
-                if found_group is None:
-                    node.groups = as_list(node.groups)
-                    node.groups.append(cat.Group(id=group_id, title=''))
-                    node = node.groups[-1]
-                else:
+                if found_group:
                     node = found_group
+                else:
+                    raise TrestleError(f'No controls found in catalog for group {group.id}')
             node.title = control_handle.group_title
             node.class_ = control_handle.group_class
         node.controls = as_list(node.controls)
@@ -457,12 +455,11 @@ class CatalogInterface():
         Update the actual catalog by pulling fresh controls from the dict.
 
         During assembly, controls may be added, but not children of controls.
-        New groups may be added, and those groups may contain groups.
-        But a control containing controls cannot be added.  Controls containing controls are only available if
+        New groups may not be added.
+        A control containing controls cannot be added.  Controls containing controls are only available if
         the parent catalog was loaded from json.
         """
         # first go through the catalog and pull existing controls from the dict
-        # Then add any new ones from the dict into the catalog.
         for group in as_list(self._catalog.groups):
             self._update_all_controls_in_group(group)
 
@@ -474,7 +471,7 @@ class CatalogInterface():
             new_list.append(new_control)
         self._catalog.controls = none_if_empty(new_list)
 
-        # now add any new controls that are in the ddict
+        # now add any new controls that are discovered in the ddict
         ids_in_catalog = CatalogInterface.get_control_ids_from_catalog(self._catalog)
         for control_handle in self._control_dict.values():
             if control_handle.control.id not in ids_in_catalog:

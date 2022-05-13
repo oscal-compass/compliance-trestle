@@ -181,9 +181,6 @@ def test_jinja_profile_docs(
     execute_command_and_assert(command_import, 0, monkeypatch)
 
     for md_control in (tmp_trestle_dir / 'controls' / 'ac').iterdir():
-        # FIXME
-        if 'ac-3' in md_control.name:
-            continue
         with open(md_control) as md_file:
             contents = md_file.read()
             tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
@@ -193,7 +190,8 @@ def test_jinja_profile_docs(
             node2 = tree.get_node_for_key('## Control Statement Header')
             assert node2
             node3 = tree.get_node_for_key('## Control Expected Evidence Header')
-            assert node3
+            # ac-3 and ac-3.3 do not have this part
+            assert not node3 if 'ac-3' in md_control.name else node3
 
 
 def test_jinja_profile_docs_fails(
