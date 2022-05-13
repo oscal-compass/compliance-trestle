@@ -206,17 +206,6 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
-    # delete a control with a child and reassemble to confirm it and child are gone from the catalog
-    d_path = tmp_trestle_dir / 'my_md/control_d.md'
-    d_path.unlink()
-    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
-    )
-
-    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
-    interface = CatalogInterface(catalog)
-    assert interface.get_count_of_controls_in_catalog(True) < 9
-
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test the catalog interface with complex controls."""
@@ -230,9 +219,6 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     interface.replace_control(control)
     interface.update_catalog_controls()
     assert interface._catalog.controls[1].controls[0].title == new_title
-
-    assert interface.delete_control_from_catalog('control_d1')
-    assert interface.delete_control_from_catalog('control_a')
 
 
 def test_catalog_interface_groups() -> None:
