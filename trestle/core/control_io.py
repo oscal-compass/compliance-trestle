@@ -155,12 +155,19 @@ class ControlIOWriter():
     ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
-        title = f'{control.id} - \[{group_title}\] {control.title}'
-        if capitalize_title:
-            title = f'{control.id.upper()} - \[{group_title.title()}\] {control.title.title()}'
+        control_id = control.id
+        group_name = ''
+        control_title = control.title
 
-        if not print_group_title:
-            title = re.sub('-.*?]', ' -', title)
+        if print_group_title:
+            group_name = ' \[' + group_title + '\]'
+
+        if capitalize_title:
+            control_id = control_id.upper()
+            group_name = group_name.title()
+            control_title = control_title.upper()
+
+        title = f'{control_id} -{group_name} {control_title}'
 
         header_title = 'Control Statement'
         if sections_dict and sections_dict['statement']:
