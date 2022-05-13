@@ -25,10 +25,8 @@ from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 
-def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test Jinja SSP output."""
-    input_template = 'ssp_template.md.jinja'
-
+def setup_ssp(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Prepare repository for docs generation."""
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
@@ -41,6 +39,11 @@ def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
         if os.path.isfile(full_file_name):
             shutil.copy(full_file_name, tmp_trestle_dir)
 
+
+def test_jinja_ssp_output(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test Jinja SSP output."""
+    input_template = 'ssp_template.md.jinja'
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
     command_import = f'trestle author jinja -i {input_template} -o output_file.md -ssp ssp_json -p main_profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
 
@@ -60,17 +63,7 @@ def test_jinja_lookup_table(
     """Test Jinja lookup table substitions."""
     input_template = 'use_lookup_table.md.jinja'
     luk_table = 'lookup_table.yaml'
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
-    ssp_cmd = SSPGenerate()
-    assert ssp_cmd._run(args) == 0
-
-    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
-
-    for file_name in os.listdir(testdata_dir / 'jinja'):
-        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
-        if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, tmp_trestle_dir)
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
     command_import = f'trestle author jinja -i {input_template} -o output_file.md ' \
                      f'-lut {luk_table} -ssp ssp_json -p main_profile -elp lut.prefix'  # noqa: N400
     execute_command_and_assert(command_import, 0, monkeypatch)
@@ -101,17 +94,7 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
     """Test that parameters are substituted with the given formatting."""
     input_template = 'ssp_template.md.jinja'
 
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
-    ssp_cmd = SSPGenerate()
-    assert ssp_cmd._run(args) == 0
-
-    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
-
-    for file_name in os.listdir(testdata_dir / 'jinja'):
-        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
-        if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, tmp_trestle_dir)
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
     command_md_gen = f'trestle author jinja -pf *.* -i {input_template} -o output.md -ssp ssp_json -p main_profile'
     execute_command_and_assert(command_md_gen, 0, monkeypatch)
@@ -165,17 +148,7 @@ def test_jinja_profile_docs(
     """Test Jinja Profile to multiple md files output."""
     input_template = 'profile_to_docs.md.jinja'
 
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
-    ssp_cmd = SSPGenerate()
-    assert ssp_cmd._run(args) == 0
-
-    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
-
-    for file_name in os.listdir(testdata_dir / 'jinja'):
-        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
-        if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, tmp_trestle_dir)
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
     command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
     execute_command_and_assert(command_import, 0, monkeypatch)
@@ -194,23 +167,35 @@ def test_jinja_profile_docs(
             assert not node3 if 'ac-3' in md_control.name else node3
 
 
+def test_jinja_profile_docs_with_group_title(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test Jinja Profile to multiple md files output with group title."""
+    input_template = 'profile_to_docs_with_group_title.md.jinja'
+
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
+
+    command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
+    execute_command_and_assert(command_import, 0, monkeypatch)
+
+    md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-2.md'
+    with open(md_control) as md_file:
+        contents = md_file.read()
+        tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
+        assert tree
+        node1 = tree.get_node_for_key('# Control Page')
+        assert node1
+        node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] ACCOUNT MANAGEMENT')
+        assert node2
+
+
 def test_jinja_profile_docs_fails(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
     """Test jinja docs generate fails."""
     input_template = 'profile_to_docs.md.jinja'
 
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, 'main_profile', 'my_ssp')
-    ssp_cmd = SSPGenerate()
-    assert ssp_cmd._run(args) == 0
-
-    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
-
-    for file_name in os.listdir(testdata_dir / 'jinja'):
-        full_file_name = os.path.join(testdata_dir / 'jinja', file_name)
-        if os.path.isfile(full_file_name):
-            shutil.copy(full_file_name, tmp_trestle_dir)
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
 
     command_jinja = f'trestle author jinja -i {input_template} -o controls --docs-profile'
     execute_command_and_assert(command_jinja, 2, monkeypatch)
