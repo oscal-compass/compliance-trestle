@@ -42,8 +42,7 @@ class AllValidator(Validator):
         """
         self.last_failure_msg = self.__doc__
         for val in vfact.validator_factory.get_all():
-            if val != self:
-                if not val.model_is_valid(model, quiet):
-                    self.last_failure_msg = val.error_msg()
-                    return False
+            if val != self and not val.model_is_valid(model, quiet):
+                self.last_failure_msg = val.error_msg()
+                return False
         return True

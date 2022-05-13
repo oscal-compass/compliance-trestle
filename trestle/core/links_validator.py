@@ -48,18 +48,18 @@ class LinksValidator(Validator):
             dupes = [uuid for uuid in links if uuid in seen or seen.add(uuid)]
             if dupes and not quiet:
                 logger.warning(f'Backmatter has  {len(dupes)} duplicate link uuids.')
-                logger.debug(f'Backmatter has {len(dupes)} duplicate link uuids: {dupes}')
+            logger.debug(f'Backmatter has {len(dupes)} duplicate link uuids: {dupes}')
 
         links = set(links)
         in_refs = refs.difference(links)
         if in_refs and not quiet:
             logger.warning(f'Model references {len(refs)} uuids and {len(in_refs)} of them are not in resources.')
-            logger.debug(f'Model references {len(in_refs)} uuids not in resources: {in_refs}')
+        logger.debug(f'Model references {len(in_refs)} uuids not in resources: {in_refs}')
 
         in_links = links.difference(refs)
         if in_links and not quiet:
             logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.')
-            logger.debug(f'Resources have {len(in_links)} not in referenced by model: {in_links}')
+        logger.debug(f'Resources have {len(in_links)} not in referenced by model: {in_links}')
 
         # This validator is intended just to give warnings, so it always returns True
         return True
