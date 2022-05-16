@@ -168,10 +168,11 @@ ARG_ITEM = 'item'
 ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
+VAL_MODE_CATALOG = 'catalog'
 VAL_MODE_DUPLICATES = 'duplicates'
+VAL_MODE_LINKS = 'links'
 VAL_MODE_REFS = 'refs'
 VAL_MODE_ALL = 'all'
-VAL_MODE_OSCAL_VERSION = 'oscal_version'
 
 IOF_SHORT = '-iof'
 IOF_LONG = '--include-optional-fields'

@@ -23,7 +23,7 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
@@ -88,7 +88,7 @@ class CatalogInterface():
         self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[str]
     ) -> None:
         """
-        Get all controls contained in this control and add it to the growing dict.
+        Get all controls contained in this control and add it to the growing control dict.
 
         Add all its sub-controls to the dict recursively.
         The path does not change because only groups are in the path, and controls cannot contain groups.
@@ -105,6 +105,7 @@ class CatalogInterface():
                 self._add_sub_controls(control_handle, control_dict, path)
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
+        """Add all controls in the group recursively, including sub groups and sub controls."""
         if group.controls is not None:
             group_path = path[:]
             if not group_path or group_path[-1] != group.id:
@@ -146,15 +147,18 @@ class CatalogInterface():
             self._add_params_to_map(handle.control)
         return control_dict
 
-    def _get_all_controls_in_list(self, controls: List[cat.Control], recurse: bool) -> List[cat.Control]:
+    @staticmethod
+    def _get_all_controls_in_list(controls: List[cat.Control], recurse: bool) -> List[cat.Control]:
+        """Get all controls in a list with optional recursion for sub controls."""
         new_list: List[cat.Control] = []
         for control in controls:
             new_list.append(control)
             if recurse and control.controls:
-                new_list.extend(self._get_all_controls_in_list(control.controls, recurse))
+                new_list.extend(CatalogInterface._get_all_controls_in_list(control.controls, recurse))
         return new_list
 
-    def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> List[cat.Control]:
+    @staticmethod
+    def _get_all_controls_in_group(group: cat.Group, recurse: bool) -> List[cat.Control]:
         """
         Create a list of all controls in this group.
 
@@ -162,10 +166,10 @@ class CatalogInterface():
         """
         controls: List[cat.Control] = []
         if group.controls:
-            controls.extend(self._get_all_controls_in_list(group.controls, recurse))
+            controls.extend(CatalogInterface._get_all_controls_in_list(group.controls, recurse))
         for sub_group in as_list(group.groups):
             if sub_group.controls:
-                controls.extend(self._get_all_controls_in_group(sub_group, recurse))
+                controls.extend(CatalogInterface._get_all_controls_in_group(sub_group, recurse))
         return controls
 
     def get_sorted_controls_in_group(self, group_id: str) -> List[cat.Control]:
@@ -178,21 +182,40 @@ class CatalogInterface():
         return sorted(controls, key=lambda control: ControlIOWriter.get_sort_id(control))
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
-        """Find all children of this control."""
+        """Find all child ids of this control from the dict with recursion."""
         children: List[str] = []
         control = self.get_control(control_id)
-        if control.controls:
-            new_controls = self._get_all_controls_in_list(control.controls, True)
+        if control:
+            new_controls = self._get_all_controls_in_list(as_list(control.controls), True)
             children.extend([con.id for con in new_controls])
         return children
 
     def get_control_ids(self) -> List[str]:
-        """Get all control ids in catalog using the dict."""
+        """Get all control ids from the control dict."""
         return self._control_dict.keys()
 
     def get_control(self, control_id: str) -> Optional[cat.Control]:
-        """Get control from catalog with this id using the dict."""
+        """Get control from the control dict with this id."""
         return None if control_id not in self._control_dict else self._control_dict[control_id].control
+
+    @staticmethod
+    def get_control_ids_from_catalog(catalog: cat.Catalog) -> List[str]:
+        """
+        Get all control ids from a catalog.
+
+        This is intended to provide a quick list of all controls in a catalog without the expense of building the
+        control dict.  So, if repeated queries are made into a catalog, it is worth instantiating a CatalogInterface
+        and associated control dict.  Otherwise just use this to get a list of all controls.
+
+        This function is needed within the CatalogInterface in order to determine if new controls have been added
+        to the dict and need to be inserted in the actual catalog during update.
+        """
+        controls = CatalogInterface._get_all_controls_in_list(as_list(catalog.controls), True)
+        id_list = [control.id for control in controls]
+        for group in as_list(catalog.groups):
+            controls = CatalogInterface._get_all_controls_in_group(group, True)
+            id_list.extend([control.id for control in as_list(controls)])
+        return id_list
 
     def get_control_by_param_id(self, param_id: str) -> Optional[cat.Control]:
         """Get control from catalog that has this param id using the dict."""
@@ -201,7 +224,11 @@ class CatalogInterface():
         return None
 
     def get_control_id_and_status(self, control_name: str) -> Tuple[str, str]:
-        """Get the control id and status using the control name."""
+        """
+        Get the control id and status using the control name.
+
+        Returns empty string if status not found.
+        """
         for control in self.get_all_controls_from_dict():
             if ControlIOWriter.get_label(control).strip().lower() == control_name.strip().lower():
                 status = ControlIOWriter.get_prop(control, 'status')
@@ -224,7 +251,7 @@ class CatalogInterface():
 
     def get_all_controls_from_catalog(self, recurse: bool) -> Iterator[cat.Control]:
         """
-        Yield all deep and individual controls from the actual catalog by group.
+        Yield all controls from the actual catalog by group including optional sub controls.
 
         Args:
             recurse: Whether to recurse within controls, but groups are always recursed
@@ -254,7 +281,7 @@ class CatalogInterface():
         return len(self._control_dict.keys())
 
     def get_count_of_controls_in_catalog(self, recurse: bool) -> int:
-        """Get count of controls from the actual catalog."""
+        """Get count of controls from the actual catalog including optional sub controls."""
         return len(list(self.get_all_controls_from_catalog(recurse)))
 
     def get_group_ids(self) -> List[str]:
@@ -262,7 +289,11 @@ class CatalogInterface():
         return sorted(filter(lambda id: id, list({control.group_id for control in self._control_dict.values()})))
 
     def get_all_groups_from_catalog(self) -> List[cat.Group]:
-        """Retrieve all groups in the catalog sorted by group_id."""
+        """
+        Retrieve all groups in the catalog sorted by group_id.
+
+        This ignores controls that are direct children of the catalog.
+        """
         groups: List[cat.Group] = []
         if self._catalog.groups:
             for my_group in self._catalog.groups:
@@ -272,7 +303,7 @@ class CatalogInterface():
 
     def get_statement_label_if_exists(self, control_id: str,
                                       statement_id: str) -> Tuple[Optional[str], Optional[common.Part]]:
-        """Get statement label if given."""
+        """Get statement label if available."""
 
         def does_part_exists(part: common.Part) -> bool:
             does_match = False
@@ -337,16 +368,28 @@ class CatalogInterface():
         )
 
     def get_control_path(self, control_id: str) -> List[str]:
-        """Return the path into the catalog for this control."""
+        """Return the path into the markdown directory for this control."""
         return self._control_dict[control_id].path
 
     def replace_control(self, control: cat.Control) -> None:
-        """Replace the control in the control_dict after modifying it."""
+        """
+        Replace the control in the control_dict.
+
+        This only replaces the parent control and not its children.
+        """
         self._control_dict[control.id].control = control
 
     def delete_control(self, control_id: str) -> None:
-        """Delete the control from the control_dict based on id."""
-        self._control_dict.pop(control_id, None)
+        """
+        Delete the control from the control_dict based on id.
+
+        Delete all its dependent children also.
+        """
+        control = self.get_control(control_id)
+        if control:
+            for sub_control_id in self.get_dependent_control_ids(control.id):
+                self._control_dict.pop(sub_control_id, None)
+            self._control_dict.pop(control_id, None)
 
     def get_catalog(self, update=True) -> cat.Catalog:
         """Safe method to get catalog after forced update from catalog dict."""
@@ -362,38 +405,81 @@ class CatalogInterface():
             controls: a list of controls in the original catalog
 
         Returns:
-            The new list of updated controls, possibly with some missing if they have been removed from the dict
+            The new list of updated controls, possibly with some missing if they have been removed from the dict.
+            Children are inserted as needed into parent controls.
         """
         new_list: List[cat.Control] = []
         for control in controls:
             # first update the control itself by getting it from the dict
-            control = self.get_control(control.id)
-            # no warning given if control not found in dict.  it is assumed to have been removed from the catalog.
-            if control is not None:
-                # then update any controls it contains from the dict
-                if control.controls:
-                    control.controls = self._update_all_controls_in_list(control.controls)
-                new_list.append(control)
+            new_control = self.get_control(control.id)
+            if new_control:
+                # this overrides any sub controls in the control itself
+                # any added sub-controls should add to the skipped list
+                new_control.controls = self._update_all_controls_in_list(as_list(control.controls))
+                new_control.controls = none_if_empty(new_control.controls)
+                new_list.append(new_control)
         return new_list
 
     def _update_all_controls_in_group(self, group: cat.Group) -> None:
         """Given a group of controls, create fresh version pulled from the control dict."""
-        if group.controls:
-            group.controls = self._update_all_controls_in_list(group.controls)
-        if group.groups:
-            new_groups: List[cat.Group] = []
-            for sub_group in group.groups:
-                self._update_all_controls_in_group(sub_group)
-                new_groups.append(sub_group)
-            group.groups = new_groups
+        group.controls = self._update_all_controls_in_list(as_list(group.controls))
+        group.controls = none_if_empty(group.controls)
+        new_groups: List[cat.Group] = []
+        for sub_group in as_list(group.groups):
+            self._update_all_controls_in_group(sub_group)
+            new_groups.append(sub_group)
+        group.groups = none_if_empty(new_groups)
+
+    def _insert_control_in_catalog(self, control_handle: ControlHandle) -> None:
+        """Insert the control into the catalog based on its path."""
+        path = control_handle.path
+        node = self._catalog
+        if path[0] != '':
+            for group_id in path:
+                found_group = None
+                for group in as_list(node.groups):
+                    if group.id == group_id:
+                        found_group = group
+                        break
+                if found_group:
+                    node = found_group
+                else:
+                    raise TrestleError(f'No controls found in catalog for group {group.id}')
+            node.title = control_handle.group_title
+            node.class_ = control_handle.group_class
+        node.controls = delete_item_from_list(
+            as_list(node.controls), control_handle.control.id, lambda control: control.id
+        )
+        node.controls.append(control_handle.control)
+        node.controls = none_if_empty(sorted(node.controls, key=lambda control: ControlIOWriter.get_sort_id(control)))
 
     def update_catalog_controls(self) -> None:
-        """Update the actual catalog by pulling fresh controls from the dict."""
-        if self._catalog.groups:
-            for group in self._catalog.groups:
-                self._update_all_controls_in_group(group)
-        if self._catalog.controls:
-            self._catalog.controls = self._update_all_controls_in_list(self._catalog.controls)
+        """
+        Update the actual catalog by pulling fresh controls from the dict.
+
+        During assembly, controls may be added, but not children of controls.
+        New groups may not be added.
+        A control containing controls cannot be added.  Controls containing controls are only available if
+        the parent catalog was loaded from json.
+        """
+        # first go through the catalog and pull existing controls from the dict
+        for group in as_list(self._catalog.groups):
+            self._update_all_controls_in_group(group)
+
+        new_list = []
+        for control in as_list(self._catalog.controls):
+            new_control = self.get_control(control.id)
+            new_control.controls = self._update_all_controls_in_list(as_list(control.controls))
+            new_control.controls = none_if_empty(new_control.controls)
+            new_list.append(new_control)
+        self._catalog.controls = none_if_empty(new_list)
+
+        # now add any new controls that are discovered in the dict
+        ids_in_catalog = CatalogInterface.get_control_ids_from_catalog(self._catalog)
+        for control_handle in self._control_dict.values():
+            if control_handle.control.id not in ids_in_catalog:
+                self._insert_control_in_catalog(control_handle)
+
         self._catalog.params = list(self.loose_param_dict.values())
 
     def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
@@ -592,7 +678,7 @@ class CatalogInterface():
         """
         # manually insert the top dir as group ''
         id_map: Dict[str, pathlib.Path] = {'': md_path}
-        for gdir in md_path.glob('*/'):
+        for gdir in md_path.rglob('*'):
             if gdir.is_dir():
                 id_map[gdir.stem] = gdir
         # rebuild the dict by inserting items in manner sorted by key
@@ -636,12 +722,12 @@ class CatalogInterface():
                 if not group_title:
                     logger.warning(f'No group title found in controls for group {group_id}')
                 new_group = cat.Group(id=group_id, title=group_title)
-                new_group.controls = control_list
+                new_group.controls = none_if_empty(control_list)
                 groups.append(new_group)
             else:
                 # if the list of controls has no group id it also has no title and is just the controls of the catalog
-                self._catalog.controls = control_list
-        self._catalog.groups = groups if groups else None
+                self._catalog.controls = none_if_empty(control_list)
+        self._catalog.groups = none_if_empty(groups)
         self._create_control_dict()
         return self._catalog
 
@@ -762,11 +848,14 @@ class CatalogInterface():
                 CatalogInterface.merge_controls(dest, src, replace_params)
                 self.replace_control(dest)
             else:
+                # this is a new control that isn't already in the merge destination
                 # need to add the control knowing its group must already exist
                 # get group info from an arbitrary control already present in group
                 _, control_handle = self._find_control_in_group(group_id)
+                new_control_handle = control_handle.copy(deep=True)
+                new_control_handle.control = src
                 # add the control and its handle to the param_dict
-                self._control_dict[src.id] = control_handle
+                self._control_dict[src.id] = new_control_handle
 
         # now need to cull any controls that are not in the src catalog
         handled_ids = set(cat_interface._control_dict.keys())

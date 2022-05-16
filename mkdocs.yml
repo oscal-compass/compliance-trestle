@@ -65,6 +65,7 @@ nav:
       - all_validator: api_reference/trestle.core.all_validator.md
       - base_model: api_reference/trestle.core.base_model.md
       - catalog_interface: api_reference/trestle.core.catalog_interface.md
+      - catalog_validator: api_reference/trestle.core.catalog_validator.md
       - commands:
         - add: api_reference/trestle.core.commands.add.md
         - assemble: api_reference/trestle.core.commands.assemble.md
@@ -103,6 +104,7 @@ nav:
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
       - jinja: api_reference/trestle.core.jinja.md
+      - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
         - markdown_api: api_reference/trestle.core.markdown.markdown_api.md
         - markdown_const: api_reference/trestle.core.markdown.markdown_const.md

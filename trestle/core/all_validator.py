@@ -29,20 +29,20 @@ class AllValidator(Validator):
         """Return information on which validation failed."""
         return self.last_failure_msg
 
-    def model_is_valid(self, model: OscalBaseModel) -> bool:
+    def model_is_valid(self, model: OscalBaseModel, quiet: bool) -> bool:
         """
         Validate an oscal model against all available validators in the trestle library.
 
         args:
             model: An Oscal model that can be passed to the validator.
+            quiet: Don't report msgs unless invalid.
 
         returns:
             True (valid) if the model passed all registered validators.
         """
         self.last_failure_msg = self.__doc__
         for val in vfact.validator_factory.get_all():
-            if val != self:
-                if not val.model_is_valid(model):
-                    self.last_failure_msg = val.error_msg()
-                    return False
+            if val != self and not val.model_is_valid(model, quiet):
+                self.last_failure_msg = val.error_msg()
+                return False
         return True

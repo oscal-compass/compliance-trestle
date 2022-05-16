@@ -257,3 +257,10 @@ def test_parameter_to_dict() -> None:
     param = common.Parameter(id='param1', label='label1', select=sel, values=['two'])
     param_dict = ModelUtils.parameter_to_dict(param, False)
     assert param == ModelUtils.dict_to_parameter(param_dict)
+
+
+def test_find_all_prose(simplified_nist_catalog: catalog.Catalog) -> None:
+    """Test get all prose from catalog."""
+    prose_list = ModelUtils.find_values_by_name(simplified_nist_catalog, 'prose')
+    n_lines = len(prose_list)
+    assert n_lines == 224
