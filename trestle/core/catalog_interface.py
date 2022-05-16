@@ -23,7 +23,7 @@ import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_io import ControlIOReader, ControlIOWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
@@ -200,7 +200,16 @@ class CatalogInterface():
 
     @staticmethod
     def get_control_ids_from_catalog(catalog: cat.Catalog) -> List[str]:
-        """Get all control ids from a catalog."""
+        """
+        Get all control ids from a catalog.
+
+        This is intended to provide a quick list of all controls in a catalog without the expense of building the
+        control dict.  So, if repeated queries are made into a catalog, it is worth instantiating a CatalogInterface
+        and associated control dict.  Otherwise just use this to get a list of all controls.
+
+        This function is needed within the CatalogInterface in order to determine if new controls have been added
+        to the dict and need to be inserted in the actual catalog during update.
+        """
         controls = CatalogInterface._get_all_controls_in_list(as_list(catalog.controls), True)
         id_list = [control.id for control in controls]
         for group in as_list(catalog.groups):
@@ -438,12 +447,9 @@ class CatalogInterface():
                     raise TrestleError(f'No controls found in catalog for group {group.id}')
             node.title = control_handle.group_title
             node.class_ = control_handle.group_class
-        node.controls = as_list(node.controls)
-        try:
-            index = [control.id for control in as_list(node.controls)].index(control_handle.control.id)
-            del node.controls[index]
-        except ValueError:
-            pass
+        node.controls = delete_item_from_list(
+            as_list(node.controls), control_handle.control.id, lambda control: control.id
+        )
         node.controls.append(control_handle.control)
         node.controls = none_if_empty(sorted(node.controls, key=lambda control: ControlIOWriter.get_sort_id(control)))
 
