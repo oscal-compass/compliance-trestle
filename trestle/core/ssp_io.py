@@ -205,13 +205,19 @@ class SSPMarkdownWriter():
         md_list = self._write_list_with_header('FedRamp Control Origination.', control_origination, level)
         return md_list
 
-    def get_control_response(self, control_id: str, level: int, write_empty_responses=False) -> str:
+    def get_control_response(self, control_id: str, level: int, write_empty_responses=False, show_comp=True) -> str:
         """
         Get the full control implemented requirements, broken down based on the available control responses.
 
-        For components the following structure is assumed:
+        Args:
+            control_id: id of the control
+            level: level of indentation
+            write_empty_responses: write response even if empty
+            show_comp: show the component name in the response
 
-        'The System' is the default response, and all other components are treated as sub-headings per response item.
+        Notes:
+            For components the following structure is assumed:
+            'The System' is the default response, and other components are treated as sub-headings per response item.
         """
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control response, set resolved catalog first.')
@@ -247,7 +253,7 @@ class SSPMarkdownWriter():
                         if component_key == SSP_MAIN_COMP_NAME and idx == 0:
                             # special case ignore header but print contents
                             md_writer.new_paragraph()
-                        else:
+                        elif show_comp:
                             md_writer.new_header(level=2, title=component_key)
                         md_writer.set_indent_level(-1)
                         md_writer.new_line(response_per_component[component_key])

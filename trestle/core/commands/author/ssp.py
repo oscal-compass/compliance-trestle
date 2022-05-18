@@ -301,26 +301,36 @@ class SSPAssemble(AuthorCommonCommand):
 
 
 class SSPFilter(AuthorCommonCommand):
-    """Filter the controls in an ssp based on files included by profile."""
+    """Filter the controls in an ssp based on files included by profile and/or list of component names."""
 
     name = 'ssp-filter'
 
     def _init_arguments(self) -> None:
         file_help_str = 'Name of the input ssp'
         self.add_argument('-n', '--name', help=file_help_str, required=True, type=str)
-        file_help_str = 'Name of the input profile that defines set of controls in output ssp'
-        self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
+        file_help_str = 'Name of the optional input profile that defines set of controls in filtered ssp'
+        self.add_argument('-p', '--profile', help=file_help_str, required=False, type=str)
         output_help_str = 'Name of the output generated SSP'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
+        comp_help_str = 'Colon-delimited list of component names to include in filtered ssp.'
+        self.add_argument('-c', '--components', help=comp_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
             trestle_root = pathlib.Path(args.trestle_root)
+            comp_names: Optional[List[str]] = None
+            if args.components:
+                comp_names = args.components.split(':')
+            elif not args.profile:
+                logger.warning('You must specify either a profile or list of component names for ssp-filter.')
+                return 1
 
-            return self.filter_ssp(trestle_root, args.name, args.profile, args.output, args.regenerate, args.version)
+            return self.filter_ssp(
+                trestle_root, args.name, args.profile, args.output, args.regenerate, args.version, comp_names
+            )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error generating the filtered ssp')
 
@@ -331,60 +341,101 @@ class SSPFilter(AuthorCommonCommand):
         profile_name: str,
         out_name: str,
         regenerate: bool,
-        version: Optional[str]
+        version: Optional[str],
+        components: Optional[List[str]] = None
     ) -> int:
         """
-        Filter the ssp based on controls included by the profile and output new ssp.
+        Filter the ssp based on controls included by the profile and/or components and output new ssp.
 
         Args:
             trestle_root: root directory of the trestle project
             ssp_name: name of the ssp model
-            profile_name: name of the profile model used for filtering
+            profile_name: name of the optional profile model used for filtering
             out_name: name of the output ssp model with filtered controls
             regenerate: whether to regenerate the uuid's in the ssp
             version: new version for the model
+            components: optional list of component names used for filtering
 
         Returns:
             0 on success, 1 otherwise
         """
+        # load the ssp
         ssp: ossp.SystemSecurityPlan
-
         ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
         profile_path = ModelUtils.path_for_top_level_model(
             trestle_root, profile_name, prof.Profile, FileContentType.JSON
         )
 
-        prof_resolver = ProfileResolver()
-        catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-        catalog_interface = CatalogInterface(catalog)
+        if components:
+            raw_comp_names = [name.lower().replace(' ', '') for name in components]
+            comp_uuids: List[str] = []
+            for component in ssp.system_implementation.components:
+                if component.title.lower().replace(' ', '') in raw_comp_names:
+                    comp_uuids.append(component.uuid)
+            # imp_reqs can be by comp
+            # and imp_reqs can have statements that are by comp
+            if comp_uuids:
+                new_imp_reqs: List[ossp.ImplementedRequirement] = []
+                # these are all required to be present
+                for imp_req in ssp.control_implementation.implemented_requirements:
+                    new_by_comps: List[ossp.ByComponent] = []
+                    # by_comps is optional
+                    for by_comp in as_list(imp_req.by_components):
+                        if by_comp.component.uuid in comp_uuids:
+                            new_by_comps.append(by_comp)
+                    imp_req.by_components = none_if_empty(new_by_comps)
+                    new_imp_reqs.append(imp_req)
+                    new_statements: List[ossp.Statement] = []
+                    for statement in as_list(imp_req.statements):
+                        new_by_comps: List[ossp.ByComponent] = []
+                        for by_comp in as_list(statement.by_components):
+                            if by_comp.component_uuid in comp_uuids:
+                                new_by_comps.append(by_comp)
+                        statement.by_components = none_if_empty(new_by_comps)
+                        new_statements.append(statement)
+                    imp_req.statements = none_if_empty(new_statements)
+                ssp.control_implementation.implemented_requirements = new_imp_reqs
+                # now remove any unused components from the ssp
+                new_comp_list: List[ossp.SystemComponent] = []
+                for comp in ssp.system_implementation.components:
+                    if comp.uuid in comp_uuids:
+                        new_comp_list.append(comp)
+                ssp.system_implementation.components = new_comp_list
 
-        # The input ssp should reference a superset of the controls referenced by the profile
-        # Need to cull references in the ssp to controls not in the profile
-        # Also make sure the output ssp contains imp reqs for all controls in the profile
-        control_imp = ssp.control_implementation
-        ssp_control_ids: Set[str] = set()
+        # filter by controls in profile
+        if profile_name:
+            prof_resolver = ProfileResolver()
+            catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+            catalog_interface = CatalogInterface(catalog)
 
-        new_set_params: List[ossp.SetParameter] = []
-        for set_param in as_list(control_imp.set_parameters):
-            control = catalog_interface.get_control_by_param_id(set_param.param_id)
-            if control is not None:
-                new_set_params.append(set_param)
-                ssp_control_ids.add(control.id)
-        control_imp.set_parameters = new_set_params if new_set_params else None
+            # The input ssp should reference a superset of the controls referenced by the profile
+            # Need to cull references in the ssp to controls not in the profile
+            # Also make sure the output ssp contains imp reqs for all controls in the profile
+            control_imp = ssp.control_implementation
+            ssp_control_ids: Set[str] = set()
 
-        new_imp_requirements: List[ossp.ImplementedRequirement] = []
-        for imp_requirement in as_list(control_imp.implemented_requirements):
-            control = catalog_interface.get_control(imp_requirement.control_id)
-            if control is not None:
-                new_imp_requirements.append(imp_requirement)
-                ssp_control_ids.add(control.id)
-        control_imp.implemented_requirements = new_imp_requirements
+            new_set_params: List[ossp.SetParameter] = []
+            for set_param in as_list(control_imp.set_parameters):
+                control = catalog_interface.get_control_by_param_id(set_param.param_id)
+                if control is not None:
+                    new_set_params.append(set_param)
+                    ssp_control_ids.add(control.id)
+            control_imp.set_parameters = none_if_empty(new_set_params)
 
-        # make sure all controls in the profile have implemented reqs in the final ssp
-        if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
-            raise TrestleError('Unable to filter the ssp because the profile references controls not in it.')
+            new_imp_requirements: List[ossp.ImplementedRequirement] = []
+            for imp_requirement in as_list(control_imp.implemented_requirements):
+                control = catalog_interface.get_control(imp_requirement.control_id)
+                if control is not None:
+                    new_imp_requirements.append(imp_requirement)
+                    ssp_control_ids.add(control.id)
+            control_imp.implemented_requirements = new_imp_requirements
 
-        ssp.control_implementation = control_imp
+            # make sure all controls in the profile have implemented reqs in the final ssp
+            if not ssp_control_ids.issuperset(catalog_interface.get_control_ids()):
+                raise TrestleError('Unable to filter the ssp because the profile references controls not in it.')
+
+            ssp.control_implementation = control_imp
+
         if regenerate:
             ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
         if version:
