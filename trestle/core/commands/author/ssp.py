@@ -324,6 +324,9 @@ class SSPFilter(AuthorCommonCommand):
             comp_names: Optional[List[str]] = None
             if args.components:
                 comp_names = args.components.split(':')
+            elif not args.profile:
+                logger.warning('You must specify either a profile or list of component names for ssp-filter.')
+                return 1
 
             return self.filter_ssp(
                 trestle_root, args.name, args.profile, args.output, args.regenerate, args.version, comp_names

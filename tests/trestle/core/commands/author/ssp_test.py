@@ -458,6 +458,20 @@ also do the bar stuff
 
     assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
 
+    # now filter without profile or components to trigger error
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
+        components=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 1
+
     # now filter the ssp through test_profile_b to force error because b references controls not in the ssp
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
