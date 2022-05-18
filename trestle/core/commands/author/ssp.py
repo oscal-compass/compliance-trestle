@@ -395,6 +395,12 @@ class SSPFilter(AuthorCommonCommand):
                         new_statements.append(statement)
                     imp_req.statements = none_if_empty(new_statements)
                 ssp.control_implementation.implemented_requirements = new_imp_reqs
+                # now remove any unused components from the ssp
+                new_comp_list: List[ossp.SystemComponent] = []
+                for comp in ssp.system_implementation.components:
+                    if comp.uuid in comp_uuids:
+                        new_comp_list.append(comp)
+                ssp.system_implementation.components = new_comp_list
 
         # filter by controls in profile
         if profile_name:
