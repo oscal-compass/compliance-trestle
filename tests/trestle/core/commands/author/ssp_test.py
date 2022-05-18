@@ -364,6 +364,18 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(gen_args) == 0
 
+    # add responses by component
+    ac1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
+    imp_text = """
+### foo
+implement the foo requirements
+
+### bar
+also do the bar stuff
+
+"""
+    test_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', imp_text)
+
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
     args = argparse.Namespace(
@@ -378,7 +390,11 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_assemble._run(args) == 0
 
     # load the ssp so we can add a setparameter to it for more test coverage
+    ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+    # confirm all by_comps are there for this system, foo, bar
+    assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 3
+
     new_setparam = ossp.SetParameter(param_id='ac-1_prm_1', values=['new_value'])
     ssp.control_implementation.set_parameters = [new_setparam]
     ModelUtils.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
@@ -393,10 +409,20 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         output=filtered_name,
         verbose=0,
         regenerate=False,
-        version=None
+        version=None,
+        components='this system:foo'
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_top_level_model(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+    # confirm the bar by_comp has been filtered out
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2
 
     orig_uuid = test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
 
@@ -408,7 +434,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         output=filtered_name,
         verbose=0,
         regenerate=False,
-        version=None
+        version=None,
+        components=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -423,7 +450,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         output=filtered_name,
         verbose=0,
         regenerate=True,
-        version=None
+        version=None,
+        components=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
@@ -438,7 +466,8 @@ def test_ssp_filter(tmp_trestle_dir: pathlib.Path) -> None:
         output=filtered_name,
         verbose=0,
         regenerate=True,
-        version=None
+        version=None,
+        components=None
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 1
