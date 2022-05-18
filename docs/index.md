@@ -77,12 +77,12 @@ Compliance trestle is currently stable and is based on NIST OSCAL version 1.0.2,
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [contributing](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/) to get started.
+Our project welcomes external contributions. Please consult [contributing](contributing/mkdocs_contributing/) to get started.
 
 ## License & Authors
 
-If you would like to see the detailed LICENSE click [here](https://ibm.github.io/compliance-trestle/license/).
-Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](https://ibm.github.io/compliance-trestle/maintainers/) for the core team.
+If you would like to see the detailed LICENSE click [here](license/).
+Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](maintainers/) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
