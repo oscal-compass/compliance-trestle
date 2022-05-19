@@ -442,7 +442,7 @@ class SSPFilter(AuthorCommonCommand):
 
         existing_ssp_path = ModelUtils.full_path_for_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
         if existing_ssp_path is not None:
-            existing_ssp = ModelUtils.load_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
+            existing_ssp, _ = ModelUtils.load_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
             if ModelUtils.models_are_equivalent(existing_ssp, ssp):
                 logger.info('No changes to filtered ssp so ssp not written out.')
                 return CmdReturnCodes.SUCCESS.value
