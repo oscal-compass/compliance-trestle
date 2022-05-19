@@ -395,6 +395,12 @@ also do the bar stuff
     # confirm all by_comps are there for this system, foo, bar
     assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 3
 
+    # get the original uuid
+    orig_uuid = ssp.uuid
+
+    # confirm there are seven controls and corresponding imp_reqs
+    assert len(ssp.control_implementation.implemented_requirements) == 7
+
     new_setparam = ossp.SetParameter(param_id='ac-1_prm_1', values=['new_value'])
     ssp.control_implementation.set_parameters = [new_setparam]
     ModelUtils.save_top_level_model(ssp, tmp_trestle_dir, ssp_name, FileContentType.JSON)
@@ -410,6 +416,36 @@ also do the bar stuff
         verbose=0,
         regenerate=False,
         version=None,
+        components=None
+    )
+    ssp_filter = SSPFilter()
+    assert ssp_filter._run(args) == 0
+
+    ssp, _ = ModelUtils.load_top_level_model(
+        tmp_trestle_dir,
+        filtered_name,
+        ossp.SystemSecurityPlan,
+        FileContentType.JSON
+    )
+
+    # confirm the imp_reqs have been culled by profile_d to only two controls
+    assert len(ssp.control_implementation.implemented_requirements) == 2
+
+    # confirm there are three by_comps for: this system, foo, bar
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
+
+    # confirm uuid was not regenerated
+    assert ssp.uuid == orig_uuid
+
+    # now filter the ssp by components
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=ssp_name,
+        profile=None,
+        output=filtered_name,
+        verbose=0,
+        regenerate=True,
+        version=None,
         components='this system:foo'
     )
     ssp_filter = SSPFilter()
@@ -421,42 +457,29 @@ also do the bar stuff
         ossp.SystemSecurityPlan,
         FileContentType.JSON
     )
+
+    # get the uuid and confirm it was regenerated this time
+    new_uuid = ssp.uuid
+    assert new_uuid != orig_uuid
+
     # confirm the bar by_comp has been filtered out
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 2
+    assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 2
 
-    orig_uuid = test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
-
-    # filter it again to confirm uuid is same
+    # filter the filtered ssp again to confirm uuid does not change even with regen because contents are the same
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
-        name=ssp_name,
-        profile='test_profile_d',
-        output=filtered_name,
-        verbose=0,
-        regenerate=False,
-        version=None,
-        components=None
-    )
-    ssp_filter = SSPFilter()
-    assert ssp_filter._run(args) == 0
-
-    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
-
-    # filter again to confirm uuid is different with regen
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        name=ssp_name,
-        profile='test_profile_d',
+        name=filtered_name,
+        profile=None,
         output=filtered_name,
         verbose=0,
         regenerate=True,
         version=None,
-        components=None
+        components='this system:foo'
     )
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+    assert new_uuid == test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
 
     # now filter without profile or components to trigger error
     args = argparse.Namespace(
