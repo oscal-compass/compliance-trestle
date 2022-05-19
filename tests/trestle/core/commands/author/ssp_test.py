@@ -442,7 +442,7 @@ also do the bar stuff
 
     assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
 
-    # filter again to confirm uuid is different with regen
+    # filter again to confirm uuid does not change even with regen because contents are the same
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=ssp_name,
@@ -456,7 +456,7 @@ also do the bar stuff
     ssp_filter = SSPFilter()
     assert ssp_filter._run(args) == 0
 
-    assert orig_uuid != test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
+    assert orig_uuid == test_utils.get_model_uuid(tmp_trestle_dir, filtered_name, ossp.SystemSecurityPlan)
 
     # now filter without profile or components to trigger error
     args = argparse.Namespace(
