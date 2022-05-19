@@ -33,6 +33,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.control_io import ControlIOReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -362,15 +363,16 @@ class SSPFilter(AuthorCommonCommand):
         # load the ssp
         ssp: ossp.SystemSecurityPlan
         ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+        existing_ssp = ssp.copy(deep=True)
         profile_path = ModelUtils.path_for_top_level_model(
             trestle_root, profile_name, prof.Profile, FileContentType.JSON
         )
 
         if components:
-            raw_comp_names = [name.lower().replace(' ', '') for name in components]
+            raw_comp_names = [ControlIOReader.simplify_name(name) for name in components]
             comp_uuids: List[str] = []
             for component in ssp.system_implementation.components:
-                if component.title.lower().replace(' ', '') in raw_comp_names:
+                if ControlIOReader.simplify_name(component.title) in raw_comp_names:
                     comp_uuids.append(component.uuid)
             # imp_reqs can be by comp
             # and imp_reqs can have statements that are by comp
@@ -436,10 +438,16 @@ class SSPFilter(AuthorCommonCommand):
 
             ssp.control_implementation = control_imp
 
-        if regenerate:
-            ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
         if version:
             ssp.metadata.version = com.Version(__root__=version)
+
+        if ModelUtils.models_are_equivalent(existing_ssp, ssp):
+            logger.info('No changes to filtered ssp so ssp not written out.')
+            return CmdReturnCodes.SUCCESS.value
+
+        if regenerate:
+            ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
+
         ModelUtils.update_last_modified(ssp)
 
         ModelUtils.save_top_level_model(ssp, trestle_root, out_name, FileContentType.JSON)

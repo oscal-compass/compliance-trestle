@@ -968,16 +968,16 @@ class ControlIOReader():
         return clean_prose
 
     @staticmethod
-    def _simplify_name(name: str) -> str:
-        name = name.lower().strip()
-        return re.sub(' +', ' ', name)
+    def simplify_name(name: str) -> str:
+        """Simplify the name to ignore variations in case and space."""
+        return name.lower().replace(' ', '')
 
     @staticmethod
     def _comp_name_in_dict(comp_name: str, comp_dict: Dict[str, List[Dict[str, str]]]) -> str:
         """If the name is already in the dict in a similar form, stick to that form."""
-        simple_name = ControlIOReader._simplify_name(comp_name)
+        simple_name = ControlIOReader.simplify_name(comp_name)
         for name in comp_dict.keys():
-            if simple_name == ControlIOReader._simplify_name(name):
+            if simple_name == ControlIOReader.simplify_name(name):
                 return name
         return comp_name
 
@@ -995,8 +995,8 @@ class ControlIOReader():
             if len(node.key.split()) <= 1:
                 raise TrestleError(f'Line in control {control_id} markdown starts with ### but has no component name.')
             comp_name = node.key.split(' ', 1)[1].strip()
-            simp_comp_name = ControlIOReader._simplify_name(comp_name)
-            if simp_comp_name == ControlIOReader._simplify_name(const.SSP_MAIN_COMP_NAME):
+            simp_comp_name = ControlIOReader.simplify_name(comp_name)
+            if simp_comp_name == ControlIOReader.simplify_name(const.SSP_MAIN_COMP_NAME):
                 raise TrestleError(
                     f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
                     'Instead, place all response prose for the default component at the top of th section, '
@@ -1183,17 +1183,24 @@ class ControlIOReader():
         imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
         imp_req.control_id = control_id
 
+        raw_comp_dict = {ControlIOReader.simplify_name(key): value for key, value in comp_dict.items()}
+        raw_avail_comps = {ControlIOReader.simplify_name(key): value for key, value in avail_comps.items()}
+
         # the comp_dict captures all component names referenced by the control
+        # need to create new components if not already in dict by looping over comps referenced by this control
         for comp_name in comp_dict.keys():
-            if comp_name in avail_comps:
-                component = avail_comps[comp_name]
+            component: Optional[ossp.SystemComponent] = None
+            raw_comp_name = ControlIOReader.simplify_name(comp_name)
+            if raw_comp_name in raw_avail_comps:
+                component = raw_avail_comps[raw_comp_name]
             else:
                 # here is where we create a new component on the fly as needed
                 component = gens.generate_sample_model(ossp.SystemComponent)
                 component.title = comp_name
                 avail_comps[comp_name] = component
-            for label, prose_lines in comp_dict[comp_name].items():
-                # create a statement to hold the by-components and assign the statement id
+                raw_avail_comps[raw_comp_name] = component
+            # now create statements to hold the by-components and assign the statement id
+            for label, prose_lines in raw_comp_dict[raw_comp_name].items():
                 if label == 'Statement':
                     statement_id = f'{control_id}_smt'
                 else:
