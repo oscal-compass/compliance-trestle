@@ -363,7 +363,6 @@ class SSPFilter(AuthorCommonCommand):
         # load the ssp
         ssp: ossp.SystemSecurityPlan
         ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
-        existing_ssp = ssp.copy(deep=True)
         profile_path = ModelUtils.path_for_top_level_model(
             trestle_root, profile_name, prof.Profile, FileContentType.JSON
         )
@@ -441,9 +440,12 @@ class SSPFilter(AuthorCommonCommand):
         if version:
             ssp.metadata.version = com.Version(__root__=version)
 
-        if ModelUtils.models_are_equivalent(existing_ssp, ssp):
-            logger.info('No changes to filtered ssp so ssp not written out.')
-            return CmdReturnCodes.SUCCESS.value
+        existing_ssp_path = ModelUtils.full_path_for_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
+        if existing_ssp_path is not None:
+            existing_ssp = ModelUtils.load_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
+            if ModelUtils.models_are_equivalent(existing_ssp, ssp):
+                logger.info('No changes to filtered ssp so ssp not written out.')
+                return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
             ssp, _, _ = ModelUtils.regenerate_uuids(ssp)
