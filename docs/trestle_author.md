@@ -314,4 +314,6 @@ If filtering by components, a colon-delimited list of components should be provi
 
 You may filter by a combination of a profile and a list of component names.
 
+As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
+
 For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
