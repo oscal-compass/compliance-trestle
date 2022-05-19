@@ -428,10 +428,10 @@ also do the bar stuff
         FileContentType.JSON
     )
 
-    # confirm the imp_reqs have been culled by profile_d two only two controls
+    # confirm the imp_reqs have been culled by profile_d to only two controls
     assert len(ssp.control_implementation.implemented_requirements) == 2
 
-    # confirm there are three by_comps for this system, foo, bar
+    # confirm there are three by_comps for: this system, foo, bar
     assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
 
     # confirm uuid was not regenerated
