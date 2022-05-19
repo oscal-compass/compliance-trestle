@@ -72,16 +72,28 @@ class TemplateVersioning:
                 filter(lambda p: p.is_file(), file_utils.iterdir_without_hidden_files(task_path))
             )
 
+            version_regex = r'[0-9]+.[0-9]+.[0-9]+'
+            pattern = re.compile(version_regex)
+            all_non_template_directories = list(
+                filter(
+                    lambda p: p.is_dir() and pattern.search(p.parts[-1]) is None,
+                    file_utils.iterdir_without_hidden_files(task_path)
+                )
+            )
+
             new_dir = Path(f'{task_path}/{START_TEMPLATE_VERSION}')
             new_dir.mkdir(parents=True, exist_ok=True)
 
             if len(all_files_wo_version) == 0:
                 logger.debug('No templates outside of the version folders.')
 
-            for f in all_files_wo_version:
-                shutil.copy(f, new_dir)
+            for f in all_files_wo_version + all_non_template_directories:
+                if f.is_file():
+                    shutil.copy(f, new_dir)
+                elif f.is_dir():
+                    shutil.copytree(f, new_dir / f.name)
 
-            for p in all_files_wo_version:
+            for p in all_files_wo_version + all_non_template_directories:
                 if p.is_dir():
                     shutil.rmtree(p)
                 else:
@@ -91,20 +103,6 @@ class TemplateVersioning:
             raise TrestleError(f'Error while updating template folder: {e}')
         except Exception as e:
             raise TrestleError(f'Unexpected error while updating template folder: {e}')
-
-    @staticmethod
-    def validate_template_folder(template_dir: Path):
-        """Validate template folder confirms to the versioned path style and has no other subdirectories."""
-        TemplateVersioning._check_if_exists_and_dir(template_dir)
-
-        version_regex = r'[0-9]+.[0-9]+.[0-9]+'
-        pattern = re.compile(version_regex)
-        subdirectories = list(
-            filter(lambda p: p.is_dir() and pattern.search(p.parts[-1]) is None, template_dir.iterdir())
-        )
-
-        if len(subdirectories) > 0:
-            raise TrestleError(f'Subdirectories are not allowed in template folders: {subdirectories}')
 
     @staticmethod
     def get_versioned_template_dir(task_path: Path, version: Optional[str] = None) -> Path:

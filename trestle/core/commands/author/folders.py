@@ -168,7 +168,7 @@ class Folders(AuthorCommonCommand):
                 else:
                     logger.info(
                         f'File: {self.rel_dir(template_file)} within the template directory was ignored'
-                        + 'as it is not markdown.'
+                        + ' as it is not markdown.'
                     )
             except Exception as ex:
                 raise TrestleError(
@@ -233,7 +233,12 @@ class Folders(AuthorCommonCommand):
 
                 if instance_version not in all_versioned_templates.keys():
                     templates = list(
-                        filter(lambda p: file_utils.is_local_and_visible(p), versioned_template_dir.iterdir())
+                        filter(
+                            lambda p: file_utils.is_local_and_visible(p) and p.is_file()
+                            and  # noqa: W504 - conflicting lint and formatting
+                            (p.suffix == '.md' or p.suffix == '.drawio'),
+                            versioned_template_dir.iterdir()
+                        )
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
@@ -278,7 +283,12 @@ class Folders(AuthorCommonCommand):
 
                 if instance_version not in all_versioned_templates.keys():
                     templates = list(
-                        filter(lambda p: file_utils.is_local_and_visible(p), versioned_template_dir.iterdir())
+                        filter(
+                            lambda p: file_utils.is_local_and_visible(p) and p.is_file()
+                            and  # noqa: W504 - conflicting lint and formatting
+                            (p.suffix == '.md' or p.suffix == '.drawio'),
+                            versioned_template_dir.iterdir()
+                        )
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
