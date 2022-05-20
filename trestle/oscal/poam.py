@@ -56,28 +56,6 @@ class State(Enum):
     other = 'other'
 
 
-class SetParameter(OscalBaseModel):
-    """
-    Identifies the parameter that will be set by the enclosed value.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='param-id',
-        description=
-        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID',
-    )
-    values: List[common.Value] = Field(...)
-    remarks: Optional[common.Remarks] = None
-
-
 class SelectControlById(OscalBaseModel):
     """
     Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.
@@ -248,50 +226,6 @@ class Status1(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
-class FindingTarget(OscalBaseModel):
-    """
-    Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    type: common.Type1 = Field(
-        ...,
-        description='Identifies the type of the target.',
-        title='Finding Target Type',
-    )
-    target_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='target-id',
-        description='A machine-oriented identifier reference for a specific target qualified by the type.',
-        title='Finding Target Identifier Reference',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='The title for this objective status.',
-        title='Objective Status Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description=
-        "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-        title='Objective Status Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status1 = Field(
-        ...,
-        description='A determination of if the objective is satisfied or not within a given system.',
-        title='Objective Status',
-    )
-    implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
-    remarks: Optional[common.Remarks] = None
-
-
 class Status(OscalBaseModel):
     """
     Describes the operational status of the system component.
@@ -352,16 +286,17 @@ class SystemComponent(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
-class AssessmentAssets(OscalBaseModel):
+class LocalDefinitions(OscalBaseModel):
     """
-    Identifies the assets used to perform this assessment, such as the assessment team, scanning tools, and assumptions.
+    Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
     """
 
     class Config:
         extra = Extra.forbid
 
     components: Optional[List[SystemComponent]] = Field(None)
-    assessment_platforms: List[common.AssessmentPlatform] = Field(..., alias='assessment-platforms')
+    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
+    remarks: Optional[common.Remarks] = None
 
 
 class RiskLog(OscalBaseModel):
@@ -560,19 +495,6 @@ class Observation(OscalBaseModel):
         'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
         title='expires field',
     )
-    remarks: Optional[common.Remarks] = None
-
-
-class LocalDefinitions(OscalBaseModel):
-    """
-    Allows components, and inventory-items to be defined within the POA&M for circumstances where no OSCAL-based SSP exists, or is not delivered with the POA&M.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    components: Optional[List[SystemComponent]] = Field(None)
-    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
     remarks: Optional[common.Remarks] = None
 
 

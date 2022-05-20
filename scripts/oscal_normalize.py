@@ -793,6 +793,23 @@ def update_refs_per_file(classes):
     return classes
 
 
+def _strip_unrefed_files(file_class):
+    dead_names = []
+    for c in file_class:
+        if c.name == 'Model':
+            continue
+        refd = False
+        for d in file_class:
+            if d.name in [c.name] + dead_names:
+                continue
+            if c.name in d.body_text:
+                refd = True
+                break
+        if not refd:
+            dead_names.append(c.name)
+    return [c for c in file_class if c.name not in dead_names]
+
+
 def normalize_files():
     """Clean up classes to minimise cross reference."""
     all_classes = load_all_classes()
@@ -808,6 +825,10 @@ def normalize_files():
 
     # strip all names and bodies
     file_classes = _strip_all_files(file_classes)
+
+    # strip classes that are never used in file
+    for name, file_class in file_classes.items():
+        file_classes[name] = _strip_unrefed_files(file_class)
 
     # convert dict to single list of classes with expected duplicates
     uc = _file_classes_to_list(file_classes, True)
