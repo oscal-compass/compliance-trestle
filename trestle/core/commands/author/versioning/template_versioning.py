@@ -23,6 +23,7 @@ from typing import List, Optional, Tuple
 from pkg_resources import resource_filename
 
 from trestle.common import file_utils
+from trestle.common.const import TEMPLATE_VERSION_REGEX
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER, TRESTLE_RESOURCES
 from trestle.core.draw_io import DrawIO
@@ -72,8 +73,7 @@ class TemplateVersioning:
                 filter(lambda p: p.is_file(), file_utils.iterdir_without_hidden_files(task_path))
             )
 
-            version_regex = r'[0-9]+.[0-9]+.[0-9]+'
-            pattern = re.compile(version_regex)
+            pattern = re.compile(TEMPLATE_VERSION_REGEX)
             all_non_template_directories = list(
                 filter(
                     lambda p: p.is_dir() and pattern.search(p.parts[-1]) is None,
@@ -144,8 +144,7 @@ class TemplateVersioning:
     @staticmethod
     def get_all_versions_for_task(task_path: Path) -> List[str]:
         """Get all versions for the task."""
-        version_regex = r'[0-9]+.[0-9]+.[0-9]+'
-        pattern = re.compile(version_regex)
+        pattern = re.compile(TEMPLATE_VERSION_REGEX)
         all_versions = []
         max_version = START_TEMPLATE_VERSION
         for p in task_path.iterdir():
