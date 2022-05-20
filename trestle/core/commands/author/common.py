@@ -79,7 +79,6 @@ class AuthorCommonCommand(CommandPlusDocs):
             self.template_dir = old_template_dir / args.template_version
 
         if old_template_dir.exists():
-            TemplateVersioning.validate_template_folder(old_template_dir)
             TemplateVersioning.update_template_folder_structure(old_template_dir)
 
         return CmdReturnCodes.SUCCESS.value
