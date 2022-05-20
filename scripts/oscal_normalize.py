@@ -794,6 +794,15 @@ def update_refs_per_file(classes):
 
 
 def _strip_unrefed_files(file_class):
+    """
+    Strip unreferenced classes from each oscal file.
+
+    The generated oscal files include classes that aren't referenced within the file.
+    Those classes need to be removed early since they shouldn't be there at all.
+    A key problem class is SetParameter, but there are others.
+    This does a simple check of the file name being present at all in the body other classes.
+    It could instead be a token-based search but this seems sufficient.
+    """
     dead_names = []
     for c in file_class:
         if c.name == 'Model':
