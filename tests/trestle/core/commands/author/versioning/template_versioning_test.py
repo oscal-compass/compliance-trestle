@@ -33,14 +33,19 @@ def test_template_version_folder_update(tmp_path: pathlib.Path) -> None:
     old_template = task_path.joinpath('template.md')
     old_template.touch()
 
+    old_folder = task_path.joinpath('images')
+    old_folder.mkdir(parents=True)
+
     with pytest.raises(TrestleError):
         TemplateVersioning.update_template_folder_structure(old_template)
 
-    # make sure file gets put to first version
+    # make sure file and folder gets put to first version
     TemplateVersioning.update_template_folder_structure(task_path)
 
     assert task_path.joinpath('0.0.1/').joinpath('template.md').exists()
+    assert task_path.joinpath('0.0.1/').joinpath('images').exists()
     assert not old_template.exists()
+    assert not old_folder.exists()
 
     # make sure new file also gets put to the first version
     another_template = task_path.joinpath('missplaced_template.md')
