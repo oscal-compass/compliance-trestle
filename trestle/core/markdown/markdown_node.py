@@ -75,7 +75,7 @@ class MarkdownNode:
         ).__iter__()
 
     def get_all_headers_for_level_and_starting_key(self, level: int, key: str) -> List[str]:
-        """Return all headers at the level and starting with the key."""
+        """Return all headers at the specified header level and starting with the key."""
         level_headers = self.get_all_headers_for_level(level)
         return [header for header in level_headers if header.startswith('## ' + key + ' ')]
 
