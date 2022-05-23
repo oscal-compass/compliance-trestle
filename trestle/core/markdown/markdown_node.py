@@ -74,6 +74,11 @@ class MarkdownNode:
             filter(lambda header: self._get_header_level_if_valid(header) == level, self.content.subnodes_keys)
         ).__iter__()
 
+    def get_all_headers_for_level_and_starting_key(self, level: int, key: str) -> List[str]:
+        """Return all headers at the level and starting with the key."""
+        level_headers = self.get_all_headers_for_level(level)
+        return [header for header in level_headers if header.startswith('## ' + key + ' ')]
+
     def get_node_for_key(self, key: str, strict_matching: bool = True) -> Optional[MarkdownNode]:
         """Return a node for the given key, substring matching is supported."""
         if not strict_matching:

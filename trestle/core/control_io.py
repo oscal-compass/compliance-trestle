@@ -1046,7 +1046,7 @@ class ControlIOReader():
             yaml_header, control = md_api.processor.process_markdown(control_file)
 
             imp_string = 'Implementation'
-            headers = control.get_all_headers_for_key(imp_string, False)
+            headers = control.get_all_headers_for_level_and_starting_key(2, imp_string)
             header_list = list(headers)
             if not header_list:
                 # if statement has no parts there is only one response for entire control
