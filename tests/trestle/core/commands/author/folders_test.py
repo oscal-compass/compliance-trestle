@@ -576,6 +576,38 @@ def test_fail_when_no_task(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
     assert rc == 1
 
 
+def test_passes_when_extra_md_file(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test extra file in the correct folder."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
+    test_template_folder = testdata_dir / 'author/governed_folders/template_folder'
+    test_instances_folder = testdata_dir / 'author/governed_folders/good_instance_with_readme'
+    task_instance_folder = tmp_trestle_dir / 'test_task/folder_1'
+
+    hidden_file = testdata_dir / pathlib.Path(
+        'author/governed_folders/template_folder_with_drawio/.hidden_does_not_affect'
+    )
+    test_utils.make_file_hidden(hidden_file)
+
+    test_utils.copy_tree_or_file_with_hidden(test_template_folder, task_template_folder)
+
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    # Add that extra file
+    (task_instance_folder / 'extra_document.md').touch()
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task -hv'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+    command_string_validate_content = 'trestle author folders validate -tn test_task'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = trestle.cli.Trestle().run()
+    assert rc == 0
+
+
 def test_instance_no_header(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
