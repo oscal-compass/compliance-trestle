@@ -1045,9 +1045,9 @@ class ControlIOReader():
             md_api = MarkdownAPI()
             yaml_header, control = md_api.processor.process_markdown(control_file)
 
-            imp_string = 'Implementation'
-            headers = control.get_all_headers_for_level_and_starting_key(2, imp_string)
-            header_list = list(headers)
+            imp_string = '## Implementation '
+            headers = control.get_all_headers_for_level(2)
+            header_list = [header for header in headers if header.startswith(imp_string)]
             if not header_list:
                 # if statement has no parts there is only one response for entire control
                 headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
@@ -1064,9 +1064,8 @@ class ControlIOReader():
                         )
             else:
                 for header in header_list:
-                    tokens = header.split(' ', 2)
-                    if tokens[0] == '##' and tokens[1] == imp_string:
-                        label = tokens[2].strip()
+                    if header.startswith(imp_string):
+                        label = header.split(' ', 2)[2].strip()
                         node = control.get_node_for_key(header)
                         ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
 
