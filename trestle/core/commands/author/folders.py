@@ -231,9 +231,23 @@ class Folders(AuthorCommonCommand):
                     )
                     template_file = versioned_template_dir / instance_file_name
 
-                if instance_version not in all_versioned_templates.keys():
-                    templates = self._get_templates(versioned_template_dir, readme_validate)
+                # Check if instance is in the available templates,
+                # additional files are allowed but should not be validated.
+                templates = self._get_templates(versioned_template_dir, readme_validate)
+                is_template_present = False
+                for template in templates:
+                    if template.name == str(instance_file_name):
+                        is_template_present = True
+                        break
 
+                if not is_template_present:
+                    logger.info(
+                        f'INFO: File{instance_file} will not be validated '
+                        f'as its name does not match any template file.'
+                    )
+                    continue
+
+                if instance_version not in all_versioned_templates.keys():
                     all_versioned_templates[instance_version] = dict.fromkeys(
                         [t.relative_to(versioned_template_dir) for t in templates], False
                     )
