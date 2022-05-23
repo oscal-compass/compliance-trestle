@@ -1064,10 +1064,9 @@ class ControlIOReader():
                         )
             else:
                 for header in header_list:
-                    if header.startswith(imp_string):
-                        label = header.split(' ', 2)[2].strip()
-                        node = control.get_node_for_key(header)
-                        ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
+                    label = header.split(' ', 2)[2].strip()
+                    node = control.get_node_for_key(header)
+                    ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
 
         except TrestleError as e:
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
