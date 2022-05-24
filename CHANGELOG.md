@@ -3,6 +3,20 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2022-05-24)
+### Feature
+* Filter ssp by component ([`d675e49`](https://github.com/IBM/compliance-trestle/commit/d675e4936151d0467362ada4442154cb841d87e2))
+* Validate refs and resources in catalogs and models ([`1c17bf7`](https://github.com/IBM/compliance-trestle/commit/1c17bf75df4ceab99c6f3ae68ee620e57738d592))
+
+### Fix
+* Resolve pre-commit issue ([#1126](https://github.com/IBM/compliance-trestle/issues/1126)) ([`679cadc`](https://github.com/IBM/compliance-trestle/commit/679cadc8bb839131d7a458b4b5cd082ed4535e24))
+* Do not validate extra files in author folders ([`25a1721`](https://github.com/IBM/compliance-trestle/commit/25a172160c651411c1521507557450d49592561d))
+* Better handling of child controls ([`c224f92`](https://github.com/IBM/compliance-trestle/commit/c224f929ce2f9e682149e73055b7b195bbdaf92c))
+* Remove unused classes from the generated oscal files ([`9a3ee20`](https://github.com/IBM/compliance-trestle/commit/9a3ee20be9520bad084ac2df556eacbd23c7907f))
+* Allow subfolders in template folder ([`7223e1b`](https://github.com/IBM/compliance-trestle/commit/7223e1b7d9dd8ef659867853a00cdbc7ca66a050))
+* Updated documentation ([`8eca1f0`](https://github.com/IBM/compliance-trestle/commit/8eca1f0abc4a62a6e1db34b32b4f615aff097c0d))
+* Add control id to the generated docs ([`b666956`](https://github.com/IBM/compliance-trestle/commit/b666956adf221420b77a980eedec2ffc044d0e6e))
+
 ## v1.0.2 (2022-05-05)
 ### Fix
 * Check for circular imports during profile resolution ([#1107](https://github.com/IBM/compliance-trestle/issues/1107)) ([`81469db`](https://github.com/IBM/compliance-trestle/commit/81469dbcca3ffcb140ac09023b7de17671c4386b))
