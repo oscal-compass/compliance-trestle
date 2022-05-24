@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle List Utils."""
-from typing import Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from trestle.common.common_types import TG
 
@@ -51,3 +51,12 @@ def join_key_to_list_dicts(dict1: Dict, dict2: Dict) -> Dict:
     # merge unlike keys
     dict3.update({key: dict2[key] for key in dict2 if key not in dict3})
     return dict3
+
+
+def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any], Any]) -> List[Any]:
+    """Remove an item if it is present in a list based on the key."""
+    keys = [key(item) for item in item_list]
+    if value in keys:
+        index = keys.index(value)
+        del item_list[index]
+    return item_list

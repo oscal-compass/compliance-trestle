@@ -275,7 +275,15 @@ def generate_param_list(label: str, count: int) -> List[cat.Control]:
 
 
 def generate_complex_catalog(stem: str = '') -> cat.Catalog:
-    """Generate a complex and deep catalog for testing."""
+    """
+    Generate a complex and deep catalog for testing.
+
+    group a has a-1 -> a-4
+    group b has b-1, b-2, b-3
+    control b-3 has b-2-1, b-2-2, b-2-3
+    group b has subgroup ba with ba-1, ba-2
+    the catalog has its own controls stem-1, stem-2, stem-3 and test-1
+    """
     group_a = generators.generate_sample_model(cat.Group, True)
     group_a.id = f'{stem}a'
     group_a.controls = generate_control_list(group_a.id, 4)

@@ -168,10 +168,11 @@ ARG_ITEM = 'item'
 ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
+VAL_MODE_CATALOG = 'catalog'
 VAL_MODE_DUPLICATES = 'duplicates'
+VAL_MODE_LINKS = 'links'
 VAL_MODE_REFS = 'refs'
 VAL_MODE_ALL = 'all'
-VAL_MODE_OSCAL_VERSION = 'oscal_version'
 
 IOF_SHORT = '-iof'
 IOF_LONG = '--include-optional-fields'
@@ -219,6 +220,9 @@ TRESTLE_HREF_REGEX = '^trestle://[^/]'
 
 # extracts foo and bar from ...[foo](bar)...
 MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
+
+# Governed header template version
+TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
 
 # extracts standalone uuid's from anywhere in string
 UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'  # noqa FS003 E501

@@ -948,33 +948,6 @@ class AssessmentPart(OscalBaseModel):
     links: Optional[List[Link]] = Field(None)
 
 
-class AssessmentMethod(OscalBaseModel):
-    """
-    A local definition of a control objective. Uses catalog syntax for control objective and assessment activities.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this assessment method elsewhere in this or other OSCAL instances. The locally defined UUID of the assessment method can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Assessment Method Universally Unique Identifier',
-    )
-    description: Optional[str] = Field(
-        None,
-        description='A human-readable description of this assessment method.',
-        title='Assessment Method Description',
-    )
-    props: Optional[List[Property]] = Field(None)
-    links: Optional[List[Link]] = Field(None)
-    part: AssessmentPart
-    remarks: Optional[Remarks] = None
-
-
 class Timing(OscalBaseModel):
     """
     The timing under which the task is intended to occur.

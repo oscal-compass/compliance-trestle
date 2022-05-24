@@ -22,12 +22,14 @@ from trestle.core.validator import Validator
 class RefsValidator(Validator):
     """Validator to confirm all references in responsible parties are found in roles."""
 
-    def model_is_valid(self, model: TopLevelOscalModel) -> bool:
+    def model_is_valid(self, model: TopLevelOscalModel, quiet: bool) -> bool:
         """
         Test if the model is valid.
 
         args:
             model: A top level OSCAL model.
+            quiet: Don't report msgs unless invalid.
+
         returns:
             True (valid) if the model's responsible parties match those found in roles.
         """

@@ -66,7 +66,7 @@ class ControlIOWriter():
 
     @staticmethod
     def get_prop(part_control: Union[common.Part, cat.Control], prop_name: str) -> str:
-        """Get the property with that name."""
+        """Get the property with that name or return empty string."""
         for prop in as_list(part_control.props):
             if prop.name.strip().lower() == prop_name.strip().lower():
                 return prop.value.strip()
@@ -155,12 +155,19 @@ class ControlIOWriter():
     ) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
-        title = f'{control.id} - \[{group_title}\] {control.title}'
-        if capitalize_title:
-            title = f'{control.id.upper()} - \[{group_title.title()}\] {control.title.title()}'
+        control_id = control.id
+        group_name = ''
+        control_title = control.title
 
-        if not print_group_title:
-            title = re.sub('-.*?]', ' -', title)
+        if print_group_title:
+            group_name = ' \[' + group_title + '\]'
+
+        if capitalize_title:
+            control_id = control_id.upper()
+            group_name = group_name.title()
+            control_title = control_title.upper()
+
+        title = f'{control_id} -{group_name} {control_title}'
 
         header_title = 'Control Statement'
         if sections_dict and sections_dict['statement']:
@@ -961,16 +968,16 @@ class ControlIOReader():
         return clean_prose
 
     @staticmethod
-    def _simplify_name(name: str) -> str:
-        name = name.lower().strip()
-        return re.sub(' +', ' ', name)
+    def simplify_name(name: str) -> str:
+        """Simplify the name to ignore variations in case and space."""
+        return name.lower().replace(' ', '')
 
     @staticmethod
     def _comp_name_in_dict(comp_name: str, comp_dict: Dict[str, List[Dict[str, str]]]) -> str:
         """If the name is already in the dict in a similar form, stick to that form."""
-        simple_name = ControlIOReader._simplify_name(comp_name)
+        simple_name = ControlIOReader.simplify_name(comp_name)
         for name in comp_dict.keys():
-            if simple_name == ControlIOReader._simplify_name(name):
+            if simple_name == ControlIOReader.simplify_name(name):
                 return name
         return comp_name
 
@@ -988,8 +995,8 @@ class ControlIOReader():
             if len(node.key.split()) <= 1:
                 raise TrestleError(f'Line in control {control_id} markdown starts with ### but has no component name.')
             comp_name = node.key.split(' ', 1)[1].strip()
-            simp_comp_name = ControlIOReader._simplify_name(comp_name)
-            if simp_comp_name == ControlIOReader._simplify_name(const.SSP_MAIN_COMP_NAME):
+            simp_comp_name = ControlIOReader.simplify_name(comp_name)
+            if simp_comp_name == ControlIOReader.simplify_name(const.SSP_MAIN_COMP_NAME):
                 raise TrestleError(
                     f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
                     'Instead, place all response prose for the default component at the top of th section, '
@@ -1038,9 +1045,9 @@ class ControlIOReader():
             md_api = MarkdownAPI()
             yaml_header, control = md_api.processor.process_markdown(control_file)
 
-            imp_string = 'Implementation'
-            headers = control.get_all_headers_for_key(imp_string, False)
-            header_list = list(headers)
+            imp_string = '## Implementation '
+            headers = control.get_all_headers_for_level(2)
+            header_list = [header for header in headers if header.startswith(imp_string)]
             if not header_list:
                 # if statement has no parts there is only one response for entire control
                 headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
@@ -1057,11 +1064,9 @@ class ControlIOReader():
                         )
             else:
                 for header in header_list:
-                    tokens = header.split(' ', 2)
-                    if tokens[0] == '##' and tokens[1] == imp_string:
-                        label = tokens[2].strip()
-                        node = control.get_node_for_key(header)
-                        ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
+                    label = header.split(' ', 2)[2].strip()
+                    node = control.get_node_for_key(header)
+                    ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
 
         except TrestleError as e:
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
@@ -1176,17 +1181,24 @@ class ControlIOReader():
         imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
         imp_req.control_id = control_id
 
+        raw_comp_dict = {ControlIOReader.simplify_name(key): value for key, value in comp_dict.items()}
+        raw_avail_comps = {ControlIOReader.simplify_name(key): value for key, value in avail_comps.items()}
+
         # the comp_dict captures all component names referenced by the control
+        # need to create new components if not already in dict by looping over comps referenced by this control
         for comp_name in comp_dict.keys():
-            if comp_name in avail_comps:
-                component = avail_comps[comp_name]
+            component: Optional[ossp.SystemComponent] = None
+            raw_comp_name = ControlIOReader.simplify_name(comp_name)
+            if raw_comp_name in raw_avail_comps:
+                component = raw_avail_comps[raw_comp_name]
             else:
                 # here is where we create a new component on the fly as needed
                 component = gens.generate_sample_model(ossp.SystemComponent)
                 component.title = comp_name
                 avail_comps[comp_name] = component
-            for label, prose_lines in comp_dict[comp_name].items():
-                # create a statement to hold the by-components and assign the statement id
+                raw_avail_comps[raw_comp_name] = component
+            # now create statements to hold the by-components and assign the statement id
+            for label, prose_lines in raw_comp_dict[raw_comp_name].items():
                 if label == 'Statement':
                     statement_id = f'{control_id}_smt'
                 else:

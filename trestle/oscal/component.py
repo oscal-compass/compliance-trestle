@@ -83,6 +83,18 @@ class State(Enum):
     other = 'other'
 
 
+class Status(OscalBaseModel):
+    """
+    Describes the operational status of the system component.
+    """
+
+    class Config:
+        extra = Extra.forbid
+
+    state: State = Field(..., description='The operational status.', title='State')
+    remarks: Optional[common.Remarks] = None
+
+
 class SetParameter(OscalBaseModel):
     """
     Identifies the parameter that will be set by the enclosed value.
@@ -244,66 +256,6 @@ class Capability(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     incorporates_components: Optional[List[IncorporatesComponent]] = Field(None, alias='incorporates-components')
     control_implementations: Optional[List[ControlImplementation]] = Field(None, alias='control-implementations')
-    remarks: Optional[common.Remarks] = None
-
-
-class Status(OscalBaseModel):
-    """
-    Describes the operational status of the system component.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: State = Field(..., description='The operational status.', title='State')
-    remarks: Optional[common.Remarks] = None
-
-
-class SystemComponent(OscalBaseModel):
-    """
-    A defined component that can be part of an implemented system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description=
-        'A machine-oriented, globally unique identifier with cross-instance scope that can be used to reference this component elsewhere in this or other OSCAL instances. The locally defined UUID of the component can be used to reference the data item locally or globally (e.g., in an imported OSCAL instance). This UUID should be assigned per-subject, which means it should be consistently used to identify the same subject across revisions of the document.',
-        title='Component Identifier',
-    )
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='A category describing the purpose of the component.',
-        title='Component Type',
-    )
-    title: str = Field(
-        ...,
-        description='A human readable name for the system component.',
-        title='Component Title',
-    )
-    description: str = Field(
-        ...,
-        description='A description of the component, including information about its function.',
-        title='Component Description',
-    )
-    purpose: Optional[str] = Field(
-        None,
-        description='A summary of the technological or business purpose of the component.',
-        title='Purpose',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status = Field(
-        ...,
-        description='Describes the operational status of the system component.',
-        title='Status',
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
-    protocols: Optional[List[common.Protocol]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 

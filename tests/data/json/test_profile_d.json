@@ -20,6 +20,9 @@
         ]
       }
     ],
+    "merge": {
+      "as-is": true
+    },
     "modify": {
       "set-parameters": [
         {

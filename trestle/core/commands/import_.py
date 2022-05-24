@@ -97,7 +97,12 @@ class ImportCmd(CommandPlusDocs):
             import_plan.execute()
 
             args = argparse.Namespace(
-                file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root, type=None, all=None
+                file=desired_model_path,
+                verbose=args.verbose,
+                trestle_root=args.trestle_root,
+                type=None,
+                all=None,
+                quiet=True
             )
             rollback = False
             try:

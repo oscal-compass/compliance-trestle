@@ -182,7 +182,7 @@ class CatalogAssemble(AuthorCommonCommand):
         if not md_dir.exists():
             raise TrestleError(f'Markdown directory {md_name} does not exist.')
 
-        # assemble the markdown controls into md_catalog
+        # assemble the markdown controls into fresh md_catalog
         md_catalog_interface = CatalogInterface()
         try:
             md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters)

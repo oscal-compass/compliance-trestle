@@ -793,6 +793,32 @@ def update_refs_per_file(classes):
     return classes
 
 
+def _strip_unrefed_files(file_class):
+    """
+    Strip unreferenced classes from each oscal file.
+
+    The generated oscal files include classes that aren't referenced within the file.
+    Those classes need to be removed early since they shouldn't be there at all.
+    A key problem class is SetParameter, but there are others.
+    This does a simple check of the file name being present at all in the body other classes.
+    It could instead be a token-based search but this seems sufficient.
+    """
+    dead_names = []
+    for c in file_class:
+        if c.name == 'Model':
+            continue
+        refd = False
+        for d in file_class:
+            if d.name in [c.name] + dead_names:
+                continue
+            if c.name in d.body_text:
+                refd = True
+                break
+        if not refd:
+            dead_names.append(c.name)
+    return [c for c in file_class if c.name not in dead_names]
+
+
 def normalize_files():
     """Clean up classes to minimise cross reference."""
     all_classes = load_all_classes()
@@ -808,6 +834,10 @@ def normalize_files():
 
     # strip all names and bodies
     file_classes = _strip_all_files(file_classes)
+
+    # strip classes that are never used in file
+    for name, file_class in file_classes.items():
+        file_classes[name] = _strip_unrefed_files(file_class)
 
     # convert dict to single list of classes with expected duplicates
     uc = _file_classes_to_list(file_classes, True)

@@ -34,6 +34,9 @@
         "include-all": {}
       }
     ],
+    "merge": {
+      "as-is": true
+    },
     "modify": {
       "set-parameters": [
         {

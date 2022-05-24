@@ -17,7 +17,7 @@ from typing import Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import execute_command_and_assert, setup_for_ssp
+from tests.test_utils import execute_command_and_assert, insert_text_in_file, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, INHERITED, PLANNED
@@ -94,8 +94,8 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.c', 'This is also a response.')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
 
-    command_ssp_gen = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
-    execute_command_and_assert(command_ssp_gen, 0, monkeypatch)
+    command_ssp_assem = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
+    execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
 
     ssp_json_path = tmp_trestle_dir / 'system-security-plans/ssp_json/system-security-plan.json'
     profile_path = tmp_trestle_dir / 'profiles/main_profile/profile.json'
@@ -122,6 +122,27 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert tree.get_node_for_key('### Part a.')
     assert tree.get_node_for_key('### Part c.')
     assert len(list(tree.get_all_headers_for_level(3))) == 3
+
+    # insert some responses by component
+    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
+    assert insert_text_in_file(ac1_path, 'ac-1_smt.a', '### foo comp\n')
+    assert insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
+    execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
+    ssp_obj, _ = fetcher.get_oscal(True)
+    resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+    ssp_io = SSPMarkdownWriter(tmp_trestle_dir)
+    ssp_io.set_catalog(resolved_catalog)
+    ssp_io.set_ssp(ssp_obj)
+
+    # component titles should not be there
+    md_text = ssp_io.get_control_response('ac-1', 2, False, False)
+    assert 'foo' not in md_text
+    assert 'bar' not in md_text
+
+    # component titles should be there
+    md_text = ssp_io.get_control_response('ac-1', 2, False, True)
+    assert 'foo' in md_text
+    assert 'bar' in md_text
 
 
 def test_writers(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

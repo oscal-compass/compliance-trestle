@@ -1,1 +1,1 @@
-{\!MAINTAINERS.md!}
+{!MAINTAINERS.md!}

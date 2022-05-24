@@ -190,6 +190,49 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
 
     assert creation_time < assembled_cat_path.stat().st_mtime
 
+    control_text = """# control_q - \[The xy control group\] this is control q
+
+## Control Statement
+"""
+    # add a new markdown control and make sure it is assembled
+    control_path = tmp_trestle_dir / 'my_md/xy/control_q.md'
+    with open(control_path, 'w') as f:
+        f.write(control_text)
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, 'xx2'
+    )
+
+    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    interface = CatalogInterface(catalog)
+    assert interface.get_count_of_controls_in_catalog(True) == 7
+
+    # make additions to a sub control and confirm they end up in the assembled catalog
+    control_d1_text = """---
+x-trestle-set-params:
+  param_new:
+    values: new param value
+---
+# control_d1 - \[\] this is control d1
+
+## Control Statement
+
+New control statement.
+"""
+    control_d1_path = tmp_trestle_dir / 'my_md/control_d1.md'
+    with open(control_d1_path, 'w') as f:
+        f.write(control_d1_text)
+    # need to set parameters during assembly
+    assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, True, False, 'xx3'
+    )
+
+    catalog, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'my_assembled_cat', cat.Catalog, FileContentType.JSON)
+    interface = CatalogInterface(catalog)
+    assert interface.get_count_of_controls_in_catalog(True) == 7
+    control_d = interface.get_control('control_d')
+    assert control_d.controls[0].params[0].id == 'param_new'
+    assert control_d.controls[0].params[0].values[0].__root__ == 'new param value'
+
 
 def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     """Test the catalog interface with complex controls."""

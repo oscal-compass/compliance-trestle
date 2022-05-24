@@ -18,15 +18,17 @@
 from ilcli import Command
 
 from trestle.common import const
-from trestle.core import all_validator, duplicates_validator, refs_validator
+from trestle.core import all_validator, catalog_validator, duplicates_validator, links_validator, refs_validator
 from trestle.core.object_factory import ObjectFactory
 
 # Create the singleton validator factory
 validator_factory: ObjectFactory = ObjectFactory()
 
 # Register all validators here
+validator_factory.register_object(const.VAL_MODE_CATALOG, catalog_validator.CatalogValidator())
 validator_factory.register_object(const.VAL_MODE_DUPLICATES, duplicates_validator.DuplicatesValidator())
 validator_factory.register_object(const.VAL_MODE_REFS, refs_validator.RefsValidator())
+validator_factory.register_object(const.VAL_MODE_LINKS, links_validator.LinksValidator())
 validator_factory.register_object(const.VAL_MODE_ALL, all_validator.AllValidator())
 
 
@@ -37,3 +39,5 @@ def init_arguments(cmd: Command) -> None:
     group.add_argument('-t', '--type', choices=const.MODEL_TYPE_LIST, help='Validate one or all models of this type.')
     group.add_argument('-a', '--all', action='store_true', help='Validate all models in trestle directory.')
     cmd.add_argument('-n', '--name', help='Name of single model to validate (with --type specified).', required=False)
+    quiet_help = 'Do not report messages unless validation fails.'
+    cmd.add_argument('-q', '--quiet', action='store_true', help=quiet_help, required=False)
