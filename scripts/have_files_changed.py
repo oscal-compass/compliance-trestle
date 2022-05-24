@@ -70,7 +70,7 @@ class FilesChanged(Command):
     def has_changed(repo_root: pathlib.Path, excludes: List[str]) -> bool:
         """Determine if files have changed."""
         # Ensure no periods are passed.
-        excludes = list(map(lambda x: x.lstrip('.'), excludes))
+        excludes = [x.lstrip('.') for x in excludes]
         repo = Repo(repo_root)
         if repo.bare:
             raise Exception('Cannot operate on a bare git repository.')

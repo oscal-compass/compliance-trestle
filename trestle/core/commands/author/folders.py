@@ -168,7 +168,7 @@ class Folders(AuthorCommonCommand):
                 else:
                     logger.info(
                         f'File: {self.rel_dir(template_file)} within the template directory was ignored'
-                        + 'as it is not markdown.'
+                        + ' as it is not markdown.'
                     )
             except Exception as ex:
                 raise TrestleError(
@@ -231,13 +231,23 @@ class Folders(AuthorCommonCommand):
                     )
                     template_file = versioned_template_dir / instance_file_name
 
-                if instance_version not in all_versioned_templates.keys():
-                    templates = list(
-                        filter(lambda p: file_utils.is_local_and_visible(p), versioned_template_dir.iterdir())
-                    )
-                    if not readme_validate:
-                        templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
+                # Check if instance is in the available templates,
+                # additional files are allowed but should not be validated.
+                templates = self._get_templates(versioned_template_dir, readme_validate)
+                is_template_present = False
+                for template in templates:
+                    if template.name == str(instance_file_name):
+                        is_template_present = True
+                        break
 
+                if not is_template_present:
+                    logger.info(
+                        f'INFO: File{instance_file} will not be validated '
+                        f'as its name does not match any template file.'
+                    )
+                    continue
+
+                if instance_version not in all_versioned_templates.keys():
                     all_versioned_templates[instance_version] = dict.fromkeys(
                         [t.relative_to(versioned_template_dir) for t in templates], False
                     )
@@ -277,11 +287,7 @@ class Folders(AuthorCommonCommand):
                     template_file = versioned_template_dir / instance_file_name
 
                 if instance_version not in all_versioned_templates.keys():
-                    templates = list(
-                        filter(lambda p: file_utils.is_local_and_visible(p), versioned_template_dir.iterdir())
-                    )
-                    if not readme_validate:
-                        templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
+                    templates = self._get_templates(versioned_template_dir, readme_validate)
 
                     all_versioned_templates[instance_version] = dict.fromkeys(
                         [t.relative_to(versioned_template_dir) for t in templates], False
@@ -314,6 +320,21 @@ class Folders(AuthorCommonCommand):
                     return False
 
         return True
+
+    def _get_templates(self, versioned_template_dir: pathlib.Path, readme_validate: bool) -> List[pathlib.Path]:
+        """Get templates for the given version."""
+        templates = list(
+            filter(
+                lambda p: file_utils.is_local_and_visible(p) and p.is_file()
+                and  # noqa: W504 - conflicting lint and formatting
+                (p.suffix == '.md' or p.suffix == '.drawio'),
+                versioned_template_dir.iterdir()
+            )
+        )
+        if not readme_validate:
+            templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
+
+        return templates
 
     def create_sample(self) -> int:
         """
