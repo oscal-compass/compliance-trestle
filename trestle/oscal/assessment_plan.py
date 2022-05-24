@@ -67,25 +67,27 @@ class State(Enum):
     not_satisfied = 'not-satisfied'
 
 
-class SetParameter(OscalBaseModel):
+class Status(OscalBaseModel):
     """
-    Identifies the parameter that will be set by the enclosed value.
+    A determination of if the objective is satisfied or not within a given system.
     """
 
     class Config:
         extra = Extra.forbid
 
-    param_id: constr(
+    state: State = Field(
+        ...,
+        description='An indication as to whether the objective is satisfied or not.',
+        title='Objective Status State',
+    )
+    reason: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='param-id',
-        description=
-        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID',
+    )] = Field(
+        None,
+        description="The reason the objective was given it's status.",
+        title='Objective Status Reason',
     )
-    values: List[common.Value] = Field(...)
     remarks: Optional[common.Remarks] = None
 
 
@@ -324,74 +326,6 @@ class SystemComponent(OscalBaseModel):
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     protocols: Optional[List[common.Protocol]] = Field(None)
-    remarks: Optional[common.Remarks] = None
-
-
-class Status(OscalBaseModel):
-    """
-    A determination of if the objective is satisfied or not within a given system.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    state: State = Field(
-        ...,
-        description='An indication as to whether the objective is satisfied or not.',
-        title='Objective Status State',
-    )
-    reason: Optional[constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    )] = Field(
-        None,
-        description="The reason the objective was given it's status.",
-        title='Objective Status Reason',
-    )
-    remarks: Optional[common.Remarks] = None
-
-
-class FindingTarget(OscalBaseModel):
-    """
-    Captures an assessor's conclusions regarding the degree to which an objective is satisfied.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    type: common.Type1 = Field(
-        ...,
-        description='Identifies the type of the target.',
-        title='Finding Target Type',
-    )
-    target_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='target-id',
-        description='A machine-oriented identifier reference for a specific target qualified by the type.',
-        title='Finding Target Identifier Reference',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='The title for this objective status.',
-        title='Objective Status Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description=
-        "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-        title='Objective Status Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status = Field(
-        ...,
-        description='A determination of if the objective is satisfied or not within a given system.',
-        title='Objective Status',
-    )
-    implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
     remarks: Optional[common.Remarks] = None
 
 

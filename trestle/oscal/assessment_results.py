@@ -56,28 +56,6 @@ class State(Enum):
     not_satisfied = 'not-satisfied'
 
 
-class SetParameter(OscalBaseModel):
-    """
-    Identifies the parameter that will be set by the enclosed value.
-    """
-
-    class Config:
-        extra = Extra.forbid
-
-    param_id: constr(
-        regex=
-        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='param-id',
-        description=
-        "A human-oriented reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
-        title='Parameter ID',
-    )
-    values: List[common.Value] = Field(...)
-    remarks: Optional[common.Remarks] = None
-
-
 class SelectControlById(OscalBaseModel):
     """
     Used to select a control for inclusion/exclusion based on one or more control identifiers. A set of statement identifiers can be used to target the inclusion/exclusion to only specific control statements providing more granularity over the specific statements that are within the asessment scope.
