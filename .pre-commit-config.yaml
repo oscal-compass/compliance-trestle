@@ -6,7 +6,7 @@ repos:
       - id: check-yaml
         exclude: "tests/data/yaml/bad_simple.yaml"
       - id: no-commit-to-branch
-        args: [--branch, develop, --branch, main]
+        args: [--branch, main]
   - repo: https://github.com/pre-commit/mirrors-yapf
     rev: v0.32.0
     hooks:
@@ -74,7 +74,7 @@ repos:
     rev: 0.7.14
     hooks:
     - id: mdformat
-      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference|tests/data/author|docs/contributing/mkdocs_contributing.md|tests/data/jinja_markdown_include|tests/data/jinja_cmd/number_captions_data.md|tests/data/jinja_cmd/number_captions_expected_output.md"
+      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/maintainers.md|docs/api_reference|tests/data/author|docs/contributing/mkdocs_contributing.md|tests/data/jinja_markdown_include|tests/data/jinja_cmd/number_captions_data.md|tests/data/jinja_cmd/number_captions_expected_output.md"
       additional_dependencies:
       - mdformat-tables
       - mdformat-config
