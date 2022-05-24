@@ -17,10 +17,11 @@
 import importlib
 import logging
 import pathlib
+import re
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union, cast
 
 from pydantic import BaseModel, create_model
 
@@ -639,7 +640,7 @@ class ModelUtils:
         return loe
 
     @staticmethod
-    def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
+    def has_no_duplicate_values_by_name(object_of_interest: BaseModel, name_of_interest: str) -> bool:
         """Determine if duplicate values of type exist in object."""
         loe = ModelUtils.find_values_by_name(object_of_interest, name_of_interest)
         set_loe = set(loe)
@@ -651,8 +652,30 @@ class ModelUtils:
         # now print items
         for item, instances in items.items():
             if instances > 1:
-                logger.info(f'Duplicate detected of item {item} with {instances} instances.')
+                logger.warning(f'Duplicate detected of item {item} with {instances} instances.')
         return False
+
+    @staticmethod
+    def find_uuid_refs(object_of_interest: BaseModel) -> Set[str]:
+        """Find uuid references made in prose and links."""
+        # links have href of form #foo or #uuid
+        links_list: List[List[trestle.common.Link]] = ModelUtils.find_values_by_name(object_of_interest, 'links')
+        uuid_strs = [link.href for links in links_list for link in links]
+
+        # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
+        prose_list = ModelUtils.find_values_by_name(object_of_interest, 'prose')
+        uuid_strs.extend(
+            [
+                match[1] for prose in prose_list for matches in re.findall(const.MARKDOWN_URL_REGEX, prose)
+                for match in matches
+            ]
+        )
+
+        # collect the strings that start with # and are potential uuids
+        uuid_strs = [uuid_str for uuid_str in uuid_strs if uuid_str and uuid_str[0] == '#']
+
+        # go through all matches and build set of those that are uuids
+        return {uuid_match[0] for uuid_str in uuid_strs for uuid_match in re.findall(const.UUID_REGEX, uuid_str[1:])}
 
     @staticmethod
     def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]) -> Tuple[Any, Dict[str, str]]:

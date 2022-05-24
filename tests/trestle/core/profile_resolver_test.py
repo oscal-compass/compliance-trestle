@@ -68,7 +68,7 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     assert interface.get_count_of_controls_in_catalog(True) == 7
 
-    assert len(cat.controls) == 4
+    assert len(cat.controls) == 3
 
     assert interface.get_dependent_control_ids('ac-3') == ['ac-3.3']
 

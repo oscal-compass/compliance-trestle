@@ -13,6 +13,9 @@
         "include-all": {}
       }
     ],
+    "merge": {
+      "as-is": true
+    },
     "modify": {
       "alters": [
         {
