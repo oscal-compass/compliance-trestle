@@ -384,7 +384,7 @@ class Folders(AuthorCommonCommand):
                         + f'{self.task_name} on directory {self.rel_dir(task_instance)}'
                     )
             else:
-                logger.warning(
+                logger.info(
                     f'Unexpected file {self.rel_dir(task_instance)} identified in {self.task_name}'
                     + ' directory, ignoring.'
                 )
