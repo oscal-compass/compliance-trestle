@@ -1,0 +1,5 @@
+---
+app-version: 0.0.0
+
+osco-raw-data: ./data/osco/ssg-ocp4-ds-cis-111.222.333.444-pod.yaml
+
