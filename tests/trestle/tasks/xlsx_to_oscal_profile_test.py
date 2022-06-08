@@ -78,7 +78,7 @@ def test_xlsx_execute(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -104,7 +104,7 @@ def test_xlsx_execute_with_blank_rows(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -130,7 +130,7 @@ def test_xlsx_execute_with_missing_control_id(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -158,7 +158,7 @@ def test_xlsx_execute_with_missing_rule_name_id(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -184,7 +184,7 @@ def test_xlsx_execute_filter(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -211,7 +211,7 @@ def test_xlsx_execute_by_control(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -238,7 +238,7 @@ def test_xlsx_execute_by_rule(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -265,7 +265,7 @@ def test_xlsx_execute_by_check(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_xlsx_execute_bogus_profile_type(tmp_path):
