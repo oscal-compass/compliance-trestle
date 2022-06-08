@@ -443,3 +443,10 @@ def test_pulled_params_in_choice(
     assert param.links[1].text == 'new link text'
     assert param.constraints[1].description == 'new constraint'
     assert param.guidelines[1].prose == 'new guideline'
+
+
+def test_generate_group_id() -> None:
+    """Test the generation of group ids."""
+    cat_int = CatalogInterface()
+    assert cat_int._generate_group_id() == 'trestle_group_0000'
+    assert cat_int._generate_group_id() == 'trestle_group_0001'

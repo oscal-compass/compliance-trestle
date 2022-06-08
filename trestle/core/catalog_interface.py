@@ -71,9 +71,16 @@ class CatalogInterface():
         """Initialize the interface with the catalog."""
         self._catalog = catalog
         self._param_control_map: Dict[str, str] = {}
+        self._generate_group_index: int = 0
         self._control_dict = self._create_control_dict() if catalog else None
         self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
                                                               for param in as_list(catalog.params)} if catalog else {}
+
+    def _generate_group_id(self) -> str:
+        """Generate sequential group ids."""
+        group_id = f'trestle_group_{self._generate_group_index:04d}'
+        self._generate_group_index += 1
+        return group_id
 
     def _add_params_to_map(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
@@ -108,11 +115,12 @@ class CatalogInterface():
         """Add all controls in the group recursively, including sub groups and sub controls."""
         if group.controls is not None:
             group_path = path[:]
-            if not group_path or group_path[-1] != group.id:
-                group_path.append(group.id)
+            group_id = group.id if group.id is not None else self._generate_group_id()
+            if not group_path or group_path[-1] != group_id:
+                group_path.append(group_id)
             for control in group.controls:
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=group.id,
+                    group_id=group_id,
                     group_title=group.title,
                     group_class=group.class_,
                     control=control,
@@ -122,10 +130,12 @@ class CatalogInterface():
                 self._add_sub_controls(control_handle, control_dict, group_path)
         if group.groups is not None:
             group_path = path[:]
-            group_path.append(group.id)
+            group_id = group.id if group.id is not None else self._generate_group_id()
+            group_path.append(group_id)
             for sub_group in group.groups:
                 new_path = group_path[:]
-                new_path.append(sub_group.id)
+                sub_group_id = sub_group.id if sub_group.id is not None else self._generate_group_id()
+                new_path.append(sub_group_id)
                 self._add_group_controls(sub_group, control_dict, new_path)
 
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
