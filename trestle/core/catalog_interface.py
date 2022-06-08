@@ -80,6 +80,7 @@ class CatalogInterface():
         """Generate sequential group ids."""
         group_id = f'trestle_group_{self._generate_group_index:04d}'
         self._generate_group_index += 1
+        logger.warning(f'Group missing id has been assigned {group_id}')
         return group_id
 
     def _add_params_to_map(self, control: cat.Control) -> None:
