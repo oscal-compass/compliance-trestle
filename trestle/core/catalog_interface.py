@@ -76,11 +76,11 @@ class CatalogInterface():
         self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
                                                               for param in as_list(catalog.params)} if catalog else {}
 
-    def _generate_group_id(self) -> str:
+    def _generate_group_id(self, group: cat.Group) -> str:
         """Generate sequential group ids."""
         group_id = f'trestle_group_{self._generate_group_index:04d}'
         self._generate_group_index += 1
-        logger.warning(f'Group missing id has been assigned {group_id}')
+        logger.warning(f'Group titled "{group.title}" has no id and has been assigned id: {group_id}')
         return group_id
 
     def _add_params_to_map(self, control: cat.Control) -> None:
@@ -114,7 +114,7 @@ class CatalogInterface():
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
         """Add all controls in the group recursively, including sub groups and sub controls."""
-        group.id = self._generate_group_id() if group.id is None else group.id
+        group.id = self._generate_group_id(group) if group.id is None else group.id
         if group.controls is not None:
             group_path = path[:]
             if not group_path or group_path[-1] != group.id:
@@ -134,7 +134,7 @@ class CatalogInterface():
             group_path.append(group.id)
             for sub_group in group.groups:
                 new_path = group_path[:]
-                sub_group.id = self._generate_group_id() if sub_group.id is None else sub_group.id
+                sub_group.id = self._generate_group_id(sub_group) if sub_group.id is None else sub_group.id
                 new_path.append(sub_group.id)
                 self._add_group_controls(sub_group, control_dict, new_path)
 

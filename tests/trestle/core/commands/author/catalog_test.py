@@ -448,5 +448,6 @@ def test_pulled_params_in_choice(
 def test_generate_group_id() -> None:
     """Test the generation of group ids."""
     cat_int = CatalogInterface()
-    assert cat_int._generate_group_id() == 'trestle_group_0000'
-    assert cat_int._generate_group_id() == 'trestle_group_0001'
+    group = cat.Group(title='my test title')
+    assert cat_int._generate_group_id(group) == 'trestle_group_0000'
+    assert cat_int._generate_group_id(group) == 'trestle_group_0001'
