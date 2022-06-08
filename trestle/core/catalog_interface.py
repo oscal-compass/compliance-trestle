@@ -114,14 +114,14 @@ class CatalogInterface():
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
         """Add all controls in the group recursively, including sub groups and sub controls."""
+        group.id = self._generate_group_id() if group.id is None else group.id
         if group.controls is not None:
             group_path = path[:]
-            group_id = group.id if group.id is not None else self._generate_group_id()
-            if not group_path or group_path[-1] != group_id:
-                group_path.append(group_id)
+            if not group_path or group_path[-1] != group.id:
+                group_path.append(group.id)
             for control in group.controls:
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=group_id,
+                    group_id=group.id,
                     group_title=group.title,
                     group_class=group.class_,
                     control=control,
@@ -131,12 +131,11 @@ class CatalogInterface():
                 self._add_sub_controls(control_handle, control_dict, group_path)
         if group.groups is not None:
             group_path = path[:]
-            group_id = group.id if group.id is not None else self._generate_group_id()
-            group_path.append(group_id)
+            group_path.append(group.id)
             for sub_group in group.groups:
                 new_path = group_path[:]
-                sub_group_id = sub_group.id if sub_group.id is not None else self._generate_group_id()
-                new_path.append(sub_group_id)
+                sub_group.id = self._generate_group_id() if sub_group.id is None else sub_group.id
+                new_path.append(sub_group.id)
                 self._add_group_controls(sub_group, control_dict, new_path)
 
     def _create_control_dict(self) -> Dict[str, ControlHandle]:

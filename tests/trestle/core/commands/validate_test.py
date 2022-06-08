@@ -287,8 +287,9 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
 
 
 def test_validate_catalog_missing_group_id(sample_catalog_rich_controls: Catalog) -> None:
-    """Test validation of unique param ids in catalog."""
+    """Test validation of catalog with groups that dont have ids."""
     args = argparse.Namespace(mode=const.VAL_MODE_CATALOG)
     validator: Validator = validator_factory.get(args)
+    # kill one of the group id's
     sample_catalog_rich_controls.groups[0].id = None
     assert validator.model_is_valid(sample_catalog_rich_controls, True)
