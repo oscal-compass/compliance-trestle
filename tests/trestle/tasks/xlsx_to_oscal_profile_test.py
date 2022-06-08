@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""XLSX to OSCAL component-definition task tests."""
+"""XLSX to OSCAL profile task tests."""
 
 import configparser
 import os
