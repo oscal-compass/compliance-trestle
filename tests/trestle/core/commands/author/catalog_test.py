@@ -157,7 +157,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
         tmp_trestle_dir, catalog_path, markdown_path, {}, False
     )
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, cat_name, True, False, new_version
     )
     assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
@@ -171,7 +171,7 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
 
     # assemble same way again and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, True, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
