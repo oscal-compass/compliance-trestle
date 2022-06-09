@@ -153,7 +153,7 @@ def _test_oscal_profile_to_osco_profile_execute_common(tmp_path, config):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_oscal_profile_to_osco_profile_execute_bogus_profile(tmp_path):
@@ -219,7 +219,7 @@ def test_oscal_profile_to_osco_profile_execute_no_overwrite(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
@@ -248,4 +248,4 @@ def test_oscal_profile_to_osco_profile_execute_set(tmp_path):
         yaml.dump(ydata, outfile)
     assert f_expected != f_produced
     result = text_files_equal(f_expected, f_produced)
-    assert (result)
+    assert result

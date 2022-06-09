@@ -78,7 +78,7 @@ def test_xlsx_execute(tmp_path):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_xlsx_execute_bogus_spread_sheet(tmp_path):

@@ -90,7 +90,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute(tmp_path: pathlib.Path, monkeypatc
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
@@ -116,7 +116,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_selected_rules2(tmp_path: pathlib.
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
@@ -142,7 +142,7 @@ def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules2(tmp_path: pathlib.P
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_ocp4_cis_profile_to_oscal_cd_execute_enabled_rules3(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
