@@ -28,6 +28,7 @@ import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -362,7 +363,7 @@ class SSPFilter(AuthorCommonCommand):
         """
         # load the ssp
         ssp: ossp.SystemSecurityPlan
-        ssp, _ = ModelUtils.load_top_level_model(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
+        ssp, _ = load_validate_model_name(trestle_root, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
         profile_path = ModelUtils.path_for_top_level_model(
             trestle_root, profile_name, prof.Profile, FileContentType.JSON
         )
@@ -442,7 +443,7 @@ class SSPFilter(AuthorCommonCommand):
 
         existing_ssp_path = ModelUtils.full_path_for_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
         if existing_ssp_path is not None:
-            existing_ssp, _ = ModelUtils.load_top_level_model(trestle_root, out_name, ossp.SystemSecurityPlan)
+            existing_ssp, _ = load_validate_model_name(trestle_root, out_name, ossp.SystemSecurityPlan)
             if ModelUtils.models_are_equivalent(existing_ssp, ssp):
                 logger.info('No changes to filtered ssp so ssp not written out.')
                 return CmdReturnCodes.SUCCESS.value

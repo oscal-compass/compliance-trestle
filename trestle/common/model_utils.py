@@ -65,6 +65,10 @@ class ModelUtils:
             Model Alias (e.g. 'catalog.metadata') and Instance of the Model.
             If the model is decomposed/split/distributed, the instance of the model contains
             the decomposed models loaded recursively.
+
+        Note:
+            This does not validate the model.  You must either validate the model separately or use the load_validate
+            utilities.
         """
         # if trying to load file that does not exist, load path instead
         if not abs_path.exists():
@@ -162,6 +166,8 @@ class ModelUtils:
 
         If you need to load an existing model but its content type may not be known, use this method.
         But the file content type should be specified if it is somehow known.
+
+        Note:  This does not validate the model.  If you want to validate the model use the load_validate utilities.
         """
         root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         if file_content_type is None:
@@ -323,21 +329,6 @@ class ModelUtils:
         return full_list
 
     @staticmethod
-    def path_for_top_level_model(
-        trestle_root: pathlib.Path,
-        model_name: str,
-        model_class: Type[TopLevelOscalModel],
-        file_content_type: FileContentType
-    ) -> pathlib.Path:
-        """
-        Find the full path of a model given its name, model type and file content type.
-
-        This does not inspect the file system or confirm the needed path and file exists.
-        """
-        root_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
-        return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
-
-    @staticmethod
     def full_path_for_top_level_model(
         trestle_root: pathlib.Path,
         model_name: str,
@@ -355,6 +346,23 @@ class ModelUtils:
         if not FileContentType.is_readable_file(file_content_type):
             return None
         return root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
+
+    @staticmethod
+    def path_for_top_level_model(
+        trestle_root: pathlib.Path,
+        model_name: str,
+        model_class: Type[TopLevelOscalModel],
+        file_content_type: Optional[FileContentType]
+    ) -> pathlib.Path:
+        """
+        Find the full path of a model given its name, model type and file content type.
+
+        If file_content_type is given it will not inspect the file system or confirm the needed path and file exists.
+        """
+        if file_content_type is None:
+            return ModelUtils.full_path_for_top_level_model(trestle_root, model_name, model_class)
+        root_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
+        return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
     @staticmethod
     def get_singular_alias(alias_path: str, relative_path: Optional[pathlib.Path] = None) -> str:

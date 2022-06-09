@@ -30,6 +30,9 @@ import trestle.common.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.cli import Trestle
+from trestle.common.file_utils import FileContentType
+from trestle.common.load_validate import load_validate_model_name
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.split import SplitCmd
 from trestle.core.generators import generate_sample_model
@@ -286,10 +289,13 @@ def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     assert not validator.model_is_valid(sample_catalog_rich_controls, False)
 
 
-def test_validate_catalog_missing_group_id(sample_catalog_rich_controls: Catalog) -> None:
+def test_validate_catalog_missing_group_id(
+    tmp_trestle_dir: pathlib.Path, sample_catalog_rich_controls: Catalog
+) -> None:
     """Test validation of catalog with groups that dont have ids."""
-    args = argparse.Namespace(mode=const.VAL_MODE_CATALOG)
-    validator: Validator = validator_factory.get(args)
     # kill one of the group id's
     sample_catalog_rich_controls.groups[0].id = None
-    assert validator.model_is_valid(sample_catalog_rich_controls, True)
+    cat_name = 'my_cat'
+    ModelUtils.save_top_level_model(sample_catalog_rich_controls, tmp_trestle_dir, cat_name, FileContentType.JSON)
+    new_cat, _ = load_validate_model_name(tmp_trestle_dir, cat_name, Catalog)
+    assert new_cat.groups[0].id == 'trestle_group_0000'

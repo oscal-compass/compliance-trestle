@@ -29,6 +29,7 @@ import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
 from trestle.common import file_utils, log
 from trestle.common.err import TrestleError
+from trestle.common.load_validate import load_validate_model_path
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode, classname_to_alias
 from trestle.core import parser
@@ -79,7 +80,7 @@ class ManagedOSCAL:
     def read(self) -> OscalBaseModel:
         """Read OSCAL model from repository."""
         logger.debug(f'Reading model {self.model_name}.')
-        _, _, model = ModelUtils.load_distributed(self.filepath, self.root_dir)
+        model = load_validate_model_path(self.root_dir, self.filepath)
         return model
 
     def write(self, model: OscalBaseModel) -> bool:

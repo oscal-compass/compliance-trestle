@@ -28,6 +28,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -325,7 +326,7 @@ class ProfileAssemble(AuthorCommonCommand):
         if not parent_prof_name:
             parent_prof_name = assem_prof_name
 
-        parent_prof, parent_prof_path = ModelUtils.load_top_level_model(trestle_root, parent_prof_name, prof.Profile)
+        parent_prof, parent_prof_path = load_validate_model_name(trestle_root, parent_prof_name, prof.Profile)
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
         required_sections_list = required_sections.split(',') if required_sections else []
