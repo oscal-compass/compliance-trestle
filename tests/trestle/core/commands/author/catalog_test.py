@@ -153,32 +153,39 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     sample_catalog_rich_controls.oscal_write(catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     catalog_generate = CatalogGenerate()
+
+    # generate the catalog markdown
     assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
         tmp_trestle_dir, catalog_path, markdown_path, {}, False
     )
+
+    # assemble the catalog the first time
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version
     )
+
+    # load the freshly assembled catalog
     assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         assembled_cat_name,
         cat.Catalog
     )
+
+    # confirm it is a fresh file with the version set as requested
     assert assembled_cat.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(assembled_cat) < test_utils.NEW_MODEL_AGE_SECONDS
-
     creation_time = assembled_cat_path.stat().st_mtime
 
     # assemble same way again and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
 
-    # assemble same way again but without parent specified and confirm no new write
+    # assemble same way again with parent name specified and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime

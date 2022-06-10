@@ -28,6 +28,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.list_utils import none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -248,7 +249,7 @@ class ProfileAssemble(AuthorCommonCommand):
             new_alters = list(alter_dict.values())
             if profile.modify.alters != new_alters:
                 changed = True
-            profile.modify.alters = new_alters
+            profile.modify.alters = none_if_empty(new_alters)
         return changed
 
     @staticmethod
@@ -279,6 +280,8 @@ class ProfileAssemble(AuthorCommonCommand):
             profile.modify.set_parameters = sorted(
                 new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
             )
+        if profile.modify:
+            profile.modify.set_parameters = none_if_empty(profile.modify.set_parameters)
         return changed
 
     @staticmethod

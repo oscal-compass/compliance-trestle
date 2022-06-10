@@ -480,7 +480,7 @@ class CatalogInterface():
             if control_handle.control.id not in ids_in_catalog:
                 self._insert_control_in_catalog(control_handle)
 
-        self._catalog.params = list(self.loose_param_dict.values())
+        self._catalog.params = none_if_empty(list(self.loose_param_dict.values()))
 
     def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
         hits: List[str] = []
@@ -729,6 +729,7 @@ class CatalogInterface():
                 self._catalog.controls = none_if_empty(control_list)
         self._catalog.groups = none_if_empty(groups)
         self._create_control_dict()
+        self._catalog.params = none_if_empty(self._catalog.params)
         return self._catalog
 
     @staticmethod
