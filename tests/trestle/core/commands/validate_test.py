@@ -268,7 +268,7 @@ def test_validate_distributed(
         trestle_root=tmp_trestle_dir
     )
     _ = SplitCmd()._run(args)
-    test_args = 'trestle validate -a'.split(' ')
+    test_args = 'trestle validate -a -v'.split(' ')
     monkeypatch.setattr(sys, 'argv', test_args)
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         cli.run()
@@ -279,7 +279,7 @@ def test_validate_distributed(
 def test_validate_catalog_params(sample_catalog_rich_controls: Catalog) -> None:
     """Test validation of unique param ids in catalog."""
     args = argparse.Namespace(mode=const.VAL_MODE_CATALOG)
-    validator = validator_factory.get(args)
+    validator: Validator = validator_factory.get(args)
     assert validator.model_is_valid(sample_catalog_rich_controls, True)
     param_0_id = sample_catalog_rich_controls.groups[0].controls[0].params[0].id
     sample_catalog_rich_controls.groups[0].controls[0].params[1].id = param_0_id
