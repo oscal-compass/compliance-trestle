@@ -20,6 +20,7 @@ import logging
 
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, TrestleRootError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_path
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -84,8 +85,7 @@ class AssembleCmd(CommandPlusDocs):
             if not root_model_filepath.exists():
                 raise TrestleError(f'No top level model file at {root_model_dir}')
 
-            # distributed load
-            _, _, assembled_model = ModelUtils.load_distributed(root_model_filepath, args.trestle_root)
+            assembled_model = load_validate_model_path(args.trestle_root, root_model_filepath)
             plural_alias = ModelUtils.model_type_to_model_dir(model_alias)
 
             assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / plural_alias

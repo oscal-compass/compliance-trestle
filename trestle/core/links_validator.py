@@ -62,7 +62,7 @@ class LinksValidator(Validator):
         if in_links:
             if not quiet:
                 logger.warning(f'Resources have {len(links)} uuids and {len(in_links)} are not referenced by model.')
-            logger.debug(f'Resources have {len(in_links)} not in referenced by model: {in_links}')
+            logger.debug(f'Resources have {len(in_links)} uuids not referenced by model: {in_links}')
 
         # This validator is intended just to give warnings, so it always returns True
         return True

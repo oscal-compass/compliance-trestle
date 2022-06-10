@@ -28,6 +28,7 @@ from ruamel.yaml import YAML
 
 from trestle.common import const, log
 from trestle.common.err import TrestleIncorrectArgsError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -170,9 +171,9 @@ class JinjaCmd(CommandPlusDocs):
 
         if ssp:
             # name lookup
-            ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
+            ssp_data, _ = load_validate_model_name(trestle_root, ssp, SystemSecurityPlan)
             lut['ssp'] = ssp_data
-            _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
+            profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile, Profile)
             profile_resolver = ProfileResolver()
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(
                 trestle_root, profile_path, False, False, parameters_formatting
@@ -209,7 +210,7 @@ class JinjaCmd(CommandPlusDocs):
         template_folder = pathlib.Path.cwd()
 
         # Output to multiple markdown files
-        _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
+        profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile, Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
             trestle_root, profile_path, False, False, parameters_formatting

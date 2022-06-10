@@ -27,6 +27,7 @@ import trestle.common.log as log
 import trestle.oscal.common as com
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_name, load_validate_model_path
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -92,7 +93,7 @@ class CatalogGenerate(AuthorCommonCommand):
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
-            _, _, catalog = ModelUtils.load_distributed(catalog_path, trestle_root)
+            catalog = load_validate_model_path(trestle_root, catalog_path)
             catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
@@ -207,7 +208,7 @@ class CatalogAssemble(AuthorCommonCommand):
         # but this is the catalog that the markdown is merged into in memory
         logger.debug(f'parent_cat_name is {parent_cat_name}')
         if parent_cat_name:
-            parent_cat, parent_cat_path = ModelUtils.load_top_level_model(trestle_root, parent_cat_name, Catalog)
+            parent_cat, parent_cat_path = load_validate_model_name(trestle_root, parent_cat_name, Catalog)
             parent_cat_interface = CatalogInterface(parent_cat)
             # merge the just-read md catalog into the original json
             parent_cat_interface.merge_catalog(md_catalog, set_parameters)
@@ -220,7 +221,7 @@ class CatalogAssemble(AuthorCommonCommand):
         # now check the destination catalog to see if the in-memory catalog matches it
         if assem_cat_path:
             new_content_type = FileContentType.path_to_content_type(assem_cat_path)
-            _, _, existing_cat = ModelUtils.load_distributed(assem_cat_path, trestle_root)
+            existing_cat = load_validate_model_path(trestle_root, assem_cat_path)
             if ModelUtils.models_are_equivalent(existing_cat, md_catalog):
                 logger.info('Assembled catalog is not different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
