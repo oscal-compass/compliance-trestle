@@ -29,6 +29,8 @@ from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.remote import cache
+from trestle.core.validator import Validator
+from trestle.core.validator_factory import validator_factory
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +67,14 @@ class ImportCmd(CommandPlusDocs):
             fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_uri))
 
             model_read, parent_alias = fetcher.get_oscal(True)
+
+            # validate the loaded model in memory before writing out
+            # this will do any needed fixes to the file, such as assign missing catalog group ids
+            args_validate = argparse.Namespace(mode=const.VAL_MODE_ALL)
+            validator: Validator = validator_factory.get(args_validate)
+            if not validator.model_is_valid(model_read, True):
+                logger.warning(f'Validation of file to be imported {input_uri} did not pass.  Import failed.')
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             plural_path = ModelUtils.model_type_to_model_dir(parent_alias)
 
@@ -108,7 +118,7 @@ class ImportCmd(CommandPlusDocs):
             try:
                 rc = validatecmd.ValidateCmd()._run(args)
                 if rc > 0:
-                    logger.warning(f'Validation of imported file {desired_model_path} did not pass')
+                    logger.warning(f'Validation of imported file {desired_model_path} did not pass.  Stopping import.')
                     rollback = True
             except TrestleError as err:
                 logger.warning(f'Import of {str(input_uri)} failed with validation error: {err}')
