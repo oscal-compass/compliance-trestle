@@ -222,3 +222,32 @@ def test_valid_version() -> None:
     assert not TemplateVersioning.is_valid_version('0.1')
     assert not TemplateVersioning.is_valid_version('1')
     assert not TemplateVersioning.is_valid_version('0.0.0.1')
+
+
+def test_empty_folder_is_not_created(tmp_path: pathlib.Path) -> None:
+    """Test that empty folder is not created."""
+    task_path = tmp_path.joinpath('trestle/author/sample_task/')
+    task_path.mkdir(parents=True)
+
+    # run template folder update with empty task
+    TemplateVersioning.update_template_folder_structure(task_path)
+
+    assert not task_path.joinpath('0.0.1/').exists()
+
+    # now create other version of the template
+    newest_version_path = task_path.joinpath('1.0.0')
+    newest_version_path.mkdir(parents=True)
+
+    old_template = newest_version_path.joinpath('template.md')
+    old_template.touch()
+
+    old_folder = newest_version_path.joinpath('images')
+    old_folder.mkdir(parents=True)
+
+    # run template folder update with newest version
+    TemplateVersioning.update_template_folder_structure(task_path)
+
+    # assert everything is stayed the same
+    assert not task_path.joinpath('0.0.1/').exists()
+    assert old_folder.exists()
+    assert old_template.exists()
