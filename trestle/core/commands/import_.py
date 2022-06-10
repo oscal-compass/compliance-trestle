@@ -86,9 +86,8 @@ class ImportCmd(CommandPlusDocs):
                                                                 ).resolve()
 
             if desired_model_path.exists():
-                raise TrestleError(
-                    f'Cannot import because file to be imported here: {desired_model_path} already exists.'
-                )
+                logger.warning(f'Cannot import because file to be imported here: {desired_model_path} already exists.')
+                return CmdReturnCodes.COMMAND_ERROR.value
 
             if args.regenerate:
                 logger.debug(f'regenerating uuids in imported file {input_uri}')
@@ -121,7 +120,7 @@ class ImportCmd(CommandPlusDocs):
                     logger.warning(f'Validation of imported file {desired_model_path} did not pass.  Stopping import.')
                     rollback = True
             except TrestleError as err:
-                logger.warning(f'Import of {str(input_uri)} failed with validation error: {err}')
+                logger.error(f'Import of {str(input_uri)} failed with validation error: {err}')
                 rollback = True
 
             if rollback:
