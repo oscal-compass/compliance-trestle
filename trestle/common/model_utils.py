@@ -808,13 +808,12 @@ class ModelUtils:
     def models_are_equivalent(model_a: Optional[TopLevelOscalModel], model_b: Optional[TopLevelOscalModel]) -> bool:
         """Test if models are equivalent except for last modified and uuid."""
         # set b's extra properties to those of a then later undo so the models are not changed by this routine
-        if (model_b and not model_a) or (model_a and not model_b):
+        if not model_a and not model_b:
+            return True
+        if not model_a or not model_b:
             return False
-        b_last_modified = model_b.metadata.last_modified
-        model_b.metadata.last_modified = model_a.metadata.last_modified
-        b_uuid = model_b.uuid
-        model_b.uuid = model_a.uuid
+        b_last_modified, model_b.metadata.last_modified = model_b.metadata.last_modified, model_a.metadata.last_modified
+        b_uuid, model_b.uuid = model_b.uuid, model_a.uuid
         equivalent = model_a == model_b
-        model_b.metadata.last_modified = b_last_modified
-        model_b.uuid = b_uuid
+        model_b.metadata.last_modified, model_b.uuid = b_last_modified, b_uuid
         return equivalent
