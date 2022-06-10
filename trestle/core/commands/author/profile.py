@@ -28,8 +28,8 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.load_validate import load_validate_model_name
 from trestle.common.list_utils import none_if_empty
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
