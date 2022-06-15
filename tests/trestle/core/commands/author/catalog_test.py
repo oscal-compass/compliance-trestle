@@ -13,6 +13,7 @@
 # limitations under the License.
 """Tests for the catalog author module."""
 
+import argparse
 import copy
 import pathlib
 import shutil
@@ -30,6 +31,7 @@ from trestle.cli import Trestle
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_io import ControlIOReader, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -153,32 +155,39 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     sample_catalog_rich_controls.oscal_write(catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     catalog_generate = CatalogGenerate()
+
+    # generate the catalog markdown
     assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
         tmp_trestle_dir, catalog_path, markdown_path, {}, False
     )
+
+    # assemble the catalog the first time
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version
     )
+
+    # load the freshly assembled catalog
     assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         assembled_cat_name,
         cat.Catalog
     )
+
+    # confirm it is a fresh file with the version set as requested
     assert assembled_cat.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(assembled_cat) < test_utils.NEW_MODEL_AGE_SECONDS
-
     creation_time = assembled_cat_path.stat().st_mtime
 
     # assemble same way again and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
 
-    # assemble same way again but without parent specified and confirm no new write
+    # assemble same way again with parent name specified and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
@@ -443,3 +452,53 @@ def test_pulled_params_in_choice(
     assert param.links[1].text == 'new link text'
     assert param.constraints[1].description == 'new constraint'
     assert param.guidelines[1].prose == 'new guideline'
+
+
+def test_generate_group_id() -> None:
+    """Test the generation of group ids."""
+    cat_int = CatalogInterface()
+    group = cat.Group(title='my test title')
+    assert cat_int._generate_group_id(group) == 'trestle_group_0000'
+    assert cat_int._generate_group_id(group) == 'trestle_group_0001'
+
+
+def test_validate_catalog_missing_group_id(
+    tmp_trestle_dir: pathlib.Path, tmp_path_factory: pytest.TempPathFactory, sample_catalog_rich_controls: cat.Catalog
+) -> None:
+    """Test validation of catalog with groups that dont have ids."""
+    # kill one of the group id's
+    sample_catalog_rich_controls.groups[0].id = None
+    cat_name = 'my_cat'
+    tmp_cat_path = tmp_path_factory.mktemp('temp_dir') / (cat_name + '.json')
+
+    # write catalog with missing group id to tmp location
+    sample_catalog_rich_controls.oscal_write(tmp_cat_path)
+    import_cmd = ImportCmd()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(tmp_cat_path), output=cat_name, verbose=1, regenerate=False
+    )
+
+    # import the file with missing group id into the trestle workspace
+    # this should validate the file and assign the missing id a new value in memory - then save the file
+    rc = import_cmd._run(args)
+    assert rc == 0
+
+    # load the file without doing validation - to make sure the file itself has the group id assigned
+    new_cat, new_cat_path = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog)
+    assert new_cat.groups[0].id == 'trestle_group_0000'
+
+    md_name = 'md_cat'
+    md_path = tmp_trestle_dir / md_name
+    md_path.mkdir(parents=True, exist_ok=True)
+    cat_generate = CatalogGenerate()
+    assert cat_generate.generate_markdown(
+        tmp_trestle_dir, new_cat_path, md_path, {}, False
+    ) == CmdReturnCodes.SUCCESS.value
+
+    assem_cat_name = 'assem_cat'
+    cat_assemble = CatalogAssemble()
+    cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
+
+    # load the file without doing validation - to make sure the file itself has the group id assigned
+    assem_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    assert new_cat.groups[0].id == 'trestle_group_0000'

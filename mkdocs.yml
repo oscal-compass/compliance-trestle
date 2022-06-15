@@ -56,6 +56,7 @@ nav:
       - err: api_reference/trestle.common.err.md
       - file_utils: api_reference/trestle.common.file_utils.md
       - list_utils: api_reference/trestle.common.list_utils.md
+      - load_validate: api_reference/trestle.common.load_validate.md
       - log: api_reference/trestle.common.log.md
       - model_utils: api_reference/trestle.common.model_utils.md
       - str_utils: api_reference/trestle.common.str_utils.md

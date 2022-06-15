@@ -86,6 +86,9 @@ class TemplateVersioning:
 
             if len(all_files_wo_version) == 0:
                 logger.debug('No templates outside of the version folders.')
+                # if the base template folder is empty, delete it
+                if len(list(new_dir.iterdir())) == 0:
+                    new_dir.rmdir()
 
             for f in all_files_wo_version + all_non_template_directories:
                 if f.is_file():

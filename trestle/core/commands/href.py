@@ -21,7 +21,7 @@ import pathlib
 
 import trestle.common.log as log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.model_utils import ModelUtils
+from trestle.common.load_validate import load_validate_model_name
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.oscal.profile import Profile
@@ -119,7 +119,7 @@ class HrefCmd(CommandPlusDocs):
             Allow full chaining of linked catalogs and profiles.
 
         """
-        profile_data, profile_path = ModelUtils.load_top_level_model(trestle_root, profile_name, Profile)
+        profile_data, profile_path = load_validate_model_name(trestle_root, profile_name, Profile)
         n_imports = len(profile_data.imports)
         if not new_href:
             logger.info(f'List of imports for profile {profile_name}:')

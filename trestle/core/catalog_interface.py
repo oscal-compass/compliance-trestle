@@ -71,9 +71,17 @@ class CatalogInterface():
         """Initialize the interface with the catalog."""
         self._catalog = catalog
         self._param_control_map: Dict[str, str] = {}
+        self._generate_group_index: int = 0
         self._control_dict = self._create_control_dict() if catalog else None
         self.loose_param_dict: Dict[str, common.Parameter] = {param.id: param
                                                               for param in as_list(catalog.params)} if catalog else {}
+
+    def _generate_group_id(self, group: cat.Group) -> str:
+        """Generate sequential group ids."""
+        group_id = f'trestle_group_{self._generate_group_index:04d}'
+        self._generate_group_index += 1
+        logger.warning(f'Group titled "{group.title}" has no id and has been assigned id: {group_id}')
+        return group_id
 
     def _add_params_to_map(self, control: cat.Control) -> None:
         # this does not need to recurse because it is called for each control in the catalog
@@ -106,6 +114,7 @@ class CatalogInterface():
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
         """Add all controls in the group recursively, including sub groups and sub controls."""
+        group.id = self._generate_group_id(group) if group.id is None else group.id
         if group.controls is not None:
             group_path = path[:]
             if not group_path or group_path[-1] != group.id:
@@ -125,6 +134,7 @@ class CatalogInterface():
             group_path.append(group.id)
             for sub_group in group.groups:
                 new_path = group_path[:]
+                sub_group.id = self._generate_group_id(sub_group) if sub_group.id is None else sub_group.id
                 new_path.append(sub_group.id)
                 self._add_group_controls(sub_group, control_dict, new_path)
 
@@ -480,7 +490,7 @@ class CatalogInterface():
             if control_handle.control.id not in ids_in_catalog:
                 self._insert_control_in_catalog(control_handle)
 
-        self._catalog.params = list(self.loose_param_dict.values())
+        self._catalog.params = none_if_empty(list(self.loose_param_dict.values()))
 
     def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
         hits: List[str] = []
@@ -729,6 +739,7 @@ class CatalogInterface():
                 self._catalog.controls = none_if_empty(control_list)
         self._catalog.groups = none_if_empty(groups)
         self._create_control_dict()
+        self._catalog.params = none_if_empty(self._catalog.params)
         return self._catalog
 
     @staticmethod
