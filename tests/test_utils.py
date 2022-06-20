@@ -55,8 +55,12 @@ ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+JSON_NIST_REV_4_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/').resolve()
+JSON_NIST_REV_4_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
+JSON_NIST_REV_4_PROFILE_NAME = 'NIST_SP-800-53_rev4_MODERATE-baseline_profile.json'
 SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
 SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
+TASK_XLSX_OUTPUT_PATH = pathlib.Path('tests/data/tasks/xlsx/output').resolve()
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'

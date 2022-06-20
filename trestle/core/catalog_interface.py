@@ -21,6 +21,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
@@ -567,7 +568,8 @@ class CatalogInterface():
         overwrite_header_values: bool = False,
         set_parameters: bool = False,
         required_sections: Optional[str] = None,
-        allowed_sections: Optional[str] = None
+        allowed_sections: Optional[str] = None,
+        component: Optional[comp.ComponentDefinition] = None
     ) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -583,6 +585,7 @@ class CatalogInterface():
             set_parameters: Set header values based on params in the control and in the profile
             required_sections: Optional string containing list of sections that should be prompted for prose
             allowed_sections: Optional string containing list of sections that should be included in markdown
+            component: Optional component definition with corresponding implemented requirements
 
         Returns:
             None
@@ -676,7 +679,8 @@ class CatalogInterface():
                 profile,
                 overwrite_header_values,
                 required_section_list,
-                allowed_section_list
+                allowed_section_list,
+                component
             )
 
     @staticmethod

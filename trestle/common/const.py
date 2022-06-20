@@ -296,19 +296,25 @@ CONTROL_ORIGINATION = 'control-origination'
 
 IMPLEMENTATION_STATUS = 'implementation-status'
 
-RESPONSIBLE_ROLE = 'responsible-role'
+IMPLEMENTED = 'implemented'
 
-RESPONSIBLE_ROLES = 'responsible-roles'
-
-INHERITED = 'inherited'
-
-LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+PARTIALLY_IMPLEMENTED = 'partially implemented'
 
 PLANNED = 'planned'
 
 PLANNED_COMPLETION_DATE = 'planned-completion-date'
 
 COMPLETION_DATE = 'completion-date'
+
+INHERITED = 'inherited'
+
+N_A = 'N/A'
+
+RESPONSIBLE_ROLE = 'responsible-role'
+
+RESPONSIBLE_ROLES = 'responsible-roles'
+
+LEV_AUTH_UUID = 'leveraged-authorization-uuid'
 
 HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
 
@@ -323,3 +329,5 @@ SECTIONS_TAG = 'x-trestle-sections'
 EDITABLE_CONTENT = 'Editable Content'
 
 SORT_ID = 'sort-id'
+
+TRESTLE_IMP_STATUS = 'trestle-imp-status'

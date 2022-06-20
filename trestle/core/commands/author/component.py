@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -26,15 +26,13 @@ import trestle.common.const as const
 import trestle.common.log as log
 import trestle.oscal.common as com
 import trestle.oscal.component as comp
-import trestle.oscal.profile as prof
 from trestle.common import file_utils
-from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.err import TrestleError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -49,6 +47,8 @@ class ComponentGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
+        profile_help_str = 'Name of the profile model in the trestle workspace'
+        self.add_argument('-p', '--profile', help=profile_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
@@ -65,9 +65,11 @@ class ComponentGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
-            trestle_root: pathlib.Path = args.trestle_root
+            trestle_root = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
+
+            profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 
             yaml_header: dict = {}
             if args.yaml_header:
@@ -78,77 +80,33 @@ class ComponentGenerate(AuthorCommonCommand):
                 except YAMLError as e:
                     raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
 
-            # combine command line sections with any in the yaml header, with priority to command line
-            sections_dict: Optional[Dict[str, str]] = None
-            if args.sections:
-                sections_dict = sections_to_dict(args.sections)
+            markdown_path = trestle_root / args.output
 
-            component_path = trestle_root / f'components/{args.name}/component.json'
+            profile_resolver = ProfileResolver()
+
+            resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+            catalog_interface = CatalogInterface(resolved_catalog)
+
+            component, _ = load_validate_model_name(trestle_root, args.name, comp.ComponentDefinition)
 
             markdown_path = trestle_root / args.output
 
-            return self.generate_markdown(
-                trestle_root,
-                component_path,
-                markdown_path,
-                yaml_header,
-                args.overwrite_header_values,
-                sections_dict,
-                args.required_sections
-            )
-        except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Generation of the component markdown failed')
-
-    def generate_markdown(
-        self,
-        trestle_root: pathlib.Path,
-        component_path: pathlib.Path,
-        markdown_path: pathlib.Path,
-        yaml_header: dict,
-        overwrite_header_values: bool,
-        sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[str]
-    ) -> int:
-        """Generate markdown for the controls in the component.
-
-        Args:
-            trestle_root: Root directory of the trestle workspace
-            component_path: Path of the component json file
-            markdown_path: Path to the directory into which the markdown will be written
-            yaml_header: Dict to merge into the yaml header of the control markdown
-            overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
-            sections_dict: Optional dict mapping section short names to long
-            required_sections: Optional comma-sep list of sections that get prompted for prose if not in the component
-
-        Returns:
-            0 on success, 1 on error
-        """
-        try:
-            if sections_dict and 'statement' in sections_dict:
-                logger.warning('statement is not allowed as a section name.')
-                return CmdReturnCodes.COMMAND_ERROR.value
-            _, _, component = ModelUtils.load_distributed(component_path, trestle_root)
-            catalog = ProfileResolver().get_resolved_profile_catalog(
-                trestle_root, component_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
-            )
-            catalog_interface = CatalogInterface(catalog)
             catalog_interface.write_catalog_as_markdown(
                 md_path=markdown_path,
                 yaml_header=yaml_header,
-                sections_dict=sections_dict,
-                prompt_responses=False,
-                additional_content=True,
-                component=component,
-                overwrite_header_values=overwrite_header_values,
-                set_parameters=True,
-                required_sections=required_sections,
-                allowed_sections=None
+                sections_dict=None,
+                prompt_responses=True,
+                additional_content=False,
+                profile=None,
+                overwrite_header_values=False,
+                set_parameters=False,
+                required_sections=None,
+                allowed_sections=None,
+                component=component
             )
-        except TrestleNotFoundError as e:
-            raise TrestleError(f'Component {component_path} not found, error {e}')
-        except TrestleError as e:
-            raise TrestleError(f'Error generating the catalog as markdown: {e}')
-        return CmdReturnCodes.SUCCESS.value
+            return CmdReturnCodes.SUCCESS.value
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Generation of the component markdown failed')
 
 
 class ComponentAssemble(AuthorCommonCommand):
@@ -189,7 +147,6 @@ class ComponentAssemble(AuthorCommonCommand):
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to component failed')
-
 
     @staticmethod
     def assemble_component(
@@ -242,8 +199,6 @@ class ComponentAssemble(AuthorCommonCommand):
         )
         new_content_type = FileContentType.path_to_content_type(parent_comp_path)
 
-        required_sections_list = required_sections.split(',') if required_sections else []
-
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
 
@@ -252,14 +207,14 @@ class ComponentAssemble(AuthorCommonCommand):
         )
 
         if assem_comp_path.exists():
-            _, _, existing_prof = ModelUtils.load_distributed(assem_comp_path, trestle_root)
-            if ModelUtils.models_are_equivalent(existing_prof, parent_prof):
+            _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
+            if ModelUtils.models_are_equivalent(existing_comp, parent_comp):
                 logger.info('Assembled component is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
         if regenerate:
-            parent_prof, _, _ = ModelUtils.regenerate_uuids(parent_prof)
-        ModelUtils.update_last_modified(parent_prof)
+            parent_comp, _, _ = ModelUtils.regenerate_uuids(parent_comp)
+        ModelUtils.update_last_modified(parent_comp)
 
         if assem_comp_path.parent.exists():
             logger.info('Creating component from markdown and destination component exists, so updating.')

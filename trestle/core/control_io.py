@@ -35,6 +35,7 @@ from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import common
+from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
@@ -470,7 +471,8 @@ class ControlIOWriter():
         profile: Optional[prof.Profile],
         overwrite_header_values: bool,
         required_sections: Optional[List[str]],
-        allowed_sections: Optional[List[str]]
+        allowed_sections: Optional[List[str]],
+        component: Optional[comp.ComponentDefinition] = None
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -487,6 +489,7 @@ class ControlIOWriter():
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
             required_sections: List of required sections that may need prompting for content
             allowed_sections: List of allowed sections that will appear in markdown
+            component: Optional component definition containing imp req responses to be added to control markdown
 
         Returns:
             None
@@ -504,7 +507,7 @@ class ControlIOWriter():
             return
         control_file = dest_path / (control.id + '.md')
         # first read the existing markdown header and content if it exists
-        existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
+        existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file, component)
         self._md_file = MDWriter(control_file)
         self._sections_dict = sections_dict
 
@@ -534,7 +537,7 @@ class ControlIOWriter():
         # add allowed sections to the markdown
         self._add_sections(control, allowed_sections)
 
-        # only used for ssp-generate
+        # prompt responses for imp reqs
         if prompt_responses:
             self._add_implementation_response_prompts(control, existing_text)
 
@@ -1020,19 +1023,36 @@ class ControlIOReader():
             ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
 
     @staticmethod
+    def _add_component_to_dict(
+        control_id: str, comp_dict: Dict[str, Dict[str, List[str]]], component: Optional[comp.ComponentDefinition]
+    ) -> None:
+        if component:
+            for sub_comp in as_list(component.components):
+                for control_imp in as_list(sub_comp.control_implementations):
+                    for imp_req in as_list(control_imp.implemented_requirements):
+                        if imp_req.control_id == control_id:
+                            comp_dict[sub_comp.title] = imp_req.description
+
+    @staticmethod
     def read_all_implementation_prose_and_header(
-        control_file: pathlib.Path
+        control_file: pathlib.Path, component: Optional[comp.ComponentDefinition] = None
     ) -> Tuple[Dict[str, Dict[str, List[str]]], Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.
 
         Args:
             control_file: path to the control markdown file
+            component: optional component definition possibly with implementation prose for this control
 
         Returns:
             Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
             Also returns the yaml header as dict in second part of tuple.
             This does not generate components - it only tracks component names and associated responses.
+
+        Notes:
+            If a component is provided, any implementation prose for a control will be added, but only if the control
+            markdown does not exist yet.  In addition, the implemented requirement will be queried for a
+            property corresponding to implementation status and included if available.
         """
         comp_dict = {}
         yaml_header = {}
@@ -1041,6 +1061,8 @@ class ControlIOReader():
         control_id = control_file.stem
         try:
             if not control_file.exists():
+                # pull possible prose from component definition
+                ControlIOReader._add_component_to_dict(control_id, comp_dict, component)
                 return comp_dict, yaml_header
             md_api = MarkdownAPI()
             yaml_header, control = md_api.processor.process_markdown(control_file)
