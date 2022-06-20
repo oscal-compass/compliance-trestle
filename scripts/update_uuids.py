@@ -16,16 +16,17 @@
 import pathlib
 import sys
 
-from trestle.core.remote.cache import FetcherFactory
 from trestle.common.model_utils import ModelUtils
+from trestle.core.remote.cache import FetcherFactory
 
 
 def update_uuids(model_path: str) -> None:
+    """Update all the uuids in a model."""
     fetcher = FetcherFactory.get_fetcher(pathlib.Path('/tmp/test8'), model_path)
     model, _ = fetcher.get_oscal(True)
     new_model, _, _ = ModelUtils.regenerate_uuids(model)
     new_model.oscal_write(pathlib.Path(model_path))
-    
+
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:

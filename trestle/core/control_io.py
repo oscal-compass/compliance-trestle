@@ -293,19 +293,42 @@ class ControlIOWriter():
             for line in existing_text[part_label]:
                 self._md_file.new_line(line)
 
+    def _add_component_control_prompts(self, comp_dict: Dict[str, Dict[str, List[str]]]) -> bool:
+        """Add prompts for the control itself, per component."""
+        did_write = False
+        for comp_name, dic in comp_dict.items():
+            for statement_id, prose in dic.items():
+                # is this control-level guidance for this component
+                if statement_id == '':
+                    # create new heading for this component and add guidance
+                    self._md_file.new_header(level=3, title=comp_name)
+                    self._md_file.new_paraline('\n'.join(prose))
+                    did_write = True
+        return did_write
+
     def _add_implementation_response_prompts(
-        self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]]
+        self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]], component_prompts=False
     ) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
+        did_write_part = False
+        if component_prompts:
+            if self._add_component_control_prompts(comp_dict):
+                did_write_part = True
+
+        # The comp_dict looks like:
+        # This System:
+        #    a.: guidance for part a
+        #    b.: guidance for part b
+        # OSCO:
+        #    a.: OSCO guidance for part a
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
         # Note that parts corresponding to sections don't get written out here so a check is needed
         # If we have responses per component then enter them in separate ### sections
-        did_write_part = False
         if control.parts:
             for part in control.parts:
                 if part.parts:
@@ -539,7 +562,7 @@ class ControlIOWriter():
 
         # prompt responses for imp reqs
         if prompt_responses:
-            self._add_implementation_response_prompts(control, existing_text)
+            self._add_implementation_response_prompts(control, existing_text, component is not None)
 
         # only used for profile-generate
         # add sections corresponding to added parts in the profile
@@ -1031,11 +1054,19 @@ class ControlIOReader():
                 for control_imp in as_list(sub_comp.control_implementations):
                     for imp_req in as_list(control_imp.implemented_requirements):
                         if imp_req.control_id == control_id:
-                            comp_dict[sub_comp.title] = imp_req.description
+                            sub_comp_dict = {}
+                            if imp_req.description:
+                                # add top level control guidance with no statement id
+                                sub_comp_dict[''] = [imp_req.description]
+                            for statement in as_list(imp_req.statements):
+                                sub_comp_dict[statement.statement_id] = [statement.description]
+                            if sub_comp_dict:
+                                comp_dict[sub_comp.title] = sub_comp_dict
 
     @staticmethod
     def read_all_implementation_prose_and_header(
-        control_file: pathlib.Path, component: Optional[comp.ComponentDefinition] = None
+        control_file: pathlib.Path,
+        component: Optional[comp.ComponentDefinition] = None
     ) -> Tuple[Dict[str, Dict[str, List[str]]], Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.

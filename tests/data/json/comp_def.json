@@ -131,6 +131,13 @@
                       "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
                     ]
                   }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "a.",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "description": "Implement as needed for OSCO"
+                  }
                 ]
               },
               {

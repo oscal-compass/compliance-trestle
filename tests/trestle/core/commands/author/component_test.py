@@ -16,30 +16,13 @@
 import argparse
 import pathlib
 import shutil
-import sys
-from typing import Dict, Optional, Tuple
-
-from _pytest.monkeypatch import MonkeyPatch
-
-import pytest
-
-from ruamel.yaml import YAML
+from typing import Dict, Tuple
 
 from tests import test_utils
 
-import trestle.oscal.catalog as cat
-import trestle.oscal.component as comp
-import trestle.oscal.profile as prof
-from trestle.cli import Trestle
-from trestle.common.err import TrestleError
-from trestle.common.model_utils import ModelUtils
-from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.commands.author.component import ComponentAssemble, ComponentGenerate
+from trestle.core.commands.author.component import ComponentGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
-from trestle.core.models.file_content_type import FileContentType
-from trestle.core.profile_resolver import ProfileResolver
-
 
 md_path = 'md_comp'
 
@@ -56,7 +39,9 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict
         assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 
-def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
+def setup_component_generate(
+    trestle_root: pathlib.Path
+) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
     """Set up files for profile generate."""
     comp_orig_path = test_utils.JSON_TEST_DATA_PATH / 'comp_def.json'
     comp_name = 'test_comp'
