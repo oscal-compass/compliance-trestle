@@ -26,6 +26,7 @@ import frontmatter
 import trestle.oscal.catalog as cat
 import trestle.oscal.ssp as ossp
 from trestle.common import const
+from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
@@ -77,7 +78,7 @@ class ControlIOWriter():
         return wrapped
 
     @staticmethod
-    def get_prop(part_control: Union[common.Part, cat.Control], prop_name: str) -> str:
+    def get_prop(part_control: TypeWithProps, prop_name: str) -> str:
         """Get the property with that name or return empty string."""
         for prop in as_list(part_control.props):
             if prop.name.strip().lower() == prop_name.strip().lower():
@@ -93,7 +94,7 @@ class ControlIOWriter():
         return None if allow_none else control.id
 
     @staticmethod
-    def get_label(part_control: Union[common.Part, cat.Control]) -> str:
+    def get_label(part_control: TypeWithProps) -> str:
         """Get the label from the props of a part or control."""
         return ControlIOWriter.get_prop(part_control, 'label')
 
@@ -1016,8 +1017,8 @@ class ControlIOReader():
 
     @staticmethod
     def simplify_name(name: str) -> str:
-        """Simplify the name to ignore variations in case and space."""
-        return name.lower().replace(' ', '')
+        """Simplify the name to ignore variations in case, space, hyphen, underscore, slash."""
+        return name.lower().replace(' ', '').replace('-', '').replace('_', '').replace('/', '')
 
     @staticmethod
     def _comp_name_in_dict(comp_name: str, comp_dict: CompDict) -> str:
@@ -1063,6 +1064,20 @@ class ControlIOReader():
             ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
 
     @staticmethod
+    def _imp_stat_from_string(stat_str: str) -> str:
+        """Find best matching imp stat based on string."""
+        simp_str = ControlIOReader.simplify_name(stat_str)
+        if simp_str == ControlIOReader.simplify_name(const.STATUS_IMPLEMENTED):
+            return const.STATUS_IMPLEMENTED
+        if simp_str == ControlIOReader.simplify_name(const.STATUS_PARTIALLY_IMPLEMENTED):
+            return const.STATUS_PARTIALLY_IMPLEMENTED
+        if simp_str == ControlIOReader.simplify_name(const.STATUS_PLANNED):
+            return const.STATUS_PLANNED
+        if simp_str == ControlIOReader.simplify_name(const.STATUS_N_A):
+            return const.STATUS_N_A
+        return const.STATUS_UNKNOWN
+
+    @staticmethod
     def _add_component_to_dict(
         control_id: str, comp_dict: CompDict, component: Optional[comp.ComponentDefinition]
     ) -> None:
@@ -1074,12 +1089,16 @@ class ControlIOReader():
                             sub_comp_dict: Dict[str, ComponentImpInfo] = {}
                             if imp_req.description:
                                 # add top level control guidance with no statement id
+                                imp_stat_str = ControlIOWriter.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
+                                imp_stat = ControlIOReader._imp_stat_from_string(imp_stat_str)
                                 sub_comp_dict[''] = ComponentImpInfo(
-                                    prose=imp_req.description, implementation_status=const.STATUS_UNKNOWN
+                                    prose=imp_req.description, implementation_status=imp_stat
                                 )
                             for statement in as_list(imp_req.statements):
+                                imp_stat_str = ControlIOWriter.get_prop(statement, const.IMPLEMENTATION_STATUS)
+                                imp_stat = ControlIOReader._imp_stat_from_string(imp_stat_str)
                                 sub_comp_dict[statement.statement_id] = ComponentImpInfo(
-                                    prose=statement.description, implementation_status=const.STATUS_UNKNOWN
+                                    prose=statement.description, implementation_status=imp_stat
                                 )
                             if sub_comp_dict:
                                 comp_dict[sub_comp.title] = sub_comp_dict

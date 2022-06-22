@@ -76,7 +76,8 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
         allowed_sections=None,
         yaml_header=None,
         verbose=0,
-        set_parameters=False
+        set_parameters=False,
+        sections=None
     )
 
     comp_gen = ComponentGenerate()

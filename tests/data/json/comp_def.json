@@ -109,6 +109,10 @@
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
                     "class": "scc_goal_name_id",
                     "remarks": "Verify Permissions on the Kubernetes API Server Pod Specification File"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented"
                   }
                 ],
                 "responsible-roles": [
@@ -136,7 +140,13 @@
                   {
                     "statement-id": "a.",
                     "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
-                    "description": "Implement as needed for OSCO"
+                    "description": "Implement as needed for OSCO",
+                    "props": [
+                      {
+                        "name": "implementation-status",
+                        "value": "partially-implemented"
+                      }
+                    ]
                   }
                 ]
               },
