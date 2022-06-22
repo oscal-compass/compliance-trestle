@@ -28,7 +28,7 @@ from pydantic import BaseModel, create_model
 import trestle.common
 import trestle.common.common_types
 from trestle.common import const, err, str_utils, type_utils as utils
-from trestle.common.common_types import TopLevelOscalModel
+from trestle.common.common_types import TG, TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
 from trestle.common.str_utils import AliasMode, alias_to_classname
@@ -159,9 +159,9 @@ class ModelUtils:
     def load_top_level_model(
         trestle_root: pathlib.Path,
         model_name: str,
-        model_class: Type[TopLevelOscalModel],
+        model_class: TG,
         file_content_type: Optional[FileContentType] = None
-    ) -> Tuple[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]], pathlib.Path]:
+    ) -> Tuple[TG, pathlib.Path]:
         """Load a model by name and model class and infer file content type if not specified.
 
         If you need to load an existing model but its content type may not be known, use this method.
