@@ -20,7 +20,7 @@ from _pytest.monkeypatch import MonkeyPatch
 from tests.test_utils import execute_command_and_assert, insert_text_in_file, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
-from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, INHERITED, PLANNED
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, STATUS_INHERITED, STATUS_PLANNED
 from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
@@ -44,8 +44,8 @@ def setup_test(tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path,
     fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(ssp_json))
     ssp_obj, parent_alias = fetcher.get_oscal(True)
     ssp_obj.control_implementation.implemented_requirements[0].props = [
-        Property(name=IMPLEMENTATION_STATUS, value=PLANNED),
-        Property(name=CONTROL_ORIGINATION, value=INHERITED),
+        Property(name=IMPLEMENTATION_STATUS, value=STATUS_PLANNED),
+        Property(name=CONTROL_ORIGINATION, value=STATUS_INHERITED),
     ]
 
     assert parent_alias == 'system-security-plan'

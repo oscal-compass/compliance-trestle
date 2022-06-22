@@ -34,6 +34,7 @@ from trestle.core import generators as gens
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
+from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -49,6 +50,16 @@ class ParameterRep(Enum):
     LABEL_OR_CHOICES = 2
     VALUE_OR_LABEL_OR_CHOICES = 3
     VALUE_OR_EMPTY_STRING = 4
+
+
+class ComponentImpInfo(TrestleBaseModel):
+    """Class to capture component prose and status."""
+
+    prose: str
+    implementation_status: str
+
+
+CompDict = Dict[str, Dict[str, ComponentImpInfo]]
 
 
 class ControlIOWriter():
@@ -286,28 +297,36 @@ class ControlIOWriter():
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
 
-    def _insert_existing_text(self, part_label: str, existing_text: Dict[str, List[str]]) -> None:
-        """Insert text captured in the previous markdown and reinsert to avoid overwrite."""
-        if part_label in existing_text:
+    def _insert_comp_info(self, part_label: str, comp_info: Dict[str, ComponentImpInfo]) -> None:
+        """Insert prose from the component info."""
+        if part_label in comp_info:
+            info = comp_info[part_label]
             self._md_file.new_paragraph()
-            for line in existing_text[part_label]:
-                self._md_file.new_line(line)
+            self._md_file.new_line(info.prose)
+            if info.implementation_status != const.STATUS_UNKNOWN:
+                self._md_file.new_header(
+                    level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.implementation_status}'
+                )
 
-    def _add_component_control_prompts(self, comp_dict: Dict[str, Dict[str, List[str]]]) -> bool:
-        """Add prompts for the control itself, per component."""
+    def _add_component_control_prompts(self, comp_dict: CompDict) -> bool:
+        """Add prompts to the markdown for the control itself, per component."""
         did_write = False
         for comp_name, dic in comp_dict.items():
-            for statement_id, prose in dic.items():
+            for statement_id, comp_info in dic.items():
                 # is this control-level guidance for this component
                 if statement_id == '':
                     # create new heading for this component and add guidance
                     self._md_file.new_header(level=3, title=comp_name)
-                    self._md_file.new_paraline('\n'.join(prose))
+                    self._md_file.new_paraline(comp_info.prose)
+                    if comp_info.implementation_status != const.STATUS_UNKNOWN:
+                        self._md_file.new_header(
+                            level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
+                        )
                     did_write = True
         return did_write
 
     def _add_implementation_response_prompts(
-        self, control: cat.Control, comp_dict: Dict[str, Dict[str, List[str]]], component_prompts=False
+        self, control: cat.Control, comp_dict: CompDict, component_prompts=False
     ) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
@@ -320,10 +339,11 @@ class ControlIOWriter():
 
         # The comp_dict looks like:
         # This System:
-        #    a.: guidance for part a
-        #    b.: guidance for part b
+        #    a.: guidance for part a, imp_status
+        #    b.: guidance for part b, imp_status
         # OSCO:
-        #    a.: OSCO guidance for part a
+        #    '': OSCO guidance for entire control, imp_status
+        #    a.: OSCO guidance for part a, imp_status
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -346,11 +366,12 @@ class ControlIOWriter():
                             part_label = prt.id.split('.')[-1] if not part_label else part_label
                             self._md_file.new_header(level=2, title=f'Implementation {part_label}')
                             added_content = False
-                            for comp_name, prose_dict in comp_dict.items():
-                                if part_label in prose_dict:
+                            for comp_name, dic in comp_dict.items():
+                                if part_label in dic:
                                     if comp_name != const.SSP_MAIN_COMP_NAME:
+                                        # insert the component name
                                         self._md_file.new_header(level=3, title=comp_name)
-                                    self._insert_existing_text(part_label, prose_dict)
+                                    self._insert_comp_info(part_label, dic)
                                     added_content = True
                             self._md_file.new_paragraph()
                             if not added_content:
@@ -360,11 +381,11 @@ class ControlIOWriter():
         if not comp_dict and not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
         part_label = 'Statement'
-        for comp_name, prose_dict in comp_dict.items():
-            if part_label in prose_dict:
+        for comp_name, dic in comp_dict.items():
+            if part_label in dic:
                 if comp_name != const.SSP_MAIN_COMP_NAME:
                     self._md_file.new_header(level=3, title=comp_name)
-                self._insert_existing_text(part_label, prose_dict)
+                self._insert_comp_info(part_label, dic)
         self._md_file.new_hr()
 
     @staticmethod
@@ -999,7 +1020,7 @@ class ControlIOReader():
         return name.lower().replace(' ', '')
 
     @staticmethod
-    def _comp_name_in_dict(comp_name: str, comp_dict: Dict[str, List[Dict[str, str]]]) -> str:
+    def _comp_name_in_dict(comp_name: str, comp_dict: CompDict) -> str:
         """If the name is already in the dict in a similar form, stick to that form."""
         simple_name = ControlIOReader.simplify_name(comp_name)
         for name in comp_dict.keys():
@@ -1009,14 +1030,9 @@ class ControlIOReader():
 
     @staticmethod
     def _add_node_to_dict(
-        comp_name: str,
-        label: str,
-        comp_dict: Dict[str, Dict[str, List[str]]],
-        node: MarkdownNode,
-        control_id: str,
-        comp_list: List[str]
+        comp_name: str, label: str, comp_dict: CompDict, node: MarkdownNode, control_id: str, comp_list: List[str]
     ) -> None:
-        prose = ControlIOReader._clean_prose(node.content.text)
+        prose = '\n'.join(ControlIOReader._clean_prose(node.content.text))
         if node.key.startswith('### '):
             if len(node.key.split()) <= 1:
                 raise TrestleError(f'Line in control {control_id} markdown starts with ### but has no component name.')
@@ -1036,30 +1052,35 @@ class ControlIOReader():
             comp_list.append(simp_comp_name)
             comp_name = ControlIOReader._comp_name_in_dict(comp_name, comp_dict)
         if comp_name in comp_dict:
+            # FIXME need to read imp status
             if label in comp_dict[comp_name]:
-                comp_dict[comp_name][label].extend(prose)
+                comp_dict[comp_name][label].prose += '\n' + prose
             else:
-                comp_dict[comp_name][label] = prose
+                comp_dict[comp_name][label] = ComponentImpInfo(prose=prose, implementation_status=const.STATUS_UNKNOWN)
         else:
-            comp_dict[comp_name] = {label: prose}
+            comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, implementation_status=const.STATUS_UNKNOWN)}
         for subnode in node.subnodes:
             ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
 
     @staticmethod
     def _add_component_to_dict(
-        control_id: str, comp_dict: Dict[str, Dict[str, List[str]]], component: Optional[comp.ComponentDefinition]
+        control_id: str, comp_dict: CompDict, component: Optional[comp.ComponentDefinition]
     ) -> None:
         if component:
             for sub_comp in as_list(component.components):
                 for control_imp in as_list(sub_comp.control_implementations):
                     for imp_req in as_list(control_imp.implemented_requirements):
                         if imp_req.control_id == control_id:
-                            sub_comp_dict = {}
+                            sub_comp_dict: Dict[str, ComponentImpInfo] = {}
                             if imp_req.description:
                                 # add top level control guidance with no statement id
-                                sub_comp_dict[''] = [imp_req.description]
+                                sub_comp_dict[''] = ComponentImpInfo(
+                                    prose=imp_req.description, implementation_status=const.STATUS_UNKNOWN
+                                )
                             for statement in as_list(imp_req.statements):
-                                sub_comp_dict[statement.statement_id] = [statement.description]
+                                sub_comp_dict[statement.statement_id] = ComponentImpInfo(
+                                    prose=statement.description, implementation_status=const.STATUS_UNKNOWN
+                                )
                             if sub_comp_dict:
                                 comp_dict[sub_comp.title] = sub_comp_dict
 
@@ -1067,7 +1088,7 @@ class ControlIOReader():
     def read_all_implementation_prose_and_header(
         control_file: pathlib.Path,
         component: Optional[comp.ComponentDefinition] = None
-    ) -> Tuple[Dict[str, Dict[str, List[str]]], Dict[str, List[str]]]:
+    ) -> Tuple[CompDict, Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.
 
@@ -1085,7 +1106,7 @@ class ControlIOReader():
             markdown does not exist yet.  In addition, the implemented requirement will be queried for a
             property corresponding to implementation status and included if available.
         """
-        comp_dict = {}
+        comp_dict: CompDict = {}
         yaml_header = {}
         # this level only adds for top level component but add_node_to_dict can add for other components
         comp_name = const.SSP_MAIN_COMP_NAME
@@ -1139,12 +1160,12 @@ class ControlIOReader():
             if isinstance(co, str):
                 props.append(common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=co))
             elif isinstance(co, dict):
-                if const.INHERITED in co:
-                    uuid = co[const.INHERITED]
+                if const.STATUS_INHERITED in co:
+                    uuid = co[const.STATUS_INHERITED]
                     props.append(common.Property(name=const.LEV_AUTH_UUID, value=uuid))
                     props.append(
                         common.Property(
-                            ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=const.INHERITED
+                            ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=const.STATUS_INHERITED
                         )
                     )
                 else:
@@ -1157,22 +1178,26 @@ class ControlIOReader():
                     common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.IMPLEMENTATION_STATUS, value=status)
                 )
             elif isinstance(status, dict):
-                if const.PLANNED in status:
-                    if const.COMPLETION_DATE not in status:
+                if const.STATUS_PLANNED in status:
+                    if const.STATUS_COMPLETION_DATE not in status:
                         raise TrestleError(
                             f'Planned status in the control {control_id} yaml header must '
                             f'specify completion date: {status}'
                         )
                     props.append(
-                        common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED, value=status[const.PLANNED])
+                        common.Property(
+                            ns=const.NAMESPACE_FEDRAMP, name=const.STATUS_PLANNED, value=status[const.STATUS_PLANNED]
+                        )
                     )
-                    datestr = status[const.COMPLETION_DATE]
+                    datestr = status[const.STATUS_COMPLETION_DATE]
                     if isinstance(datestr, datetime):
                         datestr = datestr.strftime('%Y-%m-%d')
                     else:
                         datestr = str(datestr)
                     props.append(
-                        common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.PLANNED_COMPLETION_DATE, value=datestr)
+                        common.Property(
+                            ns=const.NAMESPACE_FEDRAMP, name=const.STATUS_PLANNED_COMPLETION_DATE, value=datestr
+                        )
                     )
                 else:
                     if len(status) != 1:
@@ -1251,7 +1276,7 @@ class ControlIOReader():
                 avail_comps[comp_name] = component
                 raw_avail_comps[raw_comp_name] = component
             # now create statements to hold the by-components and assign the statement id
-            for label, prose_lines in raw_comp_dict[raw_comp_name].items():
+            for label, comp_info in raw_comp_dict[raw_comp_name].items():
                 if label == 'Statement':
                     statement_id = f'{control_id}_smt'
                 else:
@@ -1266,10 +1291,11 @@ class ControlIOReader():
                     statement_map[statement_id] = statement
                 # create a new by-component to add to this statement
                 by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+                # FIXME add imp status here
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
                 # add the response prose to the description
-                by_comp.description = '\n'.join(prose_lines)
+                by_comp.description = comp_info.prose
                 statement.by_components.append(by_comp)
 
         imp_req.statements = list(statement_map.values())

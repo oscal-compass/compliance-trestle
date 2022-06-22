@@ -296,19 +296,23 @@ CONTROL_ORIGINATION = 'control-origination'
 
 IMPLEMENTATION_STATUS = 'implementation-status'
 
-IMPLEMENTED = 'implemented'
+IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
 
-PARTIALLY_IMPLEMENTED = 'partially implemented'
+STATUS_IMPLEMENTED = 'implemented'
 
-PLANNED = 'planned'
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
 
-PLANNED_COMPLETION_DATE = 'planned-completion-date'
+STATUS_PLANNED = 'planned'
 
-COMPLETION_DATE = 'completion-date'
+STATUS_PLANNED_COMPLETION_DATE = 'planned-completion-date'
 
-INHERITED = 'inherited'
+STATUS_COMPLETION_DATE = 'completion-date'
 
-N_A = 'N/A'
+STATUS_INHERITED = 'inherited'
+
+STATUS_N_A = 'N/A'
+
+STATUS_UNKNOWN = 'unknown'
 
 RESPONSIBLE_ROLE = 'responsible-role'
 

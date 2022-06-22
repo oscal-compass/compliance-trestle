@@ -312,7 +312,7 @@ def test_control_with_components() -> None:
     assert len(comp_prose_dict['This System'].keys()) == 3
     assert len(comp_prose_dict['Trestle Component'].keys()) == 1
     assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
-    assert comp_prose_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']
+    assert comp_prose_dict['Fancy Thing']['a.'].prose == 'Text for fancy thing component'
 
     # need to build the needed components so they can be referenced by the imp_req
     comp_dict = {}

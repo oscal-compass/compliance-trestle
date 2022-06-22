@@ -57,7 +57,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
-            prose = '\n'.join(label_dict[part_label])
+            prose = label_dict[part_label].prose
             if seek_str in prose:
                 return True
     return False
