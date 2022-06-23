@@ -304,7 +304,7 @@ class ControlIOWriter():
             info = comp_info[part_label]
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
-            if info.implementation_status != const.STATUS_UNKNOWN:
+            if info.implementation_status != const.STATUS_TRESTLE_UNKNOWN:
                 self._md_file.new_header(
                     level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.implementation_status}'
                 )
@@ -319,7 +319,7 @@ class ControlIOWriter():
                     # create new heading for this component and add guidance
                     self._md_file.new_header(level=3, title=comp_name)
                     self._md_file.new_paraline(comp_info.prose)
-                    if comp_info.implementation_status != const.STATUS_UNKNOWN:
+                    if comp_info.implementation_status != const.STATUS_TRESTLE_UNKNOWN:
                         self._md_file.new_header(
                             level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
                         )
@@ -1057,9 +1057,13 @@ class ControlIOReader():
             if label in comp_dict[comp_name]:
                 comp_dict[comp_name][label].prose += '\n' + prose
             else:
-                comp_dict[comp_name][label] = ComponentImpInfo(prose=prose, implementation_status=const.STATUS_UNKNOWN)
+                comp_dict[comp_name][label] = ComponentImpInfo(
+                    prose=prose, implementation_status=const.STATUS_TRESTLE_UNKNOWN
+                )
         else:
-            comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, implementation_status=const.STATUS_UNKNOWN)}
+            comp_dict[comp_name] = {
+                label: ComponentImpInfo(prose=prose, implementation_status=const.STATUS_TRESTLE_UNKNOWN)
+            }
         for subnode in node.subnodes:
             ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
 
@@ -1073,9 +1077,11 @@ class ControlIOReader():
             return const.STATUS_PARTIALLY_IMPLEMENTED
         if simp_str == ControlIOReader.simplify_name(const.STATUS_PLANNED):
             return const.STATUS_PLANNED
-        if simp_str == ControlIOReader.simplify_name(const.STATUS_N_A):
-            return const.STATUS_N_A
-        return const.STATUS_UNKNOWN
+        if simp_str == ControlIOReader.simplify_name(const.STATUS_NOT_APPLICABLE):
+            return const.STATUS_NOT_APPLICABLE
+        if simp_str == ControlIOReader.simplify_name(const.STATUS_TRESTLE_UNKNOWN):
+            return const.STATUS_TRESTLE_UNKNOWN
+        return const.STATUS_TRESTLE_UNKNOWN
 
     @staticmethod
     def _add_component_to_dict(
@@ -1168,7 +1174,7 @@ class ControlIOReader():
     @staticmethod
     def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
         """Insert yaml header content into the imp_req and its by_comps."""
-        dict_ = header.get(const.SSP_FEDRAMP_TAG, {})
+        dict_ = header.get(const.TRESTLE_PROPS_TAG, {})
         # if an attribute is in the dict but it is None, need to make sure we get empty list anyway
         control_orig = as_list(dict_.get(const.CONTROL_ORIGINATION, []))
         imp_status = as_list(dict_.get(const.IMPLEMENTATION_STATUS, []))
@@ -1177,14 +1183,14 @@ class ControlIOReader():
         responsible_roles = []
         for co in control_orig:
             if isinstance(co, str):
-                props.append(common.Property(ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=co))
+                props.append(common.Property(ns=const.NAMESPACE_NIST, name=const.CONTROL_ORIGINATION, value=co))
             elif isinstance(co, dict):
                 if const.STATUS_INHERITED in co:
                     uuid = co[const.STATUS_INHERITED]
                     props.append(common.Property(name=const.LEV_AUTH_UUID, value=uuid))
                     props.append(
                         common.Property(
-                            ns=const.NAMESPACE_FEDRAMP, name=const.CONTROL_ORIGINATION, value=const.STATUS_INHERITED
+                            ns=const.NAMESPACE_NIST, name=const.CONTROL_ORIGINATION, value=const.STATUS_INHERITED
                         )
                     )
                 else:

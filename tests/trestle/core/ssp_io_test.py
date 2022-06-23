@@ -42,6 +42,7 @@ def setup_test(tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path,
 
     ssp_json = testdata_dir / 'author/ssp/ssp_example.json'
     fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(ssp_json))
+    ssp_obj: SystemSecurityPlan
     ssp_obj, parent_alias = fetcher.get_oscal(True)
     ssp_obj.control_implementation.implemented_requirements[0].props = [
         Property(name=IMPLEMENTATION_STATUS, value=STATUS_PLANNED),

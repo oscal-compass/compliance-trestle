@@ -1,5 +1,5 @@
 ---
-x-trestle-fedramp-props:
+x-trestle-props:
   control-origination:
     - sp-corporate
     - sp-system

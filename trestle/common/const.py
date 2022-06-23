@@ -288,9 +288,23 @@ SSP_MAIN_COMP_NAME = 'This System'
 
 TRESTLE_TAG = 'x-trestle-'
 
+TRESTLE_PROPS_TAG = 'x-trestle-props'
+
+NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
+
 SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
+
+LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+
+STATUS_INHERITED = 'inherited'
+
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
+
+STATUS_PLANNED_COMPLETION_DATE = 'planned-completion-date'
+
+STATUS_COMPLETION_DATE = 'completion-date'
 
 CONTROL_ORIGINATION = 'control-origination'
 
@@ -298,27 +312,39 @@ IMPLEMENTATION_STATUS = 'implementation-status'
 
 IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
 
+# Following 5 are allowed state tokens for
+# SSP -> ControlImplementation -> ImplementedRequirements -> ByComponents -> common.ImplementationStatus -> State
+# Also                         -> ImplementedRequirements -> Statements -> ByComponents ...
+# But NIST says they may also be locally defined
 STATUS_IMPLEMENTED = 'implemented'
 
-STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
+STATUS_PARTIAL = 'partial'
 
 STATUS_PLANNED = 'planned'
 
-STATUS_PLANNED_COMPLETION_DATE = 'planned-completion-date'
+STATUS_ALTERNATIVE = 'alternative'
 
-STATUS_COMPLETION_DATE = 'completion-date'
+STATUS_NOT_APPLICABLE = 'not-applicable'
 
-STATUS_INHERITED = 'inherited'
+# Following 4 needed by SSP -> SystemImplementation -> SystemComponent -> Status -> State1
+# and by SSP -> SystemCharacteristics -> Status1 -> State
+STATUS_OPERATIONAL = 'operational'
 
-STATUS_N_A = 'N/A'
+STATUS_UNDER_DEVELOPMENT = 'under-development'
 
-STATUS_UNKNOWN = 'unknown'
+STATUS_DISPOSITION = 'disposition'
+
+STATUS_OTHER = 'other'
+
+# Needed only by SystemCharacteristics
+STATUS_UNDER_MAJOR_MODIFICATION = 'under-major-modification'
+
+# Used only by trestle
+STATUS_TRESTLE_UNKNOWN = 'trestle-unknown'
 
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
-
-LEV_AUTH_UUID = 'leveraged-authorization-uuid'
 
 HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
 
