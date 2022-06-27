@@ -1,5 +1,5 @@
 # Each control must have a header describing its implementation requirements and status.
-# This header represents the the FedRAMP required content.
+# This header represents ssp content.
 #
 # For control origination include all that apply and delete those that do not apply.
 # Controls ending in '-1' only allow sp-corporate and sp-system as options.

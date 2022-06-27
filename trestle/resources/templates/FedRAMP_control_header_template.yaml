@@ -9,7 +9,7 @@
 # Any option shown with an associated value must have that value provided
 #
 # Each control must have at least one responsible role.  If more than one, enter as separate list items.
-x-trestle-props:
+x-trestle-fedramp-props:
   control-origination:
     - sp-corporate
     - sp-system

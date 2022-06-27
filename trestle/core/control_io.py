@@ -1069,18 +1069,12 @@ class ControlIOReader():
 
     @staticmethod
     def _imp_stat_from_string(stat_str: str) -> str:
-        """Find best matching imp stat based on string."""
+        """Find best matching status based on string."""
         simp_str = ControlIOReader.simplify_name(stat_str)
-        if simp_str == ControlIOReader.simplify_name(const.STATUS_IMPLEMENTED):
-            return const.STATUS_IMPLEMENTED
-        if simp_str == ControlIOReader.simplify_name(const.STATUS_PARTIALLY_IMPLEMENTED):
-            return const.STATUS_PARTIALLY_IMPLEMENTED
-        if simp_str == ControlIOReader.simplify_name(const.STATUS_PLANNED):
-            return const.STATUS_PLANNED
-        if simp_str == ControlIOReader.simplify_name(const.STATUS_NOT_APPLICABLE):
-            return const.STATUS_NOT_APPLICABLE
-        if simp_str == ControlIOReader.simplify_name(const.STATUS_TRESTLE_UNKNOWN):
-            return const.STATUS_TRESTLE_UNKNOWN
+        for stat_const in const.STATUS_ALL:
+            if simp_str == ControlIOReader.simplify_name(stat_const):
+                return stat_const
+        logger.warning(f'Unrecognized status marked as unknown: {stat_str}')
         return const.STATUS_TRESTLE_UNKNOWN
 
     @staticmethod

@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -33,6 +33,7 @@ from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -70,6 +71,7 @@ class ComponentGenerate(AuthorCommonCommand):
             markdown_dir_name = args.output
             profile_name = args.profile
             component_name = args.name
+            sections_dict = sections_to_dict(args.sections)
             yaml_header: dict = {}
             if args.yaml_header:
                 try:
@@ -85,7 +87,7 @@ class ComponentGenerate(AuthorCommonCommand):
                 profile_name,
                 markdown_dir_name,
                 yaml_header,
-                args.sections,
+                sections_dict,
                 args.overwrite_header_values
             )
 
@@ -99,7 +101,7 @@ class ComponentGenerate(AuthorCommonCommand):
         profile_name: str,
         markdown_dir_name: str,
         yaml_header: dict,
-        sections: Optional[str],
+        sections_dict: Optional[Dict[str, str]],
         overwrite_header_values: bool
     ) -> int:
         """Create markdown based on the component and profile."""
@@ -107,9 +109,6 @@ class ComponentGenerate(AuthorCommonCommand):
             raise TrestleError(f'{markdown_dir_name} is not an allowed directory name')
 
         markdown_path = trestle_root / markdown_dir_name
-        if markdown_path.exists():
-            raise TrestleError(f'markdown path {markdown_path} exists.  component-generate may only be run once.')
-
         profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile_name, prof.Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
@@ -119,7 +118,7 @@ class ComponentGenerate(AuthorCommonCommand):
         catalog_interface.write_catalog_as_markdown(
             md_path=markdown_path,
             yaml_header=yaml_header,
-            sections_dict=None,
+            sections_dict=sections_dict,
             prompt_responses=True,
             additional_content=False,
             profile=None,
