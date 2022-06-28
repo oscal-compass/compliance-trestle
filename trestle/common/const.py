@@ -312,6 +312,10 @@ IMPLEMENTATION_STATUS = 'implementation-status'
 
 IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
 
+REMARKS = 'Remarks'
+
+STATUS_REMARKS = 'status-remarks'
+
 # Following 5 are allowed state tokens for
 # SSP -> ControlImplementation -> ImplementedRequirements -> ByComponents -> common.ImplementationStatus -> State
 # Also                         -> ImplementedRequirements -> Statements -> ByComponents ...
@@ -319,6 +323,8 @@ IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
 STATUS_IMPLEMENTED = 'implemented'
 
 STATUS_PARTIAL = 'partial'
+
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
 
 STATUS_PLANNED = 'planned'
 
@@ -345,6 +351,7 @@ STATUS_TRESTLE_UNKNOWN = 'trestle-unknown'
 STATUS_ALL = [
     STATUS_IMPLEMENTED,
     STATUS_PARTIAL,
+    STATUS_PARTIALLY_IMPLEMENTED,
     STATUS_PLANNED,
     STATUS_ALTERNATIVE,
     STATUS_NOT_APPLICABLE,

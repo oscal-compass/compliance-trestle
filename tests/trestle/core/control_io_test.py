@@ -309,7 +309,7 @@ def test_control_with_components() -> None:
     control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
     comp_prose_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
     assert len(comp_prose_dict.keys()) == 3
-    assert len(comp_prose_dict['This System'].keys()) == 3
+    assert len(comp_prose_dict['This System'].keys()) == 2
     assert len(comp_prose_dict['Trestle Component'].keys()) == 1
     assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
     assert comp_prose_dict['Fancy Thing']['a.'].prose == 'Text for fancy thing component'

@@ -57,9 +57,11 @@ class ComponentImpInfo(TrestleBaseModel):
     """Class to capture component prose and status."""
 
     prose: str
-    implementation_status: str
+    implementation_status = const.STATUS_TRESTLE_UNKNOWN
+    remarks: Optional[str]
 
 
+# define the type
 CompDict = Dict[str, Dict[str, ComponentImpInfo]]
 
 
@@ -78,12 +80,12 @@ class ControlIOWriter():
         return wrapped
 
     @staticmethod
-    def get_prop(part_control: TypeWithProps, prop_name: str) -> str:
+    def get_prop(part_control: TypeWithProps, prop_name: str, default: Optional[str] = None) -> str:
         """Get the property with that name or return empty string."""
         for prop in as_list(part_control.props):
             if prop.name.strip().lower() == prop_name.strip().lower():
                 return prop.value.strip()
-        return ''
+        return default if default else ''
 
     @staticmethod
     def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
@@ -309,34 +311,32 @@ class ControlIOWriter():
                     level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.implementation_status}'
                 )
 
-    def _add_component_control_prompts(self, comp_dict: CompDict) -> bool:
+    def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
         did_write = False
-        for comp_name, dic in comp_dict.items():
+        level = 3 if comp_def_format else 4
+        for dic in comp_dict.values():
             for statement_id, comp_info in dic.items():
                 # is this control-level guidance for this component
                 if statement_id == '':
                     # create new heading for this component and add guidance
-                    self._md_file.new_header(level=3, title=comp_name)
                     self._md_file.new_paraline(comp_info.prose)
                     if comp_info.implementation_status != const.STATUS_TRESTLE_UNKNOWN:
                         self._md_file.new_header(
-                            level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
+                            level=level,
+                            title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
                         )
                     did_write = True
         return did_write
 
     def _add_implementation_response_prompts(
-        self, control: cat.Control, comp_dict: CompDict, component_prompts=False
+        self, control: cat.Control, comp_dict: CompDict, comp_def_format=False
     ) -> None:
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
-        did_write_part = False
-        if component_prompts:
-            if self._add_component_control_prompts(comp_dict):
-                did_write_part = True
+        did_write_part = self._add_component_control_prompts(comp_dict, comp_def_format)
 
         # The comp_dict looks like:
         # This System:
@@ -370,8 +370,10 @@ class ControlIOWriter():
                             for comp_name, dic in comp_dict.items():
                                 if part_label in dic:
                                     if comp_name != const.SSP_MAIN_COMP_NAME:
-                                        # insert the component name
-                                        self._md_file.new_header(level=3, title=comp_name)
+                                        # insert the component name for ssp but not for comp_def
+                                        # because there should only be one component in generated comp_def markdown
+                                        if not comp_def_format:
+                                            self._md_file.new_header(level=3, title=comp_name)
                                     self._insert_comp_info(part_label, dic)
                                     added_content = True
                             self._md_file.new_paragraph()
@@ -1031,41 +1033,63 @@ class ControlIOReader():
 
     @staticmethod
     def _add_node_to_dict(
-        comp_name: str, label: str, comp_dict: CompDict, node: MarkdownNode, control_id: str, comp_list: List[str]
+        comp_name: str,
+        label: str,
+        comp_dict: CompDict,
+        node: MarkdownNode,
+        control_id: str,
+        comp_list: List[str],
+        component_mode=False
     ) -> None:
+        """Extract the label, prose, possible component name - along with implementation status."""
         prose = '\n'.join(ControlIOReader._clean_prose(node.content.text))
-        if node.key.startswith('### '):
-            if len(node.key.split()) <= 1:
-                raise TrestleError(f'Line in control {control_id} markdown starts with ### but has no component name.')
-            comp_name = node.key.split(' ', 1)[1].strip()
-            simp_comp_name = ControlIOReader.simplify_name(comp_name)
-            if simp_comp_name == ControlIOReader.simplify_name(const.SSP_MAIN_COMP_NAME):
-                raise TrestleError(
-                    f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
-                    'Instead, place all response prose for the default component at the top of th section, '
-                    'with no ### component specified.  It will be entered as prose for the default system component.'
-                )
-            if simp_comp_name in comp_list:
-                raise TrestleError(
-                    f'Control {control_id} has a section with two ### component headings for {comp_name}.  '
-                    'Please combine the sections so there is only one heading for each component in a statement.'
-                )
-            comp_list.append(simp_comp_name)
-            comp_name = ControlIOReader._comp_name_in_dict(comp_name, comp_dict)
-        if comp_name in comp_dict:
-            # FIXME need to read imp status
-            if label in comp_dict[comp_name]:
-                comp_dict[comp_name][label].prose += '\n' + prose
+        if prose:
+            # for ssp, ### marks component name but for component it is ##
+            prefix = '## ' if component_mode else '### '
+            if node.key.startswith(prefix):
+                if len(node.key.split()) <= 1:
+                    raise TrestleError(
+                        f'Line in control {control_id} markdown starts with {prefix} but has no content.'
+                    )
+                comp_name = node.key.split(' ', 1)[1].strip()
+                simp_comp_name = ControlIOReader.simplify_name(comp_name)
+                if simp_comp_name == ControlIOReader.simplify_name(const.SSP_MAIN_COMP_NAME) and not component_mode:
+                    raise TrestleError(
+                        f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
+                        'Instead, place all response prose for the default component at the top of th section, with '
+                        'no ### component specified.  It will be entered as prose for the default system component.'
+                    )
+                if simp_comp_name in comp_list:
+                    raise TrestleError(
+                        f'Control {control_id} has a section with two component headings for {comp_name}.  '
+                        'Please combine the sections so there is only one heading for each component in a statement.'
+                    )
+                comp_list.append(simp_comp_name)
+                comp_name = ControlIOReader._comp_name_in_dict(comp_name, comp_dict)
+            if comp_name in comp_dict:
+                if label in comp_dict[comp_name]:
+                    comp_dict[comp_name][label].prose += '\n' + prose
+                else:
+                    comp_dict[comp_name][label] = ComponentImpInfo(prose=prose)
             else:
-                comp_dict[comp_name][label] = ComponentImpInfo(
-                    prose=prose, implementation_status=const.STATUS_TRESTLE_UNKNOWN
-                )
-        else:
-            comp_dict[comp_name] = {
-                label: ComponentImpInfo(prose=prose, implementation_status=const.STATUS_TRESTLE_UNKNOWN)
-            }
+                comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose)}
+            # keep track of subnodes already handled
+            subnode_kill: List[int] = []
+            for ii, subnode in enumerate(node.subnodes):
+                if subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
+                    # ### Implementation Status: implemented
+                    status = subnode.key.split(maxsplit=3)[-1]
+                    comp_dict[comp_name][label].implementation_status = ControlIOReader._imp_stat_from_string(status)
+                    subnode_kill.append(ii)
+                elif subnode.key.split(maxsplit=2)[1] == const.REMARKS:
+                    comp_dict[comp_name][label].remarks = subnode.content.text
+                    subnode_kill.append(ii)
+            for index in subnode_kill:
+                del node.subnodes[index]
         for subnode in node.subnodes:
-            ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list)
+            ControlIOReader._add_node_to_dict(
+                comp_name, label, comp_dict, subnode, control_id, comp_list, component_mode
+            )
 
     @staticmethod
     def _imp_stat_from_string(stat_str: str) -> str:
@@ -1081,6 +1105,7 @@ class ControlIOReader():
     def _add_component_to_dict(
         control_id: str, comp_dict: CompDict, component: Optional[comp.ComponentDefinition]
     ) -> None:
+        """Strictly works with ComponentDefinition elements and not SSP."""
         if component:
             for sub_comp in as_list(component.components):
                 for control_imp in as_list(sub_comp.control_implementations):
@@ -1121,45 +1146,48 @@ class ControlIOReader():
             This does not generate components - it only tracks component names and associated responses.
 
         Notes:
-            If a component is provided, any implementation prose for a control will be added, but only if the control
-            markdown does not exist yet.  In addition, the implemented requirement will be queried for a
+            If a component is provided, any implementation prose for a control will be added.
+            In addition, the implemented requirement will be queried for a
             property corresponding to implementation status and included if available.
         """
+        # component-generate creates different style of markdown so handle separately from SSP style markdown
+        component_mode = component is not None
         comp_dict: CompDict = {}
         yaml_header = {}
         # this level only adds for top level component but add_node_to_dict can add for other components
         comp_name = const.SSP_MAIN_COMP_NAME
         control_id = control_file.stem
+        if not control_file.exists():
+            # pull possible prose from component definition
+            ControlIOReader._add_component_to_dict(control_id, comp_dict, component)
+            return comp_dict, yaml_header
         try:
-            if not control_file.exists():
-                # pull possible prose from component definition
-                ControlIOReader._add_component_to_dict(control_id, comp_dict, component)
-                return comp_dict, yaml_header
             md_api = MarkdownAPI()
             yaml_header, control = md_api.processor.process_markdown(control_file)
 
+            # first get the header strings, including statement labels, for statement imp reqs
             imp_string = '## Implementation '
             headers = control.get_all_headers_for_level(2)
-            header_list = [header for header in headers if header.startswith(imp_string)]
-            if not header_list:
-                # if statement has no parts there is only one response for entire control
-                headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
-                # should be only one header, so warn if others found
-                n_headers = 0
-                for header in headers:
-                    node = control.get_node_for_key(header)
-                    ControlIOReader._add_node_to_dict(comp_name, 'Statement', comp_dict, node, control_id, [])
-                    n_headers += 1
-                    if n_headers > 1:
-                        logger.warning(
-                            f'Control {control_id} has single statement with extra response #{n_headers}'
-                            ' when it should only have one.'
-                        )
-            else:
-                for header in header_list:
-                    label = header.split(' ', 2)[2].strip()
-                    node = control.get_node_for_key(header)
-                    ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [])
+            imp_header_list = [header for header in headers if header.startswith(imp_string)]
+
+            # now get the (one) header for the main solution
+            main_headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
+            # should be only one header, so warn if others found
+            n_headers = 0
+            for main_header in main_headers:
+                node = control.get_node_for_key(main_header)
+                # this node is top level so it will have empty label
+                ControlIOReader._add_node_to_dict(comp_name, '', comp_dict, node, control_id, [], component_mode)
+                n_headers += 1
+                if n_headers > 1:
+                    logger.warning(
+                        f'Control {control_id} has extra main header response #{n_headers}'
+                        ' when it should only have one.'
+                    )
+            for imp_header in imp_header_list:
+                label = imp_header.split(' ', 2)[2].strip()
+                node = control.get_node_for_key(imp_header)
+                ControlIOReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [], component_mode)
 
         except TrestleError as e:
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
@@ -1269,6 +1297,7 @@ class ControlIOReader():
         Notes:
             Each statement may have several responses, with each response in a by_component for a specific component.
             statement_map keeps track of statements that may have several by_component responses.
+            This is only used for ssp via catalog_interface.
         """
         control_id = control_file.stem
         comp_dict, header = ControlIOReader.read_all_implementation_prose_and_header(control_file)
@@ -1310,9 +1339,12 @@ class ControlIOReader():
                     statement_map[statement_id] = statement
                 # create a new by-component to add to this statement
                 by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
-                # FIXME add imp status here
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
+                status = ControlIOWriter.get_prop(statement, const.IMPLEMENTATION_STATUS, const.STATUS_TRESTLE_UNKNOWN)
+                by_comp.implementation_status = common.ImplementationStatus(
+                    state=ControlIOReader._imp_stat_from_string(status)
+                )
                 # add the response prose to the description
                 by_comp.description = comp_info.prose
                 statement.by_components.append(by_comp)

@@ -761,8 +761,9 @@ class CatalogInterface():
         Notes:
             As the controls are read into the catalog the needed components are added if not already available.
             avail_comps provides the mapping of component name to the actual component.
+            This is only used for ssp via catalog_interface
         """
-        imp_req_map: Dict[str, ossp.ImplementRequirement] = {}
+        imp_req_map: Dict[str, ossp.ImplementedRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
                 sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_file, avail_comps)

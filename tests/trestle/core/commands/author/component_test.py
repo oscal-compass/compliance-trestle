@@ -82,3 +82,4 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
 
     comp_gen = ComponentGenerate()
     assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
+    assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
