@@ -20,7 +20,7 @@ from typing import Dict, Tuple
 
 from tests import test_utils
 
-from trestle.core.commands.author.component import ComponentGenerate
+from trestle.core.commands.author.component import ComponentAssemble, ComponentGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
 
@@ -83,3 +83,15 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
     comp_gen = ComponentGenerate()
     assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
     assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
+
+    test_args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name=comp_name,
+        output=md_path,
+        markdown=md_path,
+        regenerate=False,
+        version=None,
+        verbose=0
+    )
+    comp_assem = ComponentAssemble()
+    assert comp_assem._run(test_args) == CmdReturnCodes.SUCCESS.value
