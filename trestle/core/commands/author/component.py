@@ -18,6 +18,7 @@ import logging
 import pathlib
 import shutil
 from typing import Dict, List, Optional
+from uuid import uuid4
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -38,6 +39,7 @@ from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -168,19 +170,16 @@ class ComponentAssemble(AuthorCommonCommand):
 
     def _init_arguments(self) -> None:
         name_help_str = (
-            'Optional name of the component model in the trestle workspace that is being modified.  '
+            'Optional name of the component-definition model in the trestle workspace that is being modified.  '
             'If not provided the output name is used.'
         )
         self.add_argument('-n', '--name', help=name_help_str, required=False, type=str)
-        file_help_str = 'Name of the source markdown file directory'
+        file_help_str = 'Name of the source markdown directory'
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
-        output_help_str = 'Name of the output generated json Component (ok to overwrite original)'
+        output_help_str = 'Name of the output generated json component-definition (ok to overwrite original)'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
-        self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
-        self.add_argument('-as', '--allowed-sections', help=const.HELP_ALLOWED_SECTIONS, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -188,43 +187,34 @@ class ComponentAssemble(AuthorCommonCommand):
             trestle_root = pathlib.Path(args.trestle_root)
             return self.assemble_component(
                 trestle_root=trestle_root,
-                parent_prof_name=args.name,
+                parent_comp_name=args.name,
                 md_name=args.markdown,
                 assem_comp_name=args.output,
-                set_parameters=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
-                required_sections=args.required_sections,
-                allowed_sections=args.allowed_sections
             )
         except Exception as e:  # pragma: no cover
-            return handle_generic_command_exception(e, logger, 'Assembly of markdown to component failed')
+            return handle_generic_command_exception(e, logger, 'Assembly of markdown to component-definition failed')
 
     @staticmethod
     def assemble_component(
         trestle_root: pathlib.Path,
-        parent_prof_name: str,
+        parent_comp_name: Optional[str],
         md_name: str,
         assem_comp_name: str,
-        set_parameters: bool,
         regenerate: bool,
         version: Optional[str],
-        required_sections: Optional[str],
-        allowed_sections: Optional[List[str]]
     ) -> int:
         """
-        Assemble the markdown directory into a json component model file.
+        Assemble the markdown directory into a json component-definition model file.
 
         Args:
             trestle_root: The trestle root directory
-            parent_prof_name: Optional name of component used to generate the markdown (default is assem_comp_name)
+            parent_comp_name: Optional name of component-definition used to generate markdown, default = assem_comp_name
             md_name: The name of the directory containing the markdown control files for the component
-            assem_comp_name: The name of the assembled component.  It can be the same as the parent to overwrite
-            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the component
+            assem_comp_name: The name of the assembled component-definiton.  Can be same as the parent to overwrite
             regenerate: Whether to regenerate the uuid's in the component
             version: Optional version for the assembled component
-            required_sections: Optional List of required sections in assembled component, as comma-separated short names
-            allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
 
         Returns:
             0 on success, 1 otherwise
@@ -241,15 +231,18 @@ class ComponentAssemble(AuthorCommonCommand):
         if not md_dir.exists():
             raise TrestleError(f'Markdown directory {md_name} does not exist.')
 
-        if not parent_prof_name:
-            parent_prof_name = assem_comp_name
+        if not parent_comp_name:
+            parent_comp_name = assem_comp_name
 
+        # load the comp-def that will be updated
         parent_comp, parent_comp_path = ModelUtils.load_top_level_model(
             trestle_root,
-            parent_prof_name,
+            parent_comp_name,
             comp.ComponentDefinition
         )
         new_content_type = FileContentType.path_to_content_type(parent_comp_path)
+
+        ComponentAssemble.assemble_comp_def_into_parent(trestle_root, parent_comp, md_dir)
 
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
@@ -275,3 +268,42 @@ class ComponentAssemble(AuthorCommonCommand):
         assem_comp_path.parent.mkdir(parents=True, exist_ok=True)
         parent_comp.oscal_write(assem_comp_path)
         return CmdReturnCodes.SUCCESS.value
+
+    @staticmethod
+    def assemble_comp_def_into_parent(
+        trestle_root: pathlib.Path, parent_comp: comp.ComponentDefinition, md_dir: pathlib.Path
+    ) -> None:
+        """Assemble markdown content into provided component-definition model."""
+        # find the needed list of comps
+        sub_dirs = md_dir.glob('*')
+        comp_names = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
+
+        # make sure parent has list of comps to work with - possibly empty
+        if not parent_comp.components:
+            parent_comp.components = []
+
+        # remove any unneeded comps from parent comp_def
+        kill_list: List[int] = []
+        for ii, component in enumerate(parent_comp.components):
+            if component.title not in comp_names:
+                kill_list.append(ii)
+        if kill_list:
+            del parent_comp.components[kill_list]
+
+        # create new comps if needed
+        existing_comp_names = [component.title for component in parent_comp.components]
+        for comp_name in comp_names:
+            if comp_name not in existing_comp_names:
+                metadata = com.Metadata(
+                    title=comp_name, last_modified='REPLACE_ME', version='REPLACE_ME', oscal_version=OSCAL_VERSION
+                )
+                parent_comp.components.append(
+                    comp.DefinedComponent(uuid=str(uuid4()), title=comp_name, metadata=metadata)
+                )
+
+        for component in parent_comp.components:
+            ComponentAssemble._update_component_with_markdown(md_dir, component)
+
+    @staticmethod
+    def _update_component_with_markdown(md_dir: pathlib.Path, component: comp.ComponentDefinition) -> None:
+        pass
