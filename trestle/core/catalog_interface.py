@@ -569,7 +569,8 @@ class CatalogInterface():
         set_parameters: bool = False,
         required_sections: Optional[str] = None,
         allowed_sections: Optional[str] = None,
-        component: Optional[comp.ComponentDefinition] = None
+        component_def: Optional[comp.ComponentDefinition] = None,
+        component_name: Optional[str] = None
     ) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -585,7 +586,9 @@ class CatalogInterface():
             set_parameters: Set header values based on params in the control and in the profile
             required_sections: Optional string containing list of sections that should be prompted for prose
             allowed_sections: Optional string containing list of sections that should be included in markdown
-            component: Optional component definition with corresponding implemented requirements
+            component_def: Optional component definition with corresponding implemented requirements
+            component_name: Optional name of component to write out
+
 
         Returns:
             None
@@ -680,7 +683,8 @@ class CatalogInterface():
                 overwrite_header_values,
                 required_section_list,
                 allowed_section_list,
-                component
+                component_def,
+                component_name
             )
 
     @staticmethod

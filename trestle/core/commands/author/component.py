@@ -29,6 +29,7 @@ import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
+from trestle.common.list_utils import as_list
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -81,7 +82,7 @@ class ComponentGenerate(AuthorCommonCommand):
                 except YAMLError as e:
                     raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
 
-            return self.component_generate(
+            return self.component_generate_all(
                 trestle_root,
                 component_name,
                 profile_name,
@@ -94,29 +95,57 @@ class ComponentGenerate(AuthorCommonCommand):
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the component markdown failed')
 
-    def component_generate(
+    def component_generate_all(
         self,
         trestle_root: pathlib.Path,
-        component_name: str,
+        comp_def_name: str,
         profile_name: str,
         markdown_dir_name: str,
         yaml_header: dict,
         sections_dict: Optional[Dict[str, str]],
         overwrite_header_values: bool
     ) -> int:
-        """Create markdown based on the component and profile."""
+        """Generate markdown for all components in comp def."""
         if not file_utils.is_directory_name_allowed(markdown_dir_name):
             raise TrestleError(f'{markdown_dir_name} is not an allowed directory name')
+        md_path = trestle_root / markdown_dir_name
+        md_path.mkdir(parents=True, exist_ok=True)
+        component_def, _ = load_validate_model_name(trestle_root, comp_def_name, comp.ComponentDefinition)
+        for component in as_list(component_def.components):
+            rc = self.component_generate_by_name(
+                trestle_root,
+                comp_def_name,
+                component.title,
+                profile_name,
+                md_path / component.title,
+                yaml_header,
+                sections_dict,
+                overwrite_header_values
+            )
+            if rc != CmdReturnCodes.SUCCESS.value:
+                return rc
+        return CmdReturnCodes.SUCCESS.value
 
-        markdown_path = trestle_root / markdown_dir_name
+    def component_generate_by_name(
+        self,
+        trestle_root: pathlib.Path,
+        component_def_name: str,
+        component_name: str,
+        profile_name: str,
+        markdown_dir_path: pathlib.Path,
+        yaml_header: dict,
+        sections_dict: Optional[Dict[str, str]],
+        overwrite_header_values: bool
+    ) -> int:
+        """Create markdown based on the component and profile."""
         profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile_name, prof.Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
         catalog_interface = CatalogInterface(resolved_catalog)
-        component, _ = load_validate_model_name(trestle_root, component_name, comp.ComponentDefinition)
+        component_def, _ = load_validate_model_name(trestle_root, component_def_name, comp.ComponentDefinition)
 
         catalog_interface.write_catalog_as_markdown(
-            md_path=markdown_path,
+            md_path=markdown_dir_path,
             yaml_header=yaml_header,
             sections_dict=sections_dict,
             prompt_responses=True,
@@ -126,7 +155,8 @@ class ComponentGenerate(AuthorCommonCommand):
             set_parameters=False,
             required_sections=None,
             allowed_sections=None,
-            component=component
+            component_def=component_def,
+            component_name=component_name
         )
         return CmdReturnCodes.SUCCESS.value
 

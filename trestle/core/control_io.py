@@ -519,7 +519,8 @@ class ControlIOWriter():
         overwrite_header_values: bool,
         required_sections: Optional[List[str]],
         allowed_sections: Optional[List[str]],
-        component: Optional[comp.ComponentDefinition] = None
+        component_def: Optional[comp.ComponentDefinition] = None,
+        component_name: Optional[str] = None
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -536,7 +537,8 @@ class ControlIOWriter():
             overwrite_header_values: Overwrite existing values in markdown header content but add new content
             required_sections: List of required sections that may need prompting for content
             allowed_sections: List of allowed sections that will appear in markdown
-            component: Optional component definition containing imp req responses to be added to control markdown
+            component_def: Optional component definition containing imp req responses to be added to control markdown
+            component_name: name of component to write out
 
         Returns:
             None
@@ -554,7 +556,11 @@ class ControlIOWriter():
             return
         control_file = dest_path / (control.id + '.md')
         # first read the existing markdown header and content if it exists
-        existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(control_file, component)
+        existing_text, header = ControlIOReader.read_all_implementation_prose_and_header(
+            control_file,
+            component_def,
+            component_name
+        )
         self._md_file = MDWriter(control_file)
         self._sections_dict = sections_dict
 
@@ -586,7 +592,7 @@ class ControlIOWriter():
 
         # prompt responses for imp reqs
         if prompt_responses:
-            self._add_implementation_response_prompts(control, existing_text, component is not None)
+            self._add_implementation_response_prompts(control, existing_text, component_def is not None)
 
         # only used for profile-generate
         # add sections corresponding to added parts in the profile
@@ -1103,35 +1109,37 @@ class ControlIOReader():
 
     @staticmethod
     def _add_component_to_dict(
-        control_id: str, comp_dict: CompDict, component: Optional[comp.ComponentDefinition]
+        control_id: str, comp_dict: CompDict, comp_def: Optional[comp.ComponentDefinition], comp_name: Optional[str]
     ) -> None:
         """Strictly works with ComponentDefinition elements and not SSP."""
-        if component:
-            for sub_comp in as_list(component.components):
-                for control_imp in as_list(sub_comp.control_implementations):
-                    for imp_req in as_list(control_imp.implemented_requirements):
-                        if imp_req.control_id == control_id:
-                            sub_comp_dict: Dict[str, ComponentImpInfo] = {}
-                            if imp_req.description:
-                                # add top level control guidance with no statement id
-                                imp_stat_str = ControlIOWriter.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
-                                imp_stat = ControlIOReader._imp_stat_from_string(imp_stat_str)
-                                sub_comp_dict[''] = ComponentImpInfo(
-                                    prose=imp_req.description, implementation_status=imp_stat
-                                )
-                            for statement in as_list(imp_req.statements):
-                                imp_stat_str = ControlIOWriter.get_prop(statement, const.IMPLEMENTATION_STATUS)
-                                imp_stat = ControlIOReader._imp_stat_from_string(imp_stat_str)
-                                sub_comp_dict[statement.statement_id] = ComponentImpInfo(
-                                    prose=statement.description, implementation_status=imp_stat
-                                )
-                            if sub_comp_dict:
-                                comp_dict[sub_comp.title] = sub_comp_dict
+        if comp_def:
+            for sub_comp in as_list(comp_def.components):
+                if sub_comp.title == comp_name:
+                    for control_imp in as_list(sub_comp.control_implementations):
+                        for imp_req in as_list(control_imp.implemented_requirements):
+                            if imp_req.control_id == control_id:
+                                sub_comp_dict: Dict[str, ComponentImpInfo] = {}
+                                if imp_req.description:
+                                    # add top level control guidance with no statement id
+                                    imp_stat_str = ControlIOWriter.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
+                                    imp_stat = ControlIOReader._imp_stat_from_string(imp_stat_str)
+                                    sub_comp_dict[''] = ComponentImpInfo(
+                                        prose=imp_req.description, implementation_status=imp_stat
+                                    )
+                                for statement in as_list(imp_req.statements):
+                                    imp_stat_str = ControlIOWriter.get_prop(statement, const.IMPLEMENTATION_STATUS)
+                                    imp_stat = ControlIOReader._imp_stat_from_string(imp_stat_str)
+                                    sub_comp_dict[statement.statement_id] = ComponentImpInfo(
+                                        prose=statement.description, implementation_status=imp_stat
+                                    )
+                                if sub_comp_dict:
+                                    comp_dict[sub_comp.title] = sub_comp_dict
 
     @staticmethod
     def read_all_implementation_prose_and_header(
         control_file: pathlib.Path,
-        component: Optional[comp.ComponentDefinition] = None
+        component_def: Optional[comp.ComponentDefinition] = None,
+        component_name: Optional[str] = None
     ) -> Tuple[CompDict, Dict[str, List[str]]]:
         """
         Find all labels and associated prose in this control.
@@ -1151,15 +1159,15 @@ class ControlIOReader():
             property corresponding to implementation status and included if available.
         """
         # component-generate creates different style of markdown so handle separately from SSP style markdown
-        component_mode = component is not None
+        component_mode = component_def is not None
         comp_dict: CompDict = {}
         yaml_header = {}
-        # this level only adds for top level component but add_node_to_dict can add for other components
-        comp_name = const.SSP_MAIN_COMP_NAME
+        # this level only adds for known component but add_node_to_dict can add for other components
+        comp_name = component_name if component_name else const.SSP_MAIN_COMP_NAME
         control_id = control_file.stem
         if not control_file.exists():
             # pull possible prose from component definition
-            ControlIOReader._add_component_to_dict(control_id, comp_dict, component)
+            ControlIOReader._add_component_to_dict(control_id, comp_dict, component_def, comp_name)
             return comp_dict, yaml_header
         try:
             md_api = MarkdownAPI()
