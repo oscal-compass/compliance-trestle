@@ -1146,7 +1146,8 @@ class ControlIOReader():
 
         Args:
             control_file: path to the control markdown file
-            component: optional component definition possibly with implementation prose for this control
+            component_def: optional component definition possibly with implementation prose for this control
+            component_name: optional component name to read prose from
 
         Returns:
             Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.

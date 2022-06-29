@@ -74,6 +74,7 @@ nav:
           - catalog: api_reference/trestle.core.commands.author.catalog.md
           - command: api_reference/trestle.core.commands.author.command.md
           - common: api_reference/trestle.core.commands.author.common.md
+          - component: api_reference/trestle.core.commands.author.component.md
           - consts: api_reference/trestle.core.commands.author.consts.md
           - docs: api_reference/trestle.core.commands.author.docs.md
           - folders: api_reference/trestle.core.commands.author.folders.md
