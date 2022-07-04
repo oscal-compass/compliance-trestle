@@ -305,5 +305,11 @@ class ComponentAssemble(AuthorCommonCommand):
             ComponentAssemble._update_component_with_markdown(md_dir, component)
 
     @staticmethod
-    def _update_component_with_markdown(md_dir: pathlib.Path, component: comp.ComponentDefinition) -> None:
-        pass
+    def _update_component_with_markdown(md_dir: pathlib.Path, component: comp.DefinedComponent) -> None:
+        #
+        md_path = md_dir / component.title
+        avail_comps = {component.title: component}
+        cat_interface = CatalogInterface()
+        imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps)
+        # FIXME next needs work
+        component.control_implementations[0].implemented_requirements = imp_reqs

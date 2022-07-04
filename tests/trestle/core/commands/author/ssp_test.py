@@ -31,7 +31,7 @@ from trestle.common import const
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
-from trestle.core.control_io import ControlIOReader
+from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -54,7 +54,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
+    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(md_file)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
             prose = label_dict[part_label].prose

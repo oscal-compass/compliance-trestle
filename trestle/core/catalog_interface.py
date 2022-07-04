@@ -26,7 +26,9 @@ import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_io import ControlIOReader, ControlIOWriter
+from trestle.core.control_interface import ControlInterface
+from trestle.core.control_reader import ControlReader
+from trestle.core.control_writer import ControlWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import profile as prof
@@ -190,7 +192,7 @@ class CatalogInterface():
             grp_id, _, _ = self.get_group_info_by_control(control.id)
             if grp_id == group_id:
                 controls.append(control)
-        return sorted(controls, key=lambda control: ControlIOWriter.get_sort_id(control))
+        return sorted(controls, key=lambda control: ControlInterface.get_sort_id(control))
 
     def get_dependent_control_ids(self, control_id: str) -> List[str]:
         """Find all child ids of this control from the dict with recursion."""
@@ -241,8 +243,8 @@ class CatalogInterface():
         Returns empty string if status not found.
         """
         for control in self.get_all_controls_from_dict():
-            if ControlIOWriter.get_label(control).strip().lower() == control_name.strip().lower():
-                status = ControlIOWriter.get_prop(control, 'status')
+            if ControlInterface.get_label(control).strip().lower() == control_name.strip().lower():
+                status = ControlInterface.get_prop(control, 'status')
                 return control.id, status
         return '', ''
 
@@ -258,7 +260,7 @@ class CatalogInterface():
             Single string concatenating prose from all parts and sub-parts in control with that name.
         """
         control = self.get_control(control_id)
-        return ControlIOWriter.get_part_prose(control, part_name)
+        return ControlInterface.get_part_prose(control, part_name)
 
     def get_all_controls_from_catalog(self, recurse: bool) -> Iterator[cat.Control]:
         """
@@ -333,7 +335,7 @@ class CatalogInterface():
                 if part.id and statement_id.startswith(part.id):
                     part = self.find_part_with_condition(part, does_part_exists)
                     if part:
-                        label = ControlIOWriter.get_label(part)
+                        label = ControlInterface.get_label(part)
                         found_part = part
                         break
 
@@ -357,7 +359,7 @@ class CatalogInterface():
         """Delete all withdrawn controls from the catalog."""
         delete_list = []
         for control in self.get_all_controls_from_dict():
-            if ControlIOWriter.is_withdrawn(control):
+            if ControlInterface.is_withdrawn(control):
                 delete_list.append(control.id)
         for id_ in delete_list:
             self.delete_control(id_)
@@ -462,7 +464,7 @@ class CatalogInterface():
             as_list(node.controls), control_handle.control.id, lambda control: control.id
         )
         node.controls.append(control_handle.control)
-        node.controls = none_if_empty(sorted(node.controls, key=lambda control: ControlIOWriter.get_sort_id(control)))
+        node.controls = none_if_empty(sorted(node.controls, key=lambda control: ControlInterface.get_sort_id(control)))
 
     def update_catalog_controls(self) -> None:
         """
@@ -551,7 +553,7 @@ class CatalogInterface():
             mapping of param ids to their final parameter states after possible modify by the profile setparameters
         """
         # get the mapping of param_id's to params for this control, excluding those with no value set
-        param_dict = ControlIOReader.get_control_param_dict(control, values_only)
+        param_dict = ControlReader.get_control_param_dict(control, values_only)
         for key in param_dict.keys():
             if key in profile_param_dict:
                 param_dict[key] = profile_param_dict[key]
@@ -599,7 +601,7 @@ class CatalogInterface():
             captured in the set_params of the profile.  label, select, choice, how-many should only appear if they
             are specified explicitly in the profile's set_parameters.
         """
-        writer = ControlIOWriter()
+        writer = ControlWriter()
         required_section_list = required_sections.split(',') if required_sections else []
         allowed_section_list = allowed_sections.split(',') if allowed_sections else []
 
@@ -616,7 +618,7 @@ class CatalogInterface():
             # here we do special handling of how set-parameters merge with the yaml header
             if set_parameters:
                 # get all params for this control
-                control_param_dict = ControlIOReader.get_control_param_dict(control, False)
+                control_param_dict = ControlReader.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
                     # if the param is in the profile set_params, load its contents first and mark as profile-values
@@ -725,7 +727,7 @@ class CatalogInterface():
             # Controls with empty group titles are tolerated but at least one title must be present or warning given
             # The special group with no name that has the catalog as parent is just a list and has no title
             for control_path in group_dir.glob('*.md'):
-                control, control_group_title = ControlIOReader.read_control(control_path, set_parameters)
+                control, control_group_title = ControlReader.read_control(control_path, set_parameters)
                 if control_group_title:
                     if group_title:
                         if control_group_title != group_title:
@@ -735,7 +737,7 @@ class CatalogInterface():
                     else:
                         group_title = control_group_title
                 control_list_raw.append(control)
-            control_list = sorted(control_list_raw, key=lambda control: ControlIOWriter.get_sort_id(control))
+            control_list = sorted(control_list_raw, key=lambda control: ControlInterface.get_sort_id(control))
             if group_id:
                 if not group_title:
                     logger.warning(f'No group title found in controls for group {group_id}')
@@ -770,7 +772,7 @@ class CatalogInterface():
         imp_req_map: Dict[str, ossp.ImplementedRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_file, avail_comps)
+                sort_id, imp_req = ControlReader.read_implemented_requirement(control_file, avail_comps)
                 imp_req_map[sort_id] = imp_req
         return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 
@@ -784,7 +786,7 @@ class CatalogInterface():
         param_sort_map: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                sort_id, control_alters, control_param_dict = ControlIOReader.read_new_alters_and_params(
+                sort_id, control_alters, control_param_dict = ControlReader.read_new_alters_and_params(
                     control_file,
                     required_sections_list
                 )

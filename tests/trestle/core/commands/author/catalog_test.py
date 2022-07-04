@@ -32,7 +32,8 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.control_io import ControlIOReader, ParameterRep
+from trestle.core.control_interface import ParameterRep
+from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
@@ -342,14 +343,14 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict, False)
-    assert ControlIOReader.param_to_str(
+    assert ControlReader.param_to_str(
         control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'all alert personnel'
-    assert ControlIOReader.param_to_str(
+    assert ControlReader.param_to_str(
         control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'monthly'
     # param 7 has no value so its label will be used
-    assert ControlIOReader.param_to_str(
+    assert ControlReader.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
 

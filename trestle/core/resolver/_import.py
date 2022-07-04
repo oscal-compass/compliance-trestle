@@ -21,7 +21,7 @@ import trestle.common.const as const
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
-from trestle.core.control_io import ParameterRep
+from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
 from trestle.core.resolver.merge import Merge

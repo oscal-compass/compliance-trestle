@@ -33,7 +33,8 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOWriter
+from trestle.core.control_interface import ControlInterface
+from trestle.core.control_writer import ControlWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
@@ -184,7 +185,8 @@ class JinjaCmd(CommandPlusDocs):
             ssp_writer.set_catalog(resolved_catalog)
             lut['catalog'] = resolved_catalog
             lut['catalog_interface'] = CatalogInterface(resolved_catalog)
-            lut['control_io_writer'] = ControlIOWriter()
+            lut['control_interface'] = ControlInterface()
+            lut['control_writer'] = ControlWriter()
             lut['ssp_md_writer'] = ssp_writer
 
             output = JinjaCmd.render_template(template, lut, template_folder)
@@ -228,7 +230,7 @@ class JinjaCmd(CommandPlusDocs):
                     if not group_dir.exists():
                         group_dir.mkdir(parents=True, exist_ok=True)
 
-                control_writer = ControlIOWriter()
+                control_writer = ControlWriter()
 
                 jinja_env = Environment(
                     loader=FileSystemLoader(template_folder),
@@ -238,6 +240,7 @@ class JinjaCmd(CommandPlusDocs):
                 )
                 template = jinja_env.get_template(str(r_input_file))
                 lut['catalog_interface'] = catalog_interface
+                lut['control_interface'] = ControlInterface()
                 lut['control_writer'] = control_writer
                 lut['control'] = control
                 lut['profile'] = profile

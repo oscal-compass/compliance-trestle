@@ -34,7 +34,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOReader
+from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -369,10 +369,10 @@ class SSPFilter(AuthorCommonCommand):
         )
 
         if components:
-            raw_comp_names = [ControlIOReader.simplify_name(name) for name in components]
+            raw_comp_names = [ControlReader.simplify_name(name) for name in components]
             comp_uuids: List[str] = []
             for component in ssp.system_implementation.components:
-                if ControlIOReader.simplify_name(component.title) in raw_comp_names:
+                if ControlReader.simplify_name(component.title) in raw_comp_names:
                     comp_uuids.append(component.uuid)
             # imp_reqs can be by comp
             # and imp_reqs can have statements that are by comp

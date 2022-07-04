@@ -101,7 +101,9 @@ nav:
         - task: api_reference/trestle.core.commands.task.md
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
-      - control_io: api_reference/trestle.core.control_io.md
+      - control_interface: api_reference/trestle.core.control_interface.md
+      - control_reader: api_reference/trestle.core.control_reader.md
+      - control_writer: api_reference/trestle.core.control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md

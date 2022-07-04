@@ -23,7 +23,8 @@ from trestle.common.common_types import OBT
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOReader, ParameterRep
+from trestle.core.control_interface import ParameterRep
+from trestle.core.control_reader import ControlReader
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import common
 
@@ -63,7 +64,7 @@ class Modify(Pipeline.Filter):
             if param.id not in prose:
                 continue
             # create the replacement text for the param_id
-            param_str = ControlIOReader.param_to_str(param, param_rep)
+            param_str = ControlReader.param_to_str(param, param_rep)
             # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
             pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
             prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
@@ -103,7 +104,7 @@ class Modify(Pipeline.Filter):
                 logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
-                param_str = ControlIOReader.param_to_str(param, param_rep, False, False, params_format)
+                param_str = ControlReader.param_to_str(param, param_rep, False, False, params_format)
                 text = text.replace(staches[i], param_str, 1).strip()
                 if param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
                     logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
@@ -339,7 +340,7 @@ class Modify(Pipeline.Filter):
         param_dict: Dict[str, common.Parameter] = {}
         # build the full mapping of params to values from the catalog interface
         for control in self._catalog_interface.get_all_controls_from_dict():
-            param_dict.update(ControlIOReader.get_control_param_dict(control, False))
+            param_dict.update(ControlReader.get_control_param_dict(control, False))
         param_dict.update(self._catalog_interface.loose_param_dict)
         # insert param values into prose of all controls
         for control in self._catalog_interface.get_all_controls_from_dict():
