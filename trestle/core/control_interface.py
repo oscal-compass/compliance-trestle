@@ -85,7 +85,7 @@ class ControlInterface():
     """Class to interact with controls in memory."""
 
     @staticmethod
-    def _strip_to_make_ncname(label: str) -> str:
+    def strip_to_make_ncname(label: str) -> str:
         """Strip chars to conform with NCNAME regex."""
         orig_label = label
         # make sure first char is allowed
@@ -141,7 +141,7 @@ class ControlInterface():
         return ControlInterface.get_prop(part_control, 'label')
 
     @staticmethod
-    def _get_part(part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
+    def get_part(part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
         """
         Find parts with the specified item type, within the given part.
 
@@ -165,13 +165,14 @@ class ControlInterface():
             if part.parts:
                 sub_list = []
                 for prt in part.parts:
-                    sub_list.extend(ControlInterface._get_part(prt, item_type, skip_id))
+                    sub_list.extend(ControlInterface.get_part(prt, item_type, skip_id))
                 sub_list.append('')
                 items.append(sub_list)
         return items
 
     @staticmethod
-    def _get_adds(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
+    def get_adds(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
+        """Get the adds for a control from a profile by control id."""
         adds = []
         if profile and profile.modify and profile.modify.alters:
             for alter in profile.modify.alters:
@@ -229,7 +230,7 @@ class ControlInterface():
         return '', '', ''
 
     @staticmethod
-    def _get_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str, str]:
+    def get_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str, str]:
         """Get sections that are not in the list."""
         id_, name, title = ControlInterface._find_section(control, skip_section_list)
         if id_:

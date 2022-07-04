@@ -226,7 +226,7 @@ class ControlReader():
                 if not id_text:
                     prev_label = ControlInterface.get_label(parts[-1]) if parts else ''
                     id_text = ControlReader._create_next_label(prev_label, indent)
-                id_ = ControlInterface._strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
+                id_ = ControlInterface.strip_to_make_ncname(parent_id.rstrip('.') + '.' + id_text.strip('.'))
                 name = 'objective' if id_.find('_obj') > 0 else 'item'
                 prop = common.Property(name='label', value=id_text)
                 part = common.Part(name=name, id=id_, prose=prose, props=[prop])
@@ -337,10 +337,10 @@ class ControlReader():
                 ii += 1
             if prose:
                 if label.lower() == 'guidance':
-                    id_ = ControlInterface._strip_to_make_ncname(control_id + '_gdn')
+                    id_ = ControlInterface.strip_to_make_ncname(control_id + '_gdn')
                 else:
-                    id_ = ControlInterface._strip_to_make_ncname(control_id + '_' + label)
-                label = ControlInterface._strip_to_make_ncname(label)
+                    id_ = ControlInterface.strip_to_make_ncname(control_id + '_' + label)
+                label = ControlInterface.strip_to_make_ncname(label)
                 new_parts.append(common.Part(id=id_, name=label, prose=prose.strip('\n')))
         if new_parts:
             control_parts = [] if not control_parts else control_parts
@@ -680,7 +680,7 @@ class ControlReader():
                     statement_id = f'{control_id}_smt'
                 else:
                     clean_label = label.strip('.')
-                    statement_id = ControlInterface._strip_to_make_ncname(f'{control_id}_smt.{clean_label}')
+                    statement_id = ControlInterface.strip_to_make_ncname(f'{control_id}_smt.{clean_label}')
                 if statement_id in statement_map:
                     statement = statement_map[statement_id]
                 else:

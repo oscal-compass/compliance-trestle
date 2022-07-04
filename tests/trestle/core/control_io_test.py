@@ -248,9 +248,9 @@ def test_control_failures(tmp_path: pathlib.Path) -> None:
     part = common.Part(name='foo')
     assert ControlInterface.get_label(part) == ''
 
-    assert ControlInterface._strip_to_make_ncname('1a@foo') == 'afoo'
+    assert ControlInterface.strip_to_make_ncname('1a@foo') == 'afoo'
     with pytest.raises(TrestleError):
-        ControlInterface._strip_to_make_ncname('1@')
+        ControlInterface.strip_to_make_ncname('1@')
 
     with pytest.raises(TrestleError):
         ControlReader._indent('')

@@ -47,7 +47,7 @@ class ControlWriter():
                     if part.prose:
                         # need to avoid split lines in statement items
                         self._md_file.new_line(part.prose.replace('\n', '  '))
-                    items.append(ControlInterface._get_part(part, item_type, skip_id))
+                    items.append(ControlInterface.get_part(part, item_type, skip_id))
             # unwrap the list if it is many levels deep
             while not isinstance(items, str) and len(items) == 1:
                 items = items[0]
@@ -121,7 +121,7 @@ class ControlWriter():
         """Add the extra control sections after the main ones."""
         skip_section_list = ['statement', 'item', 'objective']
         while True:
-            _, name, title, prose = ControlInterface._get_section(control, skip_section_list)
+            _, name, title, prose = ControlInterface.get_section(control, skip_section_list)
             if not name:
                 return
             if allowed_sections and name not in allowed_sections:
@@ -239,7 +239,7 @@ class ControlWriter():
         self._md_file.new_hr()
 
     def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> List[str]:
-        adds = ControlInterface._get_adds(control.id, profile)
+        adds = ControlInterface.get_adds(control.id, profile)
         has_content = len(adds) > 0
 
         self._md_file.new_header(level=1, title=const.EDITABLE_CONTENT)

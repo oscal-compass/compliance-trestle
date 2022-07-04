@@ -312,4 +312,5 @@ class ComponentAssemble(AuthorCommonCommand):
         cat_interface = CatalogInterface()
         imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps)
         # FIXME next needs work
-        component.control_implementations[0].implemented_requirements = imp_reqs
+        if False:
+            component.control_implementations[0].implemented_requirements = imp_reqs
