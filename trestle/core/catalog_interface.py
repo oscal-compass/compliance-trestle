@@ -26,7 +26,7 @@ import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
@@ -559,21 +559,22 @@ class CatalogInterface():
                 param_dict[key] = profile_param_dict[key]
         return param_dict
 
-    def write_catalog_as_markdown(
-        self,
-        md_path: pathlib.Path,
-        yaml_header: dict,
-        sections_dict: Optional[Dict[str, str]],
-        prompt_responses: bool,
-        additional_content: bool = False,
-        profile: Optional[prof.Profile] = None,
-        overwrite_header_values: bool = False,
-        set_parameters: bool = False,
-        required_sections: Optional[str] = None,
-        allowed_sections: Optional[str] = None,
-        component_def: Optional[comp.ComponentDefinition] = None,
-        component_name: Optional[str] = None
-    ) -> None:
+    # def write_catalog_as_markdown(
+    #     self,
+    #     md_path: pathlib.Path,
+    #     yaml_header: dict,
+    #     sections_dict: Optional[Dict[str, str]],
+    #     prompt_responses: bool,
+    #     additional_content: bool = False,
+    #     profile: Optional[prof.Profile] = None,
+    #     overwrite_header_values: bool = False,
+    #     set_parameters: bool = False,
+    #     required_sections: Optional[str] = None,
+    #     allowed_sections: Optional[str] = None,
+    #     component_def: Optional[comp.ComponentDefinition] = None,
+    #     component_name: Optional[str] = None
+    # ) -> None:
+    def write_catalog_as_markdown(self, context: ControlContext) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
 
@@ -601,22 +602,22 @@ class CatalogInterface():
             captured in the set_params of the profile.  label, select, choice, how-many should only appear if they
             are specified explicitly in the profile's set_parameters.
         """
-        writer = ControlWriter()
-        required_section_list = required_sections.split(',') if required_sections else []
-        allowed_section_list = allowed_sections.split(',') if allowed_sections else []
+        required_section_list = context.required_sections.split(',') if context.required_sections else []
+        allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
 
         # create the directory in which to write the control markdown files
-        md_path.mkdir(exist_ok=True, parents=True)
+        context.md_root.mkdir(exist_ok=True, parents=True)
         catalog_interface = CatalogInterface(self._catalog)
         # get the list of params for this profile from its set_params
         # this is just from the set_params
-        full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(profile) if profile else {}
+        full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile
+                                                                                ) if context.profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
             # make copy of incoming yaml header
-            new_header = copy.deepcopy(yaml_header)
+            new_header = copy.deepcopy(context.yaml_header)
             # here we do special handling of how set-parameters merge with the yaml header
-            if set_parameters:
+            if context.set_parameters:
                 # get all params for this control
                 control_param_dict = ControlReader.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
@@ -645,7 +646,7 @@ class CatalogInterface():
                 if set_param_dict:
                     if const.SET_PARAMS_TAG not in new_header:
                         new_header[const.SET_PARAMS_TAG] = {}
-                    if overwrite_header_values:
+                    if context.overwrite_header_values:
                         # update the control params with new values
                         for key, value in new_header[const.SET_PARAMS_TAG].items():
                             if key in control_param_dict:
@@ -667,27 +668,32 @@ class CatalogInterface():
                         new_header[const.SET_PARAMS_TAG].pop(pop)
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
-            group_dir = md_path
+            group_dir = context.md_root
             control_path = catalog_interface.get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():
                     group_dir.mkdir(parents=True, exist_ok=True)
-            writer.write_control_for_editing(
-                group_dir,
-                control,
-                group_title,
-                new_header,
-                sections_dict,
-                additional_content,
-                prompt_responses,
-                profile,
-                overwrite_header_values,
-                required_section_list,
-                allowed_section_list,
-                component_def,
-                component_name
-            )
+            new_context = context.copy(deep=True)
+            new_context.yaml_header = new_header
+
+            writer = ControlWriter()
+            writer.write_control_for_editing(new_context, control, group_dir, group_title)
+            # writer.write_control_for_editing(
+            #     group_dir,
+            #     control,
+            #     group_title,
+            #     new_header,
+            #     sections_dict,
+            #     additional_content,
+            #     prompt_responses,
+            #     profile,
+            #     overwrite_header_values,
+            #     required_section_list,
+            #     allowed_section_list,
+            #     component_def,
+            #     component_name
+            # )
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:

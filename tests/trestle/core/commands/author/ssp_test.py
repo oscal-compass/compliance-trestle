@@ -249,7 +249,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
-    assert len(orig_ssp.system_implementation.components) == 2
+    assert len(orig_ssp.system_implementation.components) == 3  # including This System for prose not entered
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
 
@@ -279,7 +279,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
     assert orig_ssp.system_implementation == repeat_ssp.system_implementation
-    assert len(repeat_ssp.system_implementation.components) == 2
+    assert len(repeat_ssp.system_implementation.components) == 3  # including This System for prose not entered
     assert repeat_ssp.metadata.version.__root__ == new_version
 
     found_it = False

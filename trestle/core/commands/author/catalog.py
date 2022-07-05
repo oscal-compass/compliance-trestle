@@ -32,6 +32,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.control_interface import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal.catalog import Catalog
 
@@ -95,17 +96,28 @@ class CatalogGenerate(AuthorCommonCommand):
         try:
             catalog = load_validate_model_path(trestle_root, catalog_path)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(
-                md_path=markdown_path,
+            context = ControlContext.generate(
+                ContextPurpose.CATALOG,
+                True,
+                trestle_root,
+                markdown_path,
                 yaml_header=yaml_header,
-                sections_dict=None,
-                prompt_responses=False,
-                additional_content=False,
-                profile=None,
                 overwrite_header_values=overwrite_header_values,
-                set_parameters=True,
-                required_sections=None
+                set_parameters=True
             )
+            catalog_interface.write_catalog_as_markdown(context)
+
+            # catalog_interface.write_catalog_as_markdown(
+            #     md_path=markdown_path,
+            #     yaml_header=yaml_header,
+            #     sections_dict=None,
+            #     prompt_responses=False,
+            #     additional_content=False,
+            #     profile=None,
+            #     overwrite_header_values=overwrite_header_values,
+            #     set_parameters=True,
+            #     required_sections=None
+            # )
         except TrestleNotFoundError as e:
             raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
         except Exception as e:

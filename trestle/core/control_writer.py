@@ -20,7 +20,8 @@ from typing import Dict, List, Optional
 import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
+from trestle.core.control_interface import CompDict, ComponentImpInfo
+from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import component as comp
@@ -292,21 +293,24 @@ class ControlWriter():
             self._md_file.new_header(2, f'Control {section_title}')
             self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
 
+    # def write_control_for_editing(
+    #     self,
+    #     dest_path: pathlib.Path,
+    #     control: cat.Control,
+    #     group_title: str,
+    #     yaml_header: Optional[Dict],
+    #     sections_dict: Optional[Dict[str, str]],
+    #     additional_content: bool,
+    #     prompt_responses: bool,
+    #     profile: Optional[prof.Profile],
+    #     overwrite_header_values: bool,
+    #     required_sections: Optional[List[str]],
+    #     allowed_sections: Optional[List[str]],
+    #     component_def: Optional[comp.ComponentDefinition] = None,
+    #     component_name: Optional[str] = None
+    # ) -> None:
     def write_control_for_editing(
-        self,
-        dest_path: pathlib.Path,
-        control: cat.Control,
-        group_title: str,
-        yaml_header: Optional[Dict],
-        sections_dict: Optional[Dict[str, str]],
-        additional_content: bool,
-        prompt_responses: bool,
-        profile: Optional[prof.Profile],
-        overwrite_header_values: bool,
-        required_sections: Optional[List[str]],
-        allowed_sections: Optional[List[str]],
-        component_def: Optional[comp.ComponentDefinition] = None,
-        component_name: Optional[str] = None
+        self, context: ControlContext, control: cat.Control, dest_path: pathlib.Path, group_title: str
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -344,26 +348,26 @@ class ControlWriter():
         # first read the existing markdown header and content if it exists
         existing_text, header = ControlReader.read_all_implementation_prose_and_header(
             control_file,
-            component_def,
-            component_name
+            context.comp_def,
+            context.comp_name
         )
         self._md_file = MDWriter(control_file)
-        self._sections_dict = sections_dict
+        self._sections_dict = context.sections_dict
 
         merged_header = copy.deepcopy(header)
         # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
-        yaml_header = yaml_header if yaml_header else {}
+        context.yaml_header = context.yaml_header if context.yaml_header else {}
         sort_id = ControlInterface.get_sort_id(control, True)
-        if sort_id and const.SORT_ID not in yaml_header:
-            yaml_header[const.SORT_ID] = sort_id
-        ControlInterface.merge_dicts_deep(merged_header, yaml_header, overwrite_header_values)
+        if sort_id and const.SORT_ID not in context.yaml_header:
+            context.yaml_header[const.SORT_ID] = sort_id
+        ControlInterface.merge_dicts_deep(merged_header, context.yaml_header, context.overwrite_header_values)
 
         # merge any provided sections with sections in the header, with overwrite
         header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
-        if sections_dict:
-            header_sections_dict.update(sections_dict)
+        if context.sections_dict:
+            header_sections_dict.update(context.sections_dict)
         if header_sections_dict:
             merged_header[const.SECTIONS_TAG] = header_sections_dict
 
@@ -374,20 +378,20 @@ class ControlWriter():
         self._add_control_objective(control)
 
         # add allowed sections to the markdown
-        self._add_sections(control, allowed_sections)
+        self._add_sections(control, context.allowed_sections)
 
         # prompt responses for imp reqs
-        if prompt_responses:
-            self._add_implementation_response_prompts(control, existing_text, component_def is not None)
+        if context.prompt_responses:
+            self._add_implementation_response_prompts(control, existing_text, context.comp_def is not None)
 
         # only used for profile-generate
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
-        if additional_content:
-            added_sections = self._add_additional_content(control, profile)
+        if context.additional_content:
+            added_sections = self._add_additional_content(control, context.profile)
 
-        if required_sections:
-            self._prompt_required_sections(required_sections, added_sections)
+        if context.required_sections:
+            self._prompt_required_sections(context.required_sections, added_sections)
 
         self._md_file.write_out()
 

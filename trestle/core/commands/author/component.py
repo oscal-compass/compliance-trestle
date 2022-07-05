@@ -37,6 +37,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
@@ -131,8 +132,8 @@ class ComponentGenerate(AuthorCommonCommand):
     def component_generate_by_name(
         self,
         trestle_root: pathlib.Path,
-        component_def_name: str,
-        component_name: str,
+        comp_def_name: str,
+        comp_name: str,
         profile_name: str,
         markdown_dir_path: pathlib.Path,
         yaml_header: dict,
@@ -144,22 +145,28 @@ class ComponentGenerate(AuthorCommonCommand):
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
         catalog_interface = CatalogInterface(resolved_catalog)
-        component_def, _ = load_validate_model_name(trestle_root, component_def_name, comp.ComponentDefinition)
-
-        catalog_interface.write_catalog_as_markdown(
-            md_path=markdown_dir_path,
-            yaml_header=yaml_header,
-            sections_dict=sections_dict,
-            prompt_responses=True,
-            additional_content=False,
-            profile=None,
-            overwrite_header_values=overwrite_header_values,
-            set_parameters=False,
-            required_sections=None,
-            allowed_sections=None,
-            component_def=component_def,
-            component_name=component_name
-        )
+        comp_def, _ = load_validate_model_name(trestle_root, comp_def_name, comp.ComponentDefinition)
+        context = ControlContext.generate(ContextPurpose.CATALOG, True, trestle_root, markdown_dir_path)
+        context.sections_dict = sections_dict
+        context.prompt_responses = True
+        context.overwrite_header_values = overwrite_header_values
+        context.comp_def = comp_def
+        context.comp_name = comp_name
+        catalog_interface.write_catalog_as_markdown(context)
+        # catalog_interface.write_catalog_as_markdown(
+        #     md_path=markdown_dir_path,
+        #     yaml_header=yaml_header,
+        #     sections_dict=sections_dict,
+        #     prompt_responses=True,
+        #     additional_content=False,
+        #     profile=None,
+        #     overwrite_header_values=overwrite_header_values,
+        #     set_parameters=False,
+        #     required_sections=None,
+        #     allowed_sections=None,
+        #     component_def=component_def,
+        #     component_name=component_name
+        # )
         return CmdReturnCodes.SUCCESS.value
 
 

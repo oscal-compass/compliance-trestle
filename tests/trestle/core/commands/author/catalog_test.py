@@ -32,7 +32,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.control_interface import ParameterRep
+from trestle.core.control_interface import ContextPurpose, ControlContext, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -82,6 +82,10 @@ def test_catalog_generate_assemble(
     new_prose = 'My added item'
     assembled_cat_dir = tmp_trestle_dir / f'catalogs/{assembled_cat_name}'
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_trestle_dir, markdown_path)
+    context.set_parameters = set_parameters
+
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
@@ -364,7 +368,8 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
         control_b.props = []
     control_b.props.append(Property(name='status', value='Withdrawn'))
     catalog_interface = CatalogInterface(sample_catalog_rich_controls)
-    catalog_interface.write_catalog_as_markdown(tmp_path, {}, None, False)
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    catalog_interface.write_catalog_as_markdown(context)
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()

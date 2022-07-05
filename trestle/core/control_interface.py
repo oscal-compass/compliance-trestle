@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle queries and utility operations on controls in memory."""
+from __future__ import annotations
+
 import logging
 import pathlib
 import re
@@ -66,9 +68,10 @@ class ControlContext(TrestleBaseModel):
     """Class encapsulating control markdown usage."""
 
     purpose: ContextPurpose
+    to_markdown: bool
     trestle_root: pathlib.Path
-    md_path: pathlib.Path
-    yaml_header: Dict[Any, Any] = {}
+    md_root: pathlib.Path
+    yaml_header: Optional[Dict[Any, Any]] = None
     sections_dict: Optional[Dict[str, str]] = None
     prompt_responses = False
     additional_content = False
@@ -79,6 +82,49 @@ class ControlContext(TrestleBaseModel):
     allowed_sections: Optional[List[str]] = None
     comp_def: Optional[comp.ComponentDefinition] = None
     comp_name: Optional[str] = None
+
+    @classmethod
+    def generate(
+        cls,
+        purpose: ContextPurpose,
+        to_markdown: bool,
+        trestle_root: pathlib.Path,
+        md_root: pathlib.Path,
+        yaml_header: Optional[Dict[Any, Any]] = None,
+        sections_dict: Optional[Dict[str, str]] = None,
+        prompt_responses=False,
+        additional_content=False,
+        profile: Optional[prof.Profile] = None,
+        overwrite_header_values=False,
+        set_parameters=False,
+        required_sections: Optional[List[str]] = None,
+        allowed_sections: Optional[List[str]] = None,
+        comp_def: Optional[comp.ComponentDefinition] = None,
+        comp_name: Optional[str] = None
+    ) -> ControlContext:
+        """Generate control context of the needed type."""
+        context = cls(
+            purpose=purpose,
+            to_markdown=to_markdown,
+            trestle_root=trestle_root,
+            md_root=md_root,
+            yaml_header=yaml_header,
+            sections_dict=sections_dict,
+            prompt_responses=prompt_responses,
+            additional_content=additional_content,
+            profile=profile,
+            overwrite_header_values=overwrite_header_values,
+            set_parameters=set_parameters,
+            required_sections=required_sections,
+            allowed_sections=allowed_sections,
+            comp_def=comp_def,
+            comp_name=comp_name
+        )
+        if purpose == ContextPurpose.CATALOG:
+            context.comp_name = 'foo'
+        elif purpose == ContextPurpose.PROFILE:
+            context.comp_name = 'bar'
+        return context
 
 
 class ControlInterface():

@@ -30,7 +30,7 @@ from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
@@ -169,10 +169,12 @@ end of text
     if sections:
         control.parts.extend([sec_1, sec_2])
 
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     writer = ControlWriter()
-    writer.write_control_for_editing(
-        tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False, None, None
-    )
+    # writer.write_control_for_editing(
+    #     tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False, None, None
+    # )
+    writer.write_control_for_editing(context, control, tmp_path, 'My Group Title')
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlReader()
@@ -197,10 +199,12 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     sub_dir = tmp_path / 'sub_dir'
     sub_dir.mkdir(exist_ok=True)
     # write it out as markdown in a separate directory to avoid name clash
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, sub_dir)
     control_writer = ControlWriter()
-    control_writer.write_control_for_editing(
-        sub_dir, control, 'My Group Title', None, None, False, False, None, False, None, None
-    )
+    # control_writer.write_control_for_editing(
+    #     sub_dir, control, 'My Group Title', None, None, False, False, None, False, None, None
+    # )
+    control_writer.write_control_for_editing(context, control, sub_dir, group_title)
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -397,11 +401,15 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     assert len(header_1.keys()) == 8
     orig_control_read, group_title = ControlReader.read_control(control_path, True)
     assert group_title == 'Access Control'
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    context.yaml_header = header
+    context.overwrite_header_values = overwrite_header_values
     control_writer = ControlWriter()
     # write the control back out with the test header
-    control_writer.write_control_for_editing(
-        tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values, None, None
-    )
+    # control_writer.write_control_for_editing(
+    #     tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values, None, None
+    # )
+    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title)
     # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_2.keys()) == 9
