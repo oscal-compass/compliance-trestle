@@ -310,10 +310,11 @@ def test_merge_dicts_deep_empty() -> None:
     assert dest['foo'] == 'fancy value'
 
 
-def test_control_with_components() -> None:
+def test_control_with_components(tmp_path: pathlib.Path) -> None:
     """Test loading and parsing of implementated reqs with components."""
     control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
-    comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control_path)
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control_path, context)
     assert len(comp_prose_dict.keys()) == 3
     assert len(comp_prose_dict['This System'].keys()) == 2
     assert len(comp_prose_dict['Trestle Component'].keys()) == 1
@@ -328,18 +329,19 @@ def test_control_with_components() -> None:
         comp_dict[comp_name] = comp
 
     # confirm that the header content was inserted into the props of the imp_req
-    sort_id, imp_req = ControlReader.read_implemented_requirement(control_path, comp_dict)
+    sort_id, imp_req = ControlReader.read_implemented_requirement(control_path, comp_dict, context)
     assert len(imp_req.props) == 12
     assert len(imp_req.statements) == 3
     assert len(imp_req.statements[0].by_components) == 3
 
 
 @pytest.mark.parametrize('md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md'])
-def test_control_bad_components(md_file: str) -> None:
+def test_control_bad_components(md_file: str, tmp_path: pathlib.Path) -> None:
     """Test loading of imp reqs for control with bad components."""
     control_path = pathlib.Path('tests/data/author/controls/') / md_file
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     with pytest.raises(TrestleError):
-        ControlReader.read_all_implementation_prose_and_header(control_path)
+        ControlReader.read_all_implementation_prose_and_header(control_path, context)
 
 
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:

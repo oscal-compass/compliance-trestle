@@ -346,11 +346,7 @@ class ControlWriter():
             return
         control_file = dest_path / (control.id + '.md')
         # first read the existing markdown header and content if it exists
-        existing_text, header = ControlReader.read_all_implementation_prose_and_header(
-            control_file,
-            context.comp_def,
-            context.comp_name
-        )
+        existing_text, header = ControlReader.read_all_implementation_prose_and_header(control_file, context)
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 

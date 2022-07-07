@@ -28,7 +28,7 @@ from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ContextPurpose, ControlContext, ControlInterface, ParameterRep
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
@@ -368,11 +368,6 @@ class ControlReader():
         return clean_prose
 
     @staticmethod
-    def simplify_name(name: str) -> str:
-        """Simplify the name to ignore variations in case, space, hyphen, underscore, slash."""
-        return name.lower().replace(' ', '').replace('-', '').replace('_', '').replace('/', '')
-
-    @staticmethod
     def _comp_name_in_dict(comp_name: str, comp_dict: CompDict) -> str:
         """If the name is already in the dict in a similar form, stick to that form."""
         simple_name = ControlReader.simplify_name(comp_name)
@@ -389,9 +384,10 @@ class ControlReader():
         node: MarkdownNode,
         control_id: str,
         comp_list: List[str],
-        component_mode=False
+        context: ControlContext
     ) -> None:
         """Extract the label, prose, possible component name - along with implementation status."""
+        component_mode = context.purpose == ContextPurpose.COMPONENT
         prose = '\n'.join(ControlReader._clean_prose(node.content.text))
         if prose:
             # for ssp, ### marks component name but for component it is ##
@@ -437,7 +433,7 @@ class ControlReader():
             for index in subnode_kill:
                 del node.subnodes[index]
         for subnode in node.subnodes:
-            ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, component_mode)
+            ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
 
     @staticmethod
     def _imp_stat_from_string(stat_str: str) -> str:
@@ -476,73 +472,6 @@ class ControlReader():
                                     )
                                 if sub_comp_dict:
                                     comp_dict[sub_comp.title] = sub_comp_dict
-
-    @staticmethod
-    def read_all_implementation_prose_and_header(
-        control_file: pathlib.Path,
-        component_def: Optional[comp.ComponentDefinition] = None,
-        component_name: Optional[str] = None
-    ) -> Tuple[CompDict, Dict[str, List[str]]]:
-        """
-        Find all labels and associated prose in this control.
-
-        Args:
-            control_file: path to the control markdown file
-            component_def: optional component definition possibly with implementation prose for this control
-            component_name: optional component name to read prose from
-
-        Returns:
-            Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
-            Also returns the yaml header as dict in second part of tuple.
-            This does not generate components - it only tracks component names and associated responses.
-
-        Notes:
-            If a component is provided, any implementation prose for a control will be added.
-            In addition, the implemented requirement will be queried for a
-            property corresponding to implementation status and included if available.
-        """
-        # component-generate creates different style of markdown so handle separately from SSP style markdown
-        component_mode = component_def is not None
-        comp_dict: CompDict = {}
-        yaml_header = {}
-        # this level only adds for known component but add_node_to_dict can add for other components
-        comp_name = component_name if component_name else const.SSP_MAIN_COMP_NAME
-        control_id = control_file.stem
-        if not control_file.exists():
-            # pull possible prose from component definition
-            ControlReader._add_component_to_dict(control_id, comp_dict, component_def, comp_name)
-            return comp_dict, yaml_header
-        try:
-            md_api = MarkdownAPI()
-            yaml_header, control = md_api.processor.process_markdown(control_file)
-
-            # first get the header strings, including statement labels, for statement imp reqs
-            imp_string = '## Implementation '
-            headers = control.get_all_headers_for_level(2)
-            imp_header_list = [header for header in headers if header.startswith(imp_string)]
-
-            # now get the (one) header for the main solution
-            main_headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
-            # should be only one header, so warn if others found
-            n_headers = 0
-            for main_header in main_headers:
-                node = control.get_node_for_key(main_header)
-                # this node is top level so it will have empty label
-                ControlReader._add_node_to_dict(comp_name, '', comp_dict, node, control_id, [], component_mode)
-                n_headers += 1
-                if n_headers > 1:
-                    logger.warning(
-                        f'Control {control_id} has extra main header response #{n_headers}'
-                        ' when it should only have one.'
-                    )
-            for imp_header in imp_header_list:
-                label = imp_header.split(' ', 2)[2].strip()
-                node = control.get_node_for_key(imp_header)
-                ControlReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [], component_mode)
-
-        except TrestleError as e:
-            raise TrestleError(f'Error occurred reading {control_file}: {e}')
-        return comp_dict, yaml_header
 
     @staticmethod
     def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
@@ -632,8 +561,119 @@ class ControlReader():
                 by_comp.responsible_roles = imp_req.responsible_roles
 
     @staticmethod
+    def _read_added_part(ii: int, lines: List[str], control_id: str,
+                         sections_dict: Dict[str, str]) -> Tuple[int, Optional[common.Part]]:
+        """Read a single part indicated by ## Control foo."""
+        snake_dict: Dict[str, str] = {}
+        # create reverse lookup of long snake name to short name needed for part
+        for key, value in sections_dict.items():
+            snake_dict[spaces_and_caps_to_snake(value)] = key
+        while 0 <= ii < len(lines):
+            # look for ## Control foo - then read prose
+            line = lines[ii]
+            prefix = '## Control '
+            if line:
+                if not line.startswith(prefix):
+                    raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
+                part_name_long_raw = line[len(prefix):].strip()
+                part_name_snake = spaces_and_caps_to_snake(part_name_long_raw)
+                # if the long name isn't there use the snake version for the part
+                # otherwise the part will have the desired short name for the corresponding section
+                part_name = snake_dict.get(part_name_snake, part_name_snake)
+                # use sections dict to find correct title otherwise use the title from the markdown
+                part_title = sections_dict.get(part_name, part_name_long_raw)
+                prose_lines = []
+                ii += 1
+                have_content = False
+                while 0 <= ii < len(lines):
+                    line = lines[ii]
+                    if not line.startswith(prefix):
+                        if line:
+                            have_content = True
+                        prose_lines.append(line)
+                        ii += 1
+                        continue
+                    break
+                if have_content:
+                    prose = '\n'.join(prose_lines)
+                    # strip leading / trailing new lines.
+                    prose = prose.strip('\n')
+                    id_ = f'{control_id}_{part_name}'
+                    part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
+                    return ii, part
+            ii += 1
+        return -1, None
+
+    @staticmethod
+    def simplify_name(name: str) -> str:
+        """Simplify the name to ignore variations in case, space, hyphen, underscore, slash."""
+        return name.lower().replace(' ', '').replace('-', '').replace('_', '').replace('/', '')
+
+    @staticmethod
+    def read_all_implementation_prose_and_header(control_file: pathlib.Path,
+                                                 context: ControlContext) -> Tuple[CompDict, Dict[str, List[str]]]:
+        """
+        Find all labels and associated prose in this control.
+
+        Args:
+            control_file: path to the control markdown file
+            component_def: optional component definition possibly with implementation prose for this control
+            component_name: optional component name to read prose from
+
+        Returns:
+            Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
+            Also returns the yaml header as dict in second part of tuple.
+            This does not generate components - it only tracks component names and associated responses.
+
+        Notes:
+            If a component is provided, any implementation prose for a control will be added.
+            In addition, the implemented requirement will be queried for a
+            property corresponding to implementation status and included if available.
+        """
+        comp_dict: CompDict = {}
+        yaml_header = {}
+        # this level only adds for known component but add_node_to_dict can add for other components
+        comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
+        control_id = control_file.stem
+        if not control_file.exists():
+            # pull possible prose from component definition
+            ControlReader._add_component_to_dict(control_id, comp_dict, context.comp_def, comp_name)
+            return comp_dict, yaml_header
+        try:
+            md_api = MarkdownAPI()
+            yaml_header, control = md_api.processor.process_markdown(control_file)
+
+            # first get the header strings, including statement labels, for statement imp reqs
+            imp_string = '## Implementation '
+            headers = control.get_all_headers_for_level(2)
+            imp_header_list = [header for header in headers if header.startswith(imp_string)]
+
+            # now get the (one) header for the main solution
+            main_headers = control.get_all_headers_for_key(const.SSP_MD_IMPLEMENTATION_QUESTION, False)
+            # should be only one header, so warn if others found
+            n_headers = 0
+            for main_header in main_headers:
+                node = control.get_node_for_key(main_header)
+                # this node is top level so it will have empty label
+                ControlReader._add_node_to_dict(comp_name, '', comp_dict, node, control_id, [], context)
+                n_headers += 1
+                if n_headers > 1:
+                    logger.warning(
+                        f'Control {control_id} has extra main header response #{n_headers}'
+                        ' when it should only have one.'
+                    )
+            for imp_header in imp_header_list:
+                label = imp_header.split(' ', 2)[2].strip()
+                node = control.get_node_for_key(imp_header)
+                ControlReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [], context)
+
+        except TrestleError as e:
+            raise TrestleError(f'Error occurred reading {control_file}: {e}')
+        return comp_dict, yaml_header
+
+    @staticmethod
     def read_implemented_requirement(
-        control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent]
+        control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent], context: ControlContext
     ) -> Tuple[str, ossp.ImplementedRequirement]:
         """
         Get the implementated requirement associated with given control and link to existing components or new ones.
@@ -651,7 +691,7 @@ class ControlReader():
             This is only used for ssp via catalog_interface.
         """
         control_id = control_file.stem
-        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control_file)
+        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control_file, context)
 
         statement_map: Dict[str, ossp.Statement] = {}
         # create a new implemented requirement linked to the control id to hold the statements
@@ -704,50 +744,6 @@ class ControlReader():
         ControlReader._insert_header_content(imp_req, header, control_id)
         sort_id = header.get(const.SORT_ID, control_id)
         return sort_id, imp_req
-
-    @staticmethod
-    def _read_added_part(ii: int, lines: List[str], control_id: str,
-                         sections_dict: Dict[str, str]) -> Tuple[int, Optional[common.Part]]:
-        """Read a single part indicated by ## Control foo."""
-        snake_dict: Dict[str, str] = {}
-        # create reverse lookup of long snake name to short name needed for part
-        for key, value in sections_dict.items():
-            snake_dict[spaces_and_caps_to_snake(value)] = key
-        while 0 <= ii < len(lines):
-            # look for ## Control foo - then read prose
-            line = lines[ii]
-            prefix = '## Control '
-            if line:
-                if not line.startswith(prefix):
-                    raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
-                part_name_long_raw = line[len(prefix):].strip()
-                part_name_snake = spaces_and_caps_to_snake(part_name_long_raw)
-                # if the long name isn't there use the snake version for the part
-                # otherwise the part will have the desired short name for the corresponding section
-                part_name = snake_dict.get(part_name_snake, part_name_snake)
-                # use sections dict to find correct title otherwise use the title from the markdown
-                part_title = sections_dict.get(part_name, part_name_long_raw)
-                prose_lines = []
-                ii += 1
-                have_content = False
-                while 0 <= ii < len(lines):
-                    line = lines[ii]
-                    if not line.startswith(prefix):
-                        if line:
-                            have_content = True
-                        prose_lines.append(line)
-                        ii += 1
-                        continue
-                    break
-                if have_content:
-                    prose = '\n'.join(prose_lines)
-                    # strip leading / trailing new lines.
-                    prose = prose.strip('\n')
-                    id_ = f'{control_id}_{part_name}'
-                    part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
-                    return ii, part
-            ii += 1
-        return -1, None
 
     @staticmethod
     def read_new_alters_and_params(control_path: pathlib.Path,

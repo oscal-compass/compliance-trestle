@@ -106,7 +106,7 @@ class SSPGenerate(AuthorCommonCommand):
                         sections_dict[short_name] = short_name
                 logger.debug(f'ssp sections dict: {sections_dict}')
 
-            context = ControlContext.generate(ContextPurpose.CATALOG, True, trestle_root, markdown_path)
+            context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, markdown_path)
             context.yaml_header = yaml_header
             context.sections_dict = sections_dict
             context.prompt_responses = True
@@ -239,6 +239,8 @@ class SSPAssemble(AuthorCommonCommand):
                 trestle_root, orig_ssp_name, ossp.SystemSecurityPlan
             )
 
+            context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
+
             # need to load imp_reqs from markdown but need component first
             if orig_ssp_path:
                 # load the existing json ssp
@@ -246,14 +248,14 @@ class SSPAssemble(AuthorCommonCommand):
                 for component in ssp.system_implementation.components:
                     comp_dict[component.title] = component
                 # read the new imp reqs from markdown and have them reference existing components
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
                 self._merge_imp_reqs(ssp, imp_reqs)
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 # load the imp_reqs from markdown and create components as needed, referenced by ### headers
-                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict)
+                imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
 
                 # create system implementation
                 system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)

@@ -42,6 +42,7 @@ TopLevelOscalModel = TypeVar(
 
 OBT = TypeVar('OBT', bound=OscalBaseModel)
 TG = TypeVar('TG')
+TG2 = TypeVar('TG2')
 
 TypeWithProps = TypeVar(
     'TypeWithProps',

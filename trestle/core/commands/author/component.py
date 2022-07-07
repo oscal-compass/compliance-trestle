@@ -249,7 +249,9 @@ class ComponentAssemble(AuthorCommonCommand):
         )
         new_content_type = FileContentType.path_to_content_type(parent_comp_path)
 
-        ComponentAssemble.assemble_comp_def_into_parent(trestle_root, parent_comp, md_dir)
+        context = ControlContext.generate(ContextPurpose.COMPONENT, False, trestle_root, md_dir)
+
+        ComponentAssemble.assemble_comp_def_into_parent(trestle_root, parent_comp, md_dir, context)
 
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
@@ -278,7 +280,10 @@ class ComponentAssemble(AuthorCommonCommand):
 
     @staticmethod
     def assemble_comp_def_into_parent(
-        trestle_root: pathlib.Path, parent_comp: comp.ComponentDefinition, md_dir: pathlib.Path
+        trestle_root: pathlib.Path,
+        parent_comp: comp.ComponentDefinition,
+        md_dir: pathlib.Path,
+        context: ControlContext
     ) -> None:
         """Assemble markdown content into provided component-definition model."""
         # find the needed list of comps
@@ -309,15 +314,17 @@ class ComponentAssemble(AuthorCommonCommand):
                 )
 
         for component in parent_comp.components:
-            ComponentAssemble._update_component_with_markdown(md_dir, component)
+            ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
-    def _update_component_with_markdown(md_dir: pathlib.Path, component: comp.DefinedComponent) -> None:
+    def _update_component_with_markdown(
+        md_dir: pathlib.Path, component: comp.DefinedComponent, context: ControlContext
+    ) -> None:
         #
         md_path = md_dir / component.title
         avail_comps = {component.title: component}
         cat_interface = CatalogInterface()
-        imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps)
+        imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps, context)
         # FIXME next needs work
         if False:
             component.control_implementations[0].implemented_requirements = imp_reqs

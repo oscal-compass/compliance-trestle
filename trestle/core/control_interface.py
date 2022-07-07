@@ -14,6 +14,7 @@
 """Handle queries and utility operations on controls in memory."""
 from __future__ import annotations
 
+import copy
 import logging
 import pathlib
 import re
@@ -24,7 +25,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, as_dict
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -51,7 +52,7 @@ class ComponentImpInfo(TrestleBaseModel):
     remarks: Optional[str]
 
 
-# define the type
+# provide name for this type
 CompDict = Dict[str, Dict[str, ComponentImpInfo]]
 
 
@@ -78,8 +79,8 @@ class ControlContext(TrestleBaseModel):
     profile: Optional[prof.Profile] = None
     overwrite_header_values = False
     set_parameters = False
-    required_sections: Optional[List[str]] = None
-    allowed_sections: Optional[List[str]] = None
+    required_sections: Optional[str] = None
+    allowed_sections: Optional[str] = None
     comp_def: Optional[comp.ComponentDefinition] = None
     comp_name: Optional[str] = None
 
@@ -97,8 +98,8 @@ class ControlContext(TrestleBaseModel):
         profile: Optional[prof.Profile] = None,
         overwrite_header_values=False,
         set_parameters=False,
-        required_sections: Optional[List[str]] = None,
-        allowed_sections: Optional[List[str]] = None,
+        required_sections: Optional[str] = None,
+        allowed_sections: Optional[str] = None,
         comp_def: Optional[comp.ComponentDefinition] = None,
         comp_name: Optional[str] = None
     ) -> ControlContext:
@@ -120,15 +121,99 @@ class ControlContext(TrestleBaseModel):
             comp_def=comp_def,
             comp_name=comp_name
         )
-        if purpose == ContextPurpose.CATALOG:
-            context.comp_name = 'foo'
-        elif purpose == ContextPurpose.PROFILE:
-            context.comp_name = 'bar'
+        context.yaml_header = as_dict(yaml_header)
+        context.sections_dict = as_dict(sections_dict)
+        # catalog generate always sets params
+        if to_markdown:
+            context.set_parameters = True
         return context
+
+    @classmethod
+    def clone(cls, context: ControlContext) -> ControlContext:
+        """Create a clone of the context without duplicating large objects."""
+        new_context = cls(
+            purpose=context.purpose,
+            to_markdown=context.to_markdown,
+            trestle_root=context.trestle_root,
+            md_root=context.md_root,
+            yaml_header=copy.deepcopy(context.yaml_header),
+            sections_dict=copy.deepcopy(context.sections_dict),
+            prompt_responses=context.prompt_responses,
+            additional_content=context.additional_content,
+            profile=context.profile,
+            overwrite_header_values=context.overwrite_header_values,
+            set_parameters=context.set_parameters,
+            required_sections=context.required_sections,
+            allowed_sections=context.allowed_sections,
+            comp_def=context.comp_def,
+            comp_name=context.comp_name
+        )
+        return new_context
 
 
 class ControlInterface():
     """Class to interact with controls in memory."""
+
+    @staticmethod
+    def _wrap_label(label: str):
+        l_side = '\['
+        r_side = '\]'
+        wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
+        return wrapped
+
+    @staticmethod
+    def _gap_join(a_str: str, b_str: str) -> str:
+        a_clean = a_str.strip()
+        b_clean = b_str.strip()
+        if not b_clean:
+            return a_clean
+        gap = '\n' if a_clean else ''
+        return a_clean + gap + b_clean
+
+    @staticmethod
+    def _get_control_section_part(part: common.Part, section_name: str) -> str:
+        """Get the prose for a named section in the control."""
+        prose = ''
+        if part.name == section_name and part.prose is not None:
+            prose = ControlInterface._gap_join(prose, part.prose)
+        if part.parts:
+            for sub_part in part.parts:
+                prose = ControlInterface._gap_join(
+                    prose, ControlInterface._get_control_section_part(sub_part, section_name)
+                )
+        return prose
+
+    @staticmethod
+    def _get_control_section_prose(control: cat.Control, section_name: str) -> str:
+        prose = ''
+        if control.parts:
+            for part in control.parts:
+                prose = ControlInterface._gap_join(
+                    prose, ControlInterface._get_control_section_part(part, section_name)
+                )
+        return prose
+
+    @staticmethod
+    def _find_section_info(part: common.Part, skip_section_list: List[str]) -> Tuple[str, str, str]:
+        """Find section not in list."""
+        if part.prose and part.name not in skip_section_list:
+            return part.id, part.name, part.title
+        if part.parts:
+            for sub_part in part.parts:
+                id_, name, title = ControlInterface._find_section_info(sub_part, skip_section_list)
+                if id_:
+                    return id_, name, title
+        return '', '', ''
+
+    @staticmethod
+    def _find_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str]:
+        """Find next section not in list."""
+        if control.parts:
+            for part in control.parts:
+                id_, name, title = ControlInterface._find_section_info(part, skip_section_list)
+                if id_:
+                    return id_, name, title
+        return '', '', ''
 
     @staticmethod
     def strip_to_make_ncname(label: str) -> str:
@@ -164,22 +249,6 @@ class ControlInterface():
             if prop.name == const.SORT_ID:
                 return prop.value.strip()
         return None if allow_none else control.id
-
-    @staticmethod
-    def _wrap_label(label: str):
-        l_side = '\['
-        r_side = '\]'
-        wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
-        return wrapped
-
-    @staticmethod
-    def _gap_join(a_str: str, b_str: str) -> str:
-        a_clean = a_str.strip()
-        b_clean = b_str.strip()
-        if not b_clean:
-            return a_clean
-        gap = '\n' if a_clean else ''
-        return a_clean + gap + b_clean
 
     @staticmethod
     def get_label(part_control: TypeWithProps) -> str:
@@ -231,51 +300,6 @@ class ControlInterface():
         return adds
 
     @staticmethod
-    def _get_control_section_part(part: common.Part, section_name: str) -> str:
-        """Get the prose for a named section in the control."""
-        prose = ''
-        if part.name == section_name and part.prose is not None:
-            prose = ControlInterface._gap_join(prose, part.prose)
-        if part.parts:
-            for sub_part in part.parts:
-                prose = ControlInterface._gap_join(
-                    prose, ControlInterface._get_control_section_part(sub_part, section_name)
-                )
-        return prose
-
-    @staticmethod
-    def _get_control_section_prose(control: cat.Control, section_name: str) -> str:
-        prose = ''
-        if control.parts:
-            for part in control.parts:
-                prose = ControlInterface._gap_join(
-                    prose, ControlInterface._get_control_section_part(part, section_name)
-                )
-        return prose
-
-    @staticmethod
-    def _find_section_info(part: common.Part, skip_section_list: List[str]) -> Tuple[str, str, str]:
-        """Find section not in list."""
-        if part.prose and part.name not in skip_section_list:
-            return part.id, part.name, part.title
-        if part.parts:
-            for sub_part in part.parts:
-                id_, name, title = ControlInterface._find_section_info(sub_part, skip_section_list)
-                if id_:
-                    return id_, name, title
-        return '', '', ''
-
-    @staticmethod
-    def _find_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str]:
-        """Find next section not in list."""
-        if control.parts:
-            for part in control.parts:
-                id_, name, title = ControlInterface._find_section_info(part, skip_section_list)
-                if id_:
-                    return id_, name, title
-        return '', '', ''
-
-    @staticmethod
     def get_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str, str]:
         """Get sections that are not in the list."""
         id_, name, title = ControlInterface._find_section(control, skip_section_list)
@@ -305,6 +329,10 @@ class ControlInterface():
                 # if they are both dicts, recurse
                 if isinstance(dest[key], dict) and isinstance(src[key], dict):
                     ControlInterface.merge_dicts_deep(dest[key], src[key], overwrite_header_values)
+                elif isinstance(dest[key], list) and isinstance(src[key], list):
+                    for item in src[key]:
+                        if item not in dest[key]:
+                            dest[key].append(item)
                 # otherwise override dest if needed
                 elif overwrite_header_values:
                     dest[key] = src[key]

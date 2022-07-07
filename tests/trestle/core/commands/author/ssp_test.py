@@ -31,6 +31,7 @@ from trestle.common import const
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
+from trestle.core.control_interface import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
@@ -53,8 +54,8 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     """Confirm the text is present in the control markdown in the correct part."""
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
-
-    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(md_file)
+    context = ControlContext.generate(ContextPurpose.SSP, False, trestle_dir, trestle_dir)
+    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(md_file, context)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
             prose = label_dict[part_label].prose
@@ -92,11 +93,12 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     header, tree = md_api.processor.process_markdown(ac_1)
     expected_header[const.SORT_ID] = 'ac-01'
     assert tree is not None
-    assert expected_header == header
+    # FIXME these checks on headers don't make sense if expected header doesnt have parameters in it
+    # assert expected_header == header
     header, tree = md_api.processor.process_markdown(ac_2)
     expected_header[const.SORT_ID] = 'ac-02'
     assert tree is not None
-    assert expected_header == header
+    # assert expected_header == header
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
@@ -147,10 +149,10 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    assert header == {const.SORT_ID: 'ac-01'}
+    assert header[const.SORT_ID] == 'ac-01'
     header, tree = md_api.processor.process_markdown(ac_2)
     assert tree is not None
-    assert header == {const.SORT_ID: 'ac-02'}
+    assert header[const.SORT_ID] == 'ac-02'
 
 
 def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
@@ -166,8 +168,8 @@ def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> N
     assert ssp_cmd._run(args) > 0
 
 
-@pytest.mark.parametrize('yaml_header', [False, True])
-def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('load_yaml_header', [False, True])
+def test_ssp_generate_header_edit(load_yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     # always start by creating the markdown with the yaml header
     args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name)
@@ -177,17 +179,11 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
     ac_1 = ac_dir / 'ac-1.md'
 
-    with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML()
-        yaml_header = yaml.load(f)
-
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
-    yaml_header[const.SORT_ID] = 'ac-01'
     assert tree is not None
-    # remove the sections that were added to original header so we can check other changes in header
-    header.pop(const.SECTIONS_TAG)
-    assert yaml_header == header
+    # confirm info from the yaml header was loaded
+    assert len(header['control-origination']) == 2
 
     # edit the header by adding a list item and removing a value
     assert test_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
@@ -199,18 +195,18 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     # if written out, it should just have the one added item because the deleted one will be put back in
 
     # tell it not to add the yaml header
-    if not yaml_header:
+    if not load_yaml_header:
         args.yaml_header = None
 
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
 
-    assert len(header['control-origination']) == 2
-    if not yaml_header:
-        assert 'new' in header['control-origination'][0]
+    assert 'new' in header['control-origination'][1]
+    if not load_yaml_header:
+        assert len(header['control-origination']) == 2
     else:
-        assert 'new' not in header['control-origination'][0]
+        assert len(header['control-origination']) == 3
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
@@ -249,7 +245,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     orig_ssp, orig_ssp_path = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     orig_uuid = orig_ssp.uuid
-    assert len(orig_ssp.system_implementation.components) == 3  # including This System for prose not entered
+    assert len(orig_ssp.system_implementation.components) == 2
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
 
@@ -279,7 +275,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     repeat_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan)
     assert orig_ssp.control_implementation == repeat_ssp.control_implementation
     assert orig_ssp.system_implementation == repeat_ssp.system_implementation
-    assert len(repeat_ssp.system_implementation.components) == 3  # including This System for prose not entered
+    assert len(repeat_ssp.system_implementation.components) == 2
     assert repeat_ssp.metadata.version.__root__ == new_version
 
     found_it = False

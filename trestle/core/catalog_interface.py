@@ -13,7 +13,6 @@
 # limitations under the License.
 """Provide interface to catalog allowing queries and operations at control level."""
 
-import copy
 import logging
 import pathlib
 from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
@@ -614,10 +613,9 @@ class CatalogInterface():
                                                                                 ) if context.profile else {}
         # write out the controls
         for control in catalog_interface.get_all_controls_from_catalog(True):
-            # make copy of incoming yaml header
-            new_header = copy.deepcopy(context.yaml_header)
             # here we do special handling of how set-parameters merge with the yaml header
-            if context.set_parameters:
+            new_context = ControlContext.clone(context)
+            if new_context.set_parameters:
                 # get all params for this control
                 control_param_dict = ControlReader.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
@@ -644,38 +642,36 @@ class CatalogInterface():
                     new_dict.pop('id')
                     set_param_dict[param_id] = new_dict
                 if set_param_dict:
-                    if const.SET_PARAMS_TAG not in new_header:
-                        new_header[const.SET_PARAMS_TAG] = {}
-                    if context.overwrite_header_values:
+                    if const.SET_PARAMS_TAG not in new_context.yaml_header:
+                        new_context.yaml_header[const.SET_PARAMS_TAG] = {}
+                    if new_context.overwrite_header_values:
                         # update the control params with new values
-                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                        for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
                             if key in control_param_dict:
                                 set_param_dict[key] = value
                     else:
                         # update the control params with any values in yaml header not set in control
                         # need to maintain order in the set_param_dict
-                        for key, value in new_header[const.SET_PARAMS_TAG].items():
+                        for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
                             if key in control_param_dict and key not in set_param_dict:
                                 set_param_dict[key] = value
-                    new_header[const.SET_PARAMS_TAG] = set_param_dict
-                elif const.SET_PARAMS_TAG in new_header:
+                    new_context.yaml_header[const.SET_PARAMS_TAG] = set_param_dict
+                elif const.SET_PARAMS_TAG in new_context.yaml_header:
                     # need to cull any params that are not in control
                     pop_list: List[str] = []
-                    for key in new_header[const.SET_PARAMS_TAG].keys():
+                    for key in new_context.yaml_header[const.SET_PARAMS_TAG].keys():
                         if key not in control_param_dict:
                             pop_list.append(key)
                     for pop in pop_list:
-                        new_header[const.SET_PARAMS_TAG].pop(pop)
+                        new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
             _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
-            group_dir = context.md_root
+            group_dir = new_context.md_root
             control_path = catalog_interface.get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():
                     group_dir.mkdir(parents=True, exist_ok=True)
-            new_context = context.copy(deep=True)
-            new_context.yaml_header = new_header
 
             writer = ControlWriter()
             writer.write_control_for_editing(new_context, control, group_dir, group_title)
@@ -759,8 +755,9 @@ class CatalogInterface():
         return self._catalog
 
     @staticmethod
-    def read_catalog_imp_reqs(md_path: pathlib.Path,
-                              avail_comps: Dict[str, ossp.SystemComponent]) -> List[ossp.ImplementedRequirement]:
+    def read_catalog_imp_reqs(
+        md_path: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent], context: ControlContext
+    ) -> List[ossp.ImplementedRequirement]:
         """Read the full set of control implemented requirements from markdown.
 
         Args:
@@ -778,7 +775,7 @@ class CatalogInterface():
         imp_req_map: Dict[str, ossp.ImplementedRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                sort_id, imp_req = ControlReader.read_implemented_requirement(control_file, avail_comps)
+                sort_id, imp_req = ControlReader.read_implemented_requirement(control_file, avail_comps, context)
                 imp_req_map[sort_id] = imp_req
         return [imp_req_map[key] for key in sorted(imp_req_map.keys())]
 
