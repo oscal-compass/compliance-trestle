@@ -25,7 +25,7 @@ import trestle.oscal.common as com
 import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -392,19 +392,22 @@ class ControlReader():
         prose = '\n'.join(ControlReader._clean_prose(node.content.text))
         if prose:
             # for ssp, ### marks component name but for component it is ##
+            # if it is a header, make sure it has correct format
+            if node.key and node.key[0] == '#' and ControlInterface.bad_header(node.key):
+                raise TrestleError(f'Improper header format for control {control_id}: {node.key}')
             prefix = '## ' if component_mode else '### '
             if node.key.startswith(prefix):
                 if len(node.key.split()) <= 1:
                     raise TrestleError(
-                        f'Line in control {control_id} markdown starts with {prefix} but has no content.'
+                        f'Header line in control {control_id} markdown starts with {prefix} but has no content.'
                     )
                 comp_name = node.key.split(' ', 1)[1].strip()
                 simp_comp_name = ControlReader.simplify_name(comp_name)
                 if simp_comp_name == ControlReader.simplify_name(const.SSP_MAIN_COMP_NAME) and not component_mode:
                     raise TrestleError(
                         f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
-                        'Instead, place all response prose for the default component at the top of th section, with '
-                        'no ### component specified.  It will be entered as prose for the default system component.'
+                        'Instead, place all response prose for the default component at the top of the section, with '
+                        'no ### component_name heading.  It will be entered as prose for the default system component.'
                     )
                 if simp_comp_name in comp_list:
                     raise TrestleError(
@@ -420,19 +423,14 @@ class ControlReader():
                     comp_dict[comp_name][label] = ComponentImpInfo(prose=prose)
             else:
                 comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose)}
-            # keep track of subnodes already handled
+            # keep track of subnodes that get handled
             subnode_kill: List[int] = []
             for ii, subnode in enumerate(node.subnodes):
                 if subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
                     status = subnode.key.split(maxsplit=3)[-1]
                     comp_dict[comp_name][label].implementation_status = ControlReader._imp_stat_from_string(status)
                     subnode_kill.append(ii)
-                elif subnode.key.split(maxsplit=2)[1] == const.REMARKS:
-                    comp_dict[comp_name][label].remarks = subnode.content.text
-                    subnode_kill.append(ii)
-                if subnode_kill:
-                    for index in sorted(subnode_kill, reverse=True):
-                        del node.subnodes[index]
+            delete_list_from_list(node.subnodes, subnode_kill)
         for subnode in as_list(node.subnodes):
             ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
 
@@ -450,33 +448,28 @@ class ControlReader():
     def _add_component_to_dict(
         control_id: str, comp_dict: CompDict, comp_def: Optional[comp.ComponentDefinition], comp_name: Optional[str]
     ) -> Tuple[Dict[str, str], Dict[str, com.Parameter]]:
-        """Strictly works with ComponentDefinition elements and not SSP."""
+        """Add imp_reqs for this control and this component to the component dictionary."""
         rules = {}
         params = {}
         if comp_def:
-            for sub_comp in as_list(comp_def.components):
-                if sub_comp.title == comp_name:
-                    for control_imp in as_list(sub_comp.control_implementations):
-                        for imp_req in as_list(control_imp.implemented_requirements):
-                            if imp_req.control_id == control_id:
-                                sub_comp_dict: Dict[str, ComponentImpInfo] = {}
-                                rules.update(ControlInterface.get_rules_from_imp_req(imp_req))
-                                params.update(ControlInterface.get_params_from_imp_req(imp_req))
-                                if imp_req.description:
-                                    # add top level control guidance with no statement id
-                                    imp_stat_str = ControlInterface.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
-                                    imp_stat = ControlReader._imp_stat_from_string(imp_stat_str)
-                                    sub_comp_dict[''] = ComponentImpInfo(
-                                        prose=imp_req.description, implementation_status=imp_stat
-                                    )
-                                for statement in as_list(imp_req.statements):
-                                    imp_stat_str = ControlInterface.get_prop(statement, const.IMPLEMENTATION_STATUS)
-                                    imp_stat = ControlReader._imp_stat_from_string(imp_stat_str)
-                                    sub_comp_dict[statement.statement_id] = ComponentImpInfo(
-                                        prose=statement.description, implementation_status=imp_stat
-                                    )
-                                if sub_comp_dict:
-                                    comp_dict[sub_comp.title] = sub_comp_dict
+            sub_comp = ControlInterface.get_component_by_name(comp_def, comp_name)
+            for imp_req in ControlInterface.get_control_imp_reqs(sub_comp, control_id):
+                sub_comp_dict: Dict[str, ComponentImpInfo] = {}
+                rules.update(ControlInterface.get_rules_from_imp_req(imp_req))
+                params.update(ControlInterface.get_params_from_imp_req(imp_req))
+                if imp_req.description:
+                    # add top level control guidance with no statement id
+                    imp_stat_str = ControlInterface.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
+                    imp_stat = ControlReader._imp_stat_from_string(imp_stat_str)
+                    sub_comp_dict[''] = ComponentImpInfo(prose=imp_req.description, implementation_status=imp_stat)
+                for statement in as_list(imp_req.statements):
+                    imp_stat_str = ControlInterface.get_prop(statement, const.IMPLEMENTATION_STATUS)
+                    imp_stat = ControlReader._imp_stat_from_string(imp_stat_str)
+                    sub_comp_dict[statement.statement_id] = ComponentImpInfo(
+                        prose=statement.description, implementation_status=imp_stat
+                    )
+                if sub_comp_dict:
+                    comp_dict[sub_comp.title] = sub_comp_dict
         return rules, params
 
     @staticmethod
@@ -623,8 +616,7 @@ class ControlReader():
 
         Args:
             control_file: path to the control markdown file
-            component_def: optional component definition possibly with implementation prose for this control
-            component_name: optional component name to read prose from
+            context: context of the control usage
 
         Returns:
             Dictionary by comp_name of Dictionaries of part labels and corresponding prose read from the markdown file.
@@ -696,6 +688,7 @@ class ControlReader():
         Args:
             control_file: path of the control markdown file
             avail_comps: dictionary of known components keyed by component name
+            context: context of the control usage
 
         Returns:
             Tuple: The control sort-id and the one implemented requirement for this control.

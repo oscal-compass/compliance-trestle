@@ -299,25 +299,16 @@ class ControlWriter():
         Write out the control in markdown format into the specified directory.
 
         Args:
-            dest_path: Path to the directory where the control will be written
+            context: The context of the control usage
             control: The control to write as markdown
+            dest_path: Path to the directory where the control will be written
             group_title: Title of the group containing the control
-            yaml_header: Optional dict to be written as markdown yaml header
-            sections_dict: Optional dict mapping short section names to long
-            additional_content: Should the additional content be printed corresponding to profile adds
-            prompt_responses: Should the markdown include prompts for implementation detail responses
-            profile: Profile containing the adds making up additional content
-            overwrite_header_values: Overwrite existing values in markdown header content but add new content
-            required_sections: List of required sections that may need prompting for content
-            allowed_sections: List of allowed sections that will appear in markdown
-            component_def: Optional component definition containing imp req responses to be added to control markdown
-            component_name: name of component to write out
 
         Returns:
             None
 
         Notes:
-            The filename is constructed from the control's id, so only the markdown directory is required.
+            The filename is constructed from the control's id and created in the dest_path.
             If a yaml header is present in the file, new values in provided header will not replace those in the
             markdown header unless overwrite_header_values is true.  If it is true then overwrite any existing values,
             but in all cases new items from the provided header will be added to the markdown header.

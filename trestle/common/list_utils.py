@@ -65,3 +65,9 @@ def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any],
         index = keys.index(value)
         del item_list[index]
     return item_list
+
+
+def delete_list_from_list(item_list: List[Any], indices: List[int]) -> List[Any]:
+    """Delete a list of items from a list based on indices."""
+    for index in sorted(indices, reverse=True):
+        del item_list[index]

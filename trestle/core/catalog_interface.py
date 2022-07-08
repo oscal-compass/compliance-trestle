@@ -548,18 +548,7 @@ class CatalogInterface():
         Write out the catalog controls from dict as markdown files to the specified directory.
 
         Args:
-            md_path: Path to directory in which to write the markdown
-            yaml_header: Dictionary to write into the yaml header of the controls
-            sections_dict: Optional dict mapping section short names to long
-            prompt_responses: Whether to prompt for responses in the control markdown
-            additional_content: Should the additional content be printed corresponding to profile adds
-            profile: Optional profile containing the adds making up additional content
-            overwrite_header_values: Overwrite existing values in markdown header content but add new content
-            set_parameters: Set header values based on params in the control and in the profile
-            required_sections: Optional string containing list of sections that should be prompted for prose
-            allowed_sections: Optional string containing list of sections that should be included in markdown
-            component_def: Optional component definition with corresponding implemented requirements
-            component_name: Optional name of component to write out
+            context: The context of the catalog markdown creation.
 
 
         Returns:

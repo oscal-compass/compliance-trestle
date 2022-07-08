@@ -24,6 +24,7 @@ import tests.test_utils as test_utils
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const
@@ -509,3 +510,21 @@ def test_parse_control_title_failures():
 
     with pytest.raises(TrestleError):
         ControlReader._parse_control_title_line('foo-1 and - bar')
+
+
+def test_bad_header():
+    """Test bad header checks."""
+    assert ControlInterface.bad_header('')
+    assert ControlInterface.bad_header('#')
+    assert ControlInterface.bad_header('##')
+    assert ControlInterface.bad_header('#x')
+    assert ControlInterface.bad_header('x# ')
+    assert not ControlInterface.bad_header('# ')
+    assert not ControlInterface.bad_header('#### ')
+    assert not ControlInterface.bad_header('#### foo')
+
+
+def test_get_component_by_name(sample_nist_component_def: comp.ComponentDefinition) -> None:
+    """Test get component by name."""
+    assert ControlInterface.get_component_by_name(sample_nist_component_def, 'test component 1')
+    assert ControlInterface.get_component_by_name(sample_nist_component_def, 'foobar') is None

@@ -444,6 +444,7 @@ class ControlInterface():
         Convert parameter to string based on best available representation.
 
         Args:
+            param: the parameter to convert
             param_rep: how to represent the parameter
             verbose: provide verbose text for selection choices
             brackets: add brackets around the lists of items
@@ -476,12 +477,6 @@ class ControlInterface():
         return param_str
 
     @staticmethod
-    def str_to_param(param: common.Parameter, param_str: str) -> None:
-        """Replace parameter contents with contents in string."""
-        # this is a simple version that replaces the values but it can be more elaborate
-        param.values = [common.ParameterValue(__root__=param_str)]
-
-    @staticmethod
     def get_control_param_dict(
         control: cat.Control,
         values_only: bool,
@@ -506,3 +501,37 @@ class ControlInterface():
             if param.values or not values_only:
                 param_dict[param.id] = param
         return param_dict
+
+    @staticmethod
+    def bad_header(header: str) -> bool:
+        """Return true if header format is bad."""
+        if not header or header[0] != '#':
+            return True
+        n = len(header)
+        if n < 2:
+            return True
+        for ii in range(1, n):
+            if header[ii] == ' ':
+                return False
+            if header[ii] != '#':
+                return True
+        return True
+
+    @staticmethod
+    def get_component_by_name(comp_def: comp.ComponentDefinition, comp_name: str) -> Optional[comp.DefinedComponent]:
+        """Get the component with this name from the comp_def."""
+        for sub_comp in as_list(comp_def.components):
+            if sub_comp.title == comp_name:
+                return sub_comp
+        return None
+
+    @staticmethod
+    def get_control_imp_reqs(component: comp.DefinedComponent, control_id: str) -> List[comp.ImplementedRequirement]:
+        """Get the imp_reqs for this control from the component."""
+        imp_reqs: List[comp.ImplementedRequirement] = []
+        if component:
+            for control_imp in as_list(component.control_implementations):
+                for imp_req in as_list(control_imp.implemented_requirements):
+                    if imp_req.control_id == control_id:
+                        imp_reqs.append(imp_req)
+        return imp_reqs
