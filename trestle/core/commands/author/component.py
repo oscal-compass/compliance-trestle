@@ -20,9 +20,6 @@ import shutil
 from typing import Dict, List, Optional
 from uuid import uuid4
 
-from ruamel.yaml import YAML
-from ruamel.yaml.error import YAMLError
-
 import trestle.common.const as const
 import trestle.common.log as log
 import trestle.oscal.common as com
@@ -35,9 +32,8 @@ from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
+from trestle.core.control_interface import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
@@ -56,17 +52,6 @@ class ComponentGenerate(AuthorCommonCommand):
         profile_help_str = 'Name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=profile_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
-        self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
-        self.add_argument(
-            '-ohv',
-            '--overwrite-header-values',
-            help=const.HELP_OVERWRITE_HEADER_VALUES,
-            required=False,
-            action='store_true',
-            default=False
-        )
-        self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
-        self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -75,24 +60,9 @@ class ComponentGenerate(AuthorCommonCommand):
             markdown_dir_name = args.output
             profile_name = args.profile
             component_name = args.name
-            sections_dict = sections_to_dict(args.sections)
-            yaml_header: dict = {}
-            if args.yaml_header:
-                try:
-                    logging.debug(f'Loading yaml header file {args.yaml_header}')
-                    yaml = YAML()
-                    yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
-                except YAMLError as e:
-                    raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
 
             return self.component_generate_all(
-                trestle_root,
-                component_name,
-                profile_name,
-                markdown_dir_name,
-                yaml_header,
-                sections_dict,
-                args.overwrite_header_values
+                trestle_root, component_name, profile_name, markdown_dir_name, None, None, False
             )
 
         except Exception as e:  # pragma: no cover
@@ -146,27 +116,14 @@ class ComponentGenerate(AuthorCommonCommand):
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
         catalog_interface = CatalogInterface(resolved_catalog)
         comp_def, _ = load_validate_model_name(trestle_root, comp_def_name, comp.ComponentDefinition)
-        context = ControlContext.generate(ContextPurpose.CATALOG, True, trestle_root, markdown_dir_path)
+        context = ControlContext.generate(ContextPurpose.COMPONENT, True, trestle_root, markdown_dir_path)
         context.sections_dict = sections_dict
         context.prompt_responses = True
         context.overwrite_header_values = overwrite_header_values
         context.comp_def = comp_def
         context.comp_name = comp_name
         catalog_interface.write_catalog_as_markdown(context)
-        # catalog_interface.write_catalog_as_markdown(
-        #     md_path=markdown_dir_path,
-        #     yaml_header=yaml_header,
-        #     sections_dict=sections_dict,
-        #     prompt_responses=True,
-        #     additional_content=False,
-        #     profile=None,
-        #     overwrite_header_values=overwrite_header_values,
-        #     set_parameters=False,
-        #     required_sections=None,
-        #     allowed_sections=None,
-        #     component_def=component_def,
-        #     component_name=component_name
-        # )
+
         return CmdReturnCodes.SUCCESS.value
 
 

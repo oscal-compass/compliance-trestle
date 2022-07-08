@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import frontmatter
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.common as com
 import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
@@ -28,7 +29,7 @@ from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ContextPurpose, ControlContext, ControlInterface, ParameterRep
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ContextPurpose, ControlContext, ControlInterface
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
@@ -423,16 +424,16 @@ class ControlReader():
             subnode_kill: List[int] = []
             for ii, subnode in enumerate(node.subnodes):
                 if subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
-                    # ### Implementation Status: implemented
                     status = subnode.key.split(maxsplit=3)[-1]
                     comp_dict[comp_name][label].implementation_status = ControlReader._imp_stat_from_string(status)
                     subnode_kill.append(ii)
                 elif subnode.key.split(maxsplit=2)[1] == const.REMARKS:
                     comp_dict[comp_name][label].remarks = subnode.content.text
                     subnode_kill.append(ii)
-            for index in subnode_kill:
-                del node.subnodes[index]
-        for subnode in node.subnodes:
+                if subnode_kill:
+                    for index in sorted(subnode_kill, reverse=True):
+                        del node.subnodes[index]
+        for subnode in as_list(node.subnodes):
             ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
 
     @staticmethod
@@ -448,8 +449,10 @@ class ControlReader():
     @staticmethod
     def _add_component_to_dict(
         control_id: str, comp_dict: CompDict, comp_def: Optional[comp.ComponentDefinition], comp_name: Optional[str]
-    ) -> None:
+    ) -> Tuple[Dict[str, str], Dict[str, com.Parameter]]:
         """Strictly works with ComponentDefinition elements and not SSP."""
+        rules = {}
+        params = {}
         if comp_def:
             for sub_comp in as_list(comp_def.components):
                 if sub_comp.title == comp_name:
@@ -457,6 +460,8 @@ class ControlReader():
                         for imp_req in as_list(control_imp.implemented_requirements):
                             if imp_req.control_id == control_id:
                                 sub_comp_dict: Dict[str, ComponentImpInfo] = {}
+                                rules.update(ControlInterface.get_rules_from_imp_req(imp_req))
+                                params.update(ControlInterface.get_params_from_imp_req(imp_req))
                                 if imp_req.description:
                                     # add top level control guidance with no statement id
                                     imp_stat_str = ControlInterface.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
@@ -472,6 +477,7 @@ class ControlReader():
                                     )
                                 if sub_comp_dict:
                                     comp_dict[sub_comp.title] = sub_comp_dict
+        return rules, params
 
     @staticmethod
     def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
@@ -630,16 +636,25 @@ class ControlReader():
             In addition, the implemented requirement will be queried for a
             property corresponding to implementation status and included if available.
         """
-        comp_dict: CompDict = {}
-        yaml_header = {}
         # this level only adds for known component but add_node_to_dict can add for other components
         comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
         control_id = control_file.stem
+
+        comp_dict: CompDict = {}
+        yaml_header = {}
+        # pull possible prose and rules from component definition if provided
+        rules, params = ControlReader._add_component_to_dict(control_id, comp_dict, context.comp_def, comp_name)
+        if rules:
+            yaml_header[const.RULE_NAME_IDS] = rules
+        if params:
+            yaml_header[const.COMP_DEF_PARAMS] = params
+
         if not control_file.exists():
-            # pull possible prose from component definition
-            ControlReader._add_component_to_dict(control_id, comp_dict, context.comp_def, comp_name)
             return comp_dict, yaml_header
         try:
+            # if markdown exists, reset the comp_dict to empty and pull from markdown only
+            comp_dict = {}
+
             md_api = MarkdownAPI()
             yaml_header, control = md_api.processor.process_markdown(control_file)
 
@@ -789,115 +804,6 @@ class ControlReader():
         if header_params:
             param_dict.update(header_params)
         return sort_id, new_alters, param_dict
-
-    @staticmethod
-    def param_values_as_str_list(param: common.Parameter) -> List[str]:
-        """Convert param values to list of strings."""
-        return [val.__root__ for val in as_list(param.values)]
-
-    @staticmethod
-    def param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
-        """Convert param values to string with optional brackets."""
-        if not param.values:
-            return None
-        values_str = ', '.join(ControlReader.param_values_as_str_list(param))
-        return f'[{values_str}]' if brackets else values_str
-
-    @staticmethod
-    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
-        """Convert parameter selection to str."""
-        if param.select and param.select.choice:
-            how_many_str = ''
-            if param.select.how_many:
-                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
-            choices_str = '; '.join(as_list(param.select.choice))
-            choices_str = f'[{choices_str}]' if brackets else choices_str
-            choices_str = f'Choose {how_many_str}: {choices_str}' if verbose else choices_str
-            return choices_str
-        return ''
-
-    @staticmethod
-    def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
-        """Convert param label or choices to string, using choices if present."""
-        choices = ControlReader.param_selection_as_str(param, verbose, brackets)
-        text = choices if choices else param.label
-        text = text if text else param.id
-        return text
-
-    @staticmethod
-    def param_to_str(
-        param: common.Parameter,
-        param_rep: ParameterRep,
-        verbose=False,
-        brackets=False,
-        params_format: Optional[str] = None,
-    ) -> Optional[str]:
-        """
-        Convert parameter to string based on best available representation.
-
-        Args:
-            param_rep: how to represent the parameter
-            verbose: provide verbose text for selection choices
-            brackets: add brackets around the lists of items
-            params_format: a string containing a single dot that represents a form of highlighting around the param
-
-        Returns:
-            formatted string or None
-        """
-        param_str = None
-        if param_rep == ParameterRep.VALUE_OR_STRING_NONE:
-            param_str = ControlReader.param_values_as_str(param)
-            param_str = param_str if param_str else 'None'
-        elif param_rep == ParameterRep.LABEL_OR_CHOICES:
-            param_str = ControlReader.param_label_choices_as_str(param, verbose, brackets)
-        elif param_rep == ParameterRep.VALUE_OR_LABEL_OR_CHOICES:
-            param_str = ControlReader.param_values_as_str(param)
-            if not param_str:
-                param_str = ControlReader.param_label_choices_as_str(param, verbose, brackets)
-        elif param_rep == ParameterRep.VALUE_OR_EMPTY_STRING:
-            param_str = ControlReader.param_values_as_str(param, brackets)
-            if not param_str:
-                param_str = ''
-        if param_str is not None and params_format:
-            if params_format.count('.') > 1:
-                raise TrestleError(
-                    f'Additional text {params_format} '
-                    f'for the parameters cannot contain multiple dots (.)'
-                )
-            param_str = params_format.replace('.', param_str)
-        return param_str
-
-    @staticmethod
-    def str_to_param(param: common.Parameter, param_str: str) -> None:
-        """Replace parameter contents with contents in string."""
-        # this is a simple version that replaces the values but it can be more elaborate
-        param.values = [common.ParameterValue(__root__=param_str)]
-
-    @staticmethod
-    def get_control_param_dict(
-        control: cat.Control,
-        values_only: bool,
-    ) -> Dict[str, common.Parameter]:
-        """
-        Create mapping of param id's to params.
-
-        Args:
-            control: the control containing params of interest
-            values_only: only add params to the dict that have actual values
-
-        Returns:
-            Dictionary of param_id mapped to param
-
-        Notes:
-            Warning is given if there is a parameter with no ID
-        """
-        param_dict: Dict[str, common.Parameter] = {}
-        for param in as_list(control.params):
-            if not param.id:
-                logger.warning(f'Control {control.id} has parameter with no id.  Ignoring.')
-            if param.values or not values_only:
-                param_dict[param.id] = param
-        return param_dict
 
     @staticmethod
     def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:

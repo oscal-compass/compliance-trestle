@@ -20,12 +20,11 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 import trestle.common.const as const
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
-import trestle.oscal.component as comp
 import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
+from trestle.core.control_interface import ControlContext, ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.core.trestle_base_model import TrestleBaseModel
@@ -513,27 +512,13 @@ class CatalogInterface():
         return hits
 
     @staticmethod
-    def setparam_to_param(param_id: str, set_param: prof.SetParameter) -> common.Parameter:
-        """
-        Convert setparameter to parameter.
-
-        Args:
-            param_id: the id of the parameter
-            set_param: the set_parameter from a profile
-
-        Returns:
-            a Parameter with param_id and content from the SetParameter
-        """
-        return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
-
-    @staticmethod
     def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, common.Parameter]:
         """Get the full mapping of param_id to modified value for this profiles set_params."""
         set_param_dict: Dict[str, common.Parameter] = {}
         if not profile.modify:
             return set_param_dict
         for set_param in as_list(profile.modify.set_parameters):
-            param = CatalogInterface.setparam_to_param(set_param.param_id, set_param)
+            param = ControlInterface.setparam_to_param(set_param.param_id, set_param)
             set_param_dict[set_param.param_id] = param
         return set_param_dict
 
@@ -552,27 +537,12 @@ class CatalogInterface():
             mapping of param ids to their final parameter states after possible modify by the profile setparameters
         """
         # get the mapping of param_id's to params for this control, excluding those with no value set
-        param_dict = ControlReader.get_control_param_dict(control, values_only)
+        param_dict = ControlInterface.get_control_param_dict(control, values_only)
         for key in param_dict.keys():
             if key in profile_param_dict:
                 param_dict[key] = profile_param_dict[key]
         return param_dict
 
-    # def write_catalog_as_markdown(
-    #     self,
-    #     md_path: pathlib.Path,
-    #     yaml_header: dict,
-    #     sections_dict: Optional[Dict[str, str]],
-    #     prompt_responses: bool,
-    #     additional_content: bool = False,
-    #     profile: Optional[prof.Profile] = None,
-    #     overwrite_header_values: bool = False,
-    #     set_parameters: bool = False,
-    #     required_sections: Optional[str] = None,
-    #     allowed_sections: Optional[str] = None,
-    #     component_def: Optional[comp.ComponentDefinition] = None,
-    #     component_name: Optional[str] = None
-    # ) -> None:
     def write_catalog_as_markdown(self, context: ControlContext) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -617,7 +587,7 @@ class CatalogInterface():
             new_context = ControlContext.clone(context)
             if new_context.set_parameters:
                 # get all params for this control
-                control_param_dict = ControlReader.get_control_param_dict(control, False)
+                control_param_dict = ControlInterface.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
                     # if the param is in the profile set_params, load its contents first and mark as profile-values
@@ -673,23 +643,11 @@ class CatalogInterface():
                 if not group_dir.exists():
                     group_dir.mkdir(parents=True, exist_ok=True)
 
+            new_context.required_sections = required_section_list
+            new_context.allowed_sections = allowed_section_list
+
             writer = ControlWriter()
             writer.write_control_for_editing(new_context, control, group_dir, group_title)
-            # writer.write_control_for_editing(
-            #     group_dir,
-            #     control,
-            #     group_title,
-            #     new_header,
-            #     sections_dict,
-            #     additional_content,
-            #     prompt_responses,
-            #     profile,
-            #     overwrite_header_values,
-            #     required_section_list,
-            #     allowed_section_list,
-            #     component_def,
-            #     component_name
-            # )
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:

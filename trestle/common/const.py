@@ -245,6 +245,10 @@ SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for
 
 PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = 'Add prose here for required Section'
 
+RULE_NAME_IDS = 'rule_name_ids'
+
+RULE_NAME_PREFIX = 'rule_name_'
+
 NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
 
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
@@ -346,7 +350,7 @@ STATUS_OTHER = 'other'
 STATUS_UNDER_MAJOR_MODIFICATION = 'under-major-modification'
 
 # Used only by trestle
-STATUS_TRESTLE_UNKNOWN = 'trestle-unknown'
+STATUS_TRESTLE_UNKNOWN = 'unknown'
 
 STATUS_ALL = [
     STATUS_IMPLEMENTED,
@@ -363,6 +367,8 @@ STATUS_ALL = [
     STATUS_TRESTLE_UNKNOWN
 ]
 
+STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED} {STATUS_PARTIAL} {STATUS_PLANNED} {STATUS_TRESTLE_UNKNOWN} -->'  # noqa E501
+
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
@@ -370,6 +376,8 @@ RESPONSIBLE_ROLES = 'responsible-roles'
 HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
 
 SET_PARAMS_TAG = 'x-trestle-set-params'
+
+COMP_DEF_PARAMS = 'comp-def-params'
 
 PROFILE_VALUES = 'profile-values'
 

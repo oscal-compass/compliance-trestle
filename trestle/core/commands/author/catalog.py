@@ -107,17 +107,6 @@ class CatalogGenerate(AuthorCommonCommand):
             )
             catalog_interface.write_catalog_as_markdown(context)
 
-            # catalog_interface.write_catalog_as_markdown(
-            #     md_path=markdown_path,
-            #     yaml_header=yaml_header,
-            #     sections_dict=None,
-            #     prompt_responses=False,
-            #     additional_content=False,
-            #     profile=None,
-            #     overwrite_header_values=overwrite_header_values,
-            #     set_parameters=True,
-            #     required_sections=None
-            # )
         except TrestleNotFoundError as e:
             raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
         except Exception as e:

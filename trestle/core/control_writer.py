@@ -24,7 +24,6 @@ from trestle.core.control_interface import CompDict, ComponentImpInfo
 from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
-from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
@@ -148,16 +147,16 @@ class ControlWriter():
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
 
-    def _insert_comp_info(self, part_label: str, comp_info: Dict[str, ComponentImpInfo]) -> None:
+    def _insert_comp_info(self, part_label: str, comp_info: Dict[str, ComponentImpInfo], comp_def_format: bool) -> None:
         """Insert prose from the component info."""
+        level = 3 if comp_def_format else 4
         if part_label in comp_info:
             info = comp_info[part_label]
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
-            if info.implementation_status != const.STATUS_TRESTLE_UNKNOWN:
-                self._md_file.new_header(
-                    level=4, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.implementation_status}'
-                )
+            self._md_file.new_header(
+                level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.implementation_status}'
+            )
 
     def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
@@ -169,11 +168,9 @@ class ControlWriter():
                 if statement_id == '':
                     # create new heading for this component and add guidance
                     self._md_file.new_paraline(comp_info.prose)
-                    if comp_info.implementation_status != const.STATUS_TRESTLE_UNKNOWN:
-                        self._md_file.new_header(
-                            level=level,
-                            title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
-                        )
+                    self._md_file.new_header(
+                        level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
+                    )
                     did_write = True
         return did_write
 
@@ -184,6 +181,8 @@ class ControlWriter():
         self._md_file.new_hr()
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
+        if comp_def_format:
+            self._md_file.new_paraline(const.STATUS_PROMPT)
         did_write_part = self._add_component_control_prompts(comp_dict, comp_def_format)
 
         # The comp_dict looks like:
@@ -222,7 +221,7 @@ class ControlWriter():
                                         # because there should only be one component in generated comp_def markdown
                                         if not comp_def_format:
                                             self._md_file.new_header(level=3, title=comp_name)
-                                    self._insert_comp_info(part_label, dic)
+                                    self._insert_comp_info(part_label, dic, comp_def_format)
                                     added_content = True
                             self._md_file.new_paragraph()
                             if not added_content:
@@ -236,7 +235,7 @@ class ControlWriter():
             if part_label in dic:
                 if comp_name != const.SSP_MAIN_COMP_NAME:
                     self._md_file.new_header(level=3, title=comp_name)
-                self._insert_comp_info(part_label, dic)
+                self._insert_comp_info(part_label, dic, comp_def_format)
         self._md_file.new_hr()
 
     def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> List[str]:
@@ -293,22 +292,6 @@ class ControlWriter():
             self._md_file.new_header(2, f'Control {section_title}')
             self._md_file.new_line(f'{const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT}: {section_title}')
 
-    # def write_control_for_editing(
-    #     self,
-    #     dest_path: pathlib.Path,
-    #     control: cat.Control,
-    #     group_title: str,
-    #     yaml_header: Optional[Dict],
-    #     sections_dict: Optional[Dict[str, str]],
-    #     additional_content: bool,
-    #     prompt_responses: bool,
-    #     profile: Optional[prof.Profile],
-    #     overwrite_header_values: bool,
-    #     required_sections: Optional[List[str]],
-    #     allowed_sections: Optional[List[str]],
-    #     component_def: Optional[comp.ComponentDefinition] = None,
-    #     component_name: Optional[str] = None
-    # ) -> None:
     def write_control_for_editing(
         self, context: ControlContext, control: cat.Control, dest_path: pathlib.Path, group_title: str
     ) -> None:
@@ -366,6 +349,9 @@ class ControlWriter():
             header_sections_dict.update(context.sections_dict)
         if header_sections_dict:
             merged_header[const.SECTIONS_TAG] = header_sections_dict
+
+        if context.purpose == ContextPurpose.COMPONENT and const.SORT_ID in merged_header:
+            del merged_header[const.SORT_ID]
 
         self._add_yaml_header(merged_header)
 
@@ -428,8 +414,7 @@ class ControlWriter():
 
     def get_params(self, control: cat.Control, label_column=False, md_file=None) -> List[str]:
         """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
-        reader = ControlReader()
-        param_dict = reader.get_control_param_dict(control, False)
+        param_dict = ControlInterface.get_control_param_dict(control, False)
 
         if param_dict:
             if md_file:
@@ -443,15 +428,15 @@ class ControlWriter():
                     [
                         [
                             key,
-                            ControlReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
-                            ControlReader.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES, True),
+                            ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
+                            ControlInterface.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES, True),
                         ] for key in param_dict.keys()
                     ], ['Parameter ID', 'Values', 'Label or Choices']
                 )
             else:
                 self._md_file.new_table(
                     [
-                        [key, ControlReader.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
+                        [key, ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
                         for key in param_dict.keys()
                     ], ['Parameter ID', 'Values']
                 )

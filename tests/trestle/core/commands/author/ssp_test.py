@@ -93,12 +93,10 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     header, tree = md_api.processor.process_markdown(ac_1)
     expected_header[const.SORT_ID] = 'ac-01'
     assert tree is not None
-    # FIXME these checks on headers don't make sense if expected header doesnt have parameters in it
-    # assert expected_header == header
+    # FIXME confirm checks on header equality don't make sense if expected header doesnt have parameters in it
     header, tree = md_api.processor.process_markdown(ac_2)
     expected_header[const.SORT_ID] = 'ac-02'
     assert tree is not None
-    # assert expected_header == header
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:

@@ -34,7 +34,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
+from trestle.core.control_interface import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -114,19 +114,6 @@ class SSPGenerate(AuthorCommonCommand):
             context.allowed_sections = args.allowed_sections
 
             catalog_interface.write_catalog_as_markdown(context)
-
-            # catalog_interface.write_catalog_as_markdown(
-            #     md_path=markdown_path,
-            #     yaml_header=yaml_header,
-            #     sections_dict=sections_dict,
-            #     prompt_responses=True,
-            #     additional_content=False,
-            #     profile=None,
-            #     overwrite_header_values=args.overwrite_header_values,
-            #     set_parameters=False,
-            #     required_sections=None,
-            #     allowed_sections=args.allowed_sections
-            # )
 
             return CmdReturnCodes.SUCCESS.value
 

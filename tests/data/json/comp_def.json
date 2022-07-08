@@ -104,7 +104,7 @@
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
                     "class": "scc_goal_name_id",
@@ -156,7 +156,7 @@
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
                     "class": "scc_goal_name_id",
@@ -191,7 +191,7 @@
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
                     "class": "scc_goal_name_id",
@@ -226,7 +226,7 @@
                 "description": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
                     "class": "scc_goal_name_id",
@@ -261,7 +261,7 @@
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
                     "class": "scc_goal_name_id",
@@ -296,7 +296,7 @@
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
                     "class": "scc_goal_name_id",
@@ -331,7 +331,7 @@
                 "description": "Ensure that the Container Network Interface file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
                     "class": "scc_goal_name_id",
@@ -366,7 +366,7 @@
                 "description": "Ensure that the Container Network Interface file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
                     "class": "scc_goal_name_id",
@@ -432,7 +432,7 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available",
                     "class": "scc_goal_name_id",
@@ -476,7 +476,7 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "XCCDF_rule",
+                    "name": "rule_name_XCCDF",
                     "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
                     "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_available",
                     "class": "scc_goal_name_id",

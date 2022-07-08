@@ -25,7 +25,8 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, as_dict
+from trestle.common.list_utils import as_dict, as_list
+from trestle.common.str_utils import string_from_root
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -130,7 +131,7 @@ class ControlContext(TrestleBaseModel):
 
     @classmethod
     def clone(cls, context: ControlContext) -> ControlContext:
-        """Create a clone of the context without duplicating large objects."""
+        """Create a deep clone of the context without duplicating large objects."""
         new_context = cls(
             purpose=context.purpose,
             to_markdown=context.to_markdown,
@@ -317,6 +318,44 @@ class ControlInterface():
         return prose.strip()
 
     @staticmethod
+    def setparam_to_param(param_id: str, set_param: prof.SetParameter) -> common.Parameter:
+        """
+        Convert setparameter to parameter.
+
+        Args:
+            param_id: the id of the parameter
+            set_param: the set_parameter from a profile
+
+        Returns:
+            a Parameter with param_id and content from the SetParameter
+        """
+        return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
+
+    @staticmethod
+    def get_rules_from_imp_req(imp_req: comp.ImplementedRequirement) -> Dict[str, str]:
+        """Get all rules found in this imp_req."""
+        rules = {}
+        for prop in as_list(imp_req.props):
+            if prop.name.startswith(const.RULE_NAME_PREFIX):
+                name = prop.value[len(const.RULE_NAME_PREFIX):]
+                remarks = string_from_root(prop.remarks)
+                rules[name] = remarks
+        return rules
+
+    @staticmethod
+    def get_params_from_imp_req(imp_req: comp.ImplementedRequirement) -> Dict[str, Dict[str, Any]]:
+        """Get all params found in this imp_req."""
+        params = {}
+        for param in as_list(imp_req.set_parameters):
+            values = [string_from_root(value) for value in param.values]
+            values = values[0] if len(values) == 1 else values
+            new_param = {'values': values}
+            if param.remarks:
+                new_param['remarks'] = string_from_root(param.remarks)
+            params[param.param_id] = new_param
+        return params
+
+    @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
         """
         Merge dict src into dest.
@@ -358,3 +397,112 @@ class ControlInterface():
                 if prop.name.lower().strip() == 'status' and prop.value.lower().strip() == 'withdrawn':
                     return True
         return False
+
+    @staticmethod
+    def param_values_as_str_list(param: common.Parameter) -> List[str]:
+        """Convert param values to list of strings."""
+        return [val.__root__ for val in as_list(param.values)]
+
+    @staticmethod
+    def param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
+        """Convert param values to string with optional brackets."""
+        if not param.values:
+            return None
+        values_str = ', '.join(ControlInterface.param_values_as_str_list(param))
+        return f'[{values_str}]' if brackets else values_str
+
+    @staticmethod
+    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+        """Convert parameter selection to str."""
+        if param.select and param.select.choice:
+            how_many_str = ''
+            if param.select.how_many:
+                how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
+            choices_str = '; '.join(as_list(param.select.choice))
+            choices_str = f'[{choices_str}]' if brackets else choices_str
+            choices_str = f'Choose {how_many_str}: {choices_str}' if verbose else choices_str
+            return choices_str
+        return ''
+
+    @staticmethod
+    def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+        """Convert param label or choices to string, using choices if present."""
+        choices = ControlInterface.param_selection_as_str(param, verbose, brackets)
+        text = choices if choices else param.label
+        text = text if text else param.id
+        return text
+
+    @staticmethod
+    def param_to_str(
+        param: common.Parameter,
+        param_rep: ParameterRep,
+        verbose=False,
+        brackets=False,
+        params_format: Optional[str] = None,
+    ) -> Optional[str]:
+        """
+        Convert parameter to string based on best available representation.
+
+        Args:
+            param_rep: how to represent the parameter
+            verbose: provide verbose text for selection choices
+            brackets: add brackets around the lists of items
+            params_format: a string containing a single dot that represents a form of highlighting around the param
+
+        Returns:
+            formatted string or None
+        """
+        param_str = None
+        if param_rep == ParameterRep.VALUE_OR_STRING_NONE:
+            param_str = ControlInterface.param_values_as_str(param)
+            param_str = param_str if param_str else 'None'
+        elif param_rep == ParameterRep.LABEL_OR_CHOICES:
+            param_str = ControlInterface.param_label_choices_as_str(param, verbose, brackets)
+        elif param_rep == ParameterRep.VALUE_OR_LABEL_OR_CHOICES:
+            param_str = ControlInterface.param_values_as_str(param)
+            if not param_str:
+                param_str = ControlInterface.param_label_choices_as_str(param, verbose, brackets)
+        elif param_rep == ParameterRep.VALUE_OR_EMPTY_STRING:
+            param_str = ControlInterface.param_values_as_str(param, brackets)
+            if not param_str:
+                param_str = ''
+        if param_str is not None and params_format:
+            if params_format.count('.') > 1:
+                raise TrestleError(
+                    f'Additional text {params_format} '
+                    f'for the parameters cannot contain multiple dots (.)'
+                )
+            param_str = params_format.replace('.', param_str)
+        return param_str
+
+    @staticmethod
+    def str_to_param(param: common.Parameter, param_str: str) -> None:
+        """Replace parameter contents with contents in string."""
+        # this is a simple version that replaces the values but it can be more elaborate
+        param.values = [common.ParameterValue(__root__=param_str)]
+
+    @staticmethod
+    def get_control_param_dict(
+        control: cat.Control,
+        values_only: bool,
+    ) -> Dict[str, common.Parameter]:
+        """
+        Create mapping of param id's to params.
+
+        Args:
+            control: the control containing params of interest
+            values_only: only add params to the dict that have actual values
+
+        Returns:
+            Dictionary of param_id mapped to param
+
+        Notes:
+            Warning is given if there is a parameter with no ID
+        """
+        param_dict: Dict[str, common.Parameter] = {}
+        for param in as_list(control.params):
+            if not param.id:
+                logger.warning(f'Control {control.id} has parameter with no id.  Ignoring.')
+            if param.values or not values_only:
+                param_dict[param.id] = param
+        return param_dict

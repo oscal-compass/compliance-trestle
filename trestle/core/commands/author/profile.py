@@ -169,18 +169,6 @@ class ProfileGenerate(AuthorCommonCommand):
             context.required_sections = required_sections
             catalog_interface.write_catalog_as_markdown(context)
 
-            # catalog_interface.write_catalog_as_markdown(
-            #     md_path=markdown_path,
-            #     yaml_header=yaml_header,
-            #     sections_dict=sections_dict,
-            #     prompt_responses=False,
-            #     additional_content=True,
-            #     profile=profile,
-            #     overwrite_header_values=overwrite_header_values,
-            #     set_parameters=True,
-            #     required_sections=required_sections,
-            #     allowed_sections=None
-            # )
         except TrestleNotFoundError as e:
             raise TrestleError(f'Profile {profile_path} not found, error {e}')
         except TrestleError as e:
