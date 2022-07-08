@@ -390,3 +390,7 @@ EDITABLE_CONTENT = 'Editable Content'
 SORT_ID = 'sort-id'
 
 TRESTLE_IMP_STATUS = 'trestle-imp-status'
+
+CONTROL_OBJECTIVE_HEADER = '## Control Objective'
+
+CONTROL_HEADER = '## Control'

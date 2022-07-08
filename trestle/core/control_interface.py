@@ -287,17 +287,23 @@ class ControlInterface():
         return items
 
     @staticmethod
+    def get_adds_for_control(profile: prof.Profile, control_id: str) -> List[prof.Add]:
+        """Get the adds for a given control id from a profile."""
+        adds: List[prof.Add] = []
+        if profile.modify:
+            for alter in as_list(profile.modify.alters):
+                if alter.control_id == control_id:
+                    adds.extend(as_list(alter.adds))
+        return adds
+
+    @staticmethod
     def get_adds(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
         """Get the adds for a control from a profile by control id."""
         adds = []
-        if profile and profile.modify and profile.modify.alters:
-            for alter in profile.modify.alters:
-                if alter.control_id == control_id and alter.adds:
-                    for add in alter.adds:
-                        if add.parts:
-                            for part in add.parts:
-                                if part.prose:
-                                    adds.append((part.name, part.prose))
+        for add in ControlInterface.get_adds_for_control(profile, control_id):
+            for part in as_list(add.parts):
+                if part.prose:
+                    adds.append((part.name, part.prose))
         return adds
 
     @staticmethod

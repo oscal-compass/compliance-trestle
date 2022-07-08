@@ -199,34 +199,33 @@ class ControlWriter():
         # If we have responses per component then enter them in separate ### sections
         if control.parts:
             for part in control.parts:
-                if part.parts:
-                    if part.name == 'statement':
-                        for prt in part.parts:
-                            if prt.name != 'item':
-                                continue
-                            if not did_write_part:
-                                self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
-                                # insert extra line to make mdformat happy
-                                self._md_file._add_line_raw('')
-                            self._md_file.new_hr()
-                            # if no label guess the label from the sub-part id
-                            part_label = ControlInterface.get_label(prt)
-                            part_label = prt.id.split('.')[-1] if not part_label else part_label
-                            self._md_file.new_header(level=2, title=f'Implementation {part_label}')
-                            added_content = False
-                            for comp_name, dic in comp_dict.items():
-                                if part_label in dic:
-                                    if comp_name != const.SSP_MAIN_COMP_NAME:
-                                        # insert the component name for ssp but not for comp_def
-                                        # because there should only be one component in generated comp_def markdown
-                                        if not comp_def_format:
-                                            self._md_file.new_header(level=3, title=comp_name)
-                                    self._insert_comp_info(part_label, dic, comp_def_format)
-                                    added_content = True
-                            self._md_file.new_paragraph()
-                            if not added_content:
-                                self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
-                            did_write_part = True
+                if part.parts and part.name == 'statement':
+                    for prt in part.parts:
+                        if prt.name != 'item':
+                            continue
+                        if not did_write_part:
+                            self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
+                            # insert extra line to make mdformat happy
+                            self._md_file._add_line_raw('')
+                        self._md_file.new_hr()
+                        # if no label guess the label from the sub-part id
+                        part_label = ControlInterface.get_label(prt)
+                        part_label = prt.id.split('.')[-1] if not part_label else part_label
+                        self._md_file.new_header(level=2, title=f'Implementation {part_label}')
+                        added_content = False
+                        for comp_name, dic in comp_dict.items():
+                            if part_label in dic:
+                                if comp_name != const.SSP_MAIN_COMP_NAME:
+                                    # insert the component name for ssp but not for comp_def
+                                    # because there should only be one component in generated comp_def markdown
+                                    if not comp_def_format:
+                                        self._md_file.new_header(level=3, title=comp_name)
+                                self._insert_comp_info(part_label, dic, comp_def_format)
+                                added_content = True
+                        self._md_file.new_paragraph()
+                        if not added_content:
+                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
+                        did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')

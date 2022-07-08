@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 import trestle.common.const as const
@@ -62,7 +62,7 @@ class ComponentGenerate(AuthorCommonCommand):
             component_name = args.name
 
             return self.component_generate_all(
-                trestle_root, component_name, profile_name, markdown_dir_name, None, None, False
+                trestle_root, component_name, profile_name, markdown_dir_name, {}, None, False
             )
 
         except Exception as e:  # pragma: no cover
@@ -74,7 +74,7 @@ class ComponentGenerate(AuthorCommonCommand):
         comp_def_name: str,
         profile_name: str,
         markdown_dir_name: str,
-        yaml_header: dict,
+        yaml_header: Dict[str, Any],
         sections_dict: Optional[Dict[str, str]],
         overwrite_header_values: bool
     ) -> int:

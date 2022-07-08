@@ -247,7 +247,7 @@ class ControlReader():
     @staticmethod
     def _read_control_statement(ii: int, lines: List[str], control_id: str) -> Tuple[int, common.Part]:
         """Search for the Control statement and read until next ## Control."""
-        while 0 <= ii < len(lines) and not lines[ii].startswith('## Control '):
+        while 0 <= ii < len(lines) and not lines[ii].startswith(const.CONTROL_HEADER):
             ii += 1
         if ii >= len(lines):
             raise TrestleError(f'Control statement not found for control {control_id}')
@@ -281,7 +281,7 @@ class ControlReader():
     @staticmethod
     def _read_control_objective(ii: int, lines: List[str], control_id: str) -> Tuple[int, Optional[common.Part]]:
         ii_orig = ii
-        while 0 <= ii < len(lines) and not lines[ii].startswith('## Control Objective'):
+        while 0 <= ii < len(lines) and not lines[ii].startswith(const.CONTROL_OBJECTIVE_HEADER):
             ii += 1
 
         if ii >= len(lines):
@@ -317,7 +317,7 @@ class ControlReader():
                        control_parts: List[common.Part]) -> Tuple[int, Optional[List[common.Part]]]:
         """Read all sections following the section separated by ## Control."""
         new_parts = []
-        prefix = '## Control '
+        prefix = const.CONTROL_HEADER + ' '
         while 0 <= ii < len(lines):
             line = lines[ii]
             if line.startswith('## What is the solution') or line.startswith(f'# {const.EDITABLE_CONTENT}'):
@@ -570,7 +570,7 @@ class ControlReader():
         while 0 <= ii < len(lines):
             # look for ## Control foo - then read prose
             line = lines[ii]
-            prefix = '## Control '
+            prefix = const.CONTROL_HEADER + ' '
             if line:
                 if not line.startswith(prefix):
                     raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
@@ -821,7 +821,7 @@ class ControlReader():
         if rc < 0:
             return control, group_title
         control.parts = [statement_part] if statement_part else None
-        control_objective = control_tree.get_node_for_key('## Control Objective')
+        control_objective = control_tree.get_node_for_key(const.CONTROL_OBJECTIVE_HEADER)
         if control_objective is not None:
             _, objective_part = ControlReader._read_control_objective(
                 0, control_objective.content.raw_text.split('\n'), control.id
@@ -831,8 +831,8 @@ class ControlReader():
                     control.parts.append(objective_part)
                 else:
                     control.parts = [objective_part]
-        for header_key in control_tree.get_all_headers_for_key('## Control', False):
-            if header_key not in {control_headers[0], '## Control Objective', control_titles[0]}:
+        for header_key in control_tree.get_all_headers_for_key(const.CONTROL_HEADER, False):
+            if header_key not in {control_headers[0], const.CONTROL_OBJECTIVE_HEADER, control_titles[0]}:
                 section_node = control_tree.get_node_for_key(header_key)
                 _, control.parts = ControlReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
