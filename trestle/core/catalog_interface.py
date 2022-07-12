@@ -19,8 +19,8 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.common.const as const
 import trestle.core.generators as gens
+import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
-import trestle.oscal.ssp as ossp
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
@@ -703,8 +703,8 @@ class CatalogInterface():
 
     @staticmethod
     def read_catalog_imp_reqs(
-        md_path: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent], context: ControlContext
-    ) -> List[ossp.ImplementedRequirement]:
+        md_path: pathlib.Path, avail_comps: Dict[str, generic.GenericComponent], context: ControlContext
+    ) -> List[generic.GenericImplementedRequirement]:
         """Read the full set of control implemented requirements from markdown.
 
         Args:
@@ -719,7 +719,7 @@ class CatalogInterface():
             avail_comps provides the mapping of component name to the actual component.
             This is only used for ssp via catalog_interface
         """
-        imp_req_map: Dict[str, ossp.ImplementedRequirement] = {}
+        imp_req_map: Dict[str, generic.GenericImplementedRequirement] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
                 sort_id, imp_req = ControlReader.read_implemented_requirement(control_file, avail_comps, context)

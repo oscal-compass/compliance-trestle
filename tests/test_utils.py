@@ -239,6 +239,22 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
     return False
 
 
+def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
+    """Substitute first match of string with new string in file."""
+    f = file_path.open('r')
+    lines = f.readlines()
+    f.close()
+    for ii, line in enumerate(lines):
+        if tag in line:
+            lines[ii] = lines[ii].replace(tag, new_str)
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
+            return True
+    return False
+
+
 def generate_control_list(label: str, count: int) -> List[cat.Control]:
     """Generate a list of controls with indexed names."""
     controls: List[cat.Control] = []

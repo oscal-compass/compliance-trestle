@@ -20,9 +20,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import frontmatter
 
+import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
-import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_list_from_list, none_if_empty
@@ -437,12 +437,9 @@ class ControlReader():
     @staticmethod
     def _imp_stat_from_string(stat_str: str) -> str:
         """Find best matching status based on string."""
-        simp_str = ControlReader.simplify_name(stat_str)
-        for stat_const in const.STATUS_ALL:
-            if simp_str == ControlReader.simplify_name(stat_const):
-                return stat_const
-        logger.warning(f'Unrecognized status marked as unknown: {stat_str}')
-        return const.STATUS_TRESTLE_UNKNOWN
+        if not stat_str:
+            return const.STATUS_TRESTLE_UNKNOWN
+        return stat_str
 
     @staticmethod
     def _add_component_to_dict(
@@ -473,7 +470,9 @@ class ControlReader():
         return rules, params
 
     @staticmethod
-    def _insert_header_content(imp_req: ossp.ImplementedRequirement, header: Dict[str, Any], control_id: str) -> None:
+    def _insert_header_content(
+        imp_req: generic.GenericImplementedRequirement, header: Dict[str, Any], control_id: str
+    ) -> None:
         """Insert yaml header content into the imp_req and its by_comps."""
         dict_ = header.get(const.TRESTLE_PROPS_TAG, {})
         # if an attribute is in the dict but it is None, need to make sure we get empty list anyway
@@ -678,10 +677,11 @@ class ControlReader():
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
         return comp_dict, yaml_header
 
+    # FIXME this needs to handle compdef and ssp separately
     @staticmethod
     def read_implemented_requirement(
-        control_file: pathlib.Path, avail_comps: Dict[str, ossp.SystemComponent], context: ControlContext
-    ) -> Tuple[str, ossp.ImplementedRequirement]:
+        control_file: pathlib.Path, avail_comps: Dict[str, generic.GenericComponent], context: ControlContext
+    ) -> Tuple[str, generic.GenericImplementedRequirement]:
         """
         Get the implementated requirement associated with given control and link to existing components or new ones.
 
@@ -701,9 +701,9 @@ class ControlReader():
         control_id = control_file.stem
         comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control_file, context)
 
-        statement_map: Dict[str, ossp.Statement] = {}
+        statement_map: Dict[str, generic.GenericStatement] = {}
         # create a new implemented requirement linked to the control id to hold the statements
-        imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+        imp_req: generic.GenericImplementedRequirement = generic.GenericImplementedRequirement.generate()
         imp_req.control_id = control_id
 
         raw_comp_dict = {ControlReader.simplify_name(key): value for key, value in comp_dict.items()}
@@ -712,13 +712,13 @@ class ControlReader():
         # the comp_dict captures all component names referenced by the control
         # need to create new components if not already in dict by looping over comps referenced by this control
         for comp_name in comp_dict.keys():
-            component: Optional[ossp.SystemComponent] = None
+            component: Optional[generic.GenericComponent] = None
             raw_comp_name = ControlReader.simplify_name(comp_name)
             if raw_comp_name in raw_avail_comps:
                 component = raw_avail_comps[raw_comp_name]
             else:
                 # here is where we create a new component on the fly as needed
-                component = gens.generate_sample_model(ossp.SystemComponent)
+                component = generic.GenericComponent.generate()
                 component.title = comp_name
                 avail_comps[comp_name] = component
                 raw_avail_comps[raw_comp_name] = component
@@ -732,15 +732,15 @@ class ControlReader():
                 if statement_id in statement_map:
                     statement = statement_map[statement_id]
                 else:
-                    statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
+                    statement: generic.GenericStatement = generic.GenericStatement.generate()
                     statement.statement_id = statement_id
                     statement.by_components = []
                     statement_map[statement_id] = statement
                 # create a new by-component to add to this statement
-                by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+                by_comp: generic.GenericByComponent = generic.GenericByComponent.generate()
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
-                status = ControlInterface.get_prop(statement, const.IMPLEMENTATION_STATUS, const.STATUS_TRESTLE_UNKNOWN)
+                status = comp_info.implementation_status
                 by_comp.implementation_status = common.ImplementationStatus(
                     state=ControlReader._imp_stat_from_string(status)
                 )

@@ -22,6 +22,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
+import trestle.core.generic_oscal as generic
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
@@ -219,7 +220,7 @@ class SSPAssemble(AuthorCommonCommand):
                 new_file_content_type = FileContentType.path_to_content_type(new_ssp_path)
 
             ssp: ossp.SystemSecurityPlan
-            comp_dict: Dict[str, ossp.SystemComponent] = {}
+            comp_dict: Dict[str, generic.GenericComponent] = {}
 
             # if orig ssp exists - need to load it rather than instantiate new one
             orig_ssp_path = ModelUtils.full_path_for_top_level_model(
@@ -233,16 +234,22 @@ class SSPAssemble(AuthorCommonCommand):
                 # load the existing json ssp
                 _, _, ssp = ModelUtils.load_distributed(orig_ssp_path, trestle_root)
                 for component in ssp.system_implementation.components:
-                    comp_dict[component.title] = component
+                    comp_dict[component.title] = generic.GenericComponent.from_system_component(component)
                 # read the new imp reqs from markdown and have them reference existing components
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
-                self._merge_imp_reqs(ssp, imp_reqs)
+                new_imp_reqs = []
+                for imp_req in imp_reqs:
+                    new_imp_reqs.append(imp_req.as_ssp())
+                self._merge_imp_reqs(ssp, new_imp_reqs)
                 new_file_content_type = FileContentType.path_to_content_type(orig_ssp_path)
             else:
                 # create a sample ssp to hold all the parts
                 ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
                 # load the imp_reqs from markdown and create components as needed, referenced by ### headers
                 imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, comp_dict, context)
+                new_imp_reqs = []
+                for imp_req in imp_reqs:
+                    new_imp_reqs.append(imp_req.as_ssp())
 
                 # create system implementation
                 system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
@@ -250,7 +257,7 @@ class SSPAssemble(AuthorCommonCommand):
 
                 # create a control implementation to hold the implementated requirements
                 control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
-                control_imp.implemented_requirements = imp_reqs
+                control_imp.implemented_requirements = new_imp_reqs
                 control_imp.description = const.SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT
 
                 # insert the parts into the ssp
@@ -266,7 +273,7 @@ class SSPAssemble(AuthorCommonCommand):
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             component_list: List[ossp.SystemComponent] = []
             for comp in comp_dict.values():
-                component_list.append(comp)
+                component_list.append(comp.as_system_component())
             if ssp.system_implementation.components:
                 # reconstruct list with same order as existing, but add/remove components as needed
                 new_list: List[ossp.SystemComponent] = []

@@ -20,9 +20,12 @@ from typing import Dict, Tuple
 
 from tests import test_utils
 
+import trestle.oscal.component as comp
+from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.component import ComponentAssemble, ComponentGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
+from trestle.core.control_interface import ControlInterface
 
 md_path = 'md_comp'
 
@@ -84,10 +87,16 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
     assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
     assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
 
+    ac5_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-5.md'
+
+    assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: under-development')
+    assert test_utils.substitute_text_in_file(ac5_path, 'Status: under-development', 'Status: implemented')
+    assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
+
     test_args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
         name=comp_name,
-        output=md_path,
+        output='assem_comp',
         markdown=md_path,
         regenerate=False,
         version=None,
@@ -95,3 +104,8 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
     )
     comp_assem = ComponentAssemble()
     assert comp_assem._run(test_args) == CmdReturnCodes.SUCCESS.value
+
+    assem_comp_def, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'assem_comp', comp.ComponentDefinition)
+    component = ControlInterface.get_component_by_name(assem_comp_def, 'OSCO')
+    imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-5')
+    assert ControlInterface.get_item_status(imp_reqs[0].statements[0]) == 'implemented'

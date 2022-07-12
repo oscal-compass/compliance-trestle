@@ -112,7 +112,7 @@
                   },
                   {
                     "name": "implementation-status",
-                    "value": "implemented"
+                    "value": "operational"
                   }
                 ],
                 "responsible-roles": [
@@ -144,7 +144,7 @@
                     "props": [
                       {
                         "name": "implementation-status",
-                        "value": "partially-implemented"
+                        "value": "under-development"
                       }
                     ]
                   }
@@ -437,6 +437,10 @@
                     "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available",
                     "class": "scc_goal_name_id",
                     "remarks": "Ensure Eviction threshold Settings Are Set - evictionSoft: memory.available"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "under-development"
                   }
                 ],
                 "set-parameters": [

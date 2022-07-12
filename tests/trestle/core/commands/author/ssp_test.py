@@ -633,7 +633,7 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
     json_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)
     comp_def = json_ssp.system_implementation.components[0]
     assert comp_def.title == 'This System'
-    assert comp_def.status.state == ossp.State1.under_development
+    assert comp_def.status.state == ossp.State1.other
     imp_reqs: List[ossp.ImplementedRequirement] = json_ssp.control_implementation.implemented_requirements
     assert len(imp_reqs) == 2
     assert imp_reqs[0].control_id == 's1.1.1'

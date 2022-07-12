@@ -49,7 +49,7 @@ class ComponentImpInfo(TrestleBaseModel):
     """Class to capture component prose and status."""
 
     prose: str
-    implementation_status = const.STATUS_TRESTLE_UNKNOWN
+    implementation_status = const.STATUS_OTHER
     remarks: Optional[str]
 
 
@@ -242,6 +242,26 @@ class ControlInterface():
             if prop.name.strip().lower() == prop_name.strip().lower():
                 return prop.value.strip()
         return default if default else ''
+
+    @staticmethod
+    def delete_prop(part_control: TypeWithProps, prop_name: str) -> None:
+        """Delete property with that name."""
+        # assumes at most one instance
+        names = [prop.name for prop in as_list(part_control.props)]
+        if prop_name in names:
+            index = names.index(prop_name)
+            del part_control.props[index]
+
+    @staticmethod
+    def replace_prop(part_control: TypeWithProps, new_prop: common.Property) -> None:
+        """Delete property with that name if present and insert new one."""
+        # assumes at most one instance
+        names = [prop.name for prop in as_list(part_control.props)]
+        if new_prop.name in names:
+            index = names.index(new_prop.name)
+            del part_control.props[index]
+        part_control.props = as_list(part_control.props)
+        part_control.props.append(new_prop)
 
     @staticmethod
     def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
@@ -541,3 +561,23 @@ class ControlInterface():
                     if imp_req.control_id == control_id:
                         imp_reqs.append(imp_req)
         return imp_reqs
+
+    @staticmethod
+    def get_item_status(item: TypeWithProps) -> str:
+        """Get the status of an imp_req."""
+        for prop in as_list(item.props):
+            if prop.name == const.IMPLEMENTATION_STATUS:
+                return prop.value
+        return const.STATUS_TRESTLE_UNKNOWN
+
+    @staticmethod
+    def insert_imp_req_into_component(
+        component: comp.DefinedComponent, new_imp_req: comp.ImplementedRequirement
+    ) -> None:
+        """Insert imp req into component by matching control id to existing imp req."""
+        for control_imp in as_list(component.control_implementations):
+            for ii, imp_req in enumerate(as_list(control_imp.implemented_requirements)):
+                if imp_req.control_id == new_imp_req.control_id:
+                    control_imp.implemented_requirements[ii] = new_imp_req
+                    return
+        logger.warning(f'No existing implemented requirement found for control {imp_req.control_id}')

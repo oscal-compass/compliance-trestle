@@ -22,6 +22,7 @@ from uuid import uuid4
 
 import trestle.common.const as const
 import trestle.common.log as log
+import trestle.core.generic_oscal as generic
 import trestle.oscal.common as com
 import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
@@ -33,7 +34,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_interface import ContextPurpose, ControlContext
+from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
@@ -279,9 +280,11 @@ class ComponentAssemble(AuthorCommonCommand):
     ) -> None:
         #
         md_path = md_dir / component.title
-        avail_comps = {component.title: component}
+        generic_comp = generic.GenericComponent.from_defined_component(component)
+        avail_comps = {component.title: generic_comp}
         cat_interface = CatalogInterface()
         imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps, context)
-        # FIXME next needs work
-        if False:
-            component.control_implementations[0].implemented_requirements = imp_reqs
+        # the imp_reqs need to be inserted into the correct control_implementation
+        for imp_req in imp_reqs:
+            comp_imp_req = imp_req.as_comp_def()
+            ControlInterface.insert_imp_req_into_component(component, comp_imp_req)

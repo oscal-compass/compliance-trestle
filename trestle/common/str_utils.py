@@ -113,7 +113,7 @@ def underscore_to_dash(name: str) -> str:
 
 
 def as_string(string_or_none: Optional[str]) -> str:
-    """Convert string or None to iteself or empty string."""
+    """Convert string or None to itself or empty string."""
     return string_or_none if string_or_none else ''
 
 
