@@ -107,6 +107,7 @@ nav:
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
+      - generic_oscal: api_reference/trestle.core.generic_oscal.md
       - jinja: api_reference/trestle.core.jinja.md
       - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
