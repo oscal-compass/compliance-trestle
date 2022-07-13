@@ -425,21 +425,20 @@ class ControlReader():
                 comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose)}
             # keep track of subnodes that get handled
             subnode_kill: List[int] = []
+            status_str = None
+            remarks_str = None
             for ii, subnode in enumerate(node.subnodes):
-                if subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
-                    status = subnode.key.split(maxsplit=3)[-1]
-                    comp_dict[comp_name][label].implementation_status = ControlReader._imp_stat_from_string(status)
+                if subnode.key.find(const.IMPLEMENTATION_STATUS_REMARKS_HEADER) >= 0:
+                    remarks_str = subnode.key.split(maxsplit=4)[-1]
                     subnode_kill.append(ii)
+                elif subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
+                    status_str = subnode.key.split(maxsplit=3)[-1]
+                    subnode_kill.append(ii)
+            if status_str:
+                comp_dict[comp_name][label].status = common.ImplementationStatus(state=status_str, remarks=remarks_str)
             delete_list_from_list(node.subnodes, subnode_kill)
         for subnode in as_list(node.subnodes):
             ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
-
-    @staticmethod
-    def _imp_stat_from_string(stat_str: str) -> str:
-        """Find best matching status based on string."""
-        if not stat_str:
-            return const.STATUS_TRESTLE_UNKNOWN
-        return stat_str
 
     @staticmethod
     def _add_component_to_dict(
@@ -456,15 +455,11 @@ class ControlReader():
                 params.update(ControlInterface.get_params_from_imp_req(imp_req))
                 if imp_req.description:
                     # add top level control guidance with no statement id
-                    imp_stat_str = ControlInterface.get_prop(imp_req, const.IMPLEMENTATION_STATUS)
-                    imp_stat = ControlReader._imp_stat_from_string(imp_stat_str)
-                    sub_comp_dict[''] = ComponentImpInfo(prose=imp_req.description, implementation_status=imp_stat)
+                    status = ControlInterface.get_status_from_props(imp_req)
+                    sub_comp_dict[''] = ComponentImpInfo(prose=imp_req.description, status=status)
                 for statement in as_list(imp_req.statements):
-                    imp_stat_str = ControlInterface.get_prop(statement, const.IMPLEMENTATION_STATUS)
-                    imp_stat = ControlReader._imp_stat_from_string(imp_stat_str)
-                    sub_comp_dict[statement.statement_id] = ComponentImpInfo(
-                        prose=statement.description, implementation_status=imp_stat
-                    )
+                    status = ControlInterface.get_status_from_props(statement)
+                    sub_comp_dict[statement.statement_id] = ComponentImpInfo(prose=statement.description, status=status)
                 if sub_comp_dict:
                     comp_dict[sub_comp.title] = sub_comp_dict
         return rules, params
@@ -677,7 +672,6 @@ class ControlReader():
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
         return comp_dict, yaml_header
 
-    # FIXME this needs to handle compdef and ssp separately
     @staticmethod
     def read_implemented_requirement(
         control_file: pathlib.Path, avail_comps: Dict[str, generic.GenericComponent], context: ControlContext
@@ -740,10 +734,7 @@ class ControlReader():
                 by_comp: generic.GenericByComponent = generic.GenericByComponent.generate()
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
-                status = comp_info.implementation_status
-                by_comp.implementation_status = common.ImplementationStatus(
-                    state=ControlReader._imp_stat_from_string(status)
-                )
+                by_comp.implementation_status = comp_info.status
                 # add the response prose to the description
                 by_comp.description = comp_info.prose
                 statement.by_components.append(by_comp)

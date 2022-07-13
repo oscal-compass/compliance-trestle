@@ -314,7 +314,11 @@ CONTROL_ORIGINATION = 'control-origination'
 
 IMPLEMENTATION_STATUS = 'implementation-status'
 
+IMPLEMENTATION_STATUS_REMARKS = 'implementation-status-remarks'
+
 IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
+
+IMPLEMENTATION_STATUS_REMARKS_HEADER = 'Implementation Status Remarks'
 
 REMARKS = 'Remarks'
 

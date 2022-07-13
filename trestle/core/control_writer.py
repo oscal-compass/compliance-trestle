@@ -154,9 +154,11 @@ class ControlWriter():
             info = comp_info[part_label]
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
-            self._md_file.new_header(
-                level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.implementation_status}'
-            )
+            self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.status.state}')
+            if info.status.remarks:
+                self._md_file.new_header(
+                    level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {info.status.remarks}'
+                )
 
     def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
@@ -169,8 +171,13 @@ class ControlWriter():
                     # create new heading for this component and add guidance
                     self._md_file.new_paraline(comp_info.prose)
                     self._md_file.new_header(
-                        level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.implementation_status}'
+                        level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.status.state}'
                     )
+                    if comp_info.status.remarks:
+                        self._md_file.new_header(
+                            level=level,
+                            title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {comp_info.status.remarks}'
+                        )
                     did_write = True
         return did_write
 

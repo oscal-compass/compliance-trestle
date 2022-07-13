@@ -49,8 +49,7 @@ class ComponentImpInfo(TrestleBaseModel):
     """Class to capture component prose and status."""
 
     prose: str
-    implementation_status = const.STATUS_OTHER
-    remarks: Optional[str]
+    status = common.ImplementationStatus(state=const.STATUS_OTHER)
 
 
 # provide name for this type
@@ -563,12 +562,24 @@ class ControlInterface():
         return imp_reqs
 
     @staticmethod
-    def get_item_status(item: TypeWithProps) -> str:
-        """Get the status of an imp_req."""
+    def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:
+        """Get the status of an item from its props."""
+        status = common.ImplementationStatus(state=const.STATUS_OTHER)
         for prop in as_list(item.props):
             if prop.name == const.IMPLEMENTATION_STATUS:
-                return prop.value
-        return const.STATUS_TRESTLE_UNKNOWN
+                status.state = prop.value
+            elif prop.name == const.IMPLEMENTATION_STATUS_REMARKS:
+                status.remarks = prop.value
+        return status
+
+    @staticmethod
+    def insert_status_in_props(item: TypeWithProps, status: str, remarks: Optional[str]) -> None:
+        """Insert status content into props of the item."""
+        ControlInterface.replace_prop(item, const.IMPLEMENTATION_STATUS, status)
+        if remarks:
+            ControlInterface.replace_prop(item, const.IMPLEMENTATION_STATUS_REMARKS, remarks)
+        else:
+            ControlInterface.delete_prop(item, const.IMPLEMENTATION_STATUS_REMARKS)
 
     @staticmethod
     def insert_imp_req_into_component(

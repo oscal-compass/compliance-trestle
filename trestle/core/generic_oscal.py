@@ -187,10 +187,8 @@ class GenericComponent(TrestleBaseModel):
     @classmethod
     def from_defined_component(cls, def_comp: comp.DefinedComponent) -> GenericComponent:
         """Convert defined component to generic."""
-        # FIXME get remarks also
-        status_str = ControlInterface.get_prop(def_comp, const.IMPLEMENTATION_STATUS, const.STATUS_OTHER)
+        status = ControlInterface.get_status_from_props(def_comp)
         class_dict = copy.deepcopy(def_comp.__dict__)
-        status = common.ImplementationStatus(state=status_str)
         class_dict['status'] = status
         return cls(**class_dict)
 
