@@ -492,6 +492,7 @@ class ControlReader():
                     raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
             else:
                 raise TrestleError(f'The yaml header for control {control_id} has unexpected content: {co}')
+        # FIXME this needs reworking
         for status in imp_status:
             if isinstance(status, str):
                 props.append(

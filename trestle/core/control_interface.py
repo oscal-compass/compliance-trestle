@@ -567,19 +567,24 @@ class ControlInterface():
         status = common.ImplementationStatus(state=const.STATUS_OTHER)
         for prop in as_list(item.props):
             if prop.name == const.IMPLEMENTATION_STATUS:
-                status.state = prop.value
-            elif prop.name == const.IMPLEMENTATION_STATUS_REMARKS:
-                status.remarks = prop.value
+                status = ControlInterface.prop_as_status(prop)
+                break
         return status
 
     @staticmethod
-    def insert_status_in_props(item: TypeWithProps, status: str, remarks: Optional[str]) -> None:
+    def status_as_prop(status: common.ImplementationStatus) -> common.Property:
+        """Convert status to property."""
+        return common.Property(name=const.IMPLEMENTATION_STATUS, value=status.state, remarks=status.remarks)
+
+    @staticmethod
+    def prop_as_status(prop: common.Property) -> common.ImplementationStatus:
+        """Convert property to status."""
+        return common.ImplementationStatus(state=prop.value, remarks=prop.remarks)
+
+    @staticmethod
+    def insert_status_in_props(item: TypeWithProps, status: common.ImplementationStatus) -> None:
         """Insert status content into props of the item."""
         ControlInterface.replace_prop(item, const.IMPLEMENTATION_STATUS, status)
-        if remarks:
-            ControlInterface.replace_prop(item, const.IMPLEMENTATION_STATUS_REMARKS, remarks)
-        else:
-            ControlInterface.delete_prop(item, const.IMPLEMENTATION_STATUS_REMARKS)
 
     @staticmethod
     def insert_imp_req_into_component(

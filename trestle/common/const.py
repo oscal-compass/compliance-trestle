@@ -314,8 +314,6 @@ CONTROL_ORIGINATION = 'control-origination'
 
 IMPLEMENTATION_STATUS = 'implementation-status'
 
-IMPLEMENTATION_STATUS_REMARKS = 'implementation-status-remarks'
-
 IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
 
 IMPLEMENTATION_STATUS_REMARKS_HEADER = 'Implementation Status Remarks'
@@ -353,9 +351,6 @@ STATUS_OTHER = 'other'
 # Needed only by SystemCharacteristics
 STATUS_UNDER_MAJOR_MODIFICATION = 'under-major-modification'
 
-# Used only by trestle
-STATUS_TRESTLE_UNKNOWN = 'unknown'
-
 STATUS_ALL = [
     STATUS_IMPLEMENTED,
     STATUS_PARTIAL,
@@ -367,11 +362,10 @@ STATUS_ALL = [
     STATUS_UNDER_DEVELOPMENT,
     STATUS_DISPOSITION,
     STATUS_OTHER,
-    STATUS_UNDER_MAJOR_MODIFICATION,
-    STATUS_TRESTLE_UNKNOWN
+    STATUS_UNDER_MAJOR_MODIFICATION
 ]
 
-STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED} {STATUS_PARTIAL} {STATUS_PLANNED} {STATUS_TRESTLE_UNKNOWN} -->'  # noqa E501
+STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_OPERATIONAL} {STATUS_UNDER_DEVELOPMENT} {STATUS_DISPOSITION} {STATUS_OTHER} -->'  # noqa E501
 
 RESPONSIBLE_ROLE = 'responsible-role'
 

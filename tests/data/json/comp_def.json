@@ -112,7 +112,8 @@
                   },
                   {
                     "name": "implementation-status",
-                    "value": "operational"
+                    "value": "operational",
+                    "remarks": "this is my remark"
                   }
                 ],
                 "responsible-roles": [

@@ -155,9 +155,9 @@ class ControlWriter():
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
             self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.status.state}')
-            if info.status.remarks:
+            if info.status.remarks and info.status.remarks.__root__:
                 self._md_file.new_header(
-                    level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {info.status.remarks}'
+                    level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {info.status.remarks.__root__}'
                 )
 
     def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
@@ -173,10 +173,10 @@ class ControlWriter():
                     self._md_file.new_header(
                         level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.status.state}'
                     )
-                    if comp_info.status.remarks:
+                    if comp_info.status.remarks and comp_info.status.remarks.__root__:
                         self._md_file.new_header(
                             level=level,
-                            title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {comp_info.status.remarks}'
+                            title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {comp_info.status.remarks.__root__}'
                         )
                     did_write = True
         return did_write
@@ -326,7 +326,7 @@ class ControlWriter():
             return
         control_file = dest_path / (control.id + '.md')
         # first read the existing markdown header and content if it exists
-        existing_text, header = ControlReader.read_all_implementation_prose_and_header(control_file, context)
+        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control_file, context)
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 
@@ -361,7 +361,7 @@ class ControlWriter():
 
         # prompt responses for imp reqs
         if context.prompt_responses:
-            self._add_implementation_response_prompts(control, existing_text, context.comp_def is not None)
+            self._add_implementation_response_prompts(control, comp_dict, context.comp_def is not None)
 
         # only used for profile-generate
         # add sections corresponding to added parts in the profile
