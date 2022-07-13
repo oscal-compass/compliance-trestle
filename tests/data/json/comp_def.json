@@ -113,7 +113,7 @@
                   {
                     "name": "implementation-status",
                     "value": "operational",
-                    "remarks": "this is my remark"
+                    "remarks": "ac1 remark"
                   }
                 ],
                 "responsible-roles": [
@@ -441,7 +441,8 @@
                   },
                   {
                     "name": "implementation-status",
-                    "value": "under-development"
+                    "value": "under-development",
+                    "remarks": "this is my remark"
                   }
                 ],
                 "set-parameters": [

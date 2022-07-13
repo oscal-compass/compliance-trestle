@@ -584,7 +584,8 @@ class ControlInterface():
     @staticmethod
     def insert_status_in_props(item: TypeWithProps, status: common.ImplementationStatus) -> None:
         """Insert status content into props of the item."""
-        ControlInterface.replace_prop(item, const.IMPLEMENTATION_STATUS, status)
+        prop = ControlInterface.status_as_prop(status)
+        ControlInterface.replace_prop(item, prop)
 
     @staticmethod
     def insert_imp_req_into_component(

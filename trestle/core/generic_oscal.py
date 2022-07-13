@@ -118,9 +118,7 @@ class GenericStatement(TrestleBaseModel):
             del stat_dict['by_components']
             stat_dict['description'] = by_comp.description
             new_stat = comp.Statement(**stat_dict)
-            ControlInterface.replace_prop(
-                new_stat, common.Property(name=const.IMPLEMENTATION_STATUS, value=by_comp.implementation_status.state)
-            )
+            ControlInterface.insert_status_in_props(new_stat, by_comp.implementation_status)
             statements.append(new_stat)
         return statements
 
@@ -178,10 +176,7 @@ class GenericComponent(TrestleBaseModel):
         class_dict = copy.deepcopy(self.__dict__)
         del class_dict['status']
         def_comp = comp.DefinedComponent(**class_dict)
-        ControlInterface.delete_prop(def_comp, const.IMPLEMENTATION_STATUS)
-        props = as_list(def_comp.props)
-        props.append(common.Property(name=const.IMPLEMENTATION_STATUS, value=common.Value(_root__=status)))
-        def_comp.props = props
+        ControlInterface.insert_status_in_props(def_comp, status)
         return def_comp
 
     @classmethod
@@ -199,7 +194,7 @@ class GenericComponent(TrestleBaseModel):
         status_str = self.status.state if self.status else 'other'
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
             status_str = 'other'
-        class_dict['status'] = ossp.Status(state=ossp.State1(status_str))
+        class_dict['status'] = ossp.Status(state=ossp.State1(status_str), remarks=self.status.remarks)
         return ossp.SystemComponent(**class_dict)
 
     @classmethod
