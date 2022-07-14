@@ -25,7 +25,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_list
+from trestle.common.list_utils import as_dict, as_list, none_if_empty
 from trestle.common.str_utils import string_from_root
 from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
@@ -588,6 +588,12 @@ class ControlInterface():
         ControlInterface.replace_prop(item, prop)
 
     @staticmethod
+    def copy_status_in_props(dest: TypeWithProps, src: TypeWithProps) -> None:
+        """Copy status in props from one object to another."""
+        status = ControlInterface.get_status_from_props(src)
+        ControlInterface.insert_status_in_props(dest, status)
+
+    @staticmethod
     def insert_imp_req_into_component(
         component: comp.DefinedComponent, new_imp_req: comp.ImplementedRequirement
     ) -> None:
@@ -595,6 +601,16 @@ class ControlInterface():
         for control_imp in as_list(component.control_implementations):
             for ii, imp_req in enumerate(as_list(control_imp.implemented_requirements)):
                 if imp_req.control_id == new_imp_req.control_id:
-                    control_imp.implemented_requirements[ii] = new_imp_req
+                    control_imp.implemented_requirements[ii].description = new_imp_req.description
+                    status = ControlInterface.get_status_from_props(new_imp_req)
+                    ControlInterface.insert_status_in_props(imp_req, status)
+                    statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
+                    new_statements: List[comp.Statement] = []
+                    for statement in as_list(new_imp_req.statements):
+                        stat = statement_dict.get(statement.statement_id, statement)
+                        stat.description = statement.description
+                        ControlInterface.copy_status_in_props(stat, statement)
+                        new_statements.append(stat)
+                    imp_req.statements = none_if_empty(new_statements)
                     return
-        logger.warning(f'No existing implemented requirement found for control {imp_req.control_id}')
+        logger.warning(f'No existing implemented requirement found for control {new_imp_req.control_id}')

@@ -709,6 +709,12 @@ class ControlReader():
         for comp_name in comp_dict.keys():
             component: Optional[generic.GenericComponent] = None
             raw_comp_name = ControlReader.simplify_name(comp_name)
+            if raw_comp_name == ControlReader.simplify_name(const.SSP_MD_IMPLEMENTATION_QUESTION):
+                comp_info: ComponentImpInfo = list(raw_comp_dict[raw_comp_name].items())[0][1]
+                imp_req.description = comp_info.prose
+                if comp_info.status:
+                    ControlInterface.insert_status_in_props(imp_req, comp_info.status)
+                continue
             if raw_comp_name in raw_avail_comps:
                 component = raw_avail_comps[raw_comp_name]
             else:

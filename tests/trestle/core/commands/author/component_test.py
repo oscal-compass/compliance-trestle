@@ -109,6 +109,6 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
     assem_comp_def, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'assem_comp', comp.ComponentDefinition)
     component = ControlInterface.get_component_by_name(assem_comp_def, 'OSCO')
     imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-5')
-    new_status = ControlInterface.get_status_from_props(imp_reqs[0].statements[0])
+    new_status = ControlInterface.get_status_from_props(imp_reqs[0])
     assert new_status.state == 'implemented'
     assert new_status.remarks.__root__ == 'this is my new remark'
