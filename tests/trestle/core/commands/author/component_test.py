@@ -18,11 +18,13 @@ import pathlib
 import shutil
 from typing import Dict, Tuple
 
+from _pytest.monkeypatch import MonkeyPatch
+
 from tests import test_utils
 
 import trestle.oscal.component as comp
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.author.component import ComponentAssemble, ComponentGenerate
+from trestle.core.commands.author.component import ComponentGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
 from trestle.core.control_interface import ControlInterface
@@ -42,32 +44,29 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict
         assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 
-def setup_component_generate(
-    trestle_root: pathlib.Path
-) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path, pathlib.Path]:
+def load_file(trestle_root: pathlib.Path, source_name: str, dest_name: str, source_type: str) -> None:
+    """Load file into workspace."""
+    item_orig_path = test_utils.JSON_TEST_DATA_PATH / (source_name)
+    item_dir = trestle_root / f'{source_type}s/{dest_name}'
+    item_dir.mkdir(exist_ok=True, parents=True)
+    item_new_path = item_dir / f'{source_type}.json'
+    shutil.copy(item_orig_path, item_new_path)
+
+
+def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, pathlib.Path, pathlib.Path]:
     """Set up files for profile generate."""
-    comp_orig_path = test_utils.JSON_TEST_DATA_PATH / 'comp_def.json'
     comp_name = 'test_comp'
-    trestle_comp_dir = trestle_root / ('component-definitions/' + comp_name)
-    trestle_comp_dir.mkdir(exist_ok=True, parents=True)
-    comp_new_path = trestle_comp_dir / ('component-definition.json')
-    shutil.copy(comp_orig_path, comp_new_path)
     cat_name = 'nist_cat'
-    cat_orig_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME
-    cat_new_dir = trestle_root / ('catalogs/' + cat_name)
-    cat_new_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy(cat_orig_path, cat_new_dir / 'catalog.json')
     prof_name = 'nist_prof'
-    prof_orig_path = test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_PROFILE_NAME
-    prof_new_dir = trestle_root / ('profiles/' + prof_name)
-    prof_new_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy(prof_orig_path, prof_new_dir / 'profile.json')
+    load_file(trestle_root, 'comp_def.json', comp_name, 'component-definition')
+    load_file(trestle_root, test_utils.SIMPLIFIED_NIST_CATALOG_NAME, cat_name, 'catalog')
+    load_file(trestle_root, test_utils.SIMPLIFIED_NIST_PROFILE_NAME, prof_name, 'profile')
     new_href = 'trestle://catalogs/nist_cat/catalog.json'
     assert HrefCmd.change_import_href(trestle_root, prof_name, new_href, 0) == 0
     return comp_name, prof_name, cat_name
 
 
-def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
+def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
     comp_name, prof_name, _ = setup_component_generate(tmp_trestle_dir)
     test_args = argparse.Namespace(
@@ -103,8 +102,8 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path) -> None:
         version=None,
         verbose=0
     )
-    comp_assem = ComponentAssemble()
-    assert comp_assem._run(test_args) == CmdReturnCodes.SUCCESS.value
+    command = f'trestle author component-assemble -n {comp_name} -o assem_comp -m {md_path}'
+    test_utils.execute_command_and_assert(command, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
     assem_comp_def, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'assem_comp', comp.ComponentDefinition)
     component = ControlInterface.get_component_by_name(assem_comp_def, 'OSCO')

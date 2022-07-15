@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from uuid import uuid4
 
 import trestle.common.const as const
@@ -57,14 +57,8 @@ class ComponentGenerate(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
-            trestle_root = args.trestle_root
-            markdown_dir_name = args.output
-            profile_name = args.profile
-            component_name = args.name
 
-            return self.component_generate_all(
-                trestle_root, component_name, profile_name, markdown_dir_name, {}, None, False
-            )
+            return self.component_generate_all(args.trestle_root, args.name, args.profile, args.output, {}, None, False)
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the component markdown failed')
@@ -85,6 +79,7 @@ class ComponentGenerate(AuthorCommonCommand):
         md_path = trestle_root / markdown_dir_name
         md_path.mkdir(parents=True, exist_ok=True)
         component_def, _ = load_validate_model_name(trestle_root, comp_def_name, comp.ComponentDefinition)
+        rc = CmdReturnCodes.SUCCESS.value
         for component in as_list(component_def.components):
             rc = self.component_generate_by_name(
                 trestle_root,
@@ -97,8 +92,8 @@ class ComponentGenerate(AuthorCommonCommand):
                 overwrite_header_values
             )
             if rc != CmdReturnCodes.SUCCESS.value:
-                return rc
-        return CmdReturnCodes.SUCCESS.value
+                break
+        return rc
 
     def component_generate_by_name(
         self,
@@ -149,9 +144,8 @@ class ComponentAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
-            trestle_root = pathlib.Path(args.trestle_root)
             return self.assemble_component(
-                trestle_root=trestle_root,
+                trestle_root=args.trestle_root,
                 parent_comp_name=args.name,
                 md_name=args.markdown,
                 assem_comp_name=args.output,
@@ -245,20 +239,14 @@ class ComponentAssemble(AuthorCommonCommand):
     ) -> None:
         """Assemble markdown content into provided component-definition model."""
         # find the needed list of comps
-        sub_dirs = md_dir.glob('*')
+        sub_dirs = file_utils.iterdir_without_hidden_files(md_dir)
         comp_names = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
 
         # make sure parent has list of comps to work with - possibly empty
         if not parent_comp.components:
             parent_comp.components = []
 
-        # remove any unneeded comps from parent comp_def
-        kill_list: List[int] = []
-        for ii, component in enumerate(parent_comp.components):
-            if component.title not in comp_names:
-                kill_list.append(ii)
-        if kill_list:
-            del parent_comp.components[kill_list]
+        parent_comp.components[:] = [comp for comp in parent_comp.components if comp.title in comp_names]
 
         # create new comps if needed
         existing_comp_names = [component.title for component in parent_comp.components]

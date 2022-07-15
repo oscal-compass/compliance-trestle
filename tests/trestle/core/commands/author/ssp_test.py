@@ -19,8 +19,6 @@ from typing import List
 
 import pytest
 
-from ruamel.yaml import YAML
-
 from tests import test_utils
 from tests.test_utils import setup_for_ssp
 
@@ -29,7 +27,6 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_interface import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
@@ -68,7 +65,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 @pytest.mark.parametrize('specify_sections', [False, True])
 def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
+    args, _, _ = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
     if specify_sections:
         args.allowed_sections = 'ImplGuidance,ExpectedEvidence'
 
@@ -83,20 +80,12 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
 
-    with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML()
-        expected_header = yaml.load(f)
-    sections_dict = sections_to_dict(sections)
-    expected_header[const.SECTIONS_TAG] = sections_dict
     assert test_utils.confirm_text_in_file(ac_1, '## Control', '## Control Guidance') != specify_sections
     md_api = MarkdownAPI()
-    header, tree = md_api.processor.process_markdown(ac_1)
-    expected_header[const.SORT_ID] = 'ac-01'
-    assert tree is not None
-    # FIXME confirm checks on header equality don't make sense if expected header doesnt have parameters in it
-    header, tree = md_api.processor.process_markdown(ac_2)
-    expected_header[const.SORT_ID] = 'ac-02'
-    assert tree is not None
+    _, tree = md_api.processor.process_markdown(ac_1)
+    assert tree.get_count_of_subnodes() == 8 if specify_sections else 9
+    _, tree = md_api.processor.process_markdown(ac_2)
+    assert tree.get_count_of_subnodes() == 17 if specify_sections else 18
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
@@ -200,11 +189,14 @@ def test_ssp_generate_header_edit(load_yaml_header: bool, tmp_trestle_dir: pathl
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
 
-    assert 'new' in header['control-origination'][1]
+    co = header['control-origination']
+    assert co[0] == 'Service Provider System Specific'
+    assert co[1] == 'My new edits'
     if not load_yaml_header:
-        assert len(header['control-origination']) == 2
+        assert len(co) == 2
     else:
-        assert len(header['control-origination']) == 3
+        assert co[2] == 'Service Provider Corporate'
+        assert len(co) == 3
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:

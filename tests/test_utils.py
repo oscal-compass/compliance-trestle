@@ -191,6 +191,8 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
     Text is a string with appropriate \n line endings.
     If tag is none just add at end of file.
     """
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     if tag:
         lines: List[str] = []
         with file_path.open('r') as f:
@@ -210,6 +212,8 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
 
 def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     """Confirm the expected text is in the file after the tag."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     lines: List[str] = []
     with file_path.open('r') as f:
         lines = f.readlines()
@@ -225,6 +229,8 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
 
 def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> bool:
     """Delete a run of lines in a file containing tag."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     f = file_path.open('r')
     lines = f.readlines()
     f.close()
@@ -241,6 +247,8 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
 
 def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
     """Substitute first match of string with new string in file."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     f = file_path.open('r')
     lines = f.readlines()
     f.close()

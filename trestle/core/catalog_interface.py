@@ -13,8 +13,10 @@
 # limitations under the License.
 """Provide interface to catalog allowing queries and operations at control level."""
 
+import copy
 import logging
 import pathlib
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import trestle.common.const as const
@@ -27,7 +29,6 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.control_interface import ControlContext, ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
-from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import profile as prof
 
@@ -52,7 +53,8 @@ class CatalogInterface():
     This class does no direct file i/o.  i/o is performed via ControlIO.
     """
 
-    class ControlHandle(TrestleBaseModel):
+    @dataclass
+    class ControlHandle:
         """Convenience class for handling controls as members of a group.
 
         group_id: id of parent group or '' if not in a group
@@ -824,7 +826,7 @@ class CatalogInterface():
                 # need to add the control knowing its group must already exist
                 # get group info from an arbitrary control already present in group
                 _, control_handle = self._find_control_in_group(group_id)
-                new_control_handle = control_handle.copy(deep=True)
+                new_control_handle = copy.deepcopy(control_handle)
                 new_control_handle.control = src
                 # add the control and its handle to the param_dict
                 self._control_dict[src.id] = new_control_handle

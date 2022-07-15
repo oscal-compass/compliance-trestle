@@ -245,7 +245,7 @@ class ControlWriter():
         self._md_file.new_hr()
 
     def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> List[str]:
-        adds = ControlInterface.get_adds(control.id, profile)
+        adds = ControlInterface.get_all_add_prose(control.id, profile)
         has_content = len(adds) > 0
 
         self._md_file.new_header(level=1, title=const.EDITABLE_CONTENT)

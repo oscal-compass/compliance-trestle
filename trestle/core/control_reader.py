@@ -36,6 +36,8 @@ from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
+from yaml.scanner import ScannerError
+
 logger = logging.getLogger(__name__)
 
 
@@ -52,7 +54,7 @@ class ControlReader():
             raise TrestleError(f'Unable to load file due to utf-8 encoding issues: {e}')
         try:
             fm = frontmatter.loads(content)
-        except Exception as e:
+        except ScannerError as e:
             logger.error(
                 f'Error parsing yaml header from file {control_file}. '
                 f'This is most likely due to an incorrect yaml structure.'

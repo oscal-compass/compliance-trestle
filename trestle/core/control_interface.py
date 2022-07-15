@@ -18,8 +18,10 @@ import copy
 import logging
 import pathlib
 import re
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
+from uuid import uuid4
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
@@ -27,7 +29,6 @@ from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_dict, as_list, none_if_empty
 from trestle.common.str_utils import string_from_root
-from trestle.core.trestle_base_model import TrestleBaseModel
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -45,11 +46,12 @@ class ParameterRep(Enum):
     VALUE_OR_EMPTY_STRING = 4
 
 
-class ComponentImpInfo(TrestleBaseModel):
+@dataclass
+class ComponentImpInfo:
     """Class to capture component prose and status."""
 
     prose: str
-    status = common.ImplementationStatus(state=const.STATUS_OTHER)
+    status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_OTHER)
 
 
 # provide name for this type
@@ -65,20 +67,21 @@ class ContextPurpose(Enum):
     SSP = 3
 
 
-class ControlContext(TrestleBaseModel):
+@dataclass
+class ControlContext:
     """Class encapsulating control markdown usage."""
 
     purpose: ContextPurpose
     to_markdown: bool
     trestle_root: pathlib.Path
     md_root: pathlib.Path
+    prompt_responses: bool
+    additional_content: bool
+    overwrite_header_values: bool
+    set_parameters: bool
     yaml_header: Optional[Dict[Any, Any]] = None
     sections_dict: Optional[Dict[str, str]] = None
-    prompt_responses = False
-    additional_content = False
     profile: Optional[prof.Profile] = None
-    overwrite_header_values = False
-    set_parameters = False
     required_sections: Optional[str] = None
     allowed_sections: Optional[str] = None
     comp_def: Optional[comp.ComponentDefinition] = None
@@ -91,13 +94,13 @@ class ControlContext(TrestleBaseModel):
         to_markdown: bool,
         trestle_root: pathlib.Path,
         md_root: pathlib.Path,
-        yaml_header: Optional[Dict[Any, Any]] = None,
-        sections_dict: Optional[Dict[str, str]] = None,
         prompt_responses=False,
         additional_content=False,
-        profile: Optional[prof.Profile] = None,
         overwrite_header_values=False,
         set_parameters=False,
+        yaml_header: Optional[Dict[Any, Any]] = None,
+        sections_dict: Optional[Dict[str, str]] = None,
+        profile: Optional[prof.Profile] = None,
         required_sections: Optional[str] = None,
         allowed_sections: Optional[str] = None,
         comp_def: Optional[comp.ComponentDefinition] = None,
@@ -105,17 +108,17 @@ class ControlContext(TrestleBaseModel):
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
-            purpose=purpose,
-            to_markdown=to_markdown,
-            trestle_root=trestle_root,
-            md_root=md_root,
+            purpose,
+            to_markdown,
+            trestle_root,
+            md_root,
+            prompt_responses,
+            additional_content,
+            overwrite_header_values,
+            set_parameters,
             yaml_header=yaml_header,
             sections_dict=sections_dict,
-            prompt_responses=prompt_responses,
-            additional_content=additional_content,
             profile=profile,
-            overwrite_header_values=overwrite_header_values,
-            set_parameters=set_parameters,
             required_sections=required_sections,
             allowed_sections=allowed_sections,
             comp_def=comp_def,
@@ -132,17 +135,17 @@ class ControlContext(TrestleBaseModel):
     def clone(cls, context: ControlContext) -> ControlContext:
         """Create a deep clone of the context without duplicating large objects."""
         new_context = cls(
-            purpose=context.purpose,
-            to_markdown=context.to_markdown,
-            trestle_root=context.trestle_root,
-            md_root=context.md_root,
+            context.purpose,
+            context.to_markdown,
+            context.trestle_root,
+            context.md_root,
+            context.prompt_responses,
+            context.additional_content,
+            context.overwrite_header_values,
+            context.set_parameters,
             yaml_header=copy.deepcopy(context.yaml_header),
             sections_dict=copy.deepcopy(context.sections_dict),
-            prompt_responses=context.prompt_responses,
-            additional_content=context.additional_content,
             profile=context.profile,
-            overwrite_header_values=context.overwrite_header_values,
-            set_parameters=context.set_parameters,
             required_sections=context.required_sections,
             allowed_sections=context.allowed_sections,
             comp_def=context.comp_def,
@@ -151,7 +154,7 @@ class ControlContext(TrestleBaseModel):
         return new_context
 
 
-class ControlInterface():
+class ControlInterface:
     """Class to interact with controls in memory."""
 
     @staticmethod
@@ -316,7 +319,7 @@ class ControlInterface():
         return adds
 
     @staticmethod
-    def get_adds(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
+    def get_all_add_prose(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
         """Get the adds for a control from a profile by control id."""
         adds = []
         for add in ControlInterface.get_adds_for_control(profile, control_id):
@@ -613,4 +616,11 @@ class ControlInterface():
                         new_statements.append(stat)
                     imp_req.statements = none_if_empty(new_statements)
                     return
-        logger.warning(f'No existing implemented requirement found for control {new_imp_req.control_id}')
+        # need to insert new imp_req into an available control_imp, so choose first one and make it if needed
+        if not component.control_implementations:
+            component.control_implementations = [
+                comp.ControlImplementation(uuid=str(uuid4()), source=const.REPLACE_ME, description=const.REPLACE_ME)
+            ]
+        imp_reqs = as_list(component.control_implementations[0].implemented_requirements)
+        imp_reqs.append(new_imp_req)
+        component.control_implementations[0].implemented_requirements = imp_reqs
