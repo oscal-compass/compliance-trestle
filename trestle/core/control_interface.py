@@ -610,7 +610,9 @@ class ControlInterface:
                     statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
                     new_statements: List[comp.Statement] = []
                     for statement in as_list(new_imp_req.statements):
+                        # get the original version of the statement if available, or use new one
                         stat = statement_dict.get(statement.statement_id, statement)
+                        # update the description and status from markdown
                         stat.description = statement.description
                         ControlInterface.copy_status_in_props(stat, statement)
                         new_statements.append(stat)

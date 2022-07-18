@@ -27,10 +27,12 @@ from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
+import trestle.oscal.component as comp
 from trestle.common import const, err, str_utils, type_utils as utils
 from trestle.common.common_types import TG, TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
+from trestle.common.list_utils import as_list
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
@@ -817,3 +819,42 @@ class ModelUtils:
         equivalent = model_a == model_b
         model_b.metadata.last_modified, model_b.uuid = b_last_modified, b_uuid
         return equivalent
+
+    @staticmethod
+    def component_defs_are_equivalent(
+        model_a: Optional[comp.ComponentDefinition], model_b: Optional[comp.ComponentDefinition]
+    ) -> bool:
+        """
+        Determine if two comp defs are equivalent.
+
+        This isn't a comprehensive check but looks for changes that would have happened during component assemble.
+        """
+        if not model_a and not model_b:
+            return True
+        if not model_a or not model_b:
+            return False
+        if len(as_list(model_a.components)) != len(as_list(model_b.components)):
+            return False
+        # confirm all statements are identical except for uuid
+        for ii, c_a in enumerate(as_list(model_a.components)):
+            c_b = model_b.components[ii]
+            if len(as_list(c_a.control_implementations)) != len(as_list(c_b.control_implementations)):
+                return False
+            for jj, cimp_a in enumerate(as_list(c_a.control_implementations)):
+                cimp_b = c_b.control_implementations[jj]
+                if len(as_list(cimp_a.implemented_requirements)) != len(as_list(cimp_b.implemented_requirements)):
+                    return False
+                for kk, imp_a in enumerate(as_list(cimp_a.implemented_requirements)):
+                    imp_b = cimp_b.implemented_requirements[kk]
+                    if len(as_list(imp_a.statements)) != len(as_list(imp_b.statements)):
+                        return False
+                    for nn, s_a in enumerate(as_list(imp_a.statements)):
+                        # set uuids to same and then check equality
+                        s_b = imp_b.statements[nn]
+                        b_uuid, s_b.uuid = s_b.uuid, s_a.uuid
+                        statements_equivalent = s_b == s_a
+                        s_b.uuid = b_uuid
+                        if not statements_equivalent:
+                            return False
+
+        return True

@@ -13,7 +13,6 @@
 # limitations under the License.
 """Tests for the component author module."""
 
-import argparse
 import pathlib
 import shutil
 from typing import Dict, Tuple
@@ -24,7 +23,6 @@ from tests import test_utils
 
 import trestle.oscal.component as comp
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.author.component import ComponentGenerate
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
 from trestle.core.control_interface import ControlInterface
@@ -66,48 +64,52 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     return comp_name, prof_name, cat_name
 
 
+def check_ac1_contents(ac1_path: pathlib.Path) -> None:
+    """Check the contents of ac-1 md."""
+    assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'set to 644')
+    assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: operational')
+    assert test_utils.confirm_text_in_file(ac1_path, 'Status: operational', 'ac1 remark')
+
+
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
     comp_name, prof_name, _ = setup_component_generate(tmp_trestle_dir)
-    test_args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        name=comp_name,
-        profile=prof_name,
-        output=md_path,
-        overwrite_header_values=False,
-        allowed_sections=None,
-        yaml_header=None,
-        verbose=0,
-        set_parameters=False,
-        sections=None
-    )
-
-    comp_gen = ComponentGenerate()
-    assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
-    assert comp_gen._run(test_args) == CmdReturnCodes.SUCCESS.value
-
+    ac1_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-1.md'
     ac5_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-5.md'
 
+    generate_cmd = f'trestle author component-generate -n {comp_name} -p {prof_name} -o {md_path}'
+
+    # generate the md first time
+    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    check_ac1_contents(ac1_path)
+
+    # confirm it overwrites existing md properly
+    test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    check_ac1_contents(ac1_path)
+
+    # make edits to status and remarks
     assert test_utils.substitute_text_in_file(ac5_path, 'Status: under-development', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
     assert test_utils.substitute_text_in_file(ac5_path, 'my remark', 'my new remark')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'my new remark')
 
-    test_args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        name=comp_name,
-        output='assem_comp',
-        markdown=md_path,
-        regenerate=False,
-        version=None,
-        verbose=0
-    )
-    command = f'trestle author component-assemble -n {comp_name} -o assem_comp -m {md_path}'
-    test_utils.execute_command_and_assert(command, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assemble_cmd = f'trestle author component-assemble -n {comp_name} -o assem_comp -m {md_path}'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
-    assem_comp_def, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'assem_comp', comp.ComponentDefinition)
+    # confirm assembled model is as expected
+    assem_comp_def, orig_comp_def_path = ModelUtils.load_top_level_model(
+        tmp_trestle_dir,
+        'assem_comp',
+        comp.ComponentDefinition
+    )
     component = ControlInterface.get_component_by_name(assem_comp_def, 'OSCO')
     imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-5')
     new_status = ControlInterface.get_status_from_props(imp_reqs[0])
     assert new_status.state == 'implemented'
     assert new_status.remarks.__root__ == 'this is my new remark'
+
+    orig_file_creation = orig_comp_def_path.stat().st_mtime
+
+    # confirm repeat assemble doesn't generate new file since no changes
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assert orig_comp_def_path.stat().st_mtime == orig_file_creation

@@ -203,7 +203,7 @@ class ComponentAssemble(AuthorCommonCommand):
 
         context = ControlContext.generate(ContextPurpose.COMPONENT, False, trestle_root, md_dir)
 
-        ComponentAssemble.assemble_comp_def_into_parent(trestle_root, parent_comp, md_dir, context)
+        ComponentAssemble.assemble_comp_def_into_parent(parent_comp, md_dir, context)
 
         if version:
             parent_comp.metadata.version = com.Version(__root__=version)
@@ -214,7 +214,7 @@ class ComponentAssemble(AuthorCommonCommand):
 
         if assem_comp_path.exists():
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
-            if ModelUtils.models_are_equivalent(existing_comp, parent_comp):
+            if ModelUtils.component_defs_are_equivalent(existing_comp, parent_comp):
                 logger.info('Assembled component is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
@@ -232,10 +232,7 @@ class ComponentAssemble(AuthorCommonCommand):
 
     @staticmethod
     def assemble_comp_def_into_parent(
-        trestle_root: pathlib.Path,
-        parent_comp: comp.ComponentDefinition,
-        md_dir: pathlib.Path,
-        context: ControlContext
+        parent_comp: comp.ComponentDefinition, md_dir: pathlib.Path, context: ControlContext
     ) -> None:
         """Assemble markdown content into provided component-definition model."""
         # find the needed list of comps
