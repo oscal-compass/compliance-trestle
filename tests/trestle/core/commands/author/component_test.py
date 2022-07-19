@@ -69,6 +69,7 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'set to 644')
     assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: operational')
     assert test_utils.confirm_text_in_file(ac1_path, 'Status: operational', 'ac1 remark')
+    assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: other')
 
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -83,9 +84,15 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
 
+    ac1_size = ac1_path.stat().st_size
+    ac5_size = ac5_path.stat().st_size
+
     # confirm it overwrites existing md properly
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
+
+    assert ac1_path.stat().st_size == ac1_size
+    assert ac5_path.stat().st_size == ac5_size
 
     # make edits to status and remarks
     assert test_utils.substitute_text_in_file(ac5_path, 'Status: under-development', 'Status: implemented')

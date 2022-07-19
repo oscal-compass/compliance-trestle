@@ -25,6 +25,7 @@ from trestle.core.control_interface import ContextPurpose, ControlContext, Contr
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import profile as prof
+from trestle.oscal.common import ImplementationStatus
 
 logger = logging.getLogger(__name__)
 
@@ -147,18 +148,21 @@ class ControlWriter():
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
 
+    def _insert_status(self, status: ImplementationStatus, level: int) -> None:
+        self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {status.state}')
+        if status.remarks and status.remarks.__root__:
+            self._md_file.new_header(
+                level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {status.remarks.__root__}'
+            )
+
     def _insert_comp_info(self, part_label: str, comp_info: Dict[str, ComponentImpInfo], comp_def_format: bool) -> None:
-        """Insert prose from the component info."""
+        """Insert prose and status from the component info."""
         level = 3 if comp_def_format else 4
         if part_label in comp_info:
             info = comp_info[part_label]
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
-            self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {info.status.state}')
-            if info.status.remarks and info.status.remarks.__root__:
-                self._md_file.new_header(
-                    level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {info.status.remarks.__root__}'
-                )
+            self._insert_status(info.status, level)
 
     def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
@@ -170,14 +174,7 @@ class ControlWriter():
                 if statement_id == '':
                     # create new heading for this component and add guidance
                     self._md_file.new_paraline(comp_info.prose)
-                    self._md_file.new_header(
-                        level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {comp_info.status.state}'
-                    )
-                    if comp_info.status.remarks and comp_info.status.remarks.__root__:
-                        self._md_file.new_header(
-                            level=level,
-                            title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {comp_info.status.remarks.__root__}'
-                        )
+                    self._insert_status(comp_info.status, level)
                     did_write = True
         return did_write
 
@@ -232,6 +229,9 @@ class ControlWriter():
                         self._md_file.new_paragraph()
                         if not added_content:
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
+                            if comp_def_format:
+                                status = ControlInterface.get_status_from_props(prt)
+                                self._insert_status(status, 3)
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
