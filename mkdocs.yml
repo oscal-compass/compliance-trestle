@@ -172,12 +172,11 @@ plugins:
 - mkdocstrings:
     handlers:
       python:
-        rendering:
+        options:
           group_by_category: true
           show_category_heading: true
           show_if_no_docstring: true
           show_root_heading: true
-        selection:
           filters:
           - '!^_[^_]'
           - '!^__json'
