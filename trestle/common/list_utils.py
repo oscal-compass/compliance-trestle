@@ -16,12 +16,17 @@
 """Trestle List Utils."""
 from typing import Any, Callable, Dict, List, Optional
 
-from trestle.common.common_types import TG
+from trestle.common.common_types import TG, TG2
 
 
 def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
     """Convert list or None object to itself or an empty list if none."""
     return list_or_none if list_or_none else []
+
+
+def as_dict(dict_or_none: Optional[Dict[TG, TG2]]) -> Dict[TG, TG2]:
+    """Convert dict or None object to itself or an empty dict if none."""
+    return dict_or_none if dict_or_none else {}
 
 
 def none_if_empty(list_: List[TG]) -> Optional[List[TG]]:
@@ -60,3 +65,9 @@ def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any],
         index = keys.index(value)
         del item_list[index]
     return item_list
+
+
+def delete_list_from_list(item_list: List[Any], indices: List[int]) -> List[Any]:
+    """Delete a list of items from a list based on indices."""
+    for index in sorted(indices, reverse=True):
+        del item_list[index]

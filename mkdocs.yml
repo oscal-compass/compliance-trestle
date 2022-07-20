@@ -74,6 +74,7 @@ nav:
           - catalog: api_reference/trestle.core.commands.author.catalog.md
           - command: api_reference/trestle.core.commands.author.command.md
           - common: api_reference/trestle.core.commands.author.common.md
+          - component: api_reference/trestle.core.commands.author.component.md
           - consts: api_reference/trestle.core.commands.author.consts.md
           - docs: api_reference/trestle.core.commands.author.docs.md
           - folders: api_reference/trestle.core.commands.author.folders.md
@@ -100,10 +101,13 @@ nav:
         - task: api_reference/trestle.core.commands.task.md
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
-      - control_io: api_reference/trestle.core.control_io.md
+      - control_interface: api_reference/trestle.core.control_interface.md
+      - control_reader: api_reference/trestle.core.control_reader.md
+      - control_writer: api_reference/trestle.core.control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
+      - generic_oscal: api_reference/trestle.core.generic_oscal.md
       - jinja: api_reference/trestle.core.jinja.md
       - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
@@ -168,12 +172,11 @@ plugins:
 - mkdocstrings:
     handlers:
       python:
-        rendering:
+        options:
           group_by_category: true
           show_category_heading: true
           show_if_no_docstring: true
           show_root_heading: true
-        selection:
           filters:
           - '!^_[^_]'
           - '!^__json'

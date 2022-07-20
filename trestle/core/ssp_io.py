@@ -21,7 +21,7 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core import catalog_interface
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOWriter
+from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import ssp
@@ -63,7 +63,7 @@ class SSPMarkdownWriter():
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control statement, set resolved catalog first.')
 
-        writer = ControlIOWriter()
+        writer = ControlWriter()
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
@@ -151,7 +151,7 @@ class SSPMarkdownWriter():
         if not self._ssp:
             raise TrestleError('Cannot get parameter table, set SSP first.')
 
-        writer = ControlIOWriter()
+        writer = ControlWriter()
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''

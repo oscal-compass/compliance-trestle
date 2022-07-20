@@ -23,12 +23,12 @@ Test SSP
 {% endif %}
 
 {% for control in catalog_interface.get_sorted_controls_in_group(group.id) %}
-{# ### {{ control_io_writer.get_label(control) }}: {{ control.title}}
+{# ### {{ control_interface.get_label(control) }}: {{ control.title}}
 
 #### Control Statement #}
 {{ ssp_md_writer.get_control_statement(control.id, 2) }}
 
-#### {{ control_io_writer.get_label(control) }} Summary information
+#### {{ control_interface.get_label(control) }} Summary information
 {{ ssp_md_writer.get_fedramp_control_tables(control.id, 4, false) }}
 
 #### Implementation
