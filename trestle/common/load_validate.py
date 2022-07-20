@@ -17,10 +17,10 @@
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional, Tuple, Type
+from typing import Optional, Tuple
 
 from trestle.common import const
-from trestle.common.common_types import TopLevelOscalModel
+from trestle.common.common_types import TG, TopLevelOscalModel
 from trestle.common.file_utils import FileContentType
 from trestle.common.model_utils import ModelUtils
 from trestle.core.validator import Validator
@@ -42,9 +42,9 @@ def load_validate_model_path(trestle_root: Path, model_path: Path) -> TopLevelOs
 def load_validate_model_name(
     trestle_root: Path,
     model_name: str,
-    model_class: Type[TopLevelOscalModel],
+    model_class: TG,
     file_content_type: Optional[FileContentType] = None
-) -> Tuple[TopLevelOscalModel, Path]:
+) -> Tuple[TG, Path]:
     """Load a model by its name and type and validate it."""
     model_path = ModelUtils.path_for_top_level_model(trestle_root, model_name, model_class, file_content_type)
     model = load_validate_model_path(trestle_root, model_path)

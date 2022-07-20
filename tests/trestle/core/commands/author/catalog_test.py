@@ -32,7 +32,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.control_io import ControlIOReader, ParameterRep
+from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
@@ -81,6 +81,10 @@ def test_catalog_generate_assemble(
     new_prose = 'My added item'
     assembled_cat_dir = tmp_trestle_dir / f'catalogs/{assembled_cat_name}'
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_trestle_dir, markdown_path)
+    context.set_parameters = set_parameters
+
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
@@ -342,14 +346,14 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict, False)
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'all alert personnel'
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'monthly'
     # param 7 has no value so its label will be used
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
 
@@ -363,7 +367,8 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
         control_b.props = []
     control_b.props.append(Property(name='status', value='Withdrawn'))
     catalog_interface = CatalogInterface(sample_catalog_rich_controls)
-    catalog_interface.write_catalog_as_markdown(tmp_path, {}, None, False)
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    catalog_interface.write_catalog_as_markdown(context)
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()

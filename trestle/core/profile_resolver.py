@@ -19,7 +19,7 @@ from typing import Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
-from trestle.core.control_io import ParameterRep
+from trestle.core.control_interface import ParameterRep
 from trestle.core.resolver._import import Import
 
 logger = logging.getLogger(__name__)

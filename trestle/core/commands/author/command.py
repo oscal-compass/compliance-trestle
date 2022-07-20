@@ -21,6 +21,7 @@ Umbrella command for all markdown related transformations
 import logging
 
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
+from trestle.core.commands.author.component import ComponentAssemble, ComponentGenerate
 from trestle.core.commands.author.docs import Docs
 from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
@@ -40,6 +41,8 @@ class AuthorCmd(CommandPlusDocs):
     subcommands = [
         CatalogAssemble,
         CatalogGenerate,
+        ComponentAssemble,
+        ComponentGenerate,
         Docs,
         Folders,
         Headers,

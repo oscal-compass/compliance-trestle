@@ -16,6 +16,7 @@
 """Trestle String Utils."""
 import enum
 import string
+from typing import Any, Optional
 
 
 class AliasMode(enum.Enum):
@@ -109,3 +110,13 @@ def underscore_to_dash(name: str) -> str:
     """Convert underscore to dash and drop final dash if present."""
     converted = name.replace('_', '-')
     return converted if converted[-1] != '-' else converted[:-1]
+
+
+def as_string(string_or_none: Optional[str]) -> str:
+    """Convert string or None to itself or empty string."""
+    return string_or_none if string_or_none else ''
+
+
+def string_from_root(item_with_root: Optional[Any]) -> str:
+    """Convert root to string if present."""
+    return as_string(item_with_root.__root__) if item_with_root else ''

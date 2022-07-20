@@ -245,6 +245,10 @@ SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for
 
 PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = 'Add prose here for required Section'
 
+RULE_NAME_PREFIX = 'rule_name_'
+
+RULE_NAME_IDS = RULE_NAME_PREFIX + 'ids'
+
 NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
 
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
@@ -288,31 +292,90 @@ SSP_MAIN_COMP_NAME = 'This System'
 
 TRESTLE_TAG = 'x-trestle-'
 
+TRESTLE_PROPS_TAG = TRESTLE_TAG + 'props'
+
+NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
+
 SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
+
+LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+
+STATUS_INHERITED = 'inherited'
+
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
+
+STATUS_PLANNED_COMPLETION_DATE = 'planned-completion-date'
+
+STATUS_COMPLETION_DATE = 'completion-date'
 
 CONTROL_ORIGINATION = 'control-origination'
 
 IMPLEMENTATION_STATUS = 'implementation-status'
 
+IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
+
+IMPLEMENTATION_STATUS_REMARKS_HEADER = 'Implementation Status Remarks'
+
+REMARKS = 'Remarks'
+
+STATUS_REMARKS = 'status-remarks'
+
+# Following 5 are allowed state tokens for
+# SSP -> ControlImplementation -> ImplementedRequirements -> ByComponents -> common.ImplementationStatus -> State
+# Also                         -> ImplementedRequirements -> Statements -> ByComponents ...
+# But NIST says they may also be locally defined
+STATUS_IMPLEMENTED = 'implemented'
+
+STATUS_PARTIAL = 'partial'
+
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
+
+STATUS_PLANNED = 'planned'
+
+STATUS_ALTERNATIVE = 'alternative'
+
+STATUS_NOT_APPLICABLE = 'not-applicable'
+
+# Following 4 needed by SSP -> SystemImplementation -> SystemComponent -> Status -> State1
+# and by SSP -> SystemCharacteristics -> Status1 -> State
+STATUS_OPERATIONAL = 'operational'
+
+STATUS_UNDER_DEVELOPMENT = 'under-development'
+
+STATUS_DISPOSITION = 'disposition'
+
+STATUS_OTHER = 'other'
+
+# Needed only by SystemCharacteristics
+STATUS_UNDER_MAJOR_MODIFICATION = 'under-major-modification'
+
+STATUS_ALL = [
+    STATUS_IMPLEMENTED,
+    STATUS_PARTIAL,
+    STATUS_PARTIALLY_IMPLEMENTED,
+    STATUS_PLANNED,
+    STATUS_ALTERNATIVE,
+    STATUS_NOT_APPLICABLE,
+    STATUS_OPERATIONAL,
+    STATUS_UNDER_DEVELOPMENT,
+    STATUS_DISPOSITION,
+    STATUS_OTHER,
+    STATUS_UNDER_MAJOR_MODIFICATION
+]
+
+STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_OPERATIONAL} {STATUS_UNDER_DEVELOPMENT} {STATUS_DISPOSITION} {STATUS_OTHER} -->'  # noqa E501
+
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
 
-INHERITED = 'inherited'
-
-LEV_AUTH_UUID = 'leveraged-authorization-uuid'
-
-PLANNED = 'planned'
-
-PLANNED_COMPLETION_DATE = 'planned-completion-date'
-
-COMPLETION_DATE = 'completion-date'
-
 HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
 
 SET_PARAMS_TAG = 'x-trestle-set-params'
+
+COMP_DEF_PARAMS = 'comp-def-params'
 
 PROFILE_VALUES = 'profile-values'
 
@@ -323,3 +386,11 @@ SECTIONS_TAG = 'x-trestle-sections'
 EDITABLE_CONTENT = 'Editable Content'
 
 SORT_ID = 'sort-id'
+
+TRESTLE_IMP_STATUS = 'trestle-imp-status'
+
+CONTROL_OBJECTIVE_HEADER = '## Control Objective'
+
+CONTROL_HEADER = '## Control'
+
+REPLACE_ME = 'REPLACE_ME'

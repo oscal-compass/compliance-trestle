@@ -34,7 +34,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ParameterRep
+from trestle.core.control_interface import ContextPurpose, ControlContext, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -159,18 +159,16 @@ class ProfileGenerate(AuthorCommonCommand):
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(
-                md_path=markdown_path,
-                yaml_header=yaml_header,
-                sections_dict=sections_dict,
-                prompt_responses=False,
-                additional_content=True,
-                profile=profile,
-                overwrite_header_values=overwrite_header_values,
-                set_parameters=True,
-                required_sections=required_sections,
-                allowed_sections=None
-            )
+            context = ControlContext.generate(ContextPurpose.CATALOG, True, trestle_root, markdown_path)
+            context.yaml_header = yaml_header
+            context.sections_dict = sections_dict
+            context.additional_content = True
+            context.profile = profile
+            context.overwrite_header_values = overwrite_header_values
+            context.set_parameters = True
+            context.required_sections = required_sections
+            catalog_interface.write_catalog_as_markdown(context)
+
         except TrestleNotFoundError as e:
             raise TrestleError(f'Profile {profile_path} not found, error {e}')
         except TrestleError as e:

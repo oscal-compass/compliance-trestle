@@ -16,12 +16,13 @@
 """Test utils module."""
 
 import argparse
+import difflib
 import logging
 import os
 import pathlib
 import shutil
 import sys
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -55,8 +56,12 @@ ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+JSON_NIST_REV_4_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/').resolve()
+JSON_NIST_REV_4_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
+JSON_NIST_REV_4_PROFILE_NAME = 'NIST_SP-800-53_rev4_MODERATE-baseline_profile.json'
 SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
 SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
+TASK_XLSX_OUTPUT_PATH = pathlib.Path('tests/data/tasks/xlsx/output').resolve()
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'
@@ -187,6 +192,8 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
     Text is a string with appropriate \n line endings.
     If tag is none just add at end of file.
     """
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     if tag:
         lines: List[str] = []
         with file_path.open('r') as f:
@@ -206,6 +213,8 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
 
 def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     """Confirm the expected text is in the file after the tag."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     lines: List[str] = []
     with file_path.open('r') as f:
         lines = f.readlines()
@@ -221,12 +230,32 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
 
 def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> bool:
     """Delete a run of lines in a file containing tag."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     f = file_path.open('r')
     lines = f.readlines()
     f.close()
     for ii, line in enumerate(lines):
         if tag in line:
             del lines[ii:(ii + extra_lines + 1)]
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
+            return True
+    return False
+
+
+def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
+    """Substitute first match of string with new string in file."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    f = file_path.open('r')
+    lines = f.readlines()
+    f.close()
+    for ii, line in enumerate(lines):
+        if tag in line:
+            lines[ii] = lines[ii].replace(tag, new_str)
             f = file_path.open('w')
             f.writelines(lines)
             f.flush()
@@ -523,3 +552,39 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
             logger.error(f'controls differ: {a.id}')
             return False
     return True
+
+
+class FileChecker:
+    """Check for changes in files after test operations."""
+
+    def __init__(self, root_dir: pathlib.Path) -> None:
+        """Initialize the class with the root directory."""
+        self._root_dir = root_dir
+        self._file_dict: Dict[pathlib.Path, str] = {}
+        for file in self._root_dir.rglob('*'):
+            if not file.is_dir():
+                self._file_dict[file] = file.read_text()
+
+    def files_unchanged(self) -> bool:
+        """Check if any files have changed."""
+        checked_files = []
+        for file in self._root_dir.rglob('*'):
+            if not file.is_dir():
+                if file not in self._file_dict:
+                    logger.error(f'Test file {file} is a new file that was not there originally.')
+                    return False
+                old_text = self._file_dict[file]
+                new_text = file.read_text()
+                if old_text != new_text:
+                    logger.error(f'Test file {file} has changed contents:')
+                    differ = difflib.Differ()
+                    diff = differ.compare(old_text.split('\n'), new_text.split('\n'))
+                    for line in diff:
+                        logger.error(line)
+                    return False
+                checked_files.append(file)
+        if len(checked_files) != len(self._file_dict):
+            missing = set(self._file_dict.keys()).difference(checked_files)
+            logger.error(f'Some files are missing: {missing}')
+            return False
+        return True
