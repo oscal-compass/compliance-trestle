@@ -116,6 +116,14 @@ class MarkdownNode:
         # go through all contents and modify headers
         self._rec_traverse_header_update(self, header_map)
 
+    def get_count_of_subnodes(self, recurse=True) -> int:
+        """Get count of subnodes with optional recursion."""
+        count = len(self.subnodes)
+        if recurse:
+            for subnode in self.subnodes:
+                count += subnode.get_count_of_subnodes(True)
+        return count
+
     def _build_tree(
         self,
         lines: List[str],
