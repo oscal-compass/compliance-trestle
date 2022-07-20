@@ -142,7 +142,7 @@ Trestle provides the capability to version the templates and the documents via `
 Consider an example where we have a governed document called `Decision 1` that we now need to update to contain a new header field `approved-status` and a new required heading `Heading n` at the end, as demonstrated in the Figure below:
 ![Decision document update](assets/template_versioning.png)
 
-The intented workflow in this scenario is to:
+The intended workflow in this scenario is to:
 
 1.Create a new version of the `decisions` template:
 

@@ -5,7 +5,7 @@ authoring content using the [compliance-trestle](https://ibm.github.io/complianc
 
 ## Step 1: Create a trestle workspace if you don't have one already
 
-This will initialize Trestle workspace that would contain all your templates and governed documents.
+This intializes a Trestle workspace that will contain all your templates and governed documents.
 
 ```bash
 mkdir my_workspace
@@ -14,7 +14,7 @@ trestle init
 >>> Initialized trestle project successfully in [user_path]/my_workspace
 ```
 
-The templates will be located in the `/my_workspace/.trestle/author/`. Please note that if you use MacOS or Linux distribution, by default `.trestle` will be hidden. You will need to reconfigure your system to show hidden folders.
+The templates will be located in the `/my_workspace/.trestle/author/`. Please note that if you use MacOS or Linux distribution, by default `.trestle` will be hidden. You will need to reconfigure your system to show hidden folders if you want to see them listed.
 
 ## Step 2: Setup or create a new template version
 
@@ -34,7 +34,7 @@ Note: version 0.0.1 is reserved for unversioned documents.
 ## Step 3: Create a new document using a particular template version
 
 Now that we have a template, we would like to create an instance of this template that would actually have content in it.
-This steps will create a complete copy of the template of version `0.0.2` that you can fill in with custom content.
+These steps will create a complete copy of the template of version `0.0.2` that you can fill in with custom content.
 
 ```bash
 cd my_workspace 
