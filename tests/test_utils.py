@@ -16,12 +16,13 @@
 """Test utils module."""
 
 import argparse
+import difflib
 import logging
 import os
 import pathlib
 import shutil
 import sys
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -551,3 +552,39 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
             logger.error(f'controls differ: {a.id}')
             return False
     return True
+
+
+class FileChecker:
+    """Check for changes in files after test operations."""
+
+    def __init__(self, root_dir: pathlib.Path) -> None:
+        """Initialize the class with the root directory."""
+        self._root_dir = root_dir
+        self._file_dict: Dict[pathlib.Path, str] = {}
+        for file in self._root_dir.rglob('*'):
+            if not file.is_dir():
+                self._file_dict[file] = file.read_text()
+
+    def files_unchanged(self) -> bool:
+        """Check if any files have changed."""
+        checked_files = []
+        for file in self._root_dir.rglob('*'):
+            if not file.is_dir():
+                if file not in self._file_dict:
+                    logger.error(f'Test file {file} is a new file that was not there originally.')
+                    return False
+                old_text = self._file_dict[file]
+                new_text = file.read_text()
+                if old_text != new_text:
+                    logger.error(f'Test file {file} has changed contents:')
+                    differ = difflib.Differ()
+                    diff = differ.compare(old_text.split('\n'), new_text.split('\n'))
+                    for line in diff:
+                        logger.error(line)
+                    return False
+                checked_files.append(file)
+        if len(checked_files) != len(self._file_dict):
+            missing = set(self._file_dict.keys()).difference(checked_files)
+            logger.error(f'Some files are missing: {missing}')
+            return False
+        return True

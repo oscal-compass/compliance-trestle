@@ -84,15 +84,13 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
 
-    ac1_size = ac1_path.stat().st_size
-    ac5_size = ac5_path.stat().st_size
+    file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
 
     # confirm it overwrites existing md properly
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-    check_ac1_contents(ac1_path)
 
-    assert ac1_path.stat().st_size == ac1_size
-    assert ac5_path.stat().st_size == ac5_size
+    # all files should be the same
+    assert file_checker.files_unchanged()
 
     # make edits to status and remarks
     assert test_utils.substitute_text_in_file(ac5_path, 'Status: under-development', 'Status: implemented')

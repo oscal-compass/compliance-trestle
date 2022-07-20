@@ -187,6 +187,7 @@ class ControlWriter():
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
         if comp_def_format:
             self._md_file.new_paraline(const.STATUS_PROMPT)
+            self._md_file.new_paragraph()
         did_write_part = self._add_component_control_prompts(comp_dict, comp_def_format)
 
         # The comp_dict looks like:
@@ -236,6 +237,9 @@ class ControlWriter():
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control.id}')
+            if comp_def_format:
+                status = ControlInterface.get_status_from_props(control)
+                self._insert_status(status, 3)
         part_label = 'Statement'
         for comp_name, dic in comp_dict.items():
             if part_label in dic:
