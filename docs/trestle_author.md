@@ -18,6 +18,10 @@ While trestle provides editing support for OSCAL there is an unfortunate truth t
 
 The markdown centric workflows allow transition path where capability is [being developed](https://github.com/IBM/compliance-trestle/issues/555)
 
+## Getting Started
+
+To work with governed documents, you would need to initialize the Trestle workspace and create your first governed document and template. To do so please follow this [tutorial](./tutorials/work_with_authoring_versions.md).
+
 ## Governance mechanisms
 
 ### Markdown structural enforcement
@@ -126,6 +130,56 @@ Drawio (or `mxgraph`) files have a set of data fields. In a drawio file this is 
 The data presents as a set of key-value pairs which can be edited (see below). The data is bound to each tab in a drawio file. The trestle CLI currently expects that metadata (whether from the template or file to be measured) is in the first tab when editing the draw io file.
 
 ![Editing drawio data](assets/drawio_editing_data.png "Editing drawio data")
+
+## Template versioning
+
+### Prerequisite:
+
+This section assumes that you have an existing Trestle workspace initialized, with existing template and governed documents. Please follow steps in the section `# Getting Started` if you don't have one.
+
+Trestle provides the capability to version the templates and the documents via `x-trestle-template-version` field in the header.
+
+Consider an example where we have a governed document called `Decision 1` that we now need to update to contain a new header field `approved-status` and a new required heading `Heading n` at the end, as demonstrated in the Figure below:
+![Decision document update](assets/template_versioning.png)
+
+The intented workflow in this scenario is to:
+
+1.Create a new version of the `decisions` template:
+
+```bash
+cd my_workspace 
+trestle author docs setup -tn decisions -tv 0.1.1
+>>> Set template version to 0.1.1.
+>>> Template file setup for task decisions at .trestle/author/decisions/0.1.1/template.md
+>>> Task directory is decisions
+```
+
+Add the new required content to the newly created template. In our example simply copy-paste all content from the `.trestle/author/decisions/0.1.0/template.md` and add the newly required fields.
+
+2.Create a new instance of that template.
+
+```bash
+trestle author docs create-sample -tn decisions -tv 0.1.1
+>>> Set template version to 0.1.1.
+```
+
+This step will create a copy of the template of version 0.1.1.
+
+Now you will need to fill the documents with the updated information and new fields.
+
+3.(Optional) Delete the old document.
+
+Now that you have a new version of the document, you can delete the old one if you no longer need it. You can also keep it if you would like to maintain a history of updates.
+
+4.Run validation.
+
+After filling the contents to the new version of the template, you can run the validation to ensure that everything works as expected.
+
+```bash
+trestle author docs validate -tn decisions
+>>> Instances will be validated against template version specified in their headers.
+>>> VALID: decisions/decision_000.md
+```
 
 ## `trestle author governed-docs`
 
