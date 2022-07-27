@@ -20,8 +20,8 @@ from typing import Dict, List, Optional
 import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.core.control_interface import CompDict, ComponentImpInfo
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import profile as prof

@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 from uuid import uuid4
 
 import trestle.common.const as const
@@ -34,7 +34,8 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import ControlInterface
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
@@ -51,27 +52,20 @@ class ComponentGenerate(AuthorCommonCommand):
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         profile_help_str = 'Name of the profile model in the trestle workspace'
-        self.add_argument('-p', '--profile', help=profile_help_str, required=True, type=str)
+        self.add_argument('-p', '--profile', help=profile_help_str, required=False, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
             log.set_log_level_from_args(args)
 
-            return self.component_generate_all(args.trestle_root, args.name, args.profile, args.output, {}, None, False)
+            return self.component_generate_all(args.trestle_root, args.name, args.profile, args.output)
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the component markdown failed')
 
     def component_generate_all(
-        self,
-        trestle_root: pathlib.Path,
-        comp_def_name: str,
-        profile_name: str,
-        markdown_dir_name: str,
-        yaml_header: Dict[str, Any],
-        sections_dict: Optional[Dict[str, str]],
-        overwrite_header_values: bool
+        self, trestle_root: pathlib.Path, comp_def_name: str, profile_name: Optional[str], markdown_dir_name: str
     ) -> int:
         """Generate markdown for all components in comp def."""
         if not file_utils.is_directory_name_allowed(markdown_dir_name):
@@ -79,47 +73,48 @@ class ComponentGenerate(AuthorCommonCommand):
         md_path = trestle_root / markdown_dir_name
         md_path.mkdir(parents=True, exist_ok=True)
         component_def, _ = load_validate_model_name(trestle_root, comp_def_name, comp.ComponentDefinition)
+
+        # if profile is specified, create catalog interface from it
+        catalog_interface = None
+        if profile_name:
+            profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile_name, prof.Profile)
+            profile_resolver = ProfileResolver()
+            resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, str(profile_path))
+            catalog_interface = CatalogInterface(resolved_catalog)
+
+        context = ControlContext.generate(ContextPurpose.COMPONENT, True, trestle_root, md_path)
+        context.prompt_responses = True
+        context.comp_def = component_def
+
         rc = CmdReturnCodes.SUCCESS.value
         for component in as_list(component_def.components):
-            rc = self.component_generate_by_name(
-                trestle_root,
-                comp_def_name,
-                component.title,
-                profile_name,
-                md_path / component.title,
-                yaml_header,
-                sections_dict,
-                overwrite_header_values
-            )
+            rc = self.component_generate_by_name(context, component, md_path / component.title, catalog_interface, {})
             if rc != CmdReturnCodes.SUCCESS.value:
                 break
         return rc
 
     def component_generate_by_name(
         self,
-        trestle_root: pathlib.Path,
-        comp_def_name: str,
-        comp_name: str,
-        profile_name: str,
+        context: ControlContext,
+        component: comp.DefinedComponent,
         markdown_dir_path: pathlib.Path,
-        yaml_header: dict,
-        sections_dict: Optional[Dict[str, str]],
-        overwrite_header_values: bool
+        catalog_interface: Optional[CatalogInterface],
+        source_dict: Dict[str, CatalogInterface]
     ) -> int:
         """Create markdown based on the component and profile."""
-        profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile_name, prof.Profile)
-        profile_resolver = ProfileResolver()
-        resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-        catalog_interface = CatalogInterface(resolved_catalog)
-        comp_def, _ = load_validate_model_name(trestle_root, comp_def_name, comp.ComponentDefinition)
-        context = ControlContext.generate(ContextPurpose.COMPONENT, True, trestle_root, markdown_dir_path)
-        context.sections_dict = sections_dict
-        context.prompt_responses = True
-        context.overwrite_header_values = overwrite_header_values
-        context.comp_def = comp_def
-        context.comp_name = comp_name
-        catalog_interface.write_catalog_as_markdown(context)
-
+        logger.debug(f'Creating markdown for component {component.title}.')
+        context.md_root = markdown_dir_path
+        context.comp_name = component.title
+        for control_imp in as_list(component.control_implementations):
+            if catalog_interface:
+                catalog_interface.write_catalog_as_markdown(context)
+            else:
+                source = control_imp.source
+                if source not in source_dict:
+                    resolved_catalog = ProfileResolver.get_resolved_profile_catalog(context.trestle_root, source)
+                    catalog_interface = CatalogInterface(resolved_catalog)
+                    source_dict[source] = catalog_interface
+                source_dict[source].write_catalog_as_markdown(context)
         return CmdReturnCodes.SUCCESS.value
 
 
@@ -212,7 +207,7 @@ class ComponentAssemble(AuthorCommonCommand):
             trestle_root, assem_comp_name, comp.ComponentDefinition, new_content_type
         )
 
-        if assem_comp_path.exists():
+        if not version and assem_comp_path.exists():
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
             if ModelUtils.component_defs_are_equivalent(existing_comp, parent_comp):
                 logger.info('Assembled component is no different from existing version, so no update.')

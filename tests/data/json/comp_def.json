@@ -71,7 +71,7 @@
         "control-implementations": [
           {
             "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
-            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "source": "trestle://profiles/nist_prof/profile.json",
             "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
             "props": [
               {
@@ -104,11 +104,12 @@
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify Permissions on the Kubernetes API Server Pod Specification File"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   },
                   {
                     "name": "implementation-status",
@@ -157,11 +158,12 @@
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify User Who Owns The Kubernetes API Server Pod Specification File"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -192,11 +194,12 @@
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify Group Who Owns The Kubernetes API Server Pod Specification File"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -227,11 +230,12 @@
                 "description": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify Permissions on the Kubernetes Controller Manager Pod Specificiation File"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -262,11 +266,12 @@
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify User Who Owns The Kubernetes Controller Manager Pod Specificiation File"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -297,11 +302,12 @@
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify Group Who Owns The Kubernetes Controller Manager Pod Specification File"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -332,11 +338,12 @@
                 "description": "Ensure that the Container Network Interface file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify User Who Owns The OpenShift Container Network Interface Files"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -367,11 +374,12 @@
                 "description": "Ensure that the Container Network Interface file ownership is set to root:root",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Verify Group Who Owns The OpenShift Container Network Interface Files"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "responsible-roles": [
@@ -400,7 +408,7 @@
           },
           {
             "uuid": "098ed59b-2a8c-4b3c-a0fd-1eee194be562",
-            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "source": "trestle://profiles/nist_prof/profile.json",
             "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
             "props": [
               {
@@ -433,11 +441,20 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Eviction threshold Settings Are Set - evictionSoft: memory.available"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "value": "FancyXtraRule"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "This is a fancy extra rule"
                   },
                   {
                     "name": "implementation-status",
@@ -482,11 +499,12 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "rule_name_XCCDF",
-                    "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
-                    "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_available",
-                    "class": "scc_goal_name_id",
-                    "remarks": "Ensure Eviction threshold Settings Are Set - evictionSoft: nodefs.available"
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "value": "The XCCDF must be compliant"
                   }
                 ],
                 "set-parameters": [

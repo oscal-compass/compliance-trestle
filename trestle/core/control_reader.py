@@ -29,7 +29,8 @@ from trestle.common.list_utils import as_list, delete_list_from_list, none_if_em
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ContextPurpose, ControlContext, ControlInterface
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
@@ -455,7 +456,8 @@ class ControlReader():
                 sub_comp_dict: Dict[str, ComponentImpInfo] = {}
                 rules.update(ControlInterface.get_rules_from_imp_req(imp_req))
                 params.update(ControlInterface.get_params_from_imp_req(imp_req))
-                if imp_req.description:
+                # if description is same as control id regard it as not having prose
+                if imp_req.description and imp_req.description != imp_req.control_id:
                     # add top level control guidance with no statement id
                     status = ControlInterface.get_status_from_props(imp_req)
                     sub_comp_dict[''] = ComponentImpInfo(prose=imp_req.description, status=status)
@@ -513,10 +515,7 @@ class ControlReader():
                         )
                     )
                     datestr = status[const.STATUS_COMPLETION_DATE]
-                    if isinstance(datestr, datetime):
-                        datestr = datestr.strftime('%Y-%m-%d')
-                    else:
-                        datestr = str(datestr)
+                    datestr = datestr.strftime('%Y-%m-%d') if isinstance(datestr, datetime) else str(datestr)
                     props.append(
                         common.Property(
                             ns=const.NAMESPACE_FEDRAMP, name=const.STATUS_PLANNED_COMPLETION_DATE, value=datestr
@@ -634,9 +633,9 @@ class ControlReader():
         # pull possible prose and rules from component definition if provided
         rules, params = ControlReader._add_component_to_dict(control_id, comp_dict, context.comp_def, comp_name)
         if rules:
-            yaml_header[const.RULE_NAME_IDS] = rules
+            yaml_header[const.COMP_DEF_RULES_TAG] = rules
         if params:
-            yaml_header[const.COMP_DEF_PARAMS] = params
+            yaml_header[const.COMP_DEF_PARAMS_TAG] = params
 
         if not control_file.exists():
             return comp_dict, yaml_header

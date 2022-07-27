@@ -245,10 +245,6 @@ SSP_SYSTEM_CONTROL_IMPLEMENTATION_TEXT = 'This is the control implementation for
 
 PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT = 'Add prose here for required Section'
 
-RULE_NAME_PREFIX = 'rule_name_'
-
-RULE_NAME_IDS = RULE_NAME_PREFIX + 'ids'
-
 NCNAME_REGEX = r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa FS003 E501
 
 NCNAME_UTF8_FIRST_CHAR_OPTIONS = string.ascii_letters + '_'
@@ -375,7 +371,9 @@ HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in
 
 SET_PARAMS_TAG = 'x-trestle-set-params'
 
-COMP_DEF_PARAMS = 'comp-def-params'
+COMP_DEF_PARAMS_TAG = 'comp-def-params'
+
+COMP_DEF_RULES_TAG = 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
 
@@ -387,7 +385,7 @@ EDITABLE_CONTENT = 'Editable Content'
 
 SORT_ID = 'sort-id'
 
-TRESTLE_IMP_STATUS = 'trestle-imp-status'
+TRESTLE_IMP_STATUS_TAG = 'trestle-imp-status'
 
 CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 

@@ -28,6 +28,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.cli import Trestle
 from trestle.common.err import TrestleError
@@ -404,3 +405,14 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     new_time = profile_path.stat().st_mtime
 
     assert new_time != orig_time
+
+
+def test_profile_alter_adds(sample_profile: prof.Profile) -> None:
+    """Test profile alter adds involving Nones."""
+    adds = [prof.Add(props=[com.Property(name='prop_1', value='prop_1_val')])]
+    alters = [prof.Alter(control_id='ac-1', adds=adds)]
+    # first case modify is None
+    assert ProfileAssemble._replace_alter_adds(sample_profile, alters)
+    sample_profile.modify.alters = None
+    # second case modify is not None but alters is None
+    assert ProfileAssemble._replace_alter_adds(sample_profile, alters)

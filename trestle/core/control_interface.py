@@ -14,9 +14,7 @@
 """Handle queries and utility operations on controls in memory."""
 from __future__ import annotations
 
-import copy
 import logging
-import pathlib
 import re
 from dataclasses import dataclass
 from enum import Enum
@@ -27,7 +25,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_dict, as_list, none_if_empty
+from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.str_utils import string_from_root
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -56,102 +54,6 @@ class ComponentImpInfo:
 
 # provide name for this type
 CompDict = Dict[str, Dict[str, ComponentImpInfo]]
-
-
-class ContextPurpose(Enum):
-    """Specify the modality of the control markdown."""
-
-    CATALOG = 0
-    COMPONENT = 1
-    PROFILE = 2
-    SSP = 3
-
-
-@dataclass
-class ControlContext:
-    """Class encapsulating control markdown usage."""
-
-    purpose: ContextPurpose
-    to_markdown: bool
-    trestle_root: pathlib.Path
-    md_root: pathlib.Path
-    prompt_responses: bool
-    additional_content: bool
-    overwrite_header_values: bool
-    set_parameters: bool
-    yaml_header: Optional[Dict[Any, Any]] = None
-    sections_dict: Optional[Dict[str, str]] = None
-    profile: Optional[prof.Profile] = None
-    required_sections: Optional[str] = None
-    allowed_sections: Optional[str] = None
-    comp_def: Optional[comp.ComponentDefinition] = None
-    comp_name: Optional[str] = None
-
-    @classmethod
-    def generate(
-        cls,
-        purpose: ContextPurpose,
-        to_markdown: bool,
-        trestle_root: pathlib.Path,
-        md_root: pathlib.Path,
-        prompt_responses=False,
-        additional_content=False,
-        overwrite_header_values=False,
-        set_parameters=False,
-        yaml_header: Optional[Dict[Any, Any]] = None,
-        sections_dict: Optional[Dict[str, str]] = None,
-        profile: Optional[prof.Profile] = None,
-        required_sections: Optional[str] = None,
-        allowed_sections: Optional[str] = None,
-        comp_def: Optional[comp.ComponentDefinition] = None,
-        comp_name: Optional[str] = None
-    ) -> ControlContext:
-        """Generate control context of the needed type."""
-        context = cls(
-            purpose,
-            to_markdown,
-            trestle_root,
-            md_root,
-            prompt_responses,
-            additional_content,
-            overwrite_header_values,
-            set_parameters,
-            yaml_header=yaml_header,
-            sections_dict=sections_dict,
-            profile=profile,
-            required_sections=required_sections,
-            allowed_sections=allowed_sections,
-            comp_def=comp_def,
-            comp_name=comp_name
-        )
-        context.yaml_header = as_dict(yaml_header)
-        context.sections_dict = as_dict(sections_dict)
-        # catalog generate always sets params
-        if to_markdown:
-            context.set_parameters = True
-        return context
-
-    @classmethod
-    def clone(cls, context: ControlContext) -> ControlContext:
-        """Create a deep clone of the context without duplicating large objects."""
-        new_context = cls(
-            context.purpose,
-            context.to_markdown,
-            context.trestle_root,
-            context.md_root,
-            context.prompt_responses,
-            context.additional_content,
-            context.overwrite_header_values,
-            context.set_parameters,
-            yaml_header=copy.deepcopy(context.yaml_header),
-            sections_dict=copy.deepcopy(context.sections_dict),
-            profile=context.profile,
-            required_sections=context.required_sections,
-            allowed_sections=context.allowed_sections,
-            comp_def=context.comp_def,
-            comp_name=context.comp_name
-        )
-        return new_context
 
 
 class ControlInterface:
@@ -246,16 +148,17 @@ class ControlInterface:
         return default if default else ''
 
     @staticmethod
-    def delete_prop(part_control: TypeWithProps, prop_name: str) -> None:
+    def _delete_prop(part_control: TypeWithProps, prop_name: str) -> None:
         """Delete property with that name."""
         # assumes at most one instance
         names = [prop.name for prop in as_list(part_control.props)]
         if prop_name in names:
             index = names.index(prop_name)
             del part_control.props[index]
+        part_control.props = none_if_empty(part_control.props)
 
     @staticmethod
-    def replace_prop(part_control: TypeWithProps, new_prop: common.Property) -> None:
+    def _replace_prop(part_control: TypeWithProps, new_prop: common.Property) -> None:
         """Delete property with that name if present and insert new one."""
         # assumes at most one instance
         names = [prop.name for prop in as_list(part_control.props)]
@@ -309,7 +212,7 @@ class ControlInterface:
         return items
 
     @staticmethod
-    def get_adds_for_control(profile: prof.Profile, control_id: str) -> List[prof.Add]:
+    def _get_adds_for_control(profile: prof.Profile, control_id: str) -> List[prof.Add]:
         """Get the adds for a given control id from a profile."""
         adds: List[prof.Add] = []
         if profile.modify:
@@ -322,7 +225,7 @@ class ControlInterface:
     def get_all_add_prose(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
         """Get the adds for a control from a profile by control id."""
         adds = []
-        for add in ControlInterface.get_adds_for_control(profile, control_id):
+        for add in ControlInterface._get_adds_for_control(profile, control_id):
             for part in as_list(add.parts):
                 if part.prose:
                     adds.append((part.name, part.prose))
@@ -363,11 +266,19 @@ class ControlInterface:
     def get_rules_from_imp_req(imp_req: comp.ImplementedRequirement) -> Dict[str, str]:
         """Get all rules found in this imp_req."""
         rules = {}
+        # this expects Rule_Id and Rule_Description
+        name = ''
+        desc = ''
         for prop in as_list(imp_req.props):
-            if prop.name.startswith(const.RULE_NAME_PREFIX):
-                name = prop.value[len(const.RULE_NAME_PREFIX):]
-                remarks = string_from_root(prop.remarks)
-                rules[name] = remarks
+            if prop.name == 'Rule_Id':
+                name = prop.value
+            elif prop.name == 'Rule_Description':
+                desc = prop.value
+            # grab each pair in case there are multiple pairs
+            # then clear and look for new pair
+            if name and desc:
+                rules[name] = desc
+                name = desc = ''
         return rules
 
     @staticmethod
@@ -427,20 +338,20 @@ class ControlInterface:
         return False
 
     @staticmethod
-    def param_values_as_str_list(param: common.Parameter) -> List[str]:
+    def _param_values_as_str_list(param: common.Parameter) -> List[str]:
         """Convert param values to list of strings."""
         return [val.__root__ for val in as_list(param.values)]
 
     @staticmethod
-    def param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
+    def _param_values_as_str(param: common.Parameter, brackets=False) -> Optional[str]:
         """Convert param values to string with optional brackets."""
         if not param.values:
             return None
-        values_str = ', '.join(ControlInterface.param_values_as_str_list(param))
+        values_str = ', '.join(ControlInterface._param_values_as_str_list(param))
         return f'[{values_str}]' if brackets else values_str
 
     @staticmethod
-    def param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+    def _param_selection_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
         """Convert parameter selection to str."""
         if param.select and param.select.choice:
             how_many_str = ''
@@ -453,9 +364,9 @@ class ControlInterface:
         return ''
 
     @staticmethod
-    def param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
+    def _param_label_choices_as_str(param: common.Parameter, verbose=False, brackets=False) -> str:
         """Convert param label or choices to string, using choices if present."""
-        choices = ControlInterface.param_selection_as_str(param, verbose, brackets)
+        choices = ControlInterface._param_selection_as_str(param, verbose, brackets)
         text = choices if choices else param.label
         text = text if text else param.id
         return text
@@ -483,16 +394,16 @@ class ControlInterface:
         """
         param_str = None
         if param_rep == ParameterRep.VALUE_OR_STRING_NONE:
-            param_str = ControlInterface.param_values_as_str(param)
+            param_str = ControlInterface._param_values_as_str(param)
             param_str = param_str if param_str else 'None'
         elif param_rep == ParameterRep.LABEL_OR_CHOICES:
-            param_str = ControlInterface.param_label_choices_as_str(param, verbose, brackets)
+            param_str = ControlInterface._param_label_choices_as_str(param, verbose, brackets)
         elif param_rep == ParameterRep.VALUE_OR_LABEL_OR_CHOICES:
-            param_str = ControlInterface.param_values_as_str(param)
+            param_str = ControlInterface._param_values_as_str(param)
             if not param_str:
-                param_str = ControlInterface.param_label_choices_as_str(param, verbose, brackets)
+                param_str = ControlInterface._param_label_choices_as_str(param, verbose, brackets)
         elif param_rep == ParameterRep.VALUE_OR_EMPTY_STRING:
-            param_str = ControlInterface.param_values_as_str(param, brackets)
+            param_str = ControlInterface._param_values_as_str(param, brackets)
             if not param_str:
                 param_str = ''
         if param_str is not None and params_format:
@@ -570,28 +481,28 @@ class ControlInterface:
         status = common.ImplementationStatus(state=const.STATUS_OTHER)
         for prop in as_list(item.props):
             if prop.name == const.IMPLEMENTATION_STATUS:
-                status = ControlInterface.prop_as_status(prop)
+                status = ControlInterface._prop_as_status(prop)
                 break
         return status
 
     @staticmethod
-    def status_as_prop(status: common.ImplementationStatus) -> common.Property:
+    def _status_as_prop(status: common.ImplementationStatus) -> common.Property:
         """Convert status to property."""
         return common.Property(name=const.IMPLEMENTATION_STATUS, value=status.state, remarks=status.remarks)
 
     @staticmethod
-    def prop_as_status(prop: common.Property) -> common.ImplementationStatus:
+    def _prop_as_status(prop: common.Property) -> common.ImplementationStatus:
         """Convert property to status."""
         return common.ImplementationStatus(state=prop.value, remarks=prop.remarks)
 
     @staticmethod
     def insert_status_in_props(item: TypeWithProps, status: common.ImplementationStatus) -> None:
         """Insert status content into props of the item."""
-        prop = ControlInterface.status_as_prop(status)
-        ControlInterface.replace_prop(item, prop)
+        prop = ControlInterface._status_as_prop(status)
+        ControlInterface._replace_prop(item, prop)
 
     @staticmethod
-    def copy_status_in_props(dest: TypeWithProps, src: TypeWithProps) -> None:
+    def _copy_status_in_props(dest: TypeWithProps, src: TypeWithProps) -> None:
         """Copy status in props from one object to another."""
         status = ControlInterface.get_status_from_props(src)
         ControlInterface.insert_status_in_props(dest, status)
@@ -602,9 +513,8 @@ class ControlInterface:
     ) -> None:
         """Insert imp req into component by matching control id to existing imp req."""
         for control_imp in as_list(component.control_implementations):
-            for ii, imp_req in enumerate(as_list(control_imp.implemented_requirements)):
+            for imp_req in as_list(control_imp.implemented_requirements):
                 if imp_req.control_id == new_imp_req.control_id:
-                    control_imp.implemented_requirements[ii].description = new_imp_req.description
                     status = ControlInterface.get_status_from_props(new_imp_req)
                     ControlInterface.insert_status_in_props(imp_req, status)
                     statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
@@ -614,7 +524,7 @@ class ControlInterface:
                         stat = statement_dict.get(statement.statement_id, statement)
                         # update the description and status from markdown
                         stat.description = statement.description
-                        ControlInterface.copy_status_in_props(stat, statement)
+                        ControlInterface._copy_status_in_props(stat, statement)
                         new_statements.append(stat)
                     imp_req.statements = none_if_empty(new_statements)
                     return

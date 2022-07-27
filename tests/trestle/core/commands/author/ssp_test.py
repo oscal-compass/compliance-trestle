@@ -28,7 +28,7 @@ import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
-from trestle.core.control_interface import ContextPurpose, ControlContext
+from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
