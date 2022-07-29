@@ -373,6 +373,8 @@ SET_PARAMS_TAG = 'x-trestle-set-params'
 
 COMP_DEF_PARAMS_TAG = 'comp-def-params'
 
+COMP_DEF_PARAM_VALS_TAG = 'comp-def-param-vals'
+
 COMP_DEF_RULES_TAG = 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'

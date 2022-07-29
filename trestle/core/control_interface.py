@@ -49,6 +49,7 @@ class ComponentImpInfo:
     """Class to capture component prose and status."""
 
     prose: str
+    rules: List[str]
     status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_OTHER)
 
 
@@ -263,36 +264,72 @@ class ControlInterface:
         return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
 
     @staticmethod
-    def get_rules_from_imp_req(imp_req: comp.ImplementedRequirement) -> Dict[str, str]:
-        """Get all rules found in this imp_req."""
+    def get_rules_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+        """Get all rules found in this items props."""
+        # rules is dict containing rule_id and description
         rules = {}
-        # this expects Rule_Id and Rule_Description
         name = ''
         desc = ''
-        for prop in as_list(imp_req.props):
-            if prop.name == 'Rule_Id':
+        id_ = ''
+        for prop in as_list(item.props):
+            if prop.name == 'rule_name_id':
                 name = prop.value
-            elif prop.name == 'Rule_Description':
+                id_ = string_from_root(prop.remarks)
+            elif prop.name == 'rule_description':
                 desc = prop.value
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
             if name and desc:
-                rules[name] = desc
-                name = desc = ''
+                rules[id_] = {'name': name, 'description': desc}
+                name = desc = id_ = ''
         return rules
 
     @staticmethod
-    def get_params_from_imp_req(imp_req: comp.ImplementedRequirement) -> Dict[str, Dict[str, Any]]:
-        """Get all params found in this imp_req."""
+    def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
+        """Get the list of rules applying to this item."""
+        rules = []
+        for prop in as_list(item.props):
+            if prop.name == 'rule_name_id':
+                rules.append(prop.value)
+        return rules
+
+    @staticmethod
+    def get_params_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
+        """Get all params found in this item."""
+        # id, description, options - where options is a string containing comma-sep list of items
+        # params is dict with rule_id as key and value contains: param_name, description and choices
         params = {}
-        for param in as_list(imp_req.set_parameters):
-            values = [string_from_root(value) for value in param.values]
-            values = values[0] if len(values) == 1 else values
-            new_param = {'values': values}
-            if param.remarks:
-                new_param['remarks'] = string_from_root(param.remarks)
-            params[param.param_id] = new_param
+        for prop in as_list(item.props):
+            if prop.name == 'param_id':
+                rule_id = string_from_root(prop.remarks)
+                param_name = prop.value
+                if rule_id in params:
+                    raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
+                # create new param for this rule
+                params[rule_id] = {'name': param_name}
+            elif prop.name == 'param_description':
+                rule_id = string_from_root(prop.remarks)
+                if rule_id in params:
+                    params[rule_id]['description'] = prop.value
+                else:
+                    raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
+            elif prop.name == 'param_options':
+                rule_id = string_from_root(prop.remarks)
+                if rule_id in params:
+                    params[rule_id]['options'] = prop.value
+                else:
+                    raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
         return params
+
+    @staticmethod
+    def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:
+        """Get param values from set_parameters in control implementation."""
+        param_dict = {}
+        for set_param in as_list(control_imp.set_parameters):
+            value_str = ControlInterface._setparam_values_as_str(set_param)
+            if value_str:
+                param_dict[set_param.param_id] = value_str
+        return param_dict
 
     @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
@@ -336,6 +373,18 @@ class ControlInterface:
                 if prop.name.lower().strip() == 'status' and prop.value.lower().strip() == 'withdrawn':
                     return True
         return False
+
+    @staticmethod
+    def _setparam_values_as_str(set_param: comp.SetParameter) -> str:
+        """Convert values to string."""
+        out_str = ''
+        for value in as_list(set_param.values):
+            value_str = string_from_root(value)
+            if value_str:
+                if out_str:
+                    out_str += ', '
+                out_str += value_str
+        return out_str
 
     @staticmethod
     def _param_values_as_str_list(param: common.Parameter) -> List[str]:

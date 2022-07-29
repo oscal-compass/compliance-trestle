@@ -95,6 +95,35 @@
               {
                 "name": "profile_check_version",
                 "value": "0.1.58"
+              },
+              {
+                "name": "rule_name_id",
+                "value": "XCCDF",
+                "remarks": "Rule_1"
+              },
+              {
+                "name": "rule_description",
+                "value": "The XCCDF must be compliant",
+                "remarks": "Rule_1"
+              },
+              {
+                "name": "rule_name_id",
+                "value": "FancyXtraRule",
+                "remarks": "Rule_2"
+              },
+              {
+                "name": "rule_description",
+                "value": "This is a fancy extra rule",
+                "remarks": "Rule_2"
+              }
+            ],
+            "set-parameters": [
+              {
+                "param-id": "kubelet_eviction_thresholds_set_soft_memory_available",
+                "values": [
+                  "500Mi"
+                ],
+                "remarks": "Memory Available for the EvictionSoft threshold to trigger."
               }
             ],
             "implemented-requirements": [
@@ -104,12 +133,8 @@
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
-                    "name": "Rule_Id",
+                    "name": "rule-name-id",
                     "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
                   },
                   {
                     "name": "implementation-status",
@@ -140,7 +165,7 @@
                 ],
                 "statements": [
                   {
-                    "statement-id": "a.",
+                    "statement-id": "ac-1_smt.a",
                     "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
                     "description": "Implement as needed for OSCO",
                     "props": [
@@ -156,16 +181,6 @@
                 "uuid": "6e1a6aca-78ad-4c49-9a33-0639f7509f3c",
                 "control-id": "ac-2",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -192,16 +207,6 @@
                 "uuid": "76360569-e7fc-436e-927c-1e3c350c4b59",
                 "control-id": "ac-2.1",
                 "description": "Ensure that the API server pod specification file ownership is set to root:root",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -228,16 +233,6 @@
                 "uuid": "1798c9f5-0807-40af-ab10-229e7f714c16",
                 "control-id": "ac-2.2",
                 "description": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -264,16 +259,6 @@
                 "uuid": "136d4ced-16a0-44cf-8f24-6aa66884bb10",
                 "control-id": "ac-2.3",
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -300,16 +285,6 @@
                 "uuid": "62309a71-2abf-4a24-a78f-56c2f9eeed3b",
                 "control-id": "ac-2.4",
                 "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -336,16 +311,6 @@
                 "uuid": "ecca956a-4837-404a-b4fa-2685a7b15fc5",
                 "control-id": "ac-3",
                 "description": "Ensure that the Container Network Interface file ownership is set to root:root",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -372,16 +337,6 @@
                 "uuid": "fb37ef9a-e5ad-4e84-9995-785d4b19ece0",
                 "control-id": "ac-4.4",
                 "description": "Ensure that the Container Network Interface file ownership is set to root:root",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "responsible-roles": [
                   {
                     "role-id": "prepared-by",
@@ -441,34 +396,17 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "Rule_Id",
+                    "name": "rule-name-id",
                     "value": "XCCDF"
                   },
                   {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  },
-                  {
-                    "name": "Rule_Id",
+                    "name": "rule-name-id",
                     "value": "FancyXtraRule"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "This is a fancy extra rule"
                   },
                   {
                     "name": "implementation-status",
                     "value": "under-development",
                     "remarks": "this is my remark"
-                  }
-                ],
-                "set-parameters": [
-                  {
-                    "param-id": "kubelet_eviction_thresholds_set_soft_memory_available",
-                    "values": [
-                      "500Mi"
-                    ],
-                    "remarks": "Memory Available for the EvictionSoft threshold to trigger."
                   }
                 ],
                 "responsible-roles": [
@@ -497,16 +435,6 @@
                 "uuid": "c1541519-ba7e-44ca-afd0-4068d307a9b0",
                 "control-id": "ac-2.13",
                 "description": "Ensure that garbage collection is configured as appropriate",
-                "props": [
-                  {
-                    "name": "Rule_Id",
-                    "value": "XCCDF"
-                  },
-                  {
-                    "name": "Rule_Description",
-                    "value": "The XCCDF must be compliant"
-                  }
-                ],
                 "set-parameters": [
                   {
                     "param-id": "kubelet_eviction_thresholds_set_soft_nodefs_available",

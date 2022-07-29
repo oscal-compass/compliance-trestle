@@ -75,7 +75,7 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: other')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.COMP_DEF_RULES_TAG]['XCCDF'] == 'The XCCDF must be compliant'
+    assert header[const.COMP_DEF_RULES_TAG][0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['label'] == 'organization-defined personnel or roles'
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['values'] == 'Param_1_value_in_catalog'
 
@@ -84,14 +84,11 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     """Check the contents of ac-5 md."""
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac5_path)
-    assert header[const.COMP_DEF_RULES_TAG]['XCCDF'] == 'The XCCDF must be compliant'
-    assert header[const.COMP_DEF_RULES_TAG]['FancyXtraRule'] == 'This is a fancy extra rule'
+    assert header[const.COMP_DEF_RULES_TAG][0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    assert header[const.COMP_DEF_RULES_TAG][1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
     assert header[const.SET_PARAMS_TAG
                   ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
-    assert header[const.COMP_DEF_PARAMS_TAG
-                  ]['kubelet_eviction_thresholds_set_soft_memory_available']['values'] == '500Mi'
-    assert header[const.COMP_DEF_PARAMS_TAG]['kubelet_eviction_thresholds_set_soft_memory_available'][
-        'remarks'] == 'Memory Available for the EvictionSoft threshold to trigger.'
+    assert header[const.COMP_DEF_PARAM_VALS_TAG]['kubelet_eviction_thresholds_set_soft_memory_available'] == '500Mi'
 
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -162,17 +159,3 @@ def test_generic_oscal() -> None:
     generic_cont_imp = generic.GenericControlImplementation.generate()
     cont_imp = generic_cont_imp.as_ssp()
     assert cont_imp.description == const.REPLACE_ME
-
-
-def hide_test_temp(keep_cwd, monkeypatch):
-    """Remove this temporary test."""
-    import os
-    os.chdir('/tmp/test_cd')
-    cmd = 'trestle author component-generate -n cd -o md_cd -p nist_prof'
-    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-
-    fc = test_utils.FileChecker(pathlib.Path('/tmp/test_cd'))
-
-    test_utils.execute_command_and_assert(cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
-
-    assert fc.files_unchanged()

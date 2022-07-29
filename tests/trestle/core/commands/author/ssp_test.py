@@ -52,7 +52,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
     context = ControlContext.generate(ContextPurpose.SSP, False, trestle_dir, trestle_dir)
-    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(md_file, context)
+    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(None, md_file, context)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
             prose = label_dict[part_label].prose
@@ -83,9 +83,10 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     assert test_utils.confirm_text_in_file(ac_1, '## Control', '## Control Guidance') != specify_sections
     md_api = MarkdownAPI()
     _, tree = md_api.processor.process_markdown(ac_1)
-    assert tree.get_count_of_subnodes() == 8 if specify_sections else 9
+    # implementation status is now added as a subnode
+    assert tree.get_count_of_subnodes() == 11 if specify_sections else 12
     _, tree = md_api.processor.process_markdown(ac_2)
-    assert tree.get_count_of_subnodes() == 17 if specify_sections else 18
+    assert tree.get_count_of_subnodes() == 29 if specify_sections else 30
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:

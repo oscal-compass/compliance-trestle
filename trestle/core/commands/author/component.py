@@ -252,6 +252,7 @@ class ComponentAssemble(AuthorCommonCommand):
                 )
 
         for component in parent_comp.components:
+            context.comp_name = component.title
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
