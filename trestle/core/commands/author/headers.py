@@ -230,13 +230,7 @@ class Headers(AuthorCommonCommand):
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
-                    all_versioned_templates[instance_version] = {}
-                    all_drawio_templates = list(filter(lambda p: p.suffix == '.drawio', templates))
-                    all_md_templates = list(filter(lambda p: p.suffix == '.md', templates))
-                    if all_drawio_templates:
-                        all_versioned_templates[instance_version]['drawio'] = all_drawio_templates[0]
-                    if all_md_templates:
-                        all_versioned_templates[instance_version]['md'] = all_md_templates[0]
+                    self._update_templates(all_versioned_templates, templates, instance_version)
 
                 # validate
                 md_api.load_validator_with_template(all_versioned_templates[instance_version]['md'], True, False)
@@ -270,13 +264,7 @@ class Headers(AuthorCommonCommand):
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
-                    all_versioned_templates[instance_version] = {}
-                    all_drawio_templates = list(filter(lambda p: p.suffix == '.drawio', templates))
-                    all_md_templates = list(filter(lambda p: p.suffix == '.md', templates))
-                    if all_drawio_templates:
-                        all_versioned_templates[instance_version]['drawio'] = all_drawio_templates[0]
-                    if all_md_templates:
-                        all_versioned_templates[instance_version]['md'] = all_md_templates[0]
+                    self._update_templates(all_versioned_templates, templates, instance_version)
 
                 # validate
                 drawio_validator = DrawIOMetadataValidator(all_versioned_templates[instance_version]['drawio'])
@@ -291,6 +279,15 @@ class Headers(AuthorCommonCommand):
                 logger.debug(f'Unsupported extension of the instance file: {instance_file}, will not be validated.')
 
         return True
+
+    def _update_templates(self, all_versioned_templates, templates, instance_version):
+        all_versioned_templates[instance_version] = {}
+        all_drawio_templates = list(filter(lambda p: p.suffix == '.drawio', templates))
+        all_md_templates = list(filter(lambda p: p.suffix == '.md', templates))
+        if all_drawio_templates:
+            all_versioned_templates[instance_version]['drawio'] = all_drawio_templates[0]
+        if all_md_templates:
+            all_versioned_templates[instance_version]['md'] = all_md_templates[0]
 
     def validate(
         self,
