@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle author headers command."""
-
+import os
 import pathlib
 import shutil
 import sys
@@ -561,3 +561,28 @@ def test_instance_no_header(
     monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
     rc = Trestle().run()
     assert rc == 1
+
+
+def test_instance_no_drawio_template_global(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating instance with no header."""
+    task_template_folder = tmp_trestle_dir / '.trestle/author/__global__/'
+    test_template_folder = testdata_dir / 'author/headers/good_templates_wo_drawio'
+    test_instances_folder = testdata_dir / 'author/headers/ignored_files'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+
+    shutil.copytree(test_template_folder, task_template_folder)
+
+    # copy all files
+    shutil.copytree(test_instances_folder, task_instance_folder)
+
+    # remove all drawios
+    for file in task_instance_folder.rglob('*'):
+        if file.is_file() and file.suffix == '.drawio':
+            os.remove(task_instance_folder / file)
+
+    command_string_validate_content = 'trestle author headers validate -r -tn test_task -g -ig ^_.*'
+    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
+    rc = Trestle().run()
+    assert rc == 0

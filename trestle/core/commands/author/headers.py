@@ -231,12 +231,12 @@ class Headers(AuthorCommonCommand):
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
                     all_versioned_templates[instance_version] = {}
-                    all_versioned_templates[instance_version]['drawio'] = list(
-                        filter(lambda p: p.suffix == '.drawio', templates)
-                    )[0]
-                    all_versioned_templates[instance_version]['md'] = list(
-                        filter(lambda p: p.suffix == '.md', templates)
-                    )[0]
+                    all_drawio_templates = list(filter(lambda p: p.suffix == '.drawio', templates))
+                    all_md_templates = list(filter(lambda p: p.suffix == '.md', templates))
+                    if all_drawio_templates:
+                        all_versioned_templates[instance_version]['drawio'] = all_drawio_templates[0]
+                    if all_md_templates:
+                        all_versioned_templates[instance_version]['md'] = all_md_templates[0]
 
                 # validate
                 md_api.load_validator_with_template(all_versioned_templates[instance_version]['md'], True, False)
@@ -271,12 +271,12 @@ class Headers(AuthorCommonCommand):
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
                     all_versioned_templates[instance_version] = {}
-                    all_versioned_templates[instance_version]['drawio'] = list(
-                        filter(lambda p: p.suffix == '.drawio', templates)
-                    )[0]
-                    all_versioned_templates[instance_version]['md'] = list(
-                        filter(lambda p: p.suffix == '.md', templates)
-                    )[0]
+                    all_drawio_templates = list(filter(lambda p: p.suffix == '.drawio', templates))
+                    all_md_templates = list(filter(lambda p: p.suffix == '.md', templates))
+                    if all_drawio_templates:
+                        all_versioned_templates[instance_version]['drawio'] = all_drawio_templates[0]
+                    if all_md_templates:
+                        all_versioned_templates[instance_version]['md'] = all_md_templates[0]
 
                 # validate
                 drawio_validator = DrawIOMetadataValidator(all_versioned_templates[instance_version]['drawio'])
