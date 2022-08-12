@@ -429,8 +429,8 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     prof_generate = f'trestle author profile-generate -n main_profile -o {md_name}'
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
 
-    ac1_path = tmp_trestle_dir / md_name / 'ac' / 'ac-1.md'
-    ac2_path = tmp_trestle_dir / md_name / 'ac' / 'ac-2.md'
+    ac1_path = tmp_trestle_dir / md_name / 'ac/ac-1.md'
+    ac2_path = tmp_trestle_dir / md_name / 'ac/ac-2.md'
 
     md_api = MarkdownAPI()
 
