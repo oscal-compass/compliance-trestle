@@ -332,7 +332,9 @@ def test_control_with_components(tmp_path: pathlib.Path) -> None:
     assert len(imp_req.statements[0].by_components) == 3
 
 
-@pytest.mark.parametrize('md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md'])
+@pytest.mark.parametrize(
+    'md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md', 'control_with_bad_component.md']
+)
 def test_control_bad_components(md_file: str, tmp_path: pathlib.Path) -> None:
     """Test loading of imp reqs for control with bad components."""
     control_path = pathlib.Path('tests/data/author/controls/') / md_file
