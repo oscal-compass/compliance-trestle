@@ -672,6 +672,8 @@ class ControlReader():
         if rules:
             yaml_header[const.COMP_DEF_RULES_TAG] = list(rules.values())
         if params:
+            if not set(rules.keys()).issuperset(params.keys()):
+                raise TrestleError(f'Control {control_id} has a parameter assigned to a rule that is not defined.')
             yaml_header[const.COMP_DEF_PARAMS_TAG] = [{rules[id_]['name']: params[id_] for id_ in params.keys()}]
         if param_vals:
             yaml_header[const.COMP_DEF_PARAM_VALS_TAG] = param_vals

@@ -98,32 +98,60 @@
               },
               {
                 "name": "rule_name_id",
+                "ns": "http://foo_ns",
                 "value": "XCCDF",
-                "remarks": "Rule_1"
+                "class": "rule_name_id",
+                "remarks": "rule_1"
               },
               {
                 "name": "rule_description",
+                "ns": "http://foo_ns",
                 "value": "The XCCDF must be compliant",
-                "remarks": "Rule_1"
+                "remarks": "rule_1"
               },
               {
                 "name": "rule_name_id",
+                "ns": "http://foo_ns",
                 "value": "FancyXtraRule",
-                "remarks": "Rule_2"
+                "class": "rule_name_id",
+                "remarks": "rule_2"
               },
               {
                 "name": "rule_description",
+                "ns": "http://foo_ns",
                 "value": "This is a fancy extra rule",
-                "remarks": "Rule_2"
+                "class": "rule_description",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "param_id",
+                "ns": "http://foo_ns",
+                "value": "foo_length",
+                "class": "param_id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "param_description",
+                "ns": "http://foo_ns",
+                "value": "minimum_foo_length",
+                "class": "param_description",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "param_options",
+                "ns": "http://foo_ns",
+                "value": "[\"6\", \"9\"]",
+                "class": "param_options",
+                "remarks": "rule_1"
               }
             ],
             "set-parameters": [
               {
-                "param-id": "kubelet_eviction_thresholds_set_soft_memory_available",
+                "param-id": "quantity_available",
                 "values": [
-                  "500Mi"
+                  "500"
                 ],
-                "remarks": "Memory Available for the EvictionSoft threshold to trigger."
+                "remarks": "Total quantity available."
               }
             ],
             "implemented-requirements": [
@@ -396,11 +424,15 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "rule-name-id",
+                    "name": "rule_name_id",
+                    "ns": "http://foo_ns",
+                    "class": "rule_name_id",
                     "value": "XCCDF"
                   },
                   {
-                    "name": "rule-name-id",
+                    "name": "rule_name_id",
+                    "ns": "http://foo_ns",
+                    "class": "rule_name_id",
                     "value": "FancyXtraRule"
                   },
                   {

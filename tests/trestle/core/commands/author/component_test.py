@@ -88,7 +88,7 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     assert header[const.COMP_DEF_RULES_TAG][1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
     assert header[const.SET_PARAMS_TAG
                   ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
-    assert header[const.COMP_DEF_PARAM_VALS_TAG]['kubelet_eviction_thresholds_set_soft_memory_available'] == '500Mi'
+    assert header[const.COMP_DEF_PARAM_VALS_TAG]['quantity_available'] == '500'
 
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
