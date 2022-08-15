@@ -236,16 +236,21 @@ class ProfileAssemble(AuthorCommonCommand):
             # now go through new alters and add them to each control in dict by control id
             for new_alter in alters:
                 alter = alter_dict.get(new_alter.control_id, None)
-                if alter:
-                    # even though we removed adds at start, we may have added one already
-                    if alter.adds:
-                        alter.adds.extend(new_alter.adds)
-                    else:
-                        alter.adds = new_alter.adds
-                    # update the dict with the new alter with its added adds
-                    alter_dict[new_alter.control_id] = alter
+                if not alter:
+                    # the control did not have alters, so add
+                    alter = prof.Alter(control_id=new_alter.control_id)
+
+                # even though we removed adds at start, we may have added one already
+                if alter.adds:
+                    alter.adds.extend(new_alter.adds)
+                else:
+                    alter.adds = new_alter.adds
+                # update the dict with the new alter with its added adds
+                alter_dict[new_alter.control_id] = alter
             # get the new list of alters from the dict and update profile
             new_alters = list(alter_dict.values())
+            # special case, if all adds were deleted remove such alters completely
+            new_alters = list(filter(lambda alt: alt.adds or alt.removes, new_alters))
             if profile.modify.alters != new_alters:
                 changed = True
             profile.modify.alters = none_if_empty(new_alters)

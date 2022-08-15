@@ -34,6 +34,8 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, sections_to_dict
+from trestle.core.markdown.markdown_api import MarkdownAPI
+from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 
@@ -404,3 +406,58 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     new_time = profile_path.stat().st_mtime
 
     assert new_time != orig_time
+
+
+def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test the profile generate and assemble in cycles, with incremental changes."""
+
+    def generate_assemble(md_path: pathlib.Path) -> MarkdownNode:
+        prof_assemble = f'trestle author profile-assemble -n main_profile -m {md_name} -o main_profile'
+        test_utils.execute_command_and_assert(prof_assemble, 0, monkeypatch)
+
+        # generate markdown again, ensure section is there
+        prof_generate = f'trestle author profile-generate -n main_profile -o {md_name}'
+        test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
+        assert md_path.exists()
+        _, tree = md_api.processor.process_markdown(md_path)
+
+        return tree
+
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, True, True)
+
+    prof_generate = f'trestle author profile-generate -n main_profile -o {md_name}'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
+    ac1_path = tmp_trestle_dir / md_name / 'ac/ac-1.md'
+    ac2_path = tmp_trestle_dir / md_name / 'ac/ac-2.md'
+
+    md_api = MarkdownAPI()
+
+    assert ac1_path.exists()
+    assert test_utils.insert_text_in_file(ac1_path, None, '## Control this_should_appear_in_parts \n Test text.')
+    _, tree = md_api.processor.process_markdown(ac1_path)
+
+    assert tree.get_node_for_key('## Control this_should_appear_in_parts', strict_matching=True)
+
+    # Scenario 1: Profile has no alters at all, ensure new sections is added
+    tree = generate_assemble(ac1_path)
+    assert tree.get_node_for_key('## Control this_should_appear_in_parts', strict_matching=True)
+
+    # Scenario 2: Profiles has one alter for ac-1, now add new section to ac-2, ensure new sectio is added
+    assert ac2_path.exists()
+    assert test_utils.insert_text_in_file(ac2_path, None, '## Control this_should_appear_in_parts2 \n Test text.')
+    _, tree = md_api.processor.process_markdown(ac2_path)
+    assert tree.get_node_for_key('## Control this_should_appear_in_parts2', strict_matching=True)
+
+    tree = generate_assemble(ac2_path)
+    assert tree.get_node_for_key('## Control this_should_appear_in_parts2', strict_matching=True)
+
+    # Scenario 3: Remove added section from the ac-1, ensure the alters are deleted
+    assert ac1_path.exists()
+    assert test_utils.delete_line_in_file(ac1_path, '## Control this_should_appear_in_parts', 2)
+    _, tree = md_api.processor.process_markdown(ac1_path)
+    assert not tree.get_node_for_key('## Control this_should_appear_in_parts')
+
+    tree = generate_assemble(ac1_path)
+    assert not tree.get_node_for_key('## Control this_should_appear_in_parts')
