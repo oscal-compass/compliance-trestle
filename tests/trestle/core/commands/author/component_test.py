@@ -21,11 +21,14 @@ from _pytest.monkeypatch import MonkeyPatch
 
 from tests import test_utils
 
+import trestle.core.generic_oscal as generic
 import trestle.oscal.component as comp
+from trestle.common import const
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
 from trestle.core.control_interface import ControlInterface
+from trestle.core.markdown.markdown_processor import MarkdownProcessor
 
 md_path = 'md_comp'
 
@@ -70,6 +73,22 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: operational')
     assert test_utils.confirm_text_in_file(ac1_path, 'Status: operational', 'ac1 remark')
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: other')
+    markdown_processor = MarkdownProcessor()
+    header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
+    assert header[const.COMP_DEF_RULES_TAG][0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['label'] == 'organization-defined personnel or roles'
+    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['values'] == 'Param_1_value_in_catalog'
+
+
+def check_ac5_contents(ac5_path: pathlib.Path) -> None:
+    """Check the contents of ac-5 md."""
+    markdown_processor = MarkdownProcessor()
+    header, _ = markdown_processor.read_markdown_wo_processing(ac5_path)
+    assert header[const.COMP_DEF_RULES_TAG][0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    assert header[const.COMP_DEF_RULES_TAG][1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
+    assert header[const.SET_PARAMS_TAG
+                  ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
+    assert header[const.COMP_DEF_PARAM_VALS_TAG]['quantity_available'] == '500'
 
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -83,9 +102,12 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # generate the md first time
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
+    check_ac5_contents(ac5_path)
 
     file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
 
+    # generate again but force use of source in comp_def to load profile rather than command line
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
     # confirm it overwrites existing md properly
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
 
@@ -112,9 +134,28 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     new_status = ControlInterface.get_status_from_props(imp_reqs[0])
     assert new_status.state == 'implemented'
     assert new_status.remarks.__root__ == 'this is my new remark'
+    orig_uuid = assem_comp_def.uuid
 
     orig_file_creation = orig_comp_def_path.stat().st_mtime
 
     # confirm repeat assemble doesn't generate new file since no changes
     test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     assert orig_comp_def_path.stat().st_mtime == orig_file_creation
+
+    # force overwrite of output, regenerate, and new version
+    assemble_cmd = f'trestle author component-assemble -o assem_comp -m {md_path} -r -vn 1.2.3'
+    test_utils.execute_command_and_assert(assemble_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
+    assem_comp_def, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'assem_comp', comp.ComponentDefinition)
+    assert assem_comp_def.uuid != orig_uuid
+    assert assem_comp_def.metadata.version.__root__ == '1.2.3'
+
+
+def test_generic_oscal() -> None:
+    """Test generic oscal conversions."""
+    generic_component = generic.GenericComponent.generate()
+    def_comp = generic_component.as_defined_component()
+    assert def_comp.description == const.REPLACE_ME
+
+    generic_cont_imp = generic.GenericControlImplementation.generate()
+    cont_imp = generic_cont_imp.as_ssp()
+    assert cont_imp.description == const.REPLACE_ME

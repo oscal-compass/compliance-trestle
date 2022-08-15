@@ -18,7 +18,6 @@ import argparse
 import logging
 import pathlib
 
-import trestle.core.commands.validate as validatecmd
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, TrestleRootError, handle_generic_command_exception
 from trestle.common.model_utils import ModelUtils
@@ -113,27 +112,6 @@ class ImportCmd(CommandPlusDocs):
                 all=None,
                 quiet=True
             )
-            rollback = False
-            try:
-                rc = validatecmd.ValidateCmd()._run(args)
-                if rc > 0:
-                    logger.warning(f'Validation of imported file {desired_model_path} did not pass.  Stopping import.')
-                    rollback = True
-            except TrestleError as err:
-                logger.error(f'Import of {str(input_uri)} failed with validation error: {err}')
-                rollback = True
-
-            if rollback:
-                logger.debug(f'Rolling back import of {str(input_uri)} to {desired_model_path}')
-                try:
-                    import_plan.rollback()
-                except TrestleError as err:
-                    raise TrestleError(
-                        f'Import failed in plan rollback: {err}. Manually remove {desired_model_path} to recover.'
-                    )
-                logger.debug(f'Successful rollback of import to {desired_model_path}')
-                return CmdReturnCodes.COMMAND_ERROR.value
-
             return CmdReturnCodes.SUCCESS.value
 
         except Exception as e:  # pragma: no cover

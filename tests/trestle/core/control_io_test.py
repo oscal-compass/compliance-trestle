@@ -31,7 +31,8 @@ from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
@@ -308,8 +309,9 @@ def test_merge_dicts_deep_empty() -> None:
 def test_control_with_components(tmp_path: pathlib.Path) -> None:
     """Test loading and parsing of implementated reqs with components."""
     control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
+    control, _ = ControlReader.read_control(control_path, False)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control_path, context)
+    comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
     assert len(comp_prose_dict.keys()) == 3
     assert len(comp_prose_dict['This System'].keys()) == 2
     assert len(comp_prose_dict['Trestle Component'].keys()) == 1
@@ -330,13 +332,16 @@ def test_control_with_components(tmp_path: pathlib.Path) -> None:
     assert len(imp_req.statements[0].by_components) == 3
 
 
-@pytest.mark.parametrize('md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md'])
+@pytest.mark.parametrize(
+    'md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md', 'control_with_bad_component.md']
+)
 def test_control_bad_components(md_file: str, tmp_path: pathlib.Path) -> None:
     """Test loading of imp reqs for control with bad components."""
     control_path = pathlib.Path('tests/data/author/controls/') / md_file
+    control, _ = ControlReader.read_control(control_path, False)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     with pytest.raises(TrestleError):
-        ControlReader.read_all_implementation_prose_and_header(control_path, context)
+        ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
 
 
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
@@ -350,7 +355,7 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     control = catalog_interface.get_control('ac-1')
     param_dict = ControlInterface.get_control_param_dict(control, False)
     # confirm profile value is used
-    assert ControlInterface.param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
+    assert ControlInterface._param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
     # confirm original param label is used since no value was assigned
     assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
@@ -528,3 +533,14 @@ def test_get_component_by_name(sample_nist_component_def: comp.ComponentDefiniti
     """Test get component by name."""
     assert ControlInterface.get_component_by_name(sample_nist_component_def, 'test component 1')
     assert ControlInterface.get_component_by_name(sample_nist_component_def, 'foobar') is None
+
+
+def test_delete_prop(sample_component_definition: comp.ComponentDefinition) -> None:
+    """Teste delete prop."""
+    component = sample_component_definition.components[1]
+    assert len(component.props) == 2
+    ControlInterface._delete_prop(component, 'prop_2')
+    assert len(component.props) == 1
+    assert component.props[0].name == 'prop_1'
+    ControlInterface._delete_prop(component, 'prop_1')
+    assert component.props is None

@@ -31,7 +31,7 @@ class ProfileResolver():
     @staticmethod
     def get_resolved_profile_catalog(
         trestle_root: pathlib.Path,
-        profile_path: pathlib.Path,
+        profile_path: str,
         block_adds: bool = False,
         block_params: bool = False,
         params_format: Optional[str] = None,
@@ -42,7 +42,7 @@ class ProfileResolver():
 
         Args:
             trestle_root: root directory of the trestle project
-            profile_path: path of the profile being resolved
+            profile_path: string path or uri of the profile being resolved
             block_adds: prevent the application of adds in the final profile
             block_params: prevent the application of setparams in the final profile
             params_format: optional pattern with dot to wrap the param string, where dot represents the param string
