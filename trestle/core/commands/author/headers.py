@@ -281,7 +281,7 @@ class Headers(AuthorCommonCommand):
         return True
 
     def _update_templates(
-        self, all_versioned_templates: Dict[str, Dict[str]], templates: List[str], instance_version: str
+        self, all_versioned_templates: Dict[str, Dict[str, str]], templates: List[str], instance_version: str
     ):
         all_versioned_templates[instance_version] = {}
         all_drawio_templates = list(filter(lambda p: p.suffix == const.DRAWIO_FILE_EXT, templates))
