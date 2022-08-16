@@ -27,6 +27,8 @@ TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 TRESTLE_KEEP_FILE = '.keep'
+DRAWIO_FILE_EXT = '.drawio'
+MARKDOWN_FILE_EXT = '.md'
 
 ALLOWED_EXTENSIONS_IN_DIRS = {'.json', '.xml', '.yaml', '.yml', '.md'}
 

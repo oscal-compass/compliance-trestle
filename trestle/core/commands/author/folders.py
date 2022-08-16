@@ -23,7 +23,7 @@ from typing import List
 
 import trestle.core.commands.author.consts as author_const
 import trestle.core.draw_io as draw_io
-from trestle.common import file_utils
+from trestle.common import const, file_utils
 from trestle.common.err import TrestleError, TrestleIncorrectArgsError, handle_generic_command_exception
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
@@ -155,7 +155,7 @@ class Folders(AuthorCommonCommand):
                     continue
                 elif template_file.is_dir():
                     continue
-                elif template_file.suffix.lower() == '.md':
+                elif template_file.suffix.lower() == const.MARKDOWN_FILE_EXT:
                     if not readme_validate and template_file.name == 'readme.md':
                         raise TrestleError('Template directory contains a readme.md file and readme validation is off.')
 
@@ -214,7 +214,7 @@ class Folders(AuthorCommonCommand):
                     continue
             instance_file_name = instance_file.relative_to(instance_dir)
             instance_file_names.append(instance_file_name)
-            if instance_file.suffix == '.md':
+            if instance_file.suffix == const.MARKDOWN_FILE_EXT:
                 md_api = MarkdownAPI()
                 versioned_template_dir = None
                 if template_version != '':
@@ -268,7 +268,7 @@ class Folders(AuthorCommonCommand):
                     # mark template as present
                     all_versioned_templates[instance_version][instance_file_name] = True
 
-            elif instance_file.suffix == '.drawio':
+            elif instance_file.suffix == const.DRAWIO_FILE_EXT:
                 drawio = draw_io.DrawIO(instance_file)
                 metadata = drawio.get_metadata()[0]
                 versioned_template_dir = None
@@ -327,7 +327,7 @@ class Folders(AuthorCommonCommand):
             filter(
                 lambda p: file_utils.is_local_and_visible(p) and p.is_file()
                 and  # noqa: W504 - conflicting lint and formatting
-                (p.suffix == '.md' or p.suffix == '.drawio'),
+                (p.suffix == const.MARKDOWN_FILE_EXT or p.suffix == const.DRAWIO_FILE_EXT),
                 versioned_template_dir.iterdir()
             )
         )

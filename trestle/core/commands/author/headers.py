@@ -18,7 +18,7 @@ import argparse
 import logging
 import pathlib
 import re
-from typing import List
+from typing import Dict, List
 
 import trestle.core.commands.author.consts as author_const
 from trestle.common import const, file_utils
@@ -151,14 +151,14 @@ class Headers(AuthorCommonCommand):
                     and template_file.name.lower() != 'readme.md'):
                 raise TrestleError(f'Unexpected template file {self.rel_dir(template_file)}')
 
-            if template_file.suffix == '.md':
+            if template_file.suffix == const.MARKDOWN_FILE_EXT:
                 try:
                     md_api = MarkdownAPI()
                     md_api.load_validator_with_template(template_file, True, False)
                 except Exception as ex:
                     raise TrestleError(f'Template for task {self.task_name} failed to validate due to {ex}')
 
-            elif template_file.suffix == '.drawio':
+            elif template_file.suffix == const.DRAWIO_FILE_EXT:
                 try:
                     _ = DrawIOMetadataValidator(template_file)
                 except Exception as ex:
@@ -209,7 +209,7 @@ class Headers(AuthorCommonCommand):
                     continue
             instance_file_name = instance_file.relative_to(candidate_dir)
             instance_file_names.append(instance_file_name)
-            if instance_file.suffix == '.md':
+            if instance_file.suffix == const.MARKDOWN_FILE_EXT:
                 md_api = MarkdownAPI()
                 versioned_template_dir = None
                 if template_version != '':
@@ -230,13 +230,7 @@ class Headers(AuthorCommonCommand):
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
-                    all_versioned_templates[instance_version] = {}
-                    all_versioned_templates[instance_version]['drawio'] = list(
-                        filter(lambda p: p.suffix == '.drawio', templates)
-                    )[0]
-                    all_versioned_templates[instance_version]['md'] = list(
-                        filter(lambda p: p.suffix == '.md', templates)
-                    )[0]
+                    self._update_templates(all_versioned_templates, templates, instance_version)
 
                 # validate
                 md_api.load_validator_with_template(all_versioned_templates[instance_version]['md'], True, False)
@@ -247,7 +241,7 @@ class Headers(AuthorCommonCommand):
                 else:
                     logger.info(f'VALID: {self.rel_dir(instance_file)}')
 
-            elif instance_file.suffix == '.drawio':
+            elif instance_file.suffix == const.DRAWIO_FILE_EXT:
                 drawio = DrawIO(instance_file)
                 metadata = drawio.get_metadata()[0]
 
@@ -270,13 +264,7 @@ class Headers(AuthorCommonCommand):
                     )
                     if not readme_validate:
                         templates = list(filter(lambda p: p.name.lower() != 'readme.md', templates))
-                    all_versioned_templates[instance_version] = {}
-                    all_versioned_templates[instance_version]['drawio'] = list(
-                        filter(lambda p: p.suffix == '.drawio', templates)
-                    )[0]
-                    all_versioned_templates[instance_version]['md'] = list(
-                        filter(lambda p: p.suffix == '.md', templates)
-                    )[0]
+                    self._update_templates(all_versioned_templates, templates, instance_version)
 
                 # validate
                 drawio_validator = DrawIOMetadataValidator(all_versioned_templates[instance_version]['drawio'])
@@ -291,6 +279,17 @@ class Headers(AuthorCommonCommand):
                 logger.debug(f'Unsupported extension of the instance file: {instance_file}, will not be validated.')
 
         return True
+
+    def _update_templates(
+        self, all_versioned_templates: Dict[str, Dict[str, str]], templates: List[str], instance_version: str
+    ):
+        all_versioned_templates[instance_version] = {}
+        all_drawio_templates = list(filter(lambda p: p.suffix == const.DRAWIO_FILE_EXT, templates))
+        all_md_templates = list(filter(lambda p: p.suffix == const.MARKDOWN_FILE_EXT, templates))
+        if all_drawio_templates:
+            all_versioned_templates[instance_version]['drawio'] = all_drawio_templates[0]
+        if all_md_templates:
+            all_versioned_templates[instance_version]['md'] = all_md_templates[0]
 
     def validate(
         self,

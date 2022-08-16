@@ -340,7 +340,7 @@ class ControlWriter():
         if ControlInterface.is_withdrawn(control):
             logger.debug(f'Not writing out control {control.id} since it is marked Withdrawn.')
             return
-        control_file = dest_path / (control.id + '.md')
+        control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
         # first read the existing markdown header and content if it exists
         comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control, control_file, context)
         self._md_file = MDWriter(control_file)

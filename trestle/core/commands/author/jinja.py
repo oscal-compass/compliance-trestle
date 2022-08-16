@@ -247,7 +247,7 @@ class JinjaCmd(CommandPlusDocs):
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 
-                output_file = trestle_root / group_dir / pathlib.Path(control.id + '.md')
+                output_file = trestle_root / group_dir / pathlib.Path(control.id + const.MARKDOWN_FILE_EXT)
                 output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         return CmdReturnCodes.SUCCESS.value
