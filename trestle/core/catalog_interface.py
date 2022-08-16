@@ -26,7 +26,8 @@ import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_interface import ControlContext, ControlInterface
+from trestle.core.control_context import ControlContext
+from trestle.core.control_interface import ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.oscal import common
@@ -567,13 +568,12 @@ class CatalogInterface():
 
         # create the directory in which to write the control markdown files
         context.md_root.mkdir(exist_ok=True, parents=True)
-        catalog_interface = CatalogInterface(self._catalog)
         # get the list of params for this profile from its set_params
         # this is just from the set_params
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile
                                                                                 ) if context.profile else {}
         # write out the controls
-        for control in catalog_interface.get_all_controls_from_catalog(True):
+        for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
             if new_context.set_parameters:
@@ -625,10 +625,10 @@ class CatalogInterface():
                             pop_list.append(key)
                     for pop in pop_list:
                         new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
-            _, group_title, _ = catalog_interface.get_group_info_by_control(control.id)
+            _, group_title, _ = self.get_group_info_by_control(control.id)
             # control could be in sub-group of group so build path to it
             group_dir = new_context.md_root
-            control_path = catalog_interface.get_control_path(control.id)
+            control_path = self.get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():
