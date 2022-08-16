@@ -22,7 +22,7 @@ import shutil
 from typing import Optional
 
 import trestle.core.commands.author.consts as author_const
-from trestle.common import file_utils
+from trestle.common import const, file_utils
 from trestle.common.err import TrestleError, handle_generic_command_exception
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.versioning.template_versioning import TemplateVersioning
@@ -208,7 +208,7 @@ class Docs(AuthorCommonCommand):
         for item_path in md_dir.iterdir():
             if file_utils.is_local_and_visible(item_path):
                 if item_path.is_file():
-                    if not item_path.suffix == '.md':
+                    if not item_path.suffix == const.MARKDOWN_FILE_EXT:
                         logger.info(
                             f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
                         )
