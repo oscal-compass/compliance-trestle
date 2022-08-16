@@ -115,7 +115,7 @@ class GenericStatement(TrestleBaseModel):
         statements: List[comp.Statement] = []
         for by_comp in as_list(self.by_components):
             stat_dict = copy.deepcopy(self.__dict__)
-            del stat_dict['by_components']
+            stat_dict.pop('by_components', None)
             stat_dict['description'] = by_comp.description
             new_stat = comp.Statement(**stat_dict)
             ControlInterface.insert_status_in_props(new_stat, by_comp.implementation_status)
@@ -125,7 +125,7 @@ class GenericStatement(TrestleBaseModel):
     def as_ssp(self) -> ossp.Statement:
         """Represent in ssp form."""
         class_dict = copy.deepcopy(self.__dict__)
-        del class_dict['description']
+        class_dict.pop('description', None)
         return ossp.Statement(**class_dict)
 
 
@@ -172,9 +172,9 @@ class GenericComponent(TrestleBaseModel):
 
     def as_defined_component(self) -> comp.DefinedComponent:
         """Convert to DefinedComponent."""
-        status = self.status.state
+        status = self.status
         class_dict = copy.deepcopy(self.__dict__)
-        del class_dict['status']
+        class_dict.pop('status', None)
         def_comp = comp.DefinedComponent(**class_dict)
         ControlInterface.insert_status_in_props(def_comp, status)
         return def_comp
@@ -190,7 +190,7 @@ class GenericComponent(TrestleBaseModel):
     def as_system_component(self) -> ossp.SystemComponent:
         """Convert to SystemComponent."""
         class_dict = copy.deepcopy(self.__dict__)
-        del class_dict['control_implementations']
+        class_dict.pop('control_implementations', None)
         status_str = self.status.state if self.status else 'other'
         if status_str not in ['under-development', 'operational', 'disposition', 'other']:
             status_str = 'other'
@@ -201,8 +201,7 @@ class GenericComponent(TrestleBaseModel):
     def from_system_component(cls, sys_comp: ossp.SystemComponent) -> GenericComponent:
         """Convert system component to generic."""
         class_dict = copy.deepcopy(sys_comp.__dict__)
-        if 'control_implementations' in class_dict:
-            del class_dict['control_implementations']
+        class_dict.pop('control_implementations', None)
         status_str = 'other'
         if 'status' in class_dict:
             status_str = class_dict['status'].state.name
@@ -252,7 +251,7 @@ class GenericImplementedRequirement(TrestleBaseModel):
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'  # noqa E501
     ) = Field(
         ...,
-        alias='control_id',
+        alias='control-id',
         description=  # noqa E251
         'A human-oriented identifier reference to a control with a corresponding id value. When referencing an externally defined control, the Control Identifier Reference must be used in the context of the external / imported OSCAL instance (e.g., uri-reference).',  # noqa E501
         title='Control Identifier Reference',
@@ -277,7 +276,8 @@ class GenericImplementedRequirement(TrestleBaseModel):
     def generate() -> GenericImplementedRequirement:
         """Generate instance of this class."""
         uuid = str(uuid4())
-        return GenericImplementedRequirement(uuid=uuid, control_id=const.REPLACE_ME, description=const.REPLACE_ME)
+        class_dict = {'uuid': uuid, 'control-id': const.REPLACE_ME, 'description': const.REPLACE_ME}
+        return GenericImplementedRequirement(**class_dict)
 
     def as_comp_def(self) -> comp.ImplementedRequirement:
         """Convert to defined component form."""
@@ -334,16 +334,28 @@ class GenericControlImplementation(TrestleBaseModel):
     set_parameters: Optional[List[GenericSetParameter]] = Field(None, alias='set-parameters')
     implemented_requirements: List[GenericImplementedRequirement] = Field(..., alias='implemented-requirements')
 
+    @staticmethod
+    def generate() -> GenericControlImplementation:
+        """Generate instance of this class."""
+        uuid = str(uuid4())
+        imp_reqs = [GenericImplementedRequirement.generate()]
+        class_dict = {
+            'uuid': uuid,
+            'control-id': const.REPLACE_ME,
+            'source': const.REPLACE_ME,
+            'description': const.REPLACE_ME,
+            'implemented-requirements': imp_reqs
+        }
+        return GenericControlImplementation(**class_dict)
+
     def as_ssp(self) -> ossp.ControlImplementation:
         """Represent in ssp form."""
-        class_dict = self.__dict__
-        del class_dict['uuid']
-        del class_dict['source']
-        del class_dict['props']
-        del class_dict['links']
         imp_reqs = []
         for imp_req in self.implemented_requirements:
             imp_reqs.append(imp_req.as_ssp())
+        class_dict = self.__dict__
+        for prop in ['uuid', 'source', 'props', 'links', 'implemented_requirements']:
+            class_dict.pop(prop, None)
         if imp_reqs:
             class_dict['implemented-requirements'] = imp_reqs
         return ossp.ControlImplementation(**class_dict)

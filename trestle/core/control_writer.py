@@ -20,8 +20,8 @@ from typing import Dict, List, Optional
 import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.core.control_interface import CompDict, ComponentImpInfo
-from trestle.core.control_interface import ContextPurpose, ControlContext, ControlInterface, ParameterRep
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import profile as prof
@@ -155,6 +155,19 @@ class ControlWriter():
                 level=level, title=f'{const.IMPLEMENTATION_STATUS_REMARKS_HEADER}: {status.remarks.__root__}'
             )
 
+    def _insert_rules(self, rules: List[str], level: int) -> None:
+        if rules:
+            self._md_file.new_header(level=level, title='Rules:')
+            self._md_file.set_indent_level(0)
+            self._md_file.new_list(rules)
+            self._md_file.set_indent_level(-1)
+
+    def _has_prose(self, part_label: str, comp_dict: CompDict) -> bool:
+        for dic in comp_dict.values():
+            if part_label in dic and dic[part_label].prose:
+                return True
+        return False
+
     def _insert_comp_info(self, part_label: str, comp_info: Dict[str, ComponentImpInfo], comp_def_format: bool) -> None:
         """Insert prose and status from the component info."""
         level = 3 if comp_def_format else 4
@@ -162,10 +175,16 @@ class ControlWriter():
             info = comp_info[part_label]
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
+            self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
+        else:
+            self._insert_status(ImplementationStatus(state=const.STATUS_OTHER), level)
 
     def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
+        if comp_def_format:
+            self._md_file.new_paraline(const.STATUS_PROMPT)
+            self._md_file.new_paragraph()
         did_write = False
         level = 3 if comp_def_format else 4
         for dic in comp_dict.values():
@@ -174,6 +193,7 @@ class ControlWriter():
                 if statement_id == '':
                     # create new heading for this component and add guidance
                     self._md_file.new_paraline(comp_info.prose)
+                    self._insert_rules(comp_info.rules, level)
                     self._insert_status(comp_info.status, level)
                     did_write = True
         return did_write
@@ -184,19 +204,11 @@ class ControlWriter():
         """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
+        # top level request for implementation details
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
-        if comp_def_format:
-            self._md_file.new_paraline(const.STATUS_PROMPT)
-            self._md_file.new_paragraph()
-        did_write_part = self._add_component_control_prompts(comp_dict, comp_def_format)
 
-        # The comp_dict looks like:
-        # This System:
-        #    a.: guidance for part a, imp_status
-        #    b.: guidance for part b, imp_status
-        # OSCO:
-        #    '': OSCO guidance for entire control, imp_status
-        #    a.: OSCO guidance for part a, imp_status
+        # write out control level prose and status
+        did_write_part = self._add_component_control_prompts(comp_dict, comp_def_format)
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -217,7 +229,9 @@ class ControlWriter():
                         part_label = ControlInterface.get_label(prt)
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
                         self._md_file.new_header(level=2, title=f'Implementation {part_label}')
-                        added_content = False
+                        if not self._has_prose(part_label, comp_dict):
+                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
+                        wrote_label_content = False
                         for comp_name, dic in comp_dict.items():
                             if part_label in dic:
                                 if comp_name != const.SSP_MAIN_COMP_NAME:
@@ -225,14 +239,12 @@ class ControlWriter():
                                     # because there should only be one component in generated comp_def markdown
                                     if not comp_def_format:
                                         self._md_file.new_header(level=3, title=comp_name)
-                                self._insert_comp_info(part_label, dic, comp_def_format)
-                                added_content = True
+                            self._insert_comp_info(part_label, dic, comp_def_format)
+                            wrote_label_content = True
+                        if not wrote_label_content:
+                            level = 3 if comp_def_format else 4
+                            self._insert_status(ImplementationStatus(state=const.STATUS_OTHER), level)
                         self._md_file.new_paragraph()
-                        if not added_content:
-                            self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
-                            if comp_def_format:
-                                status = ControlInterface.get_status_from_props(prt)
-                                self._insert_status(status, 3)
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
         if not comp_dict and not did_write_part:
@@ -330,7 +342,7 @@ class ControlWriter():
             return
         control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
         # first read the existing markdown header and content if it exists
-        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control_file, context)
+        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control, control_file, context)
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 
