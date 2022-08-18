@@ -20,7 +20,7 @@ from typing import Dict, Iterator, List, Optional
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
-from trestle.common.err import TrestleError, TrestleNotFoundError
+from trestle.common.err import TrestleNotFoundError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ControlInterface, ParameterRep
@@ -149,22 +149,17 @@ class Modify(Pipeline.Filter):
                 Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep)
 
     @staticmethod
-    def _add_contents_as_list(add: prof.Add) -> List[OBT]:
-        add_list = []
-        add_list.extend(as_list(add.props))
-        add_list.extend(as_list(add.parts))
-        add_list.extend(as_list(add.links))
-        return add_list
-
-    @staticmethod
-    def _add_adds_to_part(part: common.Part, add: prof.Add) -> None:
+    def _add_adds_to_part(part: common.Part, add: prof.Add, added_parts=False) -> None:
         for attr in ['params', 'props', 'parts', 'links']:
+            # don't add parts if already added earlier
+            if added_parts and attr == 'parts':
+                continue
             add_list = getattr(add, attr, None)
             if add_list:
                 Modify._add_attr_to_part(part, add_list, attr, add.position)
 
     @staticmethod
-    def _add_to_list(input_list: List[OBT], add: prof.Add) -> bool:
+    def _add_to_list(parts_list: List[common.Part], add: prof.Add) -> bool:
         """Add the contents of the add according to its by_id and position.
 
         Return True on success or False if id needed and not found.
@@ -172,28 +167,25 @@ class Modify(Pipeline.Filter):
         This is only called when by_id is not None.
         The add will be inserted if the id is found, or return False if not.
         This allows a separate recursive routine to search sub-lists for the id.
+        Position before/after will put the item adjacent to the target in the same list as target
+        Position starting/ending will put the item within the target itself
         """
-        add_list = Modify._add_contents_as_list(add)
         # Test here for matched by_id attribute.
-        try:
-            for index in range(len(input_list)):
-                if input_list[index].id == add.by_id:
-                    if add.position == prof.Position.after:
-                        for offset, new_item in enumerate(add_list):
-                            input_list.insert(index + 1 + offset, new_item)
-                        return True
-                    elif add.position == prof.Position.before:
-                        for offset, new_item in enumerate(add_list):
-                            input_list.insert(index + offset, new_item)
-                        return True
-                    # if starting or ending, the adds go directly into this part according to type
-                    Modify._add_adds_to_part(input_list[index], add)
-                    return True
-        except AttributeError:
-            raise TrestleError(
-                'Cannot use "after" or "before" modifications for a list where elements'
-                + ' do not contain the referenced by_id attribute.'
-            )
+        added_parts = False
+        for index in range(len(parts_list)):
+            # find the matching part
+            if parts_list[index].id == add.by_id:
+                if add.position == prof.Position.after:
+                    for offset, new_item in enumerate(as_list(add.parts)):
+                        parts_list.insert(index + 1 + offset, new_item)
+                    added_parts = True
+                elif add.position == prof.Position.before:
+                    for offset, new_item in enumerate(as_list(add.parts)):
+                        parts_list.insert(index + offset, new_item)
+                    added_parts = True
+                # if starting or ending, the adds go directly into this part according to type
+                Modify._add_adds_to_part(parts_list[index], add, added_parts)
+                return True
         return False
 
     @staticmethod

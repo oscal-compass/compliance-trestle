@@ -15,7 +15,7 @@
 import copy
 import logging
 import pathlib
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
@@ -260,9 +260,9 @@ class ControlWriter():
                 self._insert_comp_info(part_label, dic, comp_def_format)
         self._md_file.new_hr()
 
-    def _add_additional_content(self, control: cat.Control, profile: prof.Profile) -> List[str]:
-        adds = ControlInterface.get_all_add_prose(control.id, profile)
-        has_content = len(adds) > 0
+    def _add_additional_content(self, control: cat.Control, profile: prof.Profile, header: Dict[str, Any]) -> List[str]:
+        part_infos = ControlInterface.get_all_add_info(control.id, profile)
+        has_content = len(part_infos) > 0
 
         self._md_file.new_header(level=1, title=const.EDITABLE_CONTENT)
         self._md_file.new_line('<!-- Make additions and edits below -->')
@@ -298,12 +298,18 @@ class ControlWriter():
 
         added_sections: List[str] = []
 
-        for add in adds:
-            name, prose = add
-            title = self._sections_dict.get(name, name) if self._sections_dict else name
-            self._md_file.new_header(level=2, title=f'Control {title}')
-            self._md_file.new_paraline(prose)
-            added_sections.append(name)
+        for part_info in part_infos:
+            part, prop_list = part_info.to_dicts()
+            if part:
+                name = part['name']
+                title = self._sections_dict.get(name, name) if self._sections_dict else name
+                self._md_file.new_header(level=2, title=f'Control {title}')
+                self._md_file.new_paraline(part['prose'])
+                added_sections.append(name)
+            elif prop_list:
+                if const.TRESTLE_ADD_PROPS_TAG not in header:
+                    header[const.TRESTLE_ADD_PROPS_TAG] = []
+                header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         return added_sections
 
     def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
@@ -366,8 +372,6 @@ class ControlWriter():
         if context.purpose == ContextPurpose.COMPONENT and const.SORT_ID in merged_header:
             del merged_header[const.SORT_ID]
 
-        self._add_yaml_header(merged_header)
-
         self._add_control_statement(control, group_title)
 
         self._add_control_objective(control)
@@ -383,7 +387,9 @@ class ControlWriter():
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
         if context.additional_content:
-            added_sections = self._add_additional_content(control, context.profile)
+            added_sections = self._add_additional_content(control, context.profile, merged_header)
+
+        self._add_yaml_header(merged_header)
 
         if context.required_sections:
             self._prompt_required_sections(context.required_sections, added_sections)

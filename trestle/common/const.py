@@ -210,6 +210,14 @@ WINDOWS_DRIVE_URI_REGEX = r'([A-Za-z]:[\\/]?)[^\\/]'
 
 WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 
+# extract two groups corresponding to prop name and value
+# need to strip white space from end of value
+PROPERTY_REGEX = r'(?:###\s+Property\s+)([^\s]*)\s*:\s+(.*)'
+
+PART_REGEX = r'(?:##\s+Part\s+)(.*)'
+
+CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
+
 CACHE_ABS_DIR = '__abs__'
 
 UNIX_CACHE_ROOT = '__root__'
@@ -292,7 +300,7 @@ TRESTLE_PROPS_TAG = TRESTLE_TAG + 'props'
 
 NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
 
-SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
+SSP_FEDRAMP_TAG = TRESTLE_TAG + 'fedramp-props'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
@@ -369,19 +377,19 @@ RESPONSIBLE_ROLES = 'responsible-roles'
 
 HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
 
-SET_PARAMS_TAG = 'x-trestle-set-params'
+SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
-COMP_DEF_PARAMS_TAG = 'comp-def-params'
+COMP_DEF_PARAMS_TAG = TRESTLE_TAG + 'comp-def-params'
 
-COMP_DEF_PARAM_VALS_TAG = 'comp-def-param-vals'
+COMP_DEF_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-param-vals'
 
-COMP_DEF_RULES_TAG = 'comp-def-rules'
+COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
 
 VALUES = 'values'
 
-SECTIONS_TAG = 'x-trestle-sections'
+SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
 EDITABLE_CONTENT = 'Editable Content'
 
@@ -389,8 +397,12 @@ SORT_ID = 'sort-id'
 
 TRESTLE_IMP_STATUS_TAG = 'trestle-imp-status'
 
+TRESTLE_ADD_PROPS_TAG = TRESTLE_TAG + 'add-props'
+
 CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 
 CONTROL_HEADER = '## Control'
+
+PART_HEADER = '## Part'
 
 REPLACE_ME = 'REPLACE_ME'

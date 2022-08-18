@@ -160,7 +160,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
             catalog_interface = CatalogInterface(catalog)
-            context = ControlContext.generate(ContextPurpose.CATALOG, True, trestle_root, markdown_path)
+            context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
             context.yaml_header = yaml_header
             context.sections_dict = sections_dict
             context.additional_content = True
