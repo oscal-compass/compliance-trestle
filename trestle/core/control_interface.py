@@ -63,29 +63,24 @@ class PartInfo:
 
     name: str
     prose: str
-    remarks: str = ''
-    by_id: str = ''
+    smt_part: str = ''
     props: List[common.Property] = None
 
-    def to_dicts(self) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+    def to_dicts(self, part_id_map: Dict[str, str]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """Convert the part info to a dict or list of props."""
         prop_list = []
         part = {}
         # if it has a part name then it is a part with prose
         if self.name:
-            part['name'] = self.name
+            part['name'] = part_id_map.get(self.name, self.name)
             if self.prose:
                 part['prose'] = self.prose
-            if self.remarks:
-                part['remarks'] = self.remarks
         # otherwise it is a list of props
         else:
             for prop in as_list(self.props):
                 prop_d = {'name': prop.name, 'value': prop.value}
-                if prop.remarks:
-                    prop_d['remarks'] = prop.remarks.__root__
-                if self.by_id:
-                    prop_d['by-id'] = self.by_id
+                if self.smt_part:
+                    prop_d['smt-part'] = part_id_map.get(self.smt_part, self.smt_part)
                 prop_list.append(prop_d)
         return part, prop_list
 
@@ -262,11 +257,11 @@ class ControlInterface:
         for add in ControlInterface._get_adds_for_control(profile, control_id):
             # add control level props with no name
             if add.props:
-                by_id = add.by_id if add.by_id else ''
-                part_infos.append(PartInfo(name='', prose='', by_id=by_id, props=add.props))
+                smt_part = add.by_id if add.by_id else ''
+                part_infos.append(PartInfo(name='', prose='', smt_part=smt_part, props=add.props))
             # add part level props with part name
             for part in as_list(add.parts):
-                part_infos.append(PartInfo(name=part.name, prose=part.prose, by_id=add.by_id, props=part.props))
+                part_infos.append(PartInfo(name=part.name, prose=part.prose, smt_part=add.by_id, props=part.props))
         return part_infos
 
     @staticmethod

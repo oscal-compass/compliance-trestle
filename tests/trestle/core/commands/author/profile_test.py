@@ -442,7 +442,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     remarks: ac1 new stuff
   - name: ac1_new_part
     value: ac1 new part value
-    by-id: ac-1_smt.c
+    smt-part: c.
 """
     assert test_utils.insert_text_in_file(ac1_path, const.TRESTLE_ADD_PROPS_TAG, text)
 
@@ -472,7 +472,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert ac1.parts[0].parts[2].props[1].value == 'ac1 new part value'
 
     prose = """
-## Part ac-1_smt.b
+## Part b.
 
 ### NewGuidance
 

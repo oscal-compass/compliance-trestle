@@ -19,8 +19,6 @@ import string
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
-import frontmatter
-
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common import const
@@ -37,41 +35,11 @@ from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
-from yaml.scanner import ScannerError
-
 logger = logging.getLogger(__name__)
 
 
 class ControlReader():
     """Class to read controls from markdown."""
-
-    @staticmethod
-    def _load_control_lines_and_header(control_file: pathlib.Path) -> Tuple[List[str], Dict[str, Any]]:
-        lines: List[str] = []
-        try:
-            content = control_file.open('r', encoding=const.FILE_ENCODING).read()
-        except UnicodeDecodeError as e:
-            logger.debug(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
-            raise TrestleError(f'Unable to load file due to utf-8 encoding issues: {e}')
-        try:
-            fm = frontmatter.loads(content)
-        except ScannerError as e:
-            logger.error(
-                f'Error parsing yaml header from file {control_file}. '
-                f'This is most likely due to an incorrect yaml structure.'
-            )
-            raise TrestleError(f'Failure parsing yaml header on file {control_file}: {e}')
-        raw_lines = fm.content.split('\n')
-        header = fm.metadata
-        # Any fully blank lines will be retained but as empty strings
-        lines = [line.strip('\r\n').rstrip() for line in raw_lines]
-        clean_lines = []
-        # need to keep indentation and empty lines
-        for line in lines:
-            if line.startswith('<!--') or line.startswith('__________________'):
-                continue
-            clean_lines.append(line)
-        return clean_lines, header
 
     @staticmethod
     def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
@@ -756,8 +724,9 @@ class ControlReader():
         return sort_id, imp_req
 
     @staticmethod
-    def read_new_alters_and_params(control_path: pathlib.Path,
-                                   required_sections_list: List[str]) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
+    def read_new_alters_and_params(
+        control_path: pathlib.Path, required_sections_list: List[str], label_map: Dict[str, Dict[str, str]]
+    ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
@@ -808,7 +777,13 @@ class ControlReader():
                 match = re.match(const.PART_REGEX, subnode.key)
                 if not match:
                     raise TrestleError(f'Unexpected editable header {subnode.key} found in control {control_id}')
-                by_part = match.groups(0)[0]
+                by_part_label = match.groups(0)[0]
+                control_label_map = label_map.get(control_id, None)
+                if control_label_map is None:
+                    raise TrestleError(f'No label map found for control {control_id}')
+                by_part_id = control_label_map.get(by_part_label, None)
+                if by_part_id is None:
+                    raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
                 for node2 in as_list(subnode.subnodes):
                     if node2.key.startswith('### '):
                         part_name = node2.key[4:].strip()
@@ -817,7 +792,7 @@ class ControlReader():
                         id_ = f'{control_id}_{part_name}'
                         part = common.Part(id=id_, name=part_name, prose=prose)
                         alter = prof.Alter(
-                            control_id=control_id, adds=[prof.Add(parts=[part], position='ending', by_id=by_part)]
+                            control_id=control_id, adds=[prof.Add(parts=[part], position='ending', by_id=by_part_id)]
                         )
                         new_alters.append(alter)
                     else:
@@ -831,7 +806,9 @@ class ControlReader():
             param_dict.update(header_params)
         prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
         for prop_d in prop_list:
-            by_id = prop_d.get('by-id', None)
+            by_id = prop_d.get('smt-part', None)
+            if by_id and control_id in label_map:
+                by_id = label_map[control_id].get(by_id, by_id)
             prop = common.Property(name=prop_d['name'], value=prop_d['value'])
             alter = prof.Alter(control_id=control_id, adds=[prof.Add(props=[prop], position='after', by_id=by_id)])
             new_alters.append(alter)

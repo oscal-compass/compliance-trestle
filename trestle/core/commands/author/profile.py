@@ -160,6 +160,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
             catalog_interface = CatalogInterface(catalog)
+            part_id_map = catalog_interface.get_part_id_map()
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
             context.yaml_header = yaml_header
             context.sections_dict = sections_dict
@@ -168,7 +169,7 @@ class ProfileGenerate(AuthorCommonCommand):
             context.overwrite_header_values = overwrite_header_values
             context.set_parameters = True
             context.required_sections = required_sections
-            catalog_interface.write_catalog_as_markdown(context)
+            catalog_interface.write_catalog_as_markdown(context, part_id_map)
 
         except TrestleNotFoundError as e:
             raise TrestleError(f'Profile {profile_path} not found, error {e}')
@@ -336,13 +337,21 @@ class ProfileAssemble(AuthorCommonCommand):
         parent_prof, parent_prof_path = load_validate_model_name(trestle_root, parent_prof_name, prof.Profile)
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 
+        catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, parent_prof_path)
+        catalog_interface = CatalogInterface(catalog)
+        label_map = catalog_interface.get_label_map()
+
         required_sections_list = required_sections.split(',') if required_sections else []
 
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
         # keep track if any changes were made
         md_dir = trestle_root / md_name
-        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(md_dir, required_sections_list)
+        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(
+            md_dir,
+            required_sections_list,
+            label_map
+        )
         if allowed_sections:
             for alter in found_alters:
                 for add in alter.adds:

@@ -35,6 +35,7 @@ from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -173,7 +174,7 @@ end of text
 
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     writer = ControlWriter()
-    writer.write_control_for_editing(context, control, tmp_path, 'My Group Title')
+    writer.write_control_for_editing(context, control, tmp_path, 'My Group Title', {})
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlReader()
@@ -200,7 +201,7 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     # write it out as markdown in a separate directory to avoid name clash
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, sub_dir)
     control_writer = ControlWriter()
-    control_writer.write_control_for_editing(context, control, sub_dir, group_title)
+    control_writer.write_control_for_editing(context, control, sub_dir, group_title, {})
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -264,15 +265,17 @@ def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     bad_file = tmp_path / 'bad_unicode.md'
     with open(bad_file, 'wb') as f:
         f.write(b'\x81')
+    md_api = MarkdownAPI()
     with pytest.raises(TrestleError):
-        ControlReader._load_control_lines_and_header(bad_file)
+        _, _ = md_api.processor.process_markdown(bad_file)
 
 
 def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
     """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
+    md_api = MarkdownAPI()
     with pytest.raises(TrestleError):
-        ControlReader._load_control_lines_and_header(bad_file)
+        _, _ = md_api.processor.process_markdown(bad_file)
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
@@ -407,7 +410,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     context.yaml_header = header
     context.overwrite_header_values = overwrite_header_values
     control_writer = ControlWriter()
-    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title)
+    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {})
     # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_2.keys()) == 9

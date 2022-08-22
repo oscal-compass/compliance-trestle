@@ -105,7 +105,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 overwrite_header_values=overwrite_header_values,
                 set_parameters=True
             )
-            catalog_interface.write_catalog_as_markdown(context)
+            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map())
 
         except TrestleNotFoundError as e:
             raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
