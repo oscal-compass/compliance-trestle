@@ -458,9 +458,9 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
         prof.Profile, FileContentType.JSON
     )
     alters = profile.modify.alters
-    assert len(alters[0].adds) == 6
-    assert alters[0].adds[3].by_id == 'ac-1_smt.c'
-    assert alters[0].adds[5].by_id == 'ac-1_smt.a'
+    assert len(alters[0].adds) == 4
+    assert alters[0].adds[2].by_id == 'ac-1_smt.c'
+    assert alters[0].adds[3].by_id == 'ac-1_smt.a'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
@@ -495,9 +495,9 @@ More guidance
         prof.Profile, FileContentType.JSON
     )
     alters = profile.modify.alters
-    assert len(alters[0].adds) == 8
-    assert alters[0].adds[3].by_id == 'ac-1_smt.b'
-    assert alters[0].adds[5].by_id == 'ac-1_smt.c'
+    assert len(alters[0].adds) == 5
+    assert alters[0].adds[1].by_id == 'ac-1_smt.b'
+    assert alters[0].adds[3].by_id == 'ac-1_smt.c'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]

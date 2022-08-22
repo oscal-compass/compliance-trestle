@@ -751,6 +751,8 @@ class ControlReader():
         if not editable_node:
             return sort_id, [], {}
 
+        after_parts = []
+        ending_parts = {}
         for subnode in editable_node.subnodes:
             match = re.match(const.CONTROL_REGEX, subnode.key)
             if match:
@@ -768,10 +770,7 @@ class ControlReader():
                 # use sections dict to find correct title otherwise use the title from the markdown
                 part_title = sections_dict.get(part_name, part_name_raw)
                 part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
-                alter = prof.Alter(
-                    control_id=control_id, adds=[prof.Add(parts=[part], position='after', by_id=f'{control_id}_smt')]
-                )
-                new_alters.append(alter)
+                after_parts.append(part)
                 found_sections.append(part_name)
             else:
                 match = re.match(const.PART_REGEX, subnode.key)
@@ -791,12 +790,18 @@ class ControlReader():
                         prose = '\n'.join(prose)
                         id_ = f'{control_id}_{part_name}'
                         part = common.Part(id=id_, name=part_name, prose=prose)
-                        alter = prof.Alter(
-                            control_id=control_id, adds=[prof.Add(parts=[part], position='ending', by_id=by_part_id)]
-                        )
-                        new_alters.append(alter)
                     else:
                         raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
+                    if by_part_id not in ending_parts:
+                        ending_parts[by_part_id] = []
+                    ending_parts[by_part_id].append(part)
+
+        adds = []
+        if after_parts:
+            adds.append(prof.Add(parts=after_parts, position='after', by_id=f'{control_id}_smt'))
+        for by_id, parts in ending_parts.items():
+            adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
+
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
@@ -805,13 +810,26 @@ class ControlReader():
         if header_params:
             param_dict.update(header_params)
         prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
+        props = []
+        props_by_id = {}
         for prop_d in prop_list:
             by_id = prop_d.get('smt-part', None)
             if by_id and control_id in label_map:
                 by_id = label_map[control_id].get(by_id, by_id)
             prop = common.Property(name=prop_d['name'], value=prop_d['value'])
-            alter = prof.Alter(control_id=control_id, adds=[prof.Add(props=[prop], position='after', by_id=by_id)])
-            new_alters.append(alter)
+            if by_id:
+                if by_id not in props_by_id:
+                    props_by_id[by_id] = []
+                props_by_id[by_id].append(prop)
+            else:
+                props.append(prop)
+        if props:
+            adds.append(prof.Add(props=props, position='ending'))
+        for by_id, props in props_by_id.items():
+            adds.append(prof.Add(props=props, position='after', by_id=by_id))
+        new_alters = []
+        if adds:
+            new_alters = [prof.Alter(control_id=control_id, adds=adds)]
         return sort_id, new_alters, param_dict
 
     @staticmethod
