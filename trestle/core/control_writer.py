@@ -84,12 +84,12 @@ class ControlWriter():
         title = f'{control_id} -{group_name} {control_title}'
 
         header_title = 'Control Statement'
-        if sections_dict and sections_dict['statement']:
-            header_title = sections_dict['statement']
+        if sections_dict and sections_dict[const.STATEMENT]:
+            header_title = sections_dict[const.STATEMENT]
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title=header_title)
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, 'item')
         self._md_file.set_indent_level(-1)
 
     def _add_control_statement_ssp(self, control: cat.Control) -> None:
@@ -101,7 +101,7 @@ class ControlWriter():
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Statement')
         self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
+        self._add_part_and_its_items(control, const.STATEMENT, 'item')
         self._md_file.set_indent_level(-1)
 
     def _add_control_objective(self, control: cat.Control, sections_dict: Optional[Dict[str, str]] = None) -> None:
@@ -120,7 +120,7 @@ class ControlWriter():
 
     def _add_sections(self, control: cat.Control, allowed_sections: Optional[List[str]]) -> None:
         """Add the extra control sections after the main ones."""
-        skip_section_list = ['statement', 'item', 'objective']
+        skip_section_list = [const.STATEMENT, 'item', 'objective']
         while True:
             _, name, title, prose = ControlInterface.get_section(control, skip_section_list)
             if not name:
@@ -216,7 +216,7 @@ class ControlWriter():
         # If we have responses per component then enter them in separate ### sections
         if control.parts:
             for part in control.parts:
-                if part.parts and part.name == 'statement':
+                if part.parts and part.name == const.STATEMENT:
                     for prt in part.parts:
                         if prt.name != 'item':
                             continue
@@ -252,7 +252,7 @@ class ControlWriter():
             if comp_def_format:
                 status = ControlInterface.get_status_from_props(control)
                 self._insert_status(status, 3)
-        part_label = 'Statement'
+        part_label = const.STATEMENT
         for comp_name, dic in comp_dict.items():
             if part_label in dic:
                 if comp_name != const.SSP_MAIN_COMP_NAME:
@@ -420,7 +420,7 @@ class ControlWriter():
             raise TrestleError(f'Group title must be provided and be a string, instead received: {group_title}')
 
         for section in sections:
-            if 'statement' == section:
+            if const.STATEMENT == section:
                 self._add_control_statement(control, group_title, sections_dict, True, add_group_to_title)
 
             elif 'objective' == section:

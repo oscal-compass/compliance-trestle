@@ -236,7 +236,7 @@ class ControlReader():
         else:
             ii, indent, line = ControlReader._get_next_indent(ii, lines)
 
-        statement_part = common.Part(name='statement', id=f'{control_id}_smt')
+        statement_part = common.Part(name=const.STATEMENT, id=f'{control_id}_smt')
         # first line is either statement prose or start of statement parts
         if indent < 0:
             statement_part.prose = line
@@ -425,7 +425,7 @@ class ControlReader():
     def _get_statement_label(control: Optional[cat.Control], statement_id: str) -> str:
         if control:
             for part in as_list(control.parts):
-                if part.name == 'statement':
+                if part.name == const.STATEMENT:
                     for sub_part in as_list(part.parts):
                         if sub_part.name == 'item' and sub_part.id == statement_id:
                             return ControlInterface.get_label(sub_part)
@@ -701,7 +701,7 @@ class ControlReader():
                     by_comp.implementation_status = comp_info.status
                     # add the response prose to the description
                     by_comp.description = comp_info.prose
-                    if label == 'Statement':
+                    if label == const.STATEMENT:
                         statement_id = f'{control_id}_smt'
                     else:
                         clean_label = label.strip('.')

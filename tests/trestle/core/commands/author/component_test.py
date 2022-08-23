@@ -23,7 +23,7 @@ from tests import test_utils
 
 import trestle.core.generic_oscal as generic
 import trestle.oscal.component as comp
-from trestle.common import const
+from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.href import HrefCmd
@@ -36,12 +36,12 @@ md_path = 'md_comp'
 def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict[str, str]) -> None:
     """Edit the files to show assemble worked."""
     assert control_path.exists()
-    assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
+    assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if set_parameters:
         assert test_utils.delete_line_in_file(control_path, 'label:')
-        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
+        assert file_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
         # delete profile values for 4, then replace value for 3 with new value
-        assert test_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
+        assert file_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
         assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 

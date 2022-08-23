@@ -255,7 +255,7 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             label_dict = {}
             for part in as_list(control.parts):
-                if part.name == 'statement':
+                if part.name == const.STATEMENT:
                     for sub_part in as_list(part.parts):
                         label = ControlInterface.get_label(sub_part)
                         if label:
@@ -271,7 +271,7 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             part_id_dict = {}
             for part in as_list(control.parts):
-                if part.name == 'statement':
+                if part.name == const.STATEMENT:
                     for sub_part in as_list(part.parts):
                         label = ControlInterface.get_label(sub_part)
                         if label:
@@ -353,7 +353,7 @@ class CatalogInterface():
 
         def does_part_exists(part: common.Part) -> bool:
             does_match = False
-            if part.name and part.name in {'statement', 'item'} and part.id == statement_id:
+            if part.name and part.name in {const.STATEMENT, 'item'} and part.id == statement_id:
                 does_match = True
             return does_match
 
@@ -797,7 +797,7 @@ class CatalogInterface():
             if not control.control.parts:
                 continue
             for part in control.control.parts:
-                if part.name not in sections and part.name != 'statement':
+                if part.name not in sections and part.name != const.STATEMENT:
                     sections.append(part.name)
         return sections
 

@@ -152,7 +152,7 @@ class ProfileGenerate(AuthorCommonCommand):
             0 on success, 1 on error
         """
         try:
-            if sections_dict and 'statement' in sections_dict:
+            if sections_dict and const.STATEMENT in sections_dict:
                 logger.warning('statement is not allowed as a section name.')
                 return CmdReturnCodes.COMMAND_ERROR.value
             _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)

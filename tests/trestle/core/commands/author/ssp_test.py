@@ -25,7 +25,7 @@ from tests.test_utils import setup_for_ssp
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const
+from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -44,7 +44,7 @@ def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> bo
     control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
     md_file = control_dir / (statement_id.split('_')[0] + '.md')
 
-    return test_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
+    return file_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
 
 
 def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
@@ -145,12 +145,12 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
     """
-    Test the ssp generator fails if 'statement' is provided.
+    Test the ssp generator fails if const.STATEMENT is provided.
 
     Also checking code where not label is provided.
     """
     args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
-    args.sections = 'statement'
+    args.sections = const.STATEMENT
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) > 0
@@ -174,7 +174,7 @@ def test_ssp_generate_header_edit(load_yaml_header: bool, tmp_trestle_dir: pathl
     assert len(header['control-origination']) == 2
 
     # edit the header by adding a list item and removing a value
-    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
+    assert file_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
     assert test_utils.delete_line_in_file(ac_1, 'Corporate')
 
     # if the yaml header is not written out, the new header should be the one currently in the control
@@ -361,7 +361,7 @@ implement the foo requirements
 also do the bar stuff
 
 """
-    test_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', imp_text)
+    file_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', imp_text)
 
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
@@ -574,10 +574,10 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
 
     # insert implementation text into the high level statement of a control that has no sub-parts
     control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
-    test_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
+    file_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
 
     control_a1_path = tmp_trestle_dir / ssp_name / 'a-1.md'
-    test_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
+    file_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
     test_utils.delete_line_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX)
 
     assert ssp_cmd._run(args) == 0

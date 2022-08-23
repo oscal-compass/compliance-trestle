@@ -245,7 +245,9 @@ SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implem
 
 SSP_ADD_IMPLEMENTATION_PREFIX = 'Add control implementation description here for '
 
-SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'statement'
+STATEMENT = 'statement'
+
+SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STATEMENT
 
 SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
 
@@ -408,3 +410,16 @@ CONTROL_HEADER = '## Control'
 PART_HEADER = '## Part'
 
 REPLACE_ME = 'REPLACE_ME'
+
+YAML_PROPS_COMMENT = """  # Add or modify control properties here
+  # Properties may be at the control or part level
+  # Add control level properties like this:
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #
+  # Add properties to a statement part like this, where "b." is the label of the target statement part
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #     smt-part: b.
+  #
+"""

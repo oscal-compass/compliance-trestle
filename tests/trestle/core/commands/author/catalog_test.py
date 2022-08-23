@@ -28,6 +28,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.cli import Trestle
+from trestle.common import file_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
@@ -45,10 +46,10 @@ markdown_name = 'my_md'
 
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
-        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '    values: new value\n')
+        assert file_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'Param_1_value', '    values: new value\n')
     assert test_utils.delete_line_in_file(ac1_path, 'Param_1_value')
-    assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
 
 
 @pytest.mark.parametrize('set_parameters', [True, False])

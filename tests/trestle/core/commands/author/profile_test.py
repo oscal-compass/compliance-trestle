@@ -32,6 +32,7 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.cli import Trestle
+from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -94,12 +95,12 @@ all_sections_dict = {
 def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict[str, str]) -> None:
     """Edit the files to show assemble worked."""
     assert control_path.exists()
-    assert test_utils.insert_text_in_file(control_path, None, guid_dict['text'])
+    assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
     if set_parameters:
         assert test_utils.delete_line_in_file(control_path, 'label:')
-        assert test_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
+        assert file_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
         # delete profile values for 4, then replace value for 3 with new value
-        assert test_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
+        assert file_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
         assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 
@@ -444,7 +445,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     value: ac1 new part value
     smt-part: c.
 """
-    assert test_utils.insert_text_in_file(ac1_path, const.TRESTLE_ADD_PROPS_TAG, text)
+    assert file_utils.insert_text_in_file(ac1_path, const.TRESTLE_ADD_PROPS_TAG, text)
 
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None
@@ -483,7 +484,7 @@ This is my added prose for a part in the statement
 More guidance
 
 """
-    assert test_utils.insert_text_in_file(ac1_path, None, prose)
+    assert file_utils.insert_text_in_file(ac1_path, None, prose)
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None
     ) == 0
@@ -534,7 +535,7 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     md_api = MarkdownAPI()
 
     assert ac1_path.exists()
-    assert test_utils.insert_text_in_file(ac1_path, None, '## Control this_should_appear_in_parts \n Test text.')
+    assert file_utils.insert_text_in_file(ac1_path, None, '## Control this_should_appear_in_parts \n Test text.')
     _, tree = md_api.processor.process_markdown(ac1_path)
 
     assert tree.get_node_for_key('## Control this_should_appear_in_parts', strict_matching=True)
@@ -545,7 +546,7 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 
     # Scenario 2: Profiles has one alter for ac-1, now add new section to ac-2, ensure new sectio is added
     assert ac2_path.exists()
-    assert test_utils.insert_text_in_file(ac2_path, None, '## Control this_should_appear_in_parts2 \n Test text.')
+    assert file_utils.insert_text_in_file(ac2_path, None, '## Control this_should_appear_in_parts2 \n Test text.')
     _, tree = md_api.processor.process_markdown(ac2_path)
     assert tree.get_node_for_key('## Control this_should_appear_in_parts2', strict_matching=True)
 

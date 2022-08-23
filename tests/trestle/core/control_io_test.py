@@ -116,7 +116,7 @@ def test_read_write_controls(
     """Test read and write of controls via markdown."""
     dummy_title = 'dummy title'
     control = cat.Control(id='ac-1', title=dummy_title, props=[common.Property(name=const.SORT_ID, value='ac-01')])
-    statement_part = common.Part(id='ac-1_smt', name='statement')
+    statement_part = common.Part(id='ac-1_smt', name=const.STATEMENT)
     prop = common.Property(name='label', value='a')
     part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose', props=[prop])
     prop.value = 'b'

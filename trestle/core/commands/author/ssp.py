@@ -98,7 +98,7 @@ class SSPGenerate(AuthorCommonCommand):
             sections_dict: Dict[str, str] = {}
             if args.sections:
                 sections_dict = sections_to_dict(args.sections)
-                if 'statement' in sections_dict:
+                if const.STATEMENT in sections_dict:
                     raise TrestleError('Statement is not allowed as a section name.')
                 # add any existing sections from the controls but only have short names
                 control_section_short_names = catalog_interface.get_sections()

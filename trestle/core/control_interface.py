@@ -219,7 +219,7 @@ class ControlInterface:
         Return list of string formatted labels and associated descriptive prose
         """
         items = []
-        if part.name in ['statement', item_type]:
+        if part.name in [const.STATEMENT, item_type]:
             # the options here are to force the label to be the part.id or the part.label
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
             # here we choose the latter and extract the final element
