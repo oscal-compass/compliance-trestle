@@ -181,6 +181,8 @@ def test_profile_generate_assemble(
             tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None, None
         ) == 0
 
+    assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GENERAL_TAG, 'title: Trestle test profile')
+
     # check the assembled profile is as expected
     profile: prof.Profile
     profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name,

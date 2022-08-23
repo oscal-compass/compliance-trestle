@@ -306,6 +306,10 @@ NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
 
 SSP_FEDRAMP_TAG = TRESTLE_TAG + 'fedramp-props'
 
+TRESTLE_GENERAL_TAG = TRESTLE_TAG + 'general'
+
+PROFILE_TITLE = 'profile-title'
+
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
 LEV_AUTH_UUID = 'leveraged-authorization-uuid'
