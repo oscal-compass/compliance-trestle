@@ -160,7 +160,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
             catalog_interface = CatalogInterface(catalog)
-            part_id_map = catalog_interface.get_part_id_map()
+            part_id_map = catalog_interface.get_id_map(False)
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
             context.yaml_header = yaml_header
             context.sections_dict = sections_dict
@@ -339,7 +339,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
         catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, parent_prof_path)
         catalog_interface = CatalogInterface(catalog)
-        label_map = catalog_interface.get_label_map()
+        label_map = catalog_interface.get_id_map(True)
 
         required_sections_list = required_sections.split(',') if required_sections else []
 

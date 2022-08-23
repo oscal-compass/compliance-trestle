@@ -107,14 +107,14 @@ class ComponentGenerate(AuthorCommonCommand):
         context.comp_name = component.title
         for control_imp in as_list(component.control_implementations):
             if catalog_interface:
-                catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map())
+                catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_id_map(False))
             else:
                 source = control_imp.source
                 if source not in source_dict:
                     resolved_catalog = ProfileResolver.get_resolved_profile_catalog(context.trestle_root, source)
                     catalog_interface = CatalogInterface(resolved_catalog)
                     source_dict[source] = catalog_interface
-                part_id_map = catalog_interface.get_part_id_map() if catalog_interface else {}
+                part_id_map = catalog_interface.get_id_map(False) if catalog_interface else {}
                 source_dict[source].write_catalog_as_markdown(context, part_id_map)
         return CmdReturnCodes.SUCCESS.value
 

@@ -64,7 +64,7 @@ class PartInfo:
     name: str
     prose: str
     smt_part: str = ''
-    props: List[common.Property] = None
+    props: Optional[List[common.Property]] = None
 
     def to_dicts(self, part_id_map: Dict[str, str]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """Convert the part info to a dict or list of props."""

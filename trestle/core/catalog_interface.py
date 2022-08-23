@@ -249,37 +249,23 @@ class CatalogInterface():
                 return control.id, status
         return '', ''
 
-    def get_label_map(self) -> Dict[str, Dict[str, str]]:
+    def get_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
         """Create mapping of label to part_id for all controls."""
-        label_map = {}
+        id_map = {}
         for control in self.get_all_controls_from_catalog(True):
-            label_dict = {}
+            id_dict = {}
             for part in as_list(control.parts):
                 if part.name == const.STATEMENT:
                     for sub_part in as_list(part.parts):
                         label = ControlInterface.get_label(sub_part)
-                        if label:
-                            label_dict[label] = sub_part.id
-                    if label_dict:
-                        label_map[control.id] = label_dict
+                        if label_as_key:
+                            id_dict[label] = sub_part.id
+                        else:
+                            id_dict[sub_part.id] = label
+                    if id_dict:
+                        id_map[control.id] = id_dict
                     break
-        return label_map
-
-    def get_part_id_map(self) -> Dict[str, Dict[str, str]]:
-        """Create mapping of label to part_id for all controls."""
-        part_id_map = {}
-        for control in self.get_all_controls_from_catalog(True):
-            part_id_dict = {}
-            for part in as_list(control.parts):
-                if part.name == const.STATEMENT:
-                    for sub_part in as_list(part.parts):
-                        label = ControlInterface.get_label(sub_part)
-                        if label:
-                            part_id_dict[sub_part.id] = label
-                    if part_id_dict:
-                        part_id_map[control.id] = part_id_dict
-                    break
-        return part_id_map
+        return id_map
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
