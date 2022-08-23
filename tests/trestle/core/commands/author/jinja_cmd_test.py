@@ -185,8 +185,13 @@ def test_jinja_profile_docs_with_group_title(
         assert tree
         node1 = tree.get_node_for_key('# Control Page')
         assert node1
-        node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] ACCOUNT MANAGEMENT')
+        node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] Account Management')
         assert node2
+        assert '{: #ac-2}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        node3 = tree.get_node_for_key('## Table of Control Parameters')
+        assert node3
+        assert '{: #Parameters for AC-2 caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
+        assert 'AC-2 Test' in node3.content.tables[2]
 
 
 def test_jinja_profile_docs_fails(

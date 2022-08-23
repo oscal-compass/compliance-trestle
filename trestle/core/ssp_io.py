@@ -21,7 +21,7 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core import catalog_interface
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_writer import ControlWriter
+from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import ssp
@@ -63,12 +63,12 @@ class SSPMarkdownWriter():
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control statement, set resolved catalog first.')
 
-        writer = ControlWriter()
+        writer = DocsControlWriter()
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
 
-        control_lines = writer.get_control_statement(control)
+        control_lines = writer.get_control_statement_ssp(control)
 
         return self._build_tree_and_adjust(control_lines, level)
 
@@ -151,11 +151,11 @@ class SSPMarkdownWriter():
         if not self._ssp:
             raise TrestleError('Cannot get parameter table, set SSP first.')
 
-        writer = ControlWriter()
+        writer = DocsControlWriter()
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
-        params_lines = writer.get_params(control, label_column)
+        params_lines = writer.get_param_table(control, label_column)
         # need to make sure no params still have moustaches.  convert to brackets to avoid jinja complaints
         clean_lines = []
         for line in params_lines:
