@@ -370,7 +370,7 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     control_b.props.append(Property(name='status', value='Withdrawn'))
     catalog_interface = CatalogInterface(sample_catalog_rich_controls)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_id_map(False))
+    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map(False))
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()

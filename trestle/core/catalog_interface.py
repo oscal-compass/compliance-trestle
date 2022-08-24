@@ -249,7 +249,7 @@ class CatalogInterface():
                 return control.id, status
         return '', ''
 
-    def get_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
+    def get_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
         """Create mapping of label to part_id for all controls."""
         id_map = {}
         for control in self.get_all_controls_from_catalog(True):

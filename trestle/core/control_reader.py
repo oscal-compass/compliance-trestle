@@ -724,6 +724,84 @@ class ControlReader():
         return sort_id, imp_req
 
     @staticmethod
+    def _add_control_part(
+        control_id: str,
+        subnode: MarkdownNode,
+        required_sections_list: List[str],
+        sections_dict: Dict[str, str],
+        snake_dict: Dict[str, str],
+        after_parts: List[common.Part],
+        found_sections: List[str]
+    ) -> bool:
+        match = re.match(const.CONTROL_REGEX, subnode.key)
+        if match:
+            part_name_raw = match.groups(0)[0]
+            prose = ControlReader._clean_prose(subnode.content.text)
+            prose = '\n'.join(prose)
+            part_name_snake = spaces_and_caps_to_snake(part_name_raw)
+            part_name = snake_dict.get(part_name_snake, part_name_snake)
+            # if section is required and it hasn't been edited with prose raise error
+            if part_name in required_sections_list and prose.startswith(
+                    const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
+                missing_section = sections_dict.get(part_name, part_name)
+                raise TrestleError(f'Control {control_id} is missing prose for required section {missing_section}')
+            id_ = f'{control_id}_{part_name}'
+            # use sections dict to find correct title otherwise use the title from the markdown
+            part_title = sections_dict.get(part_name, part_name_raw)
+            part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
+            after_parts.append(part)
+            found_sections.append(part_name)
+            return True
+        return False
+
+    @staticmethod
+    def _add_sub_part(
+        control_id: str, subnode: MarkdownNode, label_map: Dict[str, str], ending_parts: Dict[str, common.Part]
+    ) -> None:
+        match = re.match(const.PART_REGEX, subnode.key)
+        if not match:
+            raise TrestleError(f'Unexpected editable header {subnode.key} found in control {control_id}')
+        by_part_label = match.groups(0)[0]
+        control_label_map = label_map.get(control_id, None)
+        if control_label_map is None:
+            raise TrestleError(f'No label map found for control {control_id}')
+        by_part_id = control_label_map.get(by_part_label, None)
+        if by_part_id is None:
+            raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
+        for node2 in as_list(subnode.subnodes):
+            hash_pattern = '### '
+            if node2.key.startswith(hash_pattern):
+                part_name = node2.key.replace(hash_pattern, '', 1).strip()
+                prose = ControlReader._clean_prose(node2.content.text)
+                prose = '\n'.join(prose)
+                id_ = f'{control_id}_{part_name}'
+                part = common.Part(id=id_, name=part_name, prose=prose)
+            else:
+                raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
+            if by_part_id not in ending_parts:
+                ending_parts[by_part_id] = []
+            ending_parts[by_part_id].append(part)
+
+    @staticmethod
+    def _get_props_list(control_id: str, label_map: Dict[str, str],
+                        yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
+        prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
+        props = []
+        props_by_id = {}
+        for prop_d in prop_list:
+            by_id = prop_d.get('smt-part', None)
+            if by_id and control_id in label_map:
+                by_id = label_map[control_id].get(by_id, by_id)
+            prop = common.Property(name=prop_d['name'], value=prop_d['value'])
+            if by_id:
+                if by_id not in props_by_id:
+                    props_by_id[by_id] = []
+                props_by_id[by_id].append(prop)
+            else:
+                props.append(prop)
+        return props, props_by_id
+
+    @staticmethod
     def read_new_alters_and_params(
         control_path: pathlib.Path, required_sections_list: List[str], label_map: Dict[str, Dict[str, str]]
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
@@ -754,47 +832,10 @@ class ControlReader():
         after_parts = []
         ending_parts = {}
         for subnode in editable_node.subnodes:
-            match = re.match(const.CONTROL_REGEX, subnode.key)
-            if match:
-                part_name_raw = match.groups(0)[0]
-                prose = ControlReader._clean_prose(subnode.content.text)
-                prose = '\n'.join(prose)
-                part_name_snake = spaces_and_caps_to_snake(part_name_raw)
-                part_name = snake_dict.get(part_name_snake, part_name_snake)
-                # if section is required and it hasn't been edited with prose raise error
-                if part_name in required_sections_list and prose.startswith(
-                        const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
-                    missing_section = sections_dict.get(part_name, part_name)
-                    raise TrestleError(f'Control {control_id} is missing prose for required section {missing_section}')
-                id_ = f'{control_id}_{part_name}'
-                # use sections dict to find correct title otherwise use the title from the markdown
-                part_title = sections_dict.get(part_name, part_name_raw)
-                part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
-                after_parts.append(part)
-                found_sections.append(part_name)
-            else:
-                match = re.match(const.PART_REGEX, subnode.key)
-                if not match:
-                    raise TrestleError(f'Unexpected editable header {subnode.key} found in control {control_id}')
-                by_part_label = match.groups(0)[0]
-                control_label_map = label_map.get(control_id, None)
-                if control_label_map is None:
-                    raise TrestleError(f'No label map found for control {control_id}')
-                by_part_id = control_label_map.get(by_part_label, None)
-                if by_part_id is None:
-                    raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
-                for node2 in as_list(subnode.subnodes):
-                    if node2.key.startswith('### '):
-                        part_name = node2.key[4:].strip()
-                        prose = ControlReader._clean_prose(node2.content.text)
-                        prose = '\n'.join(prose)
-                        id_ = f'{control_id}_{part_name}'
-                        part = common.Part(id=id_, name=part_name, prose=prose)
-                    else:
-                        raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
-                    if by_part_id not in ending_parts:
-                        ending_parts[by_part_id] = []
-                    ending_parts[by_part_id].append(part)
+            if not ControlReader._add_control_part(
+                    control_id, subnode, required_sections_list, sections_dict, snake_dict, after_parts,
+                    found_sections):
+                ControlReader._add_sub_part(control_id, subnode, label_map, ending_parts)
 
         adds = []
         if after_parts:
@@ -809,20 +850,9 @@ class ControlReader():
         header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
-        prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
-        props = []
-        props_by_id = {}
-        for prop_d in prop_list:
-            by_id = prop_d.get('smt-part', None)
-            if by_id and control_id in label_map:
-                by_id = label_map[control_id].get(by_id, by_id)
-            prop = common.Property(name=prop_d['name'], value=prop_d['value'])
-            if by_id:
-                if by_id not in props_by_id:
-                    props_by_id[by_id] = []
-                props_by_id[by_id].append(prop)
-            else:
-                props.append(prop)
+
+        props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
+
         if props:
             adds.append(prof.Add(props=props, position='ending'))
         for by_id, props in props_by_id.items():
