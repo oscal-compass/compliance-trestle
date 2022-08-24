@@ -105,6 +105,7 @@ nav:
       - control_interface: api_reference/trestle.core.control_interface.md
       - control_reader: api_reference/trestle.core.control_reader.md
       - control_writer: api_reference/trestle.core.control_writer.md
+      - docs_control_writer: api_reference/trestle.core.docs_control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
