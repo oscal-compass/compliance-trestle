@@ -16,6 +16,7 @@ import logging
 from typing import Dict, List, Optional
 
 import trestle.oscal.catalog as cat
+from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_writer import ControlWriter
@@ -50,7 +51,7 @@ class DocsControlWriter(ControlWriter):
                     control, group_title, sections_dict, add_group_to_title, tag_pattern=tag_pattern
                 )
 
-            elif 'objective' == section:
+            elif const.OBJECTIVE_PART == section:
                 self._add_control_objective(control, sections_dict, tag_pattern=tag_pattern)
 
             elif 'table_of_parameters' == section:
@@ -172,16 +173,16 @@ class DocsControlWriter(ControlWriter):
     ) -> None:
         if control.parts:
             for part in control.parts:
-                if part.name == 'objective':
+                if part.name == const.OBJECTIVE_PART:
                     self._md_file.new_paragraph()
                     heading_title = 'Control Objective'
-                    if sections_dict and sections_dict['objective']:
-                        heading_title = sections_dict['objective']
+                    if sections_dict and sections_dict[const.OBJECTIVE_PART]:
+                        heading_title = sections_dict[const.OBJECTIVE_PART]
                     self._md_file.new_header(level=2, title=heading_title)
                     if tag_pattern:
                         self._md_file.new_line(tag_pattern.replace('[.]', heading_title.replace(' ', '-').lower()))
                     self._md_file.set_indent_level(-1)
-                    self._add_part_and_its_items(control, 'objective', 'objective')
+                    self._add_part_and_its_items(control, const.OBJECTIVE_PART, const.OBJECTIVE_PART)
                     self._md_file.set_indent_level(-1)
                     return
 

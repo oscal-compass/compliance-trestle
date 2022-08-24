@@ -163,6 +163,11 @@
                   "id": "ac-1_expevid",
                   "name": "ExpectedEvidence",
                   "prose": "Detailed evidence logs."
+                },
+                {
+                  "id": "ac-1_objective",
+                  "name": "objective",
+                  "prose": "Detailed objective."
                 }
               ]
             }

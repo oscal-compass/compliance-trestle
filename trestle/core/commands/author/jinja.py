@@ -36,7 +36,6 @@ from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_interface import ControlInterface
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
-from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
 from trestle.oscal.profile import Profile
@@ -213,12 +212,7 @@ class JinjaCmd(CommandPlusDocs):
         template_folder = pathlib.Path.cwd()
 
         # Output to multiple markdown files
-        profile, profile_path = ModelUtils.load_top_level_model(
-            trestle_root,
-            profile_name,
-            Profile,
-            FileContentType.JSON
-        )
+        profile, profile_path = ModelUtils.load_top_level_model(trestle_root, profile_name, Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
             trestle_root, profile_path, False, False, parameters_formatting

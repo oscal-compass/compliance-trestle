@@ -529,13 +529,11 @@ class CatalogInterface():
     def get_profile_displayname_param_dict(profile: prof.Profile) -> Dict[str, str]:
         """Get the mapping of param_id to display-name set in the properties of set-params."""
         displayname_dict: Dict[str, str] = {}
-        if not profile.modify:
-            return displayname_dict
-
-        for set_param in as_list(profile.modify.set_parameters):
-            for prop in as_list(set_param.props):
-                if prop.name == 'display-name':
-                    displayname_dict[set_param.param_id] = prop.value
+        if profile.modify:
+            for set_param in as_list(profile.modify.set_parameters):
+                for prop in as_list(set_param.props):
+                    if prop.name == 'display-name':
+                        displayname_dict[set_param.param_id] = prop.value
 
         return displayname_dict
 

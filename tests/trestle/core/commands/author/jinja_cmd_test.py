@@ -166,6 +166,10 @@ def test_jinja_profile_docs(
             # ac-3 and ac-3.3 do not have this part
             assert not node3 if 'ac-3' in md_control.name else node3
 
+            if tree.get_node_for_key('# AC-1 - Policy and Procedures'):
+                node4 = tree.get_node_for_key('# AC-1 - Policy and Procedures')
+                assert node4.get_node_for_key('## Control Objective Header')
+
 
 def test_jinja_profile_docs_with_group_title(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
