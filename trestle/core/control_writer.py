@@ -19,9 +19,8 @@ from typing import Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.err import TrestleError
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, ParameterRep
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import profile as prof
@@ -59,14 +58,7 @@ class ControlWriter():
         if yaml_header:
             self._md_file.add_yaml_header(yaml_header)
 
-    def _add_control_statement(
-        self,
-        control: cat.Control,
-        group_title: str,
-        sections_dict: Optional[Dict[str, str]] = None,
-        capitalize_title=False,
-        print_group_title=True
-    ) -> None:
+    def _add_control_statement(self, control: cat.Control, group_title: str, print_group_title=True) -> None:
         """Add the control statement and items to the md file."""
         self._md_file.new_paragraph()
         control_id = control.id
@@ -76,42 +68,21 @@ class ControlWriter():
         if print_group_title:
             group_name = ' \[' + group_title + '\]'
 
-        if capitalize_title:
-            control_id = control_id.upper()
-            group_name = group_name.title()
-            control_title = control_title.upper()
-
         title = f'{control_id} -{group_name} {control_title}'
 
         header_title = 'Control Statement'
-        if sections_dict and sections_dict['statement']:
-            header_title = sections_dict['statement']
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title=header_title)
         self._md_file.set_indent_level(-1)
         self._add_part_and_its_items(control, 'statement', 'item')
         self._md_file.set_indent_level(-1)
 
-    def _add_control_statement_ssp(self, control: cat.Control) -> None:
-        """Add the control statement and items to the markdown SSP."""
-        self._md_file.new_paragraph()
-        label = ControlInterface.get_label(control)
-        label = label if label else control.id.upper()
-        title = f'{label} - {control.title}'
-        self._md_file.new_header(level=1, title=title)
-        self._md_file.new_header(level=2, title='Control Statement')
-        self._md_file.set_indent_level(-1)
-        self._add_part_and_its_items(control, 'statement', 'item')
-        self._md_file.set_indent_level(-1)
-
-    def _add_control_objective(self, control: cat.Control, sections_dict: Optional[Dict[str, str]] = None) -> None:
+    def _add_control_objective(self, control: cat.Control) -> None:
         if control.parts:
             for part in control.parts:
                 if part.name == 'objective':
                     self._md_file.new_paragraph()
                     heading_title = 'Control Objective'
-                    if sections_dict and sections_dict['objective']:
-                        heading_title = sections_dict['objective']
                     self._md_file.new_header(level=2, title=heading_title)
                     self._md_file.set_indent_level(-1)
                     self._add_part_and_its_items(control, 'objective', 'objective')
@@ -137,16 +108,6 @@ class ControlWriter():
                 self._md_file.new_header(level=2, title=f'Control {section_title}')
                 self._md_file.new_line(prose)
                 self._md_file.new_paragraph()
-
-    def _add_one_section(self, control: cat.Control, section: str) -> None:
-        """Add specific control section."""
-        prose = ControlInterface._get_control_section_prose(control, section)
-        if prose:
-            section_title = self._sections_dict.get(section) if self._sections_dict else section
-            section_title = section_title if section_title else section
-            self._md_file.new_header(level=2, title=f'Control {section_title}')
-            self._md_file.new_line(prose)
-            self._md_file.new_paragraph()
 
     def _insert_status(self, status: ImplementationStatus, level: int) -> None:
         self._md_file.new_header(level=level, title=f'{const.IMPLEMENTATION_STATUS_HEADER}: {status.state}')
@@ -389,71 +350,3 @@ class ControlWriter():
             self._prompt_required_sections(context.required_sections, added_sections)
 
         self._md_file.write_out()
-
-    def write_control_with_sections(
-        self,
-        control: cat.Control,
-        group_title: str,
-        sections: List[str],
-        sections_dict: Optional[Dict[str, str]] = None,
-        label_column: bool = True,
-        add_group_to_title: bool = False
-    ) -> str:
-        """Write the control into markdown file with specified sections."""
-        self._md_file = MDWriter(None)
-        self._sections_dict = sections_dict
-        if not isinstance(group_title, str):
-            raise TrestleError(f'Group title must be provided and be a string, instead received: {group_title}')
-
-        for section in sections:
-            if 'statement' == section:
-                self._add_control_statement(control, group_title, sections_dict, True, add_group_to_title)
-
-            elif 'objective' == section:
-                self._add_control_objective(control, sections_dict)
-
-            elif 'table_of_parameters' == section:
-                self.get_params(control, label_column, self._md_file)
-            else:
-                self._add_one_section(control, section)
-
-        return '\n'.join(self._md_file._lines)
-
-    def get_control_statement(self, control: cat.Control) -> List[str]:
-        """Get the control statement as formatted markdown from a control."""
-        self._md_file = MDWriter(None)
-        self._add_control_statement_ssp(control)
-        return self._md_file.get_lines()
-
-    def get_params(self, control: cat.Control, label_column=False, md_file=None) -> List[str]:
-        """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
-        param_dict = ControlInterface.get_control_param_dict(control, False)
-
-        if param_dict:
-            if md_file:
-                self._md_file = md_file
-            else:
-                self._md_file = MDWriter(None)
-            self._md_file.new_paragraph()
-            self._md_file.set_indent_level(-1)
-            if label_column:
-                self._md_file.new_table(
-                    [
-                        [
-                            key,
-                            ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_EMPTY_STRING),
-                            ControlInterface.param_to_str(param_dict[key], ParameterRep.LABEL_OR_CHOICES, True),
-                        ] for key in param_dict.keys()
-                    ], ['Parameter ID', 'Values', 'Label or Choices']
-                )
-            else:
-                self._md_file.new_table(
-                    [
-                        [key, ControlInterface.param_to_str(param_dict[key], ParameterRep.VALUE_OR_LABEL_OR_CHOICES)]
-                        for key in param_dict.keys()
-                    ], ['Parameter ID', 'Values']
-                )
-            self._md_file.set_indent_level(-1)
-            return self._md_file.get_lines()
-
-        return []

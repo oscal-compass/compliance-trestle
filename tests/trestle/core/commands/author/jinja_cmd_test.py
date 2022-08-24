@@ -166,6 +166,10 @@ def test_jinja_profile_docs(
             # ac-3 and ac-3.3 do not have this part
             assert not node3 if 'ac-3' in md_control.name else node3
 
+            if tree.get_node_for_key('# AC-1 - Policy and Procedures'):
+                node4 = tree.get_node_for_key('# AC-1 - Policy and Procedures')
+                assert node4.get_node_for_key('## Control Objective Header')
+
 
 def test_jinja_profile_docs_with_group_title(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
@@ -185,8 +189,13 @@ def test_jinja_profile_docs_with_group_title(
         assert tree
         node1 = tree.get_node_for_key('# Control Page')
         assert node1
-        node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] ACCOUNT MANAGEMENT')
+        node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] Account Management')
         assert node2
+        assert '{: #ac-2}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        node3 = tree.get_node_for_key('## Table of Control Parameters')
+        assert node3
+        assert '{: #Parameters for AC-2 caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
+        assert 'AC-2 Test' in node3.content.tables[2]
 
 
 def test_jinja_profile_docs_fails(
