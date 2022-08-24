@@ -17,9 +17,10 @@ from typing import Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import execute_command_and_assert, insert_text_in_file, setup_for_ssp
+from tests.test_utils import execute_command_and_assert, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
+from trestle.common import file_utils
 from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, STATUS_INHERITED, STATUS_PLANNED
 from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
@@ -126,8 +127,8 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 
     # insert some responses by component
     ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
-    assert insert_text_in_file(ac1_path, 'ac-1_smt.a', '### foo comp\n')
-    assert insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', '### foo comp\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
     ssp_obj, _ = fetcher.get_oscal(True)
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)

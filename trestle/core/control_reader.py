@@ -14,11 +14,10 @@
 """Handle reading of writing controls from markdown."""
 import logging
 import pathlib
+import re
 import string
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
-
-import frontmatter
 
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
@@ -36,41 +35,11 @@ from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
-from yaml.scanner import ScannerError
-
 logger = logging.getLogger(__name__)
 
 
 class ControlReader():
     """Class to read controls from markdown."""
-
-    @staticmethod
-    def _load_control_lines_and_header(control_file: pathlib.Path) -> Tuple[List[str], Dict[str, Any]]:
-        lines: List[str] = []
-        try:
-            content = control_file.open('r', encoding=const.FILE_ENCODING).read()
-        except UnicodeDecodeError as e:
-            logger.debug(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
-            raise TrestleError(f'Unable to load file due to utf-8 encoding issues: {e}')
-        try:
-            fm = frontmatter.loads(content)
-        except ScannerError as e:
-            logger.error(
-                f'Error parsing yaml header from file {control_file}. '
-                f'This is most likely due to an incorrect yaml structure.'
-            )
-            raise TrestleError(f'Failure parsing yaml header on file {control_file}: {e}')
-        raw_lines = fm.content.split('\n')
-        header = fm.metadata
-        # Any fully blank lines will be retained but as empty strings
-        lines = [line.strip('\r\n').rstrip() for line in raw_lines]
-        clean_lines = []
-        # need to keep indentation and empty lines
-        for line in lines:
-            if line.startswith('<!--') or line.startswith('__________________'):
-                continue
-            clean_lines.append(line)
-        return clean_lines, header
 
     @staticmethod
     def _parse_control_title_line(line: str) -> Tuple[int, str, str]:
@@ -267,7 +236,7 @@ class ControlReader():
         else:
             ii, indent, line = ControlReader._get_next_indent(ii, lines)
 
-        statement_part = common.Part(name='statement', id=f'{control_id}_smt')
+        statement_part = common.Part(name=const.STATEMENT, id=f'{control_id}_smt')
         # first line is either statement prose or start of statement parts
         if indent < 0:
             statement_part.prose = line
@@ -456,7 +425,7 @@ class ControlReader():
     def _get_statement_label(control: Optional[cat.Control], statement_id: str) -> str:
         if control:
             for part in as_list(control.parts):
-                if part.name == 'statement':
+                if part.name == const.STATEMENT:
                     for sub_part in as_list(part.parts):
                         if sub_part.name == 'item' and sub_part.id == statement_id:
                             return ControlInterface.get_label(sub_part)
@@ -585,50 +554,6 @@ class ControlReader():
             # enforce single list of resp. roles for control and each by_comp
             for by_comp in as_list(imp_req.by_components):
                 by_comp.responsible_roles = imp_req.responsible_roles
-
-    @staticmethod
-    def _read_added_part(ii: int, lines: List[str], control_id: str,
-                         sections_dict: Dict[str, str]) -> Tuple[int, Optional[common.Part]]:
-        """Read a single part indicated by ## Control foo."""
-        snake_dict: Dict[str, str] = {}
-        # create reverse lookup of long snake name to short name needed for part
-        for key, value in sections_dict.items():
-            snake_dict[spaces_and_caps_to_snake(value)] = key
-        while 0 <= ii < len(lines):
-            # look for ## Control foo - then read prose
-            line = lines[ii]
-            prefix = const.CONTROL_HEADER + ' '
-            if line:
-                if not line.startswith(prefix):
-                    raise TrestleError(f'Unexpected line in {const.EDITABLE_CONTENT} for control {control_id}: {line}')
-                part_name_long_raw = line[len(prefix):].strip()
-                part_name_snake = spaces_and_caps_to_snake(part_name_long_raw)
-                # if the long name isn't there use the snake version for the part
-                # otherwise the part will have the desired short name for the corresponding section
-                part_name = snake_dict.get(part_name_snake, part_name_snake)
-                # use sections dict to find correct title otherwise use the title from the markdown
-                part_title = sections_dict.get(part_name, part_name_long_raw)
-                prose_lines = []
-                ii += 1
-                have_content = False
-                while 0 <= ii < len(lines):
-                    line = lines[ii]
-                    if not line.startswith(prefix):
-                        if line:
-                            have_content = True
-                        prose_lines.append(line)
-                        ii += 1
-                        continue
-                    break
-                if have_content:
-                    prose = '\n'.join(prose_lines)
-                    # strip leading / trailing new lines.
-                    prose = prose.strip('\n')
-                    id_ = f'{control_id}_{part_name}'
-                    part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
-                    return ii, part
-            ii += 1
-        return -1, None
 
     @staticmethod
     def simplify_name(name: str) -> str:
@@ -776,7 +701,7 @@ class ControlReader():
                     by_comp.implementation_status = comp_info.status
                     # add the response prose to the description
                     by_comp.description = comp_info.prose
-                    if label == 'Statement':
+                    if label == const.STATEMENT:
                         statement_id = f'{control_id}_smt'
                     else:
                         clean_label = label.strip('.')
@@ -799,48 +724,142 @@ class ControlReader():
         return sort_id, imp_req
 
     @staticmethod
-    def read_new_alters_and_params(control_path: pathlib.Path,
-                                   required_sections_list: List[str]) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
+    def _add_control_part(
+        control_id: str,
+        subnode: MarkdownNode,
+        required_sections_list: List[str],
+        sections_dict: Dict[str, str],
+        snake_dict: Dict[str, str],
+        after_parts: List[common.Part],
+        found_sections: List[str]
+    ) -> bool:
+        match = re.match(const.CONTROL_REGEX, subnode.key)
+        if match:
+            part_name_raw = match.groups(0)[0]
+            prose = ControlReader._clean_prose(subnode.content.text)
+            prose = '\n'.join(prose)
+            part_name_snake = spaces_and_caps_to_snake(part_name_raw)
+            part_name = snake_dict.get(part_name_snake, part_name_snake)
+            # if section is required and it hasn't been edited with prose raise error
+            if part_name in required_sections_list and prose.startswith(
+                    const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
+                missing_section = sections_dict.get(part_name, part_name)
+                raise TrestleError(f'Control {control_id} is missing prose for required section {missing_section}')
+            id_ = f'{control_id}_{part_name}'
+            # use sections dict to find correct title otherwise use the title from the markdown
+            part_title = sections_dict.get(part_name, part_name_raw)
+            part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
+            after_parts.append(part)
+            found_sections.append(part_name)
+            return True
+        return False
+
+    @staticmethod
+    def _add_sub_part(
+        control_id: str, subnode: MarkdownNode, label_map: Dict[str, str], ending_parts: Dict[str, common.Part]
+    ) -> None:
+        match = re.match(const.PART_REGEX, subnode.key)
+        if not match:
+            raise TrestleError(f'Unexpected editable header {subnode.key} found in control {control_id}')
+        by_part_label = match.groups(0)[0]
+        control_label_map = label_map.get(control_id, None)
+        if control_label_map is None:
+            raise TrestleError(f'No label map found for control {control_id}')
+        by_part_id = control_label_map.get(by_part_label, None)
+        if by_part_id is None:
+            raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
+        for node2 in as_list(subnode.subnodes):
+            hash_pattern = '### '
+            if node2.key.startswith(hash_pattern):
+                part_name = node2.key.replace(hash_pattern, '', 1).strip()
+                prose = ControlReader._clean_prose(node2.content.text)
+                prose = '\n'.join(prose)
+                id_ = f'{control_id}_{part_name}'
+                part = common.Part(id=id_, name=part_name, prose=prose)
+            else:
+                raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
+            if by_part_id not in ending_parts:
+                ending_parts[by_part_id] = []
+            ending_parts[by_part_id].append(part)
+
+    @staticmethod
+    def _get_props_list(control_id: str, label_map: Dict[str, str],
+                        yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
+        prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
+        props = []
+        props_by_id = {}
+        for prop_d in prop_list:
+            by_id = prop_d.get('smt-part', None)
+            if by_id and control_id in label_map:
+                by_id = label_map[control_id].get(by_id, by_id)
+            prop = common.Property(name=prop_d['name'], value=prop_d['value'])
+            if by_id:
+                if by_id not in props_by_id:
+                    props_by_id[by_id] = []
+                props_by_id[by_id].append(prop)
+            else:
+                props.append(prop)
+        return props, props_by_id
+
+    @staticmethod
+    def read_new_alters_and_params(
+        control_path: pathlib.Path, required_sections_list: List[str], label_map: Dict[str, Dict[str, str]]
+    ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
         new_alters: List[prof.Alter] = []
-        lines, header = ControlReader._load_control_lines_and_header(control_path)
+        snake_dict: Dict[str, str] = {}
+
+        md_api = MarkdownAPI()
+        yaml_header, control_tree = md_api.processor.process_markdown(control_path)
         # extract the sort_id if present in header
-        sort_id = header.get(const.SORT_ID, control_id)
+        sort_id = yaml_header.get(const.SORT_ID, control_id)
         # query header for mapping of short to long section names
-        sections_dict: Dict[str, str] = header.get(const.SECTIONS_TAG, {})
+        sections_dict: Dict[str, str] = yaml_header.get(const.SECTIONS_TAG, {})
+        # create reverse lookup of long snake name to short name needed for part
+        for key, value in sections_dict.items():
+            snake_dict[spaces_and_caps_to_snake(value)] = key
         found_sections: List[str] = []
-        ii = 0
-        while 0 <= ii < len(lines):
-            line = lines[ii]
-            if line.startswith(f'# {const.EDITABLE_CONTENT}'):
-                ii += 1
-                while 0 <= ii < len(lines):
-                    ii, part = ControlReader._read_added_part(ii, lines, control_id, sections_dict)
-                    if ii < 0:
-                        break
-                    # if section is required and it hasn't been edited with prose raise error
-                    if part.name in required_sections_list and part.prose.startswith(
-                            const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
-                        missing_section = sections_dict.get(part.name, part.name)
-                        raise TrestleError(
-                            f'Control {control_id} is missing prose for required section {missing_section}'
-                        )
-                    alter = prof.Alter(
-                        control_id=control_id,
-                        adds=[prof.Add(parts=[part], position='after', by_id=f'{control_id}_smt')]
-                    )
-                    new_alters.append(alter)
-                    found_sections.append(part.name)
-            else:
-                ii += 1
+
+        editable_node = None
+        for header in list(control_tree.get_all_headers_for_level(1)):
+            if header.startswith('# Editable'):
+                editable_node = control_tree.get_node_for_key(header)
+                break
+        if not editable_node:
+            return sort_id, [], {}
+
+        after_parts = []
+        ending_parts = {}
+        for subnode in editable_node.subnodes:
+            if not ControlReader._add_control_part(
+                    control_id, subnode, required_sections_list, sections_dict, snake_dict, after_parts,
+                    found_sections):
+                ControlReader._add_sub_part(control_id, subnode, label_map, ending_parts)
+
+        adds = []
+        if after_parts:
+            adds.append(prof.Add(parts=after_parts, position='after', by_id=f'{control_id}_smt'))
+        for by_id, parts in ending_parts.items():
+            adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
+
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
         param_dict: Dict[str, Any] = {}
-        header_params = header.get(const.SET_PARAMS_TAG, {})
+        header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
+
+        props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
+
+        if props:
+            adds.append(prof.Add(props=props, position='ending'))
+        for by_id, props in props_by_id.items():
+            adds.append(prof.Add(props=props, position='after', by_id=by_id))
+        new_alters = []
+        if adds:
+            new_alters = [prof.Alter(control_id=control_id, adds=adds)]
         return sort_id, new_alters, param_dict
 
     @staticmethod

@@ -20,6 +20,7 @@ from typing import Any, List
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
+from trestle.common import file_utils
 from trestle.common.err import TrestleError
 
 logger = logging.getLogger(__name__)
@@ -144,6 +145,7 @@ class MDWriter():
                     f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))
+            file_utils.insert_text_in_file(self._file_path, const.TRESTLE_ADD_PROPS_TAG, const.YAML_PROPS_COMMENT)
         except IOError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
             raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')

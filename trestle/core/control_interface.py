@@ -57,6 +57,34 @@ class ComponentImpInfo:
 CompDict = Dict[str, Dict[str, ComponentImpInfo]]
 
 
+@dataclass
+class PartInfo:
+    """Class to capture control part info needed in markdown."""
+
+    name: str
+    prose: str
+    smt_part: str = ''
+    props: Optional[List[common.Property]] = None
+
+    def to_dicts(self, part_id_map: Dict[str, str]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+        """Convert the part info to a dict or list of props."""
+        prop_list = []
+        part = {}
+        # if it has a part name then it is a part with prose
+        if self.name:
+            part['name'] = part_id_map.get(self.name, self.name)
+            if self.prose:
+                part['prose'] = self.prose
+        # otherwise it is a list of props
+        else:
+            for prop in as_list(self.props):
+                prop_d = {'name': prop.name, 'value': prop.value}
+                if self.smt_part:
+                    prop_d['smt-part'] = part_id_map.get(self.smt_part, self.smt_part)
+                prop_list.append(prop_d)
+        return part, prop_list
+
+
 class ControlInterface:
     """Class to interact with controls in memory."""
 
@@ -191,7 +219,7 @@ class ControlInterface:
         Return list of string formatted labels and associated descriptive prose
         """
         items = []
-        if part.name in ['statement', item_type]:
+        if part.name in [const.STATEMENT, item_type]:
             # the options here are to force the label to be the part.id or the part.label
             # the label may be of the form (a) while the part.id is ac-1_smt.a.1.a
             # here we choose the latter and extract the final element
@@ -223,14 +251,18 @@ class ControlInterface:
         return adds
 
     @staticmethod
-    def get_all_add_prose(control_id: str, profile: prof.Profile) -> List[Tuple[str, str]]:
+    def get_all_add_info(control_id: str, profile: prof.Profile) -> List[PartInfo]:
         """Get the adds for a control from a profile by control id."""
-        adds = []
+        part_infos = []
         for add in ControlInterface._get_adds_for_control(profile, control_id):
+            # add control level props with no name
+            if add.props:
+                smt_part = add.by_id if add.by_id else ''
+                part_infos.append(PartInfo(name='', prose='', smt_part=smt_part, props=add.props))
+            # add part level props with part name
             for part in as_list(add.parts):
-                if part.prose:
-                    adds.append((part.name, part.prose))
-        return adds
+                part_infos.append(PartInfo(name=part.name, prose=part.prose, smt_part=add.by_id, props=part.props))
+        return part_infos
 
     @staticmethod
     def get_section(control: cat.Control, skip_section_list: List[str]) -> Tuple[str, str, str, str]:

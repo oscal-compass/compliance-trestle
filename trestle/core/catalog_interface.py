@@ -249,6 +249,24 @@ class CatalogInterface():
                 return control.id, status
         return '', ''
 
+    def get_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
+        """Create mapping of label to part_id for all controls."""
+        id_map = {}
+        for control in self.get_all_controls_from_catalog(True):
+            id_dict = {}
+            for part in as_list(control.parts):
+                if part.name == const.STATEMENT:
+                    for sub_part in as_list(part.parts):
+                        label = ControlInterface.get_label(sub_part)
+                        if label_as_key:
+                            id_dict[label] = sub_part.id
+                        else:
+                            id_dict[sub_part.id] = label
+                    if id_dict:
+                        id_map[control.id] = id_dict
+                    break
+        return id_map
+
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
         Get the prose for a named part in the control.
@@ -321,7 +339,7 @@ class CatalogInterface():
 
         def does_part_exists(part: common.Part) -> bool:
             does_match = False
-            if part.name and part.name in {'statement', 'item'} and part.id == statement_id:
+            if part.name and part.name in {const.STATEMENT, 'item'} and part.id == statement_id:
                 does_match = True
             return does_match
 
@@ -558,12 +576,13 @@ class CatalogInterface():
                 param_dict[key] = profile_param_dict[key]
         return param_dict
 
-    def write_catalog_as_markdown(self, context: ControlContext) -> None:
+    def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
 
         Args:
             context: The context of the catalog markdown creation.
+            part_id_map: Mapping of part_id to label for all controls
 
 
         Returns:
@@ -650,7 +669,7 @@ class CatalogInterface():
             new_context.allowed_sections = allowed_section_list
 
             writer = ControlWriter()
-            writer.write_control_for_editing(new_context, control, group_dir, group_title)
+            writer.write_control_for_editing(new_context, control, group_dir, group_title, part_id_map)
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:
@@ -742,7 +761,7 @@ class CatalogInterface():
 
     @staticmethod
     def read_additional_content(
-        md_path: pathlib.Path, required_sections_list: List[str]
+        md_path: pathlib.Path, required_sections_list: List[str], label_map: Dict[str, Dict[str, str]]
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
         """Read all markdown controls and return list of alters plus control param dict and param sort map."""
         alters_map: Dict[str, prof.Alter] = {}
@@ -752,7 +771,8 @@ class CatalogInterface():
             for control_file in group_path.glob('*.md'):
                 sort_id, control_alters, control_param_dict = ControlReader.read_new_alters_and_params(
                     control_file,
-                    required_sections_list
+                    required_sections_list,
+                    label_map
                 )
                 alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():
@@ -775,7 +795,7 @@ class CatalogInterface():
             if not control.control.parts:
                 continue
             for part in control.control.parts:
-                if part.name not in sections and part.name != 'statement':
+                if part.name not in sections and part.name != const.STATEMENT:
                     sections.append(part.name)
         return sections
 

@@ -212,6 +212,14 @@ WINDOWS_DRIVE_URI_REGEX = r'([A-Za-z]:[\\/]?)[^\\/]'
 
 WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 
+# extract two groups corresponding to prop name and value
+# need to strip white space from end of value
+PROPERTY_REGEX = r'(?:###\s+Property\s+)([^\s]*)\s*:\s+(.*)'
+
+PART_REGEX = r'(?:##\s+Part\s+)(.*)'
+
+CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
+
 CACHE_ABS_DIR = '__abs__'
 
 UNIX_CACHE_ROOT = '__root__'
@@ -239,7 +247,9 @@ SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implem
 
 SSP_ADD_IMPLEMENTATION_PREFIX = 'Add control implementation description here for '
 
-SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'statement'
+STATEMENT = 'statement'
+
+SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STATEMENT
 
 SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
 
@@ -296,7 +306,11 @@ TRESTLE_PROPS_TAG = TRESTLE_TAG + 'props'
 
 NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
 
-SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
+SSP_FEDRAMP_TAG = TRESTLE_TAG + 'fedramp-props'
+
+TRESTLE_GENERAL_TAG = TRESTLE_TAG + 'general'
+
+PROFILE_TITLE = 'profile-title'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
 
@@ -373,19 +387,19 @@ RESPONSIBLE_ROLES = 'responsible-roles'
 
 HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
 
-SET_PARAMS_TAG = 'x-trestle-set-params'
+SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
-COMP_DEF_PARAMS_TAG = 'comp-def-params'
+COMP_DEF_PARAMS_TAG = TRESTLE_TAG + 'comp-def-params'
 
-COMP_DEF_PARAM_VALS_TAG = 'comp-def-param-vals'
+COMP_DEF_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-param-vals'
 
-COMP_DEF_RULES_TAG = 'comp-def-rules'
+COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
 
 VALUES = 'values'
 
-SECTIONS_TAG = 'x-trestle-sections'
+SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
 EDITABLE_CONTENT = 'Editable Content'
 
@@ -393,8 +407,25 @@ SORT_ID = 'sort-id'
 
 TRESTLE_IMP_STATUS_TAG = 'trestle-imp-status'
 
+TRESTLE_ADD_PROPS_TAG = TRESTLE_TAG + 'add-props'
+
 CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 
 CONTROL_HEADER = '## Control'
 
+PART_HEADER = '## Part'
+
 REPLACE_ME = 'REPLACE_ME'
+
+YAML_PROPS_COMMENT = """  # Add or modify control properties here
+  # Properties may be at the control or part level
+  # Add control level properties like this:
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #
+  # Add properties to a statement part like this, where "b." is the label of the target statement part
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #     smt-part: b.
+  #
+"""

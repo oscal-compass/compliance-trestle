@@ -22,7 +22,7 @@ import os
 import pathlib
 import shutil
 import sys
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -185,32 +185,6 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) -> bool:
-    r"""Insert text lines after line containing tag.
-
-    Return True on success, False tag not found.
-    Text is a string with appropriate \n line endings.
-    If tag is none just add at end of file.
-    """
-    if not file_path.exists():
-        raise TrestleError(f'Test file {file_path} not found.')
-    if tag:
-        lines: List[str] = []
-        with file_path.open('r') as f:
-            lines = f.readlines()
-        for ii, line in enumerate(lines):
-            if line.find(tag) >= 0:
-                lines.insert(ii + 1, text)
-                with file_path.open('w') as f:
-                    f.writelines(lines)
-                return True
-    else:
-        with file_path.open('a') as f:
-            f.writelines(text)
-        return True
-    return False
-
-
 def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     """Confirm the expected text is in the file after the tag."""
     if not file_path.exists():
@@ -280,7 +254,7 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
         control.parts = [
             common.Part(
                 id=f'{control.id}_smt',
-                name='statement',
+                name=const.STATEMENT,
                 prose=f'Prose for the statement part of control {control.id}',
                 parts=[sub_part]
             ),
@@ -335,7 +309,7 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     test_control.parts = [
         common.Part(
             id=f'{test_control.id}_smt',
-            name='statement',
+            name=const.STATEMENT,
             prose='Statement with no parts.  Prose with param value {{ insert: param, test-1_prm_1 }}'
         )
     ]
