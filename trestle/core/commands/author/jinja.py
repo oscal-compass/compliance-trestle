@@ -34,7 +34,7 @@ from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_interface import ControlInterface
-from trestle.core.control_writer import ControlWriter
+from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
@@ -186,7 +186,7 @@ class JinjaCmd(CommandPlusDocs):
             lut['catalog'] = resolved_catalog
             lut['catalog_interface'] = CatalogInterface(resolved_catalog)
             lut['control_interface'] = ControlInterface()
-            lut['control_writer'] = ControlWriter()
+            lut['control_writer'] = DocsControlWriter()
             lut['ssp_md_writer'] = ssp_writer
 
             output = JinjaCmd.render_template(template, lut, template_folder)
@@ -204,7 +204,7 @@ class JinjaCmd(CommandPlusDocs):
         trestle_root: pathlib.Path,
         r_input_file: pathlib.Path,
         r_output_file: pathlib.Path,
-        profile: Optional[str],
+        profile_name: Optional[str],
         lut: Dict[str, Any],
         parameters_formatting: Optional[str] = None
     ) -> int:
@@ -212,12 +212,13 @@ class JinjaCmd(CommandPlusDocs):
         template_folder = pathlib.Path.cwd()
 
         # Output to multiple markdown files
-        profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile, Profile)
+        profile, profile_path = ModelUtils.load_top_level_model(trestle_root, profile_name, Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
             trestle_root, profile_path, False, False, parameters_formatting
         )
         catalog_interface = CatalogInterface(resolved_catalog)
+        param_dict = catalog_interface.get_profile_displayname_param_dict(profile)
 
         # Generate a single markdown page for each control per each group
         for group in catalog_interface.get_all_groups_from_catalog():
@@ -230,7 +231,7 @@ class JinjaCmd(CommandPlusDocs):
                     if not group_dir.exists():
                         group_dir.mkdir(parents=True, exist_ok=True)
 
-                control_writer = ControlWriter()
+                control_writer = DocsControlWriter()
 
                 jinja_env = Environment(
                     loader=FileSystemLoader(template_folder),
@@ -244,6 +245,7 @@ class JinjaCmd(CommandPlusDocs):
                 lut['control_writer'] = control_writer
                 lut['control'] = control
                 lut['profile'] = profile
+                lut['displayname_param_dict'] = param_dict
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 
