@@ -272,6 +272,7 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
     Return True on success, False tag not found.
     Text is a string with appropriate \n line endings.
     If tag is none just add at end of file.
+    This will only open file once if tag is not found.
     """
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
