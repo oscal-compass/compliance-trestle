@@ -341,7 +341,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         overwrite_header_values=False,
         yaml_header=None,
         sections='NeededExtra:Needed Extra,ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence',
-        required_sections='NeededExtra'
+        required_sections='NeededExtra',
+        namespace=''
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 0
@@ -358,7 +359,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         required_sections='NeededExtra',
         regenerate=False,
         version=None,
-        allowed_sections=None
+        allowed_sections=None,
+        namespace=''
     )
     # fail since required section not filled in
     profile_assemble = ProfileAssemble()
