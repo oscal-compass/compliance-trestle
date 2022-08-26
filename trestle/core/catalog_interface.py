@@ -576,6 +576,13 @@ class CatalogInterface():
                 param_dict[key] = profile_param_dict[key]
         return param_dict
 
+    @staticmethod
+    def _get_display_name(param: common.Parameter) -> Optional[str]:
+        for prop in as_list(param.props):
+            if prop.name == const.DISPLAY_NAME:
+                return prop.value
+        return None
+
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -607,6 +614,7 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
+            display_name = ''
             if new_context.set_parameters:
                 # get all params for this control
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
@@ -616,6 +624,7 @@ class CatalogInterface():
                     if param_id in full_profile_param_dict:
                         # get the param from the profile set_param
                         param = full_profile_param_dict[param_id]
+                        display_name = CatalogInterface._get_display_name(param)
                         # assign its contents to the dict
                         new_dict = ModelUtils.parameter_to_dict(param, True)
                         profile_values = new_dict.get(const.VALUES, None)
@@ -632,6 +641,8 @@ class CatalogInterface():
                     else:
                         new_dict = ModelUtils.parameter_to_dict(param_dict, True)
                     new_dict.pop('id')
+                    if display_name:
+                        new_dict[const.DISPLAY_NAME] = display_name
                     set_param_dict[param_id] = new_dict
                 if set_param_dict:
                     if const.SET_PARAMS_TAG not in new_context.yaml_header:

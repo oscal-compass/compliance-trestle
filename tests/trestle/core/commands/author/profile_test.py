@@ -193,6 +193,8 @@ def test_profile_generate_assemble(
     if set_parameters:
         assert set_params[0].param_id == 'ac-1_prm_1'
         assert set_params[0].values[0].__root__ == 'all personnel'
+        assert set_params[0].props[0].name == const.DISPLAY_NAME
+        assert set_params[0].props[0].value.startswith('Pretty')
         assert set_params[1].param_id == 'ac-1_prm_2'
         assert set_params[1].values[0].__root__ == 'Organization-level'
         assert set_params[1].values[1].__root__ == 'System-level'
@@ -504,10 +506,10 @@ More guidance
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
-    assert ac1.parts[0].parts[1].parts[0].id == 'ac-1_NewGuidance'
-    assert ac1.parts[0].parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert ac1.parts[0].parts[1].parts[1].id == 'ac-1_NewEvidence'
-    assert ac1.parts[0].parts[1].parts[1].prose == 'More guidance'
+    assert ac1.parts[0].parts[2].id == 'ac-1_NewGuidance'
+    assert ac1.parts[0].parts[2].prose == 'This is my added prose for a part in the statement'
+    assert ac1.parts[0].parts[3].id == 'ac-1_NewEvidence'
+    assert ac1.parts[0].parts[3].prose == 'More guidance'
 
 
 def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

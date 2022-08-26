@@ -183,7 +183,7 @@ class Modify(Pipeline.Filter):
                     for offset, new_item in enumerate(as_list(add.parts)):
                         parts_list.insert(index + offset, new_item)
                     added_parts = True
-                # if starting or ending, the adds go directly into this part according to type
+                # if starting or ending or None, the adds go directly into this part according to type
                 Modify._add_adds_to_part(parts_list[index], add, added_parts)
                 return True
         return False
@@ -205,6 +205,7 @@ class Modify(Pipeline.Filter):
     @staticmethod
     def _add_attr_to_part(part: common.Part, items: List[OBT], attr: str, position: prof.Position) -> None:
         attr_list = as_list(getattr(part, attr, None))
+        # position may be None and if so will go at end
         if position in [prof.Position.starting, prof.Position.before]:
             items.extend(attr_list)
             attr_list = items
@@ -213,8 +214,11 @@ class Modify(Pipeline.Filter):
         setattr(part, attr, attr_list)
 
     @staticmethod
-    def _add_attr_to_control(control: cat.Control, items: List[OBT], attr: str, position: prof.Position) -> None:
+    def _add_attr_to_control(
+        control: cat.Control, items: List[OBT], attr: str, position: Optional[prof.Position]
+    ) -> None:
         attr_list = as_list(getattr(control, attr, None))
+        # if position is None it will add to end
         if position in [prof.Position.starting, prof.Position.before]:
             items.extend(attr_list)
             attr_list = items
@@ -361,6 +365,11 @@ class Modify(Pipeline.Filter):
                     self._set_parameter_in_control_or_loose(set_param)
             alters = self._profile.modify.alters
 
+        # an add with no by-id applies to the control
+        # if position is starting it should appear immediately after title
+        # if position is ending it should appear at end
+        # if not specified it defaults to ending
+        # if no by-id then before is treated as starting and after is treated as ending
         if alters is not None:
             title = self._profile.metadata.title
             for alter in alters:
@@ -377,11 +386,6 @@ class Modify(Pipeline.Filter):
                     continue
                 if not self._block_adds:
                     for add in alter.adds:
-                        if add.position is None and add.parts is not None:
-                            msg = f'Alter/Add position is not specified in profile {title} control {id_}'
-                            msg += ' when adding part, so defaulting to ending.'
-                            logger.warning(msg)
-                            add.position = prof.Position.ending
                         control = self._catalog_interface.get_control(id_)
                         if control is None:
                             logger.warning(

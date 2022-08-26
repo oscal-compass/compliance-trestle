@@ -607,7 +607,14 @@ class ModelUtils:
                 for value in values:
                     if value not in choices:
                         logger.warning(f"Parameter {param_dict['id']} has value \"{value}\" not in choices: {choices}.")
-        return common.Parameter(**param_dict)
+        props = None
+        if const.DISPLAY_NAME in param_dict:
+            display_name = param_dict.pop(const.DISPLAY_NAME)
+            props = [common.Property(name=const.DISPLAY_NAME, value=display_name)]
+
+        param = common.Parameter(**param_dict)
+        param.props = props
+        return param
 
     @staticmethod
     def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
