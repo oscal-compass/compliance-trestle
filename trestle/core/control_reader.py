@@ -246,7 +246,7 @@ class ControlReader():
         # if there was no statement prose, this will re-read the line just read
         # as the start of the statement's parts
         ii, parts = ControlReader._read_parts(0, ii, lines, statement_part.id, [])
-        statement_part.parts = parts if parts else None
+        statement_part.parts = none_if_empty(parts)
         return ii, statement_part
 
     @staticmethod
@@ -829,19 +829,19 @@ class ControlReader():
         if not editable_node:
             return sort_id, [], {}
 
-        after_parts = []
-        ending_parts = {}
+        implicit_parts = []
+        after_parts = {}
         for subnode in editable_node.subnodes:
             if not ControlReader._add_control_part(
-                    control_id, subnode, required_sections_list, sections_dict, snake_dict, after_parts,
+                    control_id, subnode, required_sections_list, sections_dict, snake_dict, implicit_parts,
                     found_sections):
-                ControlReader._add_sub_part(control_id, subnode, label_map, ending_parts)
+                ControlReader._add_sub_part(control_id, subnode, label_map, after_parts)
 
         adds = []
-        if after_parts:
-            adds.append(prof.Add(parts=after_parts, position='after', by_id=f'{control_id}_smt'))
-        for by_id, parts in ending_parts.items():
-            adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
+        if implicit_parts:
+            adds.append(prof.Add(parts=implicit_parts, position='ending'))
+        for by_id, parts in after_parts.items():
+            adds.append(prof.Add(parts=parts, position='after', by_id=by_id))
 
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:

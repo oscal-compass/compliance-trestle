@@ -293,7 +293,9 @@ class ControlInterface:
         Returns:
             a Parameter with param_id and content from the SetParameter
         """
-        return common.Parameter(id=param_id, values=set_param.values, select=set_param.select, label=set_param.label)
+        return common.Parameter(
+            id=param_id, values=set_param.values, select=set_param.select, label=set_param.label, props=set_param.props
+        )
 
     @staticmethod
     def get_rules_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:

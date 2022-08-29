@@ -429,3 +429,9 @@ YAML_PROPS_COMMENT = """  # Add or modify control properties here
   #     smt-part: b.
   #
 """
+
+NS_HELP = 'Default namespace to use if namespace is not specified for a property.'
+
+DEFAULT_NS = 'default-namespace'
+
+DISPLAY_NAME = 'display-name'

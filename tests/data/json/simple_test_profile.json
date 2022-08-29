@@ -31,6 +31,13 @@
       "set_parameters": [
         {
           "param_id": "ac-1_prm_1",
+          "props": [
+            {
+              "name": "display-name",
+              "ns": "https://display-namespace",
+              "value": "Pretty ac-1 prm 1"
+            }
+          ],
           "label": "label from profile",
           "values": [
             "all personnel"
