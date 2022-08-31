@@ -271,6 +271,8 @@ class ControlWriter():
 
         # if the file already has markdown content, use its alters directly
         if self._md_file.exists():
+            if const.TRESTLE_ADD_PROPS_TAG in header:
+                header.pop(const.TRESTLE_ADD_PROPS_TAG)
             for alter in found_alters:
                 for add in as_list(alter.adds):
                     if add.by_id:
@@ -294,7 +296,8 @@ class ControlWriter():
                     if add.props:
                         if const.TRESTLE_ADD_PROPS_TAG not in header:
                             header[const.TRESTLE_ADD_PROPS_TAG] = []
-                        part_info = PartInfo(name='', prose='', props=add.props)
+                        by_id = add.by_id
+                        part_info = PartInfo(name='', prose='', props=add.props, smt_part=by_id)
                         _, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
                         header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         else:

@@ -477,6 +477,12 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate = ProfileGenerate()
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None)
 
+    fc = test_utils.FileChecker(ac1_path.parent)
+
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None)
+
+    assert fc.files_unchanged()
+
     text = """  - name: ac1_new
     value: ac1 new value
     remarks: ac1 new stuff
