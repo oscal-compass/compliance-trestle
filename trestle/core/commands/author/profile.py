@@ -150,6 +150,7 @@ class ProfileGenerate(AuthorCommonCommand):
             overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
             sections_dict: Optional dict mapping section short names to long
             required_sections: Optional comma-sep list of sections that get prompted for prose if not in the profile
+            default_namespace: Optional default namespace to use for props
 
         Returns:
             0 on success, 1 on error
@@ -204,6 +205,7 @@ class ProfileAssemble(AuthorCommonCommand):
         self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
+        self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
         self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
         self.add_argument('-as', '--allowed-sections', help=const.HELP_ALLOWED_SECTIONS, required=False, type=str)
         self.add_argument('-ns', '--namespace', help=const.NS_HELP, required=False, type=str)
@@ -220,6 +222,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 set_parameters=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
+                sections=args.sections,
                 required_sections=args.required_sections,
                 allowed_sections=args.allowed_sections,
                 default_namespace=args.namespace
@@ -315,6 +318,7 @@ class ProfileAssemble(AuthorCommonCommand):
         set_parameters: bool,
         regenerate: bool,
         version: Optional[str],
+        sections: Optional[Dict[str, str]],
         required_sections: Optional[str],
         allowed_sections: Optional[List[str]],
         default_namespace: Optional[str] = ''
@@ -330,6 +334,7 @@ class ProfileAssemble(AuthorCommonCommand):
             set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
+            sections: Map of short name to long name for sections
             required_sections: Optional List of required sections in assembled profile, as comma-separated short names
             allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
             default_namespace: Optional namespace to be used for properties that don't have namespace specfied
@@ -368,7 +373,9 @@ class ProfileAssemble(AuthorCommonCommand):
         found_alters, param_dict, param_map = CatalogInterface.read_additional_content(
             md_dir,
             required_sections_list,
-            label_map
+            label_map,
+            sections,
+            False
         )
         if allowed_sections:
             for alter in found_alters:

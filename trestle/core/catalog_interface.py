@@ -610,6 +610,12 @@ class CatalogInterface():
         # this is just from the set_params
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile
                                                                                 ) if context.profile else {}
+
+        label_map = self.get_part_id_map(True)
+        found_alters, _, _ = CatalogInterface.read_additional_content(
+            context.md_root, required_section_list, label_map, context.sections_dict, context.to_markdown
+        )
+
         # write out the controls
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
@@ -680,7 +686,10 @@ class CatalogInterface():
             new_context.allowed_sections = allowed_section_list
 
             writer = ControlWriter()
-            writer.write_control_for_editing(new_context, control, group_dir, group_title, part_id_map)
+            found_control_alters = [alter for alter in found_alters if alter.control_id == control.id]
+            writer.write_control_for_editing(
+                new_context, control, group_dir, group_title, part_id_map, found_control_alters
+            )
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:
@@ -772,7 +781,11 @@ class CatalogInterface():
 
     @staticmethod
     def read_additional_content(
-        md_path: pathlib.Path, required_sections_list: List[str], label_map: Dict[str, Dict[str, str]]
+        md_path: pathlib.Path,
+        required_sections_list: List[str],
+        label_map: Dict[str, Dict[str, str]],
+        sections: Dict[str, str],
+        write_mode: bool
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
         """Read all markdown controls and return list of alters plus control param dict and param sort map."""
         alters_map: Dict[str, prof.Alter] = {}
@@ -783,7 +796,9 @@ class CatalogInterface():
                 sort_id, control_alters, control_param_dict = ControlReader.read_new_alters_and_params(
                     control_file,
                     required_sections_list,
-                    label_map
+                    label_map,
+                    sections,
+                    write_mode
                 )
                 alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():

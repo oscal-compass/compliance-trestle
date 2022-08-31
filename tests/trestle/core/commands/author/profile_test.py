@@ -144,6 +144,8 @@ def test_profile_generate_assemble(
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
+    ac_path = markdown_path / 'ac'
+
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
@@ -151,7 +153,14 @@ def test_profile_generate_assemble(
             test_args.extend(['-y', str(yaml_header_path)])
         test_args.extend(['-s', all_sections_str])
         monkeypatch.setattr(sys, 'argv', test_args)
+
         assert Trestle().run() == 0
+
+        fc = test_utils.FileChecker(ac_path)
+
+        assert Trestle().run() == 0
+
+        assert fc.files_unchanged()
 
         edit_files(ac1_path, set_parameters, guid_dict)
 
@@ -169,16 +178,25 @@ def test_profile_generate_assemble(
             yaml = YAML()
             yaml_header = yaml.load(yaml_header_path.open('r'))
         sections_dict = sections_to_dict(all_sections_str)
+
         profile_generate.generate_markdown(
             tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
         )
+
+        fc = test_utils.FileChecker(ac_path)
+
+        profile_generate.generate_markdown(
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
+        )
+
+        assert fc.files_unchanged()
 
         edit_files(ac1_path, set_parameters, guid_dict)
 
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None, None
+            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None, None, None
         ) == 0
 
     assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GENERAL_TAG, 'title: Trestle test profile')
@@ -244,7 +262,16 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     if success:
         # always doing set_params True
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, new_version, required_sections, None
+            tmp_trestle_dir,
+            prof_name,
+            md_name,
+            assembled_prof_name,
+            True,
+            False,
+            new_version,
+            None,
+            required_sections,
+            None
         ) == 0
 
         # check the assembled profile is as expected
@@ -288,6 +315,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
                 True,
                 False,
                 new_version,
+                None,
                 required_sections,
                 None
             )
@@ -296,7 +324,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
     # no trestle root specified direct command
-    test_args = argparse.Namespace(name='my_prof', output='new_prof', verbose=0, set_parameters=False)
+    test_args = argparse.Namespace(name='my_prof', output='new_prof', verbose=0, set_parameters=False, sections=None)
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
@@ -313,7 +341,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         output='new_prof',
         yaml_header=bad_yaml_path,
         verbose=0,
-        set_parameters=False
+        set_parameters=False,
+        sections=None
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
@@ -360,7 +389,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         regenerate=False,
         version=None,
         allowed_sections=None,
-        namespace=''
+        namespace='',
+        sections=None
     )
     # fail since required section not filled in
     profile_assemble = ProfileAssemble()
@@ -393,7 +423,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
 
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None, None
     ) == 0
 
     # note the file timestamp, then regenerate and assemble again
@@ -402,7 +432,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, all_sections_dict, None)
 
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None, None
     ) == 0
 
     # the timestamp should be the same, indicating the file was not written
@@ -415,7 +445,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, new_sections, None)
 
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None
+        tmp_trestle_dir, prof_name, md_name, prof_name, True, False, None, None, None, None
     ) == 0
 
     # the timestamp should now be different
@@ -441,8 +471,17 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
         tmp_trestle_dir,
         'profile_with_alter_props.json'
     )
+    sections = {
+        'ImplGuidance': 'Implementation Guidance', 'ExpectedEvidence': 'Expected Evidence', 'guidance': 'Guidance'
+    }
     profile_generate = ProfileGenerate()
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, None, None)
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None)
+
+    fc = test_utils.FileChecker(ac1_path.parent)
+
+    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None)
+
+    assert fc.files_unchanged()
 
     text = """  - name: ac1_new
     value: ac1 new value
@@ -454,7 +493,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert file_utils.insert_text_in_file(ac1_path, const.TRESTLE_ADD_PROPS_TAG, text)
 
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, None, None, None
     ) == 0
 
     # check the assembled profile is as expected
@@ -481,18 +520,21 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     prose = """
 ## Part b.
 
-### NewGuidance
+### New Guidance
 
 This is my added prose for a part in the statement
 
-### NewEvidence
+### New Evidence
 
-More guidance
+More evidence
 
 """
+    sections['newguidance'] = 'New Guidance'
+    sections['newevidence'] = 'New Evidence'
+
     assert file_utils.insert_text_in_file(ac1_path, None, prose)
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, None, None, None
     ) == 0
 
     # check the assembled profile is as expected
@@ -508,10 +550,23 @@ More guidance
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
-    assert ac1.parts[0].parts[2].id == 'ac-1_NewGuidance'
-    assert ac1.parts[0].parts[2].prose == 'This is my added prose for a part in the statement'
-    assert ac1.parts[0].parts[3].id == 'ac-1_NewEvidence'
-    assert ac1.parts[0].parts[3].prose == 'More guidance'
+    assert ac1.parts[0].parts[1].parts[0].id == 'ac-1_newguidance'
+    assert ac1.parts[0].parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
+    assert ac1.parts[0].parts[1].parts[1].id == 'ac-1_newevidence'
+    assert ac1.parts[0].parts[1].parts[1].prose == 'More evidence'
+
+    # Confirm that changed prose in the markdown is retained on new profile-generate
+    assert test_utils.substitute_text_in_file(ac1_path, 'More evidence', 'Updated evidence')
+    profile_generate.generate_markdown(tmp_trestle_dir, prof_path, markdown_path, {}, False, sections, None)
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, None, None, None
+    ) == 0
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    ac1 = catalog.groups[0].controls[0]
+    assert ac1.parts[0].parts[1].parts[0].id == 'ac-1_newguidance'
+    assert ac1.parts[0].parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
+    assert ac1.parts[0].parts[1].parts[1].id == 'ac-1_newevidence'
+    assert ac1.parts[0].parts[1].parts[1].prose == 'Updated evidence'
 
 
 def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
