@@ -174,7 +174,7 @@ end of text
 
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     writer = ControlWriter()
-    writer.write_control_for_editing(context, control, tmp_path, 'My Group Title', {})
+    writer.write_control_for_editing(context, control, tmp_path, 'My Group Title', {}, [])
 
     md_path = tmp_path / f'{control.id}.md'
     reader = ControlReader()
@@ -201,7 +201,7 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     # write it out as markdown in a separate directory to avoid name clash
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, sub_dir)
     control_writer = ControlWriter()
-    control_writer.write_control_for_editing(context, control, sub_dir, group_title, {})
+    control_writer.write_control_for_editing(context, control, sub_dir, group_title, {}, [])
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -410,7 +410,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     context.yaml_header = header
     context.overwrite_header_values = overwrite_header_values
     control_writer = ControlWriter()
-    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {})
+    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {}, [])
     # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_2.keys()) == 9

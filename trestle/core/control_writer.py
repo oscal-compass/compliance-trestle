@@ -19,8 +19,9 @@ from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
+from trestle.common.list_utils import as_list
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface
+from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import profile as prof
@@ -222,7 +223,12 @@ class ControlWriter():
         self._md_file.new_hr()
 
     def _add_additional_content(
-        self, control: cat.Control, profile: prof.Profile, header: Dict[str, Any], part_id_map: Dict[str, str]
+        self,
+        control: cat.Control,
+        profile: prof.Profile,
+        header: Dict[str, Any],
+        part_id_map: Dict[str, str],
+        found_alters: List[prof.Alter]
     ) -> List[str]:
         part_infos = ControlInterface.get_all_add_info(control.id, profile)
         has_content = len(part_infos) > 0
@@ -261,18 +267,64 @@ class ControlWriter():
 
         added_sections: List[str] = []
 
-        for part_info in part_infos:
-            part, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
-            if part:
-                name = part['name']
-                title = self._sections_dict.get(name, name) if self._sections_dict else name
-                self._md_file.new_header(level=2, title=f'Control {title}')
-                self._md_file.new_paraline(part['prose'])
-                added_sections.append(name)
-            elif prop_list:
-                if const.TRESTLE_ADD_PROPS_TAG not in header:
-                    header[const.TRESTLE_ADD_PROPS_TAG] = []
-                header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
+        control_part_id_map = part_id_map.get(control.id, {})
+
+        # if the file already has markdown content, use its alters directly
+        if self._md_file.exists():
+            for alter in found_alters:
+                for add in as_list(alter.adds):
+                    if add.by_id:
+                        part_label = control_part_id_map.get(add.by_id, add.by_id)
+                        if add.parts:
+                            self._md_file.new_header(level=2, title=f'Part {part_label}')
+                            for part in as_list(add.parts):
+                                if part.prose:
+                                    name = part.name
+                                    title = self._sections_dict.get(name, name) if self._sections_dict else name
+                                    self._md_file.new_header(level=3, title=title)
+                                    self._md_file.new_paraline(part.prose)
+                                    added_sections.append(name)
+                    else:
+                        for part in as_list(add.parts):
+                            name = part.name
+                            title = self._sections_dict.get(name, name) if self._sections_dict else name
+                            self._md_file.new_header(level=2, title=f'Control {title}')
+                            self._md_file.new_paraline(part.prose)
+                            added_sections.append(name)
+                    if add.props:
+                        if const.TRESTLE_ADD_PROPS_TAG not in header:
+                            header[const.TRESTLE_ADD_PROPS_TAG] = []
+                        part_info = PartInfo(name='', prose='', props=add.props)
+                        _, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
+                        header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
+        else:
+            in_part = ''
+            for part_info in part_infos:
+                part, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
+                part_prose = part.get('prose', None)
+                if part_info.smt_part and part_prose and part_info.smt_part in control_part_id_map:
+                    # avoid outputting ## Part again if in same part
+                    if not part_info.smt_part == in_part:
+                        in_part = part_info.smt_part
+                        part_label = control_part_id_map.get(part_info.smt_part, part_info.smt_part)
+                        self._md_file.new_header(level=2, title=f'Part {part_label}')
+                    name = part['name']
+                    title = self._sections_dict.get(name, name) if self._sections_dict else name
+                    self._md_file.new_header(level=3, title=title)
+                    self._md_file.new_paraline(part_prose)
+                    added_sections.append(name)
+                elif part_prose:
+                    in_part = ''
+                    name = part['name']
+                    title = self._sections_dict.get(name, name) if self._sections_dict else name
+                    self._md_file.new_header(level=2, title=f'Control {title}')
+                    self._md_file.new_paraline(part_prose)
+                    added_sections.append(name)
+                elif prop_list:
+                    in_part = ''
+                    if const.TRESTLE_ADD_PROPS_TAG not in header:
+                        header[const.TRESTLE_ADD_PROPS_TAG] = []
+                    header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         return added_sections
 
     def _prompt_required_sections(self, required_sections: List[str], added_sections: List[str]) -> None:
@@ -289,7 +341,8 @@ class ControlWriter():
         control: cat.Control,
         dest_path: pathlib.Path,
         group_title: str,
-        part_id_map: Dict[str, str]
+        part_id_map: Dict[str, str],
+        found_alters: List[prof.Alter]
     ) -> None:
         """
         Write out the control in markdown format into the specified directory.
@@ -300,6 +353,7 @@ class ControlWriter():
             dest_path: Path to the directory where the control will be written
             group_title: Title of the group containing the control
             part_id_map: Mapping of part_id to label
+            found_alters: List of alters read from the markdown file - if it exists
 
         Returns:
             None
@@ -356,7 +410,9 @@ class ControlWriter():
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
         if context.additional_content:
-            added_sections = self._add_additional_content(control, context.profile, merged_header, part_id_map)
+            added_sections = self._add_additional_content(
+                control, context.profile, merged_header, part_id_map, found_alters
+            )
 
         self._add_yaml_header(merged_header)
 

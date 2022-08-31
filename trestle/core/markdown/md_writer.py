@@ -49,6 +49,10 @@ class MDWriter():
     def _add_indent_level(self, delta: int) -> None:
         self._indent_level += delta
 
+    def exists(self) -> bool:
+        """Check if the file already exists."""
+        return self._file_path.exists()
+
     def add_yaml_header(self, header: dict) -> None:
         """Add the yaml header."""
         self._yaml_header = header

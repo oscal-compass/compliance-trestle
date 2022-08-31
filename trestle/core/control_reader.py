@@ -565,7 +565,7 @@ class ControlReader():
         control: cat.Control, control_file: pathlib.Path, context: ControlContext
     ) -> Tuple[CompDict, Dict[str, List[str]]]:
         """
-        Find all labels and associated prose in this control.
+        Find all labels and associated implementation prose in the markdown for this control.
 
         Args:
             control_file: path to the control markdown file
@@ -731,7 +731,8 @@ class ControlReader():
         sections_dict: Dict[str, str],
         snake_dict: Dict[str, str],
         after_parts: List[common.Part],
-        found_sections: List[str]
+        found_sections: List[str],
+        write_mode
     ) -> bool:
         match = re.match(const.CONTROL_REGEX, subnode.key)
         if match:
@@ -741,7 +742,7 @@ class ControlReader():
             part_name_snake = spaces_and_caps_to_snake(part_name_raw)
             part_name = snake_dict.get(part_name_snake, part_name_snake)
             # if section is required and it hasn't been edited with prose raise error
-            if part_name in required_sections_list and prose.startswith(
+            if not write_mode and part_name in required_sections_list and prose.startswith(
                     const.PROFILE_ADD_REQUIRED_SECTION_FOR_CONTROL_TEXT):
                 missing_section = sections_dict.get(part_name, part_name)
                 raise TrestleError(f'Control {control_id} is missing prose for required section {missing_section}')
@@ -756,7 +757,11 @@ class ControlReader():
 
     @staticmethod
     def _add_sub_part(
-        control_id: str, subnode: MarkdownNode, label_map: Dict[str, str], ending_parts: Dict[str, common.Part]
+        control_id: str,
+        subnode: MarkdownNode,
+        label_map: Dict[str, str],
+        ending_parts: Dict[str, common.Part],
+        sections: Dict[str, str]
     ) -> None:
         match = re.match(const.PART_REGEX, subnode.key)
         if not match:
@@ -768,10 +773,12 @@ class ControlReader():
         by_part_id = control_label_map.get(by_part_label, None)
         if by_part_id is None:
             raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
+        inv_map = {v: k for k, v in sections.items()}
         for node2 in as_list(subnode.subnodes):
             hash_pattern = '### '
             if node2.key.startswith(hash_pattern):
                 part_name = node2.key.replace(hash_pattern, '', 1).strip()
+                part_name = inv_map.get(part_name, part_name)
                 prose = ControlReader._clean_prose(node2.content.text)
                 prose = '\n'.join(prose)
                 id_ = f'{control_id}_{part_name}'
@@ -803,7 +810,11 @@ class ControlReader():
 
     @staticmethod
     def read_new_alters_and_params(
-        control_path: pathlib.Path, required_sections_list: List[str], label_map: Dict[str, Dict[str, str]]
+        control_path: pathlib.Path,
+        required_sections_list: List[str],
+        label_map: Dict[str, Dict[str, str]],
+        sections: Dict[str, str],
+        write_mode: bool
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
@@ -832,16 +843,21 @@ class ControlReader():
         implicit_parts = []
         after_parts = {}
         for subnode in editable_node.subnodes:
-            if not ControlReader._add_control_part(
-                    control_id, subnode, required_sections_list, sections_dict, snake_dict, implicit_parts,
-                    found_sections):
-                ControlReader._add_sub_part(control_id, subnode, label_map, after_parts)
+            if not ControlReader._add_control_part(control_id,
+                                                   subnode,
+                                                   required_sections_list,
+                                                   sections_dict,
+                                                   snake_dict,
+                                                   implicit_parts,
+                                                   found_sections,
+                                                   write_mode):
+                ControlReader._add_sub_part(control_id, subnode, label_map, after_parts, sections)
 
         adds = []
         if implicit_parts:
             adds.append(prof.Add(parts=implicit_parts, position='ending'))
         for by_id, parts in after_parts.items():
-            adds.append(prof.Add(parts=parts, position='after', by_id=by_id))
+            adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
 
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
