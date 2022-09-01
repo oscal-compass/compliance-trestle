@@ -620,13 +620,13 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
-            display_name = ''
             if new_context.set_parameters:
                 # get all params for this control
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
                     # if the param is in the profile set_params, load its contents first and mark as profile-values
+                    display_name = ''
                     if param_id in full_profile_param_dict:
                         # get the param from the profile set_param
                         param = full_profile_param_dict[param_id]
