@@ -417,6 +417,7 @@ class ControlWriter():
                 control, context.profile, merged_header, part_id_map, found_alters
             )
 
+        ControlInterface.update_namespace(merged_header)
         self._add_yaml_header(merged_header)
 
         if context.required_sections:

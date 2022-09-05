@@ -619,3 +619,18 @@ class ControlInterface:
         imp_reqs = as_list(component.control_implementations[0].implemented_requirements)
         imp_reqs.append(new_imp_req)
         component.control_implementations[0].implemented_requirements = imp_reqs
+
+    @staticmethod
+    def update_namespace(yaml_header: Dict[str, Any]) -> None:
+        """Delete namespace values that match the default."""
+        if const.TRESTLE_GENERAL_TAG not in yaml_header or const.DEFAULT_NS not in yaml_header[const.TRESTLE_GENERAL_TAG
+                                                                                               ]:
+            return
+        default_ns = yaml_header[const.TRESTLE_GENERAL_TAG][const.DEFAULT_NS]
+        if const.SET_PARAMS_TAG in yaml_header:
+            for val in yaml_header[const.SET_PARAMS_TAG].values():
+                if 'ns' in val and val['ns'] == default_ns:
+                    val.pop('ns')
+        for prop in as_list(yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, None)):
+            if 'ns' in prop and prop['ns'] == default_ns:
+                prop.pop('ns')

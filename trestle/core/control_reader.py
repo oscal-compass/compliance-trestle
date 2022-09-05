@@ -22,8 +22,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common import const
+from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, get_default, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -870,8 +871,19 @@ class ControlReader():
         header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
+        default_namespace = None
+        if yaml_header.get(const.TRESTLE_GENERAL_TAG, None):
+            default_namespace = yaml_header[const.TRESTLE_GENERAL_TAG].get(const.DEFAULT_NS, None)
+        for val in param_dict.values():
+            val['ns'] = val.get('ns', default_namespace)
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
+        if default_namespace:
+            for prop in props:
+                prop.ns = get_default(prop.ns, default_namespace)
+            for prop_list in props_by_id.values():
+                for prop in prop_list:
+                    prop.ns = get_default(prop.ns, default_namespace)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
@@ -886,6 +898,12 @@ class ControlReader():
         if adds:
             new_alters = [prof.Alter(control_id=control_id, adds=adds)]
         return sort_id, new_alters, param_dict
+
+    @staticmethod
+    def _update_props_namespace(item: TypeWithProps, default_namespace: Optional[str]):
+        if default_namespace:
+            for prop in as_list(item.props):
+                prop.ns = get_default(prop.ns, default_namespace)
 
     @staticmethod
     def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
@@ -927,12 +945,16 @@ class ControlReader():
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
         if set_parameters:
+            default_namespace = None
+            if const.TRESTLE_GENERAL_TAG in yaml_header:
+                default_namespace = yaml_header[const.TRESTLE_GENERAL_TAG].get(const.DEFAULT_NS, None)
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
+                    ControlReader._update_props_namespace(param, default_namespace)
                     control.params.append(param)
         if const.SORT_ID in yaml_header:
             control.props = control.props if control.props else []

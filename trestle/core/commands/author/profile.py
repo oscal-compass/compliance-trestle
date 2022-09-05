@@ -28,7 +28,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.list_utils import none_if_empty
+from trestle.common.list_utils import as_list, get_default, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -138,7 +138,7 @@ class ProfileGenerate(AuthorCommonCommand):
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
         required_sections: Optional[str],
-        default_namespace: Optional[str] = ''
+        default_namespace: Optional[str] = None
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -273,7 +273,10 @@ class ProfileAssemble(AuthorCommonCommand):
 
     @staticmethod
     def _replace_modify_set_params(
-        profile: prof.Profile, param_dict: Dict[str, Any], param_map: Dict[str, str]
+        profile: prof.Profile,
+        param_dict: Dict[str, Any],
+        param_map: Dict[str, str],
+        default_namespace: Optional[str] = None
     ) -> bool:
         """
         Replace the set_params in the profile with list and values from markdown.
@@ -289,7 +292,7 @@ class ProfileAssemble(AuthorCommonCommand):
             for key, sub_param_dict in param_dict.items():
                 if sub_param_dict:
                     sub_param_dict['id'] = key
-                    param = ModelUtils.dict_to_parameter(sub_param_dict)
+                    param = ModelUtils.dict_to_parameter(sub_param_dict, default_namespace)
                     new_set_params.append(
                         prof.SetParameter(
                             param_id=key,
@@ -310,6 +313,20 @@ class ProfileAssemble(AuthorCommonCommand):
         return changed
 
     @staticmethod
+    def _update_namespace(profile: prof.Profile, default_namespace: str) -> None:
+        if default_namespace and profile.modify:
+            for set_param in as_list(profile.modify.set_parameters):
+                for prop in as_list(set_param.props):
+                    prop.ns = get_default(prop.ns, default_namespace)
+            for alter in as_list(profile.modify.alters):
+                for add in as_list(alter.adds):
+                    for set_param in as_list(add.params):
+                        for prop in as_list(set_param.props):
+                            prop.ns = get_default(prop.ns, default_namespace)
+                    for prop in as_list(add.props):
+                        prop.ns = get_default(prop.ns, default_namespace)
+
+    @staticmethod
     def assemble_profile(
         trestle_root: pathlib.Path,
         parent_prof_name: str,
@@ -321,7 +338,7 @@ class ProfileAssemble(AuthorCommonCommand):
         sections: Optional[Dict[str, str]],
         required_sections: Optional[str],
         allowed_sections: Optional[List[str]],
-        default_namespace: Optional[str] = ''
+        default_namespace: Optional[str] = None
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
@@ -385,7 +402,7 @@ class ProfileAssemble(AuthorCommonCommand):
                             raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
+            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map, default_namespace)
 
         if version:
             parent_prof.metadata.version = com.Version(__root__=version)

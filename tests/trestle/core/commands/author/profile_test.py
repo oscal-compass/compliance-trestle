@@ -143,12 +143,14 @@ def test_profile_generate_assemble(
         'simple_test_profile.json'
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+    default_ns = 'http://trestle/test'
 
     ac_path = markdown_path / 'ac'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
     if use_cli:
-        test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra'.split()
+        test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra -ns {default_ns}'.split(  # noqa E501
+        )
         if add_header:
             test_args.extend(['-y', str(yaml_header_path)])
         test_args.extend(['-s', all_sections_str])
@@ -180,13 +182,13 @@ def test_profile_generate_assemble(
         sections_dict = sections_to_dict(all_sections_str)
 
         profile_generate.generate_markdown(
-            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra', default_ns
         )
 
         fc = test_utils.FileChecker(ac_path)
 
         profile_generate.generate_markdown(
-            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra'
+            tmp_trestle_dir, profile_path, markdown_path, yaml_header, False, sections_dict, 'NeededExtra', default_ns
         )
 
         assert fc.files_unchanged()
@@ -196,7 +198,17 @@ def test_profile_generate_assemble(
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None, None, None
+            tmp_trestle_dir,
+            prof_name,
+            md_name,
+            assembled_prof_name,
+            set_parameters,
+            False,
+            None,
+            None,
+            None,
+            None,
+            None
         ) == 0
 
     assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GENERAL_TAG, 'title: Trestle test profile')
@@ -213,13 +225,19 @@ def test_profile_generate_assemble(
         assert set_params[0].values[0].__root__ == 'all personnel'
         assert set_params[0].props[0].name == const.DISPLAY_NAME
         assert set_params[0].props[0].value.startswith('Pretty')
+        assert set_params[0].props[0].ns == 'https://display-namespace'
         assert set_params[1].param_id == 'ac-1_prm_2'
         assert set_params[1].values[0].__root__ == 'Organization-level'
         assert set_params[1].values[1].__root__ == 'System-level'
+        assert set_params[1].props[0].name == const.DISPLAY_NAME
+        assert set_params[1].props[0].ns == default_ns
         assert set_params[2].param_id == 'ac-1_prm_3'
         assert set_params[2].values[0].__root__ == 'new value'
     else:
+        # confirm the namespace is not defined unless set_parameters is True
+        assert set_params[1].props[0].ns is None
         assert len(set_params) == 15
+    assert set_params[0].props[0].ns == 'https://display-namespace'
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
@@ -454,23 +472,36 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     assert new_time != orig_time
 
 
-def test_profile_alter_adds(sample_profile: prof.Profile) -> None:
+def test_profile_alter_adds(simplified_nist_profile: prof.Profile) -> None:
     """Test profile alter adds involving Nones."""
     adds = [prof.Add(props=[com.Property(name='prop_1', value='prop_1_val')])]
     alters = [prof.Alter(control_id='ac-1', adds=adds)]
     # first case modify is None
-    assert ProfileAssemble._replace_alter_adds(sample_profile, alters)
-    sample_profile.modify.alters = None
+    assert ProfileAssemble._replace_alter_adds(simplified_nist_profile, alters)
+    simplified_nist_profile.modify.alters = None
     # second case modify is not None but alters is None
-    assert ProfileAssemble._replace_alter_adds(sample_profile, alters)
+    assert ProfileAssemble._replace_alter_adds(simplified_nist_profile, alters)
+
+
+def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the setting of default namespace in a profile."""
+    setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
+    default_ns = 'http://trestle/test'
+    orig_ns = 'http://orig_ns'
+    ProfileAssemble._update_namespace(profile, default_ns)
+    props = profile.modify.set_parameters[0].props
+    assert props[0].ns == orig_ns
+    assert props[1].ns == default_ns
+    props = profile.modify.alters[0].adds[0].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == default_ns
 
 
 def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile alter adds involving props."""
-    ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(
-        tmp_trestle_dir,
-        'profile_with_alter_props.json'
-    )
+    ac1_path, _, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
     sections = {
         'ImplGuidance': 'Implementation Guidance', 'ExpectedEvidence': 'Expected Evidence', 'guidance': 'Guidance'
     }

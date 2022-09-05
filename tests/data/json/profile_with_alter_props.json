@@ -29,8 +29,19 @@
           "param_id": "ac-1_prm_1",
             "values": [
               "all personnel"
+            ],
+            "props": [
+              {
+                "name": "param_prop1",
+                "value": "param prop1 val",
+                "ns": "http://orig_ns"
+              },
+              {
+                "name": "param_prop2",
+                "value": "param prop2 val"
+              }
             ]
-        },
+      },
         {  "param_id": "ac-1_prm_2",
             "values": [
               "A thorough"
@@ -51,7 +62,8 @@
                 {
                   "name": "ac1_foo",
                   "value": "ac1 bar",
-                  "remarks": "ac1 good stuff"
+                  "remarks": "ac1 good stuff",
+                  "ns": "http://orig_ns"
                 }
               ]
             },

@@ -34,6 +34,11 @@ def none_if_empty(list_: List[TG]) -> Optional[List[TG]]:
     return list_ if list_ else None
 
 
+def get_default(item: TG, default: TG) -> TG:
+    """Return the default value for the item if it is not set."""
+    return item if item else default
+
+
 def is_ordered_sublist(needle: List[str], haystack: List[str]) -> bool:
     """Determine if needle is exactly contained in haystack.
 
