@@ -28,7 +28,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, get_default, none_if_empty
+from trestle.common.list_utils import none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -163,10 +163,10 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog = ProfileResolver().get_resolved_profile_catalog(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
-            yaml_header[const.TRESTLE_GENERAL_TAG] = yaml_header.get(const.TRESTLE_GENERAL_TAG, {})
-            yaml_header[const.TRESTLE_GENERAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
+            yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
+            yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
             if default_namespace:
-                yaml_header[const.TRESTLE_GENERAL_TAG][const.DEFAULT_NS] = default_namespace
+                yaml_header[const.TRESTLE_GLOBAL_TAG][const.DEFAULT_NS] = default_namespace
 
             catalog_interface = CatalogInterface(catalog)
             part_id_map = catalog_interface.get_part_id_map(False)
@@ -311,20 +311,6 @@ class ProfileAssemble(AuthorCommonCommand):
         if profile.modify:
             profile.modify.set_parameters = none_if_empty(profile.modify.set_parameters)
         return changed
-
-    @staticmethod
-    def _update_namespace(profile: prof.Profile, default_namespace: str) -> None:
-        if default_namespace and profile.modify:
-            for set_param in as_list(profile.modify.set_parameters):
-                for prop in as_list(set_param.props):
-                    prop.ns = get_default(prop.ns, default_namespace)
-            for alter in as_list(profile.modify.alters):
-                for add in as_list(alter.adds):
-                    for set_param in as_list(add.params):
-                        for prop in as_list(set_param.props):
-                            prop.ns = get_default(prop.ns, default_namespace)
-                    for prop in as_list(add.props):
-                        prop.ns = get_default(prop.ns, default_namespace)
 
     @staticmethod
     def assemble_profile(

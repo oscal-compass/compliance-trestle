@@ -801,7 +801,7 @@ class ControlReader():
             by_id = prop_d.get('smt-part', None)
             if by_id and control_id in label_map:
                 by_id = label_map[control_id].get(by_id, by_id)
-            prop = common.Property(name=prop_d['name'], value=prop_d['value'])
+            prop = common.Property(name=prop_d['name'], value=prop_d['value'], ns=prop_d.get('ns', None))
             if by_id:
                 if by_id not in props_by_id:
                     props_by_id[by_id] = []
@@ -872,13 +872,14 @@ class ControlReader():
         if header_params:
             param_dict.update(header_params)
         default_namespace = None
-        if yaml_header.get(const.TRESTLE_GENERAL_TAG, None):
-            default_namespace = yaml_header[const.TRESTLE_GENERAL_TAG].get(const.DEFAULT_NS, None)
+        if yaml_header.get(const.TRESTLE_GLOBAL_TAG, None):
+            default_namespace = yaml_header[const.TRESTLE_GLOBAL_TAG].get(const.DEFAULT_NS, None)
         for val in param_dict.values():
             val['ns'] = val.get('ns', default_namespace)
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
-        if default_namespace:
+        # the default namespace should only be applied when assembling the catalog, i.e. read mode
+        if default_namespace and not write_mode:
             for prop in props:
                 prop.ns = get_default(prop.ns, default_namespace)
             for prop_list in props_by_id.values():
@@ -900,10 +901,11 @@ class ControlReader():
         return sort_id, new_alters, param_dict
 
     @staticmethod
-    def _update_props_namespace(item: TypeWithProps, default_namespace: Optional[str]):
+    def _update_display_prop_namespace(item: TypeWithProps, default_namespace: Optional[str]):
         if default_namespace:
             for prop in as_list(item.props):
-                prop.ns = get_default(prop.ns, default_namespace)
+                if prop.name == const.DISPLAY_NAME:
+                    prop.ns = default_namespace
 
     @staticmethod
     def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
@@ -946,15 +948,15 @@ class ControlReader():
                 )
         if set_parameters:
             default_namespace = None
-            if const.TRESTLE_GENERAL_TAG in yaml_header:
-                default_namespace = yaml_header[const.TRESTLE_GENERAL_TAG].get(const.DEFAULT_NS, None)
+            if const.TRESTLE_GLOBAL_TAG in yaml_header:
+                default_namespace = yaml_header[const.TRESTLE_GLOBAL_TAG].get(const.DEFAULT_NS, None)
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
-                    ControlReader._update_props_namespace(param, default_namespace)
+                    ControlReader._update_display_prop_namespace(param, default_namespace)
                     control.params.append(param)
         if const.SORT_ID in yaml_header:
             control.props = control.props if control.props else []

@@ -2,7 +2,7 @@
   "profile": {
     "uuid": "A0000000-0000-4000-8000-000000000030",
     "metadata": {
-      "title": "Corrupt Profile with missing reference ID",
+      "title": "Profile with missing reference ID",
       "last-modified": "2021-01-01T00:00:00.000+00:00",
       "version": "2021-01-01",
       "oscal-version": "1.0.0"
@@ -39,6 +39,10 @@
               {
                 "name": "param_prop2",
                 "value": "param prop2 val"
+              },
+              {
+                "name": "display-name",
+                "value": "AC-1"
               }
             ]
       },

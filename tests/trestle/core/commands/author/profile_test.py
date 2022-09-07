@@ -211,7 +211,7 @@ def test_profile_generate_assemble(
             None
         ) == 0
 
-    assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GENERAL_TAG, 'title: Trestle test profile')
+    assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GLOBAL_TAG, 'title: Trestle test profile')
 
     # check the assembled profile is as expected
     profile: prof.Profile
@@ -485,18 +485,41 @@ def test_profile_alter_adds(simplified_nist_profile: prof.Profile) -> None:
 
 def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the setting of default namespace in a profile."""
-    setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
+    ac1_path, _, prof_path, md_path = setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
     profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, prof_name, prof.Profile)
-    default_ns = 'http://trestle/test'
+    # one prop has ns defined as orig_ns
     orig_ns = 'http://orig_ns'
-    ProfileAssemble._update_namespace(profile, default_ns)
+    first_ns = 'http://first'
+    second_ns = 'http://second'
+
+    profile_generate = ProfileGenerate()
+    profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, first_ns)
+    assert test_utils.confirm_text_in_file(ac1_path, '', f'{const.DEFAULT_NS}: {first_ns}')
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, None
+    ) == 0
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
     props = profile.modify.set_parameters[0].props
-    assert props[0].ns == orig_ns
-    assert props[1].ns == default_ns
-    props = profile.modify.alters[0].adds[0].props
-    assert props[0].ns == orig_ns
+    assert props[0].name == const.DISPLAY_NAME
+    assert props[0].ns == first_ns
     props = profile.modify.alters[0].adds[1].props
-    assert props[0].ns == default_ns
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
+    assert props[0].ns == first_ns
+
+    profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, second_ns)
+    assert test_utils.confirm_text_in_file(ac1_path, '', f'{const.DEFAULT_NS}: {second_ns}')
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, None
+    ) == 0
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
+    props = profile.modify.set_parameters[0].props
+    assert props[0].name == const.DISPLAY_NAME
+    assert props[0].ns == second_ns
+    props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
+    assert props[0].ns == second_ns
 
 
 def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
