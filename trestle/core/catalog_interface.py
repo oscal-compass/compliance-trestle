@@ -789,7 +789,8 @@ class CatalogInterface():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections: Dict[str, str],
-        write_mode: bool
+        write_mode: bool,
+        default_namespace: Optional[str] = None
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
         """Read all markdown controls and return list of alters plus control param dict and param sort map."""
         alters_map: Dict[str, prof.Alter] = {}
@@ -802,7 +803,8 @@ class CatalogInterface():
                     required_sections_list,
                     label_map,
                     sections,
-                    write_mode
+                    write_mode,
+                    default_namespace
                 )
                 alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():

@@ -169,6 +169,8 @@ def test_profile_generate_assemble(
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
         if set_parameters:
             test_args.append('-sp')
+        if default_ns:
+            test_args.extend(['-ns', default_ns])
         if dir_exists:
             assembled_prof_dir.mkdir()
         monkeypatch.setattr(sys, 'argv', test_args)
@@ -208,7 +210,7 @@ def test_profile_generate_assemble(
             None,
             None,
             None,
-            None
+            default_ns
         ) == 0
 
     assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GLOBAL_TAG, 'title: Trestle test profile')
@@ -491,12 +493,13 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     orig_ns = 'http://orig_ns'
     first_ns = 'http://first'
     second_ns = 'http://second'
+    third_ns = 'http://third'
 
     profile_generate = ProfileGenerate()
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, first_ns)
     assert test_utils.confirm_text_in_file(ac1_path, '', f'{const.DEFAULT_NS}: {first_ns}')
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, None
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, first_ns
     ) == 0
     profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
     props = profile.modify.set_parameters[0].props
@@ -510,7 +513,7 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, second_ns)
     assert test_utils.confirm_text_in_file(ac1_path, '', f'{const.DEFAULT_NS}: {second_ns}')
     assert ProfileAssemble.assemble_profile(
-        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, None
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, second_ns
     ) == 0
     profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
     props = profile.modify.set_parameters[0].props
@@ -520,6 +523,32 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     assert props[0].ns == orig_ns
     props = profile.modify.alters[0].adds[2].props
     assert props[0].ns == second_ns
+
+    # assemble with a different namespace and make sure the default is applied
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, third_ns
+    ) == 0
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
+    props = profile.modify.set_parameters[0].props
+    assert props[0].name == const.DISPLAY_NAME
+    assert props[0].ns == third_ns
+    props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
+    assert props[0].ns == third_ns
+
+    # repeat but with set_parameters False and make sure it has no effect.  A warning to the user is given.
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, False, False, None, None, None, None, third_ns
+    ) == 0
+    profile, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
+    props = profile.modify.set_parameters[0].props
+    assert props[2].name == const.DISPLAY_NAME
+    assert props[2].ns is None
+    props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
+    assert props[0].ns is None
 
 
 def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:

@@ -816,7 +816,8 @@ class ControlReader():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections: Dict[str, str],
-        write_mode: bool
+        write_mode: bool,
+        default_namespace: Optional[str] = None
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
@@ -871,9 +872,6 @@ class ControlReader():
         header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
-        default_namespace = None
-        if yaml_header.get(const.TRESTLE_GLOBAL_TAG, None):
-            default_namespace = yaml_header[const.TRESTLE_GLOBAL_TAG].get(const.DEFAULT_NS, None)
         for val in param_dict.values():
             val['ns'] = val.get('ns', default_namespace)
 

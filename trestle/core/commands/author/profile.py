@@ -367,6 +367,12 @@ class ProfileAssemble(AuthorCommonCommand):
         catalog_interface = CatalogInterface(catalog)
         label_map = catalog_interface.get_part_id_map(True)
 
+        if default_namespace and not set_parameters:
+            logger.warning(
+                'A default namespace was specified but set_parameters is False so the namespace will be ignored'
+            )
+            default_namespace = None
+
         required_sections_list = required_sections.split(',') if required_sections else []
 
         # load the editable sections of the markdown and create Adds for them
@@ -378,7 +384,8 @@ class ProfileAssemble(AuthorCommonCommand):
             required_sections_list,
             label_map,
             sections,
-            False
+            False,
+            default_namespace
         )
         if allowed_sections:
             for alter in found_alters:
