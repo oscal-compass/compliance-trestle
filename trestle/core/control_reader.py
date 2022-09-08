@@ -853,12 +853,6 @@ class ControlReader():
                                                    write_mode):
                 ControlReader._add_sub_part(control_id, subnode, label_map, after_parts, sections)
 
-        adds = []
-        if implicit_parts:
-            adds.append(prof.Add(parts=implicit_parts, position='ending'))
-        for by_id, parts in after_parts.items():
-            adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
-
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
@@ -869,10 +863,16 @@ class ControlReader():
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
 
-        if props:
-            adds.append(prof.Add(props=props, position='ending'))
-        for by_id, props in props_by_id.items():
-            adds.append(prof.Add(props=props, position='after', by_id=by_id))
+        adds: List[prof.Add] = []
+        if implicit_parts or props:
+            adds.append(prof.Add(parts=none_if_empty(implicit_parts), props=none_if_empty(props), position='ending'))
+
+        by_ids = set(after_parts.keys()).union(props_by_id.keys())
+        for by_id in by_ids:
+            parts = after_parts.get(by_id, None)
+            props = props_by_id.get(by_id, None)
+            adds.append(prof.Add(parts=parts, props=props, position='ending', by_id=by_id))
+
         new_alters = []
         if adds:
             new_alters = [prof.Alter(control_id=control_id, adds=adds)]

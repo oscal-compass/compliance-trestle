@@ -467,10 +467,7 @@ def test_profile_alter_adds(sample_profile: prof.Profile) -> None:
 
 def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile alter adds involving props."""
-    ac1_path, assembled_prof_dir, profile_path, markdown_path = setup_profile_generate(
-        tmp_trestle_dir,
-        'profile_with_alter_props.json'
-    )
+    ac1_path, _, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
     sections = {
         'ImplGuidance': 'Implementation Guidance', 'ExpectedEvidence': 'Expected Evidence', 'guidance': 'Guidance'
     }
@@ -504,9 +501,11 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
         prof.Profile, FileContentType.JSON
     )
     alters = profile.modify.alters
-    assert len(alters[0].adds) == 4
-    assert alters[0].adds[2].by_id == 'ac-1_smt.c'
-    assert alters[0].adds[3].by_id == 'ac-1_smt.a'
+    assert len(alters[0].adds) == 3
+    assert len(alters[0].adds[0].parts) == 2
+    assert len(alters[0].adds[0].props) == 2
+    assert alters[0].adds[1].by_id == 'ac-1_smt.c'
+    assert alters[0].adds[2].by_id == 'ac-1_smt.a'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
@@ -544,9 +543,9 @@ More evidence
         prof.Profile, FileContentType.JSON
     )
     alters = profile.modify.alters
-    assert len(alters[0].adds) == 5
-    assert alters[0].adds[1].by_id == 'ac-1_smt.b'
-    assert alters[0].adds[3].by_id == 'ac-1_smt.c'
+    assert len(alters[0].adds) == 4
+    assert alters[0].adds[1].by_id == 'ac-1_smt.c'
+    assert alters[0].adds[3].by_id == 'ac-1_smt.a'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
