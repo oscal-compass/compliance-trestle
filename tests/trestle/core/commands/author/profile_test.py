@@ -471,12 +471,17 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     sections = {
         'ImplGuidance': 'Implementation Guidance', 'ExpectedEvidence': 'Expected Evidence', 'guidance': 'Guidance'
     }
+    # generate markdown twice and confirmed no changes
     profile_generate = ProfileGenerate()
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None)
+    assert profile_generate.generate_markdown(
+        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None
+    ) == 0
 
     fc = test_utils.FileChecker(ac1_path.parent)
 
-    profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None)
+    assert profile_generate.generate_markdown(
+        tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None
+    ) == 0
 
     assert fc.files_unchanged()
 
@@ -487,6 +492,8 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     value: ac1 new part value
     smt-part: c.
 """
+
+    # insert two new props, one is by id attached to part c.
     assert file_utils.insert_text_in_file(ac1_path, const.TRESTLE_ADD_PROPS_TAG, text)
 
     assert ProfileAssemble.assemble_profile(
@@ -500,12 +507,12 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
         assembled_prof_name,
         prof.Profile, FileContentType.JSON
     )
-    alters = profile.modify.alters
-    assert len(alters[0].adds) == 3
-    assert len(alters[0].adds[0].parts) == 2
-    assert len(alters[0].adds[0].props) == 2
-    assert alters[0].adds[1].by_id == 'ac-1_smt.c'
-    assert alters[0].adds[2].by_id == 'ac-1_smt.a'
+    adds = profile.modify.alters[0].adds
+    assert len(adds) == 3
+    assert len(adds[0].parts) == 2
+    assert len(adds[0].props) == 2
+    assert adds[1].by_id == 'ac-1_smt.a'
+    assert adds[2].by_id == 'ac-1_smt.c'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
@@ -542,30 +549,31 @@ More evidence
         assembled_prof_name,
         prof.Profile, FileContentType.JSON
     )
-    alters = profile.modify.alters
-    assert len(alters[0].adds) == 4
-    assert alters[0].adds[1].by_id == 'ac-1_smt.c'
-    assert alters[0].adds[3].by_id == 'ac-1_smt.a'
+    adds = profile.modify.alters[0].adds
+    assert len(adds) == 4
+    assert adds[1].by_id == 'ac-1_smt.a'
+    assert adds[2].by_id == 'ac-1_smt.b'
+    assert adds[3].by_id == 'ac-1_smt.c'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
-    ac1 = catalog.groups[0].controls[0]
-    assert ac1.parts[0].parts[1].parts[0].id == 'ac-1_newguidance'
-    assert ac1.parts[0].parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert ac1.parts[0].parts[1].parts[1].id == 'ac-1_newevidence'
-    assert ac1.parts[0].parts[1].parts[1].prose == 'More evidence'
+    parts = catalog.groups[0].controls[0].parts[0].parts
+    assert parts[1].parts[0].id == 'ac-1_newguidance'
+    assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
+    assert parts[1].parts[1].id == 'ac-1_newevidence'
+    assert parts[1].parts[1].prose == 'More evidence'
 
     # Confirm that changed prose in the markdown is retained on new profile-generate
     assert test_utils.substitute_text_in_file(ac1_path, 'More evidence', 'Updated evidence')
-    profile_generate.generate_markdown(tmp_trestle_dir, prof_path, markdown_path, {}, False, sections, None)
+    assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, markdown_path, {}, False, sections, None) == 0
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, None, None, None
     ) == 0
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
-    ac1 = catalog.groups[0].controls[0]
-    assert ac1.parts[0].parts[1].parts[0].id == 'ac-1_newguidance'
-    assert ac1.parts[0].parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert ac1.parts[0].parts[1].parts[1].id == 'ac-1_newevidence'
-    assert ac1.parts[0].parts[1].parts[1].prose == 'Updated evidence'
+    parts = catalog.groups[0].controls[0].parts[0].parts
+    assert parts[1].parts[0].id == 'ac-1_newguidance'
+    assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
+    assert parts[1].parts[1].id == 'ac-1_newevidence'
+    assert parts[1].parts[1].prose == 'Updated evidence'
 
 
 def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

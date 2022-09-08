@@ -868,7 +868,7 @@ class ControlReader():
             adds.append(prof.Add(parts=none_if_empty(implicit_parts), props=none_if_empty(props), position='ending'))
 
         by_ids = set(after_parts.keys()).union(props_by_id.keys())
-        for by_id in by_ids:
+        for by_id in sorted(by_ids):
             parts = after_parts.get(by_id, None)
             props = props_by_id.get(by_id, None)
             adds.append(prof.Add(parts=parts, props=props, position='ending', by_id=by_id))

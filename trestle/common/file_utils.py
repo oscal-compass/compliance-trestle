@@ -278,16 +278,16 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
         raise TrestleError(f'Test file {file_path} not found.')
     if tag:
         lines: List[str] = []
-        with file_path.open('r', encoding='utf-8') as f:
+        with file_path.open('r', encoding=const.FILE_ENCODING) as f:
             lines = f.readlines()
         for ii, line in enumerate(lines):
             if line.find(tag) >= 0:
                 lines.insert(ii + 1, text)
-                with file_path.open('w', encoding='utf-8') as f:
+                with file_path.open('w', encoding=const.FILE_ENCODING) as f:
                     f.writelines(lines)
                 return True
     else:
-        with file_path.open('a') as f:
+        with file_path.open('a', encoding=const.FILE_ENCODING) as f:
             f.writelines(text)
         return True
     return False
