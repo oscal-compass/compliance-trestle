@@ -577,11 +577,12 @@ class CatalogInterface():
         return param_dict
 
     @staticmethod
-    def _get_display_name(param: common.Parameter) -> Optional[str]:
+    def _get_display_name_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
         for prop in as_list(param.props):
             if prop.name == const.DISPLAY_NAME:
-                return prop.value
-        return None
+                ns = str(prop.ns) if prop.ns else None
+                return prop.value, ns
+        return None, None
 
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -620,17 +621,18 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
-            display_name = ''
             if new_context.set_parameters:
                 # get all params for this control
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
                     # if the param is in the profile set_params, load its contents first and mark as profile-values
+                    display_name = ''
+                    ns = None
                     if param_id in full_profile_param_dict:
                         # get the param from the profile set_param
                         param = full_profile_param_dict[param_id]
-                        display_name = CatalogInterface._get_display_name(param)
+                        display_name, ns = CatalogInterface._get_display_name_and_ns(param)
                         # assign its contents to the dict
                         new_dict = ModelUtils.parameter_to_dict(param, True)
                         profile_values = new_dict.get(const.VALUES, None)
@@ -649,6 +651,8 @@ class CatalogInterface():
                     new_dict.pop('id')
                     if display_name:
                         new_dict[const.DISPLAY_NAME] = display_name
+                        if ns:
+                            new_dict['ns'] = ns
                     set_param_dict[param_id] = new_dict
                 if set_param_dict:
                     if const.SET_PARAMS_TAG not in new_context.yaml_header:
@@ -785,7 +789,8 @@ class CatalogInterface():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections: Dict[str, str],
-        write_mode: bool
+        write_mode: bool,
+        default_namespace: Optional[str] = None
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
         """Read all markdown controls and return list of alters plus control param dict and param sort map."""
         alters_map: Dict[str, prof.Alter] = {}
@@ -798,7 +803,8 @@ class CatalogInterface():
                     required_sections_list,
                     label_map,
                     sections,
-                    write_mode
+                    write_mode,
+                    default_namespace
                 )
                 alters_map[sort_id] = control_alters
                 for param_id, param_dict in control_param_dict.items():

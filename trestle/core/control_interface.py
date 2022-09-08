@@ -79,6 +79,8 @@ class PartInfo:
         else:
             for prop in as_list(self.props):
                 prop_d = {'name': prop.name, 'value': prop.value}
+                if prop.ns:
+                    prop_d['ns'] = str(prop.ns)
                 if self.smt_part:
                     prop_d['smt-part'] = part_id_map.get(self.smt_part, self.smt_part)
                 prop_list.append(prop_d)
