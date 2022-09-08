@@ -22,8 +22,9 @@ from typing import Any, Dict, List, Optional, Tuple
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common import const
+from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, get_default, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -730,9 +731,9 @@ class ControlReader():
         required_sections_list: List[str],
         sections_dict: Dict[str, str],
         snake_dict: Dict[str, str],
-        after_parts: List[common.Part],
+        control_parts: List[common.Part],
         found_sections: List[str],
-        write_mode
+        write_mode: bool
     ) -> bool:
         match = re.match(const.CONTROL_REGEX, subnode.key)
         if match:
@@ -750,7 +751,7 @@ class ControlReader():
             # use sections dict to find correct title otherwise use the title from the markdown
             part_title = sections_dict.get(part_name, part_name_raw)
             part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
-            after_parts.append(part)
+            control_parts.append(part)
             found_sections.append(part_name)
             return True
         return False
@@ -760,7 +761,7 @@ class ControlReader():
         control_id: str,
         subnode: MarkdownNode,
         label_map: Dict[str, str],
-        ending_parts: Dict[str, common.Part],
+        by_id_parts: Dict[str, common.Part],
         sections: Dict[str, str]
     ) -> None:
         match = re.match(const.PART_REGEX, subnode.key)
@@ -785,13 +786,14 @@ class ControlReader():
                 part = common.Part(id=id_, name=part_name, prose=prose)
             else:
                 raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
-            if by_part_id not in ending_parts:
-                ending_parts[by_part_id] = []
-            ending_parts[by_part_id].append(part)
+            if by_part_id not in by_id_parts:
+                by_id_parts[by_part_id] = []
+            by_id_parts[by_part_id].append(part)
 
     @staticmethod
     def _get_props_list(control_id: str, label_map: Dict[str, str],
                         yaml_header: Dict[str, Any]) -> Tuple[List[common.Property], Dict[str, List[common.Property]]]:
+        """Get the list of props in the yaml header of this control as separate lists with and without by_id."""
         prop_list = yaml_header.get(const.TRESTLE_ADD_PROPS_TAG, [])
         props = []
         props_by_id = {}
@@ -799,7 +801,7 @@ class ControlReader():
             by_id = prop_d.get('smt-part', None)
             if by_id and control_id in label_map:
                 by_id = label_map[control_id].get(by_id, by_id)
-            prop = common.Property(name=prop_d['name'], value=prop_d['value'])
+            prop = common.Property(name=prop_d['name'], value=prop_d['value'], ns=prop_d.get('ns', None))
             if by_id:
                 if by_id not in props_by_id:
                     props_by_id[by_id] = []
@@ -814,7 +816,8 @@ class ControlReader():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections: Dict[str, str],
-        write_mode: bool
+        write_mode: bool,
+        default_namespace: Optional[str] = None
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
@@ -840,23 +843,26 @@ class ControlReader():
         if not editable_node:
             return sort_id, [], {}
 
-        implicit_parts = []
-        after_parts = {}
+        control_parts = []
+        by_id_parts = {}
         for subnode in editable_node.subnodes:
+            # first check if it is a part added directly to the control's list of parts
             if not ControlReader._add_control_part(control_id,
                                                    subnode,
                                                    required_sections_list,
                                                    sections_dict,
                                                    snake_dict,
-                                                   implicit_parts,
+                                                   control_parts,
                                                    found_sections,
                                                    write_mode):
-                ControlReader._add_sub_part(control_id, subnode, label_map, after_parts, sections)
+                # otherwise add it to the list of new parts to be added to the sub-parts of a part based on by-id
+                ControlReader._add_sub_part(control_id, subnode, label_map, by_id_parts, sections)
 
+        # the control parts are added to the control's list of parts
         adds = []
-        if implicit_parts:
-            adds.append(prof.Add(parts=implicit_parts, position='ending'))
-        for by_id, parts in after_parts.items():
+        if control_parts:
+            adds.append(prof.Add(parts=control_parts, position='ending'))
+        for by_id, parts in by_id_parts.items():
             adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
 
         missing_sections = set(required_sections_list) - set(found_sections)
@@ -866,17 +872,38 @@ class ControlReader():
         header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
+        for val in param_dict.values():
+            val['ns'] = val.get('ns', default_namespace)
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
+        # the default namespace should only be applied when assembling the catalog, i.e. read mode
+        if default_namespace and not write_mode:
+            for prop in props:
+                prop.ns = get_default(prop.ns, default_namespace)
+            for prop_list in props_by_id.values():
+                for prop in prop_list:
+                    prop.ns = get_default(prop.ns, default_namespace)
 
+        # When adding props without by_id it can either be starting or ending and we default to ending
+        # This is the default behavior as described for implicit binding in
+        # https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/
+        # When adding props to a part using by_id, it is the same situationbecause it cannot be before or after since
+        # props are not in the same list as parts
         if props:
             adds.append(prof.Add(props=props, position='ending'))
         for by_id, props in props_by_id.items():
-            adds.append(prof.Add(props=props, position='after', by_id=by_id))
+            adds.append(prof.Add(props=props, position='ending', by_id=by_id))
         new_alters = []
         if adds:
             new_alters = [prof.Alter(control_id=control_id, adds=adds)]
         return sort_id, new_alters, param_dict
+
+    @staticmethod
+    def _update_display_prop_namespace(item: TypeWithProps, default_namespace: Optional[str]):
+        if default_namespace:
+            for prop in as_list(item.props):
+                if prop.name == const.DISPLAY_NAME:
+                    prop.ns = default_namespace
 
     @staticmethod
     def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
@@ -918,12 +945,16 @@ class ControlReader():
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
         if set_parameters:
+            default_namespace = None
+            if const.TRESTLE_GLOBAL_TAG in yaml_header:
+                default_namespace = yaml_header[const.TRESTLE_GLOBAL_TAG].get(const.DEFAULT_NS, None)
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
+                    ControlReader._update_display_prop_namespace(param, default_namespace)
                     control.params.append(param)
         if const.SORT_ID in yaml_header:
             control.props = control.props if control.props else []

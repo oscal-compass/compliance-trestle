@@ -387,6 +387,10 @@ class ControlWriter():
         if sort_id and const.SORT_ID not in context.yaml_header:
             context.yaml_header[const.SORT_ID] = sort_id
         ControlInterface.merge_dicts_deep(merged_header, context.yaml_header, context.overwrite_header_values)
+        # the global contents are special and get overwritten on generate
+        global_contents = context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
+        if global_contents:
+            merged_header[const.TRESTLE_GLOBAL_TAG] = global_contents
 
         # merge any provided sections with sections in the header, with overwrite
         header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
