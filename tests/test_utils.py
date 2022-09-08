@@ -190,7 +190,7 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
     lines: List[str] = []
-    with file_path.open('r') as f:
+    with file_path.open('r', encoding=const.FILE_ENCODING) as f:
         lines = f.readlines()
     # '' for tag will seek text anywhere
     found_tag = False if tag else True
@@ -206,7 +206,7 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
     """Delete a run of lines in a file containing tag."""
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
-    f = file_path.open('r')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
     lines = f.readlines()
     f.close()
     for ii, line in enumerate(lines):
@@ -224,7 +224,7 @@ def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> 
     """Substitute first match of string with new string in file."""
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
-    f = file_path.open('r')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
     lines = f.readlines()
     f.close()
     for ii, line in enumerate(lines):
