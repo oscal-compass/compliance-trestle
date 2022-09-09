@@ -88,12 +88,13 @@ class MDWriter():
         """Start a new paragraph."""
         self.new_line('')
 
-    def new_header(self, level: int, title: str) -> None:
+    def new_header(self, level: int, title: str, add_new_line_after_header: bool = True) -> None:
         """Add new header."""
-        # headers must be separated by blank lines
+        # headers might be separated by blank lines
         self.new_paragraph()
         self.new_line('#' * level + ' ' + title)
-        self.new_paragraph()
+        if add_new_line_after_header:
+            self.new_paragraph()
 
     def new_hr(self) -> None:
         """Add horizontal rule."""

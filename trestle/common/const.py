@@ -235,6 +235,7 @@ MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
 
 OBJECTIVE_PART = 'objective'
+TABLE_OF_PARAMS_PART = 'table_of_parameters'
 
 # extracts standalone uuid's from anywhere in string
 UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'  # noqa FS003 E501
