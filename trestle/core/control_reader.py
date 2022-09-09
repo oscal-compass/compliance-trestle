@@ -858,13 +858,6 @@ class ControlReader():
                 # otherwise add it to the list of new parts to be added to the sub-parts of a part based on by-id
                 ControlReader._add_sub_part(control_id, subnode, label_map, by_id_parts, sections)
 
-        # the control parts are added to the control's list of parts
-        adds = []
-        if control_parts:
-            adds.append(prof.Add(parts=control_parts, position='ending'))
-        for by_id, parts in by_id_parts.items():
-            adds.append(prof.Add(parts=parts, position='ending', by_id=by_id))
-
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:
             raise TrestleError(f'Control {control_id} is missing required sections {missing_sections}')
@@ -876,6 +869,7 @@ class ControlReader():
             val['ns'] = val.get('ns', default_namespace)
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
+
         # the default namespace should only be applied when assembling the catalog, i.e. read mode
         if default_namespace and not write_mode:
             for prop in props:
@@ -887,12 +881,22 @@ class ControlReader():
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
         # https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/
-        # When adding props to a part using by_id, it is the same situationbecause it cannot be before or after since
+        # When adding props to a part using by_id, it is the same situation because it cannot be before or after since
         # props are not in the same list as parts
-        if props:
-            adds.append(prof.Add(props=props, position='ending'))
-        for by_id, props in props_by_id.items():
-            adds.append(prof.Add(props=props, position='ending', by_id=by_id))
+
+        adds: List[prof.Add] = []
+
+        # add the parts and props at control level
+        if control_parts or props:
+            adds.append(prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position='ending'))
+
+        # add the parts and props at the part level, by-id
+        by_ids = set(by_id_parts.keys()).union(props_by_id.keys())
+        for by_id in sorted(by_ids):
+            parts = by_id_parts.get(by_id, None)
+            props = props_by_id.get(by_id, None)
+            adds.append(prof.Add(parts=parts, props=props, position='ending', by_id=by_id))
+
         new_alters = []
         if adds:
             new_alters = [prof.Alter(control_id=control_id, adds=adds)]

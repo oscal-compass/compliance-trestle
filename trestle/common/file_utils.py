@@ -287,7 +287,7 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
                     f.writelines(lines)
                 return True
     else:
-        with file_path.open('a') as f:
+        with file_path.open('a', encoding=const.FILE_ENCODING) as f:
             f.writelines(text)
         return True
     return False
