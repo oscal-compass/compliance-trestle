@@ -138,7 +138,7 @@ class ProfileGenerate(AuthorCommonCommand):
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
         required_sections: Optional[str],
-        default_namespace: Optional[str] = ''
+        default_namespace: Optional[str] = None
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -163,10 +163,10 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog = ProfileResolver().get_resolved_profile_catalog(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
-            yaml_header[const.TRESTLE_GENERAL_TAG] = yaml_header.get(const.TRESTLE_GENERAL_TAG, {})
-            yaml_header[const.TRESTLE_GENERAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
+            yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
+            yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
             if default_namespace:
-                yaml_header[const.TRESTLE_GENERAL_TAG][const.DEFAULT_NS] = default_namespace
+                yaml_header[const.TRESTLE_GLOBAL_TAG][const.DEFAULT_NS] = default_namespace
 
             catalog_interface = CatalogInterface(catalog)
             part_id_map = catalog_interface.get_part_id_map(False)
@@ -273,7 +273,10 @@ class ProfileAssemble(AuthorCommonCommand):
 
     @staticmethod
     def _replace_modify_set_params(
-        profile: prof.Profile, param_dict: Dict[str, Any], param_map: Dict[str, str]
+        profile: prof.Profile,
+        param_dict: Dict[str, Any],
+        param_map: Dict[str, str],
+        default_namespace: Optional[str] = None
     ) -> bool:
         """
         Replace the set_params in the profile with list and values from markdown.
@@ -289,7 +292,7 @@ class ProfileAssemble(AuthorCommonCommand):
             for key, sub_param_dict in param_dict.items():
                 if sub_param_dict:
                     sub_param_dict['id'] = key
-                    param = ModelUtils.dict_to_parameter(sub_param_dict)
+                    param = ModelUtils.dict_to_parameter(sub_param_dict, default_namespace)
                     new_set_params.append(
                         prof.SetParameter(
                             param_id=key,
@@ -321,7 +324,7 @@ class ProfileAssemble(AuthorCommonCommand):
         sections: Optional[Dict[str, str]],
         required_sections: Optional[str],
         allowed_sections: Optional[List[str]],
-        default_namespace: Optional[str] = ''
+        default_namespace: Optional[str] = None
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
@@ -364,6 +367,12 @@ class ProfileAssemble(AuthorCommonCommand):
         catalog_interface = CatalogInterface(catalog)
         label_map = catalog_interface.get_part_id_map(True)
 
+        if default_namespace and not set_parameters:
+            logger.warning(
+                'A default namespace was specified but set_parameters is False so the namespace will be ignored'
+            )
+            default_namespace = None
+
         required_sections_list = required_sections.split(',') if required_sections else []
 
         # load the editable sections of the markdown and create Adds for them
@@ -375,7 +384,8 @@ class ProfileAssemble(AuthorCommonCommand):
             required_sections_list,
             label_map,
             sections,
-            False
+            False,
+            default_namespace
         )
         if allowed_sections:
             for alter in found_alters:
@@ -385,7 +395,7 @@ class ProfileAssemble(AuthorCommonCommand):
                             raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
+            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map, default_namespace)
 
         if version:
             parent_prof.metadata.version = com.Version(__root__=version)

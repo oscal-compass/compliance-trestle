@@ -186,17 +186,17 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
 
 
 def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
-    """Confirm the expected text is in the file after the tag."""
+    """Confirm the expected text is in the file on same line or after the tag."""
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
     lines: List[str] = []
-    with file_path.open('r') as f:
+    with file_path.open('r', encoding=const.FILE_ENCODING) as f:
         lines = f.readlines()
-    found_tag = False
+    # '' for tag will seek text anywhere
+    found_tag = False if tag else True
     for line in lines:
         if not found_tag and tag in line:
             found_tag = True
-            continue
         if found_tag and text in line:
             return True
     return False
@@ -206,7 +206,7 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
     """Delete a run of lines in a file containing tag."""
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
-    f = file_path.open('r')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
     lines = f.readlines()
     f.close()
     for ii, line in enumerate(lines):
@@ -224,7 +224,7 @@ def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> 
     """Substitute first match of string with new string in file."""
     if not file_path.exists():
         raise TrestleError(f'Test file {file_path} not found.')
-    f = file_path.open('r')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
     lines = f.readlines()
     f.close()
     for ii, line in enumerate(lines):
