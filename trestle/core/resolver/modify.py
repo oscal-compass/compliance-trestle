@@ -40,7 +40,8 @@ class Modify(Pipeline.Filter):
         block_adds: bool = False,
         block_params: bool = False,
         params_format: str = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
     ) -> None:
         """Initialize the filter."""
         self._profile = profile
@@ -50,6 +51,7 @@ class Modify(Pipeline.Filter):
         self._change_prose = change_prose
         self._params_format = params_format
         self._param_rep = param_rep
+        self.show_value_warnings = show_value_warnings
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
@@ -74,7 +76,8 @@ class Modify(Pipeline.Filter):
         text: str,
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
     ) -> str:
         """
         Replace params found in moustaches with values from the param_dict.
@@ -100,14 +103,15 @@ class Modify(Pipeline.Filter):
         for i, _ in enumerate(staches):
             # A moustache may refer to a param_id not listed in the control's params
             if param_ids[i] not in param_dict:
-                logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
+                if show_value_warnings:
+                    logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
             elif param_dict[param_ids[i]] is not None:
                 param = param_dict[param_ids[i]]
                 param_str = ControlInterface.param_to_str(param, param_rep, False, False, params_format)
                 text = text.replace(staches[i], param_str, 1).strip()
-                if param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
+                if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
                     logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
-            else:
+            elif show_value_warnings:
                 logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
         return text
 
@@ -117,36 +121,40 @@ class Modify(Pipeline.Filter):
         part: common.Part,
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
     ) -> None:
         """Replace the part prose according to set_param."""
         if part.prose is not None:
-            fixed_prose = Modify._replace_params(part.prose, param_dict, params_format, param_rep)
+            fixed_prose = Modify._replace_params(part.prose, param_dict, params_format, param_rep, show_value_warnings)
             # change the prose in the control itself
             part.prose = fixed_prose
         for prt in as_list(part.parts):
-            Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep)
+            Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep, show_value_warnings)
         for sub_control in as_list(control.controls):
             for prt in as_list(sub_control.parts):
-                Modify._replace_part_prose(sub_control, prt, param_dict, params_format, param_rep)
+                Modify._replace_part_prose(sub_control, prt, param_dict, params_format, param_rep, show_value_warnings)
 
     @staticmethod
     def _replace_control_prose(
         control: cat.Control,
         param_dict: Dict[str, common.Parameter],
         params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
     ) -> None:
         """Replace the control prose according to set_param."""
         for param in as_list(control.params):
-            Modify._replace_param_choices(param, param_dict)
+            Modify._replace_param_choices(param, param_dict, show_value_warnings)
         for part in as_list(control.parts):
             if part.prose is not None:
-                fixed_prose = Modify._replace_params(part.prose, param_dict, params_format, param_rep)
+                fixed_prose = Modify._replace_params(
+                    part.prose, param_dict, params_format, param_rep, show_value_warnings
+                )
                 # change the prose in the control itself
                 part.prose = fixed_prose
             for prt in as_list(part.parts):
-                Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep)
+                Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep, show_value_warnings)
 
     @staticmethod
     def _add_adds_to_part(part: common.Part, add: prof.Add, added_parts=False) -> None:
@@ -339,15 +347,19 @@ class Modify(Pipeline.Filter):
         param_dict.update(self._catalog_interface.loose_param_dict)
         # insert param values into prose of all controls
         for control in self._catalog_interface.get_all_controls_from_dict():
-            self._replace_control_prose(control, param_dict, self._params_format, self._param_rep)
+            self._replace_control_prose(
+                control, param_dict, self._params_format, self._param_rep, self.show_value_warnings
+            )
 
     @staticmethod
-    def _replace_param_choices(param: common.Parameter, param_dict: Dict[str, common.Parameter]) -> None:
+    def _replace_param_choices(
+        param: common.Parameter, param_dict: Dict[str, common.Parameter], show_value_warnings: bool
+    ) -> None:
         """Set values for all choices param that refer to params with values."""
         if param.select:
             new_choices: List[str] = []
             for choice in as_list(param.select.choice):
-                new_choice = Modify._replace_params(choice, param_dict)
+                new_choice = Modify._replace_params(choice, param_dict, show_value_warnings)
                 new_choices.append(new_choice)
             param.select.choice = new_choices
 
