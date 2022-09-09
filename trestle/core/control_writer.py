@@ -270,7 +270,7 @@ class ControlWriter():
 
         control_part_id_map = part_id_map.get(control.id, {})
 
-        # if the file already has markdown content, use its alters directly
+        # if the file already has markdown content, read its alters
         if self._md_file.exists():
             if const.TRESTLE_ADD_PROPS_TAG in header:
                 header.pop(const.TRESTLE_ADD_PROPS_TAG)
