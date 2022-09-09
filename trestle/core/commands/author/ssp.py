@@ -92,7 +92,10 @@ class SSPGenerate(AuthorCommonCommand):
 
             profile_resolver = ProfileResolver()
 
-            resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+            # in ssp context we want to see missing value warnings
+            resolved_catalog = profile_resolver.get_resolved_profile_catalog(
+                trestle_root, profile_path, show_value_warnings=True
+            )
             catalog_interface = CatalogInterface(resolved_catalog)
 
             sections_dict: Dict[str, str] = {}
@@ -413,7 +416,7 @@ class SSPFilter(AuthorCommonCommand):
         # filter by controls in profile
         if profile_name:
             prof_resolver = ProfileResolver()
-            catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+            catalog = prof_resolver.get_resolved_profile_catalog(trestle_root, profile_path, show_value_warnings=True)
             catalog_interface = CatalogInterface(catalog)
 
             # The input ssp should reference a superset of the controls referenced by the profile

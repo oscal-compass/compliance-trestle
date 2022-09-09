@@ -35,7 +35,8 @@ class ProfileResolver():
         block_adds: bool = False,
         block_params: bool = False,
         params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
     ) -> cat.Catalog:
         """
         Create the resolved profile catalog given a profile path.
@@ -47,6 +48,7 @@ class ProfileResolver():
             block_params: prevent the application of setparams in the final profile
             params_format: optional pattern with dot to wrap the param string, where dot represents the param string
             param_rep: desired way to convert params to strings
+            show_value_warnings: warn if prose references a value that has not been set
 
         Returns:
             The resolved profile catalog
@@ -54,7 +56,9 @@ class ProfileResolver():
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
         # The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.
-        import_filter = Import(trestle_root, import_, [], True, block_adds, block_params, params_format, param_rep)
+        import_filter = Import(
+            trestle_root, import_, [], True, block_adds, block_params, params_format, param_rep, show_value_warnings
+        )
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result
