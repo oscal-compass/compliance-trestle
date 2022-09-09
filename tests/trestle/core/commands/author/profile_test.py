@@ -498,6 +498,7 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     profile_generate = ProfileGenerate()
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, first_ns)
     assert test_utils.confirm_text_in_file(ac1_path, '', f'{const.DEFAULT_NS}: {first_ns}')
+    assert not test_utils.confirm_text_in_file(ac1_path, ' ns: ', first_ns)
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, first_ns
     ) == 0
@@ -512,6 +513,7 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
 
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, second_ns)
     assert test_utils.confirm_text_in_file(ac1_path, '', f'{const.DEFAULT_NS}: {second_ns}')
+    assert not test_utils.confirm_text_in_file(ac1_path, ' ns: ', second_ns)
     assert ProfileAssemble.assemble_profile(
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, second_ns
     ) == 0
