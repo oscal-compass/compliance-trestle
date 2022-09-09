@@ -24,7 +24,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, get_default, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -870,10 +870,27 @@ class ControlReader():
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
 
+        # the default namespace should only be applied when assembling the catalog, i.e. read mode
+        if default_namespace and not write_mode:
+            for prop in props:
+                prop.ns = get_default(prop.ns, default_namespace)
+            for prop_list in props_by_id.values():
+                for prop in prop_list:
+                    prop.ns = get_default(prop.ns, default_namespace)
+
+        # When adding props without by_id it can either be starting or ending and we default to ending
+        # This is the default behavior as described for implicit binding in
+        # https://pages.nist.gov/OSCAL/concepts/processing/profile-resolution/
+        # When adding props to a part using by_id, it is the same situation because it cannot be before or after since
+        # props are not in the same list as parts
+
         adds: List[prof.Add] = []
+
+        # add the parts and props at control level
         if control_parts or props:
             adds.append(prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position='ending'))
 
+        # add the parts and props at the part level, by-id
         by_ids = set(by_id_parts.keys()).union(props_by_id.keys())
         for by_id in sorted(by_ids):
             parts = by_id_parts.get(by_id, None)

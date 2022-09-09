@@ -505,9 +505,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[0].name == const.DISPLAY_NAME
     assert props[0].ns == first_ns
-    props = profile.modify.alters[0].adds[1].props
+    props = profile.modify.alters[0].adds[0].props
     assert props[0].ns == orig_ns
-    props = profile.modify.alters[0].adds[2].props
+    props = profile.modify.alters[0].adds[1].props
     assert props[0].ns == first_ns
 
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, second_ns)
@@ -519,9 +519,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[0].name == const.DISPLAY_NAME
     assert props[0].ns == second_ns
-    props = profile.modify.alters[0].adds[1].props
+    props = profile.modify.alters[0].adds[0].props
     assert props[0].ns == orig_ns
-    props = profile.modify.alters[0].adds[2].props
+    props = profile.modify.alters[0].adds[1].props
     assert props[0].ns == second_ns
 
     # assemble with a different namespace and make sure the default is applied
@@ -532,9 +532,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[0].name == const.DISPLAY_NAME
     assert props[0].ns == third_ns
-    props = profile.modify.alters[0].adds[1].props
+    props = profile.modify.alters[0].adds[0].props
     assert props[0].ns == orig_ns
-    props = profile.modify.alters[0].adds[2].props
+    props = profile.modify.alters[0].adds[1].props
     assert props[0].ns == third_ns
 
     # repeat but with set_parameters False and make sure it has no effect.  A warning to the user is given.
@@ -545,9 +545,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[2].name == const.DISPLAY_NAME
     assert props[2].ns is None
-    props = profile.modify.alters[0].adds[1].props
+    props = profile.modify.alters[0].adds[0].props
     assert props[0].ns == orig_ns
-    props = profile.modify.alters[0].adds[2].props
+    props = profile.modify.alters[0].adds[1].props
     assert props[0].ns is None
 
 
