@@ -360,6 +360,10 @@ class ProfileAssemble(AuthorCommonCommand):
         if not parent_prof_name:
             parent_prof_name = assem_prof_name
 
+        parent_prof_path = ModelUtils.full_path_for_top_level_model(trestle_root, parent_prof_name, prof.Profile)
+        if parent_prof_path is None:
+            raise TrestleError(f'Profile {parent_prof_name} does not exist.  An existing profile must be provided.')
+
         parent_prof, parent_prof_path = load_validate_model_name(trestle_root, parent_prof_name, prof.Profile)
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
 

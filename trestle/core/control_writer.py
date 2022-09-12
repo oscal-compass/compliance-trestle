@@ -228,7 +228,8 @@ class ControlWriter():
         profile: prof.Profile,
         header: Dict[str, Any],
         part_id_map: Dict[str, str],
-        found_alters: List[prof.Alter]
+        found_alters: List[prof.Alter],
+        default_namespace: Optional[str] = None
     ) -> List[str]:
         part_infos = ControlInterface.get_all_add_info(control.id, profile)
         has_content = len(part_infos) > 0
@@ -269,7 +270,7 @@ class ControlWriter():
 
         control_part_id_map = part_id_map.get(control.id, {})
 
-        # if the file already has markdown content, use its alters directly
+        # if the file already has markdown content, read its alters
         if self._md_file.exists():
             if const.TRESTLE_ADD_PROPS_TAG in header:
                 header.pop(const.TRESTLE_ADD_PROPS_TAG)
@@ -299,6 +300,10 @@ class ControlWriter():
                         by_id = add.by_id
                         part_info = PartInfo(name='', prose='', props=add.props, smt_part=by_id)
                         _, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
+                        if default_namespace:
+                            for prop in prop_list:
+                                if prop.get('ns', None) == default_namespace:
+                                    prop.pop('ns')
                         header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         else:
             in_part = ''
@@ -327,6 +332,10 @@ class ControlWriter():
                     in_part = ''
                     if const.TRESTLE_ADD_PROPS_TAG not in header:
                         header[const.TRESTLE_ADD_PROPS_TAG] = []
+                    if default_namespace:
+                        for prop in prop_list:
+                            if prop.get('ns', None) == default_namespace:
+                                prop.pop('ns')
                     header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         return added_sections
 
@@ -413,12 +422,20 @@ class ControlWriter():
         if context.prompt_responses:
             self._add_implementation_response_prompts(control, comp_dict, context.comp_def is not None)
 
+        # get the default namespace in order to cull it on writing of markdown
+        default_namespace = context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, {}).get(const.DEFAULT_NS, None)
+        if default_namespace:
+            set_params = merged_header.get(const.SET_PARAMS_TAG, {})
+            for param in set_params.values():
+                if param.get('ns', None) == default_namespace:
+                    param.pop('ns')
+
         # only used for profile-generate
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
         if context.additional_content:
             added_sections = self._add_additional_content(
-                control, context.profile, merged_header, part_id_map, found_alters
+                control, context.profile, merged_header, part_id_map, found_alters, default_namespace
             )
 
         self._add_yaml_header(merged_header)
