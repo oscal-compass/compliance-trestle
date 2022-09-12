@@ -160,7 +160,7 @@ def test_jinja_profile_docs(
             assert tree
             node1 = tree.get_node_for_key('# Control Page')
             assert node1
-            node2 = tree.get_node_for_key('## Control Statement Header')
+            node2 = tree.get_node_for_key('## Statement Header')
             assert node2
             node3 = tree.get_node_for_key('## Control Expected Evidence Header')
             # ac-3 and ac-3.3 do not have this part
@@ -192,10 +192,36 @@ def test_jinja_profile_docs_with_group_title(
         node2 = tree.get_node_for_key('# AC-2 - \\[Access Control\\] Account Management')
         assert node2
         assert '{: #ac-2}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        assert node2.content.text[1] == ''  # assert new line after tag
         node3 = tree.get_node_for_key('## Table of Control Parameters')
         assert node3
-        assert '{: #Parameters for AC-2 caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
+        assert '{: #table-of-control-parameters}' in node3.content.raw_text  # noqa: FS003 - not f string but tag
+        assert '{: #"Parameters for AC-2" caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
         assert 'AC-2 Test' in node3.content.tables[2]
+
+
+def test_jinja_profile_docs_with_selected_sections(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test Jinja Profile to multiple md files output with group title."""
+    input_template = 'profile_to_docs_only_some_sections.md.jinja'
+
+    setup_ssp(testdata_dir, tmp_trestle_dir, monkeypatch)
+
+    command_import = f'trestle author jinja -i {input_template} -o controls -p test_profile_a --docs-profile'
+    execute_command_and_assert(command_import, 0, monkeypatch)
+
+    md_control = tmp_trestle_dir / 'controls' / 'ac' / 'ac-1.md'
+    with open(md_control) as md_file:
+        contents = md_file.read()
+        tree = MarkdownNode.build_tree_from_markdown(contents.split('\n'))
+        assert tree
+        node1 = tree.get_node_for_key('# Control Page')
+        assert node1
+        node2 = tree.get_node_for_key('## Control Objective Header')
+        assert node2
+        assert '{: #control-objective-header}' in node2.content.raw_text  # noqa: FS003 - not f string but tag
+        assert len(tree.content.subnodes_keys) == 2
 
 
 def test_jinja_profile_docs_fails(
