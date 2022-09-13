@@ -276,18 +276,31 @@ class ControlWriter():
                 header.pop(const.TRESTLE_ADD_PROPS_TAG)
             for alter in found_alters:
                 for add in as_list(alter.adds):
+                    # by_id could refer to statement (Control) or part (Part)
                     if add.by_id:
-                        part_label = control_part_id_map.get(add.by_id, add.by_id)
-                        if add.parts:
-                            self._md_file.new_header(level=2, title=f'Part {part_label}')
+                        # is this a part that goes after the control statement
+                        if add.by_id == f'{control.id}_smt':
                             for part in as_list(add.parts):
                                 if part.prose:
                                     name = part.name
                                     title = self._sections_dict.get(name, name) if self._sections_dict else name
-                                    self._md_file.new_header(level=3, title=title)
+                                    self._md_file.new_header(level=2, title=f'Control {title}')
                                     self._md_file.new_paraline(part.prose)
                                     added_sections.append(name)
+                        else:
+                            # or is it a sub-part of a statement part
+                            part_label = control_part_id_map.get(add.by_id, add.by_id)
+                            if add.parts:
+                                self._md_file.new_header(level=2, title=f'Part {part_label}')
+                                for part in as_list(add.parts):
+                                    if part.prose:
+                                        name = part.name
+                                        title = self._sections_dict.get(name, name) if self._sections_dict else name
+                                        self._md_file.new_header(level=3, title=title)
+                                        self._md_file.new_paraline(part.prose)
+                                        added_sections.append(name)
                     else:
+                        # if not by_id just add at end of control's parts
                         for part in as_list(add.parts):
                             name = part.name
                             title = self._sections_dict.get(name, name) if self._sections_dict else name
@@ -306,10 +319,12 @@ class ControlWriter():
                                     prop.pop('ns')
                         header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         else:
+            # md does not already exist so fill in directly
             in_part = ''
             for part_info in part_infos:
                 part, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
                 part_prose = part.get('prose', None)
+                # is this part of a statement part
                 if part_info.smt_part and part_prose and part_info.smt_part in control_part_id_map:
                     # avoid outputting ## Part again if in same part
                     if not part_info.smt_part == in_part:
@@ -321,6 +336,7 @@ class ControlWriter():
                     self._md_file.new_header(level=3, title=title)
                     self._md_file.new_paraline(part_prose)
                     added_sections.append(name)
+                # is it a control part
                 elif part_prose:
                     in_part = ''
                     name = part['name']

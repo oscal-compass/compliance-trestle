@@ -78,13 +78,13 @@ multi_guidance_dict = {
 }
 
 all_sections_str = (
-    'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,my_guidance:My Guidance,'
+    'implgdn:Implementation Guidance,expevid:Expected Evidence,my_guidance:My Guidance,'
     'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra'
 )
 
 all_sections_dict = {
-    'ImplGuidance': 'Implementation Guidance',
-    'ExpectedEvidence': 'Expected Evidence',
+    'implgdn': 'Implementation Guidance',
+    'expevid': 'Expected Evidence',
     'my_guidance': 'My Guidance',
     'a_guidance': 'A Guidance',
     'b_guidance': 'B Guidance',
@@ -389,7 +389,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         set_parameters=False,
         overwrite_header_values=False,
         yaml_header=None,
-        sections='NeededExtra:Needed Extra,ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence',
+        sections='NeededExtra:Needed Extra,implgdn:Implementation Guidance,expevid:Expected Evidence',
         required_sections='NeededExtra',
         namespace=''
     )
@@ -425,7 +425,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
     assert profile_assemble._run(test_args) == 1
 
     # succed if allowed sections has all
-    test_args.allowed_sections = 'ExpectedEvidence,ImplGuidance,NeededExtra'
+    test_args.allowed_sections = 'expevid,implgdn,NeededExtra'
     assert profile_assemble._run(test_args) == 0
 
     # disallowed output name
@@ -461,7 +461,7 @@ def test_profile_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     assert new_time == orig_time
 
     # now generate again but with different section title, causing change in generated profile markdown
-    new_sections = {'ImplGuidance': 'Different Title'}
+    new_sections = {'implgdn': 'Different Title'}
     profile_generate.generate_markdown(tmp_trestle_dir, profile_path, markdown_path, {}, False, new_sections, None)
 
     assert ProfileAssemble.assemble_profile(
@@ -506,9 +506,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[0].name == const.DISPLAY_NAME
     assert props[0].ns == first_ns
-    props = profile.modify.alters[0].adds[0].props
-    assert props[0].ns == orig_ns
     props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
     assert props[0].ns == first_ns
 
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, second_ns)
@@ -521,9 +521,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[0].name == const.DISPLAY_NAME
     assert props[0].ns == second_ns
-    props = profile.modify.alters[0].adds[0].props
-    assert props[0].ns == orig_ns
     props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
     assert props[0].ns == second_ns
 
     # assemble with a different namespace and make sure the default is applied
@@ -534,9 +534,9 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[0].name == const.DISPLAY_NAME
     assert props[0].ns == third_ns
-    props = profile.modify.alters[0].adds[0].props
-    assert props[0].ns == orig_ns
     props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
     assert props[0].ns == third_ns
 
     # repeat but with set_parameters False and make sure it has no effect.  A warning to the user is given.
@@ -547,18 +547,16 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.set_parameters[0].props
     assert props[2].name == const.DISPLAY_NAME
     assert props[2].ns is None
-    props = profile.modify.alters[0].adds[0].props
-    assert props[0].ns == orig_ns
     props = profile.modify.alters[0].adds[1].props
+    assert props[0].ns == orig_ns
+    props = profile.modify.alters[0].adds[2].props
     assert props[0].ns is None
 
 
 def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile alter adds involving props."""
     ac1_path, _, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
-    sections = {
-        'ImplGuidance': 'Implementation Guidance', 'ExpectedEvidence': 'Expected Evidence', 'guidance': 'Guidance'
-    }
+    sections = {'implgdn': 'Implementation Guidance', 'expevid': 'Expected Evidence', 'guidance': 'Guidance'}
     # generate markdown twice and confirmed no changes
     profile_generate = ProfileGenerate()
     assert profile_generate.generate_markdown(
@@ -596,11 +594,14 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
         prof.Profile, FileContentType.JSON
     )
     adds = profile.modify.alters[0].adds
-    assert len(adds) == 3
+    assert len(adds) == 4
+    assert adds[0].position == prof.Position.after
+    assert adds[0].by_id == 'ac-1_smt'
     assert len(adds[0].parts) == 2
-    assert len(adds[0].props) == 2
-    assert adds[1].by_id == 'ac-1_smt.a'
-    assert adds[2].by_id == 'ac-1_smt.c'
+    assert adds[0].props is None
+    assert len(adds[1].props) == 2
+    assert adds[2].by_id == 'ac-1_smt.a'
+    assert adds[3].by_id == 'ac-1_smt.c'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac1 = catalog.groups[0].controls[0]
@@ -638,10 +639,11 @@ More evidence
         prof.Profile, FileContentType.JSON
     )
     adds = profile.modify.alters[0].adds
-    assert len(adds) == 4
-    assert adds[1].by_id == 'ac-1_smt.a'
-    assert adds[2].by_id == 'ac-1_smt.b'
-    assert adds[3].by_id == 'ac-1_smt.c'
+    assert len(adds) == 5
+    assert adds[0].position == prof.Position.after
+    assert adds[2].by_id == 'ac-1_smt.a'
+    assert adds[3].by_id == 'ac-1_smt.b'
+    assert adds[4].by_id == 'ac-1_smt.c'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     parts = catalog.groups[0].controls[0].parts[0].parts

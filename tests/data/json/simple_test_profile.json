@@ -132,12 +132,12 @@
               "parts": [
                 {
                   "id": "ac-1_implgdn",
-                  "name": "ImplGuidance",
+                  "name": "implgdn",
                   "prose": "Do it carefully."
                 },
                 {
                   "id": "ac-1_expevid",
-                  "name": "ExpectedEvidence",
+                  "name": "expevid",
                   "prose": "Detailed logs."
                 }
               ]
@@ -153,12 +153,12 @@
               "parts": [
                 {
                   "id": "ac-2_implgdn",
-                  "name": "ImplGuidance",
+                  "name": "implgdn",
                   "prose": "Maintain compliance"
                 },
                 {
                   "id": "ac-2_expevid",
-                  "name": "ExpectedEvidence",
+                  "name": "expevid",
                   "prose": "Daily logs."
                 }
               ]

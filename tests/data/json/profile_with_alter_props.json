@@ -92,12 +92,12 @@
               "parts": [
                 {
                   "id": "ac-1_implgdn",
-                  "name": "ImplGuidance",
+                  "name": "implgdn",
                   "prose": "Maintain compliance"
                 },
                 {
                   "id": "ac-1_expevid",
-                  "name": "ExpectedEvidence",
+                  "name": "expevid",
                   "prose": "Daily logs.",
                   "props": [
                     {
