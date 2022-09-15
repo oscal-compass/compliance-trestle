@@ -297,7 +297,7 @@ class ControlWriter():
                                     if part.prose:
                                         name = part.name
                                         # need special handling for statement parts because their name is 'item'
-                                        # get the short hame as last piece of the part id after the '.'
+                                        # get the short name as last piece of the part id after the '.'
                                         if name == 'item':
                                             name = part.id.split('.')[-1]
                                         title = self._sections_dict.get(name, name) if self._sections_dict else name
