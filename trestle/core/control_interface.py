@@ -393,6 +393,65 @@ class ControlInterface:
         return param_dict
 
     @staticmethod
+    def merge_props(dest: Optional[List[common.Property]],
+                    src: Optional[List[common.Property]]) -> List[common.Property]:
+        """Merge a source list of properties into a destination list."""
+        if not src:
+            return dest
+        new_props: List[common.Propert] = []
+        src_map = {prop.name: prop for prop in src}
+        dest_map = {prop.name: prop for prop in dest}
+        all_names = set(src_map.keys()).union(dest_map.keys())
+        for name in all_names:
+            if name in src_map and name not in dest_map:
+                new_props.append(src_map[name])
+            elif name in dest_map and name not in src_map:
+                new_props.append(dest_map[name])
+            else:
+                new_prop = dest_map[name]
+                src_prop = src_map[name]
+                new_prop.class_ = src_prop.class_ if src_prop.class_ else new_prop.class_
+                new_prop.ns = src_prop.ns if src_prop.ns else new_prop.ns
+                new_prop.remarks = src_prop.remarks if src_prop.remarks else new_prop.remarks
+                new_prop.uuid = src_prop.uuid if src_prop.uuid else new_prop.uuid
+                new_prop.value = src_prop.value
+                new_props.append(new_prop)
+        return new_props
+
+    @staticmethod
+    def merge_part(dest: common.Part, src: common.Part) -> common.Part:
+        """Merge a source part into the destination part."""
+        logger.info(f'merge part {dest.id} {src.id}')
+        dest.name = src.name if src.name else dest.name
+        dest.ns = src.ns if src.ns else dest.ns
+        dest.props = none_if_empty(ControlInterface.merge_props(dest.props, src.props))
+        dest.prose = src.prose
+        dest.title = src.title if src.title else dest.title
+        ControlInterface.merge_parts(dest, src)
+        return dest
+
+    @staticmethod
+    def merge_parts(dest: TypeWithParts, src: TypeWithParts) -> None:
+        """Merge the parts from the source into the destination."""
+        logger.info(f'merge parts {dest.id} {src.id}')
+        if not dest.parts:
+            dest.parts = src.parts
+        elif not src.parts:
+            dest.parts = None
+        else:
+            new_parts: List[common.Part] = []
+            dest_map = {part.id: part for part in dest.parts}
+            for src_part in src.parts:
+                dest_part = dest_map.get(src_part.id, None)
+                if not dest_part:
+                    new_parts.append(src_part)
+                else:
+                    new_part = ControlInterface.merge_part(dest_part, src_part)
+                    if new_part:
+                        new_parts.append(new_part)
+            dest.parts = new_parts
+
+    @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
         """
         Merge dict src into dest.

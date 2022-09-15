@@ -108,8 +108,8 @@ def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     ac_1 = catalog.groups[0].controls[0]
-    assert ac_1.props[2].name == 'ac1_foo'
-    assert ac_1.props[2].value == 'ac1 bar'
+    assert ac_1.props[3].name == 'ac1_foo'
+    assert ac_1.props[3].value == 'ac1 bar'
     assert ac_1.parts[2].props[0].name == 'part_prop'
     assert ac_1.parts[2].props[0].value == 'part_prop_val'
 
