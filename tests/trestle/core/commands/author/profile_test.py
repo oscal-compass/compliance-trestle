@@ -104,8 +104,6 @@ B subpart prose
 
 ## Part a.
 
-prose for part a. in the statement
-
 ### a by_id subpart
 
 a by_id subpart prose
@@ -119,7 +117,7 @@ control_subparts_dict = {
         ('ac-1_a_guidance.a_subpart', 'a_subpart', 'A subpart prose'),
         ('ac-1_a_guidance.a_subpart.a_subsubpart', 'a_subsubpart', 'A subsubpart prose'),
         ('ac-1_a_guidance.b_subpart', 'b_subpart', 'B subpart prose'),
-        # FIXME ('ac-1_smt.a', 'item', 'prose for part a. in the statement'),
+        ('ac-1_smt.a', 'item', 'Develop, document, and disseminate'),  # this is the original NIST prose
         ('ac-1_smt.a.a_by_id_subpart', 'item', 'a by_id subpart prose')
     ],
     'text': control_subparts_text
