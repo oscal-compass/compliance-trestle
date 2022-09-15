@@ -402,7 +402,7 @@ class ControlInterface:
         src_map = {prop.name: prop for prop in src}
         dest_map = {prop.name: prop for prop in dest}
         all_names = set(src_map.keys()).union(dest_map.keys())
-        for name in all_names:
+        for name in sorted(all_names):
             if name in src_map and name not in dest_map:
                 new_props.append(src_map[name])
             elif name in dest_map and name not in src_map:
@@ -421,7 +421,6 @@ class ControlInterface:
     @staticmethod
     def merge_part(dest: common.Part, src: common.Part) -> common.Part:
         """Merge a source part into the destination part."""
-        logger.info(f'merge part {dest.id} {src.id}')
         dest.name = src.name if src.name else dest.name
         dest.ns = src.ns if src.ns else dest.ns
         dest.props = none_if_empty(ControlInterface.merge_props(dest.props, src.props))
@@ -433,7 +432,6 @@ class ControlInterface:
     @staticmethod
     def merge_parts(dest: TypeWithParts, src: TypeWithParts) -> None:
         """Merge the parts from the source into the destination."""
-        logger.info(f'merge parts {dest.id} {src.id}')
         if not dest.parts:
             dest.parts = src.parts
         elif not src.parts:
