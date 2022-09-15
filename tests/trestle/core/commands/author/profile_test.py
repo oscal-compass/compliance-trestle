@@ -37,6 +37,7 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, sections_to_dict
+from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.models.file_content_type import FileContentType
@@ -58,10 +59,13 @@ my_guidance_text = """
 This is My Guidance.
 """
 
-# just add a new addition
-my_guidance_dict = {'name_exp': [('my_guidance', 'This is My Guidance.')], 'text': my_guidance_text}
+# name_exp maps the name of the section to the expected prose
+# text is the text to be inserted in the markdown at the end of the file
 
-multi_guidance_text = my_guidance_text = """
+# just add a new addition
+my_guidance_dict = {'name_exp': [('ac-1_my_guidance', 'my_guidance', 'This is My Guidance.')], 'text': my_guidance_text}
+
+multi_guidance_text = """
 
 ## Control A Guidance
 
@@ -73,8 +77,52 @@ This is B Guidance.
 """
 # add two additions
 multi_guidance_dict = {
-    'name_exp': [('a_guidance', 'This is A Guidance.'), ('b_guidance', 'This is B Guidance.')],
+    'name_exp': [
+        ('ac-1_a_guidance', 'a_guidance', 'This is A Guidance.'),
+        ('ac-1_b_guidance', 'b_guidance', 'This is B Guidance.')
+    ],
     'text': multi_guidance_text
+}
+
+control_subparts_text = """
+
+## Control A Guidance
+
+Control A prose
+
+### A Subpart
+
+A subpart prose
+
+#### A Subsubpart
+
+A subsubpart prose
+
+### B Subpart
+
+B subpart prose
+
+## Part a.
+
+prose for part a. in the statement
+
+### a by_id subpart
+
+a by_id subpart prose
+
+"""
+
+# part.id, part.name, part.prose
+control_subparts_dict = {
+    'name_exp': [
+        ('ac-1_a_guidance', 'a_guidance', 'Control A prose'),
+        ('ac-1_a_guidance.a_subpart', 'a_subpart', 'A subpart prose'),
+        ('ac-1_a_guidance.a_subpart.a_subsubpart', 'a_subsubpart', 'A subsubpart prose'),
+        ('ac-1_a_guidance.b_subpart', 'b_subpart', 'B subpart prose'),
+        # FIXME ('ac-1_smt.a', 'item', 'prose for part a. in the statement'),
+        ('ac-1_smt.a.a_by_id_subpart', 'item', 'a by_id subpart prose')
+    ],
+    'text': control_subparts_text
 }
 
 all_sections_str = (
@@ -124,7 +172,7 @@ def setup_profile_generate(trestle_root: pathlib.Path,
 
 
 @pytest.mark.parametrize('add_header', [True, False])
-@pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict])
+@pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict, control_subparts_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 @pytest.mark.parametrize('set_parameters', [True, False])
@@ -245,10 +293,12 @@ def test_profile_generate_assemble(
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
     catalog_interface = CatalogInterface(catalog)
-    # confirm presence of all expected strings in the control named parts
-    for name, exp_str in guid_dict['name_exp']:
-        prose = catalog_interface.get_control_part_prose('ac-1', name)
-        assert prose.find(exp_str) >= 0
+    # confirm correct ids, names, and prose for the parts
+    ac_1 = catalog_interface.get_control('ac-1')
+    for part_id, name, exp_str in guid_dict['name_exp']:
+        part = ControlInterface.get_part_by_id(ac_1, part_id)
+        assert part.name == name
+        assert part.prose.find(exp_str) >= 0
 
 
 @pytest.mark.parametrize(
@@ -321,10 +371,13 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 
         catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
         catalog_interface = CatalogInterface(catalog)
-        # confirm presence of all expected strings in the control named parts
-        for name, exp_str in multi_guidance_dict['name_exp']:
-            prose = catalog_interface.get_control_part_prose('ac-1', name)
-            assert prose.find(exp_str) >= 0
+        # confirm correct ids, names, and prose for the parts
+        ac_1 = catalog_interface.get_control('ac-1')
+        for part_id, name, exp_str in multi_guidance_dict['name_exp']:
+            part = ControlInterface.get_part_by_id(ac_1, part_id)
+            assert part.name == name
+            assert part.prose.find(exp_str) >= 0
+
     else:
         with pytest.raises(TrestleError):
             ProfileAssemble.assemble_profile(
@@ -647,9 +700,10 @@ More evidence
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     parts = catalog.groups[0].controls[0].parts[0].parts
-    assert parts[1].parts[0].id == 'ac-1_newguidance'
+    assert parts[1].parts[0].id == 'ac-1_smt.b.new_guidance'
+    assert parts[1].parts[0].name == 'item'
     assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert parts[1].parts[1].id == 'ac-1_newevidence'
+    assert parts[1].parts[1].id == 'ac-1_smt.b.new_evidence'
     assert parts[1].parts[1].prose == 'More evidence'
 
     # Confirm that changed prose in the markdown is retained on new profile-generate
@@ -660,9 +714,9 @@ More evidence
     ) == 0
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     parts = catalog.groups[0].controls[0].parts[0].parts
-    assert parts[1].parts[0].id == 'ac-1_newguidance'
+    assert parts[1].parts[0].id == 'ac-1_smt.b.new_guidance'
     assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert parts[1].parts[1].id == 'ac-1_newevidence'
+    assert parts[1].parts[1].id == 'ac-1_smt.b.new_evidence'
     assert parts[1].parts[1].prose == 'Updated evidence'
 
 

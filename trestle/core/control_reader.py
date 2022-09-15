@@ -237,7 +237,8 @@ class ControlReader():
         else:
             ii, indent, line = ControlReader._get_next_indent(ii, lines)
 
-        statement_part = common.Part(name=const.STATEMENT, id=f'{control_id}_smt')
+        statement_id = ControlInterface.create_statement_id(control_id)
+        statement_part = common.Part(name=const.STATEMENT, id=statement_id)
         # first line is either statement prose or start of statement parts
         if indent < 0:
             statement_part.prose = line
@@ -702,18 +703,19 @@ class ControlReader():
                     by_comp.implementation_status = comp_info.status
                     # add the response prose to the description
                     by_comp.description = comp_info.prose
+                    statement_id = ControlInterface.create_statement_id(control_id)
                     if label == const.STATEMENT:
-                        statement_id = f'{control_id}_smt'
+                        statement_part_id = statement_id
                     else:
                         clean_label = label.strip('.')
-                        statement_id = ControlInterface.strip_to_make_ncname(f'{control_id}_smt.{clean_label}')
-                    if statement_id in statement_map:
-                        statement = statement_map[statement_id]
+                        statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
+                    if statement_part_id in statement_map:
+                        statement = statement_map[statement_part_id]
                     else:
                         statement: generic.GenericStatement = generic.GenericStatement.generate()
-                        statement.statement_id = statement_id
+                        statement.statement_id = statement_part_id
                         statement.by_components = []
-                        statement_map[statement_id] = statement
+                        statement_map[statement_part_id] = statement
                     statement.by_components.append(by_comp)
                 else:
                     imp_req.description = comp_info.prose
@@ -740,6 +742,8 @@ class ControlReader():
             part_name_raw = match.groups(0)[0]
             prose = ControlReader._clean_prose(subnode.content.text)
             prose = '\n'.join(prose)
+            # prose may be empty but make part anyway if it was in markdown
+            # it also may contain sub-parts
             part_name_snake = spaces_and_caps_to_snake(part_name_raw)
             part_name = snake_dict.get(part_name_snake, part_name_snake)
             # if section is required and it hasn't been edited with prose raise error
@@ -748,22 +752,47 @@ class ControlReader():
                 missing_section = sections_dict.get(part_name, part_name)
                 raise TrestleError(f'Control {control_id} is missing prose for required section {missing_section}')
             id_ = f'{control_id}_{part_name}'
-            # use sections dict to find correct title otherwise use the title from the markdown
-            part_title = sections_dict.get(part_name, part_name_raw)
+            # use sections dict to find correct title otherwise leave it None
+            part_title = sections_dict.get(part_name, None)
             part = common.Part(id=id_, name=part_name, prose=prose, title=part_title)
+            part.parts = ControlReader._add_sub_parts(part.id, subnode)
             control_parts.append(part)
             found_sections.append(part_name)
             return True
         return False
 
     @staticmethod
+    def _add_sub_parts(part_id: str,
+                       node: MarkdownNode,
+                       fixed_part_name: Optional[str] = None) -> Optional[List[common.Part]]:
+        if not node.subnodes:
+            return None
+        parts = []
+        for subnode in node.subnodes:
+            # the count of hashes should be correct based on parsing already down by the markdown parser
+            match = re.match(const.AFTER_HASHES_REGEX, subnode.key)
+            if not match:
+                raise TrestleError(f'Unexpected editable header {subnode.key} found in part {part_id}')
+            part_name = match.groups(0)[0]
+            part_name_snake = spaces_and_caps_to_snake(part_name)
+            id_ = part_id + '.' + part_name_snake
+            prose_lines = ControlReader._clean_prose(subnode.content.text)
+            prose = '\n'.join(prose_lines)
+            final_part_name = fixed_part_name if fixed_part_name else part_name_snake
+            part = common.Part(id=id_, name=final_part_name, prose=prose)
+            part.parts = ControlReader._add_sub_parts(part.id, subnode, fixed_part_name)
+            parts.append(part)
+        return parts
+
+    @staticmethod
     def _add_sub_part(
         control_id: str,
         subnode: MarkdownNode,
         label_map: Dict[str, str],
-        by_id_parts: Dict[str, common.Part],
+        by_id_parts: Dict[str, List[common.Part]],
         sections: Dict[str, str]
     ) -> None:
+        """Add subnode contents to the list of by_id statement parts for the top level of the control."""
         match = re.match(const.PART_REGEX, subnode.key)
         if not match:
             raise TrestleError(f'Unexpected editable header {subnode.key} found in control {control_id}')
@@ -774,16 +803,17 @@ class ControlReader():
         by_part_id = control_label_map.get(by_part_label, None)
         if by_part_id is None:
             raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
-        inv_map = {v: k for k, v in sections.items()}
+        inv_map = {v: k for k, v in sections.items()} if sections else {}
         for node2 in as_list(subnode.subnodes):
             hash_pattern = '### '
             if node2.key.startswith(hash_pattern):
-                part_name = node2.key.replace(hash_pattern, '', 1).strip()
+                part_name = spaces_and_caps_to_snake(node2.key.replace(hash_pattern, '', 1).strip())
                 part_name = inv_map.get(part_name, part_name)
                 prose = ControlReader._clean_prose(node2.content.text)
                 prose = '\n'.join(prose)
-                id_ = f'{control_id}_{part_name}'
-                part = common.Part(id=id_, name=part_name, prose=prose)
+                id_ = f'{by_part_id}.{part_name}'
+                part = common.Part(id=id_, name='item', prose=prose)
+                part.parts = ControlReader._add_sub_parts(part.id, node2, 'item')
             else:
                 raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
             if by_part_id not in by_id_parts:
@@ -846,7 +876,7 @@ class ControlReader():
         control_parts = []
         by_id_parts = {}
         for subnode in editable_node.subnodes:
-            # first check if it is a part added directly to the control's list of parts
+            # check if it is a part added directly to the control's list of parts
             if not ControlReader._add_control_part(control_id,
                                                    subnode,
                                                    required_sections_list,

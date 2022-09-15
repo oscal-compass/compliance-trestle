@@ -269,6 +269,7 @@ class ControlWriter():
         added_sections: List[str] = []
 
         control_part_id_map = part_id_map.get(control.id, {})
+        statement_id = ControlInterface.get_statement_id(control)
 
         # if the file already has markdown content, read its alters
         if self._md_file.exists():
@@ -279,7 +280,7 @@ class ControlWriter():
                     # by_id could refer to statement (Control) or part (Part)
                     if add.by_id:
                         # is this a part that goes after the control statement
-                        if add.by_id == f'{control.id}_smt':
+                        if add.by_id == statement_id:
                             for part in as_list(add.parts):
                                 if part.prose:
                                     name = part.name
@@ -295,6 +296,10 @@ class ControlWriter():
                                 for part in as_list(add.parts):
                                     if part.prose:
                                         name = part.name
+                                        # need special handling for statement parts because their name is 'item'
+                                        # get the short hame as last piece of the part id after the '.'
+                                        if name == 'item':
+                                            name = part.id.split('.')[-1]
                                         title = self._sections_dict.get(name, name) if self._sections_dict else name
                                         self._md_file.new_header(level=3, title=title)
                                         self._md_file.new_paraline(part.prose)
