@@ -398,7 +398,7 @@ class ControlInterface:
         """Merge a source list of properties into a destination list."""
         if not src:
             return dest
-        new_props: List[common.Propert] = []
+        new_props: List[common.Property] = []
         src_map = {prop.name: prop for prop in src}
         dest_map = {prop.name: prop for prop in dest}
         all_names = set(src_map.keys()).union(dest_map.keys())
