@@ -146,6 +146,12 @@ def test_catalog_generate_assemble(
         ac1.params = None
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
+    if use_orig_cat:
+        ac1 = assembled_cat.groups[0].controls[0]
+        assert ac1.props[2].name == 'extra_prop'
+        assert ac1.props[2].value == 'extra value'
+        assert ac1.parts[0].props[0].name == 'prop_in_part'
+        assert ac1.parts[0].props[0].value == 'value in part'
     assert test_utils.catalog_interface_equivalent(interface_orig, assembled_cat, False)
 
 

@@ -17,14 +17,14 @@
 from typing import TypeVar
 
 import trestle.oscal.component as comp
+import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
-from trestle.oscal.catalog import Catalog, Control
-from trestle.oscal.common import Part, Resource
+from trestle.oscal.catalog import Catalog, Control, Group
+from trestle.oscal.common import AssessmentPart, Part, Resource
 from trestle.oscal.poam import PlanOfActionAndMilestones
-from trestle.oscal.profile import Profile
 
 # model types containing uuids that should not regenerate
 FixedUuidModel = Resource
@@ -36,7 +36,7 @@ TopLevelOscalModel = TypeVar(
     Catalog,
     comp.ComponentDefinition,
     PlanOfActionAndMilestones,
-    Profile,
+    prof.Profile,
     ossp.SystemSecurityPlan
 )
 
@@ -48,8 +48,11 @@ TypeWithProps = TypeVar(
     'TypeWithProps',
     Control,
     Part,
+    AssessmentPart,
     comp.Statement,
     ossp.Statement,
     comp.ImplementedRequirement,
     ossp.ImplementedRequirement
 )
+
+TypeWithParts = TypeVar('TypeWithParts', Control, Part, Group, prof.Add, prof.Group)

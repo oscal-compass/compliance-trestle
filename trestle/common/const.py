@@ -220,6 +220,8 @@ PART_REGEX = r'(?:##\s+Part\s+)(.*)'
 
 CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
 
+AFTER_HASHES_REGEX = r'(?:##*\s+)(.*)'
+
 CACHE_ABS_DIR = '__abs__'
 
 UNIX_CACHE_ROOT = '__root__'

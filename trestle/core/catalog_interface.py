@@ -841,7 +841,7 @@ class CatalogInterface():
             src: source control with new content
             replace_params: replace the control params with the new ones
         """
-        dest.parts = src.parts
+        ControlInterface.merge_parts(dest, src)
         if replace_params:
             dest.params = src.params
 

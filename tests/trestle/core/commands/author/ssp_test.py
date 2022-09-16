@@ -67,7 +67,7 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     """Test the ssp generator."""
     args, _, _ = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
     if specify_sections:
-        args.allowed_sections = 'ImplGuidance,ExpectedEvidence'
+        args.allowed_sections = 'implgdn,expevid'
 
     ssp_cmd = SSPGenerate()
     # run the command for happy path

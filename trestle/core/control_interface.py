@@ -23,7 +23,7 @@ from uuid import uuid4
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.common_types import TypeWithProps
+from trestle.common.common_types import TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, none_if_empty
 from trestle.common.str_utils import string_from_root
@@ -171,9 +171,9 @@ class ControlInterface:
         return new_label
 
     @staticmethod
-    def get_prop(part_control: TypeWithProps, prop_name: str, default: Optional[str] = None) -> str:
+    def get_prop(item: TypeWithProps, prop_name: str, default: Optional[str] = None) -> str:
         """Get the property with that name or return empty string."""
-        for prop in as_list(part_control.props):
+        for prop in as_list(item.props):
             if prop.name.strip().lower() == prop_name.strip().lower():
                 return prop.value.strip()
         return default if default else ''
@@ -200,6 +200,20 @@ class ControlInterface:
         part_control.props.append(new_prop)
 
     @staticmethod
+    def create_statement_id(control_id: str, lower: bool = False) -> str:
+        """Create the control statement id from the control id."""
+        id_ = f'{control_id}_smt'
+        return id_.lower() if lower else id_
+
+    @staticmethod
+    def get_statement_id(control: cat.Control) -> str:
+        """Find the statement id in the control."""
+        for part in as_list(control.parts):
+            if part.name == const.STATEMENT:
+                return part.id
+        return ControlInterface.create_statement_id(control.id)
+
+    @staticmethod
     def get_sort_id(control: cat.Control, allow_none=False) -> Optional[str]:
         """Get the sort-id for the control."""
         for prop in as_list(control.props):
@@ -208,9 +222,20 @@ class ControlInterface:
         return None if allow_none else control.id
 
     @staticmethod
-    def get_label(part_control: TypeWithProps) -> str:
+    def get_label(item: TypeWithProps) -> str:
         """Get the label from the props of a part or control."""
-        return ControlInterface.get_prop(part_control, 'label')
+        return ControlInterface.get_prop(item, 'label')
+
+    @staticmethod
+    def get_part_by_id(item: TypeWithParts, id_: str) -> Optional[common.Part]:
+        """Find the part within this item's list of parts that matches id."""
+        for part in as_list(item.parts):
+            if part.id == id_:
+                return part
+            deep_part = ControlInterface.get_part_by_id(part, id_)
+            if deep_part:
+                return deep_part
+        return None
 
     @staticmethod
     def get_part(part: common.Part, item_type: str, skip_id: Optional[str]) -> List[Union[str, List[str]]]:
@@ -366,6 +391,63 @@ class ControlInterface:
             if value_str:
                 param_dict[set_param.param_id] = value_str
         return param_dict
+
+    @staticmethod
+    def merge_props(dest: Optional[List[common.Property]],
+                    src: Optional[List[common.Property]]) -> List[common.Property]:
+        """Merge a source list of properties into a destination list."""
+        if not src:
+            return dest
+        new_props: List[common.Property] = []
+        src_map = {prop.name: prop for prop in src}
+        dest_map = {prop.name: prop for prop in dest}
+        all_names = set(src_map.keys()).union(dest_map.keys())
+        for name in sorted(all_names):
+            if name in src_map and name not in dest_map:
+                new_props.append(src_map[name])
+            elif name in dest_map and name not in src_map:
+                new_props.append(dest_map[name])
+            else:
+                new_prop = dest_map[name]
+                src_prop = src_map[name]
+                new_prop.class_ = src_prop.class_ if src_prop.class_ else new_prop.class_
+                new_prop.ns = src_prop.ns if src_prop.ns else new_prop.ns
+                new_prop.remarks = src_prop.remarks if src_prop.remarks else new_prop.remarks
+                new_prop.uuid = src_prop.uuid if src_prop.uuid else new_prop.uuid
+                new_prop.value = src_prop.value
+                new_props.append(new_prop)
+        return new_props
+
+    @staticmethod
+    def merge_part(dest: common.Part, src: common.Part) -> common.Part:
+        """Merge a source part into the destination part."""
+        dest.name = src.name if src.name else dest.name
+        dest.ns = src.ns if src.ns else dest.ns
+        dest.props = none_if_empty(ControlInterface.merge_props(dest.props, src.props))
+        dest.prose = src.prose
+        dest.title = src.title if src.title else dest.title
+        ControlInterface.merge_parts(dest, src)
+        return dest
+
+    @staticmethod
+    def merge_parts(dest: TypeWithParts, src: TypeWithParts) -> None:
+        """Merge the parts from the source into the destination."""
+        if not dest.parts:
+            dest.parts = src.parts
+        elif not src.parts:
+            dest.parts = None
+        else:
+            new_parts: List[common.Part] = []
+            dest_map = {part.id: part for part in dest.parts}
+            for src_part in src.parts:
+                dest_part = dest_map.get(src_part.id, None)
+                if not dest_part:
+                    new_parts.append(src_part)
+                else:
+                    new_part = ControlInterface.merge_part(dest_part, src_part)
+                    if new_part:
+                        new_parts.append(new_part)
+            dest.parts = new_parts
 
     @staticmethod
     def merge_dicts_deep(dest: Dict[Any, Any], src: Dict[Any, Any], overwrite_header_values: bool) -> None:
