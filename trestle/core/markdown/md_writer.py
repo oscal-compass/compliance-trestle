@@ -24,7 +24,6 @@ from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import delete_list_from_list
 from trestle.common.str_utils import spaces_and_caps_to_lower_single_spaces
-from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)
 
@@ -170,13 +169,6 @@ class MDWriter():
     def get_text(self) -> str:
         """Get the text as currently written."""
         return '\n'.join(self._lines)
-
-    def _add_subnode_text(self, node: MarkdownNode) -> None:
-        """Add the header text to the markdown contents."""
-        for line in node.content.raw_text.split('\n'):
-            self.new_line(line)
-        for subnode in node.subnodes:
-            self._add_subnode_text(subnode)
 
     def _get_header_level(self, line: str) -> int:
         if not line or line[0] != '#':
