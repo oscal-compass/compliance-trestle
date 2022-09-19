@@ -187,24 +187,3 @@ def test_modify_subtree(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Pat
     assert len(list(subtree.get_all_headers_for_level(3))) == 4
     assert len(list(subtree.get_all_headers_for_level(4))) == 4
     assert subtree.get_node_header_lvl() == 1
-
-
-def test_cull_headings(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
-    """Test culling of headings from md tree."""
-    markdown_file = testdata_dir / 'markdown/valid_complex_md.md'
-    md_api = MarkdownAPI()
-    _, tree = md_api.processor.process_markdown(markdown_file)
-    cull_list = ['## 1.2 MD Subheader 1.2', '### 1.3.1 Valid header <!-- ### some comment here -->']
-    for item in cull_list:
-        assert tree.get_node_for_key(item)
-    n_nodes = tree.get_count_of_subnodes()
-    md_api.processor.cull_headings(tree, cull_list, False)
-    new_count = tree.get_count_of_subnodes()
-    assert new_count == n_nodes - 2
-
-    # now do cull with flexible string match
-    _, tree = md_api.processor.process_markdown(markdown_file)
-    cull_list = [' Md  SubHeader  1.2 ', '3.1 VALid  heAder']
-    md_api.processor.cull_headings(tree, cull_list, True)
-    new_count = tree.get_count_of_subnodes()
-    assert new_count == n_nodes - 2
