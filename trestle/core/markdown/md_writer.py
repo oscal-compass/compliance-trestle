@@ -192,7 +192,7 @@ class MDWriter():
 
         Notes:
             This is a simple implementation that looks for a matching header and removes all lines until
-            the next header of equal or higher level.  It does not recognize headers in multi-line comments
+            the next header of equal or lower level value.  It does not recognize headers in multi-line comments
             and does not validate the markdown structure.
 
             This function is private and should be replaced by a more complete public implementation that is aware of
