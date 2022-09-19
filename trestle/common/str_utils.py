@@ -63,7 +63,7 @@ def _snake_to_upper_camel(snake: str) -> str:
 
 def spaces_and_caps_to_snake(spaced_str: str) -> str:
     """Convert caps and spaces to snake."""
-    underscored = spaced_str.strip().replace(' ', '_')
+    underscored = '_'.join(spaced_str.strip().split())
     return underscored.lower()
 
 

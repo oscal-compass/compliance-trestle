@@ -17,7 +17,7 @@
 import logging
 import pathlib
 import traceback
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import cmarkgfm
 
@@ -25,6 +25,7 @@ import frontmatter
 
 from trestle.common import const
 from trestle.common.err import TrestleError
+from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 from yaml.scanner import ScannerError
@@ -84,3 +85,23 @@ class MarkdownProcessor:
             value = header[key]
 
         return value
+
+    def cull_headings(self, tree: MarkdownNode, cull_list: List[str], flexible: bool = True) -> None:
+        """Cull contents from the tree that match list of headings."""
+
+        def should_cull(header: str, clean_list: List[str], flexible: bool) -> bool:
+            """Determine if this header is in the cull list."""
+            clean_header = spaces_and_caps_to_snake(header) if flexible else header
+            for item in clean_list:
+                if item in clean_header:
+                    return True
+            return False
+
+        clean_list: List[str] = [spaces_and_caps_to_snake(item) for item in cull_list] if flexible else cull_list
+        new_list: List[MarkdownNode] = []
+        for subnode in tree.subnodes:
+            # if this isn't culled check its subnodes and add to list of new nodes
+            if not should_cull(subnode.key, clean_list, flexible):
+                self.cull_headings(subnode, clean_list, flexible)
+                new_list.append(subnode)
+        tree.subnodes = new_list

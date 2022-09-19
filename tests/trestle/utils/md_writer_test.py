@@ -15,6 +15,7 @@
 
 import pathlib
 
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.md_writer import MDWriter
 
 
@@ -70,6 +71,15 @@ ______________________________________________________________________
 my line
 """
 
+    with open(md_file) as f:
+        md_result = f.read()
+    assert desired_result == md_result
+
+    # now read the markdown as a tree and make sure it writes out the same way
+    markdown_api = MarkdownAPI()
+    header, tree = markdown_api.processor.process_markdown(md_file)
+    new_writer = MDWriter(md_file)
+    new_writer.write_out_header_tree(header, tree)
     with open(md_file) as f:
         md_result = f.read()
     assert desired_result == md_result

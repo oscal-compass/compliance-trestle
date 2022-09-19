@@ -191,6 +191,11 @@ def test_camel_to_snake() -> None:
     assert snaked == ''
 
 
+def test_spaces_and_caps_to_snake() -> None:
+    """Ensure spaces and caps to snake behaves correctly."""
+    assert str_utils.spaces_and_caps_to_snake('  Foo  BAr  ') == 'foo_bar'
+
+
 def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
     assert str_utils.alias_to_classname('component-definition', AliasMode.JSON) == 'ComponentDefinition'

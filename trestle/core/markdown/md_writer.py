@@ -15,13 +15,14 @@
 
 import logging
 import pathlib
-from typing import Any, List
+from typing import Any, Dict, List
 
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
+from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)
 
@@ -150,6 +151,11 @@ class MDWriter():
                     f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))
+                # if last line has text it will need an extra \n at end
+                if self._lines and self._lines[-1]:
+                    f.write('\n')
+            # inserting a comment into the header happens after header is written out
+            # the comment is only added if the add_props tag is found
             file_utils.insert_text_in_file(self._file_path, const.TRESTLE_ADD_PROPS_TAG, const.YAML_PROPS_COMMENT)
         except IOError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
@@ -162,3 +168,17 @@ class MDWriter():
     def get_text(self) -> str:
         """Get the text as currently written."""
         return '\n'.join(self._lines)
+
+    def _add_subnode_text(self, node: MarkdownNode) -> None:
+        """Add the header text to the markdown contents."""
+        for line in node.content.raw_text.split('\n'):
+            self.new_line(line)
+        for subnode in node.subnodes:
+            self._add_subnode_text(subnode)
+
+    def write_out_header_tree(self, header: Dict[str, Any], tree: MarkdownNode) -> None:
+        """Write out the header and markdown node as markdown file."""
+        self.add_yaml_header(header)
+        for node in tree.subnodes:
+            self._add_subnode_text(node)
+        self.write_out()
