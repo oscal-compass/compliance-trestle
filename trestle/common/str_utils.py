@@ -67,6 +67,12 @@ def spaces_and_caps_to_snake(spaced_str: str) -> str:
     return underscored.lower()
 
 
+def spaces_and_caps_to_lower_single_spaces(spaced_str: str) -> str:
+    """Convert caps and duplicate spaces to lower with single spaces."""
+    single_space = ' '.join(spaced_str.strip().split())
+    return single_space.lower()
+
+
 def classname_to_alias(classname: str, mode: AliasMode) -> str:
     """
     Return oscal key name or field element name based on class name.
