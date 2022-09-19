@@ -97,3 +97,14 @@ def test_cull_headings(testdata_dir: pathlib.Path, tmp_path: pathlib.Path) -> No
     # make sure headers are gone now - using the strict strings since exact match check is needed
     for item in strict_cull_list:
         assert not confirm_text_in_file(strict_path, '', item)
+
+
+def test_get_header_level(tmp_path: pathlib.Path) -> None:
+    """Test get header level."""
+    md_writer = MDWriter(tmp_path / 'foo.md')
+    assert md_writer._get_header_level('') == 0
+    assert md_writer._get_header_level('# ') == 1
+    assert md_writer._get_header_level(' # ## ') == 0
+    assert md_writer._get_header_level('## #') == 2
+    assert md_writer._get_header_level('### #') == 3
+    assert md_writer._get_header_level('foo # bar') == 0

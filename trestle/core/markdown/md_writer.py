@@ -174,7 +174,7 @@ class MDWriter():
         if not line or line[0] != '#':
             return 0
         ii = 0
-        while ii < len(line) and ii == '#':
+        while ii < len(line) and line[ii] == '#':
             ii += 1
         return ii
 
