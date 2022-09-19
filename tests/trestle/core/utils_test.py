@@ -197,7 +197,7 @@ def test_spaces_and_caps_to_snake() -> None:
 
 
 def test_spaces_and_caps_to_lower_single_spaces() -> None:
-    """Ensure spaces and caps to snake behaves correctly."""
+    """Ensure spaces and caps to lower single spaces behaves correctly."""
     assert str_utils.spaces_and_caps_to_lower_single_spaces('  Foo  BAr  ') == 'foo bar'
 
 
