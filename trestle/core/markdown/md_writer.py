@@ -15,13 +15,15 @@
 
 import logging
 import pathlib
-from typing import Any, Dict, List
+from typing import Any, List
 
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
 from trestle.common import file_utils
 from trestle.common.err import TrestleError
+from trestle.common.list_utils import delete_list_from_list
+from trestle.common.str_utils import spaces_and_caps_to_lower_single_spaces
 from trestle.core.markdown.markdown_node import MarkdownNode
 
 logger = logging.getLogger(__name__)
@@ -176,9 +178,70 @@ class MDWriter():
         for subnode in node.subnodes:
             self._add_subnode_text(subnode)
 
-    def write_out_header_tree(self, header: Dict[str, Any], tree: MarkdownNode) -> None:
-        """Write out the header and markdown node as markdown file."""
-        self.add_yaml_header(header)
-        for node in tree.subnodes:
-            self._add_subnode_text(node)
+    def _get_header_level(self, line: str) -> int:
+        if not line or line[0] != '#':
+            return 0
+        ii = 0
+        while ii < len(line) and ii == '#':
+            ii += 1
+        return ii
+
+    def _cull_headings(self, md_in: pathlib.Path, cull_list: List[str], strict_match: bool = False) -> int:
+        """
+        Cull headers from the lines of input markdown file with optional strict string match.
+
+        Args:
+            md_in: the path of the markdown file being edited
+            cull_list: the list of strings in headers that are to be culled
+            strict_match: whether to require an exact string match on header contents, or ignore case and spaces
+
+        Returns:
+            Returns number of culls made and writes out to the md filename given when the MDWriter was created.
+
+        Notes:
+            This is a simple implementation that looks for a matching header and removes all lines until
+            the next header of equal or higher level.  It does not recognize headers in multi-line comments
+            and does not validate the markdown structure.
+
+            This function is private and should be replaced by a more complete public implementation that is aware of
+            markdown structure.
+        """
+
+        def should_cull(header: str, clean_list: List[str], strict_match: bool) -> bool:
+            """Determine if this header is in the cull list."""
+            clean_header = header if strict_match else spaces_and_caps_to_lower_single_spaces(header)
+            for item in clean_list:
+                if item in clean_header:
+                    return True
+            return False
+
+        # read the contents of the source md file as raw lines of text
+        try:
+            with open(md_in, 'r', encoding=const.FILE_ENCODING) as f_in:
+                self._lines = [line.rstrip() for line in f_in.readlines()]
+        except Exception as e:
+            raise (TrestleError(f'Error reading input markdown file {md_in}: {e}'))
+
+        n_culled = 0
+        clean_list: List[str] = cull_list if strict_match else [
+            spaces_and_caps_to_lower_single_spaces(item) for item in cull_list
+        ]
+        ii = 0
+        while ii < len(self._lines):
+            line = self._lines[ii]
+            if line and line[0] == '#' and should_cull(line, clean_list, strict_match):
+                start = ii
+                level = self._get_header_level(line)
+                finish = ii + 1
+                while finish < len(self._lines):
+                    new_line = self._lines[finish]
+                    # find next header line at equal or lesser header level
+                    if new_line and new_line[0] == '#' and self._get_header_level(new_line) <= level:
+                        break
+                    finish += 1
+                delete_list_from_list(self._lines, range(start, finish))
+                n_culled += 1
+            else:
+                ii += 1
         self.write_out()
+        return n_culled

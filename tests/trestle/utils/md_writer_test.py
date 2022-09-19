@@ -15,7 +15,8 @@
 
 import pathlib
 
-from trestle.core.markdown.markdown_api import MarkdownAPI
+from tests.test_utils import confirm_text_in_file
+
 from trestle.core.markdown.md_writer import MDWriter
 
 
@@ -75,11 +76,24 @@ my line
         md_result = f.read()
     assert desired_result == md_result
 
-    # now read the markdown as a tree and make sure it writes out the same way
-    markdown_api = MarkdownAPI()
-    header, tree = markdown_api.processor.process_markdown(md_file)
-    new_writer = MDWriter(md_file)
-    new_writer.write_out_header_tree(header, tree)
-    with open(md_file) as f:
-        md_result = f.read()
-    assert desired_result == md_result
+
+def test_cull_headings(testdata_dir: pathlib.Path, tmp_path: pathlib.Path) -> None:
+    """Test culling of headings from md tree."""
+    markdown_file = testdata_dir / 'markdown/valid_complex_md.md'
+    strict_cull_list = ['1.2 MD Subheader 1.2', '1.3.1 Valid header <!--']
+    # make sure the headers are present in the original
+    for item in strict_cull_list:
+        assert confirm_text_in_file(markdown_file, '', item)
+    strict_path = tmp_path / 'strict.md'
+    md_writer = MDWriter(strict_path)
+    assert md_writer._cull_headings(markdown_file, strict_cull_list, True) == 2
+    # make sure headers are gone now
+    for item in strict_cull_list:
+        assert not confirm_text_in_file(strict_path, '', item)
+    non_strict_path = tmp_path / 'non_strict.md'
+    md_writer = MDWriter(non_strict_path)
+    non_strict_cull_list = ['     1.2   Md SuBheader   1.2    ', '1.3.1  VALid heaDer <!-- ### Some   comment   ']
+    assert md_writer._cull_headings(markdown_file, non_strict_cull_list, False) == 2
+    # make sure headers are gone now - using the strict strings since exact match check is needed
+    for item in strict_cull_list:
+        assert not confirm_text_in_file(strict_path, '', item)
