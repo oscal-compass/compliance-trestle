@@ -301,16 +301,15 @@ class ControlInterface:
     def _get_part_and_subpart_info(part: common.Part, add_by_id: str) -> List[PartInfo]:
         """Get part and its subparts info needed for markdown purposes."""
         part_infos = []
-        if not part.parts:
-            return part_infos
-
-        for part in part.parts:
+        for subpart in as_list(part.parts):
             subpart_info = None
-            if part.parts:
+            if subpart.parts:
                 # Recursively add subparts info
-                subpart_info = ControlInterface._get_part_and_subpart_info(part, add_by_id)
+                subpart_info = ControlInterface._get_part_and_subpart_info(subpart, add_by_id)
             part_infos.append(
-                PartInfo(name=part.name, prose=part.prose, smt_part=add_by_id, props=part.props, parts=subpart_info)
+                PartInfo(
+                    name=subpart.name, prose=subpart.prose, smt_part=add_by_id, props=subpart.props, parts=subpart_info
+                )
             )
 
         return part_infos
