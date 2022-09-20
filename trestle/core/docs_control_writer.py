@@ -13,13 +13,15 @@
 # limitations under the License.
 """Handle writing of controls to markdown for docs purposes."""
 import logging
+import re
 from typing import Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.common.list_utils import as_list
+from trestle.core.control_interface import ControlInterface, ParameterRep, PartInfo
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.md_writer import MDWriter
 
@@ -187,20 +189,8 @@ class DocsControlWriter(ControlWriter):
     ) -> None:
         """Add specific control section."""
         prose = ControlInterface._get_control_section_prose(control, section)
-        section_title = None
         if prose:
             section_title = self._sections_dict.get(section, section)
-        else:
-            part_infos = ControlInterface.get_all_add_info(control.id, profile)
-            prose = None
-            for part_info in part_infos:
-                if part_info.name == section:
-                    if part_info.prose:
-                        section_title = self._sections_dict.get(section, part_info.name)
-                        prose = part_info.prose
-                        break
-
-        if prose:
             heading_title = f'{section_title}'
             self._md_file.new_header(level=2, title=heading_title, add_new_line_after_header=not tag_pattern)
             if tag_pattern:
@@ -208,6 +198,39 @@ class DocsControlWriter(ControlWriter):
                 self._md_file.new_paragraph()
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
+        else:
+            # write parts and subparts if exist
+            part_infos = ControlInterface.get_all_add_info(control.id, profile)
+            for part_info in part_infos:
+                if part_info.name == section:
+                    self._write_part_info(part_info, section, tag_pattern)
+                    break
+
+    def _write_part_info(
+        self,
+        part_info: PartInfo,
+        section_name: str,
+        tag_pattern: Optional[str] = None,
+        section_prefix: str = '',
+        heading_level: int = 2
+    ):
+        section_title = self._sections_dict.get(section_name, part_info.name)
+
+        heading_title = f'{section_title}'
+        tag_section_name = section_prefix + f'{section_title}'
+        tag_section_name = re.sub('[^a-zA-Z0-9-_ \n]', '', tag_section_name)
+        tag_section_name = tag_section_name.replace(' ', '-').replace('_', '-').lower()
+        self._md_file.new_header(level=heading_level, title=heading_title, add_new_line_after_header=not tag_pattern)
+        if tag_pattern:
+            self._md_file.new_line(tag_pattern.replace('[.]', tag_section_name))
+            self._md_file.new_paragraph()
+        self._md_file.new_line(part_info.prose)
+        self._md_file.new_paragraph()
+
+        for subpart_info in as_list(part_info.parts):
+            self._write_part_info(
+                subpart_info, subpart_info.name, tag_pattern, tag_section_name + '-', heading_level + 1
+            )
 
     def _get_pretty_control_id_if_exists(self, control: cat.Control) -> str:
         control_id = control.id.upper()

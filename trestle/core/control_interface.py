@@ -65,6 +65,7 @@ class PartInfo:
     prose: str
     smt_part: str = ''
     props: Optional[List[common.Property]] = None
+    parts: Optional[List[PartInfo]] = None
 
     def to_dicts(self, part_id_map: Dict[str, str]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """Convert the part info to a dict or list of props."""
@@ -288,7 +289,28 @@ class ControlInterface:
                 part_infos.append(PartInfo(name='', prose='', smt_part=smt_part, props=add.props))
             # add part level props with part name
             for part in as_list(add.parts):
-                part_infos.append(PartInfo(name=part.name, prose=part.prose, smt_part=add.by_id, props=part.props))
+                subpart_info = ControlInterface._get_part_and_subpart_info(part, add.by_id)
+                part_infos.append(
+                    PartInfo(
+                        name=part.name, prose=part.prose, smt_part=add.by_id, props=part.props, parts=subpart_info
+                    )
+                )
+        return part_infos
+
+    @staticmethod
+    def _get_part_and_subpart_info(part: common.Part, add_by_id: str) -> List[PartInfo]:
+        """Get part and its subparts info needed for markdown purposes."""
+        part_infos = []
+        for part in as_list(part.parts):
+            subpart_info = None
+            if part.parts:
+                # Recursively add subparts info
+                subpart_info = ControlInterface._get_part_and_subpart_info(part, add_by_id)
+            part_info = PartInfo(
+                name=part.name, prose=part.prose, smt_part=add_by_id, props=part.props, parts=subpart_info
+            )
+            part_infos.append(part_info)
+
         return part_infos
 
     @staticmethod
