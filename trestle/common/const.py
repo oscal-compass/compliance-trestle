@@ -230,6 +230,8 @@ TRESTLE_HREF_HEADING = 'trestle://'
 
 TRESTLE_HREF_REGEX = '^trestle://[^/]'
 
+MATCH_ALL_EXCEPT_LETTERS_UNDERSCORE_SPACE_REGEX = '[^a-zA-Z0-9-_ \n]'
+
 # extracts foo and bar from ...[foo](bar)...
 MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 

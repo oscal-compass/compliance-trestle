@@ -218,7 +218,7 @@ class DocsControlWriter(ControlWriter):
 
         heading_title = f'{section_title}'
         tag_section_name = section_prefix + f'{section_title}'
-        tag_section_name = re.sub('[^a-zA-Z0-9-_ \n]', '', tag_section_name)
+        tag_section_name = re.sub(const.MATCH_ALL_EXCEPT_LETTERS_UNDERSCORE_SPACE_REGEX, '', tag_section_name)
         tag_section_name = tag_section_name.replace(' ', '-').replace('_', '-').lower()
         self._md_file.new_header(level=heading_level, title=heading_title, add_new_line_after_header=not tag_pattern)
         if tag_pattern:
