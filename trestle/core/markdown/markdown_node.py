@@ -23,6 +23,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import trestle.core.markdown.markdown_const as md_const
 from trestle.common.err import TrestleError
+from trestle.common.list_utils import delete_list_from_list
 
 logger = logging.getLogger(__name__)
 
@@ -54,11 +55,12 @@ class SectionContent:
 class MarkdownNode:
     """Markdown will be read to the tree."""
 
-    def __init__(self, key: str, content: SectionContent):
+    def __init__(self, key: str, content: SectionContent, starting_line: int):
         """Initialize markdown node."""
         self.subnodes: List[MarkdownNode] = []
         self.key = key
         self.content = content
+        self.starting_line = starting_line
 
     @classmethod
     def build_tree_from_markdown(cls, lines: List[str], governed_header: Optional[str] = None):
@@ -83,6 +85,21 @@ class MarkdownNode:
             return None
 
         return self._rec_traverse(self, key, strict_matching)
+
+    def get_all_nodes_for_keys(
+        self,
+        keys: List[str],
+        strict_matching: bool = True,
+        stop_recurse_on_first_match: bool = False
+    ) -> List[MarkdownNode]:
+        """Return all nodes for the given key, substring matching is supported."""
+        if not strict_matching:
+            if not any([key in el for el in self.content.subnodes_keys for key in keys]):
+                return []
+        elif not set(keys).intersection(self.content.subnodes_keys):
+            return []
+
+        return self._rec_traverse_all(self, keys, strict_matching, stop_recurse_on_first_match)
 
     def get_all_headers_for_key(self, key: str, strict_matching: bool = True) -> Iterable[str]:
         """Return all headers contained in the node with a given key."""
@@ -189,10 +206,9 @@ class MarkdownNode:
                 content.text.append(line)
                 i += 1
 
-        if starting_line == 0:
-            starting_line = 1
-        content.raw_text = '\n'.join(lines[starting_line - 1:i])
-        md_node = MarkdownNode(key=root_key, content=content)
+        first_line_to_grab = starting_line - 1 if starting_line else 0
+        content.raw_text = '\n'.join(lines[first_line_to_grab:i])
+        md_node = MarkdownNode(key=root_key, content=content, starting_line=first_line_to_grab)
         md_node.subnodes = node_children
         return (md_node, i)
 
@@ -289,7 +305,7 @@ class MarkdownNode:
             i += 1
         return table_block, i
 
-    def _rec_traverse(self, node, key: str, strict_matching: bool) -> Optional[MarkdownNode]:
+    def _rec_traverse(self, node: MarkdownNode, key: str, strict_matching: bool) -> Optional[MarkdownNode]:
         """
         Recursevely traverses the tree and searches for the given key.
 
@@ -305,6 +321,26 @@ class MarkdownNode:
                     return matched_node
 
         return None
+
+    def _rec_traverse_all(
+        self, node: MarkdownNode, keys: List[str], strict_matching: bool, stop_recurse_on_first_match: bool
+    ) -> Optional[MarkdownNode]:
+        """
+        Recursevely traverse the tree and finds all nodes matching the keys.
+
+        If strict matching is turned off, nodes will be matched if key is a substring of the node's header.
+        stop_recurse_on_first_match will return only the highest level key match and not any subnodes
+        """
+        found_nodes: List[MarkdownNode] = []
+        for key in keys:
+            if key == node.key or (not strict_matching and key in node.key):
+                found_nodes.append(node)
+                if stop_recurse_on_first_match:
+                    return found_nodes
+        for subnode in node.subnodes:
+            matched_nodes = self._rec_traverse_all(subnode, keys, strict_matching, stop_recurse_on_first_match)
+            found_nodes.extend(matched_nodes)
+        return found_nodes
 
     def _rec_traverse_header_update(self, node: MarkdownNode, header_map: Dict[str, str]) -> None:
         """Recursively traverse tree and update the contents."""
@@ -350,3 +386,14 @@ class MarkdownNode:
                 min_lvl = header_lvl
 
         return min_lvl - 1
+
+    def delete_nodes_text(self, keys: List[str], strict_matching: bool = True) -> List[str]:
+        """Remove text from this node that is found in matching subnodes."""
+        text_lines = self.content.raw_text.split('\n')
+        matching_nodes = self.get_all_nodes_for_keys(keys, strict_matching, True)
+        # need to delete from end and proceed backwards
+        sorted_nodes = sorted(matching_nodes, key=lambda node: node.starting_line, reverse=True)
+        for node in sorted_nodes:
+            last_line = node.starting_line + len(node.content.raw_text.split('\n'))
+            delete_list_from_list(text_lines, range(node.starting_line, last_line))
+        return text_lines

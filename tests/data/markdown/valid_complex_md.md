@@ -29,6 +29,7 @@ some text
 
 <!--
 some text inside html block
+# IgnoreIt A
 and one more line
 -->
 
@@ -37,6 +38,7 @@ and one more line
 some text 2
 
 ```
+# IgnoreIt B
 while True:
     print('Hello World!')
     for i in range(0, 1):
@@ -71,6 +73,9 @@ some text <kbd><kbd># Nested</kbd>#nested text<kbd>nested</kbd></kbd>
 
 <samp>Some text that should be ignored here
 this too
+
+# IgnoreIt C
+
 </samp>
 
 X<sub>i</sub> + Y <sup>i</sup> = Z<sup>i</sup><sub>i</sub>
@@ -83,6 +88,8 @@ X<sub>i</sub> + Y <sup>i</sup> = Z<sup>i</sup><sub>i</sub>
 ## ignore
 
 ### ignore
+
+# IgnoreIt D
 
 </ins>
 
@@ -132,6 +139,7 @@ some text after blockquote
 ## this is not a proper header - abc
 ## this is not a proper header 2 - ignore
 ## this is also not a header - ignore this
+# IgnoreIt E
 -->
 
 ## 4.1 This is a proper subsection
@@ -146,6 +154,7 @@ defg
 ## this is not a proper header - abc
 ## this is not a proper header 2 - ignore
 ## this is also not a header - ignore this
+# IgnoreIt F
 # this as well
 ### and this
 -->
@@ -193,6 +202,7 @@ some text here
 # ignore me
 ## ignore me too
 ### me too
+# IgnoreIt G
 -->
 
 ## 5.3 A section 3
