@@ -326,6 +326,7 @@ class ControlWriter():
         else:
             # md does not already exist so fill in directly
             in_part = ''
+            # TODO: process subparts as well - issue #1181
             for part_info in part_infos:
                 part, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
                 part_prose = part.get('prose', None)
