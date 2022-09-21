@@ -207,10 +207,15 @@ Access control policy and procedures address the controls in the AC family that 
 <!-- The above represents the contents of the control as received by the profile, prior to additions. -->
 <!-- If the profile makes additions to the control, they will appear below. -->
 <!-- The above markdown may not be edited but you may edit the content below, and/or introduce new additions to be made by the profile. -->
-<!-- If there is a yaml header at the top, parameters and values may be edited. Use --set-parameters to incorporate the changes during assembly. -->
+<!-- If there is a yaml header at the top, parameter values may be edited. Use --set-parameters to incorporate the changes during assembly. -->
 <!-- The content here will then replace what is in the profile for this control, after running profile-assemble. -->
 <!-- The added parts in the profile for this control are below.  You may edit them and/or add new ones. -->
-<!-- Each addition must have a heading of the form ## Control my_addition_name -->
+<!-- Each addition must have a heading either of the form ## Control my_addition_name -->
+<!-- or ## Part a. (where the a. refers to one of the control statement labels.) -->
+<!-- "## Control" parts are new parts added after the statement part. -->
+<!-- "## Part" parts are new parts added into the top-level statement part with that label. -->
+<!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->
+<!-- underneath the parent ## Control or ## Part being added -->
 <!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->
 
 ## Control Implementation Guidance
@@ -225,17 +230,38 @@ Detailed logs.
 
 Add prose here for required Section: Needed Extra
 
+
 ## Control A Guidance
 
-This is A Guidance.
+Control A prose
 
-## Control B Guidance
+### A Subpart
 
-This is B Guidance.
+A subpart prose
+
+#### A Subsubpart
+
+A subsubpart prose
+
+### B Subpart
+
+B subpart prose
+
+## Part a.
+
+### a by_id subpart
+
+a by_id subpart prose
+
+
 
 ```
 
-In the above markdown example, the fixed, uneditable parts of the control are output first (after the header, which can be edited), followed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name`.  You may edit the editable content and you may add new Control guidance headers with your own new content. Please refer to Markdown Specifications for Editable Content section below to learn more on which headers are valid in Trestle. Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
+In the above markdown example, the fixed, uneditable parts of the control are output first (after the header, which can be edited), followed by a separate section marked, `Editable Content`.  And below the editable content are the individual `Adds` that the profile makes, with each one marked by a header of the form, `## Control guidance_name` or `## Part statement_part_label` followed by named subparts.  You may edit the editable content and you may add new Control guidance headers and statement sub-parts with your own new content. (Please refer to Markdown Specifications for Editable Content section below to learn more on which headers are valid in Trestle.) Then the command, `trestle author profile-assemble --name original_profile --markdown markdown_dir --output new_profile` will create a new OSCAL profile based on the original profile (specified) and the editable content in each control.
+
+It's important to distinguish `## Control My New Guidance` from `## Part a.`.  Parts added with `## Control` will be new parts in the control added after the control statement, along with any subparts indicated by lower hash levels in that section.  In contrast, parts added with e.g. `## Part c.` will be added by-id to the _top level_ part in the control statement with label `c.`.  Thus "My New Guidance" is the title the user is assigning to a completely new part, while `c.` refers to a label corresponding the the desired control statement part.
+
+When new part names are created in the markdown file the title is captured along with its capitalization and spaces, but the corresponding part name will be converted to snake case by default.  However, the user may indicate a specific mapping of the long title of the part to its actual part name by providing an entry in the `sections` provided during `profile-assemble`.  For example, in the above, the `Needed Extra` part would be assigned the name `needed_extra` but if you had a section entry such as `n_ex:Needed Extra` the name `n_ex` would be assigned in the assembled json profile, so that if you used that same section entry `trestle` would know to replace the `n_ex` part with `Needed Extra` in any generated markdown.
 
 In a cyclic operation of `profile generate-edit-assemble` you would simply be re-writing from and to the same json profile, in which case the `--name` and `--output` are the same file.  For this reason the default value for `--name` is the given output file name specified by `--output` and you can just use `trestle author profile-assemble --markdown profile_md --output my_profile`.  This will assemble the markdown profile contents in directory `profile_md` into a json profile named `my_profile` but it will first use the existing `my_profile` json file as the parent profile and incorporate changes (due to user edits) in the markdown version of the profile.  Unlike `catalog-assemble` there must always be a parent json profile to reference during assemble, but like `catalog-assemble` an explicit value for `--name` is only needed if the parent file is different from the assembled output file.
 
