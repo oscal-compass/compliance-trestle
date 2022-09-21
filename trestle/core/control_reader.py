@@ -812,8 +812,8 @@ class ControlReader():
                 prose = ControlReader._clean_prose(node2.content.text)
                 prose = '\n'.join(prose)
                 id_ = f'{by_part_id}.{part_name}'
-                part = common.Part(id=id_, name='item', prose=prose)
-                part.parts = ControlReader._add_sub_parts(part.id, node2, 'item')
+                part = common.Part(id=id_, name=part_name, prose=prose)
+                part.parts = ControlReader._add_sub_parts(part.id, node2)
             else:
                 raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
             if by_part_id not in by_id_parts:
