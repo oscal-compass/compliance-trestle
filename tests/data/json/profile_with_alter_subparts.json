@@ -41,26 +41,32 @@
                   "id": "ac-1_expected_evidence",
                   "name": "expected_evidence",
                   "prose": "Some evidence prose."
-                },
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "by-id": "ac-1_smt.a",
+              "parts": [
                 {
-                  "id": "ac-1_above_the_line_guidance",
+                  "id": "ac-1_smt.a.above_the_line_guidance",
                   "name": "above_the_line_guidance",
                   "prose": "",
                   "parts": [
                     {
-                      "id": "ac-1_above_the_line_guidance.part_a",
-                      "name": "part_a.",
+                      "id": "ac-1_smt.a.above_the_line_guidance.add_to_part_a",
+                      "name": "add_to_part_a",
                       "prose": "",
                       "parts": [
                         {
-                          "id": "ac-1_above_the_line_guidance.part_a.implementation_guidance",
+                          "id": "ac-1_smt.a.above_the_line_guidance.add_to_part_a.implementation_guidance",
                           "name": "implementation_guidance",
-                          "prose": "Some ac-1_above_the_line_guidance.part_a.implementation_guidance prose"
+                          "prose": "Some ac-1_smt.a.above_the_line_guidance.add_to_part_a.implementation_guidance prose"
                         },
                         {
-                          "id": "ac-1_above_the_line_guidance.part_a.evidence_guidance",
+                          "id": "ac-1_smt.a.above_the_line_guidance.add_to_part_a.evidence_guidance",
                           "name": "evidence_guidance",
-                          "prose": "Some ac-1_above_the_line_guidance.part_a.evidence_guidance prose."
+                          "prose": "Some ac-1_smt.a.above_the_line_guidance.add_to_part_a.evidence_guidance prose."
                         }
                       ]
                     }
