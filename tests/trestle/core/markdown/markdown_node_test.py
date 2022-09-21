@@ -22,7 +22,7 @@ import pytest
 
 import trestle.common.const as const
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.markdown_node import MarkdownNode, SectionContent
 
 
 @pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
@@ -191,7 +191,7 @@ def test_modify_subtree(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Pat
 
 def test_get_header_level() -> None:
     """Test get header level."""
-    node = MarkdownNode('foo', 'bar', 0)
+    node = MarkdownNode('foo', SectionContent(), 0)
     assert node._get_header_level_if_valid('') is None
     assert node._get_header_level_if_valid('# ') == 1
     assert node._get_header_level_if_valid(' # ## ') is None

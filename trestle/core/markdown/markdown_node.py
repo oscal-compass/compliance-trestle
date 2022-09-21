@@ -92,7 +92,16 @@ class MarkdownNode:
         strict_matching: bool = True,
         stop_recurse_on_first_match: bool = False
     ) -> List[MarkdownNode]:
-        """Return all nodes for the given key, substring matching is supported."""
+        """
+        Return all nodes for the given key, substring matching is supported.
+
+        Args:
+            keys: List of strings for the headers being collected
+            strict_matching: Force exact match of key with header vs. simple substring match
+            stop_recurse_on_first_match: Return first match of any of the keys and don't search subnodes
+
+        Returns: List of found markdown nodes
+        """
         if not strict_matching:
             if not any([key in el for el in self.content.subnodes_keys for key in keys]):
                 return []
@@ -324,9 +333,9 @@ class MarkdownNode:
 
     def _rec_traverse_all(
         self, node: MarkdownNode, keys: List[str], strict_matching: bool, stop_recurse_on_first_match: bool
-    ) -> Optional[MarkdownNode]:
+    ) -> List[MarkdownNode]:
         """
-        Recursevely traverse the tree and finds all nodes matching the keys.
+        Recursevely traverse the tree and find all nodes matching the keys.
 
         If strict matching is turned off, nodes will be matched if key is a substring of the node's header.
         stop_recurse_on_first_match will return only the highest level key match and not any subnodes
