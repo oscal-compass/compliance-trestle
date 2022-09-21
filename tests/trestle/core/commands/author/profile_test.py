@@ -118,7 +118,7 @@ control_subparts_dict = {
         ('ac-1_a_guidance.a_subpart.a_subsubpart', 'a_subsubpart', 'A subsubpart prose'),
         ('ac-1_a_guidance.b_subpart', 'b_subpart', 'B subpart prose'),
         ('ac-1_smt.a', 'item', 'Develop, document, and disseminate'),  # this is the original NIST prose
-        ('ac-1_smt.a.a_by_id_subpart', 'item', 'a by_id subpart prose')
+        ('ac-1_smt.a.a_by_id_subpart', 'a_by_id_subpart', 'a by_id subpart prose')
     ],
     'text': control_subparts_text
 }
@@ -699,7 +699,7 @@ More evidence
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     parts = catalog.groups[0].controls[0].parts[0].parts
     assert parts[1].parts[0].id == 'ac-1_smt.b.new_guidance'
-    assert parts[1].parts[0].name == 'item'
+    assert parts[1].parts[0].name == 'new_guidance'
     assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
     assert parts[1].parts[1].id == 'ac-1_smt.b.new_evidence'
     assert parts[1].parts[1].prose == 'More evidence'

@@ -246,11 +246,11 @@ def test_jinja_profile_docs_with_selected_sections_and_multiple_parts(
         assert tree
         node1 = tree.get_node_for_key('## The above the line guidance')
         assert node1
-        node2 = tree.get_node_for_key('### part_a.')
+        node2 = tree.get_node_for_key('### add_to_part_a')
         assert node2
         node3 = tree.get_node_for_key('#### Evidence Guidance')
         assert node3
-        tag = '{: #the-above-the-line-guidance-part-a-evidence-guidance}'  # noqa: FS003
+        tag = '{: #the-above-the-line-guidance-add-to-part-a-evidence-guidance}'  # noqa: FS003
         assert tag in node2.content.raw_text
         assert len(tree.content.subnodes_keys) == 7
 
