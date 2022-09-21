@@ -95,7 +95,7 @@ def test_md_headers_in_html_blocks_are_ignored(md_path: pathlib.Path) -> None:
     tricky_node = tree.get_node_for_key('1.3', strict_matching=False)
     assert tricky_node.key == '## 1.3 MD Subheader 1.3 HTML'
     assert len(tricky_node.content.subnodes_keys) == 4
-    assert len(tricky_node.content.html_lines) == 39
+    assert len(tricky_node.content.html_lines) == 41
 
 
 def test_modify_md_node_header_lvl(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
