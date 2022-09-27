@@ -663,6 +663,20 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     assert ac1.parts[0].parts[2].props[1].value == 'ac1 new part value'
 
     prose = """
+## Control Multi Section
+
+### Sub A
+
+Text in Sub A
+
+#### Sub Sub A
+
+Text in Sub Sub A
+
+### Sub B
+
+Text in Sub B
+
 ## Part b.
 
 ### New Guidance
@@ -674,6 +688,9 @@ This is my added prose for a part in the statement
 More evidence
 
 """
+    sections['sub_a'] = 'Sub A'
+    sections['sub_sub_a'] = 'Sub Sub A'
+    sections['sub_b'] = 'Sub B'
     sections['newguidance'] = 'New Guidance'
     sections['newevidence'] = 'New Evidence'
 
@@ -694,6 +711,9 @@ More evidence
     assert adds[1].by_id == 'ac-1_smt.a'
     assert adds[2].by_id == 'ac-1_smt.b'
     assert adds[3].by_id == 'ac-1_smt.c'
+    assert adds[0].parts[2].id == 'ac-1_multi_section'
+    assert adds[0].parts[2].parts[0].id == 'ac-1_multi_section.sub_a'
+    assert adds[0].parts[2].parts[0].parts[0].id == 'ac-1_multi_section.sub_a.sub_sub_a'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     parts = catalog.groups[0].controls[0].parts[0].parts
@@ -715,6 +735,10 @@ More evidence
     assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
     assert parts[1].parts[1].id == 'ac-1_smt.b.new_evidence'
     assert parts[1].parts[1].prose == 'Updated evidence'
+    part = catalog.groups[0].controls[0].parts[4]
+    assert part.id == 'ac-1_multi_section'
+    assert part.parts[0].id == 'ac-1_multi_section.sub_a'
+    assert part.parts[0].parts[0].id == 'ac-1_multi_section.sub_a.sub_sub_a'
 
 
 def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

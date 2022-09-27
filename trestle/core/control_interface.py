@@ -76,6 +76,13 @@ class PartInfo:
             part['name'] = part_id_map.get(self.name, self.name)
             if self.prose:
                 part['prose'] = self.prose
+            if self.parts:
+                all_subparts = []
+                for subpart in self.parts:
+                    subpart_dict, _ = subpart.to_dicts(part_id_map)
+                    all_subparts.append(subpart_dict)
+                part['sub-parts'] = all_subparts
+
         # otherwise it is a list of props
         else:
             for prop in as_list(self.props):
