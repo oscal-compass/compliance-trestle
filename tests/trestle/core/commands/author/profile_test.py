@@ -604,6 +604,20 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     assert props[0].ns is None
 
 
+def _check_parts(part: com.Part, prose_1: str) -> None:
+    assert part.parts[0].id == 'ac-1_smt.b.new_guidance'
+    assert part.parts[0].name == 'new_guidance'
+    assert part.parts[0].prose == 'This is my added prose for a part in the statement'
+    assert part.parts[1].id == 'ac-1_smt.b.new_evidence'
+    assert part.parts[1].prose == prose_1
+
+
+def _check_multi_section(part: com.Part) -> None:
+    assert part.id == 'ac-1_multi_section'
+    assert part.parts[0].id == 'ac-1_multi_section.sub_a'
+    assert part.parts[0].parts[0].id == 'ac-1_multi_section.sub_a.sub_sub_a'
+
+
 def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile alter adds involving props."""
     ac1_path, _, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
@@ -716,12 +730,7 @@ More evidence
     assert adds[0].parts[2].parts[0].parts[0].id == 'ac-1_multi_section.sub_a.sub_sub_a'
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
-    parts = catalog.groups[0].controls[0].parts[0].parts
-    assert parts[1].parts[0].id == 'ac-1_smt.b.new_guidance'
-    assert parts[1].parts[0].name == 'new_guidance'
-    assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert parts[1].parts[1].id == 'ac-1_smt.b.new_evidence'
-    assert parts[1].parts[1].prose == 'More evidence'
+    _check_parts(catalog.groups[0].controls[0].parts[0].parts[1], 'More evidence')
 
     # Confirm that changed prose in the markdown is retained on new profile-generate
     assert test_utils.substitute_text_in_file(ac1_path, 'More evidence', 'Updated evidence')
@@ -730,15 +739,20 @@ More evidence
         tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, sections, None, None, None
     ) == 0
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
-    parts = catalog.groups[0].controls[0].parts[0].parts
-    assert parts[1].parts[0].id == 'ac-1_smt.b.new_guidance'
-    assert parts[1].parts[0].prose == 'This is my added prose for a part in the statement'
-    assert parts[1].parts[1].id == 'ac-1_smt.b.new_evidence'
-    assert parts[1].parts[1].prose == 'Updated evidence'
-    part = catalog.groups[0].controls[0].parts[4]
-    assert part.id == 'ac-1_multi_section'
-    assert part.parts[0].id == 'ac-1_multi_section.sub_a'
-    assert part.parts[0].parts[0].id == 'ac-1_multi_section.sub_a.sub_sub_a'
+    _check_parts(catalog.groups[0].controls[0].parts[0].parts[1], 'Updated evidence')
+    _check_multi_section(part=catalog.groups[0].controls[0].parts[4])
+
+    fresh_md_name = 'fresh_markdown'
+    fresh_md_path = tmp_trestle_dir / fresh_md_name
+    fresh_assem_prof_name = 'fresh_assem'
+    fresh_assem_prof_path = tmp_trestle_dir / 'profiles' / fresh_assem_prof_name / 'profile.json'
+    assert profile_generate.generate_markdown(tmp_trestle_dir, prof_path, fresh_md_path, {}, False, sections, None) == 0
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, fresh_md_name, fresh_assem_prof_name, True, False, None, sections, None, None, None
+    ) == 0
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, fresh_assem_prof_path)
+    _check_parts(catalog.groups[0].controls[0].parts[0].parts[1], 'Updated evidence')
+    _check_multi_section(part=catalog.groups[0].controls[0].parts[4])
 
 
 def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:

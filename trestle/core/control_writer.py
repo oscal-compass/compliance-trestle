@@ -252,7 +252,7 @@ class ControlWriter():
 
     def _dump_section_info(self, level: int, part: Dict[str, Any], added_sections: List[str], prefix: str) -> None:
         part_prose = part.get('prose', None)
-        part_subparts = part.get('sub-parts', None)
+        part_subparts = part.get('parts', None)
         name = part['name']
         title = self._sections_dict.get(name, name) if self._sections_dict else name
         title = f'{prefix} {title}' if prefix else title
@@ -373,7 +373,7 @@ class ControlWriter():
                         in_part = part_info.smt_part
                         part_label = control_part_id_map.get(part_info.smt_part, part_info.smt_part)
                         self._md_file.new_header(level=2, title=f'Part {part_label}')
-                    self._dump_section_info(2, part, added_sections, '')
+                    self._dump_section_info(3, part, added_sections, '')
                 # is it a control part
                 elif part_info.prose or part_info.parts:
                     in_part = ''

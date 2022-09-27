@@ -34,6 +34,7 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
@@ -233,6 +234,8 @@ class CatalogAssemble(AuthorCommonCommand):
             md_catalog, _, _ = ModelUtils.regenerate_uuids(md_catalog)
             logger.debug('regenerating uuids in catalog')
         ModelUtils.update_last_modified(md_catalog)
+
+        md_catalog.metadata.oscal_version = OSCAL_VERSION
 
         # we still may not know the assem_cat_path but can now create it with file content type
         assem_cat_path = ModelUtils.path_for_top_level_model(trestle_root, assem_cat_name, Catalog, new_content_type)
