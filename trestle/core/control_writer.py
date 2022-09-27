@@ -222,14 +222,14 @@ class ControlWriter():
                 self._insert_comp_info(part_label, dic, comp_def_format)
         self._md_file.new_hr()
 
-    def _dump_subpart_infos(self, level: int, part: PartInfo) -> None:
+    def _dump_subpart_infos(self, level: int, part: Dict[str, Any]) -> None:
         name = part['name']
         title = self._sections_dict.get(name, name) if self._sections_dict else name
         self._md_file.new_header(level=level, title=title)
-        if part.prose:
-            self._md_file.new_paraline(part.prose)
-        for subpart in as_list(part.parts):
-            self._dump_subparts(level + 1, subpart)
+        if 'prose' in part:
+            self._md_file.new_paraline(part['prose'])
+        for subpart in as_list(part.get('parts', None)):
+            self._dump_subpart_infos(level + 1, subpart)
 
     def _dump_subparts(self, level: int, part: Part) -> None:
         name = part.name

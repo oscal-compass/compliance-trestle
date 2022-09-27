@@ -81,7 +81,7 @@ class PartInfo:
                 for subpart in self.parts:
                     subpart_dict, _ = subpart.to_dicts(part_id_map)
                     all_subparts.append(subpart_dict)
-                part['sub-parts'] = all_subparts
+                part['parts'] = all_subparts
 
         # otherwise it is a list of props
         else:
