@@ -148,7 +148,7 @@ class ControlWriter():
             self._md_file.new_paraline(const.STATUS_PROMPT)
             self._md_file.new_paragraph()
         did_write = False
-        level = 3 if comp_def_format else 4
+        level = 3
         for dic in comp_dict.values():
             for statement_id, comp_info in dic.items():
                 # is this control-level guidance for this component
@@ -214,12 +214,13 @@ class ControlWriter():
             if comp_def_format:
                 status = ControlInterface.get_status_from_props(control)
                 self._insert_status(status, 3)
-        part_label = 'Statement'
-        for comp_name, dic in comp_dict.items():
-            if part_label in dic:
-                if comp_name != const.SSP_MAIN_COMP_NAME:
-                    self._md_file.new_header(level=3, title=comp_name)
-                self._insert_comp_info(part_label, dic, comp_def_format)
+        if not did_write_part:
+            part_label = ''
+            for comp_name, dic in comp_dict.items():
+                if part_label in dic:
+                    if comp_name != const.SSP_MAIN_COMP_NAME:
+                        self._md_file.new_header(level=3, title=comp_name)
+                    self._insert_comp_info(part_label, dic, comp_def_format)
         self._md_file.new_hr()
 
     def _dump_subpart_infos(self, level: int, part: Dict[str, Any]) -> None:

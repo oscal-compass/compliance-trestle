@@ -276,7 +276,9 @@ class SSPAssemble(AuthorCommonCommand):
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             component_list: List[ossp.SystemComponent] = []
             for comp in comp_dict.values():
-                component_list.append(comp.as_system_component())
+                # need to skip the component corresponding to statement level prose
+                if comp.title:
+                    component_list.append(comp.as_system_component())
             if ssp.system_implementation.components:
                 # reconstruct list with same order as existing, but add/remove components as needed
                 new_list: List[ossp.SystemComponent] = []

@@ -89,6 +89,11 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     assert header[const.SET_PARAMS_TAG
                   ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
     assert header[const.COMP_DEF_PARAM_VALS_TAG]['quantity_available'] == '500'
+    assert test_utils.confirm_text_in_file(
+        ac5_path,
+        '### Implementation Status: under-development',
+        '### Implementation Status Remarks: this is my remark'
+    )
 
 
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
