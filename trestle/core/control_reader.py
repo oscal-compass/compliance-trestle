@@ -409,7 +409,7 @@ class ControlReader():
             else:
                 comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, rules=[])}
 
-            # keep track of subnodes that get handled
+            # build list of subnodes that get handled specially so they aren't processed here
             subnode_kill: List[int] = []
             status_str = None
             remarks_str = None
