@@ -24,6 +24,13 @@ def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
     return list_or_none if list_or_none else []
 
 
+def as_filtered_list(list_or_none: Optional[List[TG]], filter_condition: Callable[[TG], bool]) -> List[TG]:
+    """Convert to list and filter based on the condition."""
+    result_list = list_or_none if list_or_none else []
+    result_list = list(filter(filter_condition, result_list))
+    return result_list
+
+
 def as_dict(dict_or_none: Optional[Dict[TG, TG2]]) -> Dict[TG, TG2]:
     """Convert dict or None object to itself or an empty dict if none."""
     return dict_or_none if dict_or_none else {}
