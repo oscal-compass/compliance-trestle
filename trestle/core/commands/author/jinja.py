@@ -218,7 +218,6 @@ class JinjaCmd(CommandPlusDocs):
             trestle_root, profile_path, False, False, parameters_formatting
         )
         catalog_interface = CatalogInterface(resolved_catalog)
-        param_dict = catalog_interface.get_profile_displayname_param_dict(profile)
 
         # Generate a single markdown page for each control per each group
         for group in catalog_interface.get_all_groups_from_catalog():
@@ -245,7 +244,6 @@ class JinjaCmd(CommandPlusDocs):
                 lut['control_writer'] = control_writer
                 lut['control'] = control
                 lut['profile'] = profile
-                lut['displayname_param_dict'] = param_dict
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 
