@@ -21,7 +21,6 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.core.control_interface import ParameterRep
 from trestle.core.resolver._import import Import
-from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +61,4 @@ class ProfileResolver():
         )
         logger.debug('launch pipeline')
         result = next(import_filter.process())
-        result.metadata.oscal_version = OSCAL_VERSION
-        result.metadata.title = f'Resolved profile catalog for profile {profile_path}'
-        result.metadata.links[0].href = str(profile_path)
         return result

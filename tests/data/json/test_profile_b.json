@@ -43,12 +43,34 @@
           "param-id": "ac-3.3_prm_1",
             "values": [
               "key power users"
+            ],
+            "props": [
+              {
+                "name": "set_param_prof_b_prop",
+                "value": "set param prof b prop value"
+              }
             ]
         },
         {  "param-id": "ac-3.3_prm_2",
             "values": [
               "full and complete compliance"
             ]
+        }
+      ],
+      "alters": [
+        {
+          "control-id": "ac-3.3",
+          "adds": [
+            {
+              "position": "starting",
+              "props": [
+                {
+                  "name": "add_prof_b_prop",
+                  "value": "add prof b prop value"
+                }
+              ]
+            }
+          ]
         }
       ]
     }
