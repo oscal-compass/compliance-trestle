@@ -335,9 +335,14 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
 
-    # a loads ac-1, ac-2 and prof_b
-    # b loads ac-3, ac-3.3, ac-4, ac-5 and prof_c
-    # c loads a-2-1, b-2-1 and cat-1
+    # a loads ac-1, ac-2 and pulls a-1, b-2-1, cat-1, ac-3, ac-3.3 from prof_b
+    # b loads ac-3, ac-3.3, ac-4, ac-5 - excludes ac-4 - and prof_c
+    # c loads a-2-1, b-2-1 and cat-1 from complex_cat
+
+    # d loads ac-1 and ac-2 and sets values
+    # e loads a and sets some parameters
+    # f loads b and adds props
+    # g loads b and tests adding props by position after
 
     for letter in 'abcdefg':
         prof_name = f'test_profile_{letter}'

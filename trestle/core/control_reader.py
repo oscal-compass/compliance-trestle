@@ -922,11 +922,8 @@ class ControlReader():
         adds: List[prof.Add] = []
 
         # add the parts and props at control level
-        # the parts could either go as ending or as after, but the convention here is after
-        if control_parts:
-            adds.append(prof.Add(parts=control_parts, by_id=f'{control_id}_smt', position='after'))
-        if props:
-            adds.append(prof.Add(props=props, position='ending'))
+        if control_parts or props:
+            adds.append(prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position='ending'))
 
         # add the parts and props at the part level, by-id
         by_ids = set(by_id_parts.keys()).union(props_by_id.keys())

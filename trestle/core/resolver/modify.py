@@ -20,12 +20,13 @@ from typing import Dict, Iterator, List, Optional
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
+from trestle.common.const import RESOLUTION_SOURCE
 from trestle.common.err import TrestleNotFoundError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.pipeline import Pipeline
-from trestle.oscal import common
+from trestle.oscal import OSCAL_VERSION, common
 
 logger = logging.getLogger(__name__)
 
@@ -416,11 +417,15 @@ class Modify(Pipeline.Filter):
 
         # update the original profile metadata with new contents
         # roles and responsible-parties will be pulled in with new uuid's
+        # the title simply becomes the title of the current profile - and will get overwritten
+        # by any other profiles downstream so that only the final profile title is used
         new_metadata = self._profile.metadata
-        new_metadata.title = f'{catalog.metadata.title}: Resolved by profile {self._profile.metadata.title}'
+        new_metadata.title = self._profile.metadata.title
+        new_metadata.oscal_version = OSCAL_VERSION
+
         links: List[common.Link] = []
         for import_ in self._profile.imports:
-            links.append(common.Link(**{'href': import_.href, 'rel': 'resolution-source'}))
+            links.append(common.Link(**{'href': import_.href, 'rel': RESOLUTION_SOURCE}))
         new_metadata.links = links
 
         # move catalog controls from dummy group '' into the catalog
