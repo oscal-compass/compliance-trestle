@@ -25,7 +25,7 @@ from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlIn
 from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import profile as prof
-from trestle.oscal.common import ImplementationStatus
+from trestle.oscal.common import ImplementationStatus, Part
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +148,7 @@ class ControlWriter():
             self._md_file.new_paraline(const.STATUS_PROMPT)
             self._md_file.new_paragraph()
         did_write = False
-        level = 3 if comp_def_format else 4
+        level = 3
         for dic in comp_dict.values():
             for statement_id, comp_info in dic.items():
                 # is this control-level guidance for this component
@@ -214,13 +214,55 @@ class ControlWriter():
             if comp_def_format:
                 status = ControlInterface.get_status_from_props(control)
                 self._insert_status(status, 3)
-        part_label = 'Statement'
-        for comp_name, dic in comp_dict.items():
-            if part_label in dic:
-                if comp_name != const.SSP_MAIN_COMP_NAME:
-                    self._md_file.new_header(level=3, title=comp_name)
-                self._insert_comp_info(part_label, dic, comp_def_format)
+        if not did_write_part:
+            part_label = ''
+            for comp_name, dic in comp_dict.items():
+                if part_label in dic:
+                    if comp_name != const.SSP_MAIN_COMP_NAME:
+                        self._md_file.new_header(level=3, title=comp_name)
+                    self._insert_comp_info(part_label, dic, comp_def_format)
         self._md_file.new_hr()
+
+    def _dump_subpart_infos(self, level: int, part: Dict[str, Any]) -> None:
+        name = part['name']
+        title = self._sections_dict.get(name, name) if self._sections_dict else name
+        self._md_file.new_header(level=level, title=title)
+        if 'prose' in part:
+            self._md_file.new_paraline(part['prose'])
+        for subpart in as_list(part.get('parts', None)):
+            self._dump_subpart_infos(level + 1, subpart)
+
+    def _dump_subparts(self, level: int, part: Part) -> None:
+        name = part.name
+        title = self._sections_dict.get(name, name) if self._sections_dict else name
+        self._md_file.new_header(level=level, title=title)
+        if part.prose:
+            self._md_file.new_paraline(part.prose)
+        for subpart in as_list(part.parts):
+            self._dump_subparts(level + 1, subpart)
+
+    def _dump_section(self, level: int, part: Part, added_sections: List[str], prefix: str) -> None:
+        title = self._sections_dict.get(part.name, part.name) if self._sections_dict else part.name
+        title = f'{prefix} {title}' if prefix else title
+        self._md_file.new_header(level=level, title=title)
+        if part.prose:
+            self._md_file.new_paraline(part.prose)
+        for subpart in as_list(part.parts):
+            self._dump_subparts(level + 1, subpart)
+        added_sections.append(part.name)
+
+    def _dump_section_info(self, level: int, part: Dict[str, Any], added_sections: List[str], prefix: str) -> None:
+        part_prose = part.get('prose', None)
+        part_subparts = part.get('parts', None)
+        name = part['name']
+        title = self._sections_dict.get(name, name) if self._sections_dict else name
+        title = f'{prefix} {title}' if prefix else title
+        self._md_file.new_header(level=level, title=title)
+        if part_prose:
+            self._md_file.new_paraline(part_prose)
+        for subpart in as_list(part_subparts):
+            self._dump_subpart_infos(level + 1, subpart)
+        added_sections.append(name)
 
     def _add_additional_content(
         self,
@@ -231,6 +273,7 @@ class ControlWriter():
         found_alters: List[prof.Alter],
         default_namespace: Optional[str] = None
     ) -> List[str]:
+        # get part and subpart info from adds of the profile
         part_infos = ControlInterface.get_all_add_info(control.id, profile)
         has_content = len(part_infos) > 0
 
@@ -291,19 +334,15 @@ class ControlWriter():
                         # is this a part that goes after the control statement
                         if add.by_id == statement_id:
                             for part in as_list(add.parts):
-                                if part.prose:
-                                    name = part.name
-                                    title = self._sections_dict.get(name, name) if self._sections_dict else name
-                                    self._md_file.new_header(level=2, title=f'Control {title}')
-                                    self._md_file.new_paraline(part.prose)
-                                    added_sections.append(name)
+                                if part.prose or part.parts:
+                                    self._dump_section(2, part, added_sections, 'Control')
                         else:
                             # or is it a sub-part of a statement part
                             part_label = control_part_id_map.get(add.by_id, add.by_id)
                             if add.parts:
                                 self._md_file.new_header(level=2, title=f'Part {part_label}')
                                 for part in as_list(add.parts):
-                                    if part.prose:
+                                    if part.prose or part.parts:
                                         name = part.name
                                         # need special handling for statement parts because their name is 'item'
                                         # get the short name as last piece of the part id after the '.'
@@ -311,16 +350,16 @@ class ControlWriter():
                                             name = part.id.split('.')[-1]
                                         title = self._sections_dict.get(name, name) if self._sections_dict else name
                                         self._md_file.new_header(level=3, title=title)
-                                        self._md_file.new_paraline(part.prose)
+                                        if part.prose:
+                                            self._md_file.new_paraline(part.prose)
+                                        for subpart in as_list(part.parts):
+                                            self._dump_subparts(3, subpart)
                                         added_sections.append(name)
                     else:
                         # if not by_id just add at end of control's parts
                         for part in as_list(add.parts):
-                            name = part.name
-                            title = self._sections_dict.get(name, name) if self._sections_dict else name
-                            self._md_file.new_header(level=2, title=f'Control {title}')
-                            self._md_file.new_paraline(part.prose)
-                            added_sections.append(name)
+                            if part.prose or part.parts:
+                                self._dump_section(2, part, added_sections, 'Control')
                     if add.props:
                         if const.TRESTLE_ADD_PROPS_TAG not in header:
                             header[const.TRESTLE_ADD_PROPS_TAG] = []
@@ -335,30 +374,20 @@ class ControlWriter():
         else:
             # md does not already exist so fill in directly
             in_part = ''
-            # TODO: process subparts as well - issue #1181
             for part_info in part_infos:
                 part, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
-                part_prose = part.get('prose', None)
                 # is this part of a statement part
-                if part_info.smt_part and part_prose and part_info.smt_part in control_part_id_map:
+                if part_info.smt_part and part_info.prose and part_info.smt_part in control_part_id_map:
                     # avoid outputting ## Part again if in same part
                     if not part_info.smt_part == in_part:
                         in_part = part_info.smt_part
                         part_label = control_part_id_map.get(part_info.smt_part, part_info.smt_part)
                         self._md_file.new_header(level=2, title=f'Part {part_label}')
-                    name = part['name']
-                    title = self._sections_dict.get(name, name) if self._sections_dict else name
-                    self._md_file.new_header(level=3, title=title)
-                    self._md_file.new_paraline(part_prose)
-                    added_sections.append(name)
+                    self._dump_section_info(3, part, added_sections, '')
                 # is it a control part
-                elif part_prose:
+                elif part_info.prose or part_info.parts:
                     in_part = ''
-                    name = part['name']
-                    title = self._sections_dict.get(name, name) if self._sections_dict else name
-                    self._md_file.new_header(level=2, title=f'Control {title}')
-                    self._md_file.new_paraline(part_prose)
-                    added_sections.append(name)
+                    self._dump_section_info(2, part, added_sections, 'Control')
                 elif prop_list:
                     in_part = ''
                     if const.TRESTLE_ADD_PROPS_TAG not in header:

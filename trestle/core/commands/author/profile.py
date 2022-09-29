@@ -38,6 +38,7 @@ from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -403,6 +404,8 @@ class ProfileAssemble(AuthorCommonCommand):
 
         if version:
             parent_prof.metadata.version = com.Version(__root__=version)
+
+        parent_prof.metadata.oscal_version = OSCAL_VERSION
 
         assem_prof_path = ModelUtils.path_for_top_level_model(
             trestle_root, assem_prof_name, prof.Profile, new_content_type

@@ -216,6 +216,11 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     # edit it a bit
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
+    # special handling for ac-2.1 because it has no statement sub-parts
+    add_prompt = 'Add control implementation description here for control ac-2.1'
+    add_response = 'My statement level prose'
+    ac_21_path = tmp_trestle_dir / ssp_name / 'ac/ac-2.1.md'
+    assert test_utils.substitute_text_in_file(ac_21_path, add_prompt, add_response)
 
     # generate markdown again on top of previous markdown to make sure it is not removed
     ssp_gen = SSPGenerate()
@@ -239,6 +244,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(orig_ssp.system_implementation.components) == 2
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
+    assert imp_req.statements[0].by_components[0].description == add_response
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
@@ -247,6 +255,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
+    assert test_utils.confirm_text_in_file(ac_21_path, const.SSP_MD_IMPLEMENTATION_QUESTION, add_response)
 
     # now assemble it again but don't regen uuid's and don't change version
     args = argparse.Namespace(
