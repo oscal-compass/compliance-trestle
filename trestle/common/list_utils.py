@@ -26,7 +26,7 @@ def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
 
 def as_filtered_list(list_or_none: Optional[List[TG]], filter_condition: Callable[[TG], bool]) -> List[TG]:
     """Convert to list and filter based on the condition."""
-    result_list = list_or_none if list_or_none else []
+    result_list = as_list(list_or_none)
     result_list = list(filter(filter_condition, result_list))
     return result_list
 
