@@ -181,7 +181,7 @@ class DocsControlWriter(ControlWriter):
         self, control: cat.Control, profile: prof.Profile, section: str, tag_pattern: Optional[str] = None
     ) -> None:
         """Add specific control section."""
-        prose = ControlInterface._get_control_section_prose(control, section)
+        prose = ControlInterface.get_control_section_prose(control, section)
         if prose:
             section_title = self._sections_dict.get(section, section)
             heading_title = f'{section_title}'

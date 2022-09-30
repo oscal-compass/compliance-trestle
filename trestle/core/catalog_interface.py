@@ -564,6 +564,20 @@ class CatalogInterface():
                 param_dict[key] = profile_param_dict[key]
         return param_dict
 
+    def _get_full_param_dict(self) -> Dict[str, common.Parameter]:
+        param_dict: Dict[str, common.Parameter] = {}
+        # build the full mapping of params to values from the catalog interface
+        for control in self.get_all_controls_from_dict():
+            param_dict.update(ControlInterface.get_control_param_dict(control, False))
+        return param_dict
+
+    def _change_prose_with_param_values(self, param_format, param_rep, show_value_warnings: bool) -> None:
+        """Go through all controls and change prose based on param values."""
+        param_dict = self._get_full_param_dict()
+        # insert param values into prose of all controls
+        for control in self.get_all_controls_from_dict():
+            ControlInterface.replace_control_prose(control, param_dict, param_format, param_rep, show_value_warnings)
+
     @staticmethod
     def _get_display_name_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
         for prop in as_list(param.props):

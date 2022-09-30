@@ -29,12 +29,11 @@ from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_interface import ParameterRep
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
 from trestle.core.resolver.merge import Merge
-from trestle.core.resolver.modify import Modify
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal import catalog as cat
 from trestle.oscal import common as com
@@ -230,7 +229,18 @@ def test_replace_params(param_id, param_text, prose, result) -> None:
     param = com.Parameter(id=param_id, values=[com.ParameterValue(__root__=param_text)])
     param_10 = com.Parameter(id='ac-2_smt.10', values=[com.ParameterValue(__root__='my 10 str')])
     param_dict = {param_id: param, 'ac-1_smt.10': param_10}
-    assert Modify._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
+    assert ControlInterface._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
+
+
+def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test replacement of params in assignment mode."""
+    cat_interface = CatalogInterface(simplified_nist_catalog)
+    param_dict = cat_interface._get_full_param_dict()
+    ac_44 = cat_interface.get_control('ac-4.4')
+    ControlInterface.replace_control_prose(ac_44, param_dict, None, ParameterRep.ASSIGNMENT_FORM)
+    assert ac_44.parts[
+        0
+    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: organization-defined procedure or method]].'  # noqa:E501
 
 
 def test_profile_resolver_param_sub() -> None:
@@ -242,7 +252,7 @@ def test_profile_resolver_param_sub() -> None:
 
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
     param_dict = {id_1: param_1, id_10: param_10}
-    new_text = Modify._replace_params(param_text, param_dict)
+    new_text = ControlInterface._replace_params(param_text, param_dict)
     assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
 
 
