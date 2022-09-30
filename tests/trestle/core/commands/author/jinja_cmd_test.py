@@ -112,9 +112,12 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
                 if len(cells) < 2:
                     continue
                 value = cells[2].strip()
+                # parameter values now do not appear in the prose
+                if value == 'Param_1_value_in_catalog':
+                    continue
                 is_found = False
                 for line in child2.content.text:
-                    if '*' + value + '*' in line:
+                    if value in line:
                         is_found = True
                         break
                 assert is_found
@@ -134,9 +137,12 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
             if len(cells) < 2:
                 continue
             value = cells[2].strip()
+            # parameter values now do not appear in the prose
+            if value == 'Param_1_value_in_catalog':
+                continue
             is_found = False
             for line in child2.content.text:
-                if 'Prefix:' + value in line:
+                if 'Prefix:' in line and value in line:
                     is_found = True
                     break
             assert is_found

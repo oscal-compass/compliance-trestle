@@ -14,7 +14,7 @@
 """Create resolved catalog from profile."""
 
 import logging
-from typing import Dict, Iterator, List, Optional
+from typing import Iterator, List, Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -23,7 +23,7 @@ from trestle.common.const import RESOLUTION_SOURCE
 from trestle.common.err import TrestleNotFoundError
 from trestle.common.list_utils import as_list
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import OSCAL_VERSION, common
 
@@ -236,19 +236,6 @@ class Modify(Pipeline.Filter):
             control.params[index] = param
             self._catalog_interface.replace_control(control)
 
-    def _change_prose_with_param_values(self):
-        """Go through all controls and change prose based on param values."""
-        param_dict: Dict[str, common.Parameter] = {}
-        # build the full mapping of params to values from the catalog interface
-        for control in self._catalog_interface.get_all_controls_from_dict():
-            param_dict.update(ControlInterface.get_control_param_dict(control, False))
-        param_dict.update(self._catalog_interface.loose_param_dict)
-        # insert param values into prose of all controls
-        for control in self._catalog_interface.get_all_controls_from_dict():
-            ControlInterface._replace_control_prose(
-                control, param_dict, self._params_format, self._param_rep, self.show_value_warnings
-            )
-
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
         """Modify the controls based on the profile."""
         logger.debug(f'modify specify catalog {catalog.metadata.title} for profile {self._profile.metadata.title}')
@@ -296,7 +283,9 @@ class Modify(Pipeline.Filter):
 
         if self._change_prose:
             # go through all controls and fix the prose based on param values
-            self._change_prose_with_param_values()
+            self._catalog_interface._change_prose_with_param_values(
+                self._params_format, self._param_rep, self.show_value_warnings
+            )
 
         catalog = self._catalog_interface.get_catalog()
 

@@ -232,6 +232,17 @@ def test_replace_params(param_id, param_text, prose, result) -> None:
     assert ControlInterface._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
 
 
+def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test replacement of params in assignment mode."""
+    cat_interface = CatalogInterface(simplified_nist_catalog)
+    param_dict = cat_interface._get_full_param_dict()
+    ac_44 = cat_interface.get_control('ac-4.4')
+    ControlInterface.replace_control_prose(ac_44, param_dict, None, ParameterRep.ASSIGNMENT_FORM)
+    assert ac_44.parts[
+        0
+    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: organization-defined procedure or method]].'  # noqa:E501
+
+
 def test_profile_resolver_param_sub() -> None:
     """Test profile resolver param sub via regex."""
     id_1 = 'ac-2_smt.1'
