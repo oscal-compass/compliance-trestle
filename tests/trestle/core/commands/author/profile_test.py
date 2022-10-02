@@ -811,7 +811,7 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 
 
 def test_profile_resolve(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test profile resolve into catalog."""
+    """Test profile resolve to create resolved profile catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
     prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'main_profile', prof.Profile, FileContentType.JSON)
     cat_name = 'resolved_catalog'
