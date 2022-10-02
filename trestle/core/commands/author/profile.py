@@ -444,7 +444,7 @@ class ProfileResolve(AuthorCommonCommand):
             '--show-values',
             help='Show values for parameters in prose',
             required=False,
-            type=bool,
+            action='store_true',
             default=False
         )
 
