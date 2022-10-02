@@ -36,7 +36,7 @@ from trestle.common import file_utils
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, sections_to_dict
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, ProfileResolve, sections_to_dict
 from trestle.core.control_interface import ControlInterface
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_node import MarkdownNode
@@ -808,3 +808,23 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
 
     tree = generate_assemble(ac1_path)
     assert not tree.get_node_for_key('## Control this_should_appear_in_parts')
+
+
+def test_profile_resolve(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test profile resolve into catalog."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+    prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'main_profile', prof.Profile, FileContentType.JSON)
+    cat_name = 'resolved_catalog'
+    ProfileResolve().resolve_profile(tmp_trestle_dir, prof_path, cat_name, False)
+    cat_1, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = cat_1.groups[0].controls[0]
+    assert ac_1.parts[0].parts[
+        1
+    ].prose == 'Designate an [Assignment: organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+
+    ProfileResolve().resolve_profile(tmp_trestle_dir, prof_path, cat_name, True)
+    cat_2, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = cat_2.groups[0].controls[0]
+    assert ac_1.parts[0].parts[
+        1
+    ].prose == 'Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
