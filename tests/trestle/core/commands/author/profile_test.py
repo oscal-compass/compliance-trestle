@@ -810,21 +810,17 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert not tree.get_node_for_key('## Control this_should_appear_in_parts')
 
 
-def test_profile_resolve(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('show_values', [True, False])
+def test_profile_resolve(tmp_trestle_dir: pathlib.Path, show_values: bool) -> None:
     """Test profile resolve to create resolved profile catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
     prof_path = ModelUtils.path_for_top_level_model(tmp_trestle_dir, 'main_profile', prof.Profile, FileContentType.JSON)
     cat_name = 'resolved_catalog'
-    ProfileResolve().resolve_profile(tmp_trestle_dir, prof_path, cat_name, False)
-    cat_1, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
-    ac_1 = cat_1.groups[0].controls[0]
-    assert ac_1.parts[0].parts[
-        1
-    ].prose == 'Designate an [Assignment: organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
-
-    ProfileResolve().resolve_profile(tmp_trestle_dir, prof_path, cat_name, True)
-    cat_2, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
-    ac_1 = cat_2.groups[0].controls[0]
-    assert ac_1.parts[0].parts[
-        1
-    ].prose == 'Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    ProfileResolve().resolve_profile(tmp_trestle_dir, prof_path, cat_name, show_values)
+    res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
+    ac_1 = res_cat.groups[0].controls[0]
+    if show_values:
+        expected_prose = 'Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    else:
+        expected_prose = 'Designate an [Assignment: organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    assert ac_1.parts[0].parts[1].prose == expected_prose
