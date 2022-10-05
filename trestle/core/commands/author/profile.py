@@ -476,17 +476,14 @@ class ProfileResolve(AuthorCommonCommand):
             show_values: If true, show values of parameters in prose rather than [Assignment:] form
 
         Returns:
-            0 on success, 1 on error
+            0 on success and raises exception on error
         """
-        try:
-            param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.ASSIGNMENT_FORM
-            catalog = ProfileResolver().get_resolved_profile_catalog(
-                trestle_root, profile_path, False, False, None, param_rep
-            )
-            ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
+        if not profile_path.exists():
+            raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
+        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.ASSIGNMENT_FORM
+        catalog = ProfileResolver().get_resolved_profile_catalog(
+            trestle_root, profile_path, False, False, None, param_rep
+        )
+        ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
 
-        except TrestleNotFoundError as e:
-            raise TrestleError(f'Profile {profile_path} not found, error {e}')
-        except TrestleError as e:
-            raise TrestleError(f'Error generating the resolved profile catalog: {e}')
         return CmdReturnCodes.SUCCESS.value

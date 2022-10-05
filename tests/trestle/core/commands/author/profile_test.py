@@ -826,3 +826,25 @@ def test_profile_resolve(tmp_trestle_dir: pathlib.Path, show_values: bool, monke
     else:
         expected_prose = 'Designate an [Assignment: organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
+
+
+@pytest.mark.parametrize('show_values', [True, False])
+def test_profile_resolve_fail(tmp_trestle_dir: pathlib.Path, show_values: bool, monkeypatch: MonkeyPatch) -> None:
+    """Test profile resolve to create resolved profile catalog."""
+    # confirm failure for non-existent profile
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
+    cat_name = 'resolved_catalog'
+    command_profile_resolve = f'trestle author profile-resolve -n foo -o {cat_name}'
+    if show_values:
+        command_profile_resolve += ' -sv'
+    test_utils.execute_command_and_assert(command_profile_resolve, 1, monkeypatch)
+
+    # confirm failure for existing but corrupt profile
+    bad_prof_dir = tmp_trestle_dir / 'profiles/bad_prof'
+    bad_prof_dir.mkdir(exist_ok=True, parents=True)
+    src_path = test_utils.JSON_TEST_DATA_PATH / 'bad_simple.json'
+    shutil.copy2(str(src_path), str(bad_prof_dir / 'profile.json'))
+    command_profile_resolve = f'trestle author profile-resolve -n bad_prof -o {cat_name}'
+    if show_values:
+        command_profile_resolve += ' -sv'
+    test_utils.execute_command_and_assert(command_profile_resolve, 1, monkeypatch)
