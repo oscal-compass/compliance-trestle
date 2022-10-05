@@ -428,3 +428,59 @@ class ProfileAssemble(AuthorCommonCommand):
         assem_prof_path.parent.mkdir(parents=True, exist_ok=True)
         parent_prof.oscal_write(assem_prof_path)
         return CmdReturnCodes.SUCCESS.value
+
+
+class ProfileResolve(AuthorCommonCommand):
+    """Resolve profile to resolved profile catalog."""
+
+    name = 'profile-resolve'
+
+    def _init_arguments(self) -> None:
+        name_help_str = 'Name of the source profile model in the trestle workspace'
+        self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
+        self.add_argument('-o', '--output', help='Name of the output resolved profile catalog', required=True, type=str)
+        self.add_argument(
+            '-sv',
+            '--show-values',
+            help='Show values for parameters in prose',
+            required=False,
+            action='store_true',
+            default=False
+        )
+
+    def _run(self, args: argparse.Namespace) -> int:
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root: pathlib.Path = args.trestle_root
+            profile_path = trestle_root / f'profiles/{args.name}/profile.json'
+            catalog_name = args.output
+            show_values = args.show_values
+
+            return self.resolve_profile(trestle_root, profile_path, catalog_name, show_values)
+
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Generation of the resolved profile catalog failed')
+
+    def resolve_profile(
+        self, trestle_root: pathlib.Path, profile_path: pathlib.Path, catalog_name: str, show_values: bool
+    ) -> int:
+        """Create resolved profile catalog from given profile.
+
+        Args:
+            trestle_root: Root directory of the trestle workspace
+            profile_path: Path of the profile json file
+            catalog_name: Name of the resolved profile catalog
+            show_values: If true, show values of parameters in prose rather than [Assignment:] form
+
+        Returns:
+            0 on success and raises exception on error
+        """
+        if not profile_path.exists():
+            raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
+        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.ASSIGNMENT_FORM
+        catalog = ProfileResolver().get_resolved_profile_catalog(
+            trestle_root, profile_path, False, False, None, param_rep
+        )
+        ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
+
+        return CmdReturnCodes.SUCCESS.value
