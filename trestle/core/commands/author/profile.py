@@ -452,9 +452,6 @@ class ProfileResolve(AuthorCommonCommand):
         try:
             log.set_log_level_from_args(args)
             trestle_root: pathlib.Path = args.trestle_root
-            if not file_utils.is_directory_name_allowed(args.output):
-                raise TrestleError(f'{args.output} is not an allowed directory name')
-
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
             catalog_name = args.output
             show_values = args.show_values
