@@ -470,14 +470,14 @@ class ProfileResolve(AuthorCommonCommand):
             trestle_root: Root directory of the trestle workspace
             profile_path: Path of the profile json file
             catalog_name: Name of the resolved profile catalog
-            show_values: If true, show values of parameters in prose rather than [Assignment:] form
+            show_values: If true, show values of parameters in prose rather than original {{}} form
 
         Returns:
             0 on success and raises exception on error
         """
         if not profile_path.exists():
             raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
-        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.ASSIGNMENT_FORM
+        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.LEAVE_MOUSTACHE
         catalog = ProfileResolver().get_resolved_profile_catalog(
             trestle_root, profile_path, False, False, None, param_rep
         )
