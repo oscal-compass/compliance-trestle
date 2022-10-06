@@ -1,0 +1,3440 @@
+{
+  "component-definition": {
+    "uuid": "6c9fb1af-5829-4b8d-a7d2-6a3d2123c5b9",
+    "metadata": {
+      "title": "Component definition for TBD profiles",
+      "last-modified": "2022-10-06T15:10:40+00:00",
+      "version": "1.1.0",
+      "oscal-version": "1.0.2",
+      "roles": [
+        {
+          "id": "prepared-by",
+          "title": "Indicates the organization that created this content."
+        },
+        {
+          "id": "prepared-for",
+          "title": "Indicates the organization for which this content was created.."
+        },
+        {
+          "id": "content-approver",
+          "title": "Indicates the organization responsible for all content represented in the \"document\"."
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "6cbc61c5-eed0-42da-960d-73d23796b3d3",
+          "type": "organization",
+          "name": "TBD",
+          "remarks": "TBD"
+        },
+        {
+          "uuid": "600d78ee-441d-49d3-994d-fae7e10dc410",
+          "type": "organization",
+          "name": "Customer",
+          "remarks": "organization to be customized at account creation only for their Component Definition"
+        },
+        {
+          "uuid": "ce93374b-8a4d-46da-8c9e-9caa218c1b24",
+          "type": "organization",
+          "name": "ISV",
+          "remarks": "organization to be customized at ISV subscription only for their Component Definition"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "prepared-by",
+          "party-uuids": [
+            "6cbc61c5-eed0-42da-960d-73d23796b3d3"
+          ]
+        },
+        {
+          "role-id": "prepared-for",
+          "party-uuids": [
+            "600d78ee-441d-49d3-994d-fae7e10dc410",
+            "ce93374b-8a4d-46da-8c9e-9caa218c1b24"
+          ]
+        },
+        {
+          "role-id": "content-approver",
+          "party-uuids": [
+            "6cbc61c5-eed0-42da-960d-73d23796b3d3"
+          ]
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "3e2a0c09-2835-4234-8792-f1eea1bc966b",
+        "type": "Service",
+        "title": "OSCO",
+        "description": "OSCO",
+        "control-implementations": [
+          {
+            "uuid": "efa73d11-dfdd-40db-b9dd-46b659fa6e77",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "0055c0ed-867c-4296-a6c6-7be8c17d9ff1",
+                "control-id": "CIS-1.2.1",
+                "description": "CIS-1.2.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --anonymous-auth argument is set to false",
+                    "remarks": "rule_set_000"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "67809a05-4a15-4d26-a722-f70e011d7ad4",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "c8f70dbe-9b63-4830-9fac-d6582cefef3d",
+                "control-id": "CIS-1.2.2",
+                "description": "CIS-1.2.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --basic-auth-file argument is not set",
+                    "remarks": "rule_set_001"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "ab0ea711-4e53-46a7-a9ac-e48e80ea4232",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "555403ce-0c90-4a67-96f2-189116dacb68",
+                "control-id": "CIS-1.2.3",
+                "description": "CIS-1.2.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --token-auth-file parameter is not set",
+                    "remarks": "rule_set_002"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "2dbd6390-783d-4c80-af9d-0fa37517ebfa",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "ff80c7fb-3a26-4ceb-adac-4da5cb6c4229",
+                "control-id": "CIS-1.2.4",
+                "description": "CIS-1.2.4",
+                "props": []
+              },
+              {
+                "uuid": "d0f18d65-924a-4fc8-9c3d-9f1a3411a762",
+                "control-id": "CIS-1.2.4",
+                "description": "CIS-1.2.4",
+                "props": []
+              },
+              {
+                "uuid": "322e4b7b-0220-4182-bb56-2ec2dc4d8551",
+                "control-id": "CIS-1.2.4",
+                "description": "CIS-1.2.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-https argument is set to true",
+                    "remarks": "rule_set_003"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-https argument is set to true",
+                    "remarks": "rule_set_004"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-https argument is set to true",
+                    "remarks": "rule_set_005"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "f2334bab-44a0-455e-995d-fd6b250d17dd",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "c14db1cc-0349-409d-8448-89532fa9b0e6",
+                "control-id": "CIS-1.2.5",
+                "description": "CIS-1.2.5",
+                "props": []
+              },
+              {
+                "uuid": "5d0a931c-b1a3-43f6-8832-d1a19fb1cf4a",
+                "control-id": "CIS-1.2.5",
+                "description": "CIS-1.2.5",
+                "props": []
+              },
+              {
+                "uuid": "6bbcca9e-105f-499e-ba3f-fa18236cca1f",
+                "control-id": "CIS-1.2.5",
+                "description": "CIS-1.2.5",
+                "props": []
+              },
+              {
+                "uuid": "5a023193-fee4-4932-bcb6-37c4f2f43970",
+                "control-id": "CIS-1.2.5",
+                "description": "CIS-1.2.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate",
+                    "remarks": "rule_set_006"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate",
+                    "remarks": "rule_set_007"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate",
+                    "remarks": "rule_set_008"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-client-certificate and --kubelet-client-key arguments are set as appropriate",
+                    "remarks": "rule_set_009"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "23e21c55-816e-40c9-a73b-5bbe0a96fc97",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "2bacb51f-bdca-4dc0-8ed9-719520b96bd5",
+                "control-id": "CIS-1.2.6",
+                "description": "CIS-1.2.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubelet-certificate-authority argument is set as appropriate",
+                    "remarks": "rule_set_010"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "69f30610-94c0-4570-8ea1-93ef910989f7",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "130d1467-2cb0-4e5b-89f7-061588bfe2cd",
+                "control-id": "CIS-1.2.7",
+                "description": "CIS-1.2.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --authorization-mode argument is not set to AlwaysAllow",
+                    "remarks": "rule_set_011"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "e00aefb1-0cf8-43e0-af11-0855e0ecb1ba",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "da7ba5a2-bcf2-4339-819d-0b23f22835a0",
+                "control-id": "CIS-1.2.8",
+                "description": "CIS-1.2.8",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --authorization-mode argument includes Node",
+                    "remarks": "rule_set_012"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "8274d991-450f-4435-b71d-814ad5aa61d3",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "8b7ed257-8e49-4f3f-af82-81e9d47ee955",
+                "control-id": "CIS-1.2.9",
+                "description": "CIS-1.2.9",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --authorization-mode argument includes RBAC",
+                    "remarks": "rule_set_013"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "86584ebf-b01c-4d5d-b6e5-da1f0903debf",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "a49a95c5-9052-474c-8960-038584d4e63b",
+                "control-id": "CIS-1.2.10",
+                "description": "CIS-1.2.10",
+                "props": []
+              },
+              {
+                "uuid": "fdb66a88-5c1f-4a5e-9712-1d74cd5c6e28",
+                "control-id": "CIS-1.2.10",
+                "description": "CIS-1.2.10",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin EventRateLimit is set",
+                    "remarks": "rule_set_014"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin EventRateLimit is set",
+                    "remarks": "rule_set_015"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "881cc54a-d646-4cfd-87b8-7fbe5f8e50ee",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "64a318c9-e34c-479e-bed1-db62054b5f09",
+                "control-id": "CIS-1.2.11",
+                "description": "CIS-1.2.11",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin AlwaysAdmit is not set",
+                    "remarks": "rule_set_016"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "ba999d2c-7e4b-469b-9ce2-0ee0b0711f68",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "9d65f19d-633c-4d78-99e7-09f29ed08037",
+                "control-id": "CIS-1.2.12",
+                "description": "CIS-1.2.12",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin AlwaysPullImages is set",
+                    "remarks": "rule_set_017"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "b6f3f5c0-0c86-4b6c-b6ea-08cce45955dd",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "9d852805-eea0-459c-b540-bb90cdecc562",
+                "control-id": "CIS-1.2.13",
+                "description": "CIS-1.2.13",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin SecurityContextDeny is not set",
+                    "remarks": "rule_set_018"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "b28c1013-a53a-4358-b884-db9103225d7a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "74c592e4-fe37-4b5a-b41a-4596f33dd696",
+                "control-id": "CIS-1.2.14",
+                "description": "CIS-1.2.14",
+                "props": []
+              },
+              {
+                "uuid": "840a9a16-381a-4036-a04f-8a7b8162b7fc",
+                "control-id": "CIS-1.2.14",
+                "description": "CIS-1.2.14",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin ServiceAccount is set",
+                    "remarks": "rule_set_019"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin ServiceAccount is set",
+                    "remarks": "rule_set_020"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "26e71c06-e555-449a-9523-6bcc2d0dfd29",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "0b290812-3404-4d8f-b807-df41fd1c4bcb",
+                "control-id": "CIS-1.2.15",
+                "description": "CIS-1.2.15",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin NamespaceLifecycle is set",
+                    "remarks": "rule_set_021"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "836a5c71-d04a-4f45-8827-034231a57ab9",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "8aa8636a-654c-408f-b29b-0026109dbd15",
+                "control-id": "CIS-1.2.16",
+                "description": "CIS-1.2.16",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin PodSecurityPolicy is set (Automated)",
+                    "remarks": "rule_set_022"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "29051188-4597-41ec-819c-fec77908309d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "394076cb-d2ab-4a94-9133-cf73fe6fdab0",
+                "control-id": "CIS-1.2.17",
+                "description": "CIS-1.2.17",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admission control plugin NodeRestriction is set (Automated)",
+                    "remarks": "rule_set_023"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "06b95ead-3e65-4b92-a4c6-842e8cb9a9bb",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "e409c896-6c31-4070-870f-799c85845804",
+                "control-id": "CIS-1.2.18",
+                "description": "CIS-1.2.18",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --insecure-bind-address argument is not set",
+                    "remarks": "rule_set_024"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "840aefc9-131d-4cbe-bb34-8ae5ba0a4eab",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "619218fd-1d6d-4896-98d6-590160bc9037",
+                "control-id": "CIS-1.2.19",
+                "description": "CIS-1.2.19",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --insecure-port argument is set to 0",
+                    "remarks": "rule_set_025"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "3d85879a-21c3-4a0a-91b3-33d2634caf9c",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "119630a9-097e-4011-b63a-84634eb0ba52",
+                "control-id": "CIS-1.2.20",
+                "description": "CIS-1.2.20",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --secure-port argument is not set to 0",
+                    "remarks": "rule_set_026"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "dff58c99-06a3-41da-b968-368729921d4e",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "0453e573-c6d4-4463-b584-4fbe6174528e",
+                "control-id": "CIS-1.2.21",
+                "description": "CIS-1.2.21",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --profiling argument is set to false",
+                    "remarks": "rule_set_027"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "7233480f-f15f-47cf-b366-f611a972be70",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "231ca4ae-022f-4b01-b493-9cd5b37995f8",
+                "control-id": "CIS-1.2.22",
+                "description": "CIS-1.2.22",
+                "props": []
+              },
+              {
+                "uuid": "d68206a0-ba3f-47bf-bf39-bd38a67420ae",
+                "control-id": "CIS-1.2.22",
+                "description": "CIS-1.2.22",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --audit-log-path argument is set",
+                    "remarks": "rule_set_028"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --audit-log-path argument is set",
+                    "remarks": "rule_set_029"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "df1c5773-d19b-43d6-84d4-43a0f9093260",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "6e40f098-d746-4d78-b6c0-d45a59163348",
+                "control-id": "CIS-1.2.23",
+                "description": "CIS-1.2.23",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the audit logs are forwarded off the cluster for retention",
+                    "remarks": "rule_set_030"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "93e730e9-ec96-4e3f-9329-5053cd23c6be",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "fe53b002-9ff3-4eb1-b618-0735213b0f9f",
+                "control-id": "CIS-1.2.24",
+                "description": "CIS-1.2.24",
+                "props": []
+              },
+              {
+                "uuid": "86026592-04f3-4f27-9050-4eb48ed416fe",
+                "control-id": "CIS-1.2.24",
+                "description": "CIS-1.2.24",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate",
+                    "remarks": "rule_set_031"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --audit-log-maxbackup argument is set to 10 or as appropriate",
+                    "remarks": "rule_set_032"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "5346fffd-cad6-469f-a0a6-5f31fad6cead",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "4845532f-a113-407d-8d76-eb2afa883f17",
+                "control-id": "CIS-1.2.25",
+                "description": "CIS-1.2.25",
+                "props": []
+              },
+              {
+                "uuid": "375c0014-a988-4d17-872c-03fcd576bc55",
+                "control-id": "CIS-1.2.25",
+                "description": "CIS-1.2.25",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate",
+                    "remarks": "rule_set_033"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --audit-log-maxsize argument is set to 100 or as appropriate",
+                    "remarks": "rule_set_034"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "cdb3adf4-5751-4752-a20f-9d835a0d8919",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "f7ed37d4-278c-45af-80f2-687bd6049a22",
+                "control-id": "CIS-1.2.26",
+                "description": "CIS-1.2.26",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --request-timeout argument is set as appropriate",
+                    "remarks": "rule_set_035"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "2601bfa3-6e57-486f-b1b8-e66889ab5966",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "ad3d0de6-789f-41a6-b545-d82e50127737",
+                "control-id": "CIS-1.2.27",
+                "description": "CIS-1.2.27",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --service-account-lookup argument is set to true",
+                    "remarks": "rule_set_036"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "2ad16a95-1a68-49e7-bfa0-2d54e3300922",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "76e1bfab-05b3-448d-9f17-e06075fda402",
+                "control-id": "CIS-1.2.28",
+                "description": "CIS-1.2.28",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --service-account-key-file argument is set as appropriate",
+                    "remarks": "rule_set_037"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "c2b0804e-aace-4e49-ba95-7f76bc94b2fd",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "7242f2cf-550b-4e22-9ee5-290d6c33f226",
+                "control-id": "CIS-1.2.29",
+                "description": "CIS-1.2.29",
+                "props": []
+              },
+              {
+                "uuid": "46bfdb3e-dc67-4951-b9a5-48640fade3d7",
+                "control-id": "CIS-1.2.29",
+                "description": "CIS-1.2.29",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate",
+                    "remarks": "rule_set_038"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --etcd-certfile and --etcd-keyfile arguments are set as appropriate",
+                    "remarks": "rule_set_039"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "0d98aa83-9b3e-4280-85de-85c594f01dcf",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "cfdc4df2-a92f-4da5-9341-5555560251d6",
+                "control-id": "CIS-1.2.30",
+                "description": "CIS-1.2.30",
+                "props": []
+              },
+              {
+                "uuid": "1ac8235e-b963-4809-b950-cdcf23fe9b54",
+                "control-id": "CIS-1.2.30",
+                "description": "CIS-1.2.30",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_040"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_041"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "08888154-89b8-4c7d-bbd2-78d050a9f445",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "b1cf7240-1a24-4347-8037-41703a70bfa6",
+                "control-id": "CIS-1.2.31",
+                "description": "CIS-1.2.31",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --client-ca-file argument is set as appropriate",
+                    "remarks": "rule_set_042"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "010d4ba0-c3c5-4dc5-a74f-33edc345a26f",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "88ea73eb-7186-45b1-9667-d42d8edd8f8d",
+                "control-id": "CIS-1.2.32",
+                "description": "CIS-1.2.32",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --etcd-cafile argument is set as appropriate",
+                    "remarks": "rule_set_043"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "f8608f36-7bc6-46ce-aedc-6a8d655bbd5b",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "c7cdead7-b8bb-4c47-93a1-c10e0a8484f1",
+                "control-id": "CIS-1.2.33",
+                "description": "CIS-1.2.33",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --encryption-provider-config argument is set as appropriate",
+                    "remarks": "rule_set_044"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "9af187af-89b3-4466-872e-69fa4fa4d3f1",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "15bc703e-29f5-4d69-9551-f1bd086b751b",
+                "control-id": "CIS-1.2.34",
+                "description": "CIS-1.2.34",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that encryption providers are appropriately configured",
+                    "remarks": "rule_set_045"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "7be650c6-9214-43f6-98f0-9adb421fc11c",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "cacdbe6e-1355-4bda-893d-48c1e41e9c87",
+                "control-id": "CIS-1.2.35",
+                "description": "CIS-1.2.35",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the API Server only makes use of Strong Cryptographic Ciphers",
+                    "remarks": "rule_set_046"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "49206bf7-6672-4978-818d-44d0577d3459",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "5f50a4aa-beae-4934-ad62-c2df61e7c583",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "641dc04a-82eb-47a0-b256-dae2b23e7a02",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "8b6fe569-858b-4123-b833-02aa99300e9d",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "13363cdf-160a-4d18-97b9-bd1c0e9fa9d5",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "2beeed03-5a7c-4f0a-94ff-bf9c74dd37ee",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "090469ff-f365-4410-ba02-f9f4532b6aa1",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "3eb6ab60-1bbe-47a7-a7fa-a37a57a1b0b4",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "6837a317-ea15-4822-acee-f7619a12a98e",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "3b3aebcd-e188-4672-8046-ba12b1405b99",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": []
+              },
+              {
+                "uuid": "51904cc4-76c6-4dfa-8533-08e07e78289b",
+                "control-id": "CIS-1.3.1",
+                "description": "CIS-1.3.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_047"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_048"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_049"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_050"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_051"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_052"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_053"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_054"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_055"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that garbage collection is configured as appropriate",
+                    "remarks": "rule_set_056"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "b0f2a218-b498-44a0-9da6-79f3f06b0d13",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "470fbb3e-c77a-4cea-aca7-7f77b74f3d36",
+                "control-id": "CIS-1.3.2",
+                "description": "CIS-1.3.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that controller manager healthz endpoints are protected by RBAC. (Automated)",
+                    "remarks": "rule_set_057"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "70b28ce2-7b64-4c98-af15-2d257ade1011",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "a07f85fb-48cc-404a-a6cf-b0da9c05ff52",
+                "control-id": "CIS-1.3.3",
+                "description": "CIS-1.3.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --use-service-account-credentials argument is set to true",
+                    "remarks": "rule_set_058"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "c10ffcc5-56be-497d-9ad6-f2f483941601",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "720156a3-f9f0-4236-bf7f-f55200837ba0",
+                "control-id": "CIS-1.3.4",
+                "description": "CIS-1.3.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --service-account-private-key-file argument is set as appropriate",
+                    "remarks": "rule_set_059"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "7df4acde-c849-49b4-9946-e99f0bf02415",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "eaf5aada-b689-4c7b-9b2c-0d88ca5e014e",
+                "control-id": "CIS-1.3.5",
+                "description": "CIS-1.3.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --root-ca-file argument is set as appropriate",
+                    "remarks": "rule_set_060"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "61fccccc-e548-449b-96ed-8d33f0702a6c",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "736ef1f7-9389-4a4d-960d-80b4e844ef03",
+                "control-id": "CIS-1.3.6",
+                "description": "CIS-1.3.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the RotateKubeletServerCertificate argument is set to true",
+                    "remarks": "rule_set_061"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "034589a3-6e0c-4e8e-9591-b7f12a3448b8",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "981a7a70-8086-49f2-aced-2c3f958b3948",
+                "control-id": "CIS-1.3.7",
+                "description": "CIS-1.3.7",
+                "props": []
+              },
+              {
+                "uuid": "a6cc2ad1-0a8b-4ed1-845b-fe13c71ed403",
+                "control-id": "CIS-1.3.7",
+                "description": "CIS-1.3.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --bind-address argument is set to 127.0.0.1",
+                    "remarks": "rule_set_062"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --bind-address argument is set to 127.0.0.1",
+                    "remarks": "rule_set_063"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "1ddbe03e-884d-4311-8137-66d9fa448315",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "8628ce73-682e-42d8-8fb5-2b39b71e8ef6",
+                "control-id": "CIS-1.4.2",
+                "description": "CIS-1.4.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --bind-address argument is set to 127.0.0.1",
+                    "remarks": "rule_set_064"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "1c75945c-37d8-4293-8ce9-cc10b1a67fbd",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "dfd69c68-8550-41ae-ae6c-402529b74078",
+                "control-id": "CIS-2.1",
+                "description": "CIS-2.1",
+                "props": []
+              },
+              {
+                "uuid": "c05d209a-e3b0-4b0e-8fb7-7fdfcde356bc",
+                "control-id": "CIS-2.1",
+                "description": "CIS-2.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --cert-file and --key-file arguments are set as appropriate",
+                    "remarks": "rule_set_065"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --cert-file and --key-file arguments are set as appropriate",
+                    "remarks": "rule_set_066"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "6a3876ed-61c0-484c-8acc-2fefa12b2bd8",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "11de65ea-5eec-4f9f-89e2-37635d294b48",
+                "control-id": "CIS-2.2",
+                "description": "CIS-2.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --client-cert-auth argument is set to true",
+                    "remarks": "rule_set_067"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "cc7b4f88-85ba-4921-8a33-5f05e4527aa4",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "afbf35fd-63dc-437d-b257-2261e4f3f306",
+                "control-id": "CIS-2.3",
+                "description": "CIS-2.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --auto-tls argument is not set to true",
+                    "remarks": "rule_set_068"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "31dcb6e2-4188-4758-bfce-fc81a74eafa3",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "f7c851b0-d166-4214-a3a1-a9e722032fd8",
+                "control-id": "CIS-2.4",
+                "description": "CIS-2.4",
+                "props": []
+              },
+              {
+                "uuid": "d1f7c3d6-cd05-4328-8d87-59d4ae777d2f",
+                "control-id": "CIS-2.4",
+                "description": "CIS-2.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --peer-cert-file and --peer-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_069"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --peer-cert-file and --peer-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_070"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "6aee5ef6-5edb-468d-8479-4b3a558e744a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "50d2d98e-3008-48a3-8880-cdb9a883741c",
+                "control-id": "CIS-2.5",
+                "description": "CIS-2.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --peer-client-cert-auth argument is set to true",
+                    "remarks": "rule_set_071"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "d0858e09-73a6-48e3-8421-1691e0aaf82f",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "24dab733-1c72-4c5e-9bb9-0f3e0e9c7bd7",
+                "control-id": "CIS-2.6",
+                "description": "CIS-2.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --peer-auto-tls argument is not set to true",
+                    "remarks": "rule_set_072"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "a06d0252-bd24-48ed-9d32-94c3ad712441",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "ae93ff8b-5bc2-452f-86ed-fdcb10f53204",
+                "control-id": "CIS-3.1.1",
+                "description": "CIS-3.1.1",
+                "props": []
+              },
+              {
+                "uuid": "a7bd0f64-7bf6-419a-bd16-dfe374c92dcc",
+                "control-id": "CIS-3.1.1",
+                "description": "CIS-3.1.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Client certificate authentication should not be used for users",
+                    "remarks": "rule_set_073"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Client certificate authentication should not be used for users",
+                    "remarks": "rule_set_074"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "6dbf99fe-b41f-46b4-bbef-08f611b16d2a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "a77ad1cb-5d33-4536-8eb3-48bf4c143cbe",
+                "control-id": "CIS-3.2.2",
+                "description": "CIS-3.2.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the audit policy covers key security concerns",
+                    "remarks": "rule_set_075"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "966d0f47-6e7e-431e-8666-aea126fcbd94",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "1dd28f1c-60f9-4fb0-b67f-a6bbf4a13e56",
+                "control-id": "CIS-4.1.3",
+                "description": "CIS-4.1.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "If proxy kubeconfig file exists ensure permissions are set to 644 or more restrictive (Automated)",
+                    "remarks": "rule_set_076"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "d4b18ddd-e903-461b-9a95-25e8b54dcc97",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "0b46e3f0-a124-4a75-87d8-620712b05a7e",
+                "control-id": "CIS-4.1.4",
+                "description": "CIS-4.1.4",
+                "props": []
+              },
+              {
+                "uuid": "148d9346-41ae-4702-9c34-20ea5b274765",
+                "control-id": "CIS-4.1.4",
+                "description": "CIS-4.1.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "If proxy kubeconfig file exists ensure ownership is set to root:root (Manual)",
+                    "remarks": "rule_set_077"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "If proxy kubeconfig file exists ensure ownership is set to root:root (Manual)",
+                    "remarks": "rule_set_078"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "7305455d-71f2-432a-8ab9-3dd14b136787",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "e0f3a4ae-4c17-4fc8-a328-f3c57e93fec4",
+                "control-id": "CIS-4.2.1",
+                "description": "CIS-4.2.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --anonymous-auth argument is set to false",
+                    "remarks": "rule_set_079"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "ec706b10-066f-4fb2-9feb-29ed745f23b6",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "9a576779-66c8-4fda-9a9c-c1f06aa497e6",
+                "control-id": "CIS-4.2.2",
+                "description": "CIS-4.2.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --authorization-mode argument is not set to AlwaysAllow",
+                    "remarks": "rule_set_080"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "0a272bc9-9fc7-4e80-8449-20be0540028a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "1b6a5941-6011-4d92-a4d8-c0d807ef4e0d",
+                "control-id": "CIS-4.2.3",
+                "description": "CIS-4.2.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --client-ca-file argument is set as appropriate",
+                    "remarks": "rule_set_081"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "00b8c9d9-0b34-4f74-af40-54d7f4fd6a87",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "9c532bcd-5e5e-4985-8cb7-cf812b8020fe",
+                "control-id": "CIS-4.2.4",
+                "description": "CIS-4.2.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --read-only-port argument is set to 0",
+                    "remarks": "rule_set_082"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "cd54683c-4b23-45f1-917e-64cedce3d0b2",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "0112b71e-37d2-4ea1-b694-aed258fb7f2e",
+                "control-id": "CIS-4.2.5",
+                "description": "CIS-4.2.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --streaming-connection-idle-timeout argument is not set to 0",
+                    "remarks": "rule_set_083"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "586a5d2f-9140-4441-a638-b265e67bbe3c",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "e44d4aa8-53c4-4283-b376-f74b383e68fd",
+                "control-id": "CIS-4.2.7",
+                "description": "CIS-4.2.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --make-iptables-util-chains argument is set to true",
+                    "remarks": "rule_set_084"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "f7680108-222e-433b-94a4-778fe4564cb5",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "a4511863-417b-4bc4-a413-d1d6fc6af5ad",
+                "control-id": "CIS-4.2.9",
+                "description": "CIS-4.2.9",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --event-qps argument is set to 0 or a level which ensures appropriate event capture",
+                    "remarks": "rule_set_085"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "1aefcb95-c8c0-4e19-810f-fdcb001a9b77",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "d7ad01fa-f515-4560-bf66-26eaaef624eb",
+                "control-id": "CIS-4.2.10",
+                "description": "CIS-4.2.10",
+                "props": []
+              },
+              {
+                "uuid": "bfff7700-b8a3-4e95-b8c1-e41340b88320",
+                "control-id": "CIS-4.2.10",
+                "description": "CIS-4.2.10",
+                "props": []
+              },
+              {
+                "uuid": "af5b77b9-9c09-4172-9565-7e8e4b120d51",
+                "control-id": "CIS-4.2.10",
+                "description": "CIS-4.2.10",
+                "props": []
+              },
+              {
+                "uuid": "a38fa2c5-5a40-4c63-9a5e-9fbbaf9ba53f",
+                "control-id": "CIS-4.2.10",
+                "description": "CIS-4.2.10",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_086"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_087"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_088"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --tls-cert-file and --tls-private-key-file arguments are set as appropriate",
+                    "remarks": "rule_set_089"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "98d45bd5-d5e8-4cc8-bfa9-dd447911b7af",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "67c36a6c-6d4c-4806-9e00-062a148c3a44",
+                "control-id": "CIS-4.2.11",
+                "description": "CIS-4.2.11",
+                "props": []
+              },
+              {
+                "uuid": "97fef67d-5fb2-4425-896c-77caffe84d8d",
+                "control-id": "CIS-4.2.11",
+                "description": "CIS-4.2.11",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --rotate-certificates argument is not set to false",
+                    "remarks": "rule_set_090"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --rotate-certificates argument is not set to false",
+                    "remarks": "rule_set_091"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "77242b01-5837-4019-868f-921bf0000bfc",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "aaff98cb-ad41-4fe0-ae9b-ef2e09de9acd",
+                "control-id": "CIS-4.2.12",
+                "description": "CIS-4.2.12",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Verify that the RotateKubeletServerCertificate argument is set to true",
+                    "remarks": "rule_set_092"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "32656042-1905-4cd1-9259-0290835c3a9a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "870f4d1f-ac56-4d6c-9dcd-43e3f5deb606",
+                "control-id": "CIS-4.2.13",
+                "description": "CIS-4.2.13",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Kubelet only makes use of Strong Cryptographic Ciphers",
+                    "remarks": "rule_set_093"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "0a46a57b-12d7-44c3-b507-869a523ef364",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "958d3f56-2284-4ace-8800-0c48144c89e7",
+                "control-id": "CIS-5.1.1",
+                "description": "CIS-5.1.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the cluster-admin role is only used where required",
+                    "remarks": "rule_set_094"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "1e2c700d-4c5d-41a5-b20d-9de08fe1deff",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "a2144dae-a591-4332-b7b5-1d40f1a3aeb8",
+                "control-id": "CIS-5.1.2",
+                "description": "CIS-5.1.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize access to secrets (info)",
+                    "remarks": "rule_set_095"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "a4123819-ea8f-4dbb-8acb-d3ac9bdf8645",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "85764dad-b1c6-4ae4-8861-8631111e9365",
+                "control-id": "CIS-5.1.3",
+                "description": "CIS-5.1.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize wildcard use in Roles and ClusterRoles (info)",
+                    "remarks": "rule_set_096"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "d46343dc-615a-4bc4-a4b9-60e4e94c234d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "44e0c486-c919-42e0-8410-f63231f3a679",
+                "control-id": "CIS-5.1.4",
+                "description": "CIS-5.1.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize access to create pods (info)",
+                    "remarks": "rule_set_097"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "dae4a942-0877-4dd2-b216-3df36f315b3b",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "cb4790b7-d165-43ad-a843-1e45d06d7814",
+                "control-id": "CIS-5.1.5",
+                "description": "CIS-5.1.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that default service accounts are not actively used. (info)",
+                    "remarks": "rule_set_098"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "c1882efa-65e2-4f48-933b-7c55eb380380",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "10d5334e-3bea-449d-9535-39233b669886",
+                "control-id": "CIS-5.1.6",
+                "description": "CIS-5.1.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that Service Account Tokens are only mounted where necessary (info)",
+                    "remarks": "rule_set_099"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "a3dd5375-5804-4850-a1b4-586b611a5e07",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "1a432f91-215f-4709-970c-5a6f3c21d0e5",
+                "control-id": "CIS-5.2.1",
+                "description": "CIS-5.2.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of privileged containers (info)",
+                    "remarks": "rule_set_100"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "c65e40e4-86ed-45d6-939a-9b8e76ad2ee8",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "73fd5552-8bc9-4a0a-abd7-a308dfbd31c4",
+                "control-id": "CIS-5.2.2",
+                "description": "CIS-5.2.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers wishing to share the host process ID namespace (info)",
+                    "remarks": "rule_set_101"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "5ac18926-5f6c-491e-8d5b-0bd8b69a99da",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "f2e5ab2b-a3b7-4433-b0c6-c9f4761dcf26",
+                "control-id": "CIS-5.2.3",
+                "description": "CIS-5.2.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers wishing to share the host IPC namespace (info)",
+                    "remarks": "rule_set_102"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "d6e4f1b7-9e06-4678-b250-960be1854f27",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "ac5c5347-40c3-4fa9-8292-29d5dcc060df",
+                "control-id": "CIS-5.2.4",
+                "description": "CIS-5.2.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers wishing to share the host network namespace (info)",
+                    "remarks": "rule_set_103"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "46e9ee3c-c79e-43c7-a111-84f25e731b15",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "d94cf218-125a-45a9-af76-fdc59c78bd85",
+                "control-id": "CIS-5.2.5",
+                "description": "CIS-5.2.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers with allowPrivilegeEscalation (info)",
+                    "remarks": "rule_set_104"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "06d62559-35c8-4072-9679-c2fe1f89592e",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "300fae2b-cdb6-4325-875c-cb75aef6c266",
+                "control-id": "CIS-5.2.6",
+                "description": "CIS-5.2.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of root containers (info)",
+                    "remarks": "rule_set_105"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "26a7b0b6-069c-4cde-be1a-a289472ea793",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "13436293-ffed-4a93-a60d-3d44a94e5bcc",
+                "control-id": "CIS-5.2.7",
+                "description": "CIS-5.2.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers with the NET_RAW capability (info)",
+                    "remarks": "rule_set_106"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "645a5d84-abbc-49fa-bb8b-2fee9ae74d13",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "e7d5d8f0-0910-4df5-b268-dd3884df8bea",
+                "control-id": "CIS-5.2.8",
+                "description": "CIS-5.2.8",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers with added capabilities (info)",
+                    "remarks": "rule_set_107"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "75c7e6ce-fd8b-4dce-821d-f0d972c97cf0",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "88e07f43-4bed-4452-b52e-42dc43f94940",
+                "control-id": "CIS-5.2.9",
+                "description": "CIS-5.2.9",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Minimize the admission of containers with capabilities assigned (info)",
+                    "remarks": "rule_set_108"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "f608f6eb-08ea-4690-8bc9-d7e1381ecdd9",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "a983b38b-f77e-442c-9435-131c32dcee00",
+                "control-id": "CIS-5.3.1",
+                "description": "CIS-5.3.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the CNI in use supports Network Policies (info)",
+                    "remarks": "rule_set_109"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "93688ac1-d69e-49e5-9a7c-109336e18c53",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "3e3b5923-31fe-4214-b8d8-62f689423cd9",
+                "control-id": "CIS-5.3.2",
+                "description": "CIS-5.3.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that all Namespaces have Network Policies defined",
+                    "remarks": "rule_set_110"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "477ce424-a123-4398-9eb0-9d9e79113e12",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "1f94da82-1755-4281-92f8-bc8d5660e5a7",
+                "control-id": "CIS-5.4.1",
+                "description": "CIS-5.4.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Prefer using secrets as files over secrets as environment variables (info)",
+                    "remarks": "rule_set_111"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "630e6248-5137-4d77-a635-ab5fd4b24cc5",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "2bec5ba2-13aa-47c9-8ff9-ce48c57f1533",
+                "control-id": "CIS-5.4.2",
+                "description": "CIS-5.4.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Consider external secret storage (info)",
+                    "remarks": "rule_set_112"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "0e79a26f-75f5-4d30-b2e7-1dfd6119c408",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "8cd16f8d-bab7-403c-a843-09f0a55112d0",
+                "control-id": "CIS-5.5.1",
+                "description": "CIS-5.5.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Configure Image Provenance using ImagePolicyWebhook admission controller",
+                    "remarks": "rule_set_113"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "be8b2c12-a567-45e9-a493-9756554b9c6f",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "1127a18a-42bb-4f67-a3ff-e97044b71fb2",
+                "control-id": "CIS-5.6.1",
+                "description": "CIS-5.6.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Create administrative boundaries between resources using namespaces (info)",
+                    "remarks": "rule_set_114"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "8f64b1e3-0dc9-4a30-97ff-cc90c1fab264",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "351c9861-f5c0-49cb-a325-9cc3b6e66217",
+                "control-id": "CIS-5.6.2",
+                "description": "CIS-5.6.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure Seccomp Profile Pod Definitions (info)",
+                    "remarks": "rule_set_115"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "da8cd86d-d201-4346-8b0b-d1755d98a165",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "d657754d-b957-4756-8c38-f719f1a0886b",
+                "control-id": "CIS-5.6.3",
+                "description": "CIS-5.6.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Apply Security Context to your Pods and Containers (info)",
+                    "remarks": "rule_set_116"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "0fd0978c-8c88-40a5-ba82-8eae2982d7d9",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile",
+            "description": "ocp4",
+            "implemented-requirements": [
+              {
+                "uuid": "eb1b9c6b-a75d-4777-827b-dd81145a7ff0",
+                "control-id": "CIS-5.6.4",
+                "description": "CIS-5.6.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "The Default Namespace should not be used (info)",
+                    "remarks": "rule_set_117"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "eb042165-6b98-4c7d-84cd-d79bf6721d66",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "f435e7bb-4e71-4b36-baae-d05fd38b64a9",
+                "control-id": "CIS-1.1.1",
+                "description": "CIS-1.1.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_118"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "2ebb147a-5353-42d7-9212-63a67fc2cf8d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "8ef70cf2-480a-4fd9-b73b-6d79bc4a9348",
+                "control-id": "CIS-1.1.2",
+                "description": "CIS-1.1.2",
+                "props": []
+              },
+              {
+                "uuid": "0d797588-a769-4f10-af3c-fa4a537425a9",
+                "control-id": "CIS-1.1.2",
+                "description": "CIS-1.1.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the API server pod specification file ownership is set to root:root",
+                    "remarks": "rule_set_119"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the API server pod specification file ownership is set to root:root",
+                    "remarks": "rule_set_120"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "2b0b45b0-70d9-4ce4-9a1e-aa4a2f1d8cf2",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "383c5560-11e4-4b5f-9171-5a3714328977",
+                "control-id": "CIS-1.1.3",
+                "description": "CIS-1.1.3",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_121"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "37eabed4-e998-4ded-9c9d-19a71b7f4357",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "904cde23-86b0-48fd-a106-874a53f273d7",
+                "control-id": "CIS-1.1.4",
+                "description": "CIS-1.1.4",
+                "props": []
+              },
+              {
+                "uuid": "ef24e16f-6fdf-4755-be5f-6271e025bd85",
+                "control-id": "CIS-1.1.4",
+                "description": "CIS-1.1.4",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the controller manager pod specification file ownership is set to root:root",
+                    "remarks": "rule_set_122"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the controller manager pod specification file ownership is set to root:root",
+                    "remarks": "rule_set_123"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "8cbc880d-6bdb-4070-8a8f-14b66306ffd7",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "460b6494-4296-4bda-a160-b34c24de1e7d",
+                "control-id": "CIS-1.1.5",
+                "description": "CIS-1.1.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_124"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "2cc8cbab-ea14-4cf5-a80d-b775b24ea108",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "78985d0a-6aaa-40ec-8ff8-79714c07ce96",
+                "control-id": "CIS-1.1.6",
+                "description": "CIS-1.1.6",
+                "props": []
+              },
+              {
+                "uuid": "e4ee0e91-c942-4725-8dcd-7e56e222a20e",
+                "control-id": "CIS-1.1.6",
+                "description": "CIS-1.1.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the scheduler pod specification file ownership is set to root:root",
+                    "remarks": "rule_set_125"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the scheduler pod specification file ownership is set to root:root",
+                    "remarks": "rule_set_126"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "8033066d-3d36-4106-870b-39ebe104db7a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "381cd192-0ad9-47cc-a191-3634ef698031",
+                "control-id": "CIS-1.1.7",
+                "description": "CIS-1.1.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd pod specification file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_127"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "30342146-c201-470f-ba7c-e033ab2cca8e",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "d7ddc0a9-fb6a-4865-a108-d4aec169da2f",
+                "control-id": "CIS-1.1.8",
+                "description": "CIS-1.1.8",
+                "props": []
+              },
+              {
+                "uuid": "e9576d84-8fd2-491c-bcc3-202d8ca7187c",
+                "control-id": "CIS-1.1.8",
+                "description": "CIS-1.1.8",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)",
+                    "remarks": "rule_set_128"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd pod specification file ownership is set to root:root (Automated)",
+                    "remarks": "rule_set_129"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "6e128b19-eacb-44c5-a30d-08c0dd4600a7",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "a496ac77-8459-4508-9ad3-ae84b935098f",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "0a6a63e0-12e8-4782-9110-e08515319329",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "87247c4a-d2ff-4058-9ef8-03ee1421ca9b",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "6bec630c-3301-4170-b3a5-dcce380e894e",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "041f00a3-848c-40f0-bd58-a53995765fce",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "4c893eab-24e7-417d-a94f-ca82466601fc",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "4f8089cc-d7f6-4c98-9075-0a19a590e1b7",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "4c94d962-7ed6-4b84-9367-adafd521af5a",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "d0c329b1-2137-4714-96cd-c832b26e0389",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": []
+              },
+              {
+                "uuid": "6c99f21a-4459-446b-9335-896e14e3e7f1",
+                "control-id": "CIS-1.1.9",
+                "description": "CIS-1.1.9",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_130"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_131"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_132"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_133"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_134"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_135"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_136"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_137"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_138"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_139"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "9e772a32-37f7-45bf-9dc2-68bb8a7c2457",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "7794707b-592f-4d3e-8aae-c22f1cdb6aaa",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "59ed0503-591d-4995-8d6b-3e2f03cf694c",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "8657f1b6-16c5-446f-9fa1-500924da939d",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "1695fad7-ed33-4ec9-97d9-892cdccbb169",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "66e30a09-0089-457f-b6b5-9e0adbe0a505",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "bd8098cd-7dfe-4e54-8926-225c6c391898",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "5a859004-8e61-497a-a7f5-ea85f6a26b78",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "e46aa57f-fa64-406f-af20-6b9a0e4b640a",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "405bae75-cdbb-47a7-b76f-ed1244f7b92f",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "36f476b9-edeb-4edf-9e19-f4651a30ca36",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "331750af-36af-4910-a1cd-d651921b724c",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "532267f4-301e-4165-a581-d6cdc2985b7e",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "50eb3de5-0a50-41e0-a36d-8ea3dc9abcc6",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "08ff0ab6-c84c-4fb2-91ca-8a3dfdf82acb",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "b2ccc6a6-1f7e-4631-a418-de674f1a6829",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "3d2506d8-2626-4d28-9f2e-eedf13244def",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "717e5f78-fe43-4ae4-ad42-4ee433b346cb",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "dda8654b-b446-4310-b346-01d85b9ba6c1",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "6d1c50dd-480d-4cd0-89ec-0f2163844fe4",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": []
+              },
+              {
+                "uuid": "83d310c4-7fb7-4fd6-b383-e91b299a4e12",
+                "control-id": "CIS-1.1.10",
+                "description": "CIS-1.1.10",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_140"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_141"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_142"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_143"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_144"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_145"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_146"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_147"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_148"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_149"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_150"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_151"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_152"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_153"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_154"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_155"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_156"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_157"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_158"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the Container Network Interface file ownership is set to root:root",
+                    "remarks": "rule_set_159"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "47babb36-18cd-432c-8ece-8ff273cdc194",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "b670e6a6-a413-4904-bda6-2e38e8e7e789",
+                "control-id": "CIS-1.1.11",
+                "description": "CIS-1.1.11",
+                "props": []
+              },
+              {
+                "uuid": "86eb58c5-dee4-491a-8562-d7174ab46455",
+                "control-id": "CIS-1.1.11",
+                "description": "CIS-1.1.11",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd data directory permissions are set to 700 or more restrictive",
+                    "remarks": "rule_set_160"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd data directory permissions are set to 700 or more restrictive",
+                    "remarks": "rule_set_161"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "3435fb37-b789-4930-8b22-a521d4e96360",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "34214ad2-7167-476e-b765-75b6912ba8fb",
+                "control-id": "CIS-1.1.12",
+                "description": "CIS-1.1.12",
+                "props": []
+              },
+              {
+                "uuid": "86166180-f88b-4dc5-bb30-1392009433a3",
+                "control-id": "CIS-1.1.12",
+                "description": "CIS-1.1.12",
+                "props": []
+              },
+              {
+                "uuid": "beed474e-793e-4336-808e-0883195bc3b5",
+                "control-id": "CIS-1.1.12",
+                "description": "CIS-1.1.12",
+                "props": []
+              },
+              {
+                "uuid": "c28a440d-6e90-4f9c-853f-f9e0cb92ebf1",
+                "control-id": "CIS-1.1.12",
+                "description": "CIS-1.1.12",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd data directory ownership is set to root:root",
+                    "remarks": "rule_set_162"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd data directory ownership is set to root:root",
+                    "remarks": "rule_set_163"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd data directory ownership is set to root:root",
+                    "remarks": "rule_set_164"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the etcd data directory ownership is set to root:root",
+                    "remarks": "rule_set_165"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "0a924678-92ed-4277-a97a-f52cab3e4950",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "3da21d2d-95cd-42f3-b382-fe585168e552",
+                "control-id": "CIS-1.1.13",
+                "description": "CIS-1.1.13",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admin.conf file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_166"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "a8d170e3-dd91-4469-82e0-cc5acdc6c56d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "d0a53142-becb-49e0-8f1f-f9c7106e0ee2",
+                "control-id": "CIS-1.1.14",
+                "description": "CIS-1.1.14",
+                "props": []
+              },
+              {
+                "uuid": "ee34198c-a1d2-4ff9-8007-76a837ea2306",
+                "control-id": "CIS-1.1.14",
+                "description": "CIS-1.1.14",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admin.conf file ownership is set to root:root",
+                    "remarks": "rule_set_167"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the admin.conf file ownership is set to root:root",
+                    "remarks": "rule_set_168"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "e91542aa-1b16-4da2-ac7e-72a1b14aa009",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "b8760042-21cf-4e5b-93c9-f3fb37569201",
+                "control-id": "CIS-1.1.15",
+                "description": "CIS-1.1.15",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the scheduler.conf file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_169"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "470483f3-ef72-4de7-a1c1-bf8f679a1726",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "95500959-fa58-4841-8638-6d9638f043c5",
+                "control-id": "CIS-1.1.16",
+                "description": "CIS-1.1.16",
+                "props": []
+              },
+              {
+                "uuid": "ad481f51-ea4c-4b61-b7b1-afa02a164bf5",
+                "control-id": "CIS-1.1.16",
+                "description": "CIS-1.1.16",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the scheduler.conf file ownership is set to root:root",
+                    "remarks": "rule_set_170"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the scheduler.conf file ownership is set to root:root",
+                    "remarks": "rule_set_171"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "c33419e8-c824-4dad-b33f-70151d8afc3d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "0c08dc24-6459-4c75-af62-c749bcd319c0",
+                "control-id": "CIS-1.1.17",
+                "description": "CIS-1.1.17",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the controller-manager.conf file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_172"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "f2556cc6-6262-4602-8b7b-d88cb110db45",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "9fd94b6e-2c28-456a-bf5d-298858a8826d",
+                "control-id": "CIS-1.1.18",
+                "description": "CIS-1.1.18",
+                "props": []
+              },
+              {
+                "uuid": "7b3c7b69-1eab-4621-9c52-29c6ee868914",
+                "control-id": "CIS-1.1.18",
+                "description": "CIS-1.1.18",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the controller-manager.conf file ownership is set to root:root",
+                    "remarks": "rule_set_173"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the controller-manager.conf file ownership is set to root:root",
+                    "remarks": "rule_set_174"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "df835b48-b089-4c19-9c7f-65b83e5c6e6a",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "0e2f47cf-43f1-4ab1-9355-9e96e0075df7",
+                "control-id": "CIS-1.1.19",
+                "description": "CIS-1.1.19",
+                "props": []
+              },
+              {
+                "uuid": "a592f8e3-4fbd-4eb4-8103-fd0a9c6d3f55",
+                "control-id": "CIS-1.1.19",
+                "description": "CIS-1.1.19",
+                "props": []
+              },
+              {
+                "uuid": "8eb6607b-3d67-47fd-9a71-6715055e63e1",
+                "control-id": "CIS-1.1.19",
+                "description": "CIS-1.1.19",
+                "props": []
+              },
+              {
+                "uuid": "ff3c9618-e60a-401e-a300-4a4ef59ff38f",
+                "control-id": "CIS-1.1.19",
+                "description": "CIS-1.1.19",
+                "props": []
+              },
+              {
+                "uuid": "327d79c7-be35-468f-8620-9d29f8e93db7",
+                "control-id": "CIS-1.1.19",
+                "description": "CIS-1.1.19",
+                "props": []
+              },
+              {
+                "uuid": "b05ff043-81dd-4994-92aa-78cece98ab3a",
+                "control-id": "CIS-1.1.19",
+                "description": "CIS-1.1.19",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI directory and file ownership is set to root:root",
+                    "remarks": "rule_set_175"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI directory and file ownership is set to root:root",
+                    "remarks": "rule_set_176"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI directory and file ownership is set to root:root",
+                    "remarks": "rule_set_177"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI directory and file ownership is set to root:root",
+                    "remarks": "rule_set_178"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI directory and file ownership is set to root:root",
+                    "remarks": "rule_set_179"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI directory and file ownership is set to root:root",
+                    "remarks": "rule_set_180"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "14d0d21b-a4e4-4924-852f-aa885ddbfaa7",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "d1cf3b19-08fa-4a1b-88de-0ad9a9fa00f0",
+                "control-id": "CIS-1.1.20",
+                "description": "CIS-1.1.20",
+                "props": []
+              },
+              {
+                "uuid": "6fee0728-10e4-45fb-bf3e-9a84cd919e1b",
+                "control-id": "CIS-1.1.20",
+                "description": "CIS-1.1.20",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI certificate file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_181"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI certificate file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_182"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "f5db4ae8-6eff-493f-8c03-2237a857dc96",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "5417b32a-163e-4044-80cb-052bee16fc3f",
+                "control-id": "CIS-1.1.21",
+                "description": "CIS-1.1.21",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the OpenShift PKI key file permissions are set to 600",
+                    "remarks": "rule_set_183"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "ef627083-ed0f-40fd-9962-f9a4e12faa8c",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "2e24ab7c-7dca-44ab-b6b5-0f07d38ad2c7",
+                "control-id": "CIS-2.7",
+                "description": "CIS-2.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that a unique Certificate Authority is used for etcd",
+                    "remarks": "rule_set_184"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "523129a9-0a43-49f9-8729-1ab51b3e720d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "dbfd9165-14b9-4576-90ec-5eb9e6fd962f",
+                "control-id": "CIS-4.1.1",
+                "description": "CIS-4.1.1",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the kubelet service file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_185"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "85048d14-5f1b-4d4a-aeda-28a8707d2165",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "1bbb4a90-f53b-4218-972e-22d2a52f3ccd",
+                "control-id": "CIS-4.1.2",
+                "description": "CIS-4.1.2",
+                "props": []
+              },
+              {
+                "uuid": "86719ee6-6e10-4bbc-a9a5-908a61581bbf",
+                "control-id": "CIS-4.1.2",
+                "description": "CIS-4.1.2",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the kubelet service file ownership is set to root:root",
+                    "remarks": "rule_set_186"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the kubelet service file ownership is set to root:root",
+                    "remarks": "rule_set_187"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "845ba489-5f1b-4274-b0f7-ae92c0203d00",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "3e3f8470-7e5c-4e7a-9866-9d34e5fd3772",
+                "control-id": "CIS-4.1.5",
+                "description": "CIS-4.1.5",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubeconfig kubelet.conf file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_188"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "d0166f2f-2e8b-437f-9c7f-00413318d634",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "e67f00d2-0c43-4484-af5b-0c3a5a61bebb",
+                "control-id": "CIS-4.1.6",
+                "description": "CIS-4.1.6",
+                "props": []
+              },
+              {
+                "uuid": "bcf2f027-e513-4312-983d-e01c99d5c407",
+                "control-id": "CIS-4.1.6",
+                "description": "CIS-4.1.6",
+                "props": []
+              },
+              {
+                "uuid": "463920b1-a62c-475c-81ca-15857f3aa143",
+                "control-id": "CIS-4.1.6",
+                "description": "CIS-4.1.6",
+                "props": []
+              },
+              {
+                "uuid": "9d654d44-808e-4595-9658-6a14d972e281",
+                "control-id": "CIS-4.1.6",
+                "description": "CIS-4.1.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root",
+                    "remarks": "rule_set_189"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root",
+                    "remarks": "rule_set_190"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root",
+                    "remarks": "rule_set_191"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root",
+                    "remarks": "rule_set_192"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "29dc6f87-c524-4829-92f6-b787dbed7a61",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "cdb19402-5db4-4a46-8da6-3b083cceab1d",
+                "control-id": "CIS-4.1.7",
+                "description": "CIS-4.1.7",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the certificate authorities file permissions are set to 644 or more restrictive",
+                    "remarks": "rule_set_193"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "a2343420-b7be-4353-9117-d9e9197379bd",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "acb6ba68-9ca5-4a0b-a721-ac91405f23a4",
+                "control-id": "CIS-4.1.8",
+                "description": "CIS-4.1.8",
+                "props": []
+              },
+              {
+                "uuid": "aa31e48c-934e-4072-90fd-6084aa38e402",
+                "control-id": "CIS-4.1.8",
+                "description": "CIS-4.1.8",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the client certificate authorities file ownership is set to root:root",
+                    "remarks": "rule_set_194"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the client certificate authorities file ownership is set to root:root",
+                    "remarks": "rule_set_195"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "d2c66f69-c4d4-4f81-93a6-883b3ca8be4d",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "34595a74-6abb-4ce3-9023-111dace2d0e7",
+                "control-id": "CIS-4.1.9",
+                "description": "CIS-4.1.9",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the kubelet --config configuration file has permissions set to 644 or more restrictive",
+                    "remarks": "rule_set_196"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "c92dac8a-f6ca-4c4d-89ff-69ee544a8f6b",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "0a4049b3-42f6-41b6-a5fb-ff4db661d669",
+                "control-id": "CIS-4.1.10",
+                "description": "CIS-4.1.10",
+                "props": []
+              },
+              {
+                "uuid": "473446ce-c006-4dc2-86d8-51189c723179",
+                "control-id": "CIS-4.1.10",
+                "description": "CIS-4.1.10",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the kubelet configuration file ownership is set to root:root",
+                    "remarks": "rule_set_197"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the kubelet configuration file ownership is set to root:root",
+                    "remarks": "rule_set_198"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "48864ec8-97fc-42d6-936e-a61c3bbefe61",
+            "source": "https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis-node.profile",
+            "description": "ocp4-node",
+            "implemented-requirements": [
+              {
+                "uuid": "2be81452-6b58-40d1-a82f-8a89ef182ec9",
+                "control-id": "CIS-4.2.6",
+                "description": "CIS-4.2.6",
+                "props": []
+              },
+              {
+                "uuid": "1dad9fd7-e3c5-4938-ae0e-15bb7e66eaae",
+                "control-id": "CIS-4.2.6",
+                "description": "CIS-4.2.6",
+                "props": [
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --protect-kernel-defaults argument is set to true",
+                    "remarks": "rule_set_199"
+                  },
+                  {
+                    "name": "Rule_Description",
+                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd",
+                    "value": "Ensure that the --protect-kernel-defaults argument is set to true",
+                    "remarks": "rule_set_200"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
