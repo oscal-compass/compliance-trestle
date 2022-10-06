@@ -837,7 +837,7 @@ def test_profile_resolve(tmp_trestle_dir: pathlib.Path, show_values: bool, monke
     if show_values:
         expected_prose = 'Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     else:
-        expected_prose = 'Designate an [Assignment: organization-defined official] to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+        expected_prose = 'Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
 
 
