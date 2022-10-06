@@ -414,6 +414,8 @@ TRESTLE_IMP_STATUS_TAG = 'trestle-imp-status'
 
 TRESTLE_ADD_PROPS_TAG = TRESTLE_TAG + 'add-props'
 
+TRESTLE_INHERITED_PROPS_TAG = TRESTLE_TAG + 'inherited-props'
+
 CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 
 CONTROL_HEADER = '## Control'
