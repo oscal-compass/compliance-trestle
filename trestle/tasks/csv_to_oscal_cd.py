@@ -146,19 +146,20 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             description = self.csv_helper.get_value(row, 'Profile_Description')
-            if control_id not in control_implementations.keys():
+            if source not in control_implementations.keys():
                 control_implementation = ControlImplementation(
                     uuid=str(uuid.uuid4()),
                     source=source,
                     description=description,
                     implemented_requirements=[],
                 )
-                control_implementations[control_id] = control_implementation
+                control_implementations[source] = control_implementation
                 defined_component.control_implementations.append(control_implementation)
         # implemented requirements
         for row in self.csv_helper.row_generator():
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
-            control_implementation = control_implementations[control_id]
+            source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
+            control_implementation = control_implementations[source]
             implemented_requirement = ImplementedRequirement(
                 uuid=str(uuid.uuid4()),
                 control_id=control_id,
@@ -183,6 +184,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 ns=ns,
                 remarks=remarks,
             )
+            implemented_requirement.props.append(prop)
             # Rule_Description
             name = 'Rule_Description'
             value = self.csv_helper.get_value(row, name)
