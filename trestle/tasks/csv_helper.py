@@ -70,6 +70,8 @@ class Column():
 class CsvHelper:
     """Csv Helper common functions and assistance."""
 
+    ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+
     def __init__(self):
         """Initialize."""
         self._csv = []
@@ -96,6 +98,9 @@ class CsvHelper:
         text1 = '  output-dir        = '
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
         logger.info(text1 + text2)
+        text1 = '  namespace         = '
+        text2 = f'(optional) the namespace for properties, e.g. {self.ns}'
+        logger.info(text1 + text2)
         text1 = '  output-overwrite  = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
@@ -104,6 +109,7 @@ class CsvHelper:
         """Configure."""
         if not task._config:
             logger.warning('config missing')
+            return False
         # config verbosity
         quiet = task._config.get('quiet', False)
         task._verbose = not quiet
@@ -129,7 +135,8 @@ class CsvHelper:
             csv_reader = csv.reader(f, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             for row in csv_reader:
                 self._csv.append(row)
-        self._column.map_head(self._csv[0])
+            if len(self._csv):
+                self._column.map_head(self._csv[0])
 
     def row_generator(self) -> Iterator[List[str]]:
         """Generate rows."""

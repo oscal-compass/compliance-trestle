@@ -24,11 +24,7 @@ from typing import List, Optional
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
-from trestle.oscal.common import Party
 from trestle.oscal.common import Property
-from trestle.oscal.common import ResponsibleParty
-from trestle.oscal.common import ResponsibleRole
-from trestle.oscal.common import Role
 from trestle.oscal.component import ComponentDefinition
 from trestle.oscal.component import ControlImplementation
 from trestle.oscal.component import DefinedComponent
@@ -39,8 +35,6 @@ from trestle.tasks.csv_helper import CsvHelper
 from trestle.tasks.csv_helper import get_trestle_version
 
 logger = logging.getLogger(__name__)
-
-key_sep = sep = '|'
 
 
 class CsvToOscalComponentDefinition(TaskBase):
@@ -65,7 +59,6 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
                                                                                     ).isoformat()
         self._verbose = False
-        self._ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
 
     def set_timestamp(self, timestamp: str) -> None:
         """Set the timestamp."""
@@ -84,7 +77,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         try:
             return self._execute()
         except Exception:
-            logger.info(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return TaskOutcome('failure')
 
     def _execute(self) -> TaskOutcome:
@@ -103,24 +96,16 @@ class CsvToOscalComponentDefinition(TaskBase):
         if not self._overwrite and pathlib.Path(ofile).exists():
             logger.warning(f'output: {ofile} already exists')
             return TaskOutcome('failure')
+        # namespace
+        self._ns = self._config.get('namespace')
         # build components
         self._build_components()
-        # roles, responsible_roles, parties, responsible parties
-        party_uuid_01 = str(uuid.uuid4())
-        party_uuid_02 = str(uuid.uuid4())
-        party_uuid_03 = str(uuid.uuid4())
-        roles = self._build_roles()
-        parties = self._build_parties(party_uuid_01, party_uuid_02, party_uuid_03)
-        responsible_parties = self._build_responsible_parties(party_uuid_01, party_uuid_02, party_uuid_03)
         # create OSCAL ComponentDefinition
         metadata = Metadata(
             title='Component definition for ' + self._get_catalog_title() + ' profiles',
             last_modified=self._timestamp,
             oscal_version=OSCAL_VERSION,
             version=get_trestle_version(),
-            roles=roles,
-            parties=parties,
-            responsible_parties=responsible_parties,
         )
         component_definition = ComponentDefinition(
             uuid=str(uuid.uuid4()),
@@ -184,7 +169,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_implementation.implemented_requirements.append(implemented_requirement)
         # rules
         index = 0
-        for row in self.csv_helper.row_generator():
+        for index, row in enumerate(self.csv_helper.row_generator()):
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             implemented_requirement = implemented_requirements[control_id]
             ns = self._ns
@@ -208,7 +193,6 @@ class CsvToOscalComponentDefinition(TaskBase):
                 remarks=remarks,
             )
             implemented_requirement.props.append(prop)
-            index += 1
 
     def _get_catalog_title(self) -> str:
         """Get catalog title."""
@@ -228,63 +212,6 @@ class CsvToOscalComponentDefinition(TaskBase):
     def _get_components(self) -> List[DefinedComponent]:
         """Get components."""
         value = self._components
-        return value
-
-    def _build_roles(self) -> List[Role]:
-        """Build roles."""
-        value = [
-            Role(id='prepared-by', title='Indicates the organization that created this content.'),
-            Role(id='prepared-for', title='Indicates the organization for which this content was created..'),
-            Role(
-                id='content-approver',
-                title='Indicates the organization responsible for all content represented in the "document".'
-            ),
-        ]
-        return value
-
-    def _build_responsible_roles(self, party_uuid_01: str, party_uuid_02: str,
-                                 party_uuid_03: str) -> List[ResponsibleRole]:
-        """Build responsible roles."""
-        role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
-        role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
-        role_content_approver = ResponsibleRole(role_id='content-approver', party_uuids=[party_uuid_01])
-        value = [
-            role_prepared_by,
-            role_prepared_for,
-            role_content_approver,
-        ]
-        return value
-
-    def _build_parties(self, party_uuid_01: str, party_uuid_02: str, party_uuid_03: str) -> List[Party]:
-        """Build parties."""
-        value = [
-            Party(uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()),
-            Party(
-                uuid=party_uuid_02,
-                type='organization',
-                name='Customer',
-                remarks='organization to be customized at account creation only for their Component Definition'
-            ),
-            Party(
-                uuid=party_uuid_03,
-                type='organization',
-                name='ISV',
-                remarks='organization to be customized at ISV subscription only for their Component Definition'
-            ),
-        ]
-        return value
-
-    def _build_responsible_parties(self, party_uuid_01: str, party_uuid_02: str,
-                                   party_uuid_03: str) -> List[ResponsibleParty]:
-        """Build responsible parties."""
-        prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
-        prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
-        content_approver = ResponsibleParty(role_id='content-approver', party_uuids=[party_uuid_01])
-        value = [
-            prepared_by,
-            prepared_for,
-            content_approver,
-        ]
         return value
 
     def _report_issues(self) -> None:
