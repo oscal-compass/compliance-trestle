@@ -190,13 +190,27 @@ class CsvToOscalComponentDefinition(TaskBase):
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             control_implementation = control_implementations[source]
-            implemented_requirement = ImplementedRequirement(
-                uuid=str(uuid.uuid4()),
-                control_id=control_id,
-                description=control_id,
+            if control_id not in implemented_requirements.keys():
+                implemented_requirement = ImplementedRequirement(
+                    uuid=str(uuid.uuid4()),
+                    control_id=control_id,
+                    description=control_id,
+                    props=[],
+                )
+                implemented_requirements[control_id] = implemented_requirement
+                control_implementation.implemented_requirements.append(implemented_requirement)
+        # rule implementations
+        for row in self.csv_helper.row_generator():
+            control_id = self.csv_helper.get_value(row, 'Control_Mappings')
+            # Rule_Id
+            name = 'Rule_Id'
+            value = self.csv_helper.get_value(row, name)
+            prop = Property(
+                name=name,
+                value=value,
+                ns=ns,
             )
-            implemented_requirements[control_id] = implemented_requirement
-            control_implementation.implemented_requirements.append(implemented_requirement)
+            implemented_requirements[control_id].props.append(prop)
 
     def _get_catalog_title(self) -> str:
         """Get catalog title."""
