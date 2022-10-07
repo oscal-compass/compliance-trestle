@@ -823,13 +823,14 @@ class CatalogInterface():
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""
-        sections: List[str] = []
-
-        for control_handle in self._control_dict.values():
-            for part in as_list(control_handle.control.parts):
-                if part.name not in sections and part.name != const.STATEMENT:
-                    sections.append(part.name)
-        return sections
+        return list(
+            {
+                part.name
+                for control_handle in self._control_dict.values()
+                for part in as_list(control_handle.control.parts)
+                if part.name != const.STATEMENT
+            }
+        )
 
     @staticmethod
     def merge_controls(dest: cat.Control, src: cat.Control, replace_params: bool) -> None:

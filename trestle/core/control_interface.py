@@ -25,8 +25,8 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, none_if_empty
-from trestle.common.str_utils import string_from_root
+from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
+from trestle.common.str_utils import string_from_root, strip_lower_equals
 from trestle.oscal import common
 from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
@@ -335,9 +335,8 @@ class ControlInterface:
     def get_part_prose(control: cat.Control, part_name: str) -> str:
         """Get the prose for a named part."""
         prose = ''
-        if control.parts:
-            for part in control.parts:
-                prose += ControlInterface._get_control_section_part(part, part_name)
+        for part in as_list(control.parts):
+            prose += ControlInterface._get_control_section_part(part, part_name)
         return prose.strip()
 
     @staticmethod
@@ -380,11 +379,7 @@ class ControlInterface:
     @staticmethod
     def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
         """Get the list of rules applying to this item."""
-        rules = []
-        for prop in as_list(item.props):
-            if prop.name == 'rule_name_id':
-                rules.append(prop.value)
-        return rules
+        return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == 'rule_name_id')]
 
     @staticmethod
     def get_params_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
@@ -417,12 +412,11 @@ class ControlInterface:
     @staticmethod
     def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:
         """Get param values from set_parameters in control implementation."""
-        param_dict = {}
-        for set_param in as_list(control_imp.set_parameters):
-            value_str = ControlInterface._setparam_values_as_str(set_param)
-            if value_str:
-                param_dict[set_param.param_id] = value_str
-        return param_dict
+        param_dict = {
+            set_param.param_id: ControlInterface._setparam_values_as_str(set_param)
+            for set_param in as_list(control_imp.set_parameters)
+        }
+        return {key: val for key, val in param_dict.items() if val}
 
     @staticmethod
     def merge_props(dest: Optional[List[common.Property]],
@@ -518,10 +512,10 @@ class ControlInterface:
 
         This is determined by property with name 'status' with value 'Withdrawn'.
         """
-        for prop in as_list(control.props):
-            if prop.name and prop.value:
-                if prop.name.lower().strip() == 'status' and prop.value.lower().strip() == 'withdrawn':
-                    return True
+        for _ in as_filtered_list(
+                control.props,
+                lambda p: strip_lower_equals(p.name, 'status') and strip_lower_equals(p.value, 'withdrawn')):
+            return True
         return False
 
     @staticmethod
@@ -818,14 +812,15 @@ class ControlInterface:
         return None
 
     @staticmethod
-    def get_control_imp_reqs(component: comp.DefinedComponent, control_id: str) -> List[comp.ImplementedRequirement]:
+    def get_control_imp_reqs(component: Optional[comp.DefinedComponent],
+                             control_id: str) -> List[comp.ImplementedRequirement]:
         """Get the imp_reqs for this control from the component."""
         imp_reqs: List[comp.ImplementedRequirement] = []
         if component:
-            for control_imp in as_list(component.control_implementations):
-                for imp_req in as_list(control_imp.implemented_requirements):
-                    if imp_req.control_id == control_id:
-                        imp_reqs.append(imp_req)
+            imp_reqs = [
+                imp_req for control_imp in as_list(component.control_implementations) for imp_req in
+                as_filtered_list(control_imp.implemented_requirements, lambda ir: ir.control_id == control_id)
+            ]
         return imp_reqs
 
     @staticmethod
