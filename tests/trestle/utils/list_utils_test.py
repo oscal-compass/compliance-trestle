@@ -37,3 +37,15 @@ def test_join_key_to_list_dicts() -> None:
     d4 = list_utils.join_key_to_list_dicts(d1, d2)
     assert d4 == d3
     assert d4 != d1
+
+
+def test_merge_dicts() -> None:
+    """Test merge dicts."""
+    src = {'a': 5, 'b': 8, 'c': 9}
+    dest = {'a': 7, 'c': 4, 'e': 1}
+    merged = list_utils.merge_dicts(dest, src)
+    assert merged == {'a': 5, 'b': 8, 'c': 9, 'e': 1}
+    assert list_utils.merge_dicts(dest, None) == dest
+    assert list_utils.merge_dicts(None, None) == {}
+    assert list_utils.merge_dicts(None, src) == src
+    assert list_utils.merge_dicts({}, {}) == {}

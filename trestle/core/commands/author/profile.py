@@ -28,7 +28,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.list_utils import none_if_empty
+from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -223,7 +223,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 set_parameters=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
-                sections=args.sections,
+                sections_dict=sections_to_dict(args.sections),
                 required_sections=args.required_sections,
                 allowed_sections=args.allowed_sections,
                 default_namespace=args.namespace
@@ -322,7 +322,7 @@ class ProfileAssemble(AuthorCommonCommand):
         set_parameters: bool,
         regenerate: bool,
         version: Optional[str],
-        sections: Optional[Dict[str, str]],
+        sections_dict: Optional[Dict[str, str]],
         required_sections: Optional[str],
         allowed_sections: Optional[List[str]],
         default_namespace: Optional[str] = None
@@ -338,7 +338,7 @@ class ProfileAssemble(AuthorCommonCommand):
             set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
-            sections: Map of short name to long name for sections
+            sections_dict: Optional map of short name to long name for sections
             required_sections: Optional List of required sections in assembled profile, as comma-separated short names
             allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
             default_namespace: Optional namespace to be used for properties that don't have namespace specfied
@@ -388,16 +388,16 @@ class ProfileAssemble(AuthorCommonCommand):
             md_dir,
             required_sections_list,
             label_map,
-            sections,
+            sections_dict,
             False,
             default_namespace
         )
-        if allowed_sections:
-            for alter in found_alters:
-                for add in alter.adds:
-                    for part in add.parts:
-                        if part.name not in allowed_sections:
-                            raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
+        # technically if allowed sections is [] it means no sections are allowed
+        if allowed_sections is not None:
+            for bad_part in [part for alter in found_alters for add in as_list(alter.adds)
+                             for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)]:
+                raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
+
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
         if set_parameters:
             ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map, default_namespace)

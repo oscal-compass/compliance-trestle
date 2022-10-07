@@ -790,7 +790,7 @@ class CatalogInterface():
         md_path: pathlib.Path,
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
-        sections: Dict[str, str],
+        sections_dict: Dict[str, str],
         write_mode: bool,
         default_namespace: Optional[str] = None
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
@@ -804,7 +804,7 @@ class CatalogInterface():
                     control_file,
                     required_sections_list,
                     label_map,
-                    sections,
+                    sections_dict,
                     write_mode,
                     default_namespace
                 )

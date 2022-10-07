@@ -83,3 +83,8 @@ def delete_list_from_list(item_list: List[Any], indices: List[int]) -> None:
     """Delete a list of items from a list based on indices."""
     for index in sorted(indices, reverse=True):
         del item_list[index]
+
+
+def merge_dicts(dest: Optional[Dict[str, str]], src: Optional[Dict[str, str]]) -> Dict[str, str]:
+    """Merge the two dicts with priority to src."""
+    return {**as_dict(dest), **as_dict(src)}
