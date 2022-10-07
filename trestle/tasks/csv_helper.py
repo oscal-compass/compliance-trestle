@@ -138,6 +138,10 @@ class CsvHelper:
             if len(self._csv):
                 self._column.map_head(self._csv[0])
 
+    def row_count(self) -> int:
+        """Row count."""
+        return len(self._csv) - 1
+
     def row_generator(self) -> Iterator[List[str]]:
         """Generate rows."""
         index = -1
