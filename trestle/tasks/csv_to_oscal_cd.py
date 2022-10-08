@@ -61,10 +61,6 @@ class CsvToOscalComponentDefinition(TaskBase):
                                                                                     ).isoformat()
         self._verbose = False
 
-    def set_timestamp(self, timestamp: str) -> None:
-        """Set the timestamp."""
-        self._timestamp = timestamp
-
     def print_info(self) -> None:
         """Print the help string."""
         self.csv_helper.print_info(self.name, 'component_definition')
@@ -85,6 +81,9 @@ class CsvToOscalComponentDefinition(TaskBase):
         """Execute path core."""
         if not self.csv_helper.configure(self):
             return TaskOutcome('failure')
+        # verbosity
+        quiet = self._config.get('quiet', False)
+        verbose = not quiet
         # config output
         odir = self._config.get('output-dir')
         opth = pathlib.Path(odir)
@@ -116,7 +115,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             components=self._get_components(),
         )
         # write OSCAL ComponentDefinition to file
-        if self._verbose:
+        if verbose:
             logger.info(f'output: {ofile}')
         component_definition.oscal_write(pathlib.Path(ofile))
         logger.info(f'{ofile}')
@@ -263,16 +262,6 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def _get_catalog_title(self) -> str:
         """Get catalog title."""
-        value = 'TBD'
-        return value
-
-    def _get_org_name(self) -> str:
-        """Get org name."""
-        value = 'TBD'
-        return value
-
-    def _get_org_remarks(self) -> str:
-        """Get org remarks."""
         value = 'TBD'
         return value
 

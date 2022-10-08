@@ -18,9 +18,16 @@ import configparser
 import os
 import pathlib
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import trestle.tasks.csv_to_oscal_cd as csv_to_oscal_cd
 from trestle.oscal.component import ComponentDefinition
 from trestle.tasks.base_task import TaskOutcome
+
+
+def monkey_exception():
+    """Monkey exception."""
+    raise Exception('foobar')
 
 
 def test_csv_to_oscal_cd_print_info(tmp_path: pathlib.Path):
@@ -107,7 +114,7 @@ def test_csv_to_oscal_cd_config_missing(tmp_path: pathlib.Path):
 
 
 def test_csv_to_oscal_cd_config_missing_csv_file_spec(tmp_path: pathlib.Path):
-    """Test csv-file missing spec."""
+    """Test csv-file missing specification."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -129,3 +136,45 @@ def test_csv_to_oscal_cd_config_missing_csv_file(tmp_path: pathlib.Path):
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test _get_catalog_title exception."""
+    monkeypatch.setattr(csv_to_oscal_cd.CsvToOscalComponentDefinition, '_get_catalog_title', monkey_exception)
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_execute_no_overwrite(tmp_path: pathlib.Path):
+    """Test execute no overwrite call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate(tmp_path)
+    section['output-overwrite'] = 'false'
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_execute_verbose(tmp_path: pathlib.Path):
+    """Test execute verbose call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['quiet'] = 'False'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate(tmp_path)
