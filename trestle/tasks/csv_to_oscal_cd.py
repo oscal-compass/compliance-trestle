@@ -188,6 +188,8 @@ class CsvToOscalComponentDefinition(TaskBase):
                 ns=ns,
                 remarks=remarks,
             )
+            control_implementation.props.append(prop)
+            # User properties, if any
             for name in user_column_names:
                 value = self.csv_helper.get_value(row, name)
                 if not value:
