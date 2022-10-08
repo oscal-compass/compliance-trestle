@@ -21,7 +21,7 @@ import pathlib
 import traceback
 import uuid
 from math import log10
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
@@ -124,13 +124,9 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._report_issues()
         return TaskOutcome('success')
 
-    def _build_components(self) -> None:
-        """Build components."""
-        self._components = []
+    def _build_defined_component(self) -> DefinedComponent:
+        """Build defined component."""
         defined_component = None
-        control_implementations = {}
-        implemented_requirements = {}
-        # defined component
         for row in self.csv_helper.row_generator():
             type_ = self.csv_helper.get_value(row, 'Component_Type')
             title = self.csv_helper.get_value(row, 'Resource')
@@ -143,10 +139,12 @@ class CsvToOscalComponentDefinition(TaskBase):
                 control_implementations=[],
             )
             break
-        self._components.append(defined_component)
-        # control_implemenations
+        return defined_component
+
+    def _build_control_implementations(self, defined_component: DefinedComponent) -> Dict[str, ControlImplementation]:
+        """Build control_implementations."""
+        control_implementations = {}
         for row in self.csv_helper.row_generator():
-            control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             description = self.csv_helper.get_value(row, 'Profile_Description')
             if source not in control_implementations.keys():
@@ -159,15 +157,18 @@ class CsvToOscalComponentDefinition(TaskBase):
                 )
                 control_implementations[source] = control_implementation
                 defined_component.control_implementations.append(control_implementation)
-        # rules
+        return control_implementations
+
+    def _build_rules(self, control_implementations: List[ControlImplementation]) -> None:
+        """Build rules."""
         user_column_names = self.csv_helper.get_user_column_names()
         fill_sz = int(log10(self.csv_helper.row_count())) + 1
         index = 0
+        ns = self._ns
+        user_ns = self._ns_user
         for index, row in enumerate(self.csv_helper.row_generator()):
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             control_implementation = control_implementations[source]
-            ns = self._ns
-            user_ns = self._ns_user
             remarks = f'rule_set_{str(index).zfill(fill_sz)}'
             # Rule_Id
             name = 'Rule_Id'
@@ -194,20 +195,25 @@ class CsvToOscalComponentDefinition(TaskBase):
             )
             control_implementation.props.append(prop)
             # User properties, if any
-            for name in user_column_names:
-                value = self.csv_helper.get_value(row, name)
+            for col_name in user_column_names:
+                value = self.csv_helper.get_value(row, col_name)
                 if not value:
                     continue
-                class_ = self.csv_helper.get_class(name)
+                class_ = self.csv_helper.get_class(col_name)
                 prop = Property(
-                    name=name,
+                    name=col_name,
                     value=value,
                     ns=user_ns,
                     class_=class_,
                     remarks=remarks,
                 )
-            control_implementation.props.append(prop)
-        # implemented requirements
+                control_implementation.props.append(prop)
+
+    def _build_implemented_requirements(
+        self, control_implementations: List[ControlImplementation]
+    ) -> Dict[str, ImplementedRequirement]:
+        """Build implemented requirements."""
+        implemented_requirements = {}
         for row in self.csv_helper.row_generator():
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
@@ -221,18 +227,39 @@ class CsvToOscalComponentDefinition(TaskBase):
                 )
                 implemented_requirements[control_id] = implemented_requirement
                 control_implementation.implemented_requirements.append(implemented_requirement)
-        # rule implementations
+        return implemented_requirements
+
+    def _build_rule_implementations(self, implemented_requirements: Dict[str, ImplementedRequirement]) -> None:
+        """Build rule implementations."""
+        ns = self._ns
         for row in self.csv_helper.row_generator():
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             # Rule_Id
             name = 'Rule_Id'
+            class_ = self.csv_helper.get_class(name)
             value = self.csv_helper.get_value(row, name)
             prop = Property(
                 name=name,
                 value=value,
                 ns=ns,
+                class_=class_,
             )
             implemented_requirements[control_id].props.append(prop)
+
+    def _build_components(self) -> None:
+        """Build components."""
+        self._components = []
+        # defined component
+        defined_component = self._build_defined_component()
+        self._components.append(defined_component)
+        # control_implemenations
+        control_implementations = self._build_control_implementations(defined_component)
+        # rules
+        self._build_rules(control_implementations)
+        # implemented requirements
+        implemented_requirements = self._build_implemented_requirements(control_implementations)
+        # rule implementations
+        self._build_rule_implementations(implemented_requirements)
 
     def _get_catalog_title(self) -> str:
         """Get catalog title."""
