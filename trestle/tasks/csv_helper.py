@@ -196,6 +196,10 @@ class CsvHelper:
         rval = self._catalog_helper.is_present(control_id)
         return rval
 
+    def get_title(self) -> bool:
+        """Get catalog title."""
+        return self._catalog_helper.get_title()
+
     def report_issues(self) -> None:
         """Report issues."""
 
@@ -208,10 +212,10 @@ class OscalCatalogHelper:
         # arrays
         self._control_ids_list = []
         # init
-        catalog = Catalog.oscal_read(catalog_path)
+        self._catalog = Catalog.oscal_read(catalog_path)
         control_ids_list = []
-        self._ingest_catalog_groups(catalog.groups, control_ids_list)
-        self._ingest_catalog_controls(catalog.groups, control_ids_list, None, None)
+        self._ingest_catalog_groups(self._catalog.groups, control_ids_list)
+        self._ingest_catalog_controls(self._catalog.groups, control_ids_list, None, None)
         self._control_ids_list = control_ids_list
         logger.debug(f'{control_ids_list}')
 
@@ -228,6 +232,10 @@ class OscalCatalogHelper:
             for control in controls:
                 control_ids.append(control.id)
                 self._ingest_catalog_controls(control.controls, control_ids, group, control)
+
+    def get_title(self) -> bool:
+        """Get catalog title."""
+        return self._catalog.metadata.title
 
     def is_present(self, control_id) -> bool:
         """Check if catalog contains specified control id."""

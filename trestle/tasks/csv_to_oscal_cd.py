@@ -269,7 +269,7 @@ class CsvToOscalComponentDefinition(TaskBase):
 
     def _get_catalog_title(self) -> str:
         """Get catalog title."""
-        value = 'TBD'
+        value = self.csv_helper.get_title()
         return value
 
     def _get_components(self) -> List[DefinedComponent]:
