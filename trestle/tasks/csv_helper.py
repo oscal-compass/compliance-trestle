@@ -19,6 +19,9 @@ import pathlib
 from typing import Iterator, List
 
 from trestle import __version__
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.catalog import Control
+from trestle.oscal.catalog import Group
 from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)
@@ -87,7 +90,7 @@ class CsvHelper:
         logger.info('')
         logger.info(f'Configuration flags sit under [task.{name}]:')
         text1 = '  catalog-file      = '
-        text2 = '(required) the path of the OSCAL catalog file.'
+        text2 = '(required) the path of the OSCAL catalog file used to determine Control_Mappings inclusion/exclusion.'
         logger.info(text1 + text2)
         text1 = '  csv-file          = '
         text2 = '(required) the path of the csv file.'
@@ -121,6 +124,16 @@ class CsvHelper:
         # config verbosity
         quiet = self._config.get('quiet', False)
         self._verbose = not quiet
+        # catalog
+        catalog_file = self._config.get('catalog-file')
+        if catalog_file is None:
+            logger.warning('config missing "catalog-file"')
+            return False
+        catalog_path = pathlib.Path(catalog_file)
+        if not catalog_path.exists():
+            logger.warning('"catalog-file" not found')
+            return False
+        self._catalog_helper = OscalCatalogHelper(catalog_path)
         # config csv
         csv_file = self._config.get('csv-file')
         if csv_file is None:
@@ -178,5 +191,44 @@ class CsvHelper:
                 user_column_names.append(column_name)
         return user_column_names
 
+    def is_control_id_in_catalog(self, control_id: str) -> bool:
+        """Determine of specified control is in catalog."""
+        rval = self._catalog_helper.is_present(control_id)
+        return rval
+
     def report_issues(self) -> None:
         """Report issues."""
+
+
+class OscalCatalogHelper:
+    """OSCAL Catalog Helper common functions and assistance."""
+
+    def __init__(self, catalog_path: pathlib.Path) -> None:
+        """Initialize."""
+        # arrays
+        self._control_ids_list = []
+        # init
+        catalog = Catalog.oscal_read(catalog_path)
+        control_ids_list = []
+        self._ingest_catalog_groups(catalog.groups, control_ids_list)
+        self._ingest_catalog_controls(catalog.groups, control_ids_list, None, None)
+        self._control_ids_list = control_ids_list
+        logger.debug(f'{control_ids_list}')
+
+    def _ingest_catalog_groups(self, groups: List[Group], control_ids: List[str]) -> None:
+        if groups:
+            for group in groups:
+                self._ingest_catalog_groups(group.groups, control_ids)
+                self._ingest_catalog_controls(group.controls, control_ids, group, None)
+
+    def _ingest_catalog_controls(
+        self, controls: List[Control], control_ids: List[str], group: Group, parent_control: Control
+    ) -> None:
+        if controls:
+            for control in controls:
+                control_ids.append(control.id)
+                self._ingest_catalog_controls(control.controls, control_ids, group, control)
+
+    def is_present(self, control_id) -> bool:
+        """Check if catalog contains specified control id."""
+        return control_id in self._control_ids_list
