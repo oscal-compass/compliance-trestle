@@ -99,6 +99,8 @@ class CsvToOscalComponentDefinition(TaskBase):
             return TaskOutcome('failure')
         # namespace
         self._ns = self._config.get('namespace')
+        # user-namespace
+        self._ns_user = self._config.get('user-namespace')
         # build components
         self._build_components()
         # create OSCAL ComponentDefinition
@@ -158,12 +160,14 @@ class CsvToOscalComponentDefinition(TaskBase):
                 control_implementations[source] = control_implementation
                 defined_component.control_implementations.append(control_implementation)
         # rules
+        user_column_names = self.csv_helper.get_user_column_names()
         fill_sz = int(log10(self.csv_helper.row_count())) + 1
         index = 0
         for index, row in enumerate(self.csv_helper.row_generator()):
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             control_implementation = control_implementations[source]
             ns = self._ns
+            user_ns = self._ns_user
             remarks = f'rule_set_{str(index).zfill(fill_sz)}'
             # Rule_Id
             name = 'Rule_Id'
@@ -184,6 +188,16 @@ class CsvToOscalComponentDefinition(TaskBase):
                 ns=ns,
                 remarks=remarks,
             )
+            for name in user_column_names:
+                value = self.csv_helper.get_value(row, name)
+                if not value:
+                    continue
+                prop = Property(
+                    name=name,
+                    value=value,
+                    ns=user_ns,
+                    remarks=remarks,
+                )
             control_implementation.props.append(prop)
         # implemented requirements
         for row in self.csv_helper.row_generator():

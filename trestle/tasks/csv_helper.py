@@ -70,9 +70,10 @@ class Column():
 class CsvHelper:
     """Csv Helper common functions and assistance."""
 
-    ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    eg_ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    eg_ns_user = 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize."""
         self._csv = []
         self._column = Column()
@@ -99,7 +100,10 @@ class CsvHelper:
         text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
         logger.info(text1 + text2)
         text1 = '  namespace         = '
-        text2 = f'(optional) the namespace for properties, e.g. {self.ns}'
+        text2 = f'(optional) the namespace for properties, e.g. {self.eg_ns}'
+        logger.info(text1 + text2)
+        text1 = '  user-namespace    = '
+        text2 = f'(optional) the user-namespace for properties, e.g. {self.eg_ns_user}'
         logger.info(text1 + text2)
         text1 = '  output-overwrite  = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
@@ -152,10 +156,18 @@ class CsvHelper:
             logger.debug(f'{index} {row}')
             yield row
 
-    def get_value(self, row: List[str], name: str):
+    def get_value(self, row: List[str], name: str) -> str:
         """Get value for specified name."""
         index = self._column.get_index(name)
         return row[index]
+
+    def get_user_column_names(self) -> List[str]:
+        """Get user column names."""
+        user_column_names = []
+        for column_name in self._csv[0]:
+            if column_name not in self._column.columns:
+                user_column_names.append(column_name)
+        return user_column_names
 
     def report_issues(self) -> None:
         """Report issues."""
