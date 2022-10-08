@@ -171,21 +171,25 @@ class CsvToOscalComponentDefinition(TaskBase):
             remarks = f'rule_set_{str(index).zfill(fill_sz)}'
             # Rule_Id
             name = 'Rule_Id'
+            class_ = self.csv_helper.get_class(name)
             value = self.csv_helper.get_value(row, name)
             prop = Property(
                 name=name,
                 value=value,
                 ns=ns,
+                class_=class_,
                 remarks=remarks,
             )
             control_implementation.props.append(prop)
             # Rule_Description
             name = 'Rule_Description'
+            class_ = self.csv_helper.get_class(name)
             value = self.csv_helper.get_value(row, name)
             prop = Property(
                 name=name,
                 value=value,
                 ns=ns,
+                class_=class_,
                 remarks=remarks,
             )
             control_implementation.props.append(prop)
@@ -194,10 +198,12 @@ class CsvToOscalComponentDefinition(TaskBase):
                 value = self.csv_helper.get_value(row, name)
                 if not value:
                     continue
+                class_ = self.csv_helper.get_class(name)
                 prop = Property(
                     name=name,
                     value=value,
                     ns=user_ns,
+                    class_=class_,
                     remarks=remarks,
                 )
             control_implementation.props.append(prop)

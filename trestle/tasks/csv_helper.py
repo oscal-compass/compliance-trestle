@@ -105,20 +105,24 @@ class CsvHelper:
         text1 = '  user-namespace    = '
         text2 = f'(optional) the user-namespace for properties, e.g. {self.eg_ns_user}'
         logger.info(text1 + text2)
+        text1 = '  class.column-name = '
+        text2 = '(optional) the class to associate with the specified column name, e.g. class.Rule_Id = scc_class'
+        logger.info(text1 + text2)
         text1 = '  output-overwrite  = '
         text2 = '(optional) true [default] or false; replace existing output when true.'
         logger.info(text1 + text2)
 
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
+        self._config = task._config
         if not task._config:
             logger.warning('config missing')
             return False
         # config verbosity
-        quiet = task._config.get('quiet', False)
-        task._verbose = not quiet
+        quiet = self._config.get('quiet', False)
+        self._verbose = not quiet
         # config csv
-        csv_file = task._config.get('csv-file')
+        csv_file = self._config.get('csv-file')
         if csv is None:
             logger.warning('config missing "csv"')
             return False
@@ -127,7 +131,7 @@ class CsvHelper:
             logger.warning('"csv" not found')
             return False
         # announce csv
-        if task._verbose:
+        if self._verbose:
             logger.info(f'input: {csv_file}')
         # load spread sheet
         self.load(csv_file)
@@ -160,6 +164,11 @@ class CsvHelper:
         """Get value for specified name."""
         index = self._column.get_index(name)
         return row[index]
+
+    def get_class(self, name: str) -> str:
+        """Get class value for specified name from config."""
+        class_name_key = f'class.{name}'
+        return self._config.get(class_name_key)
 
     def get_user_column_names(self) -> List[str]:
         """Get user column names."""
