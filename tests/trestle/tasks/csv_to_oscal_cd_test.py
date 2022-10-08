@@ -35,7 +35,7 @@ def test_csv_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     assert retval is None
 
 
-def test_csv_to_oscal_cd_catalog_simulate(tmp_path: pathlib.Path):
+def test_csv_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
@@ -48,7 +48,7 @@ def test_csv_to_oscal_cd_catalog_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_csv_to_oscal_cd_catalog_execute(tmp_path: pathlib.Path):
+def test_csv_to_oscal_cd_execute(tmp_path: pathlib.Path):
     """Test execute call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
@@ -96,3 +96,36 @@ def _validate(tmp_path: pathlib.Path):
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].value == pv3
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].class_ == cl0
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].remarks is None
+
+
+def test_csv_to_oscal_cd_config_missing(tmp_path: pathlib.Path):
+    """Test config missing."""
+    section = None
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_config_missing_csv_file_spec(tmp_path: pathlib.Path):
+    """Test csv-file missing spec."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section.pop('csv-file')
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_config_missing_csv_file(tmp_path: pathlib.Path):
+    """Test csv-file missing."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['csv-file'] = 'foobar'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE

@@ -115,7 +115,7 @@ class CsvHelper:
     def configure(self, task: TaskBase) -> bool:
         """Configure."""
         self._config = task._config
-        if not task._config:
+        if not self._config:
             logger.warning('config missing')
             return False
         # config verbosity
@@ -123,12 +123,12 @@ class CsvHelper:
         self._verbose = not quiet
         # config csv
         csv_file = self._config.get('csv-file')
-        if csv is None:
-            logger.warning('config missing "csv"')
+        if csv_file is None:
+            logger.warning('config missing "csv-file"')
             return False
         csv_path = pathlib.Path(csv_file)
         if not csv_path.exists():
-            logger.warning('"csv" not found')
+            logger.warning('"csv-file" not found')
             return False
         # announce csv
         if self._verbose:
