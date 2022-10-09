@@ -18,15 +18,9 @@ import logging
 import pathlib
 from typing import Iterator, List
 
-from trestle import __version__
 from trestle.tasks.base_task import TaskBase
 
 logger = logging.getLogger(__name__)
-
-
-def get_trestle_version() -> str:
-    """Get trestle version wrapper."""
-    return __version__
 
 
 class Column():
@@ -89,6 +83,9 @@ class CsvHelper:
         text1 = '  title             = '
         text2 = '(required) the component definition title.'
         logger.info(text1 + text2)
+        text1 = '  version           = '
+        text2 = '(required) the component definition version.'
+        logger.info(text1 + text2)
         text1 = '  csv-file          = '
         text2 = '(required) the path of the csv file.'
         logger.info(text1 + text2)
@@ -121,10 +118,15 @@ class CsvHelper:
         # config verbosity
         quiet = self._config.get('quiet', False)
         self._verbose = not quiet
-        # catalog
+        # title
         self._title = self._config.get('title')
         if self._title is None:
             logger.warning('title missing')
+            return False
+        # version
+        self._version = self._config.get('version')
+        if self._version is None:
+            logger.warning('version missing')
             return False
         # config csv
         csv_file = self._config.get('csv-file')
@@ -186,6 +188,10 @@ class CsvHelper:
     def get_title(self) -> bool:
         """Get title."""
         return self._title
+
+    def get_version(self) -> bool:
+        """Get version."""
+        return self._version
 
     def report_issues(self) -> None:
         """Report issues."""

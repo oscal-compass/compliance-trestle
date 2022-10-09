@@ -33,7 +33,6 @@ from trestle.oscal.component import ImplementedRequirement
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.csv_helper import CsvHelper
-from trestle.tasks.csv_helper import get_trestle_version
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +106,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             title=self.csv_helper.get_title(),
             last_modified=self._timestamp,
             oscal_version=OSCAL_VERSION,
-            version=get_trestle_version(),
+            version=self.csv_helper.get_version(),
         )
         component_definition = ComponentDefinition(
             uuid=str(uuid.uuid4()),
