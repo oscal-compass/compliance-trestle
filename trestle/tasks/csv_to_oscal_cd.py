@@ -21,7 +21,7 @@ import pathlib
 import traceback
 import uuid
 from math import log10
-from typing import Dict, Iterator, List, Optional
+from typing import Dict, List, Optional
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
@@ -104,7 +104,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._build_components()
         # create OSCAL ComponentDefinition
         metadata = Metadata(
-            title='Component definition for ' + self._get_catalog_title() + ' profiles',
+            title=self.csv_helper.get_title(),
             last_modified=self._timestamp,
             oscal_version=OSCAL_VERSION,
             version=get_trestle_version(),
@@ -123,17 +123,10 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._report_issues()
         return TaskOutcome('success')
 
-    def _included_row_generator(self) -> Iterator[List[str]]:
-        """Generate rows."""
-        for row in self.csv_helper.row_generator():
-            control_id = self.csv_helper.get_value(row, 'Control_Mappings')
-            if self.csv_helper.is_control_id_in_catalog(control_id):
-                yield row
-
     def _build_defined_component(self) -> DefinedComponent:
         """Build defined component."""
         defined_component = None
-        for row in self._included_row_generator():
+        for row in self.csv_helper.row_generator():
             type_ = self.csv_helper.get_value(row, 'Component_Type')
             title = self.csv_helper.get_value(row, 'Resource')
             description = self.csv_helper.get_value(row, 'Resource')
@@ -150,7 +143,7 @@ class CsvToOscalComponentDefinition(TaskBase):
     def _build_control_implementations(self, defined_component: DefinedComponent) -> Dict[str, ControlImplementation]:
         """Build control_implementations."""
         control_implementations = {}
-        for row in self._included_row_generator():
+        for row in self.csv_helper.row_generator():
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             description = self.csv_helper.get_value(row, 'Profile_Description')
             if source not in control_implementations.keys():
@@ -172,7 +165,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         index = 0
         ns = self._ns
         user_ns = self._ns_user
-        for index, row in enumerate(self._included_row_generator()):
+        for index, row in enumerate(self.csv_helper.row_generator()):
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             control_implementation = control_implementations[source]
             remarks = f'rule_set_{str(index).zfill(fill_sz)}'
@@ -220,7 +213,7 @@ class CsvToOscalComponentDefinition(TaskBase):
     ) -> Dict[str, ImplementedRequirement]:
         """Build implemented requirements."""
         implemented_requirements = {}
-        for row in self._included_row_generator():
+        for row in self.csv_helper.row_generator():
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             control_implementation = control_implementations[source]
@@ -238,7 +231,7 @@ class CsvToOscalComponentDefinition(TaskBase):
     def _build_rule_implementations(self, implemented_requirements: Dict[str, ImplementedRequirement]) -> None:
         """Build rule implementations."""
         ns = self._ns
-        for row in self._included_row_generator():
+        for row in self.csv_helper.row_generator():
             control_id = self.csv_helper.get_value(row, 'Control_Mappings')
             # Rule_Id
             name = 'Rule_Id'
@@ -266,11 +259,6 @@ class CsvToOscalComponentDefinition(TaskBase):
         implemented_requirements = self._build_implemented_requirements(control_implementations)
         # rule implementations
         self._build_rule_implementations(implemented_requirements)
-
-    def _get_catalog_title(self) -> str:
-        """Get catalog title."""
-        value = self.csv_helper.get_title()
-        return value
 
     def _get_components(self) -> List[DefinedComponent]:
         """Get components."""
