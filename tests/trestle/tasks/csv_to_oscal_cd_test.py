@@ -96,7 +96,7 @@ def _validate(tmp_path: pathlib.Path):
     assert cd.components[0].control_implementations[0].props[2].name == 'Private_Reference_Id'
     assert cd.components[0].control_implementations[0].props[2].ns == ns1
     assert cd.components[0].control_implementations[0].props[2].value == '300000100'
-    assert cd.components[0].control_implementations[0].props[2].class_ == cl1
+    assert cd.components[0].control_implementations[0].props[2].class_ is None
     assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].name == 'Rule_Id'
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].ns == ns0

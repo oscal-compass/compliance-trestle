@@ -197,12 +197,10 @@ class CsvToOscalComponentDefinition(TaskBase):
                 value = self.csv_helper.get_value(row, col_name)
                 if not value:
                     continue
-                class_ = self.csv_helper.get_class(col_name)
                 prop = Property(
                     name=col_name,
                     value=value,
                     ns=user_ns,
-                    class_=class_,
                     remarks=remarks,
                 )
                 control_implementation.props.append(prop)
