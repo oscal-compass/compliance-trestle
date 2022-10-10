@@ -161,7 +161,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 logger.warning('statement is not allowed as a section name.')
                 return CmdReturnCodes.COMMAND_ERROR.value
             _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)
-            catalog = ProfileResolver().get_resolved_profile_catalog(
+            catalog, inherited_props = ProfileResolver().get_resolved_profile_catalog_and_inherited_props(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
             yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
@@ -179,6 +179,7 @@ class ProfileGenerate(AuthorCommonCommand):
             context.overwrite_header_values = overwrite_header_values
             context.set_parameters = True
             context.required_sections = required_sections
+            context.inherited_props = inherited_props
             catalog_interface.write_catalog_as_markdown(context, part_id_map)
 
         except TrestleNotFoundError as e:

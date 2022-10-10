@@ -444,3 +444,5 @@ DEFAULT_NS = 'default-namespace'
 DISPLAY_NAME = 'display-name'
 
 RESOLUTION_SOURCE = 'resolution-source'
+
+TRESTLE_INHERITED_PROPS = 'trestle_inherited_props'

@@ -49,3 +49,35 @@ def test_merge_dicts() -> None:
     assert list_utils.merge_dicts(None, None) == {}
     assert list_utils.merge_dicts(None, src) == src
     assert list_utils.merge_dicts({}, {}) == {}
+
+
+def test_pop_item_from_list() -> None:
+    """Test pop item from list."""
+    items = [1, 3, 5, 7]
+    item = list_utils.pop_item_from_list(items, 5, lambda x: x)
+    assert item == 5
+    assert items == [1, 3, 7]
+    items = []
+    assert list_utils.pop_item_from_list(items, 5, lambda x: x) is None
+    assert items == []
+    assert list_utils.pop_item_from_list(None, None, None) is None
+    items = [{'a': 2}, {'b': 4}, {'c': 6}]
+    item = list_utils.pop_item_from_list(items, 4, lambda x: list(x.values())[0])
+    assert item == {'b': 4}
+    assert items == [{'a': 2}, {'c': 6}]
+
+
+def test_get_item_from_list() -> None:
+    """Test get item from list."""
+    items = [1, 3, 5, 7]
+    item = list_utils.get_item_from_list(items, 5, lambda x: x)
+    assert item == 5
+    assert items == [1, 3, 5, 7]
+    items = []
+    assert list_utils.get_item_from_list(items, 5, lambda x: x) is None
+    assert items == []
+    assert list_utils.get_item_from_list(None, None, None) is None
+    items = [{'a': 2}, {'b': 4}, {'c': 6}]
+    item = list_utils.get_item_from_list(items, 4, lambda x: list(x.values())[0])
+    assert item == {'b': 4}
+    assert items == [{'a': 2}, {'b': 4}, {'c': 6}]

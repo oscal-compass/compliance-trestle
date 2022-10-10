@@ -26,7 +26,7 @@ import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_context import ControlContext
+from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
@@ -623,6 +623,12 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
+            if new_context.inherited_props and new_context.purpose == ContextPurpose.PROFILE:
+                inherited_props = new_context.inherited_props.get(control.id, None)
+                if inherited_props:
+                    # build set in order of list so that duplicates will have final value stick, then convert to list
+                    unique_props = list({prop['name']: prop for prop in inherited_props}.values())
+                    new_context.yaml_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
             if new_context.set_parameters:
                 # get all params for this control
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)

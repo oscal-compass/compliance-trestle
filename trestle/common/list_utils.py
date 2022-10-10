@@ -79,6 +79,31 @@ def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any],
     return item_list
 
 
+def pop_item_from_list(item_list: Optional[List[Any]], value: Any, key: Callable[[Any], Any]) -> List[Any]:
+    """Pop an item from a list if it is present based on the key."""
+    if not item_list:
+        return None
+    keys = [key(item) for item in item_list]
+    item = None
+    if value in keys:
+        index = keys.index(value)
+        item = item_list[index]
+        del item_list[index]
+    return item
+
+
+def get_item_from_list(item_list: Optional[List[Any]], value: Any, key: Callable[[Any], Any]) -> Any:
+    """Get item from list if present."""
+    if not item_list:
+        return None
+    keys = [key(item) for item in item_list]
+    item = None
+    if value in keys:
+        index = keys.index(value)
+        item = item_list[index]
+    return item
+
+
 def delete_list_from_list(item_list: List[Any], indices: List[int]) -> None:
     """Delete a list of items from a list based on indices."""
     for index in sorted(indices, reverse=True):
