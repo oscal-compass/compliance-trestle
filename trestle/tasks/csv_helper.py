@@ -64,8 +64,8 @@ class Column():
 class CsvHelper:
     """Csv Helper common functions and assistance."""
 
-    eg_ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
-    eg_ns_user = 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
+    eg_ns = 'https://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    eg_ns_user = 'https://ibm.github.io/compliance-trestle/schemas/oscal/cd/user-defined'
 
     def __init__(self) -> None:
         """Initialize."""

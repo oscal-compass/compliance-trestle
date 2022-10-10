@@ -79,7 +79,6 @@ def _validate(tmp_path: pathlib.Path):
     pv1 = 'Ensure that the --anonymous-auth argument is set to false'
     pv3 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     cl0 = 'scc_class'
-    cl1 = 'user_class'
     rs0 = 'rule_set_000'
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 2
