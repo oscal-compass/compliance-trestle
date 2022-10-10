@@ -43,12 +43,26 @@
           "param-id": "ac-1_prm_1",
             "values": [
               "all alert personnel"
-            ]
+            ],
+            "props": [
+            {
+              "name": "display-name",
+              "ns": "http://www.ibm.com",
+              "value": "AC-1 (a) (1)"
+            }
+          ]
         },
         {  "param-id": "ac-1_prm_2",
             "values": [
               "A thorough"
-            ]
+            ],
+            "props": [
+            {
+              "name": "display-name",
+              "ns": "http://www.ibm.com",
+              "value": "AC-1 (a) (2)"
+            }
+          ]
         },
         {  "param-id": "ac-1_prm_3",
             "values": [
@@ -73,7 +87,14 @@
         {  "param-id": "ac-2_prm_1",
             "values": [
               "passwords"
-            ]
+            ],
+            "props": [
+            {
+              "name": "display-name",
+              "ns": "http://www.ibm.com",
+              "value": "AC-2 (a) (1)"
+            }
+          ]
         },
         {  "param-id": "ac-2_prm_2",
             "values": [
@@ -93,7 +114,14 @@
         {  "param-id": "ac-2_prm_5",
             "values": [
               "personnel"
-            ]
+            ],
+            "props": [
+            {
+              "name": "display-name",
+              "ns": "http://www.ibm.com",
+              "value": "AC-2 (a) (5)"
+            }
+          ]
         },
         {  "param-id": "ac-2_prm_6",
             "values": [

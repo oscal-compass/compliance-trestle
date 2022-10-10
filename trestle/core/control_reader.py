@@ -393,6 +393,11 @@ class ControlReader():
                         )
                     comp_list.append(simp_comp_name)
                     comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
+                elif node.key.startswith('## What is the solution'):
+                    comp_name = const.SSP_MAIN_COMP_NAME
+                    simp_comp_name = ControlReader.simplify_name(comp_name)
+                    comp_list.append(simp_comp_name)
+                    comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
 
             # add the prose to the comp_dict, creating new entry as needed
             if comp_name in comp_dict:
@@ -404,7 +409,7 @@ class ControlReader():
             else:
                 comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, rules=[])}
 
-            # keep track of subnodes that get handled
+            # build list of subnodes that get handled specially so they aren't processed here
             subnode_kill: List[int] = []
             status_str = None
             remarks_str = None
@@ -660,7 +665,6 @@ class ControlReader():
         Notes:
             Each statement may have several responses, with each response in a by_component for a specific component.
             statement_map keeps track of statements that may have several by_component responses.
-            This is only used for ssp via catalog_interface.
         """
         control_id = control_file.stem
         comp_dict, header = ControlReader.read_all_implementation_prose_and_header(None, control_file, context)
@@ -695,31 +699,32 @@ class ControlReader():
             # now create statements to hold the by-components and assign the statement id
             for label, comp_info in raw_comp_dict[raw_comp_name].items():
                 # if there is a statement label create by_comp - otherwise assigne status and prose to imp_req
-                if label:
-                    # create a new by-component to add to this statement
-                    by_comp: generic.GenericByComponent = generic.GenericByComponent.generate()
-                    # link it to the component uuid
-                    by_comp.component_uuid = component.uuid
-                    by_comp.implementation_status = comp_info.status
-                    # add the response prose to the description
-                    by_comp.description = comp_info.prose
-                    statement_id = ControlInterface.create_statement_id(control_id)
-                    if label == const.STATEMENT:
-                        statement_part_id = statement_id
-                    else:
-                        clean_label = label.strip('.')
-                        statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
-                    if statement_part_id in statement_map:
-                        statement = statement_map[statement_part_id]
-                    else:
-                        statement: generic.GenericStatement = generic.GenericStatement.generate()
-                        statement.statement_id = statement_part_id
-                        statement.by_components = []
-                        statement_map[statement_part_id] = statement
-                    statement.by_components.append(by_comp)
-                else:
+                # create a new by-component to add to this statement
+                if context.purpose == ContextPurpose.COMPONENT and not label:
                     imp_req.description = comp_info.prose
                     ControlInterface.insert_status_in_props(imp_req, comp_info.status)
+                    continue
+                by_comp: generic.GenericByComponent = generic.GenericByComponent.generate()
+                # link it to the component uuid
+                by_comp.component_uuid = component.uuid
+                by_comp.implementation_status = comp_info.status
+                # add the response prose to the description
+                by_comp.description = comp_info.prose
+                statement_id = ControlInterface.create_statement_id(control_id)
+                # control level response has '' as label
+                if label in ['', const.STATEMENT]:
+                    statement_part_id = statement_id
+                else:
+                    clean_label = label.strip('.')
+                    statement_part_id = ControlInterface.strip_to_make_ncname(f'{statement_id}.{clean_label}')
+                if statement_part_id in statement_map:
+                    statement = statement_map[statement_part_id]
+                else:
+                    statement: generic.GenericStatement = generic.GenericStatement.generate()
+                    statement.statement_id = statement_part_id
+                    statement.by_components = []
+                    statement_map[statement_part_id] = statement
+                statement.by_components.append(by_comp)
 
         imp_req.statements = list(statement_map.values())
         ControlReader._insert_header_content(imp_req, header, control_id)
@@ -812,8 +817,8 @@ class ControlReader():
                 prose = ControlReader._clean_prose(node2.content.text)
                 prose = '\n'.join(prose)
                 id_ = f'{by_part_id}.{part_name}'
-                part = common.Part(id=id_, name='item', prose=prose)
-                part.parts = ControlReader._add_sub_parts(part.id, node2, 'item')
+                part = common.Part(id=id_, name=part_name, prose=prose)
+                part.parts = ControlReader._add_sub_parts(part.id, node2)
             else:
                 raise TrestleError(f'Unexpected header {node2.key} found in control {control_id}')
             if by_part_id not in by_id_parts:
@@ -917,11 +922,8 @@ class ControlReader():
         adds: List[prof.Add] = []
 
         # add the parts and props at control level
-        # the parts could either go as ending or as after, but the convention here is after
-        if control_parts:
-            adds.append(prof.Add(parts=control_parts, by_id=f'{control_id}_smt', position='after'))
-        if props:
-            adds.append(prof.Add(props=props, position='ending'))
+        if control_parts or props:
+            adds.append(prof.Add(parts=none_if_empty(control_parts), props=none_if_empty(props), position='ending'))
 
         # add the parts and props at the part level, by-id
         by_ids = set(by_id_parts.keys()).union(props_by_id.keys())

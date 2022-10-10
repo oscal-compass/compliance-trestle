@@ -1,0 +1,82 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "metadata": {
+      "title": "Profile with subparts",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/nist_cat/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-1",
+              "ac-2"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "as-is": true
+    },
+    "modify": {
+      "alters": [
+        {
+          "control-id": "ac-1",
+          "adds": [
+            {
+              "position": "after",
+              "by-id": "ac-1_smt",
+              "parts": [
+                {
+                  "id": "ac-1_implgdn",
+                  "name": "ImplGuidance",
+                  "prose": "New part in subpart"
+                },
+                {
+                  "id": "ac-1_expected_evidence",
+                  "name": "expected_evidence",
+                  "prose": "Some evidence prose."
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "by-id": "ac-1_smt.a",
+              "parts": [
+                {
+                  "id": "ac-1_smt.a.above_the_line_guidance",
+                  "name": "above_the_line_guidance",
+                  "prose": "",
+                  "parts": [
+                    {
+                      "id": "ac-1_smt.a.above_the_line_guidance.add_to_part_a",
+                      "name": "add_to_part_a",
+                      "prose": "",
+                      "parts": [
+                        {
+                          "id": "ac-1_smt.a.above_the_line_guidance.add_to_part_a.implementation_guidance",
+                          "name": "implementation_guidance",
+                          "prose": "Some ac-1_smt.a.above_the_line_guidance.add_to_part_a.implementation_guidance prose"
+                        },
+                        {
+                          "id": "ac-1_smt.a.above_the_line_guidance.add_to_part_a.evidence_guidance",
+                          "name": "evidence_guidance",
+                          "prose": "Some ac-1_smt.a.above_the_line_guidance.add_to_part_a.evidence_guidance prose."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

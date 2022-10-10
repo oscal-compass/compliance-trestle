@@ -22,7 +22,7 @@ import pytest
 
 import trestle.common.const as const
 from trestle.core.markdown.markdown_api import MarkdownAPI
-from trestle.core.markdown.markdown_node import MarkdownNode
+from trestle.core.markdown.markdown_node import MarkdownNode, SectionContent
 
 
 @pytest.mark.parametrize('md_path', [(pathlib.Path('tests/data/markdown/valid_complex_md.md'))])
@@ -78,7 +78,7 @@ def test_md_content_is_correct(md_path: pathlib.Path) -> None:
     assert tree.key == 'root'
     assert len(tree.content.blockquotes) == 5
     assert len(tree.content.tables) == 7
-    assert len(tree.content.code_lines) == 12
+    assert len(tree.content.code_lines) == 13
     deep_node = tree.get_node_for_key('5.1.1.1.1', strict_matching=False)
     assert deep_node.content.text[1] == 'some very deep text'
 
@@ -95,7 +95,7 @@ def test_md_headers_in_html_blocks_are_ignored(md_path: pathlib.Path) -> None:
     tricky_node = tree.get_node_for_key('1.3', strict_matching=False)
     assert tricky_node.key == '## 1.3 MD Subheader 1.3 HTML'
     assert len(tricky_node.content.subnodes_keys) == 4
-    assert len(tricky_node.content.html_lines) == 36
+    assert len(tricky_node.content.html_lines) == 41
 
 
 def test_modify_md_node_header_lvl(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
@@ -187,3 +187,14 @@ def test_modify_subtree(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Pat
     assert len(list(subtree.get_all_headers_for_level(3))) == 4
     assert len(list(subtree.get_all_headers_for_level(4))) == 4
     assert subtree.get_node_header_lvl() == 1
+
+
+def test_get_header_level() -> None:
+    """Test get header level."""
+    node = MarkdownNode('foo', SectionContent(), 0)
+    assert node._get_header_level_if_valid('') is None
+    assert node._get_header_level_if_valid('# ') == 1
+    assert node._get_header_level_if_valid(' # ## ') is None
+    assert node._get_header_level_if_valid('## #') == 2
+    assert node._get_header_level_if_valid('### #') == 3
+    assert node._get_header_level_if_valid('foo # bar') is None

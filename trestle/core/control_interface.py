@@ -42,6 +42,7 @@ class ParameterRep(Enum):
     LABEL_OR_CHOICES = 2
     VALUE_OR_LABEL_OR_CHOICES = 3
     VALUE_OR_EMPTY_STRING = 4
+    ASSIGNMENT_FORM = 5
 
 
 @dataclass
@@ -65,6 +66,7 @@ class PartInfo:
     prose: str
     smt_part: str = ''
     props: Optional[List[common.Property]] = None
+    parts: Optional[List[PartInfo]] = None
 
     def to_dicts(self, part_id_map: Dict[str, str]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """Convert the part info to a dict or list of props."""
@@ -75,6 +77,13 @@ class PartInfo:
             part['name'] = part_id_map.get(self.name, self.name)
             if self.prose:
                 part['prose'] = self.prose
+            if self.parts:
+                all_subparts = []
+                for subpart in self.parts:
+                    subpart_dict, _ = subpart.to_dicts(part_id_map)
+                    all_subparts.append(subpart_dict)
+                part['parts'] = all_subparts
+
         # otherwise it is a list of props
         else:
             for prop in as_list(self.props):
@@ -120,7 +129,8 @@ class ControlInterface:
         return prose
 
     @staticmethod
-    def _get_control_section_prose(control: cat.Control, section_name: str) -> str:
+    def get_control_section_prose(control: cat.Control, section_name: str) -> str:
+        """Get the prose for the control section."""
         prose = ''
         if control.parts:
             for part in control.parts:
@@ -288,7 +298,29 @@ class ControlInterface:
                 part_infos.append(PartInfo(name='', prose='', smt_part=smt_part, props=add.props))
             # add part level props with part name
             for part in as_list(add.parts):
-                part_infos.append(PartInfo(name=part.name, prose=part.prose, smt_part=add.by_id, props=part.props))
+                subpart_info = ControlInterface._get_part_and_subpart_info(part, add.by_id)
+                part_infos.append(
+                    PartInfo(
+                        name=part.name, prose=part.prose, smt_part=add.by_id, props=part.props, parts=subpart_info
+                    )
+                )
+        return part_infos
+
+    @staticmethod
+    def _get_part_and_subpart_info(part: common.Part, add_by_id: str) -> List[PartInfo]:
+        """Get part and its subparts info needed for markdown purposes."""
+        part_infos = []
+        for subpart in as_list(part.parts):
+            subpart_info = None
+            if subpart.parts:
+                # Recursively add subparts info
+                subpart_info = ControlInterface._get_part_and_subpart_info(subpart, add_by_id)
+            part_infos.append(
+                PartInfo(
+                    name=subpart.name, prose=subpart.prose, smt_part=add_by_id, props=subpart.props, parts=subpart_info
+                )
+            )
+
         return part_infos
 
     @staticmethod
@@ -296,7 +328,7 @@ class ControlInterface:
         """Get sections that are not in the list."""
         id_, name, title = ControlInterface._find_section(control, skip_section_list)
         if id_:
-            return id_, name, title, ControlInterface._get_control_section_prose(control, name)
+            return id_, name, title, ControlInterface.get_control_section_prose(control, name)
         return '', '', '', ''
 
     @staticmethod
@@ -526,7 +558,7 @@ class ControlInterface:
                 how_many_str = 'one' if param.select.how_many == common.HowMany.one else 'one or more'
             choices_str = '; '.join(as_list(param.select.choice))
             choices_str = f'[{choices_str}]' if brackets else choices_str
-            choices_str = f'Choose {how_many_str}: {choices_str}' if verbose else choices_str
+            choices_str = f'Selection ({how_many_str}): {choices_str}' if verbose else choices_str
             return choices_str
         return ''
 
@@ -536,6 +568,18 @@ class ControlInterface:
         choices = ControlInterface._param_selection_as_str(param, verbose, brackets)
         text = choices if choices else param.label
         text = text if text else param.id
+        return text
+
+    @staticmethod
+    def _param_values_assignment_str(param: common.Parameter) -> str:
+        """Convert param label or choices to string, using choices if present."""
+        choices = ControlInterface._param_selection_as_str(param, True, False)
+        if choices:
+            text = f'[{choices}]'
+        elif param.label:
+            text = f'[Assignment: {param.label}]'
+        else:
+            text = param.id
         return text
 
     @staticmethod
@@ -573,6 +617,10 @@ class ControlInterface:
             param_str = ControlInterface._param_values_as_str(param, brackets)
             if not param_str:
                 param_str = ''
+        elif param_rep == ParameterRep.ASSIGNMENT_FORM:
+            param_str = ControlInterface._param_values_assignment_str(param)
+            if not param_str:
+                param_str = ''
         if param_str is not None and params_format:
             if params_format.count('.') > 1:
                 raise TrestleError(
@@ -607,6 +655,144 @@ class ControlInterface:
             if param.values or not values_only:
                 param_dict[param.id] = param
         return param_dict
+
+    @staticmethod
+    def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
+        """Find all instances of param_ids in prose and replace each with corresponding parameter representation.
+
+        Need to check all values in dict for a match
+        Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
+        """
+        for param in param_dict.values():
+            if param.id not in prose:
+                continue
+            # create the replacement text for the param_id
+            param_str = ControlInterface.param_to_str(param, param_rep)
+            # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
+            pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
+            prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
+        return prose
+
+    @staticmethod
+    def _replace_params(
+        text: str,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str] = None,
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
+    ) -> str:
+        """
+        Replace params found in moustaches with values from the param_dict.
+
+        A single line of prose may contain multiple moustaches.
+        """
+        # first check if there are any moustache patterns in the text
+        if param_rep == ParameterRep.LEAVE_MOUSTACHE:
+            return text
+        orig_text = text
+        staches: List[str] = re.findall(r'{{.*?}}', text)
+        if not staches:
+            return text
+        # now have list of all staches including braces, e.g. ['{{foo}}', '{{bar}}']
+        # clean the staches so they just have the param ids
+        param_ids = []
+        for stache in staches:
+            # remove braces so these are just param_ids but may have extra chars
+            stache_contents = stache[2:(-2)]
+            param_id = stache_contents.replace('insert: param,', '').strip()
+            param_ids.append(param_id)
+
+        # now replace original stache text with param values
+        for i, _ in enumerate(staches):
+            # A moustache may refer to a param_id not listed in the control's params
+            if param_ids[i] not in param_dict:
+                if show_value_warnings:
+                    logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
+            elif param_dict[param_ids[i]] is not None:
+                param = param_dict[param_ids[i]]
+                param_str = ControlInterface.param_to_str(param, param_rep, False, False, params_format)
+                text = text.replace(staches[i], param_str, 1).strip()
+                if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
+                    logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
+            elif show_value_warnings:
+                logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
+        # there may be staches remaining that we can't replace if not in param_dict
+        if text != orig_text:
+            while True:
+                new_text = ControlInterface._replace_params(
+                    text, param_dict, params_format, param_rep, show_value_warnings
+                )
+                if new_text == text:
+                    break
+                text = new_text
+        return text
+
+    @staticmethod
+    def _replace_part_prose(
+        control: cat.Control,
+        part: common.Part,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str] = None,
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
+    ) -> None:
+        """Replace the part prose according to set_param."""
+        if part.prose is not None:
+            fixed_prose = ControlInterface._replace_params(
+                part.prose, param_dict, params_format, param_rep, show_value_warnings
+            )
+            # change the prose in the control itself
+            part.prose = fixed_prose
+        for prt in as_list(part.parts):
+            ControlInterface._replace_part_prose(
+                control, prt, param_dict, params_format, param_rep, show_value_warnings
+            )
+        for sub_control in as_list(control.controls):
+            for prt in as_list(sub_control.parts):
+                ControlInterface._replace_part_prose(
+                    sub_control, prt, param_dict, params_format, param_rep, show_value_warnings
+                )
+
+    @staticmethod
+    def _replace_param_choices(
+        param: common.Parameter,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str],
+        param_rep: ParameterRep,
+        show_value_warnings: bool
+    ) -> None:
+        """Set values for all choices param that refer to params with values."""
+        if param.select:
+            new_choices: List[str] = []
+            for choice in as_list(param.select.choice):
+                new_choice = ControlInterface._replace_params(
+                    choice, param_dict, params_format, param_rep, show_value_warnings
+                )
+                new_choices.append(new_choice)
+            param.select.choice = new_choices
+
+    @staticmethod
+    def replace_control_prose(
+        control: cat.Control,
+        param_dict: Dict[str, common.Parameter],
+        params_format: Optional[str] = None,
+        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
+        show_value_warnings: bool = False
+    ) -> None:
+        """Replace the control prose according to set_param."""
+        for param in as_list(control.params):
+            ControlInterface._replace_param_choices(param, param_dict, params_format, param_rep, show_value_warnings)
+        for part in as_list(control.parts):
+            if part.prose is not None:
+                fixed_prose = ControlInterface._replace_params(
+                    part.prose, param_dict, params_format, param_rep, show_value_warnings
+                )
+                # change the prose in the control itself
+                part.prose = fixed_prose
+            for prt in as_list(part.parts):
+                ControlInterface._replace_part_prose(
+                    control, prt, param_dict, params_format, param_rep, show_value_warnings
+                )
 
     @staticmethod
     def bad_header(header: str) -> bool:

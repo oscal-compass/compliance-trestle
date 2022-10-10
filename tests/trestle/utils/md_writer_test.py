@@ -15,6 +15,8 @@
 
 import pathlib
 
+from tests.test_utils import confirm_text_in_file
+
 from trestle.core.markdown.md_writer import MDWriter
 
 
@@ -73,3 +75,30 @@ my line
     with open(md_file) as f:
         md_result = f.read()
     assert desired_result == md_result
+
+
+def test_cull_headings(testdata_dir: pathlib.Path, tmp_path: pathlib.Path) -> None:
+    """Test culling of headings from md tree."""
+    markdown_file = testdata_dir / 'markdown/valid_complex_md.md'
+    strict_cull_list = ['## 1.2 MD Subheader 1.2', '### 1.3.1 Valid header <!-- ### some comment here -->']
+    # make sure the headers are present in the original
+    for item in strict_cull_list:
+        assert confirm_text_in_file(markdown_file, '', item)
+    strict_path = tmp_path / 'strict.md'
+    md_writer = MDWriter(strict_path)
+    md_writer.cull_headings(markdown_file, strict_cull_list, True)
+    # make sure headers are gone now
+    for item in strict_cull_list:
+        assert not confirm_text_in_file(strict_path, '', item)
+    non_strict_path = tmp_path / 'non_strict.md'
+    md_writer = MDWriter(non_strict_path)
+    non_strict_cull_list = ['Subheader', 'Header']
+    md_writer.cull_headings(markdown_file, non_strict_cull_list, False)
+    for item in strict_cull_list:
+        assert not confirm_text_in_file(non_strict_path, '', item)
+    ignore_path = tmp_path / 'ignore.md'
+    md_writer = MDWriter(ignore_path)
+    ignore_list = ['IgnoreIt']
+    md_writer.cull_headings(markdown_file, ignore_list, False)
+    for letter in 'ABCDEFG':
+        assert confirm_text_in_file(ignore_path, '', f'IgnoreIt {letter}')

@@ -372,10 +372,10 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     ) == 'choice 1; choice 2'
     assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True
-    ) == 'Choose one or more: choice 1; choice 2'
+    ) == 'Selection (one or more): choice 1; choice 2'
     assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True, True
-    ) == 'Choose one or more: [choice 1; choice 2]'
+    ) == 'Selection (one or more): [choice 1; choice 2]'
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
