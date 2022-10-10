@@ -79,6 +79,7 @@ def _validate(tmp_path: pathlib.Path):
     pv1 = 'Ensure that the --anonymous-auth argument is set to false'
     pv3 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
     cl0 = 'scc_class'
+    cl1 = 'user_class'
     rs0 = 'rule_set_000'
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 2
@@ -95,7 +96,7 @@ def _validate(tmp_path: pathlib.Path):
     assert cd.components[0].control_implementations[0].props[2].name == 'Private_Reference_Id'
     assert cd.components[0].control_implementations[0].props[2].ns == ns1
     assert cd.components[0].control_implementations[0].props[2].value == '300000100'
-    assert cd.components[0].control_implementations[0].props[2].class_ is None
+    assert cd.components[0].control_implementations[0].props[2].class_ == cl1
     assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].name == 'Rule_Id'
     assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].ns == ns0
