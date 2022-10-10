@@ -921,7 +921,7 @@ def test_profile_generate_updates_statement(tmp_trestle_dir: pathlib.Path, monke
 def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test generation of inherited props in header."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
-    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name}'
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} -ohv'
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
 
     md_path = tmp_trestle_dir / 'my_md/ac/ac-3.3.md'

@@ -33,7 +33,7 @@ class ProfileResolver():
     """Class to resolve a catalog given a profile."""
 
     @staticmethod
-    def _extract_inherited_props(res_cat: cat.Catalog) -> Dict[str, Any]:
+    def _extract_inherited_props(res_cat: cat.Catalog) -> Tuple[cat.Catalog, Dict[str, Any]]:
         """
         Build the control dict of inherited props.
 
@@ -61,8 +61,8 @@ class ProfileResolver():
                         props_list.append({'name': prop.name, 'value': prop.value, 'part_name': sub_part.title})
                 prop_dict[control.id] = props_list
         cat_interface.update_catalog_controls()
-        res_cat = cat_interface.get_catalog()
-        return prop_dict
+        clean_res_cat = cat_interface.get_catalog()
+        return clean_res_cat, prop_dict
 
     @staticmethod
     def get_resolved_profile_catalog_and_inherited_props(
@@ -97,7 +97,7 @@ class ProfileResolver():
         )
         logger.debug('launch pipeline')
         resolved_profile_catalog = next(import_filter.process())
-        inherited_props = ProfileResolver._extract_inherited_props(resolved_profile_catalog)
+        resolved_profile_catalog, inherited_props = ProfileResolver._extract_inherited_props(resolved_profile_catalog)
         return resolved_profile_catalog, inherited_props
 
     @staticmethod
