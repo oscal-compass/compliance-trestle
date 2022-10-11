@@ -43,7 +43,7 @@ def test_csv_to_oscal_cd_print_info(tmp_path: pathlib.Path):
 
 
 def test_csv_to_oscal_cd_simulate(tmp_path: pathlib.Path):
-    """Test execute call."""
+    """Test simulate call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
