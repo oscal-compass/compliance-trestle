@@ -15,9 +15,11 @@
 
 import pathlib
 import shutil
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
+
+import pytest
 
 from tests import test_utils
 
@@ -67,6 +69,20 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     return comp_name, prof_name, cat_name
 
 
+def check_common_contents(header: Dict[str, Any]) -> None:
+    """Check common features of controls markdown."""
+    rules = header[const.COMP_DEF_RULES_TAG]
+    assert len(rules) == 2
+    assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    assert rules[1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
+    params = header[const.COMP_DEF_PARAMS_TAG]
+    assert len(params) == 1
+    assert params[0] == {'XCCDF': {'name': 'foo_length', 'description': 'minimum_foo_length', 'options': '["6", "9"]'}}
+    vals = header[const.COMP_DEF_PARAM_VALS_TAG]
+    assert len(vals) == 1
+    assert vals == {'quantity_available': '500'}
+
+
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     """Check the contents of ac-1 md."""
     assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'set to 644')
@@ -75,34 +91,35 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: other')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.COMP_DEF_RULES_TAG][0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['label'] == 'organization-defined personnel or roles'
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['values'] == 'Param_1_value_in_catalog'
+    check_common_contents(header)
 
 
 def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     """Check the contents of ac-5 md."""
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac5_path)
-    assert header[const.COMP_DEF_RULES_TAG][0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
-    assert header[const.COMP_DEF_RULES_TAG][1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
     assert header[const.SET_PARAMS_TAG
                   ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
-    assert header[const.COMP_DEF_PARAM_VALS_TAG]['quantity_available'] == '500'
     assert test_utils.confirm_text_in_file(
         ac5_path,
         '### Implementation Status: under-development',
         '### Implementation Status Remarks: this is my remark'
     )
+    check_common_contents(header)
 
 
-def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+@pytest.mark.parametrize('profile_arg', [True, False])
+def test_component_generate(tmp_trestle_dir: pathlib.Path, profile_arg: bool, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
     comp_name, prof_name, _ = setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-1.md'
     ac5_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-5.md'
 
-    generate_cmd = f'trestle author component-generate -n {comp_name} -p {prof_name} -o {md_path}'
+    generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
+    if profile_arg:
+        generate_cmd += f' -p {prof_name}'
 
     # generate the md first time
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
