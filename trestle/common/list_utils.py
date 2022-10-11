@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle List Utils."""
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from trestle.common.common_types import TG, TG2
 
@@ -79,9 +79,10 @@ def delete_item_from_list(item_list: List[TG], value: TG2, key: Callable[[TG], T
     return item_list
 
 
-def get_item_from_list(
-    item_list: Optional[List[TG]], value: TG2, key: Callable[[TG], TG2], remove: bool = False
-) -> Any:
+def get_item_from_list(item_list: Optional[List[TG]],
+                       value: TG2,
+                       key: Callable[[TG], TG2],
+                       remove: bool = False) -> Optional[TG]:
     """Get first item from list if present based on key matching value with option to remove it from the list."""
     if not item_list:
         return None
@@ -95,7 +96,7 @@ def get_item_from_list(
     return item
 
 
-def pop_item_from_list(item_list: Optional[List[TG]], value: TG2, key: Callable[[TG], TG2]) -> TG:
+def pop_item_from_list(item_list: Optional[List[TG]], value: TG2, key: Callable[[TG], TG2]) -> Optional[TG]:
     """Pop first matching item from a list if it is present based on the key matching the value."""
     return get_item_from_list(item_list, value, key, True)
 
