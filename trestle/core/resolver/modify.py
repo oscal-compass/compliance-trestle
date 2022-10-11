@@ -19,9 +19,9 @@ from typing import Iterator, List, Optional
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
-from trestle.common.const import RESOLUTION_SOURCE
+from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS
 from trestle.common.err import TrestleNotFoundError
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, get_item_from_list, none_if_empty
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
@@ -62,7 +62,7 @@ class Modify(Pipeline.Filter):
                 continue
             add_list = getattr(add, attr, None)
             if add_list:
-                Modify._add_attr_to_part(part, add_list, attr, add.position)
+                Modify._add_attr_to_part(part, add_list[:], attr, add.position)
 
     @staticmethod
     def _add_to_list(parts_list: List[common.Part], add: prof.Add) -> bool:
@@ -133,6 +133,27 @@ class Modify(Pipeline.Filter):
         setattr(control, attr, attr_list)
 
     @staticmethod
+    def _add_to_trestle_props(control: cat.Control, add: prof.Add) -> None:
+        """Add props to special trestle part that keeps track of inherited props."""
+        if add.props:
+            trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS, lambda p: p.name)
+            if trestle_part is None:
+                trestle_part = common.Part(id=TRESTLE_INHERITED_PROPS, name=TRESTLE_INHERITED_PROPS, props=[], parts=[])
+                control.parts = as_list(control.parts)
+                control.parts.append(trestle_part)
+                trestle_part = control.parts[-1]
+            if add.by_id is None or add.by_id == control.id:
+                trestle_part.props.extend(add.props)
+            else:
+                by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
+                if by_id_part is None:
+                    trestle_part.parts.append(
+                        common.Part(name=TRESTLE_INHERITED_PROPS + '_' + add.by_id, title=add.by_id, props=[])
+                    )
+                    by_id_part = trestle_part.parts[-1]
+                by_id_part.props.extend(add.props)
+
+    @staticmethod
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:
         """First step in applying Add to control."""
         control.parts = as_list(control.parts)
@@ -141,12 +162,13 @@ class Modify(Pipeline.Filter):
             for attr in ['params', 'props', 'parts', 'links']:
                 add_list = getattr(add, attr, None)
                 if add_list:
-                    Modify._add_attr_to_control(control, add_list, attr, add.position)
-            return
+                    Modify._add_attr_to_control(control, add_list[:], attr, add.position)
         else:
             # this is only called if by_id is not None
             if not Modify._add_to_parts(control.parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
+        Modify._add_to_trestle_props(control, add)
+        control.parts = none_if_empty(control.parts)
 
     @staticmethod
     def _set_overwrite_items(param: common.Parameter, set_param: prof.SetParameter) -> None:

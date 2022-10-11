@@ -53,6 +53,7 @@ class ControlContext:
     allowed_sections: Optional[str] = None
     comp_def: Optional[comp.ComponentDefinition] = None
     comp_name: Optional[str] = None
+    inherited_props: Optional[Dict[str, Any]] = None
 
     @classmethod
     def generate(
@@ -71,7 +72,8 @@ class ControlContext:
         required_sections: Optional[str] = None,
         allowed_sections: Optional[str] = None,
         comp_def: Optional[comp.ComponentDefinition] = None,
-        comp_name: Optional[str] = None
+        comp_name: Optional[str] = None,
+        inherited_props: Optional[Dict[str, Any]] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
@@ -89,7 +91,8 @@ class ControlContext:
             required_sections=required_sections,
             allowed_sections=allowed_sections,
             comp_def=comp_def,
-            comp_name=comp_name
+            comp_name=comp_name,
+            inherited_props=inherited_props
         )
         context.yaml_header = as_dict(yaml_header)
         context.sections_dict = as_dict(sections_dict)
@@ -116,6 +119,7 @@ class ControlContext:
             required_sections=context.required_sections,
             allowed_sections=context.allowed_sections,
             comp_def=context.comp_def,
-            comp_name=context.comp_name
+            comp_name=context.comp_name,
+            inherited_props=copy.deepcopy(context.inherited_props)
         )
         return new_context

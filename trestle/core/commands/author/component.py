@@ -51,7 +51,7 @@ class ComponentGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        profile_help_str = 'Name of the profile model in the trestle workspace'
+        profile_help_str = 'Optional name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=profile_help_str, required=False, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
 
@@ -87,8 +87,11 @@ class ComponentGenerate(AuthorCommonCommand):
         context.comp_def = component_def
 
         rc = CmdReturnCodes.SUCCESS.value
+        cat_interface_dict: Dict[str, CatalogInterface] = {}
         for component in as_list(component_def.components):
-            rc = self.component_generate_by_name(context, component, md_path / component.title, catalog_interface, {})
+            rc = self.component_generate_by_name(
+                context, component, md_path / component.title, catalog_interface, cat_interface_dict
+            )
             if rc != CmdReturnCodes.SUCCESS.value:
                 break
         return rc
@@ -99,7 +102,7 @@ class ComponentGenerate(AuthorCommonCommand):
         component: comp.DefinedComponent,
         markdown_dir_path: pathlib.Path,
         catalog_interface: Optional[CatalogInterface],
-        source_dict: Dict[str, CatalogInterface]
+        cat_interface_dict: Dict[str, CatalogInterface]
     ) -> int:
         """Create markdown based on the component and profile."""
         logger.debug(f'Creating markdown for component {component.title}.')
@@ -109,13 +112,15 @@ class ComponentGenerate(AuthorCommonCommand):
             if catalog_interface:
                 catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map(False))
             else:
-                source = control_imp.source
-                if source not in source_dict:
-                    resolved_catalog = ProfileResolver.get_resolved_profile_catalog(context.trestle_root, source)
-                    catalog_interface = CatalogInterface(resolved_catalog)
-                    source_dict[source] = catalog_interface
-                part_id_map = catalog_interface.get_part_id_map(False) if catalog_interface else {}
-                source_dict[source].write_catalog_as_markdown(context, part_id_map)
+                source_profile = control_imp.source
+                if source_profile not in cat_interface_dict:
+                    resolved_catalog = ProfileResolver.get_resolved_profile_catalog(
+                        context.trestle_root, source_profile
+                    )
+                    local_catalog_interface = CatalogInterface(resolved_catalog)
+                    cat_interface_dict[source_profile] = local_catalog_interface
+                part_id_map = local_catalog_interface.get_part_id_map(False) if local_catalog_interface else {}
+                cat_interface_dict[source_profile].write_catalog_as_markdown(context, part_id_map)
         return CmdReturnCodes.SUCCESS.value
 
 

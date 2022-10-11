@@ -126,3 +126,14 @@ def as_string(string_or_none: Optional[str]) -> str:
 def string_from_root(item_with_root: Optional[Any]) -> str:
     """Convert root to string if present."""
     return as_string(item_with_root.__root__) if item_with_root else ''
+
+
+def strip_lower_equals(str_a: Optional[str], str_b: Optional[str]) -> bool:
+    """
+    Safe test of lower string equality allowing Nones.
+
+    If either argument is None the result is False because the intent is to report if they are equal as actual strings.
+    """
+    if str_a is None or str_b is None:
+        return False
+    return str_a.strip().lower() == str_b.strip().lower()

@@ -24,7 +24,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, get_default, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, get_default, merge_dicts, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -795,7 +795,7 @@ class ControlReader():
         subnode: MarkdownNode,
         label_map: Dict[str, str],
         by_id_parts: Dict[str, List[common.Part]],
-        sections: Dict[str, str]
+        sections_dict: Dict[str, str]
     ) -> None:
         """Add subnode contents to the list of by_id statement parts for the top level of the control."""
         match = re.match(const.PART_REGEX, subnode.key)
@@ -808,7 +808,7 @@ class ControlReader():
         by_part_id = control_label_map.get(by_part_label, None)
         if by_part_id is None:
             raise TrestleError(f'No part id found for label {by_part_label} in control {control_id}')
-        inv_map = {v: k for k, v in sections.items()} if sections else {}
+        inv_map = {v: k for k, v in sections_dict.items()} if sections_dict else {}
         for node2 in as_list(subnode.subnodes):
             hash_pattern = '### '
             if node2.key.startswith(hash_pattern):
@@ -850,7 +850,7 @@ class ControlReader():
         control_path: pathlib.Path,
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
-        sections: Dict[str, str],
+        sections_dict: Dict[str, str],
         write_mode: bool,
         default_namespace: Optional[str] = None
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
@@ -863,10 +863,12 @@ class ControlReader():
         yaml_header, control_tree = md_api.processor.process_markdown(control_path)
         # extract the sort_id if present in header
         sort_id = yaml_header.get(const.SORT_ID, control_id)
+        # merge the incoming sections_dict with the one in the header, with priority to incoming
+        header_sections_dict: Dict[str, str] = yaml_header.get(const.SECTIONS_TAG, {})
+        merged_sections_dict = merge_dicts(header_sections_dict, sections_dict)
         # query header for mapping of short to long section names
-        sections_dict: Dict[str, str] = yaml_header.get(const.SECTIONS_TAG, {})
         # create reverse lookup of long snake name to short name needed for part
-        for key, value in sections_dict.items():
+        for key, value in merged_sections_dict.items():
             snake_dict[spaces_and_caps_to_snake(value)] = key
         found_sections: List[str] = []
 
@@ -885,13 +887,13 @@ class ControlReader():
             if not ControlReader._add_control_part(control_id,
                                                    subnode,
                                                    required_sections_list,
-                                                   sections_dict,
+                                                   merged_sections_dict,
                                                    snake_dict,
                                                    control_parts,
                                                    found_sections,
                                                    write_mode):
                 # otherwise add it to the list of new parts to be added to the sub-parts of a part based on by-id
-                ControlReader._add_sub_part(control_id, subnode, label_map, by_id_parts, sections)
+                ControlReader._add_sub_part(control_id, subnode, label_map, by_id_parts, merged_sections_dict)
 
         missing_sections = set(required_sections_list) - set(found_sections)
         if missing_sections:

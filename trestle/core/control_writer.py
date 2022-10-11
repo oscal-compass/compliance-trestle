@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, merge_dicts
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
@@ -452,12 +452,11 @@ class ControlWriter():
         if global_contents:
             merged_header[const.TRESTLE_GLOBAL_TAG] = global_contents
 
-        # merge any provided sections with sections in the header, with overwrite
+        # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)
         header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
-        if context.sections_dict:
-            header_sections_dict.update(context.sections_dict)
-        if header_sections_dict:
-            merged_header[const.SECTIONS_TAG] = header_sections_dict
+        merged_sections_dict = merge_dicts(header_sections_dict, context.sections_dict)
+        if merged_sections_dict:
+            merged_header[const.SECTIONS_TAG] = merged_sections_dict
 
         if context.purpose == ContextPurpose.COMPONENT and const.SORT_ID in merged_header:
             del merged_header[const.SORT_ID]
