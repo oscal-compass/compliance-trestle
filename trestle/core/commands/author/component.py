@@ -51,7 +51,7 @@ class ComponentGenerate(AuthorCommonCommand):
     def _init_arguments(self) -> None:
         name_help_str = 'Name of the source component model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
-        profile_help_str = 'Name of the profile model in the trestle workspace'
+        profile_help_str = 'Optional name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=profile_help_str, required=False, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
 
