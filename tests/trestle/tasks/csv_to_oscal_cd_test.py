@@ -202,3 +202,16 @@ def test_csv_to_oscal_cd_execute_verbose(tmp_path: pathlib.Path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     _validate(tmp_path)
+
+
+def test_csv_to_oscal_cd_execute_missing_heading(tmp_path: pathlib.Path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-missing-heading.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
