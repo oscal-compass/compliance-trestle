@@ -70,8 +70,8 @@ def join_key_to_list_dicts(dict1: Dict, dict2: Dict) -> Dict:
     return dict3
 
 
-def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any], Any]) -> List[Any]:
-    """Remove an item if it is present in a list based on the key."""
+def delete_item_from_list(item_list: List[TG], value: TG2, key: Callable[[TG], TG2]) -> List[TG]:
+    """Remove the first matching item if it is present in a list based on the callable key matching the query value."""
     keys = [key(item) for item in item_list]
     if value in keys:
         index = keys.index(value)
@@ -80,9 +80,9 @@ def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any],
 
 
 def get_item_from_list(
-    item_list: Optional[List[Any]], value: Any, key: Callable[[Any], Any], remove: bool = False
+    item_list: Optional[List[TG]], value: TG2, key: Callable[[TG], TG2], remove: bool = False
 ) -> Any:
-    """Get item from list if present."""
+    """Get first item from list if present based on key matching value with option to remove it from the list."""
     if not item_list:
         return None
     keys = [key(item) for item in item_list]
@@ -95,12 +95,12 @@ def get_item_from_list(
     return item
 
 
-def pop_item_from_list(item_list: Optional[List[Any]], value: Any, key: Callable[[Any], Any]) -> Any:
-    """Pop an item from a list if it is present based on the key."""
+def pop_item_from_list(item_list: Optional[List[TG]], value: TG2, key: Callable[[TG], TG2]) -> TG:
+    """Pop first matching item from a list if it is present based on the key matching the value."""
     return get_item_from_list(item_list, value, key, True)
 
 
-def delete_list_from_list(item_list: List[Any], indices: List[int]) -> None:
+def delete_list_from_list(item_list: List[TG], indices: List[int]) -> None:
     """Delete a list of items from a list based on indices."""
     for index in sorted(indices, reverse=True):
         del item_list[index]
