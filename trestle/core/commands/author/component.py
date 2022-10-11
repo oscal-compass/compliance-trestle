@@ -88,7 +88,7 @@ class ComponentGenerate(AuthorCommonCommand):
         markdown_dir_path: pathlib.Path,
         cat_interface_dict: Dict[str, CatalogInterface]
     ) -> int:
-        """Create markdown based on the component and profile."""
+        """Create markdown for the component using its source profiles."""
         logger.debug(f'Creating markdown for component {component.title}.')
         context.md_root = markdown_dir_path
         context.comp_name = component.title
@@ -100,10 +100,10 @@ class ComponentGenerate(AuthorCommonCommand):
                 )
                 local_catalog_interface = CatalogInterface(resolved_catalog)
                 cat_interface_dict[source_profile_uri] = local_catalog_interface
+            # insert the profile title (from title of resolved catalog) into the yaml header so it appears in md
             context.yaml_header = {}
             context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
             context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = resolved_catalog.metadata.title
-
             part_id_map = local_catalog_interface.get_part_id_map(False) if local_catalog_interface else {}
             cat_interface_dict[source_profile_uri].write_catalog_as_markdown(context, part_id_map)
         return CmdReturnCodes.SUCCESS.value
