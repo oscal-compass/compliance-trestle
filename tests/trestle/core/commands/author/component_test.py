@@ -19,8 +19,6 @@ from typing import Any, Dict, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import pytest
-
 from tests import test_utils
 
 import trestle.core.generic_oscal as generic
@@ -81,6 +79,8 @@ def check_common_contents(header: Dict[str, Any]) -> None:
     vals = header[const.COMP_DEF_PARAM_VALS_TAG]
     assert len(vals) == 1
     assert vals == {'quantity_available': '500'}
+    assert header[const.TRESTLE_GLOBAL_TAG][
+        const.PROFILE_TITLE] == 'NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE'  # noqa E501
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
@@ -110,16 +110,13 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     check_common_contents(header)
 
 
-@pytest.mark.parametrize('profile_arg', [True, False])
-def test_component_generate(tmp_trestle_dir: pathlib.Path, profile_arg: bool, monkeypatch: MonkeyPatch) -> None:
+def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
-    comp_name, prof_name, _ = setup_component_generate(tmp_trestle_dir)
+    comp_name, _, _ = setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-1.md'
     ac5_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-5.md'
 
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
-    if profile_arg:
-        generate_cmd += f' -p {prof_name}'
 
     # generate the md first time
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
