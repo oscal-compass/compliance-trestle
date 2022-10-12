@@ -30,6 +30,114 @@ def monkey_exception():
     raise Exception('foobar')
 
 
+def _validate1(tmp_path: pathlib.Path):
+    # read catalog
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # constants
+    id0 = 'Rule_Id'
+    id1 = 'Rule_Description'
+    id2 = 'Private_Reference_Id'
+    ns0 = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    ns1 = 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
+    pv0 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
+    pv1 = 'Ensure that the --anonymous-auth argument is set to false'
+    pv2 = '300000100'
+    pv3 = 'xccdf_org.ssgproject.content_rule_api_server_basic_auth'
+    cl0 = 'scc_class'
+    cl1 = 'user_class'
+    rs0 = 'rule_set_000'
+    rs1 = 'rule_set_001'
+    # spot check
+    assert len(cd.components) == 1
+    assert len(cd.components[0].control_implementations) == 2
+    # props
+    assert cd.components[0].control_implementations[0].props[0].name == id0
+    assert cd.components[0].control_implementations[0].props[0].ns == ns0
+    assert cd.components[0].control_implementations[0].props[0].value == pv0
+    assert cd.components[0].control_implementations[0].props[0].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[0].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[1].name == id1
+    assert cd.components[0].control_implementations[0].props[1].ns == ns0
+    assert cd.components[0].control_implementations[0].props[1].value == pv1
+    assert cd.components[0].control_implementations[0].props[1].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[1].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[2].name == id2
+    assert cd.components[0].control_implementations[0].props[2].ns == ns1
+    assert cd.components[0].control_implementations[0].props[2].value == pv2
+    assert cd.components[0].control_implementations[0].props[2].class_ == cl1
+    assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[3].name == id0
+    assert cd.components[0].control_implementations[0].props[3].ns == ns0
+    assert cd.components[0].control_implementations[0].props[3].value == pv3
+    assert cd.components[0].control_implementations[0].props[3].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[3].remarks.__root__ == rs1
+    # implemented requirements props
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].name == id0
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].ns == ns0
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].value == pv0
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].class_ == cl0
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].remarks is None
+
+
+def _validate2(tmp_path: pathlib.Path):
+    # read catalog
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # constants
+    id0 = 'Rule_Id'
+    id1 = 'Rule_Description'
+    id2 = 'Parameter_Id'
+    id3 = 'Parameter_Description'
+    id4 = 'Parameter_Value_Alternatives'
+    ns0 = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    pv0 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
+    pv1 = 'Ensure that the --anonymous-auth argument is set to false'
+    pv2 = 'scan_interval_max'
+    pv3 = 'Max Scan Interval Days'
+    pv4 = '10, 30'
+    cl0 = 'scc_class'
+    rs0 = 'rule_set_0'
+    pi0 = 'scan_interval_max'
+    pm0 = '7'
+    pi1 = 'no_of_admins_for_secrets_manager'
+    pm1 = '3'
+    # spot check
+    assert len(cd.components) == 1
+    assert len(cd.components[0].control_implementations) == 1
+    # props
+    assert cd.components[0].control_implementations[0].props[0].name == id0
+    assert cd.components[0].control_implementations[0].props[0].ns == ns0
+    assert cd.components[0].control_implementations[0].props[0].value == pv0
+    assert cd.components[0].control_implementations[0].props[0].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[0].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[1].name == id1
+    assert cd.components[0].control_implementations[0].props[1].ns == ns0
+    assert cd.components[0].control_implementations[0].props[1].value == pv1
+    assert cd.components[0].control_implementations[0].props[1].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[1].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[2].name == id2
+    assert cd.components[0].control_implementations[0].props[2].ns == ns0
+    assert cd.components[0].control_implementations[0].props[2].value == pv2
+    assert cd.components[0].control_implementations[0].props[2].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[3].name == id3
+    assert cd.components[0].control_implementations[0].props[3].ns == ns0
+    assert cd.components[0].control_implementations[0].props[3].value == pv3
+    assert cd.components[0].control_implementations[0].props[3].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[3].remarks.__root__ == rs0
+    assert cd.components[0].control_implementations[0].props[4].name == id4
+    assert cd.components[0].control_implementations[0].props[4].ns == ns0
+    assert cd.components[0].control_implementations[0].props[4].value == pv4
+    assert cd.components[0].control_implementations[0].props[4].class_ == cl0
+    assert cd.components[0].control_implementations[0].props[4].remarks.__root__ == rs0
+    # set parameters
+    assert cd.components[0].control_implementations[0].set_parameters[0].param_id == pi0
+    assert cd.components[0].control_implementations[0].set_parameters[0].values[0].__root__ == pm0
+    assert cd.components[0].control_implementations[0].set_parameters[1].param_id == pi1
+    assert cd.components[0].control_implementations[0].set_parameters[1].values[0].__root__ == pm1
+
+
 def test_csv_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -65,44 +173,7 @@ def test_csv_to_oscal_cd_execute(tmp_path: pathlib.Path):
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    _validate(tmp_path)
-
-
-def _validate(tmp_path: pathlib.Path):
-    # read catalog
-    fp = pathlib.Path(tmp_path) / 'component-definition.json'
-    cd = ComponentDefinition.oscal_read(fp)
-    # spot check
-    ns0 = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
-    ns1 = 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
-    pv0 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
-    pv1 = 'Ensure that the --anonymous-auth argument is set to false'
-    pv3 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
-    cl0 = 'scc_class'
-    cl1 = 'user_class'
-    rs0 = 'rule_set_000'
-    assert len(cd.components) == 1
-    assert len(cd.components[0].control_implementations) == 2
-    assert cd.components[0].control_implementations[0].props[0].name == 'Rule_Id'
-    assert cd.components[0].control_implementations[0].props[0].ns == ns0
-    assert cd.components[0].control_implementations[0].props[0].value == pv0
-    assert cd.components[0].control_implementations[0].props[0].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[0].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[1].name == 'Rule_Description'
-    assert cd.components[0].control_implementations[0].props[1].ns == ns0
-    assert cd.components[0].control_implementations[0].props[1].value == pv1
-    assert cd.components[0].control_implementations[0].props[1].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[1].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[2].name == 'Private_Reference_Id'
-    assert cd.components[0].control_implementations[0].props[2].ns == ns1
-    assert cd.components[0].control_implementations[0].props[2].value == '300000100'
-    assert cd.components[0].control_implementations[0].props[2].class_ == cl1
-    assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].name == 'Rule_Id'
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].ns == ns0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].value == pv3
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].class_ == cl0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].remarks is None
+    _validate1(tmp_path)
 
 
 def test_csv_to_oscal_cd_config_missing(tmp_path: pathlib.Path):
@@ -184,7 +255,7 @@ def test_csv_to_oscal_cd_execute_no_overwrite(tmp_path: pathlib.Path):
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    _validate(tmp_path)
+    _validate1(tmp_path)
     section['output-overwrite'] = 'false'
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -201,17 +272,57 @@ def test_csv_to_oscal_cd_execute_verbose(tmp_path: pathlib.Path):
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    _validate(tmp_path)
+    _validate1(tmp_path)
 
 
 def test_csv_to_oscal_cd_execute_missing_heading(tmp_path: pathlib.Path):
-    """Test execute call."""
+    """Test execute on pnput with midding heading."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
     section = config['task.csv-to-oscal-cd']
     section['output-dir'] = str(tmp_path)
     section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-missing-heading.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_execute_missing_rule_id(tmp_path: pathlib.Path):
+    """Test execute on input with missing rule-id."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-missing-rule-id.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_csv_to_oscal_cd_execute_parameters(tmp_path: pathlib.Path):
+    """Test execute on input with user parameters."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-parameters.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate2(tmp_path)
+
+
+def test_csv_to_oscal_cd_execute_parameters_missing_default(tmp_path: pathlib.Path):
+    """Test execute on input with user parameters."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-parameters-missing-default.csv'
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE

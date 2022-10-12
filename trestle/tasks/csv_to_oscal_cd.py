@@ -30,6 +30,7 @@ from trestle.oscal.component import ComponentDefinition
 from trestle.oscal.component import ControlImplementation
 from trestle.oscal.component import DefinedComponent
 from trestle.oscal.component import ImplementedRequirement
+from trestle.oscal.component import SetParameter
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.csv_helper import CsvHelper
@@ -150,12 +151,33 @@ class CsvToOscalComponentDefinition(TaskBase):
                     uuid=str(uuid.uuid4()),
                     source=source,
                     description=description,
+                    set_parameters=[],
                     implemented_requirements=[],
                     props=[],
                 )
                 control_implementations[source] = control_implementation
                 defined_component.control_implementations.append(control_implementation)
         return control_implementations
+
+    def _add_rule_prop(
+        self, control_implementation: ControlImplementation, required: bool, row: int, col: str, ns: str, remarks: str
+    ) -> None:
+        """Build rule property."""
+        value = self.csv_helper.get_value(row, col)
+        if value == '':
+            if required:
+                text = f'row: {row} missing expected value for col: {col}'
+                raise Exception(text)
+        else:
+            class_ = self.csv_helper.get_class(col)
+            prop = Property(
+                name=col,
+                value=value,
+                ns=ns,
+                class_=class_,
+                remarks=remarks,
+            )
+            control_implementation.props.append(prop)
 
     def _build_rules(self, control_implementations: List[ControlImplementation]) -> None:
         """Build rules."""
@@ -164,48 +186,40 @@ class CsvToOscalComponentDefinition(TaskBase):
         index = 0
         ns = self._ns
         user_ns = self._ns_user
+        required = True
+        optional = False
         for index, row in enumerate(self.csv_helper.row_generator()):
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             control_implementation = control_implementations[source]
             remarks = f'rule_set_{str(index).zfill(fill_sz)}'
             # Rule_Id
-            name = 'Rule_Id'
-            class_ = self.csv_helper.get_class(name)
-            value = self.csv_helper.get_value(row, name)
-            prop = Property(
-                name=name,
-                value=value,
-                ns=ns,
-                class_=class_,
-                remarks=remarks,
-            )
-            control_implementation.props.append(prop)
+            self._add_rule_prop(control_implementation, required, row, 'Rule_Id', ns, remarks)
             # Rule_Description
-            name = 'Rule_Description'
-            class_ = self.csv_helper.get_class(name)
-            value = self.csv_helper.get_value(row, name)
-            prop = Property(
-                name=name,
-                value=value,
-                ns=ns,
-                class_=class_,
-                remarks=remarks,
-            )
-            control_implementation.props.append(prop)
+            self._add_rule_prop(control_implementation, required, row, 'Rule_Description', ns, remarks)
+            # Parameter, if any
+            value = self.csv_helper.get_value(row, 'Parameter_Id')
+            if value:
+                self._add_rule_prop(control_implementation, required, row, 'Parameter_Id', ns, remarks)
+                self._add_rule_prop(control_implementation, required, row, 'Parameter_Description', ns, remarks)
+                self._add_rule_prop(control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks)
+                name = self.csv_helper.get_value(row, 'Parameter_Id')
+                value = self.csv_helper.get_value(row, 'Parameter_Default_Value')
+                if value == '':
+                    col = 'Parameter_Default_Value'
+                    text = f'row: {row} missing expected value for col: {col}'
+                    raise Exception(text)
+                values = value.split(',')
+                set_parameter = SetParameter(
+                    param_id=name,
+                    values=values,
+                )
+                control_implementation.set_parameters.append(set_parameter)
             # User properties, if any
             for col_name in user_column_names:
                 value = self.csv_helper.get_value(row, col_name)
                 if not value:
                     continue
-                class_ = self.csv_helper.get_class(col_name)
-                prop = Property(
-                    name=col_name,
-                    value=value,
-                    ns=user_ns,
-                    class_=class_,
-                    remarks=remarks,
-                )
-                control_implementation.props.append(prop)
+                self._add_rule_prop(control_implementation, required, row, col_name, user_ns, remarks)
 
     def _build_implemented_requirements(
         self, control_implementations: List[ControlImplementation]
