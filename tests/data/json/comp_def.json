@@ -97,51 +97,51 @@
                 "value": "0.1.58"
               },
               {
-                "name": "rule_name_id",
+                "name": "Rule_Id",
                 "ns": "http://foo_ns",
                 "value": "XCCDF",
-                "class": "rule_name_id",
+                "class": "Rule_Id",
                 "remarks": "rule_1"
               },
               {
-                "name": "rule_description",
+                "name": "Rule_Description",
                 "ns": "http://foo_ns",
                 "value": "The XCCDF must be compliant",
                 "remarks": "rule_1"
               },
               {
-                "name": "rule_name_id",
+                "name": "Rule_Id",
                 "ns": "http://foo_ns",
                 "value": "FancyXtraRule",
-                "class": "rule_name_id",
+                "class": "Rule_Id",
                 "remarks": "rule_2"
               },
               {
-                "name": "rule_description",
+                "name": "Rule_Description",
                 "ns": "http://foo_ns",
                 "value": "This is a fancy extra rule",
-                "class": "rule_description",
+                "class": "Rule_Description",
                 "remarks": "rule_2"
               },
               {
-                "name": "param_id",
+                "name": "Parameter_Id",
                 "ns": "http://foo_ns",
                 "value": "foo_length",
-                "class": "param_id",
+                "class": "Parameter_Id",
                 "remarks": "rule_1"
               },
               {
-                "name": "param_description",
+                "name": "Parameter_Description",
                 "ns": "http://foo_ns",
                 "value": "minimum_foo_length",
-                "class": "param_description",
+                "class": "Parameter_Description",
                 "remarks": "rule_1"
               },
               {
-                "name": "param_options",
+                "name": "Parameter_Value_Alternatives",
                 "ns": "http://foo_ns",
                 "value": "[\"6\", \"9\"]",
-                "class": "param_options",
+                "class": "Parameter_Value_Alternatives",
                 "remarks": "rule_1"
               }
             ],
@@ -161,12 +161,12 @@
                 "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
                 "props": [
                   {
-                    "name": "rule-name-id",
+                    "name": "Rule_Id",
                     "value": "XCCDF"
                   },
                   {
                     "name": "implementation-status",
-                    "value": "operational",
+                    "value": "implemented",
                     "remarks": "ac1 remark"
                   }
                 ],
@@ -199,7 +199,7 @@
                     "props": [
                       {
                         "name": "implementation-status",
-                        "value": "under-development"
+                        "value": "partial"
                       }
                     ]
                   }
@@ -424,20 +424,20 @@
                 "description": "Ensure that garbage collection is configured as appropriate",
                 "props": [
                   {
-                    "name": "rule_name_id",
+                    "name": "Rule_Id",
                     "ns": "http://foo_ns",
-                    "class": "rule_name_id",
+                    "class": "Rule_Id",
                     "value": "XCCDF"
                   },
                   {
-                    "name": "rule_name_id",
+                    "name": "Rule_Id",
                     "ns": "http://foo_ns",
-                    "class": "rule_name_id",
+                    "class": "Rule_Id",
                     "value": "FancyXtraRule"
                   },
                   {
                     "name": "implementation-status",
-                    "value": "under-development",
+                    "value": "partial",
                     "remarks": "this is my remark"
                   }
                 ],
@@ -466,14 +466,14 @@
               {
                 "uuid": "c1541519-ba7e-44ca-afd0-4068d307a9b0",
                 "control-id": "ac-2.13",
-                "description": "Ensure that garbage collection is configured as appropriate",
+                "description": "Ensure that temperature is ok.",
                 "set-parameters": [
                   {
-                    "param-id": "kubelet_eviction_thresholds_set_soft_nodefs_available",
+                    "param-id": "temperature_tolerance",
                     "values": [
                       "10%"
                     ],
-                    "remarks": "Node FS Available for the EvictionSoft threshold to trigger."
+                    "remarks": "Keep it cool."
                   }
                 ],
                 "responsible-roles": [

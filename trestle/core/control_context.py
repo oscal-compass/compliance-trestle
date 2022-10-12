@@ -18,7 +18,7 @@ import copy
 import pathlib
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from trestle.common.list_utils import as_dict
 from trestle.oscal import component as comp
@@ -54,6 +54,9 @@ class ControlContext:
     comp_def: Optional[comp.ComponentDefinition] = None
     comp_name: Optional[str] = None
     inherited_props: Optional[Dict[str, Any]] = None
+    rules_dict: Optional[Dict[str, Dict[str, str]]] = None
+    params: Optional[Dict[str, Dict[str, Any]]] = None
+    param_vals: Optional[List[Dict[str, str]]] = None
 
     @classmethod
     def generate(
@@ -73,7 +76,10 @@ class ControlContext:
         allowed_sections: Optional[str] = None,
         comp_def: Optional[comp.ComponentDefinition] = None,
         comp_name: Optional[str] = None,
-        inherited_props: Optional[Dict[str, Any]] = None
+        inherited_props: Optional[Dict[str, Any]] = None,
+        rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
+        params: Optional[Dict[str, Dict[str, Any]]] = None,
+        param_vals: Optional[List[Dict[str, str]]] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
@@ -92,7 +98,10 @@ class ControlContext:
             allowed_sections=allowed_sections,
             comp_def=comp_def,
             comp_name=comp_name,
-            inherited_props=inherited_props
+            inherited_props=inherited_props,
+            rules_dict=rules_dict,
+            params=params,
+            param_vals=param_vals
         )
         context.yaml_header = as_dict(yaml_header)
         context.sections_dict = as_dict(sections_dict)
@@ -120,6 +129,9 @@ class ControlContext:
             allowed_sections=context.allowed_sections,
             comp_def=context.comp_def,
             comp_name=context.comp_name,
-            inherited_props=copy.deepcopy(context.inherited_props)
+            inherited_props=copy.deepcopy(context.inherited_props),
+            rules_dict=context.rules_dict,
+            params=context.params,
+            param_vals=context.param_vals
         )
         return new_context
