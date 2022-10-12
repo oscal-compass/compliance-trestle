@@ -448,6 +448,14 @@ class ProfileResolve(AuthorCommonCommand):
             action='store_true',
             default=False
         )
+        self.add_argument(
+            '-bf',
+            '--bracket-format',
+            help='Format to allow brackets around value, e.g. [.] or ((.)), with the dot representing the value',
+            required=False,
+            type=str,
+            default=''
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -456,14 +464,20 @@ class ProfileResolve(AuthorCommonCommand):
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
             catalog_name = args.output
             show_values = args.show_values
+            param_format = args.bracket_format
 
-            return self.resolve_profile(trestle_root, profile_path, catalog_name, show_values)
+            return self.resolve_profile(trestle_root, profile_path, catalog_name, show_values, param_format)
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the resolved profile catalog failed')
 
     def resolve_profile(
-        self, trestle_root: pathlib.Path, profile_path: pathlib.Path, catalog_name: str, show_values: bool
+        self,
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
+        catalog_name: str,
+        show_values: bool,
+        bracket_format: str
     ) -> int:
         """Create resolved profile catalog from given profile.
 
@@ -472,6 +486,7 @@ class ProfileResolve(AuthorCommonCommand):
             profile_path: Path of the profile json file
             catalog_name: Name of the resolved profile catalog
             show_values: If true, show values of parameters in prose rather than original {{}} form
+            bracket_format: String representing brackets around value, e.g. [.] or ((.))
 
         Returns:
             0 on success and raises exception on error
@@ -479,8 +494,10 @@ class ProfileResolve(AuthorCommonCommand):
         if not profile_path.exists():
             raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
         param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.LEAVE_MOUSTACHE
+
+        bracket_format = bracket_format if bracket_format else None
         catalog = ProfileResolver().get_resolved_profile_catalog(
-            trestle_root, profile_path, False, False, None, param_rep
+            trestle_root, profile_path, False, False, bracket_format, param_rep
         )
         ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
 
