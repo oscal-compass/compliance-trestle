@@ -451,7 +451,7 @@ class ProfileResolve(AuthorCommonCommand):
         self.add_argument(
             '-bf',
             '--bracket-format',
-            help='Format to allow brackets around value, e.g. [.] or ((.)), with the dot representing the value',
+            help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
             required=False,
             type=str,
             default=''
@@ -495,7 +495,7 @@ class ProfileResolve(AuthorCommonCommand):
             raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
         param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.LEAVE_MOUSTACHE
 
-        bracket_format = bracket_format if bracket_format else None
+        bracket_format = none_if_empty(bracket_format)
         catalog = ProfileResolver().get_resolved_profile_catalog(
             trestle_root, profile_path, False, False, bracket_format, param_rep
         )
