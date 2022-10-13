@@ -839,16 +839,12 @@ def test_profile_resolve(
     test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
     res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
     ac_1 = res_cat.groups[0].controls[0]
-    if bracket_format:
-        if show_values:
-            expected_prose = 'Designate an [(officer]) to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
-        else:
-            expected_prose = 'Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
-    else:
-        if show_values:
-            expected_prose = 'Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
-        else:
-            expected_prose = 'Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+    expected_value = '{{ insert: param, ac-1_prm_3 }}'
+    if show_values:
+        expected_value = 'officer'
+        if bracket_format:
+            expected_value = f'[({expected_value}])'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
 
 
