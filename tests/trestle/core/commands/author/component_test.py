@@ -134,7 +134,10 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # all files should be the same
     assert file_checker.files_unchanged()
 
-    # make edits to status and remarks
+    # make edits to status and remarks and control level prose
+    assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
+    control_prose = '567 or more restrictive'
+    assert test_utils.confirm_text_in_file(ac1_path, 'Enter possible prose', control_prose)
     assert test_utils.substitute_text_in_file(ac5_path, 'Status: partial', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
     assert test_utils.substitute_text_in_file(ac5_path, 'my remark', 'my new remark')
@@ -154,6 +157,9 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     new_status = ControlInterface.get_status_from_props(imp_reqs[0])
     assert new_status.state == 'implemented'
     assert new_status.remarks.__root__ == 'this is my new remark'
+    imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-1')
+    assert control_prose in imp_reqs[0].description
+
     orig_uuid = assem_comp_def.uuid
 
     orig_file_creation = orig_comp_def_path.stat().st_mtime

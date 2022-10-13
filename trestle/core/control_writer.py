@@ -146,6 +146,8 @@ class ControlWriter():
         """Add prompts to the markdown for the control itself, per component."""
         if comp_def_format:
             self._md_file.new_paraline(const.STATUS_PROMPT)
+            self._md_file.new_paraline(const.RULES_WARNING)
+            self._md_file.new_paraline(const.CONTROL_PROSE_PROMPT)
             self._md_file.new_paragraph()
         did_write = False
         level = 3
