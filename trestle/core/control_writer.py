@@ -140,12 +140,14 @@ class ControlWriter():
             self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
         else:
-            self._insert_status(ImplementationStatus(state=const.STATUS_OTHER), level)
+            self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
 
     def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
         if comp_def_format:
             self._md_file.new_paraline(const.STATUS_PROMPT)
+            self._md_file.new_paraline(const.RULES_WARNING)
+            self._md_file.new_paraline(const.CONTROL_PROSE_PROMPT)
             self._md_file.new_paragraph()
         did_write = False
         level = 3
@@ -205,7 +207,7 @@ class ControlWriter():
                             wrote_label_content = True
                         if not wrote_label_content:
                             level = 3 if comp_def_format else 4
-                            self._insert_status(ImplementationStatus(state=const.STATUS_OTHER), level)
+                            self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
                         self._md_file.new_paragraph()
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement

@@ -586,6 +586,18 @@ class CatalogInterface():
                 return prop.value, ns
         return None, None
 
+    @staticmethod
+    def _get_all_rules_params_and_vals(context: ControlContext) -> None:
+        context.rules_dict = {}
+        context.params = {}
+        context.param_vals = {}
+        def_comp = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+        if def_comp:
+            for control_imp in as_list(def_comp.control_implementations):
+                context.rules_dict.update(ControlInterface.get_rules_from_item(control_imp))
+                context.params.update(ControlInterface.get_params_from_item(control_imp))
+                context.param_vals.update(ControlInterface.get_param_vals_from_control_imp(control_imp))
+
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
         Write out the catalog controls from dict as markdown files to the specified directory.
@@ -613,6 +625,9 @@ class CatalogInterface():
         # this is just from the set_params
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile
                                                                                 ) if context.profile else {}
+
+        if context.purpose == ContextPurpose.COMPONENT and context.comp_def:
+            CatalogInterface._get_all_rules_params_and_vals(context)
 
         label_map = self.get_part_id_map(True)
         found_alters, _, _ = CatalogInterface.read_additional_content(

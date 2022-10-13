@@ -19,8 +19,6 @@ from typing import Any, Dict, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import pytest
-
 from tests import test_utils
 
 import trestle.core.generic_oscal as generic
@@ -71,28 +69,29 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
     """Check common features of controls markdown."""
-    rules = header[const.COMP_DEF_RULES_TAG]
-    assert len(rules) == 2
-    assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
-    assert rules[1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
     params = header[const.COMP_DEF_PARAMS_TAG]
     assert len(params) == 1
-    assert params[0] == {'XCCDF': {'name': 'foo_length', 'description': 'minimum_foo_length', 'options': '["6", "9"]'}}
+    assert params[0] == {'name': 'foo_length', 'description': 'minimum_foo_length', 'options': '["6", "9"]'}
     vals = header[const.COMP_DEF_PARAM_VALS_TAG]
     assert len(vals) == 1
     assert vals == {'quantity_available': '500'}
+    assert header[const.TRESTLE_GLOBAL_TAG][
+        const.PROFILE_TITLE] == 'NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE'  # noqa E501
 
 
 def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     """Check the contents of ac-1 md."""
     assert test_utils.confirm_text_in_file(ac1_path, 'enter one of:', 'set to 644')
-    assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: operational')
-    assert test_utils.confirm_text_in_file(ac1_path, 'Status: operational', 'ac1 remark')
-    assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: other')
+    assert test_utils.confirm_text_in_file(ac1_path, 'set to 644', 'Status: implemented')
+    assert test_utils.confirm_text_in_file(ac1_path, 'Status: implemented', 'ac1 remark')
+    assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: planned')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['label'] == 'organization-defined personnel or roles'
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['values'] == 'Param_1_value_in_catalog'
+    rules = header[const.COMP_DEF_RULES_TAG]
+    assert len(rules) == 1
+    assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
     check_common_contents(header)
 
 
@@ -103,23 +102,22 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     assert header[const.SET_PARAMS_TAG
                   ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
     assert test_utils.confirm_text_in_file(
-        ac5_path,
-        '### Implementation Status: under-development',
-        '### Implementation Status Remarks: this is my remark'
+        ac5_path, '### Implementation Status: partial', '### Implementation Status Remarks: this is my remark'
     )
+    rules = header[const.COMP_DEF_RULES_TAG]
+    assert len(rules) == 2
+    assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    assert rules[1] == {'name': 'FancyXtraRule', 'description': 'This is a fancy extra rule'}
     check_common_contents(header)
 
 
-@pytest.mark.parametrize('profile_arg', [True, False])
-def test_component_generate(tmp_trestle_dir: pathlib.Path, profile_arg: bool, monkeypatch: MonkeyPatch) -> None:
+def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
-    comp_name, prof_name, _ = setup_component_generate(tmp_trestle_dir)
+    comp_name, _, _ = setup_component_generate(tmp_trestle_dir)
     ac1_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-1.md'
     ac5_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-5.md'
 
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
-    if profile_arg:
-        generate_cmd += f' -p {prof_name}'
 
     # generate the md first time
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
@@ -136,8 +134,11 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, profile_arg: bool, mo
     # all files should be the same
     assert file_checker.files_unchanged()
 
-    # make edits to status and remarks
-    assert test_utils.substitute_text_in_file(ac5_path, 'Status: under-development', 'Status: implemented')
+    # make edits to status and remarks and control level prose
+    assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
+    control_prose = '567 or more restrictive'
+    assert test_utils.confirm_text_in_file(ac1_path, 'Enter possible prose', control_prose)
+    assert test_utils.substitute_text_in_file(ac5_path, 'Status: partial', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
     assert test_utils.substitute_text_in_file(ac5_path, 'my remark', 'my new remark')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'my new remark')
@@ -156,6 +157,9 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, profile_arg: bool, mo
     new_status = ControlInterface.get_status_from_props(imp_reqs[0])
     assert new_status.state == 'implemented'
     assert new_status.remarks.__root__ == 'this is my new remark'
+    imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-1')
+    assert control_prose in imp_reqs[0].description
+
     orig_uuid = assem_comp_def.uuid
 
     orig_file_creation = orig_comp_def_path.stat().st_mtime

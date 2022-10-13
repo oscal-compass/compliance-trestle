@@ -384,7 +384,11 @@ STATUS_ALL = [
     STATUS_UNDER_MAJOR_MODIFICATION
 ]
 
-STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_OPERATIONAL} {STATUS_UNDER_DEVELOPMENT} {STATUS_DISPOSITION} {STATUS_OTHER} -->'  # noqa E501
+STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED}, {STATUS_PARTIAL}, {STATUS_PLANNED}, {STATUS_ALTERNATIVE}, {STATUS_NOT_APPLICABLE} -->'  # noqa E501
+
+RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
+
+CONTROL_PROSE_PROMPT = '<!-- Enter possible prose for implementation response at the control level here, after this comment -->'  # noqa E501
 
 RESPONSIBLE_ROLE = 'responsible-role'
 
@@ -446,3 +450,13 @@ DISPLAY_NAME = 'display-name'
 RESOLUTION_SOURCE = 'resolution-source'
 
 TRESTLE_INHERITED_PROPS = 'trestle_inherited_props'
+
+RULE_ID = 'Rule_Id'
+
+RULE_DESCRIPTION = 'Rule_Description'
+
+PARAMETER_ID = 'Parameter_Id'
+
+PARAMETER_DESCRIPTION = 'Parameter_Description'
+
+PARAMETER_VALUE_ALTERNATIVES = 'Parameter_Value_Alternatives'
