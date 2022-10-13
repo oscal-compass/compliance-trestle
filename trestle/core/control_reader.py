@@ -362,43 +362,43 @@ class ControlReader():
     ) -> None:
         """Extract the label, prose, possible component name - along with implementation status."""
         component_mode = context.purpose == ContextPurpose.COMPONENT
+        # for ssp, ### marks component name but for component it is ##
+        # if it is a header, make sure it has correct format
+        if node.key and node.key[0] == '#' and ControlInterface.bad_header(node.key):
+            raise TrestleError(f'Improper header format for control {control_id}: {node.key}')
+        if not component_mode:
+            # look for component name heading if present
+            prefix = '### '
+            if node.key.startswith(prefix):
+                if len(node.key.split()) <= 1:
+                    raise TrestleError(
+                        f'Header line in control {control_id} markdown starts with {prefix} but has no content.'
+                    )
+                comp_name = node.key.split(' ', 1)[1].strip()
+                simp_comp_name = ControlReader.simplify_name(comp_name)
+                if simp_comp_name == ControlReader.simplify_name(const.SSP_MAIN_COMP_NAME) and not component_mode:
+                    raise TrestleError(
+                        f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
+                        'Instead, place all response prose for the default component at the top of the section, '
+                        'with no ### component_name heading.  It will be entered as prose for the default system '
+                        'component.'
+                    )
+                if simp_comp_name in comp_list:
+                    raise TrestleError(
+                        f'Control {control_id} has a section with two component headings for {comp_name}.  '
+                        'Please combine the sections so there is only one heading for each component in a '
+                        'statement.'
+                    )
+                comp_list.append(simp_comp_name)
+                comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
+            elif node.key.startswith('## What is the solution'):
+                comp_name = const.SSP_MAIN_COMP_NAME
+                simp_comp_name = ControlReader.simplify_name(comp_name)
+                comp_list.append(simp_comp_name)
+                comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
+
         prose = '\n'.join(ControlReader._clean_prose(node.content.text))
         if prose:
-            # for ssp, ### marks component name but for component it is ##
-            # if it is a header, make sure it has correct format
-            if node.key and node.key[0] == '#' and ControlInterface.bad_header(node.key):
-                raise TrestleError(f'Improper header format for control {control_id}: {node.key}')
-            if not component_mode:
-                # look for component name heading if present
-                prefix = '### '
-                if node.key.startswith(prefix):
-                    if len(node.key.split()) <= 1:
-                        raise TrestleError(
-                            f'Header line in control {control_id} markdown starts with {prefix} but has no content.'
-                        )
-                    comp_name = node.key.split(' ', 1)[1].strip()
-                    simp_comp_name = ControlReader.simplify_name(comp_name)
-                    if simp_comp_name == ControlReader.simplify_name(const.SSP_MAIN_COMP_NAME) and not component_mode:
-                        raise TrestleError(
-                            f'Response in control {control_id} has {const.SSP_MAIN_COMP_NAME} as a component heading.  '
-                            'Instead, place all response prose for the default component at the top of the section, '
-                            'with no ### component_name heading.  It will be entered as prose for the default system '
-                            'component.'
-                        )
-                    if simp_comp_name in comp_list:
-                        raise TrestleError(
-                            f'Control {control_id} has a section with two component headings for {comp_name}.  '
-                            'Please combine the sections so there is only one heading for each component in a '
-                            'statement.'
-                        )
-                    comp_list.append(simp_comp_name)
-                    comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
-                elif node.key.startswith('## What is the solution'):
-                    comp_name = const.SSP_MAIN_COMP_NAME
-                    simp_comp_name = ControlReader.simplify_name(comp_name)
-                    comp_list.append(simp_comp_name)
-                    comp_name = ControlReader._comp_name_in_dict(comp_name, comp_dict)
-
             # add the prose to the comp_dict, creating new entry as needed
             if comp_name in comp_dict:
                 if label in comp_dict[comp_name]:
@@ -409,22 +409,27 @@ class ControlReader():
             else:
                 comp_dict[comp_name] = {label: ComponentImpInfo(prose=prose, rules=[])}
 
-            # build list of subnodes that get handled specially so they aren't processed here
-            subnode_kill: List[int] = []
-            status_str = None
-            remarks_str = None
-            for ii, subnode in enumerate(node.subnodes):
-                if subnode.key.find(const.IMPLEMENTATION_STATUS_REMARKS_HEADER) >= 0:
-                    remarks_str = subnode.key.split(maxsplit=4)[-1]
-                    subnode_kill.append(ii)
-                elif subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
-                    status_str = subnode.key.split(maxsplit=3)[-1]
-                    subnode_kill.append(ii)
-                elif subnode.key.find('Rules:') >= 0:
-                    subnode_kill.append(ii)
-            if status_str:
-                comp_dict[comp_name][label].status = common.ImplementationStatus(state=status_str, remarks=remarks_str)
-            delete_list_from_list(node.subnodes, subnode_kill)
+        # build list of subnodes that get handled specially so they aren't processed here
+        subnode_kill: List[int] = []
+        status_str = None
+        remarks_str = None
+        for ii, subnode in enumerate(node.subnodes):
+            if subnode.key.find(const.IMPLEMENTATION_STATUS_REMARKS_HEADER) >= 0:
+                remarks_str = subnode.key.split(maxsplit=4)[-1]
+                subnode_kill.append(ii)
+            elif subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
+                status_str = subnode.key.split(maxsplit=3)[-1]
+                subnode_kill.append(ii)
+            elif subnode.key.find('Rules:') >= 0:
+                subnode_kill.append(ii)
+        if status_str:
+            new_status = common.ImplementationStatus(state=status_str, remarks=remarks_str)
+            if comp_name not in comp_dict:
+                comp_dict[comp_name] = {}
+            if label not in comp_dict[comp_name]:
+                comp_dict[comp_name][label] = ComponentImpInfo(prose='', rules=[])
+            comp_dict[comp_name][label].status = new_status
+        delete_list_from_list(node.subnodes, subnode_kill)
         for subnode in as_list(node.subnodes):
             ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
 
