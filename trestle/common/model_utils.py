@@ -836,6 +836,8 @@ class ModelUtils:
     @staticmethod
     def imp_reqs_are_equivalent(imp_a: comp.ImplementedRequirement, imp_b: comp.ImplementedRequirement) -> bool:
         """Determine if imp_reqs are equivalent."""
+        if imp_a.description != imp_b.description:
+            return False
         if imp_a.props != imp_b.props:
             return False
         if imp_a.set_parameters != imp_b.set_parameters:

@@ -865,6 +865,7 @@ class ControlInterface:
                 if imp_req.control_id == new_imp_req.control_id:
                     status = ControlInterface.get_status_from_props(new_imp_req)
                     ControlInterface.insert_status_in_props(imp_req, status)
+                    imp_req.description = new_imp_req.description
                     statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
                     new_statements: List[comp.Statement] = []
                     for statement in as_list(new_imp_req.statements):
