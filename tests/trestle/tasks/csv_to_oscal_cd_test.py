@@ -51,7 +51,7 @@ def _validate1(tmp_path: pathlib.Path):
     # spot check
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 2
-    # props
+    # control implementations props
     assert cd.components[0].control_implementations[0].props[0].name == id0
     assert cd.components[0].control_implementations[0].props[0].ns == ns0
     assert cd.components[0].control_implementations[0].props[0].value == pv0
@@ -105,7 +105,7 @@ def _validate2(tmp_path: pathlib.Path):
     # spot check
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 1
-    # props
+    # control implementations props
     assert cd.components[0].control_implementations[0].props[0].name == id0
     assert cd.components[0].control_implementations[0].props[0].ns == ns0
     assert cd.components[0].control_implementations[0].props[0].value == pv0
@@ -138,8 +138,43 @@ def _validate2(tmp_path: pathlib.Path):
     assert cd.components[0].control_implementations[0].set_parameters[1].values[0].__root__ == pm1
 
 
-def test_csv_to_oscal_cd_print_info(tmp_path: pathlib.Path):
-    """Test print_info call."""
+def _validate3(tmp_path: pathlib.Path):
+    # read catalog
+    fp = pathlib.Path(tmp_path) / 'component-definition.json'
+    cd = ComponentDefinition.oscal_read(fp)
+    # constants
+    ctl0 = 'ac-6'
+    ctl1 = 'ac-5'
+    ctl2 = 'ia-7'
+    ctl3 = 'ac-3'
+    sid1 = 'ac-5_smt.c'
+    sid4 = 'ac-2_smt.d'
+    sid50 = 'au-2_smt.a'
+    sid51 = 'au-2_smt.d'
+    # spot check
+    assert len(cd.components) == 1
+    assert len(cd.components[0].control_implementations) == 1
+    # implemented requirements
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].control_id == ctl0
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].description == ''
+    assert cd.components[0].control_implementations[0].implemented_requirements[1].control_id == ctl1
+    assert cd.components[0].control_implementations[0].implemented_requirements[1].description == ''
+    assert cd.components[0].control_implementations[0].implemented_requirements[2].control_id == ctl2
+    assert cd.components[0].control_implementations[0].implemented_requirements[2].description == ''
+    assert cd.components[0].control_implementations[0].implemented_requirements[3].control_id == ctl3
+    assert cd.components[0].control_implementations[0].implemented_requirements[3].description == ''
+    # implemented requirements statements
+    assert cd.components[0].control_implementations[0].implemented_requirements[0].statements is None
+    assert cd.components[0].control_implementations[0].implemented_requirements[1].statements[0].statement_id == sid1
+    assert cd.components[0].control_implementations[0].implemented_requirements[2].statements is None
+    assert cd.components[0].control_implementations[0].implemented_requirements[3].statements is None
+    assert cd.components[0].control_implementations[0].implemented_requirements[4].statements[0].statement_id == sid4
+    assert cd.components[0].control_implementations[0].implemented_requirements[5].statements[0].statement_id == sid50
+    assert cd.components[0].control_implementations[0].implemented_requirements[5].statements[1].statement_id == sid51
+
+
+def test_print_info(tmp_path: pathlib.Path):
+    """Test print_info."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -150,8 +185,8 @@ def test_csv_to_oscal_cd_print_info(tmp_path: pathlib.Path):
     assert retval is None
 
 
-def test_csv_to_oscal_cd_simulate(tmp_path: pathlib.Path):
-    """Test simulate call."""
+def test_simulate(tmp_path: pathlib.Path):
+    """Test simulate."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -163,8 +198,8 @@ def test_csv_to_oscal_cd_simulate(tmp_path: pathlib.Path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_csv_to_oscal_cd_execute(tmp_path: pathlib.Path):
-    """Test execute call."""
+def test_execute(tmp_path: pathlib.Path):
+    """Test execute."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -176,7 +211,7 @@ def test_csv_to_oscal_cd_execute(tmp_path: pathlib.Path):
     _validate1(tmp_path)
 
 
-def test_csv_to_oscal_cd_config_missing(tmp_path: pathlib.Path):
+def test_config_missing(tmp_path: pathlib.Path):
     """Test config missing."""
     section = None
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
@@ -184,8 +219,8 @@ def test_csv_to_oscal_cd_config_missing(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_config_missing_title(tmp_path: pathlib.Path):
-    """Test catalog-file missing."""
+def test_config_missing_title(tmp_path: pathlib.Path):
+    """Test config missing title."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -196,8 +231,8 @@ def test_csv_to_oscal_cd_config_missing_title(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_config_missing_version(tmp_path: pathlib.Path):
-    """Test catalog-file missing."""
+def test_config_missing_version(tmp_path: pathlib.Path):
+    """Test config missing version."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -208,8 +243,8 @@ def test_csv_to_oscal_cd_config_missing_version(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_config_missing_csv_file_spec(tmp_path: pathlib.Path):
-    """Test csv-file missing specification."""
+def test_config_missing_csv_file_spec(tmp_path: pathlib.Path):
+    """Test config missing csv file spec."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -221,8 +256,8 @@ def test_csv_to_oscal_cd_config_missing_csv_file_spec(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_config_missing_csv_file(tmp_path: pathlib.Path):
-    """Test csv-file missing."""
+def test_config_missing_csv_file(tmp_path: pathlib.Path):
+    """Test config missing csv file."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -233,9 +268,9 @@ def test_csv_to_oscal_cd_config_missing_csv_file(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
-    """Test _build_rules exception."""
-    monkeypatch.setattr(csv_to_oscal_cd.CsvToOscalComponentDefinition, '_build_rules', monkey_exception)
+def test_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test exception."""
+    monkeypatch.setattr(csv_to_oscal_cd.CsvToOscalComponentDefinition, '_process_rows', monkey_exception)
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -245,8 +280,8 @@ def test_csv_to_oscal_cd_exception(tmp_path: pathlib.Path, monkeypatch: MonkeyPa
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_execute_no_overwrite(tmp_path: pathlib.Path):
-    """Test execute no overwrite call."""
+def test_execute_no_overwrite(tmp_path: pathlib.Path):
+    """Test execute no overwrite."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -261,8 +296,8 @@ def test_csv_to_oscal_cd_execute_no_overwrite(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_execute_verbose(tmp_path: pathlib.Path):
-    """Test execute verbose call."""
+def test_execute_verbose(tmp_path: pathlib.Path):
+    """Test execute verbose."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -275,8 +310,8 @@ def test_csv_to_oscal_cd_execute_verbose(tmp_path: pathlib.Path):
     _validate1(tmp_path)
 
 
-def test_csv_to_oscal_cd_execute_missing_heading(tmp_path: pathlib.Path):
-    """Test execute on pnput with midding heading."""
+def test_execute_missing_heading(tmp_path: pathlib.Path):
+    """Test execute missing heading."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -288,8 +323,8 @@ def test_csv_to_oscal_cd_execute_missing_heading(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_execute_missing_rule_id(tmp_path: pathlib.Path):
-    """Test execute on input with missing rule-id."""
+def test_execute_missing_rule_id(tmp_path: pathlib.Path):
+    """Test execute missing rule id."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -301,8 +336,8 @@ def test_csv_to_oscal_cd_execute_missing_rule_id(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_csv_to_oscal_cd_execute_parameters(tmp_path: pathlib.Path):
-    """Test execute on input with user parameters."""
+def test_execute_user_parameters(tmp_path: pathlib.Path):
+    """Test execute user parameters."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -315,8 +350,8 @@ def test_csv_to_oscal_cd_execute_parameters(tmp_path: pathlib.Path):
     _validate2(tmp_path)
 
 
-def test_csv_to_oscal_cd_execute_parameters_missing_default(tmp_path: pathlib.Path):
-    """Test execute on input with user parameters."""
+def test_execute_parameters_missing_default(tmp_path: pathlib.Path):
+    """Test execute parameters missing default."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
     config.read(config_path)
@@ -326,3 +361,17 @@ def test_csv_to_oscal_cd_execute_parameters_missing_default(tmp_path: pathlib.Pa
     tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
+
+
+def test_execute_optional_columns(tmp_path: pathlib.Path):
+    """Test execute optional columns."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-optional-columns.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    _validate3(tmp_path)

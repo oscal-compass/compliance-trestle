@@ -21,7 +21,7 @@ import pathlib
 import traceback
 import uuid
 from math import log10
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.common import Metadata
@@ -31,11 +31,27 @@ from trestle.oscal.component import ControlImplementation
 from trestle.oscal.component import DefinedComponent
 from trestle.oscal.component import ImplementedRequirement
 from trestle.oscal.component import SetParameter
+from trestle.oscal.component import Statement
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.tasks.csv_helper import CsvHelper
 
 logger = logging.getLogger(__name__)
+
+
+def derive_control_id(control_mapping: str) -> str:
+    """Derive control id."""
+    rval = control_mapping.split('_smt')[0]
+    return rval
+
+
+def derive_part_id(control_mapping: str) -> str:
+    """Derive part id."""
+    if '_smt.' in control_mapping:
+        rval = control_mapping
+    else:
+        rval = None
+    return rval
 
 
 class CsvToOscalComponentDefinition(TaskBase):
@@ -100,8 +116,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._ns = self._config.get('namespace')
         # user-namespace
         self._ns_user = self._config.get('user-namespace')
-        # build components
-        self._build_components()
+        # process rows
+        self._process_rows()
         # create OSCAL ComponentDefinition
         metadata = Metadata(
             title=self.csv_helper.get_title(),
@@ -118,51 +134,65 @@ class CsvToOscalComponentDefinition(TaskBase):
         if verbose:
             logger.info(f'output: {ofile}')
         component_definition.oscal_write(pathlib.Path(ofile))
-        logger.info(f'{ofile}')
         # issues
         self._report_issues()
         return TaskOutcome('success')
 
-    def _build_defined_component(self) -> DefinedComponent:
-        """Build defined component."""
-        defined_component = None
-        for row in self.csv_helper.row_generator():
+    def _get_component_key(self, row: List[str]) -> str:
+        """Get component key."""
+        resource = self.csv_helper.get_value(row, 'Resource')
+        component_type = self.csv_helper.get_value(row, 'Component_Type')
+        return f'{resource}:{component_type}'
+
+    def _get_component(self, row: List[str]) -> None:
+        """Get component."""
+        key = self._get_component_key(row)
+        rval = self._components.get(key)
+        if rval is None:
+            resource = self.csv_helper.get_value(row, 'Resource')
             type_ = self.csv_helper.get_value(row, 'Component_Type')
-            title = self.csv_helper.get_value(row, 'Resource')
-            description = self.csv_helper.get_value(row, 'Resource')
-            defined_component = DefinedComponent(
+            description = self.csv_helper.get_value(row, 'Profile_Description')
+            rval = DefinedComponent(
                 uuid=str(uuid.uuid4()),
                 type=type_,
-                title=title,
+                title=resource,
                 description=description,
                 control_implementations=[],
             )
-            break
-        return defined_component
+            self._components[key] = rval
+            logger.debug(f'created component: {key}')
+        return rval
 
-    def _build_control_implementations(self, defined_component: DefinedComponent) -> Dict[str, ControlImplementation]:
-        """Build control_implementations."""
-        control_implementations = {}
-        for row in self.csv_helper.row_generator():
+    def _get_control_implementation_key(self, row: List[str]) -> str:
+        """Get control implementation key."""
+        resource = self.csv_helper.get_value(row, 'Resource')
+        component_type = self.csv_helper.get_value(row, 'Component_Type')
+        profile_description = self.csv_helper.get_value(row, 'Profile_Description')
+        return f'{resource}:{component_type}:{profile_description}'
+
+    def _get_control_implementation(self, row: List[str]) -> None:
+        """Get control implementation."""
+        key = self._get_control_implementation_key(row)
+        rval = self._control_implementations.get(key)
+        if rval is None:
             source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
             description = self.csv_helper.get_value(row, 'Profile_Description')
-            if source not in control_implementations.keys():
-                control_implementation = ControlImplementation(
-                    uuid=str(uuid.uuid4()),
-                    source=source,
-                    description=description,
-                    set_parameters=[],
-                    implemented_requirements=[],
-                    props=[],
-                )
-                control_implementations[source] = control_implementation
-                defined_component.control_implementations.append(control_implementation)
-        return control_implementations
+            rval = ControlImplementation(
+                uuid=str(uuid.uuid4()),
+                source=source,
+                description=description,
+                implemented_requirements=[],
+            )
+            self._control_implementations[key] = rval
+            component = self._get_component(row)
+            component.control_implementations.append(rval)
+            logger.debug(f'created control implementation: {key}')
+        return rval
 
-    def _add_rule_prop(
+    def _create_rule_prop(
         self, control_implementation: ControlImplementation, required: bool, row: int, col: str, ns: str, remarks: str
     ) -> None:
-        """Build rule property."""
+        """Create rule property."""
         value = self.csv_helper.get_value(row, col)
         if value == '':
             if required:
@@ -179,29 +209,40 @@ class CsvToOscalComponentDefinition(TaskBase):
             )
             control_implementation.props.append(prop)
 
-    def _build_rules(self, control_implementations: List[ControlImplementation]) -> None:
-        """Build rules."""
-        user_column_names = self.csv_helper.get_user_column_names()
-        fill_sz = int(log10(self.csv_helper.row_count())) + 1
-        index = 0
-        ns = self._ns
-        user_ns = self._ns_user
-        required = True
-        optional = False
-        for index, row in enumerate(self.csv_helper.row_generator()):
-            source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
-            control_implementation = control_implementations[source]
+    def _get_rule_definition_key(self, row: List[str]) -> str:
+        """Get rule definition key."""
+        resource = self.csv_helper.get_value(row, 'Resource')
+        component_type = self.csv_helper.get_value(row, 'Component_Type')
+        rule_id = self.csv_helper.get_value(row, 'Rule_Id')
+        return f'{resource}:{component_type}:{rule_id}'
+
+    def _add_rule_definition(self, control_mapping: str, index: int, row: List[str]) -> None:
+        """Add rule definition."""
+        # Create rule definition (as properties)
+        key = self._get_rule_definition_key(row)
+        rule_definition = self._rule_definitions.get(key)
+        if rule_definition is None:
+            control_implementation = self._get_control_implementation(row)
+            ns = self._ns
+            ns_user = self._ns_user
+            fill_sz = int(log10(self.csv_helper.row_count())) + 1
             remarks = f'rule_set_{str(index).zfill(fill_sz)}'
+            required = True
+            optional = not required
+            if control_implementation.props is None:
+                control_implementation.props = []
             # Rule_Id
-            self._add_rule_prop(control_implementation, required, row, 'Rule_Id', ns, remarks)
-            # Rule_Description
-            self._add_rule_prop(control_implementation, required, row, 'Rule_Description', ns, remarks)
+            self._create_rule_prop(control_implementation, required, row, 'Rule_Id', ns, remarks)
+            # Rule_Id
+            self._create_rule_prop(control_implementation, required, row, 'Rule_Description', ns, remarks)
             # Parameter, if any
             value = self.csv_helper.get_value(row, 'Parameter_Id')
             if value:
-                self._add_rule_prop(control_implementation, required, row, 'Parameter_Id', ns, remarks)
-                self._add_rule_prop(control_implementation, required, row, 'Parameter_Description', ns, remarks)
-                self._add_rule_prop(control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks)
+                self._create_rule_prop(control_implementation, required, row, 'Parameter_Id', ns, remarks)
+                self._create_rule_prop(control_implementation, required, row, 'Parameter_Description', ns, remarks)
+                self._create_rule_prop(
+                    control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks
+                )
                 name = self.csv_helper.get_value(row, 'Parameter_Id')
                 value = self.csv_helper.get_value(row, 'Parameter_Default_Value')
                 if value == '':
@@ -213,70 +254,96 @@ class CsvToOscalComponentDefinition(TaskBase):
                     param_id=name,
                     values=values,
                 )
+                if control_implementation.set_parameters is None:
+                    control_implementation.set_parameters = []
                 control_implementation.set_parameters.append(set_parameter)
-            # User properties, if any
-            for col_name in user_column_names:
+            # user props
+            for col_name in self.csv_helper.get_user_column_names():
                 value = self.csv_helper.get_value(row, col_name)
                 if not value:
                     continue
-                self._add_rule_prop(control_implementation, required, row, col_name, user_ns, remarks)
+                self._create_rule_prop(control_implementation, optional, row, col_name, ns_user, remarks)
+            # Rule set created
+            self._rule_definitions[key] = control_implementation.props
+        else:
+            pass
 
-    def _build_implemented_requirements(
-        self, control_implementations: List[ControlImplementation]
-    ) -> Dict[str, ImplementedRequirement]:
-        """Build implemented requirements."""
-        implemented_requirements = {}
-        for row in self.csv_helper.row_generator():
-            control_id = self.csv_helper.get_value(row, 'Control_Mappings')
-            source = self.csv_helper.get_value(row, 'Profile_Reference_URL')
-            control_implementation = control_implementations[source]
-            if control_id not in implemented_requirements.keys():
-                implemented_requirement = ImplementedRequirement(
-                    uuid=str(uuid.uuid4()),
-                    control_id=control_id,
-                    description=control_id,
-                    props=[],
-                )
-                implemented_requirements[control_id] = implemented_requirement
-                control_implementation.implemented_requirements.append(implemented_requirement)
-        return implemented_requirements
+    def _get_implemented_requirement_key(self, control_id: str, row: List[str]) -> str:
+        """Get implemented requirement key."""
+        resource = self.csv_helper.get_value(row, 'Resource')
+        component_type = self.csv_helper.get_value(row, 'Component_Type')
+        return f'{resource}:{component_type}:{control_id}'
 
-    def _build_rule_implementations(self, implemented_requirements: Dict[str, ImplementedRequirement]) -> None:
-        """Build rule implementations."""
-        ns = self._ns
-        for row in self.csv_helper.row_generator():
-            control_id = self.csv_helper.get_value(row, 'Control_Mappings')
-            # Rule_Id
-            name = 'Rule_Id'
-            class_ = self.csv_helper.get_class(name)
-            value = self.csv_helper.get_value(row, name)
-            prop = Property(
-                name=name,
-                value=value,
-                ns=ns,
-                class_=class_,
+    def _get_implemented_requirement(self, control_id: str, row: List[str]) -> None:
+        """Get implemented requirement."""
+        key = self._get_implemented_requirement_key(control_id, row)
+        rval = self._implemented_requirements.get(key)
+        if rval is None:
+            rval = ImplementedRequirement(
+                uuid=str(uuid.uuid4()),
+                control_id=control_id,
+                description='',
             )
-            implemented_requirements[control_id].props.append(prop)
+            self._implemented_requirements[key] = rval
+            control_implementation = self._get_control_implementation(row)
+            control_implementation.implemented_requirements.append(rval)
+            logger.debug(f'created implemented requirement: {key}')
+        return rval
 
-    def _build_components(self) -> None:
-        """Build components."""
-        self._components = []
-        # defined component
-        defined_component = self._build_defined_component()
-        self._components.append(defined_component)
-        # control_implemenations
-        control_implementations = self._build_control_implementations(defined_component)
-        # rules
-        self._build_rules(control_implementations)
-        # implemented requirements
-        implemented_requirements = self._build_implemented_requirements(control_implementations)
-        # rule implementations
-        self._build_rule_implementations(implemented_requirements)
+    def _get_statement(self, implemented_requirement: ImplementedRequirement, part_id: str) -> Statement:
+        """Get statement."""
+        rval = None
+        if implemented_requirement.statements is None:
+            implemented_requirement.statements = []
+        for statement in implemented_requirement.statements:
+            if statement.statement_id == part_id:
+                rval = statement
+        if rval is None:
+            statement = Statement(statement_id=part_id, uuid=str(uuid.uuid4()), description='', props=[])
+            implemented_requirement.statements.append(statement)
+        return statement
+
+    def _add_rule_implementation(self, control_mapping: str, index: int, row: List[str]) -> None:
+        """Add rule implementation."""
+        # Create rule implementation (as property)
+        name = 'Rule_Id'
+        prop = Property(
+            name=name,
+            value=self.csv_helper.get_value(row, name),
+            ns=self._ns,
+            class_=self.csv_helper.get_class(name),
+        )
+        # Find or create implementation requirement
+        control_id = derive_control_id(control_mapping)
+        implemented_requirement = self._get_implemented_requirement(control_id, row)
+        part_id = derive_part_id(control_mapping)
+        # Add rule to implementation requirement as property or statement
+        if part_id is None:
+            if implemented_requirement.props is None:
+                implemented_requirement.props = []
+            implemented_requirement.props.append(prop)
+        else:
+            statement = self._get_statement(implemented_requirement, part_id)
+            statement.props.append(prop)
+
+    def _process_rows(self) -> None:
+        """Process rows."""
+        self._rule_definitions = {}
+        self._implemented_requirements = {}
+        self._control_implementations = {}
+        self._components = {}
+        for index, row in enumerate(self.csv_helper.row_generator()):
+            control_mappings = self.csv_helper.get_value(row, 'Control_Mappings').split()
+            for control_mapping in control_mappings:
+                self._add_rule_implementation(control_mapping, index, row)
+                self._add_rule_definition(control_mapping, index, row)
 
     def _get_components(self) -> List[DefinedComponent]:
         """Get components."""
-        value = self._components
-        return value
+        rval = []
+        for key in self._components.keys():
+            rval.append(self._components[key])
+        return rval
 
     def _report_issues(self) -> None:
         """Report issues."""

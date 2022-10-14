@@ -38,7 +38,15 @@ class Column():
             'Resource',
         ]
         self._columns_optional = [
-            'Parameter_Id', 'Parameter_Description', 'Parameter_Default_Value', 'Parameter_Value_Alternatives'
+            'Parameter_Id',
+            'Parameter_Description',
+            'Parameter_Default_Value',
+            'Parameter_Value_Alternatives',
+            'Check_Id',
+            'Check_Description',
+            'Fetcher',
+            'Fetcher_Description',
+            'Resource_Instance_Type',
         ]
         self.help_list_required = []
         for column in self._columns_required:
@@ -47,9 +55,7 @@ class Column():
         for column in self._columns_optional:
             self.help_list_optional.append(column)
 
-        logger.info(f'init: {self._columns_required}')
-
-    def is_user_column(self, column_name) -> bool:
+    def is_user_column(self, column_name: str) -> bool:
         """Check if user column name."""
         rval = True
         if column_name in self._columns_required:
@@ -91,7 +97,7 @@ class CsvHelper:
         self._csv = []
         self._column = Column()
 
-    def print_info(self, name, oscal_name) -> None:
+    def print_info(self, name: str, oscal_name: str) -> None:
         """Print the help string."""
         logger.info(f'Help information for {name} task.')
         logger.info('')
