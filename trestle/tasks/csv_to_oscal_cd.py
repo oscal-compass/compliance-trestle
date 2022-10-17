@@ -38,6 +38,9 @@ from trestle.tasks.csv_helper import CsvHelper
 
 logger = logging.getLogger(__name__)
 
+required = True
+optional = not required
+
 
 def derive_control_id(control_mapping: str) -> str:
     """Derive control id."""
@@ -201,6 +204,7 @@ class CsvToOscalComponentDefinition(TaskBase):
     ) -> None:
         """Create rule property."""
         value = self.csv_helper.get_value(row, col)
+        logger.debug(f'row_num: {row_num} col: {col} value: {value}')
         if value == '':
             if required:
                 text = f'row: {row} missing expected value for col: {col}'
@@ -226,6 +230,31 @@ class CsvToOscalComponentDefinition(TaskBase):
     def _register_rule_set(self, row_num: int, key: str, props: List[Property]):
         """Register rule set."""
         self._rule_definitions[key] = props
+        logger.debug(f'{row_num} {key} {props}')
+
+    def _add_parameter(self, row_num: int, row: List[str], control_implementation, ns, remarks) -> None:
+        # Parameter, if any
+        value = self.csv_helper.get_value(row, 'Parameter_Id')
+        if value:
+            self._create_rule_prop(row_num, control_implementation, required, row, 'Parameter_Id', ns, remarks)
+            self._create_rule_prop(row_num, control_implementation, required, row, 'Parameter_Description', ns, remarks)
+            self._create_rule_prop(
+                row_num, control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks
+            )
+            name = self.csv_helper.get_value(row, 'Parameter_Id')
+            value = self.csv_helper.get_value(row, 'Parameter_Default_Value')
+            if value == '':
+                col = 'Parameter_Default_Value'
+                text = f'row: {row} missing expected value for col: {col}'
+                raise RuntimeError(text)
+            values = value.split(',')
+            set_parameter = SetParameter(
+                param_id=name,
+                values=values,
+            )
+            if control_implementation.set_parameters is None:
+                control_implementation.set_parameters = []
+            control_implementation.set_parameters.append(set_parameter)
 
     def _add_rule_definition(self, row_num: int, row: List[str]) -> None:
         """Add rule definition."""
@@ -238,8 +267,6 @@ class CsvToOscalComponentDefinition(TaskBase):
             ns_user = self._ns_user
             fill_sz = int(log10(self.csv_helper.row_count())) + 1
             remarks = f'rule_set_{str(row_num).zfill(fill_sz)}'
-            required = True
-            optional = not required
             if control_implementation.props is None:
                 control_implementation.props = []
             for column_name in self.csv_helper.get_filtered_required_column_names():
@@ -247,29 +274,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             for column_name in self.csv_helper.get_filtered_optional_column_names():
                 self._create_rule_prop(row_num, control_implementation, optional, row, column_name, ns, remarks)
             # Parameter, if any
-            value = self.csv_helper.get_value(row, 'Parameter_Id')
-            if value:
-                self._create_rule_prop(row_num, control_implementation, required, row, 'Parameter_Id', ns, remarks)
-                self._create_rule_prop(
-                    row_num, control_implementation, required, row, 'Parameter_Description', ns, remarks
-                )
-                self._create_rule_prop(
-                    row_num, control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks
-                )
-                name = self.csv_helper.get_value(row, 'Parameter_Id')
-                value = self.csv_helper.get_value(row, 'Parameter_Default_Value')
-                if value == '':
-                    col = 'Parameter_Default_Value'
-                    text = f'row: {row} missing expected value for col: {col}'
-                    raise RuntimeError(text)
-                values = value.split(',')
-                set_parameter = SetParameter(
-                    param_id=name,
-                    values=values,
-                )
-                if control_implementation.set_parameters is None:
-                    control_implementation.set_parameters = []
-                control_implementation.set_parameters.append(set_parameter)
+            self._add_parameter(row_num, row, control_implementation, ns, remarks)
             # user props
             for col_name in self.csv_helper.get_user_column_names():
                 value = self.csv_helper.get_value(row, col_name)
