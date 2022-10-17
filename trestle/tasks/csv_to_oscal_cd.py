@@ -322,7 +322,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             implemented_requirement.statements.append(statement)
         return statement
 
-    def _add_rule_implementation(self, control_mapping: str, row_num: int, row: List[str]) -> None:
+    def _add_rule_implementation(self, control_mapping: str, row: List[str]) -> None:
         """Add rule implementation."""
         # Create rule implementation (as property)
         name = 'Rule_Id'
@@ -354,7 +354,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         for row_num, row in enumerate(self.csv_helper.row_generator()):
             control_mappings = self.csv_helper.get_value(row, 'Control_Mappings').split()
             for control_mapping in control_mappings:
-                self._add_rule_implementation(control_mapping, row_num, row)
+                self._add_rule_implementation(control_mapping, row)
             if len(control_mappings) > 0:
                 self._add_rule_definition(row_num, row)
 
