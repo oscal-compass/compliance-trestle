@@ -316,7 +316,7 @@ def test_control_with_components(tmp_path: pathlib.Path) -> None:
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
     assert len(comp_prose_dict.keys()) == 3
-    assert len(comp_prose_dict['This System'].keys()) == 2
+    assert len(comp_prose_dict['This System'].keys()) == 4
     assert len(comp_prose_dict['Trestle Component'].keys()) == 1
     assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
     assert comp_prose_dict['Fancy Thing']['a.'].prose == 'Text for fancy thing component'
@@ -331,8 +331,8 @@ def test_control_with_components(tmp_path: pathlib.Path) -> None:
     # confirm that the header content was inserted into the props of the imp_req
     sort_id, imp_req = ControlReader.read_implemented_requirement(control_path, comp_dict, context)
     assert len(imp_req.props) == 12
-    assert len(imp_req.statements) == 3
-    assert len(imp_req.statements[0].by_components) == 3
+    assert len(imp_req.statements) == 4
+    assert len(imp_req.statements[1].by_components) == 3
 
 
 @pytest.mark.parametrize(

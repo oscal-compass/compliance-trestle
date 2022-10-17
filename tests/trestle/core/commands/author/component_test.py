@@ -59,8 +59,10 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     comp_name = 'test_comp'
     cat_name = 'nist_cat'
     prof_name = 'nist_prof'
+    simple_cat_name = 'simple_catalog_no_parts'
     load_file(trestle_root, 'comp_def.json', comp_name, 'component-definition')
     load_file(trestle_root, test_utils.SIMPLIFIED_NIST_CATALOG_NAME, cat_name, 'catalog')
+    load_file(trestle_root, simple_cat_name + '.json', simple_cat_name, 'catalog')
     load_file(trestle_root, test_utils.SIMPLIFIED_NIST_PROFILE_NAME, prof_name, 'profile')
     new_href = 'trestle://catalogs/nist_cat/catalog.json'
     assert HrefCmd.change_import_href(trestle_root, prof_name, new_href, 0) == 0
@@ -137,7 +139,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # make edits to status and remarks and control level prose
     assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
     control_prose = '567 or more restrictive'
-    assert test_utils.confirm_text_in_file(ac1_path, 'Enter possible prose', control_prose)
+    assert test_utils.confirm_text_in_file(ac1_path, 'after assembly to JSON', control_prose)
     assert test_utils.substitute_text_in_file(ac5_path, 'Status: partial', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
     assert test_utils.substitute_text_in_file(ac5_path, 'my remark', 'my new remark')

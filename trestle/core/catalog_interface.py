@@ -24,7 +24,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_item_from_list, get_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
@@ -249,22 +249,22 @@ class CatalogInterface():
                 return control.id, status
         return '', ''
 
-    def get_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
-        """Create mapping of label to part_id for all controls."""
+    def get_statement_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
+        """Create mapping of label to part_id for top level parts in statement of all controls."""
         id_map = {}
         for control in self.get_all_controls_from_catalog(True):
-            id_dict = {}
-            for part in as_list(control.parts):
-                if part.name == const.STATEMENT:
-                    for sub_part in as_list(part.parts):
-                        label = ControlInterface.get_label(sub_part)
-                        if label_as_key:
-                            id_dict[label] = sub_part.id
-                        else:
-                            id_dict[sub_part.id] = label
-                    if id_dict:
-                        id_map[control.id] = id_dict
-                    break
+            statement_part = get_item_from_list(control.parts, const.STATEMENT, lambda p: p.name)
+            if statement_part:
+                id_dict: Dict[str, str] = {}
+                for sub_part in as_list(statement_part.parts):
+                    label = ControlInterface.get_label(sub_part)
+                    if label_as_key:
+                        id_dict[label] = sub_part.id
+                    else:
+                        id_dict[sub_part.id] = label
+                if id_dict:
+                    id_map[control.id] = id_dict
+                break
         return id_map
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
@@ -589,13 +589,13 @@ class CatalogInterface():
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
         context.rules_dict = {}
-        context.params = {}
+        context.params_dict = {}
         context.param_vals = {}
         def_comp = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
         if def_comp:
             for control_imp in as_list(def_comp.control_implementations):
-                context.rules_dict.update(ControlInterface.get_rules_from_item(control_imp))
-                context.params.update(ControlInterface.get_params_from_item(control_imp))
+                context.rules_dict.update(ControlInterface.get_rules_dict_from_item(control_imp))
+                context.params_dict.update(ControlInterface.get_params_dict_from_item(control_imp))
                 context.param_vals.update(ControlInterface.get_param_vals_from_control_imp(control_imp))
 
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
@@ -629,7 +629,7 @@ class CatalogInterface():
         if context.purpose == ContextPurpose.COMPONENT and context.comp_def:
             CatalogInterface._get_all_rules_params_and_vals(context)
 
-        label_map = self.get_part_id_map(True)
+        label_map = self.get_statement_part_id_map(True)
         found_alters, _, _ = CatalogInterface.read_additional_content(
             context.md_root, required_section_list, label_map, context.sections_dict, context.to_markdown
         )
@@ -821,7 +821,7 @@ class CatalogInterface():
         param_sort_map: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                sort_id, control_alters, control_param_dict = ControlReader.read_new_alters_and_params(
+                sort_id, control_alters, control_param_dict = ControlReader.read_editable_content(
                     control_file,
                     required_sections_list,
                     label_map,
