@@ -58,9 +58,7 @@ class Column():
     def is_user_column(self, column_name: str) -> bool:
         """Check if user column name."""
         rval = True
-        if column_name in self._columns_required:
-            rval = False
-        elif column_name in self._columns_optional:
+        if column_name in self._columns_required + self._columns_optional:
             rval = False
         return rval
 
@@ -68,6 +66,12 @@ class Column():
         """Get required column names."""
         rval = []
         rval += self._columns_required
+        return rval
+
+    def get_optional_column_names(self) -> List[str]:
+        """Get optional column names."""
+        rval = []
+        rval += self._columns_optional
         return rval
 
     def map_head(self, head_row: str) -> None:
@@ -171,7 +175,7 @@ class CsvHelper:
             logger.info(f'input: {csv_file}')
         # load spread sheet
         self.load(csv_file)
-        rval = self.verify(csv_file)
+        rval = self.verify()
         return rval
 
     def load(self, csv_path: pathlib.Path) -> None:
@@ -183,7 +187,7 @@ class CsvHelper:
             if len(self._csv):
                 self._column.map_head(self._csv[0])
 
-    def verify(self, csv_path: pathlib.Path) -> bool:
+    def verify(self) -> bool:
         """Verify."""
         rval = True
         required_columns = self._column.get_required_column_names()
@@ -213,13 +217,34 @@ class CsvHelper:
 
     def get_value(self, row: List[str], name: str) -> str:
         """Get value for specified name."""
+        rval = ''
         index = self._column.get_index(name)
-        return row[index]
+        if index >= 0:
+            rval = row[index]
+        return rval
 
     def get_class(self, name: str) -> str:
         """Get class value for specified name from config."""
         class_name_key = f'class.{name}'
         return self._config.get(class_name_key)
+
+    def get_filtered_required_column_names(self) -> List[str]:
+        """Get filtered_required column names."""
+        rval = []
+        for column_name in self._column.get_required_column_names():
+            if column_name == 'Control_Mappings':
+                continue
+            rval.append(column_name)
+        return rval
+
+    def get_filtered_optional_column_names(self) -> List[str]:
+        """Get filtered optional column names."""
+        rval = []
+        for column_name in self._column.get_optional_column_names():
+            if column_name.startswith('Parameter_'):
+                continue
+            rval.append(column_name)
+        return rval
 
     def get_user_column_names(self) -> List[str]:
         """Get user column names."""

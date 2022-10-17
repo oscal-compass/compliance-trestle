@@ -35,49 +35,107 @@ def _validate1(tmp_path: pathlib.Path):
     fp = pathlib.Path(tmp_path) / 'component-definition.json'
     cd = ComponentDefinition.oscal_read(fp)
     # constants
-    id0 = 'Rule_Id'
-    id1 = 'Rule_Description'
-    id2 = 'Private_Reference_Id'
-    ns0 = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
-    ns1 = 'http://abc.github.io/compliance-trestle/schemas/oscal/cd'
-    pv0 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
-    pv1 = 'Ensure that the --anonymous-auth argument is set to false'
-    pv2 = '300000100'
-    pv3 = 'xccdf_org.ssgproject.content_rule_api_server_basic_auth'
-    cl0 = 'scc_class'
-    cl1 = 'user_class'
+    ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    cl = 'scc_class'
     rs0 = 'rule_set_000'
     rs1 = 'rule_set_001'
+    cr_props = [
+        [
+            0,
+            'Rule_Id',
+            'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            1,
+            'Rule_Description',
+            'Ensure that the --anonymous-auth argument is set to false',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            2,
+            'Profile_Reference_URL',
+            'https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            3,
+            'Profile_Description',
+            'ocp4',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            4,
+            'Component_Type',
+            'Service',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            5,
+            'Resource',
+            'OSCO',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            6,
+            'Private_Reference_Id',
+            '300000100',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            7,
+            'Rule_Id',
+            'xccdf_org.ssgproject.content_rule_api_server_basic_auth',
+            rs1,
+            None,
+            None,
+        ],
+    ]
+    ir_props = [
+        [
+            0,
+            'Rule_Id',
+            'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth',
+            None,
+            ns,
+            cl,
+        ],
+    ]
     # spot check
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 2
     # control implementations props
-    assert cd.components[0].control_implementations[0].props[0].name == id0
-    assert cd.components[0].control_implementations[0].props[0].ns == ns0
-    assert cd.components[0].control_implementations[0].props[0].value == pv0
-    assert cd.components[0].control_implementations[0].props[0].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[0].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[1].name == id1
-    assert cd.components[0].control_implementations[0].props[1].ns == ns0
-    assert cd.components[0].control_implementations[0].props[1].value == pv1
-    assert cd.components[0].control_implementations[0].props[1].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[1].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[2].name == id2
-    assert cd.components[0].control_implementations[0].props[2].ns == ns1
-    assert cd.components[0].control_implementations[0].props[2].value == pv2
-    assert cd.components[0].control_implementations[0].props[2].class_ == cl1
-    assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[3].name == id0
-    assert cd.components[0].control_implementations[0].props[3].ns == ns0
-    assert cd.components[0].control_implementations[0].props[3].value == pv3
-    assert cd.components[0].control_implementations[0].props[3].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[3].remarks.__root__ == rs1
+    for prop in cr_props:
+        index = prop[0]
+        assert cd.components[0].control_implementations[0].props[index].name == prop[1]
+        assert cd.components[0].control_implementations[0].props[index].value == prop[2]
+        assert cd.components[0].control_implementations[0].props[index].remarks.__root__ == prop[3]
+        if prop[4] is not None:
+            assert cd.components[0].control_implementations[0].props[index].ns == prop[4]
+        if prop[5] is not None:
+            assert cd.components[0].control_implementations[0].props[index].class_ == prop[5]
     # implemented requirements props
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].name == id0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].ns == ns0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].value == pv0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].class_ == cl0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].props[0].remarks is None
+    for prop in ir_props:
+        index = prop[0]
+        assert cd.components[0].control_implementations[0].implemented_requirements[0].props[index].name == prop[1]
+        assert cd.components[0].control_implementations[0].implemented_requirements[0].props[index].value == prop[2]
+        assert cd.components[0].control_implementations[0].implemented_requirements[0].props[index].remarks is None
+        assert cd.components[0].control_implementations[0].implemented_requirements[0].props[index].ns == prop[4]
+        assert cd.components[0].control_implementations[0].implemented_requirements[0].props[index].class_ == prop[5]
 
 
 def _validate2(tmp_path: pathlib.Path):
@@ -85,57 +143,123 @@ def _validate2(tmp_path: pathlib.Path):
     fp = pathlib.Path(tmp_path) / 'component-definition.json'
     cd = ComponentDefinition.oscal_read(fp)
     # constants
-    id0 = 'Rule_Id'
-    id1 = 'Rule_Description'
-    id2 = 'Parameter_Id'
-    id3 = 'Parameter_Description'
-    id4 = 'Parameter_Value_Alternatives'
-    ns0 = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
-    pv0 = 'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth'
-    pv1 = 'Ensure that the --anonymous-auth argument is set to false'
-    pv2 = 'scan_interval_max'
-    pv3 = 'Max Scan Interval Days'
-    pv4 = '10, 30'
-    cl0 = 'scc_class'
+    ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd'
+    cl = 'scc_class'
     rs0 = 'rule_set_0'
-    pi0 = 'scan_interval_max'
-    pm0 = '7'
-    pi1 = 'no_of_admins_for_secrets_manager'
-    pm1 = '3'
+    rs1 = 'rule_set_1'
+    cr_props = [
+        [
+            0,
+            'Rule_Id',
+            'xccdf_org.ssgproject.content_rule_api_server_anonymous_auth',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            1,
+            'Rule_Description',
+            'Ensure that the --anonymous-auth argument is set to false',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            2,
+            'Profile_Reference_URL',
+            'https://github.com/ComplianceAsCode/content/blob/master/products/ocp4/profiles/cis.profile',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            3,
+            'Profile_Description',
+            'ocp4',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            4,
+            'Component_Type',
+            'Service',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            5,
+            'Resource',
+            'OSCO',
+            rs0,
+            None,
+            None,
+        ],
+        [
+            6,
+            'Parameter_Id',
+            'scan_interval_max',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            7,
+            'Parameter_Description',
+            'Max Scan Interval Days',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            8,
+            'Parameter_Value_Alternatives',
+            '10, 30',
+            rs0,
+            ns,
+            cl,
+        ],
+        [
+            9,
+            'Rule_Id',
+            'xccdf_org.ssgproject.content_rule_api_server_basic_auth',
+            rs1,
+            ns,
+            cl,
+        ],
+    ]
+    set_params = [
+        [
+            0,
+            'scan_interval_max',
+            '7',
+        ],
+        [
+            1,
+            'no_of_admins_for_secrets_manager',
+            '3',
+        ],
+    ]
     # spot check
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 1
     # control implementations props
-    assert cd.components[0].control_implementations[0].props[0].name == id0
-    assert cd.components[0].control_implementations[0].props[0].ns == ns0
-    assert cd.components[0].control_implementations[0].props[0].value == pv0
-    assert cd.components[0].control_implementations[0].props[0].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[0].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[1].name == id1
-    assert cd.components[0].control_implementations[0].props[1].ns == ns0
-    assert cd.components[0].control_implementations[0].props[1].value == pv1
-    assert cd.components[0].control_implementations[0].props[1].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[1].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[2].name == id2
-    assert cd.components[0].control_implementations[0].props[2].ns == ns0
-    assert cd.components[0].control_implementations[0].props[2].value == pv2
-    assert cd.components[0].control_implementations[0].props[2].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[2].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[3].name == id3
-    assert cd.components[0].control_implementations[0].props[3].ns == ns0
-    assert cd.components[0].control_implementations[0].props[3].value == pv3
-    assert cd.components[0].control_implementations[0].props[3].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[3].remarks.__root__ == rs0
-    assert cd.components[0].control_implementations[0].props[4].name == id4
-    assert cd.components[0].control_implementations[0].props[4].ns == ns0
-    assert cd.components[0].control_implementations[0].props[4].value == pv4
-    assert cd.components[0].control_implementations[0].props[4].class_ == cl0
-    assert cd.components[0].control_implementations[0].props[4].remarks.__root__ == rs0
+    for prop in cr_props:
+        index = prop[0]
+        assert cd.components[0].control_implementations[0].props[index].name == prop[1]
+        assert cd.components[0].control_implementations[0].props[index].value == prop[2]
+        assert cd.components[0].control_implementations[0].props[index].remarks.__root__ == prop[3]
+        if prop[4] is not None:
+            assert cd.components[0].control_implementations[0].props[index].ns == prop[4]
+        if prop[5] is not None:
+            assert cd.components[0].control_implementations[0].props[index].class_ == prop[5]
     # set parameters
-    assert cd.components[0].control_implementations[0].set_parameters[0].param_id == pi0
-    assert cd.components[0].control_implementations[0].set_parameters[0].values[0].__root__ == pm0
-    assert cd.components[0].control_implementations[0].set_parameters[1].param_id == pi1
-    assert cd.components[0].control_implementations[0].set_parameters[1].values[0].__root__ == pm1
+    for param in set_params:
+        index = param[0]
+        assert cd.components[0].control_implementations[0].set_parameters[index].param_id == param[1]
+        assert cd.components[0].control_implementations[0].set_parameters[index].values[0].__root__ == param[2]
+    return
 
 
 def _validate3(tmp_path: pathlib.Path):
@@ -143,34 +267,69 @@ def _validate3(tmp_path: pathlib.Path):
     fp = pathlib.Path(tmp_path) / 'component-definition.json'
     cd = ComponentDefinition.oscal_read(fp)
     # constants
-    ctl0 = 'ac-6'
-    ctl1 = 'ac-5'
-    ctl2 = 'ia-7'
-    ctl3 = 'ac-3'
-    sid1 = 'ac-5_smt.c'
-    sid4 = 'ac-2_smt.d'
-    sid50 = 'au-2_smt.a'
-    sid51 = 'au-2_smt.d'
+    irs = [
+        [
+            0,
+            'ac-6',
+            '',
+        ],
+        [1, 'ac-5', ''],
+        [2, 'ia-7', ''],
+        [3, 'ac-3', ''],
+    ]
+    statements = [
+        [
+            0,
+            None,
+            None,
+        ],
+        [
+            1,
+            0,
+            'ac-5_smt.c',
+        ],
+        [
+            2,
+            None,
+            None,
+        ],
+        [
+            3,
+            None,
+            None,
+        ],
+        [
+            4,
+            0,
+            'ac-2_smt.d',
+        ],
+        [
+            5,
+            0,
+            'au-2_smt.a',
+        ],
+        [
+            5,
+            1,
+            'au-2_smt.d',
+        ],
+    ]
     # spot check
     assert len(cd.components) == 1
     assert len(cd.components[0].control_implementations) == 1
     # implemented requirements
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].control_id == ctl0
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].description == ''
-    assert cd.components[0].control_implementations[0].implemented_requirements[1].control_id == ctl1
-    assert cd.components[0].control_implementations[0].implemented_requirements[1].description == ''
-    assert cd.components[0].control_implementations[0].implemented_requirements[2].control_id == ctl2
-    assert cd.components[0].control_implementations[0].implemented_requirements[2].description == ''
-    assert cd.components[0].control_implementations[0].implemented_requirements[3].control_id == ctl3
-    assert cd.components[0].control_implementations[0].implemented_requirements[3].description == ''
-    # implemented requirements statements
-    assert cd.components[0].control_implementations[0].implemented_requirements[0].statements is None
-    assert cd.components[0].control_implementations[0].implemented_requirements[1].statements[0].statement_id == sid1
-    assert cd.components[0].control_implementations[0].implemented_requirements[2].statements is None
-    assert cd.components[0].control_implementations[0].implemented_requirements[3].statements is None
-    assert cd.components[0].control_implementations[0].implemented_requirements[4].statements[0].statement_id == sid4
-    assert cd.components[0].control_implementations[0].implemented_requirements[5].statements[0].statement_id == sid50
-    assert cd.components[0].control_implementations[0].implemented_requirements[5].statements[1].statement_id == sid51
+    for ir in irs:
+        index = ir[0]
+        assert cd.components[0].control_implementations[0].implemented_requirements[index].control_id == ir[1]
+        assert cd.components[0].control_implementations[0].implemented_requirements[index].description == ir[2]
+    for smt in statements:
+        index_a = smt[0]
+        index_b = smt[1]
+        if index_b is None:
+            assert cd.components[0].control_implementations[0].implemented_requirements[index_a].statements is None
+        else:
+            assert cd.components[0].control_implementations[0].implemented_requirements[index_a].statements[
+                index_b].statement_id == smt[2]
 
 
 def test_print_info(tmp_path: pathlib.Path):

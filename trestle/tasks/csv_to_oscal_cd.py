@@ -190,14 +190,21 @@ class CsvToOscalComponentDefinition(TaskBase):
         return rval
 
     def _create_rule_prop(
-        self, control_implementation: ControlImplementation, required: bool, row: int, col: str, ns: str, remarks: str
+        self,
+        row_num: int,
+        control_implementation: ControlImplementation,
+        required: bool,
+        row: List[str],
+        col: str,
+        ns: str,
+        remarks: str
     ) -> None:
         """Create rule property."""
         value = self.csv_helper.get_value(row, col)
         if value == '':
             if required:
                 text = f'row: {row} missing expected value for col: {col}'
-                raise Exception(text)
+                raise RuntimeError(text)
         else:
             class_ = self.csv_helper.get_class(col)
             prop = Property(
@@ -216,7 +223,11 @@ class CsvToOscalComponentDefinition(TaskBase):
         rule_id = self.csv_helper.get_value(row, 'Rule_Id')
         return f'{resource}:{component_type}:{rule_id}'
 
-    def _add_rule_definition(self, control_mapping: str, index: int, row: List[str]) -> None:
+    def _register_rule_set(self, row_num: int, key: str, props: List[Property]):
+        """Register rule set."""
+        self._rule_definitions[key] = props
+
+    def _add_rule_definition(self, row_num: int, row: List[str]) -> None:
         """Add rule definition."""
         # Create rule definition (as properties)
         key = self._get_rule_definition_key(row)
@@ -226,29 +237,31 @@ class CsvToOscalComponentDefinition(TaskBase):
             ns = self._ns
             ns_user = self._ns_user
             fill_sz = int(log10(self.csv_helper.row_count())) + 1
-            remarks = f'rule_set_{str(index).zfill(fill_sz)}'
+            remarks = f'rule_set_{str(row_num).zfill(fill_sz)}'
             required = True
             optional = not required
             if control_implementation.props is None:
                 control_implementation.props = []
-            # Rule_Id
-            self._create_rule_prop(control_implementation, required, row, 'Rule_Id', ns, remarks)
-            # Rule_Id
-            self._create_rule_prop(control_implementation, required, row, 'Rule_Description', ns, remarks)
+            for column_name in self.csv_helper.get_filtered_required_column_names():
+                self._create_rule_prop(row_num, control_implementation, required, row, column_name, ns, remarks)
+            for column_name in self.csv_helper.get_filtered_optional_column_names():
+                self._create_rule_prop(row_num, control_implementation, optional, row, column_name, ns, remarks)
             # Parameter, if any
             value = self.csv_helper.get_value(row, 'Parameter_Id')
             if value:
-                self._create_rule_prop(control_implementation, required, row, 'Parameter_Id', ns, remarks)
-                self._create_rule_prop(control_implementation, required, row, 'Parameter_Description', ns, remarks)
+                self._create_rule_prop(row_num, control_implementation, required, row, 'Parameter_Id', ns, remarks)
                 self._create_rule_prop(
-                    control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks
+                    row_num, control_implementation, required, row, 'Parameter_Description', ns, remarks
+                )
+                self._create_rule_prop(
+                    row_num, control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks
                 )
                 name = self.csv_helper.get_value(row, 'Parameter_Id')
                 value = self.csv_helper.get_value(row, 'Parameter_Default_Value')
                 if value == '':
                     col = 'Parameter_Default_Value'
                     text = f'row: {row} missing expected value for col: {col}'
-                    raise Exception(text)
+                    raise RuntimeError(text)
                 values = value.split(',')
                 set_parameter = SetParameter(
                     param_id=name,
@@ -262,11 +275,12 @@ class CsvToOscalComponentDefinition(TaskBase):
                 value = self.csv_helper.get_value(row, col_name)
                 if not value:
                     continue
-                self._create_rule_prop(control_implementation, optional, row, col_name, ns_user, remarks)
+                self._create_rule_prop(row_num, control_implementation, optional, row, col_name, ns_user, remarks)
             # Rule set created
-            self._rule_definitions[key] = control_implementation.props
+            self._register_rule_set(row_num, key, control_implementation.props)
         else:
-            pass
+            text = f'row: {row_num} rule definition: "{key}" already exists?'
+            raise RuntimeError(text)
 
     def _get_implemented_requirement_key(self, control_id: str, row: List[str]) -> str:
         """Get implemented requirement key."""
@@ -303,7 +317,7 @@ class CsvToOscalComponentDefinition(TaskBase):
             implemented_requirement.statements.append(statement)
         return statement
 
-    def _add_rule_implementation(self, control_mapping: str, index: int, row: List[str]) -> None:
+    def _add_rule_implementation(self, control_mapping: str, row_num: int, row: List[str]) -> None:
         """Add rule implementation."""
         # Create rule implementation (as property)
         name = 'Rule_Id'
@@ -332,11 +346,12 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._implemented_requirements = {}
         self._control_implementations = {}
         self._components = {}
-        for index, row in enumerate(self.csv_helper.row_generator()):
+        for row_num, row in enumerate(self.csv_helper.row_generator()):
             control_mappings = self.csv_helper.get_value(row, 'Control_Mappings').split()
             for control_mapping in control_mappings:
-                self._add_rule_implementation(control_mapping, index, row)
-                self._add_rule_definition(control_mapping, index, row)
+                self._add_rule_implementation(control_mapping, row_num, row)
+            if len(control_mappings) > 0:
+                self._add_rule_definition(row_num, row)
 
     def _get_components(self) -> List[DefinedComponent]:
         """Get components."""
