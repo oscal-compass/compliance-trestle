@@ -588,6 +588,7 @@ class CatalogInterface():
 
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
+        """Get rules, params, vals from control implementations."""
         context.rules_dict = {}
         context.params_dict = {}
         context.param_vals = {}
@@ -597,6 +598,18 @@ class CatalogInterface():
                 context.rules_dict.update(ControlInterface.get_rules_dict_from_item(control_imp))
                 context.params_dict.update(ControlInterface.get_params_dict_from_item(control_imp))
                 context.param_vals.update(ControlInterface.get_param_vals_from_control_imp(control_imp))
+            new_dict = {}
+            for key, val in context.params_dict.items():
+                rule = context.rules_dict.get(key, None)
+                rule_name = rule['name'] if rule else 'Unknown'
+                # rebuild the dict so it has desired order in yaml header
+                new_dict[key] = {
+                    'name': val['name'],
+                    'description': val['description'],
+                    'rule-id': rule_name,
+                    'options': val['options']
+                }
+            context.params_dict = new_dict
 
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -645,7 +658,7 @@ class CatalogInterface():
                     unique_props = list({prop['name']: prop for prop in inherited_props}.values())
                     new_context.yaml_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
             if new_context.set_parameters:
-                # get all params for this control
+                # get all params for this control from the resolved profile catalog with blocked adds
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
@@ -670,7 +683,10 @@ class CatalogInterface():
                             # all the other elements are from the profile set_param
                             new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
                     else:
-                        new_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                        # if the profile doesnt change this param at all, show it in the header with values
+                        tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                        values = tmp_dict.get('values', None)
+                        new_dict = {'id': param_id, 'values': values}
                     new_dict.pop('id')
                     if display_name:
                         new_dict[const.DISPLAY_NAME] = display_name

@@ -592,6 +592,7 @@ class ControlReader():
 
         comp_dict: CompDict = {}
         yaml_header = {}
+        # use context.rules_dict and params_dict to map rules
         if context.comp_def:
             def_comp = ControlInterface.get_component_by_name(context.comp_def, comp_name)
             # pull possible prose and rules from component definition if provided
@@ -600,18 +601,18 @@ class ControlReader():
                 # find all comp_infos for this control including prose, params, rules from def_comp - not markdown
                 params, rules = ControlReader._add_component_to_dict(control, comp_dict, def_comp)
                 all_params = []
-                if rules:
-                    rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules]
-                    yaml_header[const.COMP_DEF_RULES_TAG] = [context.rules_dict[id_] for id_ in rule_ids]
-                    all_params.extend([context.params_dict[id_] for id_ in rule_ids if id_ in context.params_dict])
                 if params:
                     if not set(rules.keys()).issuperset(params.keys()):
                         raise TrestleError(
                             f'Control {control_id} has a parameter assigned to a rule that is not defined.'
                         )
                     all_params.extend([{context.rules_dict[id_]['name']: params[id_] for id_ in params.keys()}])
+                if rules:
+                    rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules]
+                    yaml_header[const.COMP_DEF_RULES_TAG] = [context.rules_dict[id_] for id_ in rule_ids]
+                    all_params.extend([context.params_dict[id_] for id_ in rule_ids if id_ in context.params_dict])
                 if all_params:
-                    yaml_header[const.COMP_DEF_PARAMS_TAG] = all_params
+                    yaml_header[const.RULE_PARAMS_TAG] = all_params
                 if context.param_vals:
                     yaml_header[const.COMP_DEF_PARAM_VALS_TAG] = context.param_vals
 

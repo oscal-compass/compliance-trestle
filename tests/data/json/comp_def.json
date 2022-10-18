@@ -152,6 +152,13 @@
                   "500"
                 ],
                 "remarks": "Total quantity available."
+              },
+              {
+                "param-id": "foo_length",
+                "values": [
+                  "6"
+                ],
+                "remarks": "Actual foo length"
               }
             ],
             "implemented-requirements": [

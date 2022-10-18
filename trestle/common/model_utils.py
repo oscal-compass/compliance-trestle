@@ -521,9 +521,9 @@ class ModelUtils:
         return collection_model_type, collection_model_alias, instances_to_be_merged
 
     @staticmethod
-    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+    def _parameter_to_dict_recurse(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
         """
-        Convert obj to dict containing only string values, storing only the fields that have values set.
+        Convert obj to dict containing only string values with recursion.
 
         Args:
             obj: The parameter or its consituent parts in recursive calls
@@ -555,12 +555,29 @@ class ModelUtils:
                     continue
                 new_list = []
                 for item in attr:
-                    new_list.append(ModelUtils.parameter_to_dict(item, partial))
+                    new_list.append(ModelUtils._parameter_to_dict_recurse(item, partial))
                 res[field] = new_list
             elif isinstance(attr, str):
                 res[field] = attr
             else:
-                res[field] = ModelUtils.parameter_to_dict(attr, partial)
+                res[field] = ModelUtils._parameter_to_dict_recurse(attr, partial)
+        return res
+
+    @staticmethod
+    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+        """
+        Convert obj to dict containing only string values, storing only the fields that have values set.
+
+        Args:
+            obj: The parameter or its consituent parts in recursive calls
+            partial: Whether to convert the entire param or just the parts needed for markdown header
+
+        Returns:
+            The converted parameter as dictionary, with values as None if not present
+        """
+        res = ModelUtils._parameter_to_dict_recurse(obj, partial)
+        if 'values' not in res:
+            res['values'] = None
         return res
 
     @staticmethod

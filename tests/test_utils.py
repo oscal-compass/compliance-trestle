@@ -220,6 +220,24 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
     return False
 
 
+def replace_line_in_file_after_tag(file_path: pathlib.Path, tag: str, new_line: str) -> bool:
+    """Replace the line after tag with new string."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
+    lines = f.readlines()
+    f.close()
+    for ii, line in enumerate(lines):
+        if tag in line:
+            lines[ii + 1] = new_line
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
+            return True
+    return False
+
+
 def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
     """Substitute first match of string with new string in file."""
     if not file_path.exists():
