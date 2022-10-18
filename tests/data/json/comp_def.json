@@ -152,6 +152,13 @@
                   "500"
                 ],
                 "remarks": "Total quantity available."
+              },
+              {
+                "param-id": "foo_length",
+                "values": [
+                  "6"
+                ],
+                "remarks": "Actual foo length"
               }
             ],
             "implemented-requirements": [
@@ -497,6 +504,30 @@
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "uuid": "098ed59b-2a8c-4b3c-a0fd-1eee194be563",
+            "source": "trestle://catalogs/simple_catalog_no_parts/catalog.json",
+            "description": "Simple catalog with no parts.",
+            "implemented-requirements": [
+              {
+                "uuid": "920bb0b5-3efd-459d-8f7f-7755e6a45d12",
+                "control-id": "s2.1.1",
+                "description": "Ensure that garbage collection is configured as appropriate",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented",
+                    "remarks": "this is my remark"
+                  }
+                ]
+              },
+              {
+                "uuid": "c1541519-ba7e-44ca-afd0-4068d307a9b1",
+                "control-id": "s2.1.2",
+                "description": "Ensure that pressure is ok."
               }
             ]
           }

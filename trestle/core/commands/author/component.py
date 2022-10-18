@@ -104,7 +104,7 @@ class ComponentGenerate(AuthorCommonCommand):
             context.yaml_header = {}
             context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
             context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = resolved_catalog.metadata.title
-            part_id_map = local_catalog_interface.get_part_id_map(False) if local_catalog_interface else {}
+            part_id_map = local_catalog_interface.get_statement_part_id_map(False) if local_catalog_interface else {}
             cat_interface_dict[source_profile_uri].write_catalog_as_markdown(context, part_id_map)
         return CmdReturnCodes.SUCCESS.value
 

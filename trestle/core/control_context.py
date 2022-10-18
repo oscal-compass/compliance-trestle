@@ -55,7 +55,7 @@ class ControlContext:
     comp_name: Optional[str] = None
     inherited_props: Optional[Dict[str, Any]] = None
     rules_dict: Optional[Dict[str, Dict[str, str]]] = None
-    params: Optional[Dict[str, Dict[str, Any]]] = None
+    params_dict: Optional[Dict[str, Dict[str, Any]]] = None
     param_vals: Optional[List[Dict[str, str]]] = None
 
     @classmethod
@@ -78,7 +78,7 @@ class ControlContext:
         comp_name: Optional[str] = None,
         inherited_props: Optional[Dict[str, Any]] = None,
         rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
-        params: Optional[Dict[str, Dict[str, Any]]] = None,
+        params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
         param_vals: Optional[List[Dict[str, str]]] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
@@ -100,7 +100,7 @@ class ControlContext:
             comp_name=comp_name,
             inherited_props=inherited_props,
             rules_dict=rules_dict,
-            params=params,
+            params_dict=params_dict,
             param_vals=param_vals
         )
         context.yaml_header = as_dict(yaml_header)
@@ -131,7 +131,7 @@ class ControlContext:
             comp_name=context.comp_name,
             inherited_props=copy.deepcopy(context.inherited_props),
             rules_dict=context.rules_dict,
-            params=context.params,
+            params_dict=context.params_dict,
             param_vals=context.param_vals
         )
         return new_context

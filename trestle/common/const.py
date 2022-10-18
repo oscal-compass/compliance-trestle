@@ -388,8 +388,6 @@ STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENT
 
 RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
 
-CONTROL_PROSE_PROMPT = '<!-- Enter possible prose for implementation response at the control level here, after this comment -->'  # noqa E501
-
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
@@ -398,7 +396,7 @@ HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in
 
 SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
-COMP_DEF_PARAMS_TAG = TRESTLE_TAG + 'comp-def-params'
+RULE_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
 COMP_DEF_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-param-vals'
 

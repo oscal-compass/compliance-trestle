@@ -356,7 +356,7 @@ class ControlInterface:
         )
 
     @staticmethod
-    def get_rules_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def get_rules_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
         """Get all rules found in this items props."""
         # rules is dict containing rule_id and description
         rules = {}
@@ -382,7 +382,7 @@ class ControlInterface:
         return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
 
     @staticmethod
-    def get_params_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
+    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
         """Get all params found in this item."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices

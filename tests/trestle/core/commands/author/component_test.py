@@ -59,8 +59,10 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     comp_name = 'test_comp'
     cat_name = 'nist_cat'
     prof_name = 'nist_prof'
+    simple_cat_name = 'simple_catalog_no_parts'
     load_file(trestle_root, 'comp_def.json', comp_name, 'component-definition')
     load_file(trestle_root, test_utils.SIMPLIFIED_NIST_CATALOG_NAME, cat_name, 'catalog')
+    load_file(trestle_root, simple_cat_name + '.json', simple_cat_name, 'catalog')
     load_file(trestle_root, test_utils.SIMPLIFIED_NIST_PROFILE_NAME, prof_name, 'profile')
     new_href = 'trestle://catalogs/nist_cat/catalog.json'
     assert HrefCmd.change_import_href(trestle_root, prof_name, new_href, 0) == 0
@@ -69,12 +71,14 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
     """Check common features of controls markdown."""
-    params = header[const.COMP_DEF_PARAMS_TAG]
+    params = header[const.RULE_PARAMS_TAG]
     assert len(params) == 1
-    assert params[0] == {'name': 'foo_length', 'description': 'minimum_foo_length', 'options': '["6", "9"]'}
+    assert params[0] == {
+        'name': 'foo_length', 'description': 'minimum_foo_length', 'rule-id': 'XCCDF', 'options': '["6", "9"]'
+    }
     vals = header[const.COMP_DEF_PARAM_VALS_TAG]
-    assert len(vals) == 1
-    assert vals == {'quantity_available': '500'}
+    assert len(vals) == 2
+    assert vals['quantity_available'] == '500'
     assert header[const.TRESTLE_GLOBAL_TAG][
         const.PROFILE_TITLE] == 'NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE'  # noqa E501
 
@@ -87,7 +91,6 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: planned')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['label'] == 'organization-defined personnel or roles'
     assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['values'] == 'Param_1_value_in_catalog'
     rules = header[const.COMP_DEF_RULES_TAG]
     assert len(rules) == 1
@@ -99,8 +102,6 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
     """Check the contents of ac-5 md."""
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac5_path)
-    assert header[const.SET_PARAMS_TAG
-                  ]['ac-5_prm_1']['label'] == 'organization-defined duties of individuals requiring separation'
     assert test_utils.confirm_text_in_file(
         ac5_path, '### Implementation Status: partial', '### Implementation Status Remarks: this is my remark'
     )
@@ -137,7 +138,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     # make edits to status and remarks and control level prose
     assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
     control_prose = '567 or more restrictive'
-    assert test_utils.confirm_text_in_file(ac1_path, 'Enter possible prose', control_prose)
+    assert test_utils.confirm_text_in_file(ac1_path, 'after assembly to JSON', control_prose)
     assert test_utils.substitute_text_in_file(ac5_path, 'Status: partial', 'Status: implemented')
     assert test_utils.confirm_text_in_file(ac5_path, 'garbage collection', 'Status: implemented')
     assert test_utils.substitute_text_in_file(ac5_path, 'my remark', 'my new remark')

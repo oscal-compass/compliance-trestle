@@ -93,7 +93,7 @@ class MarkdownNode:
         stop_recurse_on_first_match: bool = False
     ) -> List[MarkdownNode]:
         """
-        Return all nodes for the given key, substring matching is supported.
+        Return all nodes for the given keys, substring matching is supported.
 
         Args:
             keys: List of strings for the headers being collected
