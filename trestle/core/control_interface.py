@@ -51,7 +51,7 @@ class ComponentImpInfo:
 
     prose: str
     rules: List[str]
-    status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_OTHER)
+    status: common.ImplementationStatus = common.ImplementationStatus(state=const.STATUS_PLANNED)
 
 
 # provide name for this type
@@ -356,7 +356,7 @@ class ControlInterface:
         )
 
     @staticmethod
-    def get_rules_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+    def get_rules_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
         """Get all rules found in this items props."""
         # rules is dict containing rule_id and description
         rules = {}
@@ -364,10 +364,10 @@ class ControlInterface:
         desc = ''
         id_ = ''
         for prop in as_list(item.props):
-            if prop.name == 'rule_name_id':
+            if prop.name == const.RULE_ID:
                 name = prop.value
                 id_ = string_from_root(prop.remarks)
-            elif prop.name == 'rule_description':
+            elif prop.name == const.RULE_DESCRIPTION:
                 desc = prop.value
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
@@ -379,29 +379,29 @@ class ControlInterface:
     @staticmethod
     def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
         """Get the list of rules applying to this item."""
-        return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == 'rule_name_id')]
+        return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
 
     @staticmethod
-    def get_params_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
+    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
         """Get all params found in this item."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
         params = {}
         for prop in as_list(item.props):
-            if prop.name == 'param_id':
+            if prop.name == const.PARAMETER_ID:
                 rule_id = string_from_root(prop.remarks)
                 param_name = prop.value
                 if rule_id in params:
                     raise TrestleError(f'Duplicate param {param_name} found for rule {rule_id}')
                 # create new param for this rule
                 params[rule_id] = {'name': param_name}
-            elif prop.name == 'param_description':
+            elif prop.name == const.PARAMETER_DESCRIPTION:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['description'] = prop.value
                 else:
                     raise TrestleError(f'Param description for rule {rule_id} found with no param_id')
-            elif prop.name == 'param_options':
+            elif prop.name == const.PARAMETER_VALUE_ALTERNATIVES:
                 rule_id = string_from_root(prop.remarks)
                 if rule_id in params:
                     params[rule_id]['options'] = prop.value
@@ -826,7 +826,7 @@ class ControlInterface:
     @staticmethod
     def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:
         """Get the status of an item from its props."""
-        status = common.ImplementationStatus(state=const.STATUS_OTHER)
+        status = common.ImplementationStatus(state=const.STATUS_PLANNED)
         for prop in as_list(item.props):
             if prop.name == const.IMPLEMENTATION_STATUS:
                 status = ControlInterface._prop_as_status(prop)
@@ -865,6 +865,7 @@ class ControlInterface:
                 if imp_req.control_id == new_imp_req.control_id:
                     status = ControlInterface.get_status_from_props(new_imp_req)
                     ControlInterface.insert_status_in_props(imp_req, status)
+                    imp_req.description = new_imp_req.description
                     statement_dict = {stat.statement_id: stat for stat in as_list(imp_req.statements)}
                     new_statements: List[comp.Statement] = []
                     for statement in as_list(new_imp_req.statements):

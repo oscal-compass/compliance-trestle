@@ -47,9 +47,8 @@ markdown_name = 'my_md'
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
         assert file_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert file_utils.insert_text_in_file(ac1_path, 'Param_1_value', '    values: new value\n')
-    assert test_utils.delete_line_in_file(ac1_path, 'Param_1_value')
-    assert file_utils.insert_text_in_file(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
+    assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_1', '    values: new value\n')
+    assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
 
 
 @pytest.mark.parametrize('set_parameters', [True, False])
@@ -376,7 +375,7 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
     control_b.props.append(Property(name='status', value='Withdrawn'))
     catalog_interface = CatalogInterface(sample_catalog_rich_controls)
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
-    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map(False))
+    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()
