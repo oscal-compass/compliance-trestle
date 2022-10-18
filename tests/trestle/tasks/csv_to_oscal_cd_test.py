@@ -482,6 +482,19 @@ def test_execute_missing_heading(tmp_path: pathlib.Path):
     assert retval == TaskOutcome.FAILURE
 
 
+def test_execute_missing_value(tmp_path: pathlib.Path):
+    """Test execute missing value."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-missing-value.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
 def test_execute_missing_rule_id(tmp_path: pathlib.Path):
     """Test execute missing rule id."""
     config = configparser.ConfigParser()
@@ -534,3 +547,16 @@ def test_execute_optional_columns(tmp_path: pathlib.Path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     _validate3(tmp_path)
+
+
+def test_execute_duplicate_rule(tmp_path: pathlib.Path):
+    """Test execute duplicate rule."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/csv/test-csv-to-oscal-cd.config')
+    config.read(config_path)
+    section = config['task.csv-to-oscal-cd']
+    section['output-dir'] = str(tmp_path)
+    section['csv-file'] = 'tests/data/spread-sheet/ocp4-user-duplicate-rule.csv'
+    tgt = csv_to_oscal_cd.CsvToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
