@@ -100,6 +100,17 @@ class CsvHelper:
         """Initialize."""
         self._csv = []
         self._column = Column()
+        self._filtered = [
+            'Profile_Reference_URL',
+            'Profile_Description',
+            'Component_Type',
+            'Control_Mappings',
+            'Resource',
+            'Parameter_Id',
+            'Parameter_Description',
+            'Parameter_Default_Value',
+            'Parameter_Value_Alternatives',
+        ]
 
     def print_info(self, name: str, oscal_name: str) -> None:
         """Print the help string."""
@@ -228,22 +239,27 @@ class CsvHelper:
         class_name_key = f'class.{name}'
         return self._config.get(class_name_key)
 
-    def get_filtered_required_column_names(self) -> List[str]:
-        """Get filtered_required column names."""
+    def get_required_column_names(self) -> List[str]:
+        """Get required column names."""
         rval = []
         for column_name in self._column.get_required_column_names():
-            if column_name == 'Control_Mappings':
-                continue
             rval.append(column_name)
+        return rval
+
+    def get_filtered_required_column_names(self) -> List[str]:
+        """Get filtered required column names."""
+        rval = []
+        for column_name in self._column.get_required_column_names():
+            if column_name not in self._filtered:
+                rval.append(column_name)
         return rval
 
     def get_filtered_optional_column_names(self) -> List[str]:
         """Get filtered optional column names."""
         rval = []
         for column_name in self._column.get_optional_column_names():
-            if column_name.startswith('Parameter_'):
-                continue
-            rval.append(column_name)
+            if column_name not in self._filtered:
+                rval.append(column_name)
         return rval
 
     def get_user_column_names(self) -> List[str]:

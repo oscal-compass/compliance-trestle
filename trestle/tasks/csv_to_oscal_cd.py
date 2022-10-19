@@ -38,9 +38,6 @@ from trestle.tasks.csv_helper import CsvHelper
 
 logger = logging.getLogger(__name__)
 
-required = True
-optional = not required
-
 
 def derive_control_id(control_mapping: str) -> str:
     """Derive control id."""
@@ -154,7 +151,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         if rval is None:
             resource = self.csv_helper.get_value(row, 'Resource')
             type_ = self.csv_helper.get_value(row, 'Component_Type')
-            description = self.csv_helper.get_value(row, 'Profile_Description')
+            description = ''
             rval = DefinedComponent(
                 uuid=str(uuid.uuid4()),
                 type=type_,
@@ -196,7 +193,6 @@ class CsvToOscalComponentDefinition(TaskBase):
         self,
         row_num: int,
         control_implementation: ControlImplementation,
-        required: bool,
         row: List[str],
         col: str,
         ns: str,
@@ -205,10 +201,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         """Create rule property."""
         value = self.csv_helper.get_value(row, col)
         logger.debug(f'row_num: {row_num} col: {col} value: {value}')
-        if value == '':
-            if required:
-                text = f'row: {row} missing expected value for col: {col}'
-                raise RuntimeError(text)
+        if value is None or value == '':
+            return
         else:
             class_ = self.csv_helper.get_class(col)
             prop = Property(
@@ -236,11 +230,9 @@ class CsvToOscalComponentDefinition(TaskBase):
         # Parameter, if any
         value = self.csv_helper.get_value(row, 'Parameter_Id')
         if value:
-            self._create_rule_prop(row_num, control_implementation, required, row, 'Parameter_Id', ns, remarks)
-            self._create_rule_prop(row_num, control_implementation, required, row, 'Parameter_Description', ns, remarks)
-            self._create_rule_prop(
-                row_num, control_implementation, optional, row, 'Parameter_Value_Alternatives', ns, remarks
-            )
+            self._create_rule_prop(row_num, control_implementation, row, 'Parameter_Id', ns, remarks)
+            self._create_rule_prop(row_num, control_implementation, row, 'Parameter_Description', ns, remarks)
+            self._create_rule_prop(row_num, control_implementation, row, 'Parameter_Value_Alternatives', ns, remarks)
             name = self.csv_helper.get_value(row, 'Parameter_Id')
             value = self.csv_helper.get_value(row, 'Parameter_Default_Value')
             if value == '':
@@ -270,9 +262,9 @@ class CsvToOscalComponentDefinition(TaskBase):
             if control_implementation.props is None:
                 control_implementation.props = []
             for column_name in self.csv_helper.get_filtered_required_column_names():
-                self._create_rule_prop(row_num, control_implementation, required, row, column_name, ns, remarks)
+                self._create_rule_prop(row_num, control_implementation, row, column_name, ns, remarks)
             for column_name in self.csv_helper.get_filtered_optional_column_names():
-                self._create_rule_prop(row_num, control_implementation, optional, row, column_name, ns, remarks)
+                self._create_rule_prop(row_num, control_implementation, row, column_name, ns, remarks)
             # Parameter, if any
             self._add_parameter(row_num, row, control_implementation, ns, remarks)
             # user props
@@ -280,7 +272,7 @@ class CsvToOscalComponentDefinition(TaskBase):
                 value = self.csv_helper.get_value(row, col_name)
                 if not value:
                     continue
-                self._create_rule_prop(row_num, control_implementation, optional, row, col_name, ns_user, remarks)
+                self._create_rule_prop(row_num, control_implementation, row, col_name, ns_user, remarks)
             # Rule set created
             self._register_rule_set(row_num, key, control_implementation.props)
         else:
@@ -345,6 +337,14 @@ class CsvToOscalComponentDefinition(TaskBase):
             statement = self._get_statement(implemented_requirement, part_id)
             statement.props.append(prop)
 
+    def _validate_columns(self, row) -> None:
+        """Validate columns."""
+        for col in self.csv_helper.get_required_column_names():
+            value = self.csv_helper.get_value(row, col)
+            if value is None or value == '':
+                text = f'row: {row} missing expected value for col: {col}'
+                raise RuntimeError(text)
+
     def _process_rows(self) -> None:
         """Process rows."""
         self._rule_definitions = {}
@@ -353,9 +353,10 @@ class CsvToOscalComponentDefinition(TaskBase):
         self._components = {}
         for row_num, row in enumerate(self.csv_helper.row_generator()):
             control_mappings = self.csv_helper.get_value(row, 'Control_Mappings').split()
-            for control_mapping in control_mappings:
-                self._add_rule_implementation(control_mapping, row)
-            if len(control_mappings) > 0:
+            if len(control_mappings):
+                self._validate_columns(row)
+                for control_mapping in control_mappings:
+                    self._add_rule_implementation(control_mapping, row)
                 self._add_rule_definition(row_num, row)
 
     def _get_components(self) -> List[DefinedComponent]:
