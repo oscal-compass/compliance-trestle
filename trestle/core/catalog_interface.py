@@ -264,7 +264,6 @@ class CatalogInterface():
                         id_dict[sub_part.id] = label
                 if id_dict:
                     id_map[control.id] = id_dict
-                break
         return id_map
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
