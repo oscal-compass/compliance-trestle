@@ -28,7 +28,7 @@ class Column():
 
     def __init__(self) -> None:
         """Initialize."""
-        self.columns = [
+        self._columns_required = [
             'Rule_Id',
             'Rule_Description',
             'Profile_Reference_URL',
@@ -36,14 +36,43 @@ class Column():
             'Component_Type',
             'Control_Mappings',
             'Resource',
+        ]
+        self._columns_optional = [
             'Parameter_Id',
             'Parameter_Description',
             'Parameter_Default_Value',
-            'Parameter_Value_Alternatives'
+            'Parameter_Value_Alternatives',
+            'Check_Id',
+            'Check_Description',
+            'Fetcher',
+            'Fetcher_Description',
+            'Resource_Instance_Type',
         ]
-        self.help_list = []
-        for column in self.columns:
-            self.help_list.append(column)
+        self.help_list_required = []
+        for column in self._columns_required:
+            self.help_list_required.append(column)
+        self.help_list_optional = []
+        for column in self._columns_optional:
+            self.help_list_optional.append(column)
+
+    def is_user_column(self, column_name: str) -> bool:
+        """Check if user column name."""
+        rval = True
+        if column_name in self._columns_required + self._columns_optional:
+            rval = False
+        return rval
+
+    def get_required_column_names(self) -> List[str]:
+        """Get required column names."""
+        rval = []
+        rval += self._columns_required
+        return rval
+
+    def get_optional_column_names(self) -> List[str]:
+        """Get optional column names."""
+        rval = []
+        rval += self._columns_optional
+        return rval
 
     def map_head(self, head_row: str) -> None:
         """Keep head row."""
@@ -71,8 +100,19 @@ class CsvHelper:
         """Initialize."""
         self._csv = []
         self._column = Column()
+        self._filtered = [
+            'Profile_Reference_URL',
+            'Profile_Description',
+            'Component_Type',
+            'Control_Mappings',
+            'Resource',
+            'Parameter_Id',
+            'Parameter_Description',
+            'Parameter_Default_Value',
+            'Parameter_Value_Alternatives',
+        ]
 
-    def print_info(self, name, oscal_name) -> None:
+    def print_info(self, name: str, oscal_name: str) -> None:
         """Print the help string."""
         logger.info(f'Help information for {name} task.')
         logger.info('')
@@ -89,8 +129,12 @@ class CsvHelper:
         text1 = '  csv-file          = '
         text2 = '(required) the path of the csv file.'
         logger.info(text1 + text2)
-        text1 = '  expected columns:   '
-        for text2 in self._column.help_list:
+        text1 = '  required columns:   '
+        for text2 in self._column.help_list_required:
+            logger.info(text1 + text2)
+            text1 = '                      '
+        text1 = '  optional columns:   '
+        for text2 in self._column.help_list_optional:
             logger.info(text1 + text2)
             text1 = '                      '
         text1 = '  output-dir        = '
@@ -142,7 +186,8 @@ class CsvHelper:
             logger.info(f'input: {csv_file}')
         # load spread sheet
         self.load(csv_file)
-        return True
+        rval = self.verify()
+        return rval
 
     def load(self, csv_path: pathlib.Path) -> None:
         """Load."""
@@ -152,6 +197,20 @@ class CsvHelper:
                 self._csv.append(row)
             if len(self._csv):
                 self._column.map_head(self._csv[0])
+
+    def verify(self) -> bool:
+        """Verify."""
+        rval = True
+        required_columns = self._column.get_required_column_names()
+        if len(self._csv):
+            head_row = self._csv[0]
+            for heading in head_row:
+                if heading in required_columns:
+                    required_columns.remove(heading)
+        if len(required_columns):
+            logger.warning(f'Missing columns: {required_columns}')
+            rval = False
+        return rval
 
     def row_count(self) -> int:
         """Row count."""
@@ -169,19 +228,45 @@ class CsvHelper:
 
     def get_value(self, row: List[str], name: str) -> str:
         """Get value for specified name."""
+        rval = ''
         index = self._column.get_index(name)
-        return row[index]
+        if index >= 0:
+            rval = row[index]
+        return rval
 
     def get_class(self, name: str) -> str:
         """Get class value for specified name from config."""
         class_name_key = f'class.{name}'
         return self._config.get(class_name_key)
 
+    def get_required_column_names(self) -> List[str]:
+        """Get required column names."""
+        rval = []
+        for column_name in self._column.get_required_column_names():
+            rval.append(column_name)
+        return rval
+
+    def get_filtered_required_column_names(self) -> List[str]:
+        """Get filtered required column names."""
+        rval = []
+        for column_name in self._column.get_required_column_names():
+            if column_name not in self._filtered:
+                rval.append(column_name)
+        return rval
+
+    def get_filtered_optional_column_names(self) -> List[str]:
+        """Get filtered optional column names."""
+        rval = []
+        for column_name in self._column.get_optional_column_names():
+            if column_name not in self._filtered:
+                rval.append(column_name)
+        return rval
+
     def get_user_column_names(self) -> List[str]:
         """Get user column names."""
         user_column_names = []
         for column_name in self._csv[0]:
-            if column_name not in self._column.columns:
+            if self._column.is_user_column(column_name):
                 user_column_names.append(column_name)
         return user_column_names
 
