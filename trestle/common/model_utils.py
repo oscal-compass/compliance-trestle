@@ -521,9 +521,9 @@ class ModelUtils:
         return collection_model_type, collection_model_alias, instances_to_be_merged
 
     @staticmethod
-    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+    def _parameter_to_dict_recurse(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
         """
-        Convert obj to dict containing only string values, storing only the fields that have values set.
+        Convert obj to dict containing only string values with recursion.
 
         Args:
             obj: The parameter or its consituent parts in recursive calls
@@ -555,12 +555,29 @@ class ModelUtils:
                     continue
                 new_list = []
                 for item in attr:
-                    new_list.append(ModelUtils.parameter_to_dict(item, partial))
+                    new_list.append(ModelUtils._parameter_to_dict_recurse(item, partial))
                 res[field] = new_list
             elif isinstance(attr, str):
                 res[field] = attr
             else:
-                res[field] = ModelUtils.parameter_to_dict(attr, partial)
+                res[field] = ModelUtils._parameter_to_dict_recurse(attr, partial)
+        return res
+
+    @staticmethod
+    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+        """
+        Convert obj to dict containing only string values, storing only the fields that have values set.
+
+        Args:
+            obj: The parameter or its consituent parts in recursive calls
+            partial: Whether to convert the entire param or just the parts needed for markdown header
+
+        Returns:
+            The converted parameter as dictionary, with values as None if not present
+        """
+        res = ModelUtils._parameter_to_dict_recurse(obj, partial)
+        if 'values' not in res:
+            res['values'] = None
         return res
 
     @staticmethod
@@ -834,6 +851,28 @@ class ModelUtils:
         return equivalent
 
     @staticmethod
+    def imp_reqs_are_equivalent(imp_a: comp.ImplementedRequirement, imp_b: comp.ImplementedRequirement) -> bool:
+        """Determine if imp_reqs are equivalent."""
+        if imp_a.description != imp_b.description:
+            return False
+        if imp_a.props != imp_b.props:
+            return False
+        if imp_a.set_parameters != imp_b.set_parameters:
+            return False
+        if imp_a.remarks != imp_b.remarks:
+            return False
+        if len(as_list(imp_a.statements)) != len(as_list(imp_b.statements)):
+            return False
+        for kk, state_a in enumerate(as_list(imp_a.statements)):
+            state_b = imp_b.statements[kk]
+            b_uuid, state_b.uuid = state_b.uuid, state_a.uuid
+            statements_equiv = state_a == state_b
+            state_b.uuid = b_uuid
+            if not statements_equiv:
+                return False
+        return True
+
+    @staticmethod
     def component_defs_are_equivalent(
         model_a: Optional[comp.ComponentDefinition], model_b: Optional[comp.ComponentDefinition]
     ) -> bool:
@@ -855,19 +894,13 @@ class ModelUtils:
                 return False
             for jj, cimp_a in enumerate(as_list(c_a.control_implementations)):
                 cimp_b = c_b.control_implementations[jj]
+                if cimp_a.props != cimp_b.props:
+                    return False
+                if cimp_a.set_parameters != cimp_b.set_parameters:
+                    return False
                 if len(as_list(cimp_a.implemented_requirements)) != len(as_list(cimp_b.implemented_requirements)):
                     return False
                 for kk, imp_a in enumerate(as_list(cimp_a.implemented_requirements)):
-                    imp_b = cimp_b.implemented_requirements[kk]
-                    if len(as_list(imp_a.statements)) != len(as_list(imp_b.statements)):
+                    if not ModelUtils.imp_reqs_are_equivalent(imp_a, cimp_b.implemented_requirements[kk]):
                         return False
-                    for nn, s_a in enumerate(as_list(imp_a.statements)):
-                        # set uuids to same and then check equality
-                        s_b = imp_b.statements[nn]
-                        b_uuid, s_b.uuid = s_b.uuid, s_a.uuid
-                        statements_equivalent = s_b == s_a
-                        s_b.uuid = b_uuid
-                        if not statements_equivalent:
-                            return False
-
         return True

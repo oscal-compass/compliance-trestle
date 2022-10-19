@@ -117,7 +117,7 @@ class SSPGenerate(AuthorCommonCommand):
             context.overwrite_header_values = args.overwrite_header_values
             context.allowed_sections = args.allowed_sections
 
-            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map(False))
+            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
 
             return CmdReturnCodes.SUCCESS.value
 

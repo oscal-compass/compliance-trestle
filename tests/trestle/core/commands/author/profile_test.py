@@ -53,7 +53,6 @@ md_name = 'my_md'
 assembled_prof_name = 'my_assembled_prof'
 
 my_guidance_text = """
-
 ## Control My Guidance
 
 This is My Guidance.
@@ -66,7 +65,6 @@ This is My Guidance.
 my_guidance_dict = {'name_exp': [('ac-1_my_guidance', 'my_guidance', 'This is My Guidance.')], 'text': my_guidance_text}
 
 multi_guidance_text = """
-
 ## Control A Guidance
 
 This is A Guidance.
@@ -85,7 +83,6 @@ multi_guidance_dict = {
 }
 
 control_subparts_text = """
-
 ## Control A Guidance
 
 Control A prose
@@ -107,7 +104,6 @@ B subpart prose
 ### a by_id subpart
 
 a by_id subpart prose
-
 """
 
 # part.id, part.name, part.prose
@@ -125,7 +121,8 @@ control_subparts_dict = {
 
 all_sections_str = (
     'implgdn:Implementation Guidance,expevid:Expected Evidence,my_guidance:My Guidance,'
-    'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra'
+    'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra,a_subpart:A Subpart,'
+    'a_subsubpart:A Subsubpart,b_subpart:B Subpart,a_by_id_subpart:a by_id subpart'
 )
 
 all_sections_dict = {
@@ -134,7 +131,11 @@ all_sections_dict = {
     'my_guidance': 'My Guidance',
     'a_guidance': 'A Guidance',
     'b_guidance': 'B Guidance',
-    'NeededExtra': 'Needed Extra'
+    'NeededExtra': 'Needed Extra',
+    'a_subpart': 'A Subpart',
+    'a_subsubpart': 'A Subsubpart',
+    'b_subpart': 'B Subpart',
+    'a_by_id_subpart': 'a by_id subpart'
 }
 
 
@@ -146,7 +147,7 @@ def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict
         assert test_utils.delete_line_in_file(control_path, 'label:')
         assert file_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
         # delete profile values for 4, then replace value for 3 with new value
-        assert file_utils.insert_text_in_file(control_path, 'officer', '    profile-values: new value\n')
+        assert test_utils.substitute_text_in_file(control_path, 'officer', 'new value')
         assert test_utils.delete_line_in_file(control_path, 'weekly')
 
 
@@ -194,6 +195,7 @@ def test_profile_generate_assemble(
     ac_path = markdown_path / 'ac'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
+    # generate, edit, assemble
     if use_cli:
         test_args = f'trestle author profile-generate -n {prof_name} -o {md_name} -rs NeededExtra -ns {default_ns}'.split(  # noqa E501
         )
@@ -289,7 +291,8 @@ def test_profile_generate_assemble(
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
-    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assembled_prof_dir / 'profile.json')
+    assem_prof_path = assembled_prof_dir / 'profile.json'
+    catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, assem_prof_path)
     catalog_interface = CatalogInterface(catalog)
     # confirm correct ids, names, and prose for the parts
     ac_1 = catalog_interface.get_control('ac-1')
@@ -297,6 +300,22 @@ def test_profile_generate_assemble(
         part = ControlInterface.get_part_by_id(ac_1, part_id)
         assert part.name == name
         assert part.prose.find(exp_str) >= 0
+
+    # regen and make sure markdown is unchanged
+
+    # ac_2.1 has changes to the comment section due to parts not being present, then being added - so remove it
+    ac_21_path = tmp_trestle_dir / 'my_md/ac/ac-2.1.md'
+    ac_21_path.unlink()
+
+    fc = test_utils.FileChecker(ac_path)
+
+    profile_generate = ProfileGenerate()
+    profile_generate.generate_markdown(
+        tmp_trestle_dir, assem_prof_path, markdown_path, {}, False, all_sections_dict, 'NeededExtra', default_ns
+    )
+
+    ac_21_path.unlink()
+    assert fc.files_unchanged()
 
 
 @pytest.mark.parametrize(
@@ -823,21 +842,28 @@ def test_adding_removing_sections(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert not tree.get_node_for_key('## Control this_should_appear_in_parts')
 
 
+@pytest.mark.parametrize('bracket_format', [True, False])
 @pytest.mark.parametrize('show_values', [True, False])
-def test_profile_resolve(tmp_trestle_dir: pathlib.Path, show_values: bool, monkeypatch: MonkeyPatch) -> None:
+def test_profile_resolve(
+    tmp_trestle_dir: pathlib.Path, show_values: bool, bracket_format: bool, monkeypatch: MonkeyPatch
+) -> None:
     """Test profile resolve to create resolved profile catalog."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, False)
     cat_name = 'resolved_catalog'
     command_profile_resolve = f'trestle author profile-resolve -n main_profile -o {cat_name}'
     if show_values:
         command_profile_resolve += ' -sv'
+    if bracket_format:
+        command_profile_resolve += ' -bf [(.])'
     test_utils.execute_command_and_assert(command_profile_resolve, 0, monkeypatch)
     res_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog, FileContentType.JSON)
     ac_1 = res_cat.groups[0].controls[0]
+    expected_value = '{{ insert: param, ac-1_prm_3 }}'
     if show_values:
-        expected_prose = 'Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
-    else:
-        expected_prose = 'Designate an {{ insert: param, ac-1_prm_3 }} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
+        expected_value = 'officer'
+        if bracket_format:
+            expected_value = f'[({expected_value}])'
+    expected_prose = f'Designate an {expected_value} to manage the development, documentation, and dissemination of the access control policy and procedures; and'  # noqa E501
     assert ac_1.parts[0].parts[1].prose == expected_prose
 
 

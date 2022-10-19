@@ -140,24 +140,28 @@ class ControlWriter():
             self._insert_rules(info.rules, level)
             self._insert_status(info.status, level)
         else:
-            self._insert_status(ImplementationStatus(state=const.STATUS_OTHER), level)
+            self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
 
-    def _add_component_control_prompts(self, comp_dict: CompDict, comp_def_format=False) -> bool:
+    def _add_component_control_prompts(self, control_id: str, comp_dict: CompDict, comp_def_format=False) -> bool:
         """Add prompts to the markdown for the control itself, per component."""
         if comp_def_format:
             self._md_file.new_paraline(const.STATUS_PROMPT)
+            self._md_file.new_paraline(const.RULES_WARNING)
             self._md_file.new_paragraph()
         did_write = False
         level = 3
-        for dic in comp_dict.values():
-            for statement_id, comp_info in dic.items():
-                # is this control-level guidance for this component
-                if statement_id == '':
-                    # create new heading for this component and add guidance
-                    self._md_file.new_paraline(comp_info.prose)
-                    self._insert_rules(comp_info.rules, level)
-                    self._insert_status(comp_info.status, level)
-                    did_write = True
+        for comp_info in [dic[''] for dic in comp_dict.values() if '' in dic]:
+            # is this control-level guidance for this component
+            # create new heading for this component and add guidance
+            prose = comp_info.prose if comp_info.prose != control_id else ''
+            # only write out the prompt first time
+            if not self._md_file.exists() and not prose:
+                prose = f'{const.SSP_ADD_IMPLEMENTATION_FOR_CONTROL_TEXT} {control_id}'
+            if prose:
+                self._md_file.new_paraline(prose)
+            self._insert_rules(comp_info.rules, level)
+            self._insert_status(comp_info.status, level)
+            did_write = True
         return did_write
 
     def _add_implementation_response_prompts(
@@ -170,7 +174,7 @@ class ControlWriter():
         self._md_file.new_header(level=2, title=f'{const.SSP_MD_IMPLEMENTATION_QUESTION}')
 
         # write out control level prose and status
-        did_write_part = self._add_component_control_prompts(comp_dict, comp_def_format)
+        did_write_part = self._add_component_control_prompts(control.id, comp_dict, comp_def_format)
 
         # if the control has no parts written out then enter implementation in the top level entry
         # but if it does have parts written out, leave top level blank and provide details in the parts
@@ -205,7 +209,7 @@ class ControlWriter():
                             wrote_label_content = True
                         if not wrote_label_content:
                             level = 3 if comp_def_format else 4
-                            self._insert_status(ImplementationStatus(state=const.STATUS_OTHER), level)
+                            self._insert_status(ImplementationStatus(state=const.STATUS_PLANNED), level)
                         self._md_file.new_paragraph()
                         did_write_part = True
         # if we loaded nothing for this control yet then it must need a fresh prompt for the control statement
@@ -468,7 +472,7 @@ class ControlWriter():
         # add allowed sections to the markdown
         self._add_sections(control, context.allowed_sections)
 
-        # prompt responses for imp reqs
+        # prompt responses for imp reqs using special format if comp_def mode
         if context.prompt_responses:
             self._add_implementation_response_prompts(control, comp_dict, context.comp_def is not None)
 
