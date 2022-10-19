@@ -190,7 +190,7 @@ def test_profile_generate_assemble(
         'simple_test_profile.json'
     )
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    default_ns = 'http://trestle/test'
+    default_ns = 'http://my_namespace'
 
     ac_path = markdown_path / 'ac'
 
@@ -275,7 +275,7 @@ def test_profile_generate_assemble(
         assert set_params[0].values[0].__root__ == 'all personnel'
         assert set_params[0].props[0].name == const.DISPLAY_NAME
         assert set_params[0].props[0].value.startswith('Pretty')
-        assert set_params[0].props[0].ns == 'https://display-namespace'
+        assert set_params[0].props[0].ns == default_ns
         assert set_params[1].param_id == 'ac-1_prm_2'
         assert set_params[1].values[0].__root__ == 'Organization-level'
         assert set_params[1].values[1].__root__ == 'System-level'
@@ -287,7 +287,7 @@ def test_profile_generate_assemble(
         # confirm the namespace is not defined unless set_parameters is True
         assert set_params[1].props[0].ns is None
         assert len(set_params) == 15
-    assert set_params[0].props[0].ns == 'https://display-namespace'
+    assert set_params[0].props[0].ns == default_ns
 
     # now create the resolved profile catalog from the assembled json profile and confirm the addition is there
 
@@ -564,6 +564,7 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     first_ns = 'http://first'
     second_ns = 'http://second'
     third_ns = 'http://third'
+    fourth_ns = 'http://fourth'
 
     profile_generate = ProfileGenerate()
     profile_generate.generate_markdown(tmp_trestle_dir, prof_path, md_path, {}, False, None, None, first_ns)
@@ -622,6 +623,28 @@ def test_profile_default_namespace(tmp_trestle_dir: pathlib.Path) -> None:
     props = profile.modify.alters[0].adds[1].props
     assert props[0].ns is None
 
+    # confirm that a ns value of no-ns results in None for the property namespace in json
+    assert file_utils.insert_text_in_file(ac1_path, 'ac1 a bar', '    ns: http://no-ns\n')
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, fourth_ns
+    ) == 0
+    profile, assem_prof_path = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
+    props = profile.modify.alters[0].adds[1].props
+    assert props[0].name == 'ac1_a_foo'
+    assert props[0].ns is None
+    assert props[1].ns == fourth_ns
+
+    # confirm that if we don't use -ohv everything stays the same after generate
+    profile_generate.generate_markdown(tmp_trestle_dir, assem_prof_path, md_path, {}, False, None, None, None)
+    assert ProfileAssemble.assemble_profile(
+        tmp_trestle_dir, prof_name, md_name, assembled_prof_name, True, False, None, None, None, None, fourth_ns
+    ) == 0
+    profile, assem_prof_path = ModelUtils.load_top_level_model(tmp_trestle_dir, assembled_prof_name, prof.Profile)
+    props = profile.modify.alters[0].adds[1].props
+    assert props[0].name == 'ac1_a_foo'
+    assert props[0].ns is None
+    assert props[1].ns == fourth_ns
+
 
 def _check_parts(part: com.Part, prose_1: str) -> None:
     assert part.parts[0].id == 'ac-1_smt.b.new_guidance'
@@ -641,7 +664,7 @@ def test_profile_alter_props(tmp_trestle_dir: pathlib.Path) -> None:
     """Test profile alter adds involving props."""
     ac1_path, _, profile_path, markdown_path = setup_profile_generate(tmp_trestle_dir, 'profile_with_alter_props.json')
     sections = {'implgdn': 'Implementation Guidance', 'expevid': 'Expected Evidence', 'guidance': 'Guidance'}
-    # generate markdown twice and confirmed no changes
+    # generate markdown twice and confirm no changes
     profile_generate = ProfileGenerate()
     assert profile_generate.generate_markdown(
         tmp_trestle_dir, profile_path, markdown_path, {}, False, sections, None

@@ -689,8 +689,6 @@ class CatalogInterface():
                     new_dict.pop('id')
                     if display_name:
                         new_dict[const.DISPLAY_NAME] = display_name
-                        if ns:
-                            new_dict['ns'] = ns
                     set_param_dict[param_id] = new_dict
                 if set_param_dict:
                     if const.SET_PARAMS_TAG not in new_context.yaml_header:

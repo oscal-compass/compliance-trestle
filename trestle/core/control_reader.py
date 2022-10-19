@@ -924,12 +924,18 @@ class ControlReader():
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
 
         # the default namespace should only be applied when assembling the catalog, i.e. read mode
-        if default_namespace and not write_mode:
+        if not write_mode:
             for prop in props:
-                prop.ns = get_default(prop.ns, default_namespace)
+                if prop.ns == const.NO_NS:
+                    prop.ns = None
+                elif default_namespace:
+                    prop.ns = get_default(prop.ns, default_namespace)
             for prop_list in props_by_id.values():
                 for prop in prop_list:
-                    prop.ns = get_default(prop.ns, default_namespace)
+                    if prop.ns == const.NO_NS:
+                        prop.ns = None
+                    elif default_namespace:
+                        prop.ns = get_default(prop.ns, default_namespace)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
@@ -957,6 +963,7 @@ class ControlReader():
 
     @staticmethod
     def _update_display_prop_namespace(item: TypeWithProps, default_namespace: Optional[str]):
+        """Set default namespace for special property display_name."""
         if default_namespace:
             for prop in as_list(item.props):
                 if prop.name == const.DISPLAY_NAME:
@@ -1011,6 +1018,7 @@ class ControlReader():
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
+                    # if display_name is in list of properties set the properties ns to default in the json
                     ControlReader._update_display_prop_namespace(param, default_namespace)
                     control.params.append(param)
         if const.SORT_ID in yaml_header:

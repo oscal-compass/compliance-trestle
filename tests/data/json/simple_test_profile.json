@@ -34,7 +34,7 @@
           "props": [
             {
               "name": "display-name",
-              "ns": "https://display-namespace",
+              "ns": "http://my_namespace",
               "value": "Pretty ac-1 prm 1"
             }
           ],
