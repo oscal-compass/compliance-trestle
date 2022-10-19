@@ -960,3 +960,7 @@ def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeyp
     assert inherited_props[1] == {
         'name': 'add_prof_b_prop_by_id', 'value': 'add prof b prop by id value', 'part_name': 'ac-3.3_prm_2'
     }
+
+    ac5_path = tmp_trestle_dir / 'my_md/ac/ac-5.md'
+    assert test_utils.confirm_text_in_file(ac5_path, 'value: one', 'smt-part: a.')
+    assert test_utils.confirm_text_in_file(ac5_path, 'test_five', 'smt-part: ac-5_gdn')
