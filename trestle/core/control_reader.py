@@ -24,7 +24,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, get_default, merge_dicts, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, merge_dicts, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -865,8 +865,7 @@ class ControlReader():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections_dict: Dict[str, str],
-        write_mode: bool,
-        default_namespace: Optional[str] = None
+        write_mode: bool
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
@@ -917,25 +916,8 @@ class ControlReader():
         header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
-        # set the ns to default if not already set
-        for val in param_dict.values():
-            val['ns'] = val.get('ns', default_namespace)
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
-
-        # the default namespace should only be applied when assembling the catalog, i.e. read mode
-        if not write_mode:
-            for prop in props:
-                if prop.ns == const.NO_NS:
-                    prop.ns = None
-                elif default_namespace:
-                    prop.ns = get_default(prop.ns, default_namespace)
-            for prop_list in props_by_id.values():
-                for prop in prop_list:
-                    if prop.ns == const.NO_NS:
-                        prop.ns = None
-                    elif default_namespace:
-                        prop.ns = get_default(prop.ns, default_namespace)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
@@ -962,12 +944,11 @@ class ControlReader():
         return sort_id, new_alters, param_dict
 
     @staticmethod
-    def _update_display_prop_namespace(item: TypeWithProps, default_namespace: Optional[str]):
-        """Set default namespace for special property display_name."""
-        if default_namespace:
-            for prop in as_list(item.props):
-                if prop.name == const.DISPLAY_NAME:
-                    prop.ns = default_namespace
+    def _update_display_prop_namespace(item: TypeWithProps):
+        """Set namespace for special property display_name."""
+        for prop in as_list(item.props):
+            if prop.name == const.DISPLAY_NAME:
+                prop.ns = const.TRESTLE_GENERIC_NS
 
     @staticmethod
     def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
@@ -1009,17 +990,14 @@ class ControlReader():
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
         if set_parameters:
-            default_namespace = None
-            if const.TRESTLE_GLOBAL_TAG in yaml_header:
-                default_namespace = yaml_header[const.TRESTLE_GLOBAL_TAG].get(const.DEFAULT_NS, None)
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
-                    # if display_name is in list of properties set the properties ns to default in the json
-                    ControlReader._update_display_prop_namespace(param, default_namespace)
+                    # if display_name is in list of properties, set its namespace
+                    ControlReader._update_display_prop_namespace(param)
                     control.params.append(param)
         if const.SORT_ID in yaml_header:
             control.props = control.props if control.props else []

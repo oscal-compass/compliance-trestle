@@ -90,7 +90,6 @@ class ProfileGenerate(AuthorCommonCommand):
         )
         self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
         self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
-        self.add_argument('-ns', '--namespace', help=const.NS_HELP, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -124,8 +123,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 yaml_header,
                 args.overwrite_header_values,
                 sections_dict,
-                args.required_sections,
-                args.namespace
+                args.required_sections
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
@@ -138,8 +136,7 @@ class ProfileGenerate(AuthorCommonCommand):
         yaml_header: dict,
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[str],
-        default_namespace: Optional[str] = None
+        required_sections: Optional[str]
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -151,7 +148,6 @@ class ProfileGenerate(AuthorCommonCommand):
             overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
             sections_dict: Optional dict mapping section short names to long
             required_sections: Optional comma-sep list of sections that get prompted for prose if not in the profile
-            default_namespace: Optional default namespace to use for props
 
         Returns:
             0 on success, 1 on error
@@ -166,8 +162,6 @@ class ProfileGenerate(AuthorCommonCommand):
             )
             yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
             yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
-            if default_namespace:
-                yaml_header[const.TRESTLE_GLOBAL_TAG][const.DEFAULT_NS] = default_namespace
 
             catalog_interface = CatalogInterface(catalog)
             part_id_map = catalog_interface.get_statement_part_id_map(False)
@@ -210,7 +204,6 @@ class ProfileAssemble(AuthorCommonCommand):
         self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
         self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
         self.add_argument('-as', '--allowed-sections', help=const.HELP_ALLOWED_SECTIONS, required=False, type=str)
-        self.add_argument('-ns', '--namespace', help=const.NS_HELP, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         try:
@@ -226,8 +219,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 version=args.version,
                 sections_dict=sections_to_dict(args.sections),
                 required_sections=args.required_sections,
-                allowed_sections=args.allowed_sections,
-                default_namespace=args.namespace
+                allowed_sections=args.allowed_sections
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Assembly of markdown to profile failed')
@@ -275,10 +267,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
     @staticmethod
     def _replace_modify_set_params(
-        profile: prof.Profile,
-        param_dict: Dict[str, Any],
-        param_map: Dict[str, str],
-        default_namespace: Optional[str] = None
+        profile: prof.Profile, param_dict: Dict[str, Any], param_map: Dict[str, str]
     ) -> bool:
         """
         Replace the set_params in the profile with list and values from markdown.
@@ -294,7 +283,7 @@ class ProfileAssemble(AuthorCommonCommand):
             for key, sub_param_dict in param_dict.items():
                 if sub_param_dict:
                     sub_param_dict['id'] = key
-                    param = ModelUtils.dict_to_parameter(sub_param_dict, default_namespace)
+                    param = ModelUtils.dict_to_parameter(sub_param_dict)
                     new_set_params.append(
                         prof.SetParameter(
                             param_id=key,
@@ -325,8 +314,7 @@ class ProfileAssemble(AuthorCommonCommand):
         version: Optional[str],
         sections_dict: Optional[Dict[str, str]],
         required_sections: Optional[str],
-        allowed_sections: Optional[List[str]],
-        default_namespace: Optional[str] = None
+        allowed_sections: Optional[List[str]]
     ) -> int:
         """
         Assemble the markdown directory into a json profile model file.
@@ -342,7 +330,6 @@ class ProfileAssemble(AuthorCommonCommand):
             sections_dict: Optional map of short name to long name for sections
             required_sections: Optional List of required sections in assembled profile, as comma-separated short names
             allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
-            default_namespace: Optional namespace to be used for properties that don't have namespace specfied
 
         Returns:
             0 on success, 1 otherwise
@@ -373,12 +360,6 @@ class ProfileAssemble(AuthorCommonCommand):
         catalog_interface = CatalogInterface(catalog)
         label_map = catalog_interface.get_statement_part_id_map(True)
 
-        if default_namespace and not set_parameters:
-            logger.warning(
-                'A default namespace was specified but set_parameters is False so the namespace will be ignored'
-            )
-            default_namespace = None
-
         required_sections_list = required_sections.split(',') if required_sections else []
 
         # load the editable sections of the markdown and create Adds for them
@@ -390,8 +371,7 @@ class ProfileAssemble(AuthorCommonCommand):
             required_sections_list,
             label_map,
             sections_dict,
-            False,
-            default_namespace
+            False
         )
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
@@ -401,7 +381,7 @@ class ProfileAssemble(AuthorCommonCommand):
 
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
         if set_parameters:
-            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map, default_namespace)
+            ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
 
         if version:
             parent_prof.metadata.version = com.Version(__root__=version)
