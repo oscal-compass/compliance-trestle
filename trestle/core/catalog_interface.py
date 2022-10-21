@@ -663,11 +663,10 @@ class CatalogInterface():
                 for param_id, param_dict in control_param_dict.items():
                     # if the param is in the profile set_params, load its contents first and mark as profile-values
                     display_name = ''
-                    ns = None
                     if param_id in full_profile_param_dict:
                         # get the param from the profile set_param
                         param = full_profile_param_dict[param_id]
-                        display_name, ns = CatalogInterface._get_display_name_and_ns(param)
+                        display_name, _ = CatalogInterface._get_display_name_and_ns(param)
                         # assign its contents to the dict
                         new_dict = ModelUtils.parameter_to_dict(param, True)
                         profile_values = new_dict.get(const.VALUES, None)
