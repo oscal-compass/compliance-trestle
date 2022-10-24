@@ -20,7 +20,7 @@ from typing import List
 import pytest
 
 from tests import test_utils
-from tests.test_utils import setup_for_ssp
+from tests.test_utils import delete_line_in_file, setup_for_ssp
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -214,8 +214,17 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     prose_b = 'This is fun\nline with *bold* text\n\n### ACME Component\n\n' + acme_string
 
     # edit it a bit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
+    assert delete_line_in_file(ac_1_path, 'Add control implementation description')
+    assert delete_line_in_file(ac_1_path, 'Add control implementation description')
+
+    # special handling for ac-2.1 because it has no statement sub-parts
+    add_prompt = 'Add control implementation description here for control ac-2.1'
+    add_response = 'My statement level prose'
+    ac_21_path = tmp_trestle_dir / ssp_name / 'ac/ac-2.1.md'
+    assert test_utils.substitute_text_in_file(ac_21_path, add_prompt, add_response)
 
     # generate markdown again on top of previous markdown to make sure it is not removed
     ssp_gen = SSPGenerate()
@@ -239,6 +248,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(orig_ssp.system_implementation.components) == 2
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
+    assert imp_req.statements[0].by_components[0].description == add_response
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
@@ -247,6 +259,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
+    assert test_utils.confirm_text_in_file(ac_21_path, const.SSP_MD_IMPLEMENTATION_QUESTION, add_response)
 
     # now assemble it again but don't regen uuid's and don't change version
     args = argparse.Namespace(
@@ -273,7 +286,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     for imp_req in repeat_ssp.control_implementation.implemented_requirements:
         if imp_req.control_id == 'ac-1':
             statements = imp_req.statements
-            assert len(statements) == 3
+            assert len(statements) == 4
             for statement in statements:
                 for by_component in statement.by_components:
                     if by_component.description == acme_string:
@@ -380,7 +393,7 @@ also do the bar stuff
     ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     # confirm all by_comps are there for this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[1].statements[1].by_components) == 3
 
     # get the original uuid
     orig_uuid = ssp.uuid
@@ -419,7 +432,7 @@ also do the bar stuff
     assert len(ssp.control_implementation.implemented_requirements) == 2
 
     # confirm there are three by_comps for: this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[1].by_components) == 3
 
     # confirm uuid was not regenerated
     assert ssp.uuid == orig_uuid
@@ -450,7 +463,7 @@ also do the bar stuff
     assert new_uuid != orig_uuid
 
     # confirm the bar by_comp has been filtered out
-    assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 2
+    assert len(ssp.control_implementation.implemented_requirements[1].statements[1].by_components) == 2
 
     # filter the filtered ssp again to confirm uuid does not change even with regen because contents are the same
     args = argparse.Namespace(

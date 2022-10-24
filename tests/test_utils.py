@@ -220,6 +220,24 @@ def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> boo
     return False
 
 
+def replace_line_in_file_after_tag(file_path: pathlib.Path, tag: str, new_line: str) -> bool:
+    """Replace the line after tag with new string."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
+    lines = f.readlines()
+    f.close()
+    for ii, line in enumerate(lines):
+        if tag in line:
+            lines[ii + 1] = new_line
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
+            return True
+    return False
+
+
 def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
     """Substitute first match of string with new string in file."""
     if not file_path.exists():
@@ -335,9 +353,18 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
 
-    # a loads ac-1, ac-2 and prof_b
-    # b loads ac-3, ac-3.3, ac-4, ac-5 and prof_c
-    # c loads a-2-1, b-2-1 and cat-1
+    # a loads ac-1, ac-2 and pulls a-1, b-2-1, cat-1, ac-3, ac-3.3 from prof_b and adds props to b-2-1
+    # b loads ac-3, ac-3.3, ac-4, ac-5 - excludes ac-4 - and prof_c and adds props to ac-3.3
+    # c loads a-2-1, b-2-1 and cat-1 from complex_cat
+
+    # d loads ac-1 and ac-2 and sets values
+    # e loads a and sets some parameters
+    # f loads b and adds props
+    # g loads b and tests adding props by position after
+
+    # a adds props to b-2-1
+    # b adds props to ac-3.3 and by id
+    # f adds props to ac-3 and ac-5 by id
 
     for letter in 'abcdefg':
         prof_name = f'test_profile_{letter}'

@@ -112,9 +112,12 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
                 if len(cells) < 2:
                     continue
                 value = cells[2].strip()
+                # parameter values now do not appear in the prose
+                if value == 'Param_1_value_in_catalog':
+                    continue
                 is_found = False
                 for line in child2.content.text:
-                    if '*' + value + '*' in line:
+                    if value in line:
                         is_found = True
                         break
                 assert is_found
@@ -134,9 +137,12 @@ def test_params_formatting(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.
             if len(cells) < 2:
                 continue
             value = cells[2].strip()
+            # parameter values now do not appear in the prose
+            if value == 'Param_1_value_in_catalog':
+                continue
             is_found = False
             for line in child2.content.text:
-                if 'Prefix:' + value in line:
+                if 'Prefix:' in line and value in line:
                     is_found = True
                     break
             assert is_found
@@ -197,7 +203,9 @@ def test_jinja_profile_docs_with_group_title(
         assert node3
         assert '{: #table-of-control-parameters}' in node3.content.raw_text  # noqa: FS003 - not f string but tag
         assert '{: #"Parameters for AC-2" caption-side="top"}' in node3.content.raw_text  # noqa: FS003 - not f string
-        assert 'AC-2 Test' in node3.content.tables[2]
+        assert 'AC-2 (a) (1)' in node3.content.tables[2]
+        assert 'AC-2 (a) (5)' in node3.content.tables[6]
+        assert 'ac-2_prm_3' in node3.content.tables[4]
 
 
 def test_jinja_profile_docs_with_selected_sections(
@@ -246,7 +254,7 @@ def test_jinja_profile_docs_with_selected_sections_and_multiple_parts(
         assert tree
         node1 = tree.get_node_for_key('## The above the line guidance')
         assert node1
-        node2 = tree.get_node_for_key('### add_to_part_a')
+        node2 = tree.get_node_for_key('### Add to part a')
         assert node2
         node3 = tree.get_node_for_key('#### Evidence Guidance')
         assert node3

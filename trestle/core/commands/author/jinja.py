@@ -33,7 +33,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
@@ -177,7 +177,7 @@ class JinjaCmd(CommandPlusDocs):
             profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile, Profile)
             profile_resolver = ProfileResolver()
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-                trestle_root, profile_path, False, False, parameters_formatting
+                trestle_root, profile_path, False, False, parameters_formatting, ParameterRep.ASSIGNMENT_FORM
             )
 
             ssp_writer = SSPMarkdownWriter(trestle_root)
@@ -215,10 +215,9 @@ class JinjaCmd(CommandPlusDocs):
         profile, profile_path = ModelUtils.load_top_level_model(trestle_root, profile_name, Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, False, False, parameters_formatting
+            trestle_root, profile_path, False, False, parameters_formatting, ParameterRep.ASSIGNMENT_FORM
         )
         catalog_interface = CatalogInterface(resolved_catalog)
-        param_dict = catalog_interface.get_profile_displayname_param_dict(profile)
 
         # Generate a single markdown page for each control per each group
         for group in catalog_interface.get_all_groups_from_catalog():
@@ -245,7 +244,6 @@ class JinjaCmd(CommandPlusDocs):
                 lut['control_writer'] = control_writer
                 lut['control'] = control
                 lut['profile'] = profile
-                lut['displayname_param_dict'] = param_dict
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 

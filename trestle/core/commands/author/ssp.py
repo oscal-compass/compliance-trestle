@@ -117,7 +117,7 @@ class SSPGenerate(AuthorCommonCommand):
             context.overwrite_header_values = args.overwrite_header_values
             context.allowed_sections = args.allowed_sections
 
-            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_part_id_map(False))
+            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
 
             return CmdReturnCodes.SUCCESS.value
 
@@ -276,7 +276,9 @@ class SSPAssemble(AuthorCommonCommand):
             # TODO if the ssp already existed then components may need to be removed if not ref'd by imp_reqs
             component_list: List[ossp.SystemComponent] = []
             for comp in comp_dict.values():
-                component_list.append(comp.as_system_component())
+                # need to skip the component corresponding to statement level prose
+                if comp.title:
+                    component_list.append(comp.as_system_component())
             if ssp.system_implementation.components:
                 # reconstruct list with same order as existing, but add/remove components as needed
                 new_list: List[ossp.SystemComponent] = []

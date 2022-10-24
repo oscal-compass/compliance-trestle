@@ -20,7 +20,7 @@ import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common import const
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_filtered_list, as_list
 from trestle.core.control_interface import ControlInterface, ParameterRep, PartInfo
 from trestle.core.control_writer import ControlWriter
 from trestle.core.markdown.md_writer import MDWriter
@@ -39,8 +39,7 @@ class DocsControlWriter(ControlWriter):
         sections: List[str],
         sections_dict: Optional[Dict[str, str]] = None,
         label_column: bool = True,
-        add_group_to_title: bool = False,
-        param_dict: Dict[str, str] = None
+        add_group_to_title: bool = False
     ) -> str:
         """Write the control into markdown file with specified sections."""
         self._md_file = MDWriter(None)
@@ -58,12 +57,7 @@ class DocsControlWriter(ControlWriter):
 
             elif 'table_of_parameters' == section:
                 self.get_param_table(
-                    control,
-                    label_column,
-                    section_dict=sections_dict,
-                    tag_pattern=tag_pattern,
-                    param_displayname=param_dict,
-                    md_file=self._md_file
+                    control, label_column, section_dict=sections_dict, tag_pattern=tag_pattern, md_file=self._md_file
                 )
             else:
                 self._add_one_section(control, profile, section, tag_pattern=tag_pattern)
@@ -82,15 +76,14 @@ class DocsControlWriter(ControlWriter):
         label_column: bool = False,
         section_dict: Optional[Dict[str, str]] = None,
         tag_pattern: str = None,
-        param_displayname: str = None,
         md_file: MDWriter = None
     ) -> List[str]:
         """Get parameters of a control as a markdown table for ssp_io, with optional third label column."""
 
         def _get_displayname_if_exists(param_id: str) -> str:
-            if param_displayname:
-                if param_id in param_displayname:
-                    return param_displayname[param_id]
+            for param in as_filtered_list(control.params, lambda p: p.id == param_id):
+                for prop in as_filtered_list(param.props, lambda p: p.name == const.DISPLAY_NAME):
+                    return prop.value
             return param_id
 
         param_dict = ControlInterface.get_control_param_dict(control, False)
@@ -188,7 +181,7 @@ class DocsControlWriter(ControlWriter):
         self, control: cat.Control, profile: prof.Profile, section: str, tag_pattern: Optional[str] = None
     ) -> None:
         """Add specific control section."""
-        prose = ControlInterface._get_control_section_prose(control, section)
+        prose = ControlInterface.get_control_section_prose(control, section)
         if prose:
             section_title = self._sections_dict.get(section, section)
             heading_title = f'{section_title}'
