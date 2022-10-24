@@ -284,3 +284,46 @@ def test_strip_lower_equals() -> None:
     assert not str_utils.strip_lower_equals(None, '  ')
     assert not str_utils.strip_lower_equals(None, None)
     assert str_utils.strip_lower_equals('', '')
+
+
+def test_objects_differ(simplified_nist_catalog: catalog.Catalog) -> None:
+    """Test objects differ."""
+    cat_b = copy.deepcopy(simplified_nist_catalog)
+    assert not ModelUtils._objects_differ(simplified_nist_catalog, cat_b, [], [], False)
+    ModelUtils.update_last_modified(cat_b)
+    assert ModelUtils._objects_differ(simplified_nist_catalog, cat_b, [], [], False)
+    assert not ModelUtils._objects_differ(
+        simplified_nist_catalog, cat_b, [common.LastModified], ['last-modified'], False
+    )
+    cat_c, _, _ = ModelUtils.regenerate_uuids(cat_b)
+    assert ModelUtils._objects_differ(simplified_nist_catalog, cat_c, [common.LastModified], ['last-modified'], False)
+    assert not ModelUtils._objects_differ(
+        simplified_nist_catalog, cat_c, [common.LastModified, common.PartyUuid], ['last-modified', 'uuid'], False
+    )
+    assert not ModelUtils._objects_differ(
+        simplified_nist_catalog, cat_c, [common.LastModified], ['last-modified'], True
+    )
+
+
+def test_fields_set_non_none() -> None:
+    """Confirm that using fields_set can be bad."""
+    prop = common.Property(name='foo', value='bar')
+    assert prop.__fields_set__ == {'name', 'value'}
+    prop.ns = None
+    # fields_set lists value even though it was set as None
+    assert prop.__fields_set__ == {'name', 'value', 'ns'}
+    assert ModelUtils.fields_set_non_none(prop) == {'name', 'value'}
+
+
+def test_models_are_equivalent(simplified_nist_catalog: catalog.Catalog) -> None:
+    """Test models are equivalent."""
+    cat_b = copy.deepcopy(simplified_nist_catalog)
+    assert ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b)
+    ModelUtils.update_last_modified(cat_b)
+    # different last-modified is ignored
+    assert ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b)
+    cat_b, _, _ = ModelUtils.regenerate_uuids(cat_b)
+    # different uuids fail comparison
+    assert not ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b)
+    # ignoring uuids passes comparison
+    assert ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b, True)

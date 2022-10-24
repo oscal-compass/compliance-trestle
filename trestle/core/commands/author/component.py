@@ -200,7 +200,8 @@ class ComponentAssemble(AuthorCommonCommand):
 
         if not version and assem_comp_path.exists():
             _, _, existing_comp = ModelUtils.load_distributed(assem_comp_path, trestle_root)
-            if ModelUtils.component_defs_are_equivalent(existing_comp, parent_comp):
+            # comp def will change statement uuids so need to ignore them in comparison
+            if ModelUtils.models_are_equivalent(existing_comp, parent_comp, True):
                 logger.info('Assembled component is no different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
 
