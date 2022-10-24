@@ -18,7 +18,6 @@ import importlib
 import logging
 import pathlib
 import re
-import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -840,7 +839,11 @@ class ModelUtils:
 
     @staticmethod
     def _objects_differ(obj_a: Any, obj_b: Any, ignore_type_list: List[Any], ignore_name_list: List[str]) -> bool:
-        """Compare two objects with option to ignore given types."""
+        """
+        Compare two objects with option to ignore given types.
+
+        This does not check for tuples or other structures that won't be found in JSON.
+        """
         obj_a_type = type(obj_a)
         obj_b_type = type(obj_b)
         if bool(obj_a) != bool(obj_b) or obj_a_type != obj_b_type:
@@ -849,33 +852,29 @@ class ModelUtils:
             return False
         if obj_a_type in ignore_type_list:
             return False
-        # getsizeof is not useful for str
         if obj_a_type is str:
             if obj_a != obj_b:
                 return True
-        else:
-            if sys.getsizeof(obj_a) != sys.getsizeof(obj_b):
-                return True
-        if isinstance(obj_a, BaseModel):
+        elif isinstance(obj_a, BaseModel):
             fields_a = getattr(obj_a, '__fields__', None)
             fields_b = getattr(obj_b, '__fields__', None)
             if fields_a != fields_b:
                 return True
             for field in as_list(fields_a):
-                if field not in ignore_name_list and ModelUtils.objects_differ(
+                if field not in ignore_name_list and ModelUtils._objects_differ(
                         getattr(obj_a, field), getattr(obj_b, field), ignore_type_list, ignore_name_list):
                     return True
         elif obj_a_type is list:
             if len(obj_a) != len(obj_b):
                 return True
             for item_a, item_b in zip(obj_a, obj_b):
-                if ModelUtils.objects_differ(item_a, item_b, ignore_type_list, ignore_name_list):
+                if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list):
                     return True
         elif obj_a_type is dict:
             if obj_a.keys() != obj_b.keys():
                 return True
             for key, val in obj_a.items():
-                if key not in ignore_name_list and ModelUtils.objects_differ(
+                if key not in ignore_name_list and ModelUtils._objects_differ(
                         val, obj_b[key], ignore_type_list, ignore_name_list):
                     return True
         elif obj_a != obj_b:
