@@ -27,11 +27,11 @@ from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
-from trestle.common import const, err, str_utils, type_utils as utils
+from trestle.common import const, err, list_utils, str_utils, type_utils as utils
 from trestle.common.common_types import TG, TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
-from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.list_utils import as_filtered_list, none_if_empty
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
@@ -537,11 +537,11 @@ class ModelUtils:
         if isinstance(obj, common.Remarks) or isinstance(obj, common.ParameterValue):
             return obj.__root__
         # it is either a string already or we cast it to string
-        if not hasattr(obj, '__fields__'):
+        if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
         # it is an oscal object and we need to recurse within its attributes
         res = {}
-        for field in obj.__fields__:
+        for field in obj.__fields_set__:
             if partial and field not in main_fields:
                 continue
             attr = getattr(obj, field)
@@ -662,7 +662,7 @@ class ModelUtils:
             value = getattr(object_of_interest, name_of_interest, None)
             if value is not None:
                 loe.append(value)
-            fields = getattr(object_of_interest, '__fields__', None)
+            fields = getattr(object_of_interest, const.FIELDS_SET, None)
             if fields is not None:
                 for field in fields:
                     loe.extend(
@@ -743,7 +743,7 @@ class ModelUtils:
             pass
         elif isinstance(object_of_interest, BaseModel):
             # fields has names of all fields in model
-            fields = getattr(object_of_interest, '__fields__', None)
+            fields = getattr(object_of_interest, const.FIELDS_SET, None)
             for field in fields:
                 new_object = None
                 if field == uuid_str:
@@ -781,7 +781,7 @@ class ModelUtils:
         """Update all refs to uuids that were changed."""
         n_refs_updated = 0
         if isinstance(object_of_interest, BaseModel):
-            fields = getattr(object_of_interest, '__fields__', None)
+            fields = getattr(object_of_interest, const.FIELDS_SET, None)
             for field in fields:
                 new_object, n_new_updates = ModelUtils._update_new_uuid_refs(
                     object_of_interest.__dict__[field],
@@ -838,7 +838,14 @@ class ModelUtils:
         return new_object, uuid_lut, n_refs_updated
 
     @staticmethod
-    def _objects_differ(obj_a: Any, obj_b: Any, ignore_type_list: List[Any], ignore_name_list: List[str]) -> bool:
+    def fields_set_non_none(obj: BaseModel) -> Set[str]:
+        """Find the fields set with Nones removed."""
+        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f) is not None))
+
+    @staticmethod
+    def _objects_differ(
+        obj_a: Any, obj_b: Any, ignore_type_list: List[Any], ignore_name_list: List[str], ignore_all_uuid: bool
+    ) -> bool:
         """
         Compare two objects with option to ignore given types.
 
@@ -853,35 +860,60 @@ class ModelUtils:
         if obj_a_type in ignore_type_list:
             return False
         if obj_a_type is str:
-            if obj_a != obj_b:
-                return True
+            return obj_a != obj_b
         elif isinstance(obj_a, BaseModel):
-            fields_a = getattr(obj_a, '__fields__', None)
-            fields_b = getattr(obj_b, '__fields__', None)
+            fields_a = ModelUtils.fields_set_non_none(obj_a)
+            fields_b = ModelUtils.fields_set_non_none(obj_b)
             if fields_a != fields_b:
                 return True
-            for field in as_list(fields_a):
-                if field not in ignore_name_list and ModelUtils._objects_differ(
-                        getattr(obj_a, field), getattr(obj_b, field), ignore_type_list, ignore_name_list):
+            for field in list_utils.as_filtered_list(fields_a, lambda f: f not in ignore_name_list):
+                if ignore_all_uuid and 'uuid' in field:
+                    continue
+                if ModelUtils._objects_differ(getattr(obj_a, field),
+                                              getattr(obj_b, field),
+                                              ignore_type_list,
+                                              ignore_name_list,
+                                              ignore_all_uuid):
                     return True
         elif obj_a_type is list:
             if len(obj_a) != len(obj_b):
                 return True
             for item_a, item_b in zip(obj_a, obj_b):
-                if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list):
+                if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list, ignore_all_uuid):
                     return True
         elif obj_a_type is dict:
             if obj_a.keys() != obj_b.keys():
                 return True
             for key, val in obj_a.items():
+                if ignore_all_uuid and 'uuid' in key:
+                    continue
                 if key not in ignore_name_list and ModelUtils._objects_differ(
-                        val, obj_b[key], ignore_type_list, ignore_name_list):
+                        val, obj_b[key], ignore_type_list, ignore_name_list, ignore_all_uuid):
                     return True
         elif obj_a != obj_b:
             return True
         return False
 
     @staticmethod
-    def models_are_equivalent(model_a: Optional[TopLevelOscalModel], model_b: Optional[TopLevelOscalModel]) -> bool:
-        """Test if models are equivalent except for last modified and uuid."""
-        return not ModelUtils._objects_differ(model_a, model_b, [common.LastModified], ['last-modified', 'uuid'])
+    def models_are_equivalent(
+        model_a: Optional[TopLevelOscalModel],
+        model_b: Optional[TopLevelOscalModel],
+        ignore_all_uuid: bool = False
+    ) -> bool:
+        """
+        Test if models are equivalent except for last modified and possibly uuid.
+
+        If a model has had uuids regenerated, then all uuids *and references to them* are updated.  This means that
+        special handling is required if a model has had uuids regenerated - when checking equivalence.
+        """
+        uuid_type_list = [
+            common.LastModified,
+            common.LocationUuid,
+            common.MemberOfOrganization,
+            common.PartyUuid,
+            common.RelatedRisk,
+            common.RelatedObservation1,
+            common.Source
+        ]
+        type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
+        return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last-modified'], ignore_all_uuid)

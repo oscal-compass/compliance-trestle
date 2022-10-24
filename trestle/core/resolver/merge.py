@@ -114,7 +114,7 @@ class Merge(Pipeline.Filter):
 
     def _merge_items(self, dest: OBT, src: OBT, merge_method: prof.Method) -> None:
         """Merge two items recursively."""
-        for field in src.__fields__:
+        for field in src.__fields_set__:
             self._merge_attrs(dest, src, field, merge_method)
 
     def _group_contents(self, group: cat.Group) -> Tuple[List[cat.Control], List[common.Parameter]]:
