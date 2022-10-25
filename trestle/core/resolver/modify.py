@@ -14,17 +14,16 @@
 """Create resolved catalog from profile."""
 
 import logging
-import re
-from typing import Dict, Iterator, List, Optional
+from typing import Iterator, List, Optional
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
-from trestle.common.const import RESOLUTION_SOURCE
+from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS
 from trestle.common.err import TrestleNotFoundError
-from trestle.common.list_utils import as_list
+from trestle.common.list_utils import as_list, get_item_from_list, none_if_empty
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.oscal import OSCAL_VERSION, common
 
@@ -56,108 +55,6 @@ class Modify(Pipeline.Filter):
         logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
     @staticmethod
-    def _replace_ids_with_text(prose: str, param_rep: ParameterRep, param_dict: Dict[str, common.Parameter]) -> str:
-        """Find all instances of param_ids in prose and replace each with corresponding parameter representation.
-
-        Need to check all values in dict for a match
-        Reject matches where the string has an adjacent alphanumeric char: param_1 and param_10 or aparam_1
-        """
-        for param in param_dict.values():
-            if param.id not in prose:
-                continue
-            # create the replacement text for the param_id
-            param_str = ControlInterface.param_to_str(param, param_rep)
-            # non-capturing groups are odd in re.sub so capture all 3 groups and replace the middle one
-            pattern = r'(^|[^a-zA-Z0-9_])' + param.id + r'($|[^a-zA-Z0-9_])'
-            prose = re.sub(pattern, r'\1' + param_str + r'\2', prose)
-        return prose
-
-    @staticmethod
-    def _replace_params(
-        text: str,
-        param_dict: Dict[str, common.Parameter],
-        params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
-    ) -> str:
-        """
-        Replace params found in moustaches with values from the param_dict.
-
-        A single line of prose may contain multiple moustaches.
-        """
-        # first check if there are any moustache patterns in the text
-        if param_rep == ParameterRep.LEAVE_MOUSTACHE:
-            return text
-        staches: List[str] = re.findall(r'{{.*?}}', text)
-        if not staches:
-            return text
-        # now have list of all staches including braces, e.g. ['{{foo}}', '{{bar}}']
-        # clean the staches so they just have the param ids
-        param_ids = []
-        for stache in staches:
-            # remove braces so these are just param_ids but may have extra chars
-            stache_contents = stache[2:(-2)]
-            param_id = stache_contents.replace('insert: param,', '').strip()
-            param_ids.append(param_id)
-
-        # now replace original stache text with param values
-        for i, _ in enumerate(staches):
-            # A moustache may refer to a param_id not listed in the control's params
-            if param_ids[i] not in param_dict:
-                if show_value_warnings:
-                    logger.warning(f'Control prose references param {param_ids[i]} not set in the control: {staches}')
-            elif param_dict[param_ids[i]] is not None:
-                param = param_dict[param_ids[i]]
-                param_str = ControlInterface.param_to_str(param, param_rep, False, False, params_format)
-                text = text.replace(staches[i], param_str, 1).strip()
-                if show_value_warnings and param_rep != ParameterRep.LABEL_OR_CHOICES and not param.values:
-                    logger.warning(f'Parameter {param_id} has no values and was referenced by prose.')
-            elif show_value_warnings:
-                logger.warning(f'Control prose references param {param_ids[i]} with no specified value.')
-        return text
-
-    @staticmethod
-    def _replace_part_prose(
-        control: cat.Control,
-        part: common.Part,
-        param_dict: Dict[str, common.Parameter],
-        params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
-    ) -> None:
-        """Replace the part prose according to set_param."""
-        if part.prose is not None:
-            fixed_prose = Modify._replace_params(part.prose, param_dict, params_format, param_rep, show_value_warnings)
-            # change the prose in the control itself
-            part.prose = fixed_prose
-        for prt in as_list(part.parts):
-            Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep, show_value_warnings)
-        for sub_control in as_list(control.controls):
-            for prt in as_list(sub_control.parts):
-                Modify._replace_part_prose(sub_control, prt, param_dict, params_format, param_rep, show_value_warnings)
-
-    @staticmethod
-    def _replace_control_prose(
-        control: cat.Control,
-        param_dict: Dict[str, common.Parameter],
-        params_format: Optional[str] = None,
-        param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        show_value_warnings: bool = False
-    ) -> None:
-        """Replace the control prose according to set_param."""
-        for param in as_list(control.params):
-            Modify._replace_param_choices(param, param_dict, show_value_warnings)
-        for part in as_list(control.parts):
-            if part.prose is not None:
-                fixed_prose = Modify._replace_params(
-                    part.prose, param_dict, params_format, param_rep, show_value_warnings
-                )
-                # change the prose in the control itself
-                part.prose = fixed_prose
-            for prt in as_list(part.parts):
-                Modify._replace_part_prose(control, prt, param_dict, params_format, param_rep, show_value_warnings)
-
-    @staticmethod
     def _add_adds_to_part(part: common.Part, add: prof.Add, added_parts=False) -> None:
         for attr in ['params', 'props', 'parts', 'links']:
             # don't add parts if already added earlier
@@ -165,7 +62,7 @@ class Modify(Pipeline.Filter):
                 continue
             add_list = getattr(add, attr, None)
             if add_list:
-                Modify._add_attr_to_part(part, add_list, attr, add.position)
+                Modify._add_attr_to_part(part, add_list[:], attr, add.position)
 
     @staticmethod
     def _add_to_list(parts_list: List[common.Part], add: prof.Add) -> bool:
@@ -236,6 +133,27 @@ class Modify(Pipeline.Filter):
         setattr(control, attr, attr_list)
 
     @staticmethod
+    def _add_to_trestle_props(control: cat.Control, add: prof.Add) -> None:
+        """Add props to special trestle part that keeps track of inherited props."""
+        if add.props:
+            trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS, lambda p: p.name)
+            if trestle_part is None:
+                trestle_part = common.Part(id=TRESTLE_INHERITED_PROPS, name=TRESTLE_INHERITED_PROPS, props=[], parts=[])
+                control.parts = as_list(control.parts)
+                control.parts.append(trestle_part)
+                trestle_part = control.parts[-1]
+            if add.by_id is None or add.by_id == control.id:
+                trestle_part.props.extend(add.props)
+            else:
+                by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
+                if by_id_part is None:
+                    trestle_part.parts.append(
+                        common.Part(name=TRESTLE_INHERITED_PROPS + '_' + add.by_id, title=add.by_id, props=[])
+                    )
+                    by_id_part = trestle_part.parts[-1]
+                by_id_part.props.extend(add.props)
+
+    @staticmethod
     def _add_to_control(control: cat.Control, add: prof.Add) -> None:
         """First step in applying Add to control."""
         control.parts = as_list(control.parts)
@@ -244,12 +162,13 @@ class Modify(Pipeline.Filter):
             for attr in ['params', 'props', 'parts', 'links']:
                 add_list = getattr(add, attr, None)
                 if add_list:
-                    Modify._add_attr_to_control(control, add_list, attr, add.position)
-            return
+                    Modify._add_attr_to_control(control, add_list[:], attr, add.position)
         else:
             # this is only called if by_id is not None
             if not Modify._add_to_parts(control.parts, add):
                 logger.warning(f'Could not find id for add in control {control.id}: {add.by_id}')
+        Modify._add_to_trestle_props(control, add)
+        control.parts = none_if_empty(control.parts)
 
     @staticmethod
     def _set_overwrite_items(param: common.Parameter, set_param: prof.SetParameter) -> None:
@@ -339,31 +258,6 @@ class Modify(Pipeline.Filter):
             control.params[index] = param
             self._catalog_interface.replace_control(control)
 
-    def _change_prose_with_param_values(self):
-        """Go through all controls and change prose based on param values."""
-        param_dict: Dict[str, common.Parameter] = {}
-        # build the full mapping of params to values from the catalog interface
-        for control in self._catalog_interface.get_all_controls_from_dict():
-            param_dict.update(ControlInterface.get_control_param_dict(control, False))
-        param_dict.update(self._catalog_interface.loose_param_dict)
-        # insert param values into prose of all controls
-        for control in self._catalog_interface.get_all_controls_from_dict():
-            self._replace_control_prose(
-                control, param_dict, self._params_format, self._param_rep, self.show_value_warnings
-            )
-
-    @staticmethod
-    def _replace_param_choices(
-        param: common.Parameter, param_dict: Dict[str, common.Parameter], show_value_warnings: bool
-    ) -> None:
-        """Set values for all choices param that refer to params with values."""
-        if param.select:
-            new_choices: List[str] = []
-            for choice in as_list(param.select.choice):
-                new_choice = Modify._replace_params(choice, param_dict, show_value_warnings)
-                new_choices.append(new_choice)
-            param.select.choice = new_choices
-
     def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
         """Modify the controls based on the profile."""
         logger.debug(f'modify specify catalog {catalog.metadata.title} for profile {self._profile.metadata.title}')
@@ -411,7 +305,9 @@ class Modify(Pipeline.Filter):
 
         if self._change_prose:
             # go through all controls and fix the prose based on param values
-            self._change_prose_with_param_values()
+            self._catalog_interface._change_prose_with_param_values(
+                self._params_format, self._param_rep, self.show_value_warnings
+            )
 
         catalog = self._catalog_interface.get_catalog()
 

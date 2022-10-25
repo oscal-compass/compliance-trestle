@@ -212,7 +212,7 @@ class GenericComponent(TrestleBaseModel):
     def generate() -> GenericComponent:
         """Generate instance of GenericComponent."""
         uuid = str(uuid4())
-        status = common.ImplementationStatus(state=const.STATUS_OTHER)
+        status = common.ImplementationStatus(state=const.STATUS_PLANNED)
         return GenericComponent(
             uuid=uuid, type=const.REPLACE_ME, title=const.REPLACE_ME, description=const.REPLACE_ME, status=status
         )

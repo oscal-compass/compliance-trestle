@@ -24,9 +24,9 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_item_from_list, none_if_empty
+from trestle.common.list_utils import as_list, delete_item_from_list, get_item_from_list, none_if_empty
 from trestle.common.model_utils import ModelUtils
-from trestle.core.control_context import ControlContext
+from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
@@ -249,22 +249,21 @@ class CatalogInterface():
                 return control.id, status
         return '', ''
 
-    def get_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
-        """Create mapping of label to part_id for all controls."""
+    def get_statement_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
+        """Create mapping of label to part_id for top level parts in statement of all controls."""
         id_map = {}
         for control in self.get_all_controls_from_catalog(True):
-            id_dict = {}
-            for part in as_list(control.parts):
-                if part.name == const.STATEMENT:
-                    for sub_part in as_list(part.parts):
-                        label = ControlInterface.get_label(sub_part)
-                        if label_as_key:
-                            id_dict[label] = sub_part.id
-                        else:
-                            id_dict[sub_part.id] = label
-                    if id_dict:
-                        id_map[control.id] = id_dict
-                    break
+            statement_part = get_item_from_list(control.parts, const.STATEMENT, lambda p: p.name)
+            if statement_part:
+                id_dict: Dict[str, str] = {}
+                for sub_part in as_list(statement_part.parts):
+                    label = ControlInterface.get_label(sub_part)
+                    if label_as_key:
+                        id_dict[label] = sub_part.id
+                    else:
+                        id_dict[sub_part.id] = label
+                if id_dict:
+                    id_map[control.id] = id_dict
         return id_map
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
@@ -564,6 +563,20 @@ class CatalogInterface():
                 param_dict[key] = profile_param_dict[key]
         return param_dict
 
+    def _get_full_param_dict(self) -> Dict[str, common.Parameter]:
+        param_dict: Dict[str, common.Parameter] = {}
+        # build the full mapping of params to values from the catalog interface
+        for control in self.get_all_controls_from_dict():
+            param_dict.update(ControlInterface.get_control_param_dict(control, False))
+        return param_dict
+
+    def _change_prose_with_param_values(self, param_format, param_rep, show_value_warnings: bool) -> None:
+        """Go through all controls and change prose based on param values."""
+        param_dict = self._get_full_param_dict()
+        # insert param values into prose of all controls
+        for control in self.get_all_controls_from_dict():
+            ControlInterface.replace_control_prose(control, param_dict, param_format, param_rep, show_value_warnings)
+
     @staticmethod
     def _get_display_name_and_ns(param: common.Parameter) -> Tuple[Optional[str], Optional[str]]:
         for prop in as_list(param.props):
@@ -571,6 +584,31 @@ class CatalogInterface():
                 ns = str(prop.ns) if prop.ns else None
                 return prop.value, ns
         return None, None
+
+    @staticmethod
+    def _get_all_rules_params_and_vals(context: ControlContext) -> None:
+        """Get rules, params, vals from control implementations."""
+        context.rules_dict = {}
+        context.params_dict = {}
+        context.param_vals = {}
+        def_comp = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+        if def_comp:
+            for control_imp in as_list(def_comp.control_implementations):
+                context.rules_dict.update(ControlInterface.get_rules_dict_from_item(control_imp))
+                context.params_dict.update(ControlInterface.get_params_dict_from_item(control_imp))
+                context.param_vals.update(ControlInterface.get_param_vals_from_control_imp(control_imp))
+            new_dict = {}
+            for key, val in context.params_dict.items():
+                rule = context.rules_dict.get(key, None)
+                rule_name = rule['name'] if rule else 'Unknown'
+                # rebuild the dict so it has desired order in yaml header
+                new_dict[key] = {
+                    'name': val['name'],
+                    'description': val['description'],
+                    'rule-id': rule_name,
+                    'options': val['options']
+                }
+            context.params_dict = new_dict
 
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """
@@ -600,7 +638,10 @@ class CatalogInterface():
         full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile
                                                                                 ) if context.profile else {}
 
-        label_map = self.get_part_id_map(True)
+        if context.purpose == ContextPurpose.COMPONENT and context.comp_def:
+            CatalogInterface._get_all_rules_params_and_vals(context)
+
+        label_map = self.get_statement_part_id_map(True)
         found_alters, _, _ = CatalogInterface.read_additional_content(
             context.md_root, required_section_list, label_map, context.sections_dict, context.to_markdown
         )
@@ -609,8 +650,14 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
+            if new_context.inherited_props and new_context.purpose == ContextPurpose.PROFILE:
+                inherited_props = new_context.inherited_props.get(control.id, None)
+                if inherited_props:
+                    # build set in order of list so that duplicates will have final value stick, then convert to list
+                    unique_props = list({prop['name']: prop for prop in inherited_props}.values())
+                    new_context.yaml_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
             if new_context.set_parameters:
-                # get all params for this control
+                # get all params for this control from the resolved profile catalog with blocked adds
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
                 set_param_dict: Dict[str, str] = {}
                 for param_id, param_dict in control_param_dict.items():
@@ -635,7 +682,10 @@ class CatalogInterface():
                             # all the other elements are from the profile set_param
                             new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
                     else:
-                        new_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                        # if the profile doesnt change this param at all, show it in the header with values
+                        tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                        values = tmp_dict.get('values', None)
+                        new_dict = {'id': param_id, 'values': values}
                     new_dict.pop('id')
                     if display_name:
                         new_dict[const.DISPLAY_NAME] = display_name
@@ -776,7 +826,7 @@ class CatalogInterface():
         md_path: pathlib.Path,
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
-        sections: Dict[str, str],
+        sections_dict: Dict[str, str],
         write_mode: bool,
         default_namespace: Optional[str] = None
     ) -> Tuple[List[prof.Alter], Dict[str, Any], Dict[str, str]]:
@@ -786,11 +836,11 @@ class CatalogInterface():
         param_sort_map: Dict[str, str] = {}
         for group_path in CatalogInterface._get_group_ids_and_dirs(md_path).values():
             for control_file in group_path.glob('*.md'):
-                sort_id, control_alters, control_param_dict = ControlReader.read_new_alters_and_params(
+                sort_id, control_alters, control_param_dict = ControlReader.read_editable_content(
                     control_file,
                     required_sections_list,
                     label_map,
-                    sections,
+                    sections_dict,
                     write_mode,
                     default_namespace
                 )
@@ -809,15 +859,14 @@ class CatalogInterface():
 
     def get_sections(self) -> List[str]:
         """Get the available sections by a full index of all controls."""
-        sections: List[str] = []
-
-        for control in self._control_dict.values():
-            if not control.control.parts:
-                continue
-            for part in control.control.parts:
-                if part.name not in sections and part.name != const.STATEMENT:
-                    sections.append(part.name)
-        return sections
+        return list(
+            {
+                part.name
+                for control_handle in self._control_dict.values()
+                for part in as_list(control_handle.control.parts)
+                if part.name != const.STATEMENT
+            }
+        )
 
     @staticmethod
     def merge_controls(dest: cat.Control, src: cat.Control, replace_params: bool) -> None:

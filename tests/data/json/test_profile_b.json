@@ -69,6 +69,16 @@
                   "value": "add prof b prop value"
                 }
               ]
+            },
+            {
+              "position": "starting",
+              "by-id": "ac-3.3_prm_2",
+              "props": [
+                {
+                  "name": "add_prof_b_prop_by_id",
+                  "value": "add prof b prop by id value"
+                }
+              ]
             }
           ]
         }

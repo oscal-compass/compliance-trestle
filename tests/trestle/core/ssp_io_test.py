@@ -17,7 +17,7 @@ from typing import Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import execute_command_and_assert, setup_for_ssp
+from tests.test_utils import delete_line_in_file, execute_command_and_assert, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
 from trestle.common import file_utils
@@ -90,11 +90,15 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
+    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
 
     # set responses
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', 'This is a response')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.c', 'This is also a response.')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
+    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
+    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
+    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
 
     command_ssp_assem = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
@@ -126,8 +130,7 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert len(list(tree.get_all_headers_for_level(3))) == 3
 
     # insert some responses by component
-    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
-    assert file_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', '### foo comp\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'Implementation a.', '### foo comp\n')
     assert file_utils.insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
     ssp_obj, _ = fetcher.get_oscal(True)
