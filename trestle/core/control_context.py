@@ -45,7 +45,7 @@ class ControlContext:
     prompt_responses: bool
     additional_content: bool
     overwrite_header_values: bool
-    set_parameters: bool
+    set_parameters_flag: bool
     yaml_header: Optional[Dict[Any, Any]] = None
     sections_dict: Optional[Dict[str, str]] = None
     profile: Optional[prof.Profile] = None
@@ -57,6 +57,7 @@ class ControlContext:
     rules_dict: Optional[Dict[str, Dict[str, str]]] = None
     params_dict: Optional[Dict[str, Dict[str, Any]]] = None
     param_vals: Optional[List[Dict[str, str]]] = None
+    control_implementation: Optional[comp.ControlImplementation] = None
 
     @classmethod
     def generate(
@@ -68,7 +69,7 @@ class ControlContext:
         prompt_responses=False,
         additional_content=False,
         overwrite_header_values=False,
-        set_parameters=False,
+        set_parameters_flag=False,
         yaml_header: Optional[Dict[Any, Any]] = None,
         sections_dict: Optional[Dict[str, str]] = None,
         profile: Optional[prof.Profile] = None,
@@ -79,7 +80,8 @@ class ControlContext:
         inherited_props: Optional[Dict[str, Any]] = None,
         rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
         params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
-        param_vals: Optional[List[Dict[str, str]]] = None
+        param_vals: Optional[List[Dict[str, str]]] = None,
+        control_implementation: Optional[comp.ControlImplementation] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
         context = cls(
@@ -90,7 +92,7 @@ class ControlContext:
             prompt_responses,
             additional_content,
             overwrite_header_values,
-            set_parameters,
+            set_parameters_flag,
             yaml_header=yaml_header,
             sections_dict=sections_dict,
             profile=profile,
@@ -101,7 +103,8 @@ class ControlContext:
             inherited_props=inherited_props,
             rules_dict=rules_dict,
             params_dict=params_dict,
-            param_vals=param_vals
+            param_vals=param_vals,
+            control_implementation=control_implementation
         )
         context.yaml_header = as_dict(yaml_header)
         context.sections_dict = as_dict(sections_dict)
@@ -121,7 +124,7 @@ class ControlContext:
             context.prompt_responses,
             context.additional_content,
             context.overwrite_header_values,
-            context.set_parameters,
+            context.set_parameters_flag,
             yaml_header=copy.deepcopy(context.yaml_header),
             sections_dict=copy.deepcopy(context.sections_dict),
             profile=context.profile,
@@ -132,6 +135,7 @@ class ControlContext:
             inherited_props=copy.deepcopy(context.inherited_props),
             rules_dict=context.rules_dict,
             params_dict=context.params_dict,
-            param_vals=context.param_vals
+            param_vals=context.param_vals,
+            control_implementation=copy.deepcopy(context.control_implementation)
         )
         return new_context

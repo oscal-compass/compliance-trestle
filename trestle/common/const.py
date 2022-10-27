@@ -398,11 +398,13 @@ SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
 RULE_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
-COMP_DEF_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-param-vals'
+COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
 
 COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
+
+COMP_DEF_VALUES = 'comp-def-values'
 
 VALUES = 'values'
 
@@ -445,7 +447,8 @@ TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
 
 RESOLUTION_SOURCE = 'resolution-source'
 
-TRESTLE_INHERITED_PROPS = 'trestle_inherited_props'
+# call it tracker to distinguish from the externally visible TRESTLE_INHERITED_PROPS_TAG
+TRESTLE_INHERITED_PROPS_TRACKER = 'trestle_inherited_props_tracker'
 
 RULE_ID = 'Rule_Id'
 

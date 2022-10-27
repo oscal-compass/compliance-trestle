@@ -614,7 +614,7 @@ class ControlReader():
                 if all_params:
                     yaml_header[const.RULE_PARAMS_TAG] = all_params
                 if context.param_vals:
-                    yaml_header[const.COMP_DEF_PARAM_VALS_TAG] = context.param_vals
+                    yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.param_vals
 
         if not control_file.exists():
             return comp_dict, yaml_header
@@ -622,9 +622,9 @@ class ControlReader():
         try:
             md_api = MarkdownAPI()
             new_yaml_header, control_md = md_api.processor.process_markdown(control_file)
-            if context.purpose != ContextPurpose.COMPONENT:
-                yaml_header = new_yaml_header
-                comp_dict = {}
+            # if context.purpose != ContextPurpose.COMPONENT:
+            yaml_header = new_yaml_header
+            comp_dict = {}
 
             # first get the header strings, including statement labels, for statement imp reqs
             imp_string = '## Implementation '
@@ -951,7 +951,7 @@ class ControlReader():
                 prop.ns = const.TRESTLE_GENERIC_NS
 
     @staticmethod
-    def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
+    def read_control(control_path: pathlib.Path, set_parameters_flag: bool) -> Tuple[cat.Control, str]:
         """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
@@ -989,7 +989,7 @@ class ControlReader():
                 _, control.parts = ControlReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
-        if set_parameters:
+        if set_parameters_flag:
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []

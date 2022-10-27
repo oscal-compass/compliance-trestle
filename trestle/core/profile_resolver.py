@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import trestle.oscal.catalog as cat
 import trestle.oscal.common as com
 import trestle.oscal.profile as prof
-from trestle.common.const import TRESTLE_INHERITED_PROPS
+from trestle.common.const import TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.list_utils import as_list, pop_item_from_list
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.control_interface import ParameterRep
@@ -45,13 +45,13 @@ class ProfileResolver():
 
         Notes:
         If an upstream profile adds props to the control they are tracked in a special temporary part in the control
-        called const.TRESTLE_INHERITED_PROPS.  If that part is present in a control its contents should be added to
-        the dict entry for that control, and the part removed from the control.
+        called const.TRESTLE_INHERITED_PROPS_TRACKER.  If that part is present in a control its contents should be added
+        to the dict entry for that control, and the part removed from the control.
         """
         prop_dict: Dict[str, Any] = {}
         cat_interface = CatalogInterface(res_cat)
         for control in cat_interface.get_all_controls_from_dict():
-            part: com.Part = pop_item_from_list(control.parts, TRESTLE_INHERITED_PROPS, lambda p: p.name)
+            part: com.Part = pop_item_from_list(control.parts, TRESTLE_INHERITED_PROPS_TRACKER, lambda p: p.name)
             if part:
                 props_list: List[Dict[str, Any]] = []
                 for prop in as_list(part.props):

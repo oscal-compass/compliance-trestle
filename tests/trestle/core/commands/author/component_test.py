@@ -33,11 +33,11 @@ from trestle.core.markdown.markdown_processor import MarkdownProcessor
 md_path = 'md_comp'
 
 
-def edit_files(control_path: pathlib.Path, set_parameters: bool, guid_dict: Dict[str, str]) -> None:
+def edit_files(control_path: pathlib.Path, set_parameters_flag: bool, guid_dict: Dict[str, str]) -> None:
     """Edit the files to show assemble worked."""
     assert control_path.exists()
     assert file_utils.insert_text_in_file(control_path, None, guid_dict['text'])
-    if set_parameters:
+    if set_parameters_flag:
         assert test_utils.delete_line_in_file(control_path, 'label:')
         assert file_utils.insert_text_in_file(control_path, 'ac-1_prm_1:', '    label: label from edit\n')
         # delete profile values for 4, then replace value for 3 with new value
@@ -76,7 +76,7 @@ def check_common_contents(header: Dict[str, Any]) -> None:
     assert params[0] == {
         'name': 'foo_length', 'description': 'minimum_foo_length', 'rule-id': 'XCCDF', 'options': '["6", "9"]'
     }
-    vals = header[const.COMP_DEF_PARAM_VALS_TAG]
+    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]
     assert len(vals) == 2
     assert vals['quantity_available'] == '500'
     assert header[const.TRESTLE_GLOBAL_TAG][
@@ -136,6 +136,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     assert file_checker.files_unchanged()
 
     # make edits to status and remarks and control level prose
+    assert test_utils.substitute_text_in_file(ac1_path, "'6'", "'9'")
     assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
     control_prose = '567 or more restrictive'
     assert test_utils.confirm_text_in_file(ac1_path, 'after assembly to JSON', control_prose)

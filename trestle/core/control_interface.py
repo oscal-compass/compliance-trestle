@@ -630,7 +630,7 @@ class ControlInterface:
         values_only: bool,
     ) -> Dict[str, common.Parameter]:
         """
-        Create mapping of param id's to params.
+        Create mapping of param id's to params for params in the control.
 
         Args:
             control: the control containing params of interest
