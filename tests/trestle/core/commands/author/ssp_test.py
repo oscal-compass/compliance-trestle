@@ -84,10 +84,10 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     md_api = MarkdownAPI()
     _, tree = md_api.processor.process_markdown(ac_1)
     # if sections specified then Control Guidance does not appear
-    rc = 12 if specify_sections else 13
+    rc = 11 if specify_sections else 12
     assert tree.get_count_of_subnodes() == rc
     _, tree = md_api.processor.process_markdown(ac_2)
-    rc = 30 if specify_sections else 31
+    rc = 29 if specify_sections else 30
     assert tree.get_count_of_subnodes() == rc
 
 

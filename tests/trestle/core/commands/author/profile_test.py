@@ -120,7 +120,7 @@ control_subparts_dict = {
 }
 
 all_sections_str = (
-    'implgdn:Implementation Guidance,expevid:Expected Evidence,my_guidance:My Guidance,'
+    'guidance:Guidance,implgdn:Implementation Guidance,expevid:Expected Evidence,my_guidance:My Guidance,'
     'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra,a_subpart:A Subpart,'
     'a_subsubpart:A Subsubpart,b_subpart:B Subpart,a_by_id_subpart:a by_id subpart'
 )

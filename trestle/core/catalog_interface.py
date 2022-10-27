@@ -759,29 +759,8 @@ class CatalogInterface():
             writer = ControlWriter()
             writer.write_control_for_editing(new_context, control, group_dir, group_title, part_id_map, [])
 
-    def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
-        """
-        Write out the catalog controls from dict as markdown files to the specified directory.
-
-        Args:
-            context: The context of the catalog markdown creation.
-            part_id_map: Mapping of part_id to label for all controls
-
-        Returns:
-            None
-        """
-        # create the directory in which to write the control markdown files
-        context.md_root.mkdir(exist_ok=True, parents=True)
-
-        if context.purpose == ContextPurpose.PROFILE:
-            self.write_catalog_as_profile_markdown(context, part_id_map)
-        elif context.purpose == ContextPurpose.COMPONENT:
-            self.write_catalog_as_component_markdown(context, part_id_map)
-        elif context.purpose == ContextPurpose.SSP:
-            self.write_catalog_as_ssp_markdown(context, part_id_map)
-
-        # just write regular catalog
-
+    def write_catalog_as_catalog(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
+        """Write the catalog as a simple catalog."""
         required_section_list = context.required_sections.split(',') if context.required_sections else []
         allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
 
@@ -842,6 +821,29 @@ class CatalogInterface():
 
             writer = ControlWriter()
             writer.write_control_for_editing(new_context, control, group_dir, group_title, part_id_map, [])
+
+    def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
+        """
+        Write out the catalog controls from dict as markdown files to the specified directory.
+
+        Args:
+            context: The context of the catalog markdown creation.
+            part_id_map: Mapping of part_id to label for all controls
+
+        Returns:
+            None
+        """
+        # create the directory in which to write the control markdown files
+        context.md_root.mkdir(exist_ok=True, parents=True)
+
+        if context.purpose == ContextPurpose.PROFILE:
+            self.write_catalog_as_profile_markdown(context, part_id_map)
+        elif context.purpose == ContextPurpose.COMPONENT:
+            self.write_catalog_as_component_markdown(context, part_id_map)
+        elif context.purpose == ContextPurpose.SSP:
+            self.write_catalog_as_ssp_markdown(context, part_id_map)
+        else:
+            self.write_catalog_as_catalog(context, part_id_map)
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:
