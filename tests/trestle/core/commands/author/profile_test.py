@@ -428,9 +428,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
 def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure modes of profile generate and assemble."""
     # no trestle root specified direct command
-    test_args = argparse.Namespace(
-        name='my_prof', output='new_prof', verbose=0, set_parameters_flag=False, sections=None
-    )
+    test_args = argparse.Namespace(name='my_prof', output='new_prof', verbose=0, set_parameters=False, sections=None)
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
 
@@ -447,7 +445,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         output='new_prof',
         yaml_header=bad_yaml_path,
         verbose=0,
-        set_parameters_flag=False,
+        set_parameters=False,
         sections=None
     )
     profile_generate = ProfileGenerate()
@@ -488,7 +486,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         markdown='md_prof',
         output='my_prof',
         verbose=0,
-        set_parameters_flag=False,
+        set_parameters=False,
         yaml_header=None,
         required_sections='NeededExtra',
         regenerate=False,
