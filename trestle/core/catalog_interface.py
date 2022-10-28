@@ -281,11 +281,14 @@ class CatalogInterface():
         """Get list of statement parts as dicts with indentation, label and prose."""
         items = []
         control = self.get_control(control_id)
+        # statement may have no parts at all but if statement present it is first part
         if control and control.parts:
-            # statement is first part
             part = control.parts[0]
-            for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
-                items.extend(CatalogInterface._get_statement_sub_parts(prt, 0))
+            if part.name == 'statement':
+                for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
+                    items.extend(CatalogInterface._get_statement_sub_parts(prt, 0))
+            else:
+                logger.warning(f'Control {control_id} has parts but first part name is {part.name} - not statement')
         return items
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
