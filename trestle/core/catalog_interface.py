@@ -24,7 +24,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_item_from_list, get_item_from_list, none_if_empty
+from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, get_item_from_list, none_if_empty  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
@@ -265,6 +265,28 @@ class CatalogInterface():
                 if id_dict:
                     id_map[control.id] = id_dict
         return id_map
+
+    @staticmethod
+    def _get_statement_sub_parts(part: common.Part, indent: int) -> List[Dict[str, str]]:
+        items = []
+        label = ControlInterface.get_label(part)
+        label = 'no_label' if not label else label
+        prose = '' if part.prose is None else part.prose
+        items.append({'indent': indent, 'label': label, 'prose': prose})
+        for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
+            items.extend(CatalogInterface._get_statement_sub_parts(prt, indent + 1))
+        return items
+
+    def get_statement_parts(self, control_id: str) -> List[Dict[str, str]]:
+        """Get list of statement parts as dicts with indentation, label and prose."""
+        items = []
+        control = self.get_control(control_id)
+        if control and control.parts:
+            # statement is first part
+            part = control.parts[0]
+            for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
+                items.extend(CatalogInterface._get_statement_sub_parts(prt, 0))
+        return items
 
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
