@@ -715,7 +715,7 @@ class CatalogInterface():
 
             new_context.required_sections = required_section_list
             new_context.allowed_sections = allowed_section_list
-            found_control_alters = as_filtered_list(found_alters, lambda a: a.control_id == control.id)
+            found_control_alters = [alter for alter in found_alters if alter.control_id == control.id]
 
             self._write_control_into_dir(new_context, control, part_id_map, found_control_alters)
 
