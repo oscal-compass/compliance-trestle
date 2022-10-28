@@ -169,7 +169,7 @@ class CatalogAssemble(AuthorCommonCommand):
             md_name: The name of the directory containing the markdown control files for the ssp
             assem_cat_name: The output name of the catalog model to be created from the assembly
             parent_cat_name: Optional name of the parent catalog that the markdown controls will replace
-            set_parameters: set the parameters in the control to the values in the markdown yaml header
+            set_parameters_flag: set the parameters in the control to the values in the markdown yaml header
             regenerate: whether to regenerate the uuid's in the catalog
             version: version for the assembled catalog
 
