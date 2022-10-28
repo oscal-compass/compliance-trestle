@@ -422,6 +422,54 @@
               {
                 "name": "profile_check_version",
                 "value": "0.1.58"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://foo_ns",
+                "value": "XCCDF",
+                "class": "Rule_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://foo_ns",
+                "value": "The XCCDF must be compliant",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://foo_ns",
+                "value": "FancyXtraRule",
+                "class": "Rule_Id",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://foo_ns",
+                "value": "This is a fancy extra rule",
+                "class": "Rule_Description",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Parameter_Id",
+                "ns": "http://foo_ns",
+                "value": "foo_length",
+                "class": "Parameter_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Description",
+                "ns": "http://foo_ns",
+                "value": "minimum_foo_length",
+                "class": "Parameter_Description",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Value_Alternatives",
+                "ns": "http://foo_ns",
+                "value": "[\"6\", \"9\"]",
+                "class": "Parameter_Value_Alternatives",
+                "remarks": "rule_1"
               }
             ],
             "implemented-requirements": [

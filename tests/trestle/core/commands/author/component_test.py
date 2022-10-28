@@ -71,14 +71,11 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
 
 def check_common_contents(header: Dict[str, Any]) -> None:
     """Check common features of controls markdown."""
-    params = header[const.RULE_PARAMS_TAG]
+    params = header[const.RULES_PARAMS_TAG]
     assert len(params) == 1
     assert params[0] == {
         'name': 'foo_length', 'description': 'minimum_foo_length', 'rule-id': 'XCCDF', 'options': '["6", "9"]'
     }
-    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]
-    assert len(vals) == 2
-    assert vals['quantity_available'] == '500'
     assert header[const.TRESTLE_GLOBAL_TAG][
         const.PROFILE_TITLE] == 'NIST Special Publication 800-53 Revision 5 MODERATE IMPACT BASELINE'  # noqa E501
 
@@ -91,10 +88,13 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: planned')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1']['values'] == 'Param_1_value_in_catalog'
+    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
     rules = header[const.COMP_DEF_RULES_TAG]
     assert len(rules) == 1
     assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]
+    assert len(vals) == 2
+    assert vals['quantity_available'] == '500'
     check_common_contents(header)
 
 
@@ -136,7 +136,6 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     assert file_checker.files_unchanged()
 
     # make edits to status and remarks and control level prose
-    assert test_utils.substitute_text_in_file(ac1_path, "'6'", "'9'")
     assert test_utils.substitute_text_in_file(ac1_path, '644', '567')
     control_prose = '567 or more restrictive'
     assert test_utils.confirm_text_in_file(ac1_path, 'after assembly to JSON', control_prose)
@@ -155,11 +154,11 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
         comp.ComponentDefinition
     )
     component = ControlInterface.get_component_by_name(assem_comp_def, 'OSCO')
-    imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-5')
+    imp_reqs = ControlInterface.get_control_imp_reqs(component.control_implementations[1], 'ac-5')
     new_status = ControlInterface.get_status_from_props(imp_reqs[0])
     assert new_status.state == 'implemented'
     assert new_status.remarks.__root__ == 'this is my new remark'
-    imp_reqs = ControlInterface.get_control_imp_reqs(component, 'ac-1')
+    imp_reqs = ControlInterface.get_control_imp_reqs(component.control_implementations[0], 'ac-1')
     assert control_prose in imp_reqs[0].description
 
     orig_uuid = assem_comp_def.uuid

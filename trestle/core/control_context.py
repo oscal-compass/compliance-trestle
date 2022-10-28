@@ -55,8 +55,8 @@ class ControlContext:
     comp_name: Optional[str] = None
     inherited_props: Optional[Dict[str, Any]] = None
     rules_dict: Optional[Dict[str, Dict[str, str]]] = None
-    params_dict: Optional[Dict[str, Dict[str, Any]]] = None
-    param_vals: Optional[List[Dict[str, str]]] = None
+    rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None
+    rules_param_vals: Optional[List[Dict[str, str]]] = None
     control_implementation: Optional[comp.ControlImplementation] = None
 
     @classmethod
@@ -79,8 +79,8 @@ class ControlContext:
         comp_name: Optional[str] = None,
         inherited_props: Optional[Dict[str, Any]] = None,
         rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
-        params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
-        param_vals: Optional[List[Dict[str, str]]] = None,
+        rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
+        rules_param_vals: Optional[List[Dict[str, str]]] = None,
         control_implementation: Optional[comp.ControlImplementation] = None
     ) -> ControlContext:
         """Generate control context of the needed type."""
@@ -102,8 +102,8 @@ class ControlContext:
             comp_name=comp_name,
             inherited_props=inherited_props,
             rules_dict=rules_dict,
-            params_dict=params_dict,
-            param_vals=param_vals,
+            rules_params_dict=rules_params_dict,
+            rules_param_vals=rules_param_vals,
             control_implementation=control_implementation
         )
         context.yaml_header = as_dict(yaml_header)
@@ -133,9 +133,9 @@ class ControlContext:
             comp_def=context.comp_def,
             comp_name=context.comp_name,
             inherited_props=copy.deepcopy(context.inherited_props),
-            rules_dict=context.rules_dict,
-            params_dict=context.params_dict,
-            param_vals=context.param_vals,
+            rules_dict=copy.deepcopy(context.rules_dict),
+            rules_params_dict=copy.deepcopy(context.rules_params_dict),
+            rules_param_vals=context.rules_param_vals,
             control_implementation=copy.deepcopy(context.control_implementation)
         )
         return new_context

@@ -396,7 +396,7 @@ HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in
 
 SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
-RULE_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
+RULES_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
 COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
 

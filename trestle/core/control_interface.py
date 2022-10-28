@@ -382,11 +382,11 @@ class ControlInterface:
         return [prop.value for prop in as_filtered_list(item.props, lambda p: p.name == const.RULE_ID)]
 
     @staticmethod
-    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, Any]]:
-        """Get all params found in this item."""
+    def get_params_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
+        """Get all params found in this item with rule_id as key."""
         # id, description, options - where options is a string containing comma-sep list of items
         # params is dict with rule_id as key and value contains: param_name, description and choices
-        params = {}
+        params: Dict[str, Dict[str, str]] = {}
         for prop in as_list(item.props):
             if prop.name == const.PARAMETER_ID:
                 rule_id = string_from_root(prop.remarks)
@@ -407,7 +407,15 @@ class ControlInterface:
                     params[rule_id]['options'] = prop.value
                 else:
                     raise TrestleError(f'Param options for rule {rule_id} found with no param_id')
-        return params
+        new_params = {}
+        for rule_id, param in params.items():
+            if 'name' not in param:
+                logger.warning(f'Parameter for rule_id {rule_id} has no matching name.  Ignoring the param.')
+            else:
+                param['description'] = param.get('description', '')
+                param['options'] = param.get('options', '')
+                new_params[rule_id] = param
+        return new_params
 
     @staticmethod
     def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:
@@ -812,16 +820,12 @@ class ControlInterface:
         return None
 
     @staticmethod
-    def get_control_imp_reqs(component: Optional[comp.DefinedComponent],
+    def get_control_imp_reqs(control_imp: Optional[comp.ControlImplementation],
                              control_id: str) -> List[comp.ImplementedRequirement]:
-        """Get the imp_reqs for this control from the component."""
-        imp_reqs: List[comp.ImplementedRequirement] = []
-        if component:
-            imp_reqs = [
-                imp_req for control_imp in as_list(component.control_implementations) for imp_req in
-                as_filtered_list(control_imp.implemented_requirements, lambda ir: ir.control_id == control_id)
-            ]
-        return imp_reqs
+        """Get the imp_reqs for this control from the control implementation."""
+        if control_imp is None:
+            return []
+        return as_filtered_list(control_imp.implemented_requirements, lambda imp_req: imp_req.control_id == control_id)
 
     @staticmethod
     def get_status_from_props(item: TypeWithProps) -> common.ImplementationStatus:
