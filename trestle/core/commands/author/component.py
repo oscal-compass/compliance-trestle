@@ -101,11 +101,14 @@ class ComponentGenerate(AuthorCommonCommand):
                 )
                 local_catalog_interface = CatalogInterface(resolved_catalog)
                 cat_interface_dict[source_profile_uri] = local_catalog_interface
+            else:
+                local_catalog_interface = cat_interface_dict[source_profile_uri]
             # insert the profile title (from title of resolved catalog) into the yaml header so it appears in md
             # different controls in the final catalog may have different profile titles if from different control_imps
             context.yaml_header = {}
             context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = resolved_catalog.metadata.title
+            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE
+                                                          ] = local_catalog_interface.get_catalog_title()
             part_id_map = local_catalog_interface.get_statement_part_id_map(False) if local_catalog_interface else {}
             # write controls corresponding to this source catalog
             # if two controlimps load the same control, the second one will merge into the first

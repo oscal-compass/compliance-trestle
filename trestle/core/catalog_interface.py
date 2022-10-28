@@ -250,6 +250,10 @@ class CatalogInterface():
                 return control.id, status
         return '', ''
 
+    def get_catalog_title(self) -> str:
+        """Get the title of the catalog."""
+        return self._catalog.metadata.title
+
     def get_statement_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
         """Create mapping of label to part_id for top level parts in statement of all controls."""
         id_map = {}
