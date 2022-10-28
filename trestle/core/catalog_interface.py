@@ -271,6 +271,31 @@ class CatalogInterface():
                     id_map[control.id] = id_dict
         return id_map
 
+    @staticmethod
+    def _get_statement_sub_parts(part: common.Part, indent: int) -> List[Dict[str, str]]:
+        items = []
+        label = ControlInterface.get_label(part)
+        label = 'no_label' if not label else label
+        prose = '' if part.prose is None else part.prose
+        items.append({'indent': indent, 'label': label, 'prose': prose})
+        for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
+            items.extend(CatalogInterface._get_statement_sub_parts(prt, indent + 1))
+        return items
+
+    def get_statement_parts(self, control_id: str) -> List[Dict[str, str]]:
+        """Get list of statement parts as dicts with indentation, label and prose."""
+        items = []
+        control = self.get_control(control_id)
+        # statement may have no parts at all but if statement present it is first part
+        if control and control.parts:
+            part = control.parts[0]
+            if part.name == 'statement':
+                for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
+                    items.extend(CatalogInterface._get_statement_sub_parts(prt, 0))
+            else:
+                logger.warning(f'Control {control_id} has parts but first part name is {part.name} - not statement')
+        return items
+
     def get_control_part_prose(self, control_id: str, part_name: str) -> str:
         """
         Get the prose for a named part in the control.

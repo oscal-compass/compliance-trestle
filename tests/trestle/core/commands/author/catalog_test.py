@@ -268,6 +268,21 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     assert interface._catalog.controls[1].controls[0].title == new_title
 
 
+def test_get_statement_parts(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test the catalog interface with complex controls."""
+    interface = CatalogInterface(simplified_nist_catalog)
+    parts = interface.get_statement_parts('ac-1')
+    assert len(parts) == 9
+    prt = parts[0]
+    assert prt['indent'] == 0
+    assert prt['label'] == 'a.'
+    assert prt['prose'].startswith('Develop, document')
+    prt = parts[3]
+    assert prt['indent'] == 2
+    assert prt['label'] == '(b)'
+    assert prt['prose'].startswith('Is consistent with')
+
+
 def test_catalog_interface_groups() -> None:
     """Test handling of groups of groups in CatalogInterface."""
     catalog: cat.Catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
