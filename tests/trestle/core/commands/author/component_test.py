@@ -88,7 +88,7 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     assert test_utils.confirm_text_in_file(ac1_path, 'ac-1_smt.c', 'Status: planned')
     markdown_processor = MarkdownProcessor()
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
-    assert header[const.SET_PARAMS_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
+    assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
     rules = header[const.COMP_DEF_RULES_TAG]
     assert len(rules) == 1
     assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}

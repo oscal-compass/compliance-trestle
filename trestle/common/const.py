@@ -400,6 +400,8 @@ RULES_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
 COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
 
+PARAM_VALUES_TAG = TRESTLE_TAG + 'param-values'
+
 COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'

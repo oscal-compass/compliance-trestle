@@ -760,9 +760,9 @@ class CatalogInterface():
                             _update_values(set_param)
 
                 if control_param_dict:
-                    new_context.yaml_header[const.SET_PARAMS_TAG] = {}
+                    new_context.yaml_header[const.PARAM_VALUES_TAG] = {}
                     for key, param in control_param_dict.items():
-                        new_context.yaml_header[const.SET_PARAMS_TAG][key] = none_if_empty(
+                        new_context.yaml_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
                             ControlInterface.param_to_str(param, ParameterRep.VALUE_OR_EMPTY_STRING)
                         )
 
