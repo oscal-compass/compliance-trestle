@@ -785,15 +785,10 @@ class CatalogInterface():
             control_param_dict = ControlInterface.get_control_param_dict(control, False)
             set_param_dict: Dict[str, str] = {}
             for param_id, param_dict in control_param_dict.items():
-                # if the param is in the full_param_dict, load its contents first and mark as profile-values
-                display_name = ''
-                # if the profile doesnt change this param at all, show it in the header with values
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
                 values = tmp_dict.get('values', None)
                 new_dict = {'id': param_id, 'values': values}
                 new_dict.pop('id')
-                if display_name:
-                    new_dict[const.DISPLAY_NAME] = display_name
                 set_param_dict[param_id] = new_dict
             if set_param_dict:
                 if const.SET_PARAMS_TAG not in new_context.yaml_header:
