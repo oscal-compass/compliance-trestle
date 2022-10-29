@@ -19,7 +19,7 @@ from typing import Iterator, List, Optional
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.common_types import OBT
-from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS
+from trestle.common.const import RESOLUTION_SOURCE, TRESTLE_INHERITED_PROPS_TRACKER
 from trestle.common.err import TrestleNotFoundError
 from trestle.common.list_utils import as_list, get_item_from_list, none_if_empty
 from trestle.core.catalog_interface import CatalogInterface
@@ -136,9 +136,11 @@ class Modify(Pipeline.Filter):
     def _add_to_trestle_props(control: cat.Control, add: prof.Add) -> None:
         """Add props to special trestle part that keeps track of inherited props."""
         if add.props:
-            trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS, lambda p: p.name)
+            trestle_part = get_item_from_list(control.parts, TRESTLE_INHERITED_PROPS_TRACKER, lambda p: p.name)
             if trestle_part is None:
-                trestle_part = common.Part(id=TRESTLE_INHERITED_PROPS, name=TRESTLE_INHERITED_PROPS, props=[], parts=[])
+                trestle_part = common.Part(
+                    id=TRESTLE_INHERITED_PROPS_TRACKER, name=TRESTLE_INHERITED_PROPS_TRACKER, props=[], parts=[]
+                )
                 control.parts = as_list(control.parts)
                 control.parts.append(trestle_part)
                 trestle_part = control.parts[-1]
@@ -148,7 +150,7 @@ class Modify(Pipeline.Filter):
                 by_id_part = get_item_from_list(trestle_part.parts, add.by_id, lambda p: p.title)
                 if by_id_part is None:
                     trestle_part.parts.append(
-                        common.Part(name=TRESTLE_INHERITED_PROPS + '_' + add.by_id, title=add.by_id, props=[])
+                        common.Part(name=TRESTLE_INHERITED_PROPS_TRACKER + '_' + add.by_id, title=add.by_id, props=[])
                     )
                     by_id_part = trestle_part.parts[-1]
                 by_id_part.props.extend(add.props)

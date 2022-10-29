@@ -171,7 +171,7 @@ class ProfileGenerate(AuthorCommonCommand):
             context.additional_content = True
             context.profile = profile
             context.overwrite_header_values = overwrite_header_values
-            context.set_parameters = True
+            context.set_parameters_flag = True
             context.required_sections = required_sections
             context.inherited_props = inherited_props
             catalog_interface.write_catalog_as_markdown(context, part_id_map)
@@ -214,7 +214,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 parent_prof_name=args.name,
                 md_name=args.markdown,
                 assem_prof_name=args.output,
-                set_parameters=args.set_parameters,
+                set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
                 sections_dict=sections_to_dict(args.sections),
@@ -309,7 +309,7 @@ class ProfileAssemble(AuthorCommonCommand):
         parent_prof_name: str,
         md_name: str,
         assem_prof_name: str,
-        set_parameters: bool,
+        set_parameters_flag: bool,
         regenerate: bool,
         version: Optional[str],
         sections_dict: Optional[Dict[str, str]],
@@ -324,7 +324,7 @@ class ProfileAssemble(AuthorCommonCommand):
             parent_prof_name: Optional name of profile used to generate the markdown (default is assem_prof_name)
             md_name: The name of the directory containing the markdown control files for the profile
             assem_prof_name: The name of the assembled profile.  It can be the same as the parent to overwrite
-            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
+            set_parameters_flag: Use the parameters in yaml header to specify values for setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
             sections_dict: Optional map of short name to long name for sections
@@ -380,7 +380,7 @@ class ProfileAssemble(AuthorCommonCommand):
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
-        if set_parameters:
+        if set_parameters_flag:
             ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
 
         if version:

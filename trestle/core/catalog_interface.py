@@ -27,10 +27,11 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, get_item_from_list, none_if_empty  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
-from trestle.core.control_interface import ControlInterface
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.control_reader import ControlReader
 from trestle.core.control_writer import ControlWriter
 from trestle.oscal import common
+from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
@@ -248,6 +249,10 @@ class CatalogInterface():
                 status = ControlInterface.get_prop(control, 'status')
                 return control.id, status
         return '', ''
+
+    def get_catalog_title(self) -> str:
+        """Get the title of the catalog."""
+        return self._catalog.metadata.title
 
     def get_statement_part_id_map(self, label_as_key: bool) -> Dict[str, Dict[str, str]]:
         """Create mapping of label to part_id for top level parts in statement of all controls."""
@@ -557,14 +562,13 @@ class CatalogInterface():
         return hits
 
     @staticmethod
-    def _get_full_profile_param_dict(profile: prof.Profile) -> Dict[str, common.Parameter]:
+    def _get_full_profile_param_dict(profile: Optional[prof.Profile]) -> Dict[str, common.Parameter]:
         """Get the full mapping of param_id to modified value for this profiles set_params."""
         set_param_dict: Dict[str, common.Parameter] = {}
-        if not profile.modify:
-            return set_param_dict
-        for set_param in as_list(profile.modify.set_parameters):
-            param = ControlInterface.setparam_to_param(set_param.param_id, set_param)
-            set_param_dict[set_param.param_id] = param
+        if profile and profile.modify:
+            for set_param in as_list(profile.modify.set_parameters):
+                param = ControlInterface.setparam_to_param(set_param.param_id, set_param)
+                set_param_dict[set_param.param_id] = param
         return set_param_dict
 
     @staticmethod
@@ -610,61 +614,54 @@ class CatalogInterface():
                 return prop.value, ns
         return None, None
 
+    def _write_control_into_dir(
+        self,
+        context: ControlContext,
+        control: cat.Control,
+        part_id_map: Dict[str, Dict[str, str]],
+        found_control_alters: List[prof.Alter]
+    ):
+        _, group_title, _ = self.get_group_info_by_control(control.id)
+        control_path_parts = self.get_control_path(control.id)
+        group_dir = context.md_root / '/'.join(control_path_parts)
+
+        writer = ControlWriter()
+        writer.write_control_for_editing(context, control, group_dir, group_title, part_id_map, found_control_alters)
+
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
-        """Get rules, params, vals from control implementations."""
+        """Get rules, params, vals from the control implementation."""
+        # rules are defined in the control_imp itself
+        # but they are linked to controls via the imp_reqs
+        # param values may be set both by the control_imp and the imp_req
         context.rules_dict = {}
-        context.params_dict = {}
-        context.param_vals = {}
-        def_comp = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
-        if def_comp:
-            for control_imp in as_list(def_comp.control_implementations):
-                context.rules_dict.update(ControlInterface.get_rules_dict_from_item(control_imp))
-                context.params_dict.update(ControlInterface.get_params_dict_from_item(control_imp))
-                context.param_vals.update(ControlInterface.get_param_vals_from_control_imp(control_imp))
-            new_dict = {}
-            for key, val in context.params_dict.items():
-                rule = context.rules_dict.get(key, None)
-                rule_name = rule['name'] if rule else 'Unknown'
-                # rebuild the dict so it has desired order in yaml header
-                new_dict[key] = {
-                    'name': val['name'],
-                    'description': val['description'],
-                    'rule-id': rule_name,
-                    'options': val['options']
-                }
-            context.params_dict = new_dict
+        context.rules_params_dict = {}
+        context.rules_param_vals = {}
+        context.rules_dict.update(ControlInterface.get_rules_dict_from_item(context.control_implementation))
+        context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(context.control_implementation))
+        context.rules_param_vals.update(
+            ControlInterface.get_param_vals_from_control_imp(context.control_implementation)
+        )
+        new_dict = {}
+        for key, val in context.rules_params_dict.items():
+            rule = context.rules_dict.get(key, None)
+            rule_name = rule['name'] if rule else 'Unknown'
+            # rebuild the dict so it has desired order in yaml header
+            new_dict[key] = {
+                'name': val['name'], 'description': val['description'], 'rule-id': rule_name, 'options': val['options']
+            }
+        context.rules_params_dict = new_dict
 
-    def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
-        """
-        Write out the catalog controls from dict as markdown files to the specified directory.
-
-        Args:
-            context: The context of the catalog markdown creation.
-            part_id_map: Mapping of part_id to label for all controls
-
-
-        Returns:
-            None
-
-        Notes:
-            The header should capture current values for parameters.
-            Special handling is needed if a profile is provided, in which case the header should only have details
-            captured in the set_params of the profile.  label, select, choice, how-many should only appear if they
-            are specified explicitly in the profile's set_parameters.
-        """
+    def write_catalog_as_profile_markdown(
+        self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]
+    ) -> None:
+        """Write out the catalog as profile markdown."""
         required_section_list = context.required_sections.split(',') if context.required_sections else []
         allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
 
-        # create the directory in which to write the control markdown files
-        context.md_root.mkdir(exist_ok=True, parents=True)
-        # get the list of params for this profile from its set_params
+        # Get the list of params for this profile from its set_params
         # this is just from the set_params
-        full_profile_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile
-                                                                                ) if context.profile else {}
-
-        if context.purpose == ContextPurpose.COMPONENT and context.comp_def:
-            CatalogInterface._get_all_rules_params_and_vals(context)
+        full_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
 
         label_map = self.get_statement_part_id_map(True)
         found_alters, _, _ = CatalogInterface.read_additional_content(
@@ -675,85 +672,200 @@ class CatalogInterface():
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
             new_context = ControlContext.clone(context)
-            if new_context.inherited_props and new_context.purpose == ContextPurpose.PROFILE:
+            if new_context.inherited_props:
                 inherited_props = new_context.inherited_props.get(control.id, None)
                 if inherited_props:
                     # build set in order of list so that duplicates will have final value stick, then convert to list
                     unique_props = list({prop['name']: prop for prop in inherited_props}.values())
                     new_context.yaml_header[const.TRESTLE_INHERITED_PROPS_TAG] = unique_props
-            if new_context.set_parameters:
-                # get all params for this control from the resolved profile catalog with blocked adds
+            # get all params and vals for this control from the resolved profile catalog with block adds in effect
+            control_param_dict = ControlInterface.get_control_param_dict(control, False)
+            set_param_dict: Dict[str, str] = {}
+            for param_id, param_dict in control_param_dict.items():
+                # if the param is in the full_param_dict, load its contents first and mark as profile-values
+                display_name = ''
+                if param_id in full_param_dict:
+                    # get the param from the profile set_param
+                    param = full_param_dict[param_id]
+                    display_name, _ = CatalogInterface._get_display_name_and_ns(param)
+                    # assign its contents to the dict
+                    new_dict = ModelUtils.parameter_to_dict(param, True)
+                    if const.VALUES in new_dict:
+                        new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
+                        new_dict.pop(const.VALUES)
+                    # then insert the original, incoming values as values
+                    if param_id in control_param_dict:
+                        orig_param = control_param_dict[param_id]
+                        orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
+                        # pull only the values from the actual control dict
+                        # all the other elements are from the profile set_param
+                        new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
+                else:
+                    # if the profile doesnt change this param at all, show it in the header with values
+                    tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                    values = tmp_dict.get('values', None)
+                    new_dict = {'id': param_id, 'values': values}
+                new_dict.pop('id', None)
+                if display_name:
+                    new_dict[const.DISPLAY_NAME] = display_name
+                set_param_dict[param_id] = new_dict
+            if set_param_dict:
+                if const.SET_PARAMS_TAG not in new_context.yaml_header:
+                    new_context.yaml_header[const.SET_PARAMS_TAG] = {}
+                if new_context.overwrite_header_values:
+                    # update the control params with new values
+                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
+                        if key in control_param_dict:
+                            set_param_dict[key] = value
+                else:
+                    # update the control params with any values in yaml header not set in control
+                    # need to maintain order in the set_param_dict
+                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
+                        if key in control_param_dict and key not in set_param_dict:
+                            set_param_dict[key] = value
+                new_context.yaml_header[const.SET_PARAMS_TAG] = set_param_dict
+            elif const.SET_PARAMS_TAG in new_context.yaml_header:
+                # need to cull any params that are not in control
+                pop_list: List[str] = []
+                for key in new_context.yaml_header[const.SET_PARAMS_TAG].keys():
+                    if key not in control_param_dict:
+                        pop_list.append(key)
+                for pop in pop_list:
+                    new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
+
+            new_context.required_sections = required_section_list
+            new_context.allowed_sections = allowed_section_list
+            found_control_alters = [alter for alter in found_alters if alter.control_id == control.id]
+
+            self._write_control_into_dir(new_context, control, part_id_map, found_control_alters)
+
+    def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
+        """Write out the catalog as component markdown."""
+        # in component mode get rules, params, and param values from the current control_implementation
+        # the catalog is written out in pieces per control_imp
+        allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
+
+        # write out the controls
+        for control in self.get_all_controls_from_catalog(True):
+            # here we do special handling of how set-parameters merge with the yaml header
+            new_context = ControlContext.clone(context)
+            new_context.allowed_sections = allowed_section_list
+
+            self._write_control_into_dir(new_context, control, part_id_map, [])
+
+    def write_catalog_as_component_markdown(
+        self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]
+    ) -> None:
+        """Write out the catalog as component markdown."""
+
+        def _update_values(set_param: comp.SetParameter) -> None:
+            if set_param.param_id in control_param_dict:
+                control_param_dict[set_param.param_id].values = set_param.values
+            if set_param.param_id in new_context.rules_param_vals:
+                values = ', '.join([v.__root__ for v in as_list(set_param.values)])
+                new_context.rules_param_vals[set_param.param_id] = values
+
+        # get the rule information for the current control implementation being written out in this context
+        CatalogInterface._get_all_rules_params_and_vals(context)
+
+        control_ids_in_comp_imp = [
+            imp_req.control_id for imp_req in as_list(context.control_implementation.implemented_requirements)
+        ]
+
+        for control in self.get_all_controls_from_catalog(True):
+            if control.id in control_ids_in_comp_imp:
+                new_context = ControlContext.clone(context)
                 control_param_dict = ControlInterface.get_control_param_dict(control, False)
-                set_param_dict: Dict[str, str] = {}
-                for param_id, param_dict in control_param_dict.items():
-                    # if the param is in the profile set_params, load its contents first and mark as profile-values
-                    display_name = ''
-                    if param_id in full_profile_param_dict:
-                        # get the param from the profile set_param
-                        param = full_profile_param_dict[param_id]
-                        display_name, _ = CatalogInterface._get_display_name_and_ns(param)
-                        # assign its contents to the dict
-                        new_dict = ModelUtils.parameter_to_dict(param, True)
-                        profile_values = new_dict.get(const.VALUES, None)
-                        if profile_values:
-                            new_dict[const.PROFILE_VALUES] = profile_values
-                            new_dict.pop(const.VALUES)
-                        # then insert the original, incoming values as values
-                        if param_id in control_param_dict:
-                            orig_param = control_param_dict[param_id]
-                            orig_dict = ModelUtils.parameter_to_dict(orig_param, True)
-                            # pull only the values from the actual control dict
-                            # all the other elements are from the profile set_param
-                            new_dict[const.VALUES] = orig_dict.get(const.VALUES, None)
-                    else:
-                        # if the profile doesnt change this param at all, show it in the header with values
-                        tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
-                        values = tmp_dict.get('values', None)
-                        new_dict = {'id': param_id, 'values': values}
-                    new_dict.pop('id')
-                    if display_name:
-                        new_dict[const.DISPLAY_NAME] = display_name
-                    set_param_dict[param_id] = new_dict
-                if set_param_dict:
-                    if const.SET_PARAMS_TAG not in new_context.yaml_header:
-                        new_context.yaml_header[const.SET_PARAMS_TAG] = {}
-                    if new_context.overwrite_header_values:
-                        # update the control params with new values
-                        for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
-                            if key in control_param_dict:
-                                set_param_dict[key] = value
-                    else:
-                        # update the control params with any values in yaml header not set in control
-                        # need to maintain order in the set_param_dict
-                        for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
-                            if key in control_param_dict and key not in set_param_dict:
-                                set_param_dict[key] = value
-                    new_context.yaml_header[const.SET_PARAMS_TAG] = set_param_dict
-                elif const.SET_PARAMS_TAG in new_context.yaml_header:
-                    # need to cull any params that are not in control
-                    pop_list: List[str] = []
-                    for key in new_context.yaml_header[const.SET_PARAMS_TAG].keys():
-                        if key not in control_param_dict:
-                            pop_list.append(key)
-                    for pop in pop_list:
-                        new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
-            _, group_title, _ = self.get_group_info_by_control(control.id)
-            # control could be in sub-group of group so build path to it
-            group_dir = new_context.md_root
+                for set_param in as_list(new_context.control_implementation.set_parameters):
+                    _update_values(set_param)
+                for imp_req in as_list(new_context.control_implementation.implemented_requirements):
+                    if imp_req.control_id == control.id:
+                        for set_param in as_list(imp_req.set_parameters):
+                            _update_values(set_param)
+
+                if control_param_dict:
+                    new_context.yaml_header[const.PARAM_VALUES_TAG] = {}
+                    for key, param in control_param_dict.items():
+                        new_context.yaml_header[const.PARAM_VALUES_TAG][key] = none_if_empty(
+                            ControlInterface.param_to_str(param, ParameterRep.VALUE_OR_EMPTY_STRING)
+                        )
+
+                self._write_control_into_dir(new_context, control, part_id_map, [])
+
+    def write_catalog_as_catalog(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
+        """Write the catalog as a simple catalog."""
+        required_section_list = context.required_sections.split(',') if context.required_sections else []
+        allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
+
+        # write out the controls
+        for control in self.get_all_controls_from_catalog(True):
+            # here we do special handling of how set-parameters merge with the yaml header
+            new_context = ControlContext.clone(context)
+
+            control_param_dict = ControlInterface.get_control_param_dict(control, False)
+            set_param_dict: Dict[str, str] = {}
+            for param_id, param_dict in control_param_dict.items():
+                tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
+                values = tmp_dict.get('values', None)
+                new_dict = {'values': values}
+                set_param_dict[param_id] = new_dict
+            if set_param_dict:
+                if const.SET_PARAMS_TAG not in new_context.yaml_header:
+                    new_context.yaml_header[const.SET_PARAMS_TAG] = {}
+                if new_context.overwrite_header_values:
+                    # update the control params with new values
+                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
+                        if key in control_param_dict:
+                            set_param_dict[key] = value
+                else:
+                    # update the control params with any values in yaml header not set in control
+                    # need to maintain order in the set_param_dict
+                    for key, value in new_context.yaml_header[const.SET_PARAMS_TAG].items():
+                        if key in control_param_dict and key not in set_param_dict:
+                            set_param_dict[key] = value
+                new_context.yaml_header[const.SET_PARAMS_TAG] = set_param_dict
+            elif const.SET_PARAMS_TAG in new_context.yaml_header:
+                # need to cull any params that are not in control
+                pop_list: List[str] = []
+                for key in new_context.yaml_header[const.SET_PARAMS_TAG].keys():
+                    if key not in control_param_dict:
+                        pop_list.append(key)
+                for pop in pop_list:
+                    new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
+
+            new_context.required_sections = required_section_list
+            new_context.allowed_sections = allowed_section_list
+            self._write_control_into_dir(new_context, control, part_id_map, [])
+
+    def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
+        """
+        Write out the catalog controls from dict as markdown files to the specified directory.
+
+        Args:
+            context: The context of the catalog markdown creation.
+            part_id_map: Mapping of part_id to label for all controls
+
+        Returns:
+            None
+        """
+        # create the directory structure in which to write the control markdown files
+        context.md_root.mkdir(exist_ok=True, parents=True)
+        for control in self.get_all_controls_from_catalog(True):
+            group_dir = context.md_root
             control_path = self.get_control_path(control.id)
             for sub_dir in control_path:
                 group_dir = group_dir / sub_dir
                 if not group_dir.exists():
                     group_dir.mkdir(parents=True, exist_ok=True)
 
-            new_context.required_sections = required_section_list
-            new_context.allowed_sections = allowed_section_list
-
-            writer = ControlWriter()
-            found_control_alters = [alter for alter in found_alters if alter.control_id == control.id]
-            writer.write_control_for_editing(
-                new_context, control, group_dir, group_title, part_id_map, found_control_alters
-            )
+        if context.purpose == ContextPurpose.PROFILE:
+            self.write_catalog_as_profile_markdown(context, part_id_map)
+        elif context.purpose == ContextPurpose.COMPONENT:
+            self.write_catalog_as_component_markdown(context, part_id_map)
+        elif context.purpose == ContextPurpose.SSP:
+            self.write_catalog_as_ssp_markdown(context, part_id_map)
+        else:
+            self.write_catalog_as_catalog(context, part_id_map)
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:
@@ -773,7 +885,7 @@ class CatalogInterface():
             sorted_id_map[key] = id_map[key]
         return sorted_id_map
 
-    def read_catalog_from_markdown(self, md_path: pathlib.Path, set_parameters: bool) -> cat.Catalog:
+    def read_catalog_from_markdown(self, md_path: pathlib.Path, set_parameters_flag: bool) -> cat.Catalog:
         """
         Read the groups and catalog controls from the given directory.
 
@@ -793,7 +905,7 @@ class CatalogInterface():
             # Controls with empty group titles are tolerated but at least one title must be present or warning given
             # The special group with no name that has the catalog as parent is just a list and has no title
             for control_path in group_dir.glob('*.md'):
-                control, control_group_title = ControlReader.read_control(control_path, set_parameters)
+                control, control_group_title = ControlReader.read_control(control_path, set_parameters_flag)
                 if control_group_title:
                     if group_title:
                         if control_group_title != group_title:
