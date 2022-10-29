@@ -602,14 +602,15 @@ class ControlReader():
             if params_dict:
                 if not set(params_dict.keys()).issuperset(rules_list):
                     raise TrestleError(f'Control {control_id} has a parameter assigned to a rule that is not defined.')
-                all_params.extend(
-                    [
-                        {
-                            context.rules_dict[id_]['name']: context.rules_params_dict[id_]
-                            for id_ in context.rules_params_dict.keys()
-                        }
-                    ]
-                )
+                if context.rules_dict:
+                    all_params.extend(
+                        [
+                            {
+                                context.rules_dict[id_]['name']: context.rules_params_dict[id_]
+                                for id_ in context.rules_params_dict.keys()
+                            }
+                        ]
+                    )
             if context.rules_dict:
                 rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
                 yaml_header[const.COMP_DEF_RULES_TAG] = [context.rules_dict[id_] for id_ in rule_ids]

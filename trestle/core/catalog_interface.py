@@ -614,23 +614,19 @@ class CatalogInterface():
                 return prop.value, ns
         return None, None
 
-    # typing
     def _write_control_into_dir(
-        self, new_context: ControlContext, control: cat.Control, part_id_map, found_control_alters
+        self,
+        context: ControlContext,
+        control: cat.Control,
+        part_id_map: Dict[str, Dict[str, str]],
+        found_control_alters: List[prof.Alter]
     ):
         _, group_title, _ = self.get_group_info_by_control(control.id)
-        # control could be in sub-group of group so build path to it
-        group_dir = new_context.md_root
-        control_path = self.get_control_path(control.id)
-        for sub_dir in control_path:
-            group_dir = group_dir / sub_dir
-            if not group_dir.exists():
-                group_dir.mkdir(parents=True, exist_ok=True)
+        control_path_parts = self.get_control_path(control.id)
+        group_dir = context.md_root / '/'.join(control_path_parts)
 
         writer = ControlWriter()
-        writer.write_control_for_editing(
-            new_context, control, group_dir, group_title, part_id_map, found_control_alters
-        )
+        writer.write_control_for_editing(context, control, group_dir, group_title, part_id_map, found_control_alters)
 
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
@@ -694,9 +690,8 @@ class CatalogInterface():
                     display_name, _ = CatalogInterface._get_display_name_and_ns(param)
                     # assign its contents to the dict
                     new_dict = ModelUtils.parameter_to_dict(param, True)
-                    profile_values = new_dict.get(const.VALUES, None)
-                    if profile_values:
-                        new_dict[const.PROFILE_VALUES] = profile_values
+                    if const.VALUES in new_dict:
+                        new_dict[const.PROFILE_VALUES] = new_dict[const.VALUES]
                         new_dict.pop(const.VALUES)
                     # then insert the original, incoming values as values
                     if param_id in control_param_dict:
@@ -710,7 +705,7 @@ class CatalogInterface():
                     tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
                     values = tmp_dict.get('values', None)
                     new_dict = {'id': param_id, 'values': values}
-                new_dict.pop('id')
+                new_dict.pop('id', None)
                 if display_name:
                     new_dict[const.DISPLAY_NAME] = display_name
                 set_param_dict[param_id] = new_dict
@@ -764,10 +759,10 @@ class CatalogInterface():
         """Write out the catalog as component markdown."""
 
         def _update_values(set_param: comp.SetParameter) -> None:
-            values = ', '.join([v.__root__ for v in as_list(set_param.values)])
             if set_param.param_id in control_param_dict:
-                control_param_dict[set_param.param_id] = values
+                control_param_dict[set_param.param_id].values = set_param.values
             if set_param.param_id in new_context.rules_param_vals:
+                values = ', '.join([v.__root__ for v in as_list(set_param.values)])
                 new_context.rules_param_vals[set_param.param_id] = values
 
         # get the rule information for the current control implementation being written out in this context
@@ -812,8 +807,7 @@ class CatalogInterface():
             for param_id, param_dict in control_param_dict.items():
                 tmp_dict = ModelUtils.parameter_to_dict(param_dict, True)
                 values = tmp_dict.get('values', None)
-                new_dict = {'id': param_id, 'values': values}
-                new_dict.pop('id')
+                new_dict = {'values': values}
                 set_param_dict[param_id] = new_dict
             if set_param_dict:
                 if const.SET_PARAMS_TAG not in new_context.yaml_header:
@@ -854,8 +848,15 @@ class CatalogInterface():
         Returns:
             None
         """
-        # create the directory in which to write the control markdown files
+        # create the directory structure in which to write the control markdown files
         context.md_root.mkdir(exist_ok=True, parents=True)
+        for control in self.get_all_controls_from_catalog(True):
+            group_dir = context.md_root
+            control_path = self.get_control_path(control.id)
+            for sub_dir in control_path:
+                group_dir = group_dir / sub_dir
+                if not group_dir.exists():
+                    group_dir.mkdir(parents=True, exist_ok=True)
 
         if context.purpose == ContextPurpose.PROFILE:
             self.write_catalog_as_profile_markdown(context, part_id_map)
