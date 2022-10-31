@@ -621,8 +621,8 @@ class CatalogInterface():
         part_id_map: Dict[str, Dict[str, str]],
         found_control_alters: List[prof.Alter]
     ):
+        # we need to create the dir structure on demand because we don't know a priori what groups are included
         _, group_title, _ = self.get_group_info_by_control(control.id)
-
         group_dir = context.md_root
         control_path = self.get_control_path(control.id)
         for sub_dir in control_path:
