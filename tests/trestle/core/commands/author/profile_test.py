@@ -120,12 +120,13 @@ control_subparts_dict = {
 }
 
 all_sections_str = (
-    'implgdn:Implementation Guidance,expevid:Expected Evidence,my_guidance:My Guidance,'
+    'guidance:Guidance,implgdn:Implementation Guidance,expevid:Expected Evidence,my_guidance:My Guidance,'
     'a_guidance:A Guidance,b_guidance:B Guidance,NeededExtra:Needed Extra,a_subpart:A Subpart,'
     'a_subsubpart:A Subsubpart,b_subpart:B Subpart,a_by_id_subpart:a by_id subpart'
 )
 
 all_sections_dict = {
+    'guidance': 'Guidance',
     'implgdn': 'Implementation Guidance',
     'expevid': 'Expected Evidence',
     'my_guidance': 'My Guidance',
@@ -179,13 +180,13 @@ def setup_profile_generate(trestle_root: pathlib.Path,
 @pytest.mark.parametrize('guid_dict', [my_guidance_dict, multi_guidance_dict, control_subparts_dict])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
-@pytest.mark.parametrize('set_parameters', [True, False])
+@pytest.mark.parametrize('set_parameters_flag', [True, False])
 def test_profile_generate_assemble(
     add_header: bool,
     guid_dict: Dict,
     use_cli: bool,
     dir_exists: bool,
-    set_parameters: bool,
+    set_parameters_flag: bool,
     tmp_trestle_dir: pathlib.Path,
     monkeypatch: MonkeyPatch
 ) -> None:
@@ -219,7 +220,7 @@ def test_profile_generate_assemble(
         edit_files(ac1_path, True, guid_dict)
 
         test_args = f'trestle author profile-assemble -n {prof_name} -m {md_name} -o {assembled_prof_name}'.split()
-        if set_parameters:
+        if set_parameters_flag:
             test_args.append('-sp')
         if dir_exists:
             assembled_prof_dir.mkdir()
@@ -250,7 +251,16 @@ def test_profile_generate_assemble(
         if dir_exists:
             assembled_prof_dir.mkdir()
         assert ProfileAssemble.assemble_profile(
-            tmp_trestle_dir, prof_name, md_name, assembled_prof_name, set_parameters, False, None, None, None, None
+            tmp_trestle_dir,
+            prof_name,
+            md_name,
+            assembled_prof_name,
+            set_parameters_flag,
+            False,
+            None,
+            None,
+            None,
+            None
         ) == 0
 
     assert test_utils.confirm_text_in_file(ac1_path, const.TRESTLE_GLOBAL_TAG, 'title: Trestle test profile')
@@ -262,13 +272,13 @@ def test_profile_generate_assemble(
     assert ModelUtils.model_age(profile) < test_utils.NEW_MODEL_AGE_SECONDS
     # get the set_params from the assembled profile
     set_params = profile.modify.set_parameters
-    if set_parameters:
+    if set_parameters_flag:
         assert set_params[2].values[0].__root__ == 'new value'
         assert set_params[1].props[0].ns == const.TRESTLE_GENERIC_NS
         assert len(set_params) == 14
     else:
         # the original profile did not have ns set for this display name
-        # confirm the namespace is not defined unless set_parameters is True
+        # confirm the namespace is not defined unless set_parameters_flag is True
         # i.e. the setting of ns for display-name is not automatic unless set-parameters is true
         assert set_params[2].values[0].__root__ == 'officer'
         assert set_params[1].props[0].ns is None
@@ -312,9 +322,9 @@ def test_profile_generate_assemble(
         tmp_trestle_dir, assem_prof_path, markdown_path, {}, False, all_sections_dict, 'NeededExtra'
     )
 
-    # if not set_parameters then the markdown will have no profile value for ac-1_prm_4, but the profile will still
-    # have a value for it.  So if set_parameters is true we need to remove that line that gets added
-    if not set_parameters:
+    # if not set_parameters_flag then the markdown will have no profile value for ac-1_prm_4, but the profile will still
+    # have a value for it.  So if set_parameters_flag is true we need to remove that line that gets added
+    if not set_parameters_flag:
         ac_1_path = tmp_trestle_dir / 'my_md/ac/ac-1.md'
         assert test_utils.delete_line_in_file(ac_1_path, 'profile-values: weekly')
 
@@ -336,7 +346,7 @@ def test_profile_ohv(required_sections: Optional[str], success: bool, ohv: bool,
     new_version = '1.2.3'
 
     # convert resolved profile catalog to markdown then assemble it after adding an item to a control
-    # if set_parameters is true, the yaml header will contain all the parameters
+    # if set_parameters_flag is true, the yaml header will contain all the parameters
     profile_generate = ProfileGenerate()
     yaml = YAML()
     yaml_header = yaml.load(yaml_header_path.open('r'))
@@ -460,7 +470,7 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         name='my_prof',
         output='md_prof',
         verbose=0,
-        set_parameters=False,
+        set_parameters_flag=False,
         overwrite_header_values=False,
         yaml_header=None,
         sections='NeededExtra:Needed Extra,implgdn:Implementation Guidance,expevid:Expected Evidence',
@@ -894,7 +904,11 @@ def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeyp
     assert inherited_props[1] == {
         'name': 'add_prof_b_prop_by_id', 'value': 'add prof b prop by id value', 'part_name': 'ac-3.3_prm_2'
     }
+    set_params = header[const.SET_PARAMS_TAG]
+    assert set_params['ac-3.3_prm_1'][const.PROFILE_VALUES] == 'from prof f set-param'
+    assert set_params['ac-3.3_prm_1'][const.VALUES] == 'key power users'
 
     ac5_path = tmp_trestle_dir / 'my_md/ac/ac-5.md'
     assert test_utils.confirm_text_in_file(ac5_path, 'value: one', 'smt-part: a.')
     assert test_utils.confirm_text_in_file(ac5_path, 'test_five', 'smt-part: ac-5_gdn')
+    assert test_utils.confirm_text_in_file(ac5_path, 'value: two', 'ns: https://prof_f_ns')

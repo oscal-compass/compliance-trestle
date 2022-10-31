@@ -835,8 +835,8 @@ class ModelUtils:
 
     @staticmethod
     def fields_set_non_none(obj: BaseModel) -> Set[str]:
-        """Find the fields set with Nones removed."""
-        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f) is not None))
+        """Find the fields set with Nones and empty items removed."""
+        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f)))
 
     @staticmethod
     def _objects_differ(
