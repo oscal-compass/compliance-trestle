@@ -622,8 +622,13 @@ class CatalogInterface():
         found_control_alters: List[prof.Alter]
     ):
         _, group_title, _ = self.get_group_info_by_control(control.id)
-        control_path_parts = self.get_control_path(control.id)
-        group_dir = context.md_root / '/'.join(control_path_parts)
+
+        group_dir = context.md_root
+        control_path = self.get_control_path(control.id)
+        for sub_dir in control_path:
+            group_dir = group_dir / sub_dir
+            if not group_dir.exists():
+                group_dir.mkdir(parents=True, exist_ok=True)
 
         writer = ControlWriter()
         writer.write_control_for_editing(context, control, group_dir, group_title, part_id_map, found_control_alters)
@@ -848,15 +853,8 @@ class CatalogInterface():
         Returns:
             None
         """
-        # create the directory structure in which to write the control markdown files
+        # create the directory in which to write the control markdown files
         context.md_root.mkdir(exist_ok=True, parents=True)
-        for control in self.get_all_controls_from_catalog(True):
-            group_dir = context.md_root
-            control_path = self.get_control_path(control.id)
-            for sub_dir in control_path:
-                group_dir = group_dir / sub_dir
-                if not group_dir.exists():
-                    group_dir.mkdir(parents=True, exist_ok=True)
 
         if context.purpose == ContextPurpose.PROFILE:
             self.write_catalog_as_profile_markdown(context, part_id_map)
