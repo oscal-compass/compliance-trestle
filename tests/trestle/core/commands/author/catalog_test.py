@@ -536,11 +536,14 @@ def test_get_control_paths(sample_catalog_rich_controls: cat.Catalog) -> None:
     cat_interface = CatalogInterface(sample_catalog_rich_controls)
     path = cat_interface.get_full_control_path('control_s')
     assert path == ['xy', 'sub']
+    assert cat_interface.get_control_path('control_s') == ['xy', 'sub']
     path = cat_interface.get_full_control_path('control_d1')
-    assert ['', 'control_d']
+    assert path == ['', 'control_d']
+    assert cat_interface.get_control_path('control_d1') == ['']
     control = copy.deepcopy(cat_interface.get_control('control_d1'))
     control.id = 'cat_level'
     sample_catalog_rich_controls.controls = [control]
     cat_interface = CatalogInterface(sample_catalog_rich_controls)
     path = cat_interface.get_full_control_path('cat_level')
     assert path == ['']
+    assert cat_interface.get_control_path('cat_level') == ['']
