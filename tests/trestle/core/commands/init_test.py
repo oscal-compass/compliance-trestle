@@ -90,7 +90,7 @@ def test_config_copy_error(tmp_path: pathlib.Path, keep_cwd: bool, monkeypatch: 
     assert os.stat(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)).st_size == 0
 
 
-def test_init_local(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_init_local(tmp_path: pathlib.Path, keep_cwd: bool, monkeypatch: MonkeyPatch):
     """Test init for local usage only."""
     os.chdir(tmp_path)
     command = 'trestle init --local'
@@ -104,7 +104,7 @@ def test_init_local(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_init_govdocs(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_init_govdocs(tmp_path: pathlib.Path, keep_cwd: bool, monkeypatch: MonkeyPatch):
     """Test init for governed document usage only."""
     os.chdir(tmp_path)
     command = 'trestle init --govdocs'
@@ -118,7 +118,7 @@ def test_init_govdocs(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     assert not os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_init_full(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_init_full(tmp_path: pathlib.Path, keep_cwd: bool, monkeypatch: MonkeyPatch):
     """Test init for full usage only."""
     os.chdir(tmp_path)
     command = 'trestle init --full'
@@ -132,7 +132,7 @@ def test_init_full(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_init_govdocs_n_local(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_init_govdocs_n_local(tmp_path: pathlib.Path, keep_cwd: bool, monkeypatch: MonkeyPatch):
     """Test init with multiple flags behave like mode of the highest hierarchy."""
     os.chdir(tmp_path)
     command = 'trestle init --govdocs --local'
@@ -146,7 +146,7 @@ def test_init_govdocs_n_local(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_init_govdocs_n_full(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
+def test_init_govdocs_n_full(tmp_path: pathlib.Path, keep_cwd: bool, monkeypatch: MonkeyPatch):
     """Test init with multiple flags behave like mode of the highest hierarchy."""
     os.chdir(tmp_path)
     command = 'trestle init --govdocs --full'
