@@ -444,7 +444,7 @@ class CatalogInterface():
         )
 
     def get_control_path(self, control_id: str) -> List[str]:
-        """Return the path into the markdown directory for this control."""
+        """Return the path into the markdown directory for this control based only on the groups."""
         return self._control_dict[control_id].group_path
 
     def get_full_control_path(self, control_id: str) -> List[str]:
