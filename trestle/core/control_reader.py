@@ -566,6 +566,14 @@ class ControlReader():
         return name.lower().replace(' ', '').replace('-', '').replace('_', '').replace('/', '')
 
     @staticmethod
+    def _get_label_from_implementation_header(imp_header: str):
+        # assumed to be of form: Implementation for part a.
+        split_header = imp_header.split(' ', 4)
+        if len(split_header) != 5:
+            raise TrestleError(f'Implementation header cannot be parsed for statement part: {imp_header}')
+        return split_header[4].strip()
+
+    @staticmethod
     def read_all_implementation_prose_and_header(
         control: cat.Control, control_file: pathlib.Path, context: ControlContext
     ) -> Tuple[CompDict, Dict[str, List[str]]]:
@@ -650,11 +658,7 @@ class ControlReader():
                 # it may have subnodes of Rules, Implementation Status, Implementaton Remarks
                 ControlReader._add_node_to_dict(comp_name, '', comp_dict, node, control_id, [], context)
             for imp_header in imp_header_list:
-                # Implementation for part a.
-                split_header = imp_header.split(' ', 4)
-                if len(split_header) != 5:
-                    raise TrestleError(f'Implemntation header string cannot be parsed for statement part: {imp_header}')
-                label = split_header[4].strip()
+                label = ControlReader._get_label_from_implementation_header(imp_header)
                 node = control_md.get_node_for_key(imp_header)
                 ControlReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [], context)
 
