@@ -650,7 +650,11 @@ class ControlReader():
                 # it may have subnodes of Rules, Implementation Status, Implementaton Remarks
                 ControlReader._add_node_to_dict(comp_name, '', comp_dict, node, control_id, [], context)
             for imp_header in imp_header_list:
-                label = imp_header.split(' ', 2)[2].strip()
+                # Implementation for part a.
+                split_header = imp_header.split(' ', 4)
+                if len(split_header) != 5:
+                    raise TrestleError(f'Implemntation header string cannot be parsed for statement part: {imp_header}')
+                label = split_header[4].strip()
                 node = control_md.get_node_for_key(imp_header)
                 ControlReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [], context)
 

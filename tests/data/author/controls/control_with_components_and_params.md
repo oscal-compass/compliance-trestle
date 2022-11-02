@@ -65,7 +65,7 @@ ______________________________________________________________________
 
 ______________________________________________________________________
 
-## Implementation a.
+## Implementation for part a.
 
 Text for default component
 
@@ -82,7 +82,7 @@ Text for fancy thing component
 
 ______________________________________________________________________
 
-## Implementation b.
+## Implementation for part b.
 
 ### fancy  thing
 
@@ -94,7 +94,7 @@ and more stuff
 
 ______________________________________________________________________
 
-## Implementation c.
+## Implementation for part c.
 
 Just for the default component
 
