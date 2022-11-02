@@ -527,5 +527,20 @@ def test_validate_catalog_missing_group_id(
     cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    assem_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    _, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
+
+
+def test_get_control_paths(sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test get control paths."""
+    cat_interface = CatalogInterface(sample_catalog_rich_controls)
+    path = cat_interface.get_full_control_path('control_s')
+    assert path == ['xy', 'sub']
+    path = cat_interface.get_full_control_path('control_d1')
+    assert ['', 'control_d']
+    control = copy.deepcopy(cat_interface.get_control('control_d1'))
+    control.id = 'cat_level'
+    sample_catalog_rich_controls.controls = [control]
+    cat_interface = CatalogInterface(sample_catalog_rich_controls)
+    path = cat_interface.get_full_control_path('cat_level')
+    assert path == ['']
