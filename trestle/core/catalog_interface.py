@@ -69,7 +69,8 @@ class CatalogInterface():
         group_id: str
         group_title: Optional[str]
         group_class: Optional[str]
-        path: List[str]
+        group_path: List[str]
+        control_path: List[str]
         control: cat.Control
 
     def __init__(self, catalog: Optional[cat.Catalog] = None) -> None:
@@ -110,12 +111,20 @@ class CatalogInterface():
             group_id = control_handle.group_id
             group_title = control_handle.group_title
             group_class = control_handle.group_class
+            group_path = control_handle.group_path
+            control_path = path[:]
+            control_path.append(control_handle.control.id)
             for sub_control in control_handle.control.controls:
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=group_id, group_title=group_title, group_class=group_class, path=path, control=sub_control
+                    group_id=group_id,
+                    group_title=group_title,
+                    group_class=group_class,
+                    group_path=group_path,
+                    control_path=control_path,
+                    control=sub_control
                 )
                 control_dict[sub_control.id] = control_handle
-                self._add_sub_controls(control_handle, control_dict, path)
+                self._add_sub_controls(control_handle, control_dict, control_path)
 
     def _add_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[str]) -> None:
         """Add all controls in the group recursively, including sub groups and sub controls."""
@@ -130,7 +139,8 @@ class CatalogInterface():
                     group_title=group.title,
                     group_class=group.class_,
                     control=control,
-                    path=group_path
+                    group_path=group_path,
+                    control_path=group_path
                 )
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
@@ -154,7 +164,12 @@ class CatalogInterface():
             group_path = ['']
             for control in self._catalog.controls:
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id='', group_title='', group_class=const.MODEL_TYPE_CATALOG, control=control, path=group_path
+                    group_id='',
+                    group_title='',
+                    group_class=const.MODEL_TYPE_CATALOG,
+                    control=control,
+                    group_path=group_path,
+                    control_path=group_path
                 )
                 control_dict[control.id] = control_handle
                 self._add_sub_controls(control_handle, control_dict, group_path)
@@ -429,8 +444,12 @@ class CatalogInterface():
         )
 
     def get_control_path(self, control_id: str) -> List[str]:
-        """Return the path into the markdown directory for this control."""
-        return self._control_dict[control_id].path
+        """Return the path into the markdown directory for this control based only on the groups."""
+        return self._control_dict[control_id].group_path
+
+    def get_full_control_path(self, control_id: str) -> List[str]:
+        """Return the path to the control including groups and sub-controls."""
+        return self._control_dict[control_id].control_path
 
     def replace_control(self, control: cat.Control) -> None:
         """
@@ -493,7 +512,7 @@ class CatalogInterface():
 
     def _insert_control_in_catalog(self, control_handle: ControlHandle) -> None:
         """Insert the control into the catalog based on its path."""
-        path = control_handle.path
+        path = control_handle.group_path
         node = self._catalog
         if path[0] != '':
             for group_id in path:
