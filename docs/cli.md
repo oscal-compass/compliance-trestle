@@ -139,7 +139,18 @@ Trestle provides utilities for converting from element path to trestle's python 
 
 ## `trestle init`
 
-This command will create (initialize) a trestle workspace in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
+This command will create (initialize) a trestle workspace in the current directory with the necessary directory structure and trestle artefacts.
+This command has multiple modes that it can run in:
+
+- `--full`
+- `--local`
+- `--govdocs`
+
+By default `trestle init` will run in the `--full` mode.
+
+`--full` mode is meant to be used when full functionality of Trestle is used i.e. managing OSCAL models locally, govern documents or using Trestle for API purposes.
+`dist` repository will be used when `trestle assemble` command is used.
+Running `trestle init --full` will create the directory structure below for different artefacts:
 
 ```text
 .
@@ -159,6 +170,27 @@ This command will create (initialize) a trestle workspace in the current directo
 ├── assessment-plans
 ├── assessment-results
 └── plan-of-action-and-milestones
+```
+
+`--local` mode is meant to be used when Trestle is used to only manage OSCAL models locally. Running `trestle init --local` will create the directory structure below for different artefacts:
+
+```text
+.
+├── .trestle
+├── catalogs
+├── profiles
+├── component-definitions
+├── system-security-plans
+├── assessment-plans
+├── assessment-results
+└── plan-of-action-and-milestones
+```
+
+`--govdocs` mode is meant to be used when Trestle is only used to govern documents. Running `trestle init --govdocs` will create the directory structure below:
+
+```text
+.
+├── .trestle
 ```
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands.

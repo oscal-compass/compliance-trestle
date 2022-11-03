@@ -180,6 +180,18 @@ IOF_SHORT = '-iof'
 IOF_LONG = '--include-optional-fields'
 IOF_HELP = 'Include fields that are optional in the OSCAL model when generating the new object.'
 
+INIT_FULL_SHORT = '-fl'
+INIT_FULL_LONG = '--full'
+INIT_FULL_HELP = 'Initializes Trestle workspace for local, API and governed documents usage.'
+
+INIT_GOVDOCS_SHORT = '-gd'
+INIT_GOVDOCS_LONG = '--govdocs'
+INIT_GOVDOCS_HELP = 'Initializes Trestle workspace for governed documents usage only.'
+
+INIT_LOCAL_SHORT = '-loc'
+INIT_LOCAL_LONG = '--local'
+INIT_LOCAL_HELP = 'Initializes Trestle workspace for local management of OSCAL models.'
+
 FILE_ENCODING = 'utf8'
 
 # Trestle documentation
