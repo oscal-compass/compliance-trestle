@@ -18,26 +18,21 @@
 import os
 import pathlib
 import stat
-import sys
 
 from _pytest.monkeypatch import MonkeyPatch
 
-import pytest
+from tests.test_utils import execute_command_and_assert
 
 import trestle.common.const as const
-from trestle import cli
 from trestle.common import file_utils
 
 
-def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
-    """Test init happy path."""
+def test_init(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test init happy path and no flags."""
     os.chdir(tmp_path)
-    testargs = ['trestle', 'init', '-v']
-    monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        cli.run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 0
+    command = 'trestle init -v'
+    execute_command_and_assert(command, 0, monkeypatch)
+
     for directory in const.MODEL_DIR_LIST:
         assert os.path.isdir(directory)
         assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
@@ -46,7 +41,7 @@ def test_init(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_directory_creation_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
+def test_directory_creation_error(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
     if file_utils.is_windows():
@@ -56,12 +51,10 @@ def test_directory_creation_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     config_dir.mkdir()
     config_dir.chmod(stat.S_IREAD)
     config_file = config_dir / const.TRESTLE_CONFIG_FILE
-    testargs = ['trestle', 'init']
-    monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        cli.run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 1
+
+    command = 'trestle init -v'
+    execute_command_and_assert(command, 1, monkeypatch)
+
     for directory in const.MODEL_DIR_LIST:
         dir_path = pathlib.Path(directory)
         assert not dir_path.exists()
@@ -77,7 +70,7 @@ def test_directory_creation_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     assert not config_exists
 
 
-def test_config_copy_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
+def test_config_copy_error(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test error during init when a contents of .trestle cannot be created."""
     os.chdir(tmp_path)
     config_dir = pathlib.Path(const.TRESTLE_CONFIG_DIR)
@@ -85,15 +78,83 @@ def test_config_copy_error(tmp_path, keep_cwd, monkeypatch: MonkeyPatch):
     config_file = config_dir / const.TRESTLE_CONFIG_FILE
     config_file.touch()
     config_file.chmod(stat.S_IREAD)
-    testargs = ['trestle', 'init']
-    monkeypatch.setattr(sys, 'argv', testargs)
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        cli.run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 1
+
+    command = 'trestle init'
+    execute_command_and_assert(command, 1, monkeypatch)
+
     for directory in const.MODEL_DIR_LIST:
         assert os.path.isdir(directory)
         assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
     assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
     assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
     assert os.stat(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)).st_size == 0
+
+
+def test_init_local(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test init for local usage only."""
+    os.chdir(tmp_path)
+    command = 'trestle init --local'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    for directory in const.MODEL_DIR_LIST:
+        assert os.path.isdir(directory)
+        assert not os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+        assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+
+
+def test_init_govdocs(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test init for governed document usage only."""
+    os.chdir(tmp_path)
+    command = 'trestle init --govdocs'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    for directory in const.MODEL_DIR_LIST:
+        assert not os.path.isdir(directory)
+        assert not os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+        assert not os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert not os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+
+
+def test_init_full(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test init for full usage only."""
+    os.chdir(tmp_path)
+    command = 'trestle init --full'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    for directory in const.MODEL_DIR_LIST:
+        assert os.path.isdir(directory)
+        assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+        assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+
+
+def test_init_govdocs_n_local(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test init with multiple flags behave like mode of the highest hierarchy."""
+    os.chdir(tmp_path)
+    command = 'trestle init --govdocs --local'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    for directory in const.MODEL_DIR_LIST:
+        assert os.path.isdir(directory)
+        assert not os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+        assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+
+
+def test_init_govdocs_n_full(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch):
+    """Test init with multiple flags behave like mode of the highest hierarchy."""
+    os.chdir(tmp_path)
+    command = 'trestle init --govdocs --full'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    for directory in const.MODEL_DIR_LIST:
+        assert os.path.isdir(directory)
+        assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+        assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
+    assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
+    assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
