@@ -272,13 +272,13 @@ def test_get_statement_parts(simplified_nist_catalog: cat.Catalog) -> None:
     """Test the catalog interface with complex controls."""
     interface = CatalogInterface(simplified_nist_catalog)
     parts = interface.get_statement_parts('ac-1')
-    assert len(parts) == 9
+    assert len(parts) == 10
     prt = parts[0]
     assert prt['indent'] == 0
-    assert prt['label'] == 'a.'
-    assert prt['prose'].startswith('Develop, document')
-    prt = parts[3]
-    assert prt['indent'] == 2
+    assert prt['label'] == ''
+    assert prt['prose'] == 'The organization:'
+    prt = parts[4]
+    assert prt['indent'] == 3
     assert prt['label'] == '(b)'
     assert prt['prose'].startswith('Is consistent with')
 

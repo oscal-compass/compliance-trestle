@@ -289,8 +289,8 @@ class CatalogInterface():
     @staticmethod
     def _get_statement_sub_parts(part: common.Part, indent: int) -> List[Dict[str, str]]:
         items = []
+        # this may be '' if no label
         label = ControlInterface.get_label(part)
-        label = 'no_label' if not label else label
         prose = '' if part.prose is None else part.prose
         items.append({'indent': indent, 'label': label, 'prose': prose})
         for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
@@ -301,12 +301,15 @@ class CatalogInterface():
         """Get list of statement parts as dicts with indentation, label and prose."""
         items = []
         control = self.get_control(control_id)
-        # statement may have no parts at all but if statement present it is first part
-        if control and control.parts:
+
+        # control may have no statement or parts
+        # but if statement present it is first part
+        if control is None:
+            logger.warning(f'No control found for id {control_id}')
+        elif control.parts:
             part = control.parts[0]
             if part.name == 'statement':
-                for prt in as_filtered_list(part.parts, lambda p: p.name == 'item'):
-                    items.extend(CatalogInterface._get_statement_sub_parts(prt, 0))
+                items.extend(CatalogInterface._get_statement_sub_parts(part, 0))
             else:
                 logger.warning(f'Control {control_id} has parts but first part name is {part.name} - not statement')
         return items
