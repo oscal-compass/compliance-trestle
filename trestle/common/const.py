@@ -438,8 +438,6 @@ CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 
 CONTROL_HEADER = '## Control'
 
-PART_HEADER = '## Part'
-
 REPLACE_ME = 'REPLACE_ME'
 
 YAML_PROPS_COMMENT = """  # Add or modify control properties here
