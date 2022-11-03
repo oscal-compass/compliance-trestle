@@ -273,7 +273,7 @@ def test_find_all_prose(simplified_nist_catalog: catalog.Catalog) -> None:
     """Test get all prose from catalog."""
     prose_list = ModelUtils.find_values_by_name(simplified_nist_catalog, 'prose')
     n_lines = len(prose_list)
-    assert n_lines == 224
+    assert n_lines == 225
 
 
 def test_strip_lower_equals() -> None:
