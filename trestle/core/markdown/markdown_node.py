@@ -71,18 +71,23 @@ class MarkdownNode:
         return ob
 
     def get_all_headers_for_level(self, level: int) -> Iterable[str]:
-        """Return all headers per specified level of heirarchy."""
+        """Return all headers per specified level of hierarchy."""
         return list(
             filter(lambda header: self._get_header_level_if_valid(header) == level, self.content.subnodes_keys)
         ).__iter__()
 
     def get_node_for_key(self, key: str, strict_matching: bool = True) -> Optional[MarkdownNode]:
-        """Return a node for the given key, substring matching is supported."""
+        """Return a first node for the given key, substring matching is supported."""
         if not strict_matching:
             if not any([key in el for el in self.content.subnodes_keys]):
                 return None
-        elif key not in self.content.subnodes_keys:
-            return None
+            elif [key in el for el in self.content.subnodes_keys].count(True) > 1:
+                logger.warning(f'Multiple nodes for {key} were founded, only the first one will be returned.')
+        else:
+            if key not in self.content.subnodes_keys:
+                return None
+            elif self.content.subnodes_keys.index(key) > 1:
+                logger.warning(f'Multiple nodes for {key} were founded, only the first one will be returned.')
 
         return self._rec_traverse(self, key, strict_matching)
 
@@ -149,6 +154,17 @@ class MarkdownNode:
             for subnode in self.subnodes:
                 count += subnode.get_count_of_subnodes(True)
         return count
+
+    def delete_nodes_text(self, keys: List[str], strict_matching: bool = True) -> List[str]:
+        """Remove text from this node that is found in matching subnodes."""
+        text_lines = self.content.raw_text.split('\n')
+        matching_nodes = self.get_all_nodes_for_keys(keys, strict_matching, True)
+        # need to delete from end and proceed backwards
+        sorted_nodes = sorted(matching_nodes, key=lambda node: node.starting_line, reverse=True)
+        for node in sorted_nodes:
+            last_line = node.starting_line + len(node.content.raw_text.split('\n'))
+            delete_list_from_list(text_lines, list(range(node.starting_line, last_line)))
+        return text_lines
 
     def _build_tree(
         self,
@@ -395,14 +411,3 @@ class MarkdownNode:
                 min_lvl = header_lvl
 
         return min_lvl - 1
-
-    def delete_nodes_text(self, keys: List[str], strict_matching: bool = True) -> List[str]:
-        """Remove text from this node that is found in matching subnodes."""
-        text_lines = self.content.raw_text.split('\n')
-        matching_nodes = self.get_all_nodes_for_keys(keys, strict_matching, True)
-        # need to delete from end and proceed backwards
-        sorted_nodes = sorted(matching_nodes, key=lambda node: node.starting_line, reverse=True)
-        for node in sorted_nodes:
-            last_line = node.starting_line + len(node.content.raw_text.split('\n'))
-            delete_list_from_list(text_lines, range(node.starting_line, last_line))
-        return text_lines
