@@ -118,19 +118,19 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert md_text
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
-    assert tree.get_node_for_key('## Part a.')
-    assert tree.get_node_for_key('## Part c.')
+    assert tree.get_node_for_key('## Implementation for part a.')
+    assert tree.get_node_for_key('## Implementation for part c.')
     assert len(list(tree.get_all_headers_for_level(2))) == 3
 
-    md_text = ssp_io.get_control_response('ac-1', 2, False)
+    md_text = ssp_io.get_control_response('ac-1', 1, False)
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
-    assert tree.get_node_for_key('### Part a.')
-    assert tree.get_node_for_key('### Part c.')
-    assert len(list(tree.get_all_headers_for_level(3))) == 3
+    assert tree.get_node_for_key('## Implementation for part a.')
+    assert tree.get_node_for_key('## Implementation for part c.')
+    assert len(list(tree.get_all_headers_for_level(2))) == 3
 
     # insert some responses by component
-    assert file_utils.insert_text_in_file(ac1_path, 'Implementation a.', '### foo comp\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'Implementation for part a.', '### foo comp\n')
     assert file_utils.insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
     ssp_obj, _ = fetcher.get_oscal(True)
