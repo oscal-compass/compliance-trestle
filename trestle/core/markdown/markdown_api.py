@@ -16,7 +16,7 @@
 """A markdown API."""
 import logging
 import pathlib
-from typing import Optional
+from typing import Dict, Optional
 
 from trestle.common import const
 from trestle.common.err import TrestleError
@@ -69,7 +69,7 @@ class MarkdownAPI:
         instance_header, instance_tree = self.processor.process_markdown(md_instance_path)
         return self.validator.is_valid_against_template(md_instance_path, instance_header, instance_tree)
 
-    def write_markdown_with_header(self, path, header, md_body) -> None:
+    def write_markdown_with_header(self, path: pathlib.Path, header: Dict[str, str], md_body: str) -> None:
         """Write markdown with the YAML header."""
         try:
             # use encoding to handle character sets as well as possible
