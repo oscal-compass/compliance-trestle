@@ -404,7 +404,7 @@ RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
 
-HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
+HELP_SET_PARAMS = 'set parameters and properties based on the yaml header in control markdown'
 
 SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
