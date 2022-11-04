@@ -180,6 +180,18 @@ IOF_SHORT = '-iof'
 IOF_LONG = '--include-optional-fields'
 IOF_HELP = 'Include fields that are optional in the OSCAL model when generating the new object.'
 
+INIT_FULL_SHORT = '-fl'
+INIT_FULL_LONG = '--full'
+INIT_FULL_HELP = 'Initializes Trestle workspace for local, API and governed documents usage.'
+
+INIT_GOVDOCS_SHORT = '-gd'
+INIT_GOVDOCS_LONG = '--govdocs'
+INIT_GOVDOCS_HELP = 'Initializes Trestle workspace for governed documents usage only.'
+
+INIT_LOCAL_SHORT = '-loc'
+INIT_LOCAL_LONG = '--local'
+INIT_LOCAL_HELP = 'Initializes Trestle workspace for local management of OSCAL models.'
+
 FILE_ENCODING = 'utf8'
 
 # Trestle documentation
@@ -396,13 +408,17 @@ HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in
 
 SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
-RULE_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
+RULES_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
-COMP_DEF_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-param-vals'
+COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
+
+PARAM_VALUES_TAG = TRESTLE_TAG + 'param-values'
 
 COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
+
+COMP_DEF_VALUES = 'comp-def-values'
 
 VALUES = 'values'
 
@@ -422,8 +438,6 @@ CONTROL_OBJECTIVE_HEADER = '## Control Objective'
 
 CONTROL_HEADER = '## Control'
 
-PART_HEADER = '## Part'
-
 REPLACE_ME = 'REPLACE_ME'
 
 YAML_PROPS_COMMENT = """  # Add or modify control properties here
@@ -439,15 +453,14 @@ YAML_PROPS_COMMENT = """  # Add or modify control properties here
   #
 """
 
-NS_HELP = 'Default namespace to use if namespace is not specified for a property.'
-
-DEFAULT_NS = 'default-namespace'
-
 DISPLAY_NAME = 'display-name'
+
+TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
 
 RESOLUTION_SOURCE = 'resolution-source'
 
-TRESTLE_INHERITED_PROPS = 'trestle_inherited_props'
+# call it tracker to distinguish from the externally visible TRESTLE_INHERITED_PROPS_TAG
+TRESTLE_INHERITED_PROPS_TRACKER = 'trestle_inherited_props_tracker'
 
 RULE_ID = 'Rule_Id'
 

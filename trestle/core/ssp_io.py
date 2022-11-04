@@ -217,7 +217,7 @@ class SSPMarkdownWriter():
 
         Notes:
             For components the following structure is assumed:
-            'The System' is the default response, and other components are treated as sub-headings per response item.
+            'This System' is the default response, and other components are treated as sub-headings per response item.
         """
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control response, set resolved catalog first.')
@@ -247,7 +247,7 @@ class SSPMarkdownWriter():
                 if response_per_component or (not response_per_component and write_empty_responses):
                     if part_name and part_name == 'item':
                         # print part header only if subitem
-                        header = f'Part {label}'
+                        header = f'Implementation for part {label}'
                         md_writer.new_header(level=1, title=header)
                     for idx, component_key in enumerate(response_per_component):
                         if component_key == SSP_MAIN_COMP_NAME and idx == 0:

@@ -220,6 +220,7 @@
               {
                 "id": "ac-1_smt",
                 "name": "statement",
+                "prose": "The organization:",
                 "parts": [
                   {
                     "id": "ac-1_smt.a",

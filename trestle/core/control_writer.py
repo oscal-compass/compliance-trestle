@@ -194,7 +194,7 @@ class ControlWriter():
                         # if no label guess the label from the sub-part id
                         part_label = ControlInterface.get_label(prt)
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
-                        self._md_file.new_header(level=2, title=f'Implementation {part_label}')
+                        self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         if not self._has_prose(part_label, comp_dict):
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                         wrote_label_content = False
@@ -274,8 +274,7 @@ class ControlWriter():
         profile: prof.Profile,
         header: Dict[str, Any],
         part_id_map: Dict[str, str],
-        found_alters: List[prof.Alter],
-        default_namespace: Optional[str] = None
+        found_alters: List[prof.Alter]
     ) -> List[str]:
         # get part and subpart info from adds of the profile
         part_infos = ControlInterface.get_all_add_info(control.id, profile)
@@ -370,10 +369,6 @@ class ControlWriter():
                         by_id = add.by_id
                         part_info = PartInfo(name='', prose='', props=add.props, smt_part=by_id)
                         _, prop_list = part_info.to_dicts(part_id_map.get(control.id, {}))
-                        if default_namespace:
-                            for prop in prop_list:
-                                if prop.get('ns', None) == default_namespace:
-                                    prop.pop('ns')
                         header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         else:
             # md does not already exist so fill in directly
@@ -396,10 +391,6 @@ class ControlWriter():
                     in_part = ''
                     if const.TRESTLE_ADD_PROPS_TAG not in header:
                         header[const.TRESTLE_ADD_PROPS_TAG] = []
-                    if default_namespace:
-                        for prop in prop_list:
-                            if prop.get('ns', None) == default_namespace:
-                                prop.pop('ns')
                     header[const.TRESTLE_ADD_PROPS_TAG].extend(prop_list)
         return added_sections
 
@@ -485,20 +476,12 @@ class ControlWriter():
         if context.prompt_responses:
             self._add_implementation_response_prompts(control, comp_dict, context.comp_def is not None)
 
-        # get the default namespace in order to cull it on writing of markdown
-        default_namespace = context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, {}).get(const.DEFAULT_NS, None)
-        if default_namespace:
-            set_params = merged_header.get(const.SET_PARAMS_TAG, {})
-            for param in set_params.values():
-                if param.get('ns', None) == default_namespace:
-                    param.pop('ns')
-
         # only used for profile-generate
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
         if context.additional_content:
             added_sections = self._add_additional_content(
-                control, context.profile, merged_header, part_id_map, found_alters, default_namespace
+                control, context.profile, merged_header, part_id_map, found_alters
             )
 
         self._add_yaml_header(merged_header)

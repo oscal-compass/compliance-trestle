@@ -34,7 +34,7 @@
           "props": [
             {
               "name": "display-name",
-              "ns": "https://display-namespace",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal",
               "value": "Pretty ac-1 prm 1"
             }
           ],
@@ -139,6 +139,20 @@
                   "id": "ac-1_expevid",
                   "name": "expevid",
                   "prose": "Detailed logs."
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "props": [
+                {
+                  "name": "prop_with_ns",
+                  "value": "prop with ns",
+                  "ns": "https://my_namespace"
+                },
+                {
+                  "name": "prop_with_no_ns",
+                  "value": "prop with no ns"
                 }
               ]
             }

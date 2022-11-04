@@ -37,6 +37,16 @@ class InitCmd(CommandBase):
 
     name = 'init'
 
+    def _init_arguments(self) -> None:
+
+        self.add_argument(const.INIT_FULL_SHORT, const.INIT_FULL_LONG, help=const.INIT_FULL_HELP, action='store_true')
+        self.add_argument(
+            const.INIT_LOCAL_SHORT, const.INIT_LOCAL_LONG, help=const.INIT_LOCAL_HELP, action='store_true'
+        )
+        self.add_argument(
+            const.INIT_GOVDOCS_SHORT, const.INIT_GOVDOCS_LONG, help=const.INIT_GOVDOCS_HELP, action='store_true'
+        )
+
     def _run(self, args: argparse.Namespace) -> int:
         """Create a trestle project in the current directory."""
         try:
@@ -47,11 +57,18 @@ class InitCmd(CommandBase):
                     f'Initialization failed. Given directory {dir_path} does not exist or is not a directory.'
                 )
 
-            # Create directories
-            self._create_directories(dir_path)
+            if not (args.full or args.local or args.govdocs):
+                # Running in full mode by default
+                args.full = True
 
-            # Create config file
-            self._copy_config_file(dir_path)
+            init_dist_folder = True if args.full else False
+            init_oscal_folders = True if args.local or args.full else False
+            copy_config_file = True if args.full or args.local else False
+
+            self._create_directories(dir_path, init_oscal_folders, init_dist_folder)
+
+            if copy_config_file:
+                self._copy_config_file(dir_path)
 
             logger.info(f'Initialized trestle project successfully in {dir_path}')
 
@@ -60,14 +77,17 @@ class InitCmd(CommandBase):
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Failed to initialize Trestle working directory.')
 
-    def _create_directories(self, root: pathlib.Path) -> None:
+    def _create_directories(self, root: pathlib.Path, create_model_folders: bool, create_dist_folder: bool) -> None:
         """Create the directory tree if it does not exist."""
         # Prepare directory list to be created
         try:
             directory_list = [root / pathlib.Path(const.TRESTLE_CONFIG_DIR)]
-            for model_dir in const.MODEL_DIR_LIST:
-                directory_list.append(root / pathlib.Path(model_dir))
-                directory_list.append(root / pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
+
+            if create_model_folders:
+                for model_dir in const.MODEL_DIR_LIST:
+                    directory_list.append(root / pathlib.Path(model_dir))
+                    if create_dist_folder:
+                        directory_list.append(root / pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
 
             # Create directories
             for directory in directory_list:
