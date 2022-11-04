@@ -1,6 +1,6 @@
 # Trestle CLI for Governance of Authored Documents
 
-This document is organized in a multiple collapsable sections for the ease of use.
+This document is organized in a multiple collapsable sections for ease of use.
 Start by reading the overview and setting up the Trestle workspace and then proceed to other sections,
 to learn more about Trestle authoring capabilities.
 
@@ -42,7 +42,7 @@ To create a trestle workspace that will contain all your templates and governed 
 ```bash
 mkdir my_workspace
 cd my_workspace
-trestle init
+trestle init --govdocs
 >>> Initialized trestle project successfully in [user_path]/my_workspace
 ```
 
@@ -60,12 +60,12 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
 
   Trestle templating enforces the documents to follow a specific structure. There are two ways in which structure is enforced in a document against template:
 
-  1. Enforcing a header (metadata) structure within the markdown document.
+  1. Enforcing a YAML header (metadata) structure at the top of the markdown document.
   1. Enforcing a heading structure within the markdown document.
 
   Each document is validated against a specific template, see CLI section below on information on how to specify which template the document should be validated against.
 
-  ### Enforcing header (metadata) structure
+  ### Enforcing YAML header (metadata) structure
 
   Each template and document contains metadata in form of a YAML header that is placed on top.
   When the document is created (i.e. `trestle docs setup`) the metadata is copied from the template to the newly created document.
@@ -96,7 +96,7 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
 
   The document YAML header(metadata) is said to be **_valid_** against the template, if and only if:
 
-  1. It contains **all** keys from the template EXCEPT the keys that are either:
+  1. It contains **all** keys from the template EXCEPT the keys that either:
      1. Start with `x-trestle`
      1. Are listed under the `x-trestle-ignore` key (i.e. `x-trestle-ignore: not-important-field, bought-in`)
   1. The version under `x-trestle-template-version: ` key is matching the template.
@@ -133,7 +133,7 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
   1. No new headings were added at the top level (i.e. `# New heading` is not allowed).
   1. All original headings are in the same order as in the template.
   1. All headings must be in the hierarchical order (i.e. `# Heading` then `### Heading` then `## Heading` is invalid).
-  1. If the `--governed-heading` option is provided, then
+  1. If the `--governed-heading` option is provided, then document is valid if no keys has changed in the specified governed section.
 
   For example, consider this template as our starting point:
 
@@ -144,8 +144,8 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
   ## Template sub heading
   ```
 
-  Now we did added new sections and ended up with the following document.
-  This document will be valid against the template above
+  Now we added new sections and ended up with the following document:
+  (note: this document will be valid against the template above)
 
   ```markdown
   # Template heading 1
@@ -160,7 +160,7 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
   This sub-sub heading is okay
   ```
 
-  However, violations such as adding or removing a heading at the top level is not acceptable:
+  However, violations such as adding or removing a heading at the top level are not acceptable:
 
   ```markdown
   # Template heading 1
@@ -194,7 +194,7 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
 
 - <details>
   <summary><b>Setting Up Templates and Documents Via CLI</b></summary>
-  Trestle allows to set up templates and governed documents in a several different ways based on the nature of the needed governance.
+  Trestle allows the setup of templates and governed documents in a several different ways based on the nature of the needed governance.
 
   Definitions used in this section:
 
@@ -262,9 +262,9 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
 
     > trestle author docs validate -tn my_task_name
 
-    This will take this `TRESTLE_ROOT/.trestle/author/my_task_name/template.md` template and validate all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`.
+    This will take the `TRESTLE_ROOT/.trestle/author/my_task_name/template.md` template and validate all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`.
 
-    This will validate that markdown body in the document is valid against the template. Please note that by default the header will **not** be validated.
+    Running the command will validate that markdown body in the document is valid against the template. Please note that by default the header will **not** be validated.
     See extra options for more validation options. To learn more on what exactly is validated please refer to `Documents Structural Enforcement` section in this document.
 
     #### Extra options
@@ -296,7 +296,8 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
 
     In this section we describe the functionality of `trestle author folders` command.
 
-    `author folders` is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
+    `author folders` is designed to allow the assembly of groups of templates where each folder contains unique content.
+    This command will validate that both: structure (i.e. all template documents are present) and content is preserved in the folder. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
 
     ### Creating new task folder
 
@@ -399,13 +400,14 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
     </details>
 
   - <details>
-      <summary><b>headers - Validate documents headers only against a global or a specific template </b></summary>
+      <summary><b>headers - Validate only the headers against a global or a specific template </b></summary>
 
-    ## Validate documents headers only against a global or a specific template
+    ## Validate only the headers against a global or a specific template.
 
     In this section we describe the functionality of `trestle author headers` command.
 
-    Trestle author headers supports a slightly different usecase than that of `docs` and `folders` above: some content is governed, however, the content is non-standardized.
+    Trestle author headers supports a slightly different usecase than that of `docs` and `folders` above as only the YAML headers will be validated.
+    This command can be useful when one does not care about the markdown structure and might want to use global templates (templates that are shared across multiple tasks).
 
     With `headers` template folder can contain both .md and .drawio files and each file will be validated against the template that matches the extension.
     Also `headers` allow user to have `global` templates that can be shared across multiple tasks.
@@ -472,7 +474,7 @@ The templates will be located in the `/my_workspace/.trestle/author/`. Please no
 
     ### Extra options
 
-    - If `--global` (`-g`) is passed then `__global__` then it will create `trestle_root/.trestle/author/__global__` folder. Use this when you would like to use same template for multiple tasks.
+    - If `--global` (`-g`) is passed it will create `trestle_root/.trestle/author/__global__` folder. Use this when you would like to use same template for multiple tasks.
     - If `--ignore ^_.*` (`-ig`) is passed it will validate all files except folders and files that start with underscore `_`. Use this option when you would like to ignore any folders or files that match given regular expression.
     - If `--readme-validate` (`-rv`) is passed README.md will be validated as well, otherwise it is ignored.
     - If `--recurse` (`-r`) is passed the documents in the subfolders will also be validated. By default `author docs` only indexes a flat directory.
