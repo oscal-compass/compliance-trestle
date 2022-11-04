@@ -82,12 +82,12 @@ class MarkdownNode:
             if not any([key in el for el in self.content.subnodes_keys]):
                 return None
             elif [key in el for el in self.content.subnodes_keys].count(True) > 1:
-                logger.warning(f'Multiple nodes for {key} were founded, only the first one will be returned.')
+                logger.warning(f'Multiple nodes for {key} were found, only the first one will be returned.')
         else:
             if key not in self.content.subnodes_keys:
                 return None
             elif self.content.subnodes_keys.index(key) > 1:
-                logger.warning(f'Multiple nodes for {key} were founded, only the first one will be returned.')
+                logger.warning(f'Multiple nodes for {key} were found, only the first one will be returned.')
 
         return self._rec_traverse(self, key, strict_matching)
 
