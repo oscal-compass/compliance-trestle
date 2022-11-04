@@ -194,7 +194,7 @@ class ControlWriter():
                         # if no label guess the label from the sub-part id
                         part_label = ControlInterface.get_label(prt)
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
-                        self._md_file.new_header(level=2, title=f'Implementation {part_label}')
+                        self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         if not self._has_prose(part_label, comp_dict):
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
                         wrote_label_content = False
