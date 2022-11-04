@@ -589,7 +589,7 @@ class ModelUtils:
         return None
 
     @staticmethod
-    def dict_to_parameter(param_dict: Dict[str, Any], default_namespace: Optional[str] = None) -> common.Parameter:
+    def dict_to_parameter(param_dict: Dict[str, Any]) -> common.Parameter:
         """
         Convert dict with only string values to Parameter with handling for HowMany and with validity checks.
 
@@ -624,13 +624,9 @@ class ModelUtils:
                     if value not in choices:
                         logger.warning(f"Parameter {param_dict['id']} has value \"{value}\" not in choices: {choices}.")
         props = param_dict.get('props', [])
-        new_ns = param_dict.get('ns', default_namespace)
-        if new_ns:
-            for prop in props:
-                prop['ns'] = prop.get('ns', new_ns)
         if const.DISPLAY_NAME in param_dict:
             display_name = param_dict.pop(const.DISPLAY_NAME)
-            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=new_ns))
+            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))
 
         if 'ns' in param_dict:
             param_dict.pop('ns')
@@ -839,8 +835,8 @@ class ModelUtils:
 
     @staticmethod
     def fields_set_non_none(obj: BaseModel) -> Set[str]:
-        """Find the fields set with Nones removed."""
-        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f) is not None))
+        """Find the fields set with Nones and empty items removed."""
+        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f)))
 
     @staticmethod
     def _objects_differ(

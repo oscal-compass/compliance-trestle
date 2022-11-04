@@ -24,7 +24,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, get_default, merge_dicts, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, merge_dicts, none_if_empty
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -446,18 +446,18 @@ class ControlReader():
 
     @staticmethod
     def _add_component_to_dict(
-        control: Optional[cat.Control], comp_dict: CompDict, def_comp: comp.DefinedComponent
-    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, Any]], Dict[str, str]]:
+        control_imp: comp.ControlImplementation, comp_title: str, control: Optional[cat.Control], comp_dict: CompDict
+    ) -> Tuple[Dict[str, Dict[str, str]], List[str]]:
         """Add imp_reqs for this control and this component to the component dictionary."""
         control_id = control.id if control else 'temp'
-        sub_comp_dict: Dict[str, ComponentImpInfo] = {}
-        params = {}
+        params_dict = {}
         all_rules = set()
-        for imp_req in ControlInterface.get_control_imp_reqs(def_comp, control_id):
+        sub_comp_dict = {}
+        for imp_req in ControlInterface.get_control_imp_reqs(control_imp, control_id):
             # if description is same as control id regard it as not having prose
             # add top level control guidance with no statement id
             prose = ControlReader._handle_empty_prose(imp_req.description, control_id)
-            params.update(ControlInterface.get_params_dict_from_item(imp_req))
+            params_dict.update(ControlInterface.get_params_dict_from_item(imp_req))
             rules_list = ControlInterface.get_rule_list_for_item(imp_req)
             all_rules.update(rules_list)
             status = ControlInterface.get_status_from_props(imp_req)
@@ -470,8 +470,8 @@ class ControlReader():
                 prose = ControlReader._handle_empty_prose(statement.description, statement.statement_id)
                 sub_comp_dict[label] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
         if sub_comp_dict:
-            comp_dict[def_comp.title] = sub_comp_dict
-        return params, sorted(all_rules)
+            comp_dict[comp_title] = sub_comp_dict
+        return params_dict, sorted(all_rules)
 
     @staticmethod
     def _insert_header_content(
@@ -566,6 +566,14 @@ class ControlReader():
         return name.lower().replace(' ', '').replace('-', '').replace('_', '').replace('/', '')
 
     @staticmethod
+    def _get_label_from_implementation_header(imp_header: str):
+        # assumed to be of form: Implementation for part a.
+        split_header = imp_header.split(' ', 4)
+        if len(split_header) != 5:
+            raise TrestleError(f'Implementation header cannot be parsed for statement part: {imp_header}')
+        return split_header[4].strip()
+
+    @staticmethod
     def read_all_implementation_prose_and_header(
         control: cat.Control, control_file: pathlib.Path, context: ControlContext
     ) -> Tuple[CompDict, Dict[str, List[str]]]:
@@ -593,28 +601,34 @@ class ControlReader():
         comp_dict: CompDict = {}
         yaml_header = {}
         # use context.rules_dict and params_dict to map rules
-        if context.comp_def:
-            def_comp = ControlInterface.get_component_by_name(context.comp_def, comp_name)
-            # pull possible prose and rules from component definition if provided
-            # add to sections in the yaml header
-            if def_comp:
-                # find all comp_infos for this control including prose, params, rules from def_comp - not markdown
-                params, rules = ControlReader._add_component_to_dict(control, comp_dict, def_comp)
-                all_params = []
-                if params:
-                    if not set(rules.keys()).issuperset(params.keys()):
-                        raise TrestleError(
-                            f'Control {control_id} has a parameter assigned to a rule that is not defined.'
-                        )
-                    all_params.extend([{context.rules_dict[id_]['name']: params[id_] for id_ in params.keys()}])
-                if rules:
-                    rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules]
-                    yaml_header[const.COMP_DEF_RULES_TAG] = [context.rules_dict[id_] for id_ in rule_ids]
-                    all_params.extend([context.params_dict[id_] for id_ in rule_ids if id_ in context.params_dict])
-                if all_params:
-                    yaml_header[const.RULE_PARAMS_TAG] = all_params
-                if context.param_vals:
-                    yaml_header[const.COMP_DEF_PARAM_VALS_TAG] = context.param_vals
+        if context.purpose == ContextPurpose.COMPONENT:
+            # find rule info needed by this control
+            params_dict, rules_list = ControlReader._add_component_to_dict(
+                context.control_implementation, context.comp_name, control, comp_dict
+            )
+            all_params = []
+            if params_dict:
+                if not set(params_dict.keys()).issuperset(rules_list):
+                    raise TrestleError(f'Control {control_id} has a parameter assigned to a rule that is not defined.')
+                if context.rules_dict:
+                    all_params.extend(
+                        [
+                            {
+                                context.rules_dict[id_]['name']: context.rules_params_dict[id_]
+                                for id_ in context.rules_params_dict.keys()
+                            }
+                        ]
+                    )
+            if context.rules_dict:
+                rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
+                yaml_header[const.COMP_DEF_RULES_TAG] = [context.rules_dict[id_] for id_ in rule_ids]
+                all_params.extend(
+                    [context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict]
+                )
+            if all_params:
+                yaml_header[const.RULES_PARAMS_TAG] = all_params
+            if context.rules_param_vals:
+                yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.rules_param_vals
 
         if not control_file.exists():
             return comp_dict, yaml_header
@@ -622,9 +636,7 @@ class ControlReader():
         try:
             md_api = MarkdownAPI()
             new_yaml_header, control_md = md_api.processor.process_markdown(control_file)
-            if context.purpose != ContextPurpose.COMPONENT:
-                yaml_header = new_yaml_header
-                comp_dict = {}
+            yaml_header = new_yaml_header
 
             # first get the header strings, including statement labels, for statement imp reqs
             imp_string = '## Implementation '
@@ -646,7 +658,7 @@ class ControlReader():
                 # it may have subnodes of Rules, Implementation Status, Implementaton Remarks
                 ControlReader._add_node_to_dict(comp_name, '', comp_dict, node, control_id, [], context)
             for imp_header in imp_header_list:
-                label = imp_header.split(' ', 2)[2].strip()
+                label = ControlReader._get_label_from_implementation_header(imp_header)
                 node = control_md.get_node_for_key(imp_header)
                 ControlReader._add_node_to_dict(comp_name, label, comp_dict, node, control_id, [], context)
 
@@ -865,8 +877,7 @@ class ControlReader():
         required_sections_list: List[str],
         label_map: Dict[str, Dict[str, str]],
         sections_dict: Dict[str, str],
-        write_mode: bool,
-        default_namespace: Optional[str] = None
+        write_mode: bool
     ) -> Tuple[str, List[prof.Alter], Dict[str, Any]]:
         """Get parts for the markdown control corresponding to Editable Content - along with the set-parameter dict."""
         control_id = control_path.stem
@@ -917,19 +928,8 @@ class ControlReader():
         header_params = yaml_header.get(const.SET_PARAMS_TAG, {})
         if header_params:
             param_dict.update(header_params)
-        # set the ns to default if not already set
-        for val in param_dict.values():
-            val['ns'] = val.get('ns', default_namespace)
 
         props, props_by_id = ControlReader._get_props_list(control_id, label_map, yaml_header)
-
-        # the default namespace should only be applied when assembling the catalog, i.e. read mode
-        if default_namespace and not write_mode:
-            for prop in props:
-                prop.ns = get_default(prop.ns, default_namespace)
-            for prop_list in props_by_id.values():
-                for prop in prop_list:
-                    prop.ns = get_default(prop.ns, default_namespace)
 
         # When adding props without by_id it can either be starting or ending and we default to ending
         # This is the default behavior as described for implicit binding in
@@ -956,14 +956,14 @@ class ControlReader():
         return sort_id, new_alters, param_dict
 
     @staticmethod
-    def _update_display_prop_namespace(item: TypeWithProps, default_namespace: Optional[str]):
-        if default_namespace:
-            for prop in as_list(item.props):
-                if prop.name == const.DISPLAY_NAME:
-                    prop.ns = default_namespace
+    def _update_display_prop_namespace(item: TypeWithProps):
+        """Set namespace for special property display_name."""
+        for prop in as_list(item.props):
+            if prop.name == const.DISPLAY_NAME:
+                prop.ns = const.TRESTLE_GENERIC_NS
 
     @staticmethod
-    def read_control(control_path: pathlib.Path, set_parameters: bool) -> Tuple[cat.Control, str]:
+    def read_control(control_path: pathlib.Path, set_parameters_flag: bool) -> Tuple[cat.Control, str]:
         """Read the control and group title from the markdown file."""
         control = gens.generate_sample_model(cat.Control)
         md_api = MarkdownAPI()
@@ -1001,17 +1001,15 @@ class ControlReader():
                 _, control.parts = ControlReader._read_sections(
                     0, section_node.content.raw_text.split('\n'), control.id, control.parts
                 )
-        if set_parameters:
-            default_namespace = None
-            if const.TRESTLE_GLOBAL_TAG in yaml_header:
-                default_namespace = yaml_header[const.TRESTLE_GLOBAL_TAG].get(const.DEFAULT_NS, None)
+        if set_parameters_flag:
             params: Dict[str, str] = yaml_header.get(const.SET_PARAMS_TAG, [])
             if params:
                 control.params = []
                 for id_, param_dict in params.items():
                     param_dict['id'] = id_
                     param = ModelUtils.dict_to_parameter(param_dict)
-                    ControlReader._update_display_prop_namespace(param, default_namespace)
+                    # if display_name is in list of properties, set its namespace
+                    ControlReader._update_display_prop_namespace(param)
                     control.params.append(param)
         if const.SORT_ID in yaml_header:
             control.props = control.props if control.props else []

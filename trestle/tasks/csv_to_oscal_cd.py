@@ -309,6 +309,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         for statement in implemented_requirement.statements:
             if statement.statement_id == part_id:
                 rval = statement
+                break
         if rval is None:
             statement = Statement(statement_id=part_id, uuid=str(uuid.uuid4()), description='', props=[])
             implemented_requirement.statements.append(statement)

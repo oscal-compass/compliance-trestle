@@ -104,7 +104,7 @@ class CatalogGenerate(AuthorCommonCommand):
                 markdown_path,
                 yaml_header=yaml_header,
                 overwrite_header_values=overwrite_header_values,
-                set_parameters=True
+                set_parameters_flag=True
             )
             catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
 
@@ -144,7 +144,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 md_name=args.markdown,
                 assem_cat_name=args.output,
                 parent_cat_name=args.name,
-                set_parameters=args.set_parameters,
+                set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version
             )
@@ -157,7 +157,7 @@ class CatalogAssemble(AuthorCommonCommand):
         md_name: str,
         assem_cat_name: str,
         parent_cat_name: Optional[str],
-        set_parameters: bool,
+        set_parameters_flag: bool,
         regenerate: bool,
         version: Optional[str]
     ) -> int:
@@ -169,7 +169,7 @@ class CatalogAssemble(AuthorCommonCommand):
             md_name: The name of the directory containing the markdown control files for the ssp
             assem_cat_name: The output name of the catalog model to be created from the assembly
             parent_cat_name: Optional name of the parent catalog that the markdown controls will replace
-            set_parameters: set the parameters in the control to the values in the markdown yaml header
+            set_parameters_flag: set the parameters in the control to the values in the markdown yaml header
             regenerate: whether to regenerate the uuid's in the catalog
             version: version for the assembled catalog
 
@@ -188,7 +188,7 @@ class CatalogAssemble(AuthorCommonCommand):
         # assemble the markdown controls into fresh md_catalog
         md_catalog_interface = CatalogInterface()
         try:
-            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters)
+            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters_flag)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
         if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
@@ -213,7 +213,7 @@ class CatalogAssemble(AuthorCommonCommand):
             parent_cat, parent_cat_path = load_validate_model_name(trestle_root, parent_cat_name, Catalog)
             parent_cat_interface = CatalogInterface(parent_cat)
             # merge the just-read md catalog into the original json
-            parent_cat_interface.merge_catalog(md_catalog, set_parameters)
+            parent_cat_interface.merge_catalog(md_catalog, set_parameters_flag)
             md_catalog = parent_cat_interface.get_catalog()
             new_content_type = FileContentType.path_to_content_type(parent_cat_path)
 

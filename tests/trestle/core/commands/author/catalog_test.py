@@ -51,14 +51,14 @@ def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) ->
     assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
 
 
-@pytest.mark.parametrize('set_parameters', [True, False])
+@pytest.mark.parametrize('set_parameters_flag', [True, False])
 @pytest.mark.parametrize('make_change', [True, False])
 @pytest.mark.parametrize('use_orig_cat', [True, False])
 @pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
-    set_parameters: bool,
+    set_parameters_flag: bool,
     make_change: bool,
     use_orig_cat: bool,
     add_header: bool,
@@ -84,7 +84,7 @@ def test_catalog_generate_assemble(
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
 
     context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_trestle_dir, markdown_path)
-    context.set_parameters = set_parameters
+    context.set_parameters_flag = set_parameters_flag
 
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
@@ -96,7 +96,7 @@ def test_catalog_generate_assemble(
         assert ac1_path.exists()
         _change_params(ac1_path, new_prose, make_change)
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
-        if set_parameters:
+        if set_parameters_flag:
             test_args.append('-sp')
         if use_orig_cat:
             test_args.extend(f'-n {cat_name}'.split())
@@ -119,7 +119,7 @@ def test_catalog_generate_assemble(
             assembled_cat_dir.mkdir()
         orig_cat_name = cat_name if use_orig_cat else None
         assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-            tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters, False, ''
+            tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters_flag, False, ''
         )
 
     orig_cat: cat.Catalog = cat.Catalog.oscal_read(catalog_path)
@@ -136,7 +136,7 @@ def test_catalog_generate_assemble(
         ac1.parts[0].parts.append(new_part)
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
-    if set_parameters:
+    if set_parameters_flag:
         ac1.params[0].values = [ParameterValue(__root__='new value')]
         ac1.params[2].values = [ParameterValue(__root__='added param 3 value')]
         interface_orig.replace_control(ac1)
@@ -266,6 +266,21 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     interface.replace_control(control)
     interface.update_catalog_controls()
     assert interface._catalog.controls[1].controls[0].title == new_title
+
+
+def test_get_statement_parts(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test the catalog interface with complex controls."""
+    interface = CatalogInterface(simplified_nist_catalog)
+    parts = interface.get_statement_parts('ac-1')
+    assert len(parts) == 10
+    prt = parts[0]
+    assert prt['indent'] == 0
+    assert prt['label'] == ''
+    assert prt['prose'] == 'The organization:'
+    prt = parts[4]
+    assert prt['indent'] == 3
+    assert prt['label'] == '(b)'
+    assert prt['prose'].startswith('Is consistent with')
 
 
 def test_catalog_interface_groups() -> None:
@@ -512,5 +527,23 @@ def test_validate_catalog_missing_group_id(
     cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
 
     # load the file without doing validation - to make sure the file itself has the group id assigned
-    assem_cat, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    _, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
     assert new_cat.groups[0].id == 'trestle_group_0000'
+
+
+def test_get_control_paths(sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test get control paths."""
+    cat_interface = CatalogInterface(sample_catalog_rich_controls)
+    path = cat_interface.get_full_control_path('control_s')
+    assert path == ['xy', 'sub']
+    assert cat_interface.get_control_path('control_s') == ['xy', 'sub']
+    path = cat_interface.get_full_control_path('control_d1')
+    assert path == ['', 'control_d']
+    assert cat_interface.get_control_path('control_d1') == ['']
+    control = copy.deepcopy(cat_interface.get_control('control_d1'))
+    control.id = 'cat_level'
+    sample_catalog_rich_controls.controls = [control]
+    cat_interface = CatalogInterface(sample_catalog_rich_controls)
+    path = cat_interface.get_full_control_path('cat_level')
+    assert path == ['']
+    assert cat_interface.get_control_path('cat_level') == ['']

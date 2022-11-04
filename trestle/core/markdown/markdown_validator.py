@@ -99,17 +99,34 @@ class MarkdownValidator:
                 return True
 
         if self.md_header_to_validate is not None:
-            instance_gov_node = instance_tree.get_node_for_key(self.md_header_to_validate, False)
-            template_gov_node = self.template_tree.get_node_for_key(self.md_header_to_validate, False)
-            if instance_gov_node is None:
-                logger.info(f'Governed document not found in instance: {instance}')
-                return False
-            instance_keys = instance_gov_node.content.governed_document
-            template_keys = template_gov_node.content.governed_document
+            instance_gov_nodes = instance_tree.get_all_nodes_for_keys([self.md_header_to_validate], False)
+            template_gov_nodes = self.template_tree.get_all_nodes_for_keys([self.md_header_to_validate], False)
 
-            is_valid = self._validate_headings(instance, template_keys, instance_keys)
-            if not is_valid:
+            if not instance_gov_nodes:
+                logger.info(f'Governed section {self.md_header_to_validate} not found in instance: {instance}')
                 return False
+
+            if not template_gov_nodes:
+                logger.info(
+                    f'Governed section {self.md_header_to_validate} not found in template: {self.template_path}'
+                )
+                return False
+
+            if [node.key for node in instance_gov_nodes] != [node.key for node in template_gov_nodes]:
+                logger.info(
+                    f'Governed sections were changed, '
+                    f'template expects: {[node.key for node in template_gov_nodes]},'
+                    f'but found {[node.key for node in instance_gov_nodes]}.'
+                )
+                return False
+
+            for instance_gov_node, template_gov_node in zip(instance_gov_nodes, template_gov_nodes):
+                instance_keys = instance_gov_node.content.governed_document
+                template_keys = template_gov_node.content.governed_document
+
+                is_valid = self._validate_headings(instance, template_keys, instance_keys)
+                if not is_valid:
+                    return False
 
         if self._validate_md_body:
             instance_keys = instance_tree.content.subnodes_keys

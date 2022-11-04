@@ -29,6 +29,7 @@ from tests.test_utils import execute_command_and_assert
 
 import trestle
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
+from trestle.core.markdown.markdown_api import MarkdownAPI
 
 import yaml
 
@@ -621,3 +622,66 @@ def test_001_template_folder_is_not_created(
     contents = frontmatter.loads(template_path_new.open('r').read())
     header = contents.metadata
     assert header['x-trestle-template-version'] == '0.1.0'
+
+
+def test_instance_validate_with_governed_heading(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating good instance with governed heading and various changes."""
+    task_template = tmp_trestle_dir / '.trestle/author/test_task/template.md'
+    test_template_folder = testdata_dir / 'author/0.0.1/test_3_md_hand_edited'
+    test_template = testdata_dir / 'author/0.0.1/test_3_md_hand_edited/template.md'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+
+    (tmp_trestle_dir / '.trestle/author/test_task').mkdir(parents=True)
+    task_template.touch()
+    shutil.copy(test_template, task_template)
+    shutil.copytree(test_template_folder, task_instance_folder)
+
+    command_validate = 'trestle author docs validate -tn test_task'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    command_validate = 'trestle author docs validate -tn test_task -gh Governed_Section'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    # Change second section named Governed Section, should fail
+    task_markdown = task_instance_folder / 'decisions_000.md'
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(task_markdown)
+
+    # Make sure two nodes of the same name exists
+    gov_nodes = tree.get_all_nodes_for_keys(['## Governed_Section'], True, False)
+
+    assert len(gov_nodes) == 2
+
+    # Change non-governed text
+    tree.content.raw_text = tree.content.raw_text.replace('Not governed text', 'This is fine')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
+
+    # Now change governed stuff
+    tree.content.raw_text = tree.content.raw_text.replace('Financial Approver', 'This is not fine')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
+
+    # Now rename back
+    tree.content.raw_text = tree.content.raw_text.replace('This is not fine', 'Financial Approver')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
+
+    # Rename other governed section
+    tree.content.raw_text = tree.content.raw_text.replace('Another_Governed_Section', 'Renamed Governed Section')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=Another_Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
+
+    # Validate non existing governed section
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=NonExisting'
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
