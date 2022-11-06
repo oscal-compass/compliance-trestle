@@ -324,7 +324,7 @@ class ProfileAssemble(AuthorCommonCommand):
             parent_prof_name: Optional name of profile used to generate the markdown (default is assem_prof_name)
             md_name: The name of the directory containing the markdown control files for the profile
             assem_prof_name: The name of the assembled profile.  It can be the same as the parent to overwrite
-            set_parameters_flag: Use the parameters in yaml header to specify values for setparameters in the profile
+            set_parameters_flag: Use the params and props in yaml header to add or alter setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
             sections_dict: Optional map of short name to long name for sections

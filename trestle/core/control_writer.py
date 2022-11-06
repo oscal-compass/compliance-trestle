@@ -305,7 +305,16 @@ class ControlWriter():
             self._md_file.new_line(
                 '<!-- The current profile has no added parts for this control, but you may add new ones here. -->'
             )
-        self._md_file.new_line('<!-- Each addition must have a heading of the form ## Control my_addition_name -->')
+        self._md_file.new_line(
+            '<!-- Each addition must have a heading either of the form ## Control my_addition_name -->'
+        )
+        self._md_file.new_line('<!-- or ## Part a. (where the a. refers to one of the control statement labels.) -->')
+        self._md_file.new_line('<!-- "## Control" parts are new parts added after the statement part. -->')
+        self._md_file.new_line(
+            '<!-- "## Part" parts are new parts added into the top-level statement part with that label. -->'
+        )
+        self._md_file.new_line('<!-- Subparts may be added with nested hash levels of the form ### My Subpart Name -->')
+        self._md_file.new_line('<!-- underneath the parent ## Control or ## Part being added -->')
         self._md_file.new_line(
             '<!-- See https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring for guidance. -->'  # noqa E501
         )
