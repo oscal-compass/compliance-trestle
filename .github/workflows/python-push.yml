@@ -44,39 +44,39 @@ jobs:
       run: |
         make develop
     - name: Setup pre-commit
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run md document formatting (mdformat)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       run: |
         make mdformat
     - name: Run code formatting (yapf)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       run: |
         make code-format
     - name: Run code linting (flake8)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       run: |
         make code-lint
     - name: Run code typing check (mypy)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       continue-on-error: true 
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
-      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       run: |
         make docs-validate
     - name: Pytest Fast
-      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8') }}
       run: |
         make test
     - name: Pytest Cov
-      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}
       run: |
         make test-cov
   deploy:
@@ -90,10 +90,10 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
     - name: Install build tools
       run: |
         make develop
@@ -119,11 +119,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         token: ${{ secrets.ADMIN_PAT }} 
-    - name: Set up Python 3.7
+    - name: Set up Python 3.8
       uses: actions/setup-python@v2
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
       with:
-        python-version: 3.7
+        python-version: 3.8
     - name: Install build tools
       run: |
         make develop
