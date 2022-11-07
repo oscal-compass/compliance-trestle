@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.import_/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
     
     
       
@@ -21,16 +21,18 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c382b1dc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.815d1a91.min.css">
         
           
           
           <meta name="theme-color" content="#009485">
         
       
+      
+
     
     
     
@@ -45,7 +47,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -55,10 +57,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -135,7 +140,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -159,7 +164,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +209,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -370,20 +375,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorials/work_with_authoring_versions/" class="md-nav__link">
-        Work with authoring versions
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -439,7 +430,7 @@
   
     <li class="md-nav__item">
       <a href="../../trestle_author/" class="md-nav__link">
-        CLI for authoring governed content
+        Trestle CLI for Governance of Authored Documents
       </a>
     </li>
   
@@ -893,6 +884,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.common.load_validate/" class="md-nav__link">
+        load_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.common.log/" class="md-nav__link">
         log
       </a>
@@ -1178,6 +1183,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.author.consts/" class="md-nav__link">
         consts
       </a>
@@ -1279,18 +1298,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_11" type="checkbox" id="__nav_10_2_3_5_3_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_12" type="checkbox" id="__nav_10_2_3_5_3_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__link" for="__nav_10_2_3_5_3_12">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="versioning" data-md-level="6">
-        <label class="md-nav__title" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__title" for="__nav_10_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
         </label>
@@ -1677,8 +1696,64 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.control_io/" class="md-nav__link">
-        control_io
+      <a href="../trestle.core.control_context/" class="md-nav__link">
+        control_context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_interface/" class="md-nav__link">
+        control_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_reader/" class="md-nav__link">
+        control_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_writer/" class="md-nav__link">
+        control_writer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.docs_control_writer/" class="md-nav__link">
+        docs_control_writer
       </a>
     </li>
   
@@ -1733,6 +1808,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.generic_oscal/" class="md-nav__link">
+        generic_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.jinja/" class="md-nav__link">
         jinja
       </a>
@@ -1764,18 +1853,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_12" type="checkbox" id="__nav_10_2_3_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_17" type="checkbox" id="__nav_10_2_3_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_12">
+        <label class="md-nav__link" for="__nav_10_2_3_17">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="markdown" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_12">
+        <label class="md-nav__title" for="__nav_10_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
         </label>
@@ -1881,18 +1970,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_13" type="checkbox" id="__nav_10_2_3_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_18" type="checkbox" id="__nav_10_2_3_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_13">
+        <label class="md-nav__link" for="__nav_10_2_3_18">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_13">
+        <label class="md-nav__title" for="__nav_10_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
         </label>
@@ -2054,18 +2143,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_19" type="checkbox" id="__nav_10_2_3_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_24" type="checkbox" id="__nav_10_2_3_24" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_19">
+        <label class="md-nav__link" for="__nav_10_2_3_24">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_19">
+        <label class="md-nav__title" for="__nav_10_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -2115,18 +2204,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_21" type="checkbox" id="__nav_10_2_3_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_26" type="checkbox" id="__nav_10_2_3_26" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_21">
+        <label class="md-nav__link" for="__nav_10_2_3_26">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="resolver" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_21">
+        <label class="md-nav__title" for="__nav_10_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
         </label>
@@ -2423,6 +2512,34 @@
     <li class="md-nav__item">
       <a href="../trestle.tasks.base_task/" class="md-nav__link">
         base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
+        csv_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_to_oscal_cd/" class="md-nav__link">
+        csv_to_oscal_cd
       </a>
     </li>
   
@@ -2810,10 +2927,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>import_</h1>
@@ -2822,12 +2940,12 @@
 
 
 
-<h2 class="doc doc-heading" id="trestle.core.commands.import_">
+<h2 id="trestle.core.commands.import_" class="doc doc-heading">
         <code>trestle.core.commands.import_</code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.import_" title="Permanent link">¤</a></h2>
+<a href="#trestle.core.commands.import_" class="headerlink" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -2846,11 +2964,11 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.import_.logger">
+<h4 id="trestle.core.commands.import_.logger" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.import_.logger" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.import_.logger" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2859,20 +2977,20 @@
   </div>
 
 
-<h3 id="trestle.core.commands.import_-classes">Classes<a class="headerlink" href="#trestle.core.commands.import_-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.core.commands.import_-classes">Classes<a href="#trestle.core.commands.import_-classes" class="headerlink" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.import_.ImportCmd">
+<h4 id="trestle.core.commands.import_.ImportCmd" class="doc doc-heading">
         <code>
 ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.commands.command_docs.CommandPlusDocs" href="../trestle.core.commands.command_docs/#trestle.core.commands.command_docs.CommandPlusDocs">CommandPlusDocs</a>)
         </code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.import_.ImportCmd" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.import_.ImportCmd" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2913,6 +3031,14 @@ ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.
 
             <span class="n">model_read</span><span class="p">,</span> <span class="n">parent_alias</span> <span class="o">=</span> <span class="n">fetcher</span><span class="o">.</span><span class="n">get_oscal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
+            <span class="c1"># validate the loaded model in memory before writing out</span>
+            <span class="c1"># this will do any needed fixes to the file, such as assign missing catalog group ids</span>
+            <span class="n">args_validate</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">VAL_MODE_ALL</span><span class="p">)</span>
+            <span class="n">validator</span><span class="p">:</span> <span class="n">Validator</span> <span class="o">=</span> <span class="n">validator_factory</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args_validate</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">validator</span><span class="o">.</span><span class="n">model_is_valid</span><span class="p">(</span><span class="n">model_read</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validation of file to be imported </span><span class="si">{</span><span class="n">input_uri</span><span class="si">}</span><span class="s1"> did not pass.  Import failed.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
+
             <span class="n">plural_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">parent_alias</span><span class="p">)</span>
 
             <span class="n">output_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
@@ -2923,9 +3049,8 @@ ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.
                                                                 <span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">desired_model_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Cannot import because file to be imported here: </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1"> already exists.&#39;</span>
-                <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot import because file to be imported here: </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1"> already exists.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
 
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">regenerate</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;regenerating uuids in imported file </span><span class="si">{</span><span class="n">input_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -2951,27 +3076,6 @@ ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.
                 <span class="nb">all</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
-            <span class="n">rollback</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">rc</span> <span class="o">=</span> <span class="n">validatecmd</span><span class="o">.</span><span class="n">ValidateCmd</span><span class="p">()</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">rc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Validation of imported file </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1"> did not pass&#39;</span><span class="p">)</span>
-                    <span class="n">rollback</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Import of </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">input_uri</span><span class="p">)</span><span class="si">}</span><span class="s1"> failed with validation error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">rollback</span> <span class="o">=</span> <span class="kc">True</span>
-
-            <span class="k">if</span> <span class="n">rollback</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Rolling back import of </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">input_uri</span><span class="p">)</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">import_plan</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-                <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;Import failed in plan rollback: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">. Manually remove </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1"> to recover.&#39;</span>
-                    <span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Successful rollback of import to </span><span class="si">{</span><span class="n">desired_model_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
-
             <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -2992,11 +3096,11 @@ ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.import_.ImportCmd.name">
+<h6 id="trestle.core.commands.import_.ImportCmd.name" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">name</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.import_.ImportCmd.name" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.import_.ImportCmd.name" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3031,16 +3135,25 @@ ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.
 
 <p>handler: python</p>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../trestle.core.commands.href/" class="md-footer__link md-footer__link--prev" aria-label="Previous: href" rel="prev">
@@ -3095,10 +3208,11 @@ ImportCmd            (<a class="autorefs autorefs-internal" title="trestle.core.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.jinja/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
     
     
       
@@ -21,16 +21,18 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c382b1dc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.815d1a91.min.css">
         
           
           
           <meta name="theme-color" content="#009485">
         
       
+      
+
     
     
     
@@ -45,7 +47,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -55,10 +57,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -135,7 +140,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -159,7 +164,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +209,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -370,20 +375,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorials/work_with_authoring_versions/" class="md-nav__link">
-        Work with authoring versions
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -439,7 +430,7 @@
   
     <li class="md-nav__item">
       <a href="../../trestle_author/" class="md-nav__link">
-        CLI for authoring governed content
+        Trestle CLI for Governance of Authored Documents
       </a>
     </li>
   
@@ -893,6 +884,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.common.load_validate/" class="md-nav__link">
+        load_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.common.log/" class="md-nav__link">
         log
       </a>
@@ -1180,6 +1185,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.author.consts/" class="md-nav__link">
         consts
       </a>
@@ -1412,18 +1431,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_11" type="checkbox" id="__nav_10_2_3_5_3_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_12" type="checkbox" id="__nav_10_2_3_5_3_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__link" for="__nav_10_2_3_5_3_12">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="versioning" data-md-level="6">
-        <label class="md-nav__title" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__title" for="__nav_10_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
         </label>
@@ -1727,8 +1746,64 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.control_io/" class="md-nav__link">
-        control_io
+      <a href="../trestle.core.control_context/" class="md-nav__link">
+        control_context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_interface/" class="md-nav__link">
+        control_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_reader/" class="md-nav__link">
+        control_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_writer/" class="md-nav__link">
+        control_writer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.docs_control_writer/" class="md-nav__link">
+        docs_control_writer
       </a>
     </li>
   
@@ -1783,6 +1858,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.generic_oscal/" class="md-nav__link">
+        generic_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.jinja/" class="md-nav__link">
         jinja
       </a>
@@ -1814,18 +1903,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_12" type="checkbox" id="__nav_10_2_3_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_17" type="checkbox" id="__nav_10_2_3_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_12">
+        <label class="md-nav__link" for="__nav_10_2_3_17">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="markdown" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_12">
+        <label class="md-nav__title" for="__nav_10_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
         </label>
@@ -1931,18 +2020,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_13" type="checkbox" id="__nav_10_2_3_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_18" type="checkbox" id="__nav_10_2_3_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_13">
+        <label class="md-nav__link" for="__nav_10_2_3_18">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_13">
+        <label class="md-nav__title" for="__nav_10_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
         </label>
@@ -2104,18 +2193,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_19" type="checkbox" id="__nav_10_2_3_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_24" type="checkbox" id="__nav_10_2_3_24" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_19">
+        <label class="md-nav__link" for="__nav_10_2_3_24">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_19">
+        <label class="md-nav__title" for="__nav_10_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -2165,18 +2254,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_21" type="checkbox" id="__nav_10_2_3_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_26" type="checkbox" id="__nav_10_2_3_26" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_21">
+        <label class="md-nav__link" for="__nav_10_2_3_26">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="resolver" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_21">
+        <label class="md-nav__title" for="__nav_10_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
         </label>
@@ -2473,6 +2562,34 @@
     <li class="md-nav__item">
       <a href="../trestle.tasks.base_task/" class="md-nav__link">
         base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
+        csv_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_to_oscal_cd/" class="md-nav__link">
+        csv_to_oscal_cd
       </a>
     </li>
   
@@ -2908,10 +3025,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>jinja</h1>
@@ -2920,12 +3038,12 @@
 
 
 
-<h2 class="doc doc-heading" id="trestle.core.commands.author.jinja">
+<h2 id="trestle.core.commands.author.jinja" class="doc doc-heading">
         <code>trestle.core.commands.author.jinja</code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja" title="Permanent link">¤</a></h2>
+<a href="#trestle.core.commands.author.jinja" class="headerlink" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -2944,11 +3062,11 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.author.jinja.logger">
+<h4 id="trestle.core.commands.author.jinja.logger" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.logger" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.author.jinja.logger" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2957,20 +3075,20 @@
   </div>
 
 
-<h3 id="trestle.core.commands.author.jinja-classes">Classes<a class="headerlink" href="#trestle.core.commands.author.jinja-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.core.commands.author.jinja-classes">Classes<a href="#trestle.core.commands.author.jinja-classes" class="headerlink" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd">
+<h4 id="trestle.core.commands.author.jinja.JinjaCmd" class="doc doc-heading">
         <code>
 JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.commands.command_docs.CommandPlusDocs" href="../trestle.core.commands.command_docs/#trestle.core.commands.command_docs.CommandPlusDocs">CommandPlusDocs</a>)
         </code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -3106,12 +3224,12 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
         <span class="k">if</span> <span class="n">ssp</span><span class="p">:</span>
             <span class="c1"># name lookup</span>
-            <span class="n">ssp_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">SystemSecurityPlan</span><span class="p">)</span>
+            <span class="n">ssp_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">SystemSecurityPlan</span><span class="p">)</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_data</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
+            <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
             <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
             <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
-                <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span>
+                <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">ASSIGNMENT_FORM</span>
             <span class="p">)</span>
 
             <span class="n">ssp_writer</span> <span class="o">=</span> <span class="n">SSPMarkdownWriter</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">)</span>
@@ -3119,7 +3237,8 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
             <span class="n">ssp_writer</span><span class="o">.</span><span class="n">set_catalog</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_catalog</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
-            <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_io_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+            <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="p">()</span>
+            <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DocsControlWriter</span><span class="p">()</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp_md_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_writer</span>
 
             <span class="n">output</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">template_folder</span><span class="p">)</span>
@@ -3137,7 +3256,7 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
         <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">r_input_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
         <span class="n">r_output_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
-        <span class="n">profile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">profile_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">lut</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">parameters_formatting</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -3145,10 +3264,10 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
         <span class="n">template_folder</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
 
         <span class="c1"># Output to multiple markdown files</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
+        <span class="n">profile</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
         <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
         <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
-            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">ASSIGNMENT_FORM</span>
         <span class="p">)</span>
         <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
 
@@ -3163,7 +3282,7 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">group_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                         <span class="n">group_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                <span class="n">control_writer</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+                <span class="n">control_writer</span> <span class="o">=</span> <span class="n">DocsControlWriter</span><span class="p">()</span>
 
                 <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
                     <span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_folder</span><span class="p">),</span>
@@ -3173,13 +3292,14 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
                 <span class="p">)</span>
                 <span class="n">template</span> <span class="o">=</span> <span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r_input_file</span><span class="p">))</span>
                 <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalog_interface</span>
+                <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="p">()</span>
                 <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_writer</span>
                 <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
                 <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span>
                 <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;group_title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_title</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">template_folder</span><span class="p">)</span>
 
-                <span class="n">output_file</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">group_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s1">&#39;.md&#39;</span><span class="p">)</span>
+                <span class="n">output_file</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">group_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">MARKDOWN_FILE_EXT</span><span class="p">)</span>
                 <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
@@ -3222,11 +3342,11 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.max_recursion_depth">
+<h6 id="trestle.core.commands.author.jinja.JinjaCmd.max_recursion_depth" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">max_recursion_depth</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd.max_recursion_depth" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd.max_recursion_depth" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3240,11 +3360,11 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.name">
+<h6 id="trestle.core.commands.author.jinja.JinjaCmd.name" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">name</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd.name" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd.name" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3255,20 +3375,20 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 
 
-<h5 id="trestle.core.commands.author.jinja.JinjaCmd-methods">Methods<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd-methods" title="Permanent link">¤</a></h5>
+<h5 id="trestle.core.commands.author.jinja.JinjaCmd-methods">Methods<a href="#trestle.core.commands.author.jinja.JinjaCmd-methods" class="headerlink" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.jinja_ify">
+<h6 id="trestle.core.commands.author.jinja.JinjaCmd.jinja_ify" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">jinja_ify</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">r_input_file</span><span class="p">,</span> <span class="n">r_output_file</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">number_captions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd.jinja_ify" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd.jinja_ify" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3302,12 +3422,12 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
     <span class="k">if</span> <span class="n">ssp</span><span class="p">:</span>
         <span class="c1"># name lookup</span>
-        <span class="n">ssp_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">SystemSecurityPlan</span><span class="p">)</span>
+        <span class="n">ssp_data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">ssp</span><span class="p">,</span> <span class="n">SystemSecurityPlan</span><span class="p">)</span>
         <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_data</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
+        <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
         <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
         <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
-            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">ASSIGNMENT_FORM</span>
         <span class="p">)</span>
 
         <span class="n">ssp_writer</span> <span class="o">=</span> <span class="n">SSPMarkdownWriter</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">)</span>
@@ -3315,7 +3435,8 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
         <span class="n">ssp_writer</span><span class="o">.</span><span class="n">set_catalog</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
         <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_catalog</span>
         <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
-        <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_io_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+        <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="p">()</span>
+        <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DocsControlWriter</span><span class="p">()</span>
         <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;ssp_md_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ssp_writer</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">template_folder</span><span class="p">)</span>
@@ -3339,14 +3460,14 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.jinja_multiple_md">
-<code class="highlight language-python"><span class="n">jinja_multiple_md</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">r_input_file</span><span class="p">,</span> <span class="n">r_output_file</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h6 id="trestle.core.commands.author.jinja.JinjaCmd.jinja_multiple_md" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">jinja_multiple_md</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">r_input_file</span><span class="p">,</span> <span class="n">r_output_file</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd.jinja_multiple_md" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd.jinja_multiple_md" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3359,7 +3480,7 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
     <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">r_input_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">r_output_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
-    <span class="n">profile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">profile_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">lut</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">parameters_formatting</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -3367,10 +3488,10 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
     <span class="n">template_folder</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
 
     <span class="c1"># Output to multiple markdown files</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
+    <span class="n">profile</span><span class="p">,</span> <span class="n">profile_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_name</span><span class="p">,</span> <span class="n">Profile</span><span class="p">)</span>
     <span class="n">profile_resolver</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span>
     <span class="n">resolved_catalog</span> <span class="o">=</span> <span class="n">profile_resolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
-        <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span>
+        <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parameters_formatting</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">ASSIGNMENT_FORM</span>
     <span class="p">)</span>
     <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">resolved_catalog</span><span class="p">)</span>
 
@@ -3385,7 +3506,7 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">group_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                     <span class="n">group_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-            <span class="n">control_writer</span> <span class="o">=</span> <span class="n">ControlIOWriter</span><span class="p">()</span>
+            <span class="n">control_writer</span> <span class="o">=</span> <span class="n">DocsControlWriter</span><span class="p">()</span>
 
             <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span>
                 <span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_folder</span><span class="p">),</span>
@@ -3395,13 +3516,14 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
             <span class="p">)</span>
             <span class="n">template</span> <span class="o">=</span> <span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r_input_file</span><span class="p">))</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;catalog_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">catalog_interface</span>
+            <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_interface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ControlInterface</span><span class="p">()</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control_writer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control_writer</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;control&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span>
             <span class="n">lut</span><span class="p">[</span><span class="s1">&#39;group_title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_title</span>
             <span class="n">output</span> <span class="o">=</span> <span class="n">JinjaCmd</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">template_folder</span><span class="p">)</span>
 
-            <span class="n">output_file</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">group_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s1">&#39;.md&#39;</span><span class="p">)</span>
+            <span class="n">output_file</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">group_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">MARKDOWN_FILE_EXT</span><span class="p">)</span>
             <span class="n">output_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
@@ -3417,14 +3539,14 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.load_LUT">
+<h6 id="trestle.core.commands.author.jinja.JinjaCmd.load_LUT" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">load_LUT</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd.load_LUT" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd.load_LUT" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3456,14 +3578,14 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.jinja.JinjaCmd.render_template">
+<h6 id="trestle.core.commands.author.jinja.JinjaCmd.render_template" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">render_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">lut</span><span class="p">,</span> <span class="n">template_folder</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.core.commands.author.jinja.JinjaCmd.render_template" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.jinja.JinjaCmd.render_template" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3523,16 +3645,25 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
 
 <p>handler: python</p>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../trestle.core.commands.author.headers/" class="md-footer__link md-footer__link--prev" aria-label="Previous: headers" rel="prev">
@@ -3587,10 +3718,11 @@ JinjaCmd            (<a class="autorefs autorefs-internal" title="trestle.core.c
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

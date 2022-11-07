@@ -13,24 +13,26 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_author/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
     
     
       
-        <title>CLI for authoring governed content - Compliance Trestle</title>
+        <title>Trestle CLI for Governance of Authored Documents - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.c382b1dc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.815d1a91.min.css">
         
           
           
           <meta name="theme-color" content="#009485">
         
       
+      
+
     
     
     
@@ -45,7 +47,7 @@
     
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -55,10 +57,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -112,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI for authoring governed content
+              Trestle CLI for Governance of Authored Documents
             
           </span>
         </div>
@@ -135,7 +140,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -159,7 +164,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +209,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -370,20 +375,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../tutorials/work_with_authoring_versions/" class="md-nav__link">
-        Work with authoring versions
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -450,12 +441,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          CLI for authoring governed content
+          Trestle CLI for Governance of Authored Documents
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        CLI for authoring governed content
+        Trestle CLI for Governance of Authored Documents
       </a>
       
         
@@ -474,252 +465,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
-  </a>
-  
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#why-is-this-capability-in-trestle" class="md-nav__link">
-    Why is this capability in trestle?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#governance-mechanisms" class="md-nav__link">
-    Governance mechanisms
-  </a>
-  
-    <nav class="md-nav" aria-label="Governance mechanisms">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#markdown-structural-enforcement" class="md-nav__link">
-    Markdown structural enforcement
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#strict-header-heading-conformance-mechanisms" class="md-nav__link">
-    Strict header / heading conformance mechanisms
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#drawio-enforcement-mechanisms" class="md-nav__link">
-    Drawio enforcement mechanisms
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-governed-docs" class="md-nav__link">
-    trestle author governed-docs
-  </a>
-  
-    <nav class="md-nav" aria-label="trestle author governed-docs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#extra-options" class="md-nav__link">
-    Extra options
-  </a>
-  
-    <nav class="md-nav" aria-label="Extra options">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#recursive-r-recurse" class="md-nav__link">
-    recursive (-r, --recurse)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#header-only-validation-hov-header-only-validate" class="md-nav__link">
-    Header only validation (-hov, --header-only-validate)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ignore-files-or-folders-from-validation-ig-ignore" class="md-nav__link">
-    Ignore files or folders from validation (-ig, --ignore)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-version-tracking-tv-template-version" class="md-nav__link">
-    Template version tracking (-tv, --template-version)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-folders" class="md-nav__link">
-    trestle author folders
-  </a>
-  
-    <nav class="md-nav" aria-label="trestle author folders">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#supported-options" class="md-nav__link">
-    Supported options
-  </a>
-  
-    <nav class="md-nav" aria-label="Supported options">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#header-validate-hv-header-validate" class="md-nav__link">
-    Header validate (-hv/--header-validate)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#header-only-validation-hov-header-only-validate_1" class="md-nav__link">
-    Header only validation (-hov, --header-only-validate)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ignore-files-or-folders-from-validation-ig-ignore_1" class="md-nav__link">
-    Ignore files or folders from validation (-ig, --ignore)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-version-tracking-tv-template-version_1" class="md-nav__link">
-    Template version tracking (-tv, --template-version)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-headers" class="md-nav__link">
-    trestle author headers
-  </a>
-  
-    <nav class="md-nav" aria-label="trestle author headers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#supported-options_1" class="md-nav__link">
-    Supported options
-  </a>
-  
-    <nav class="md-nav" aria-label="Supported options">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#recursive-r-recurse_1" class="md-nav__link">
-    Recursive (-r, --recurse)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#global-g-global" class="md-nav__link">
-    Global (-g, --global)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#exclude-ex-exclude" class="md-nav__link">
-    Exclude (-ex, --exclude)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ignore-files-or-folders-from-validation-ig-ignore_2" class="md-nav__link">
-    Ignore files or folders from validation (-ig, --ignore)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-version-tracking-tv-template-version_2" class="md-nav__link">
-    Template version tracking (-tv, --template-version)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-catalog-generate-and-trestle-author-catalog-assemble" class="md-nav__link">
-    trestle author catalog-generate and trestle author catalog-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-profile-generate-and-trestle-author-profile-assemble" class="md-nav__link">
-    trestle author profile-generate and trestle author profile-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-ssp-generate-and-trestle-author-ssp-assemble" class="md-nav__link">
-    trestle author ssp-generate and trestle author ssp-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-ssp-filter" class="md-nav__link">
-    trestle author ssp-filter
+  <a href="#contents" class="md-nav__link">
+    Contents
   </a>
   
 </li>
@@ -1176,6 +923,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.common.load_validate/" class="md-nav__link">
+        load_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.common.log/" class="md-nav__link">
         log
       </a>
@@ -1457,6 +1218,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.core.commands.author.consts/" class="md-nav__link">
         consts
       </a>
@@ -1558,18 +1333,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_11" type="checkbox" id="__nav_10_2_3_5_3_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_12" type="checkbox" id="__nav_10_2_3_5_3_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__link" for="__nav_10_2_3_5_3_12">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="versioning" data-md-level="6">
-        <label class="md-nav__title" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__title" for="__nav_10_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
         </label>
@@ -1873,8 +1648,64 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.control_io/" class="md-nav__link">
-        control_io
+      <a href="../api_reference/trestle.core.control_context/" class="md-nav__link">
+        control_context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.control_interface/" class="md-nav__link">
+        control_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.control_reader/" class="md-nav__link">
+        control_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.control_writer/" class="md-nav__link">
+        control_writer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.docs_control_writer/" class="md-nav__link">
+        docs_control_writer
       </a>
     </li>
   
@@ -1929,6 +1760,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.generic_oscal/" class="md-nav__link">
+        generic_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.core.jinja/" class="md-nav__link">
         jinja
       </a>
@@ -1960,18 +1805,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_12" type="checkbox" id="__nav_10_2_3_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_17" type="checkbox" id="__nav_10_2_3_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_12">
+        <label class="md-nav__link" for="__nav_10_2_3_17">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="markdown" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_12">
+        <label class="md-nav__title" for="__nav_10_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
         </label>
@@ -2077,18 +1922,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_13" type="checkbox" id="__nav_10_2_3_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_18" type="checkbox" id="__nav_10_2_3_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_13">
+        <label class="md-nav__link" for="__nav_10_2_3_18">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_13">
+        <label class="md-nav__title" for="__nav_10_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
         </label>
@@ -2250,18 +2095,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_19" type="checkbox" id="__nav_10_2_3_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_24" type="checkbox" id="__nav_10_2_3_24" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_19">
+        <label class="md-nav__link" for="__nav_10_2_3_24">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_19">
+        <label class="md-nav__title" for="__nav_10_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -2311,18 +2156,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_21" type="checkbox" id="__nav_10_2_3_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_26" type="checkbox" id="__nav_10_2_3_26" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_21">
+        <label class="md-nav__link" for="__nav_10_2_3_26">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="resolver" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_21">
+        <label class="md-nav__title" for="__nav_10_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
         </label>
@@ -2619,6 +2464,34 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.tasks.base_task/" class="md-nav__link">
         base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.csv_helper/" class="md-nav__link">
+        csv_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.csv_to_oscal_cd/" class="md-nav__link">
+        csv_to_oscal_cd
       </a>
     </li>
   
@@ -2948,252 +2821,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
-  </a>
-  
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#why-is-this-capability-in-trestle" class="md-nav__link">
-    Why is this capability in trestle?
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#governance-mechanisms" class="md-nav__link">
-    Governance mechanisms
-  </a>
-  
-    <nav class="md-nav" aria-label="Governance mechanisms">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#markdown-structural-enforcement" class="md-nav__link">
-    Markdown structural enforcement
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#strict-header-heading-conformance-mechanisms" class="md-nav__link">
-    Strict header / heading conformance mechanisms
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#drawio-enforcement-mechanisms" class="md-nav__link">
-    Drawio enforcement mechanisms
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-governed-docs" class="md-nav__link">
-    trestle author governed-docs
-  </a>
-  
-    <nav class="md-nav" aria-label="trestle author governed-docs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#extra-options" class="md-nav__link">
-    Extra options
-  </a>
-  
-    <nav class="md-nav" aria-label="Extra options">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#recursive-r-recurse" class="md-nav__link">
-    recursive (-r, --recurse)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#header-only-validation-hov-header-only-validate" class="md-nav__link">
-    Header only validation (-hov, --header-only-validate)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ignore-files-or-folders-from-validation-ig-ignore" class="md-nav__link">
-    Ignore files or folders from validation (-ig, --ignore)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-version-tracking-tv-template-version" class="md-nav__link">
-    Template version tracking (-tv, --template-version)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-folders" class="md-nav__link">
-    trestle author folders
-  </a>
-  
-    <nav class="md-nav" aria-label="trestle author folders">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#supported-options" class="md-nav__link">
-    Supported options
-  </a>
-  
-    <nav class="md-nav" aria-label="Supported options">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#header-validate-hv-header-validate" class="md-nav__link">
-    Header validate (-hv/--header-validate)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#header-only-validation-hov-header-only-validate_1" class="md-nav__link">
-    Header only validation (-hov, --header-only-validate)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ignore-files-or-folders-from-validation-ig-ignore_1" class="md-nav__link">
-    Ignore files or folders from validation (-ig, --ignore)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-version-tracking-tv-template-version_1" class="md-nav__link">
-    Template version tracking (-tv, --template-version)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-headers" class="md-nav__link">
-    trestle author headers
-  </a>
-  
-    <nav class="md-nav" aria-label="trestle author headers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#supported-options_1" class="md-nav__link">
-    Supported options
-  </a>
-  
-    <nav class="md-nav" aria-label="Supported options">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#recursive-r-recurse_1" class="md-nav__link">
-    Recursive (-r, --recurse)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#global-g-global" class="md-nav__link">
-    Global (-g, --global)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#exclude-ex-exclude" class="md-nav__link">
-    Exclude (-ex, --exclude)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ignore-files-or-folders-from-validation-ig-ignore_2" class="md-nav__link">
-    Ignore files or folders from validation (-ig, --ignore)
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-version-tracking-tv-template-version_2" class="md-nav__link">
-    Template version tracking (-tv, --template-version)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-catalog-generate-and-trestle-author-catalog-assemble" class="md-nav__link">
-    trestle author catalog-generate and trestle author catalog-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-profile-generate-and-trestle-author-profile-assemble" class="md-nav__link">
-    trestle author profile-generate and trestle author profile-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-ssp-generate-and-trestle-author-ssp-assemble" class="md-nav__link">
-    trestle author ssp-generate and trestle author ssp-assemble
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-author-ssp-filter" class="md-nav__link">
-    trestle author ssp-filter
+  <a href="#contents" class="md-nav__link">
+    Contents
   </a>
   
 </li>
@@ -3206,42 +2835,156 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
-<h1 id="trestle-cli-for-governance-of-authored-documents">trestle CLI for governance of authored documents<a class="headerlink" href="#trestle-cli-for-governance-of-authored-documents" title="Permanent link">¤</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¤</a></h2>
-<p>The premise of trestle is to support managing compliance artifacts as code.
-When this is considered, many organisations using <code>{github|gitlab|bitbucket}</code> rely on markdown documents for documentary artifacts that may either directly or indirectly support compliance efforts.</p>
-<p>To support this, trestle has the concept of 'governing' documents that are authored documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.</p>
-<p>Living in the <code>GitOps</code> world this capability is anchored with <code>markdown</code> files as the core of the workflows. Currently <code>drawio</code> files are also supported for a subset of enforcement mechanisms.</p>
-<h3 id="why-is-this-capability-in-trestle">Why is this capability in trestle?<a class="headerlink" href="#why-is-this-capability-in-trestle" title="Permanent link">¤</a></h3>
-<p>While trestle provides editing support for OSCAL there is an unfortunate truth that for some compliance workflows:</p>
-<ol>
-<li>OSCAL does not cover the lower level operational workflows.</li>
-<li>Some users will not be comfortable editing in json/yaml/xml formats</li>
-</ol>
-<p>The markdown centric workflows allow transition path where capability is <a href="https://github.com/IBM/compliance-trestle/issues/555">being developed</a></p>
-<h2 id="governance-mechanisms">Governance mechanisms<a class="headerlink" href="#governance-mechanisms" title="Permanent link">¤</a></h2>
-<h3 id="markdown-structural-enforcement">Markdown structural enforcement<a class="headerlink" href="#markdown-structural-enforcement" title="Permanent link">¤</a></h3>
-<p>In order for trestle to enforce structure an approach has been taken for how to template markdown documents. There are two mechanism that are enforced:</p>
-<ol>
-<li>Enforcing a heading structure within the markdown document:</li>
-<li>Enforcing a structured header within the markdown document either by using yaml headers or a designated heading.</li>
-</ol>
-<p>For enforcing the heading structure the mechanism used is the following:</p>
-<p>Markdown headings <code>As an example</code> are considered to be nested based on the heading level (e.g. <code>heading</code> is below <code>top level heading</code>).</p>
-<p>For a document to contain the structural requirements it must contain all the headings provided in the template, however, can contain additional nested templates. Given this template:</p>
-<div class="highlight"><pre><span></span><code><span class="gh"># Template heading 1</span>
+<h1 id="trestle-cli-for-governance-of-authored-documents">Trestle CLI for Governance of Authored Documents<a class="headerlink" href="#trestle-cli-for-governance-of-authored-documents" title="Permanent link">¤</a></h1>
+<p>This document is organized in a multiple collapsable sections for ease of use.
+Start by reading the overview and setting up the Trestle workspace and then proceed to other sections,
+to learn more about Trestle authoring capabilities.</p>
+<h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">¤</a></h2>
+<details>
+  <summary><b>1. Overview</b></summary>
 
+## Overview
+
+The premise of trestle is to support managing compliance artifacts as code.
+When this is considered, many organisations using `{github|gitlab|bitbucket}` rely on markdown documents for documentary artifacts that may either directly or indirectly support compliance efforts.
+
+To support this, trestle has the concept of 'governing' documents that are authored documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.
+
+Living in the `GitOps` world this capability is anchored with `markdown` files as the core of the workflows. Currently `drawio` files are also supported for a subset of enforcement mechanisms.
+
+### Why is this capability in trestle?
+
+While trestle provides editing support for OSCAL there is an unfortunate truth that for some compliance workflows:
+
+1. OSCAL does not cover the lower level operational workflows.
+1. Some users will not be comfortable editing in json/yaml/xml formats
+
+The markdown centric workflows allow transition path where capability is [being developed](https://github.com/IBM/compliance-trestle/issues/555)
+
+</details>
+
+<details>
+  <summary><b>2. Setting up the Trestle workspace</b></summary>
+
+## Setting up the Trestle workspace
+
+To work with governed documents, you would need to initialize the Trestle workspace and create your first governed document
+and template.
+
+To create a trestle workspace that will contain all your templates and governed documents:
+
+<div class="highlight"><pre><span></span><code>mkdir my_workspace
+<span class="nb">cd</span> my_workspace
+trestle init --govdocs
+&gt;&gt;&gt; Initialized trestle project successfully <span class="k">in</span> <span class="o">[</span>user_path<span class="o">]</span>/my_workspace
+</code></pre></div>
+
+The templates will be located in the `/my_workspace/.trestle/author/`. Please note that if you use MacOS or Linux distribution, by default `.trestle` will be hidden. You will need to reconfigure your system to show hidden folders if you want to see them listed.
+
+</details>
+
+<details>
+  <summary><b>3. Authoring of Documents</b></summary>
+
+- <details>
+  <summary><b>Documents Structural Enforcement</b></summary>
+
+  ## Markdown structural enforcement
+
+  Trestle templating enforces the documents to follow a specific structure. There are two ways in which structure is enforced in a document against template:
+
+  1. Enforcing a YAML header (metadata) structure at the top of the markdown document.
+  1. Enforcing a heading structure within the markdown document.
+
+  Each document is validated against a specific template, see CLI section below on information on how to specify which template the document should be validated against.
+
+  ### Enforcing YAML header (metadata) structure
+
+  Each template and document contains metadata in form of a YAML header that is placed on top.
+  When the document is created (i.e. `trestle docs setup`) the metadata is copied from the template to the newly created document.
+
+  Below is an example of a markdown file that contains YAML header:
+
+  <div class="highlight"><pre><span></span><code>---
+groceries:
+    grocery1:
+        name: apple
+        type: fruit
+        bought-in: Local market
+    grocery2:
+        name: potato
+        type: vegetable
+        bought-in: Local market
+date: 01-01-2022
+not-important-field: not important
+x-trestle-version: 1.0.0
+<span class="gu">x-trestle-ignore: not-important-field, bought-in</span>
+<span class="gu">---</span>
+<span class="gh"># The rest of my document</span>
+</code></pre></div>
+
+  Each field in the YAML header follows the `key: value` format.
+  For YAML header we validate the structure and the presence of the "keys" and not the "values".
+
+  The document YAML header(metadata) is said to be **_valid_** against the template, if and only if:
+
+  1. It contains **all** keys from the template EXCEPT the keys that either:
+     1. Start with `x-trestle`
+     1. Are listed under the `x-trestle-ignore` key (i.e. `x-trestle-ignore: not-important-field, bought-in`)
+  1. The version under `x-trestle-template-version: ` key is matching the template.
+  1. No new keys were added to the document.
+
+  For example, this change to the YAML header above is acceptable:
+
+  <div class="highlight"><pre><span></span><code>---
+groceries:
+    grocery1:
+        name: pear
+        type: fruit
+        bought-in: Superstore
+    grocery2:
+        name: potato
+        type: vegetable
+        bought-in: Local market
+date: 10-10-2023
+not-important-field: not important
+x-trestle-version: 1.0.0
+<span class="gu">x-trestle-ignore: not-important-field, bought-in</span>
+<span class="gu">---</span>
+<span class="gh"># The rest of my document</span>
+</code></pre></div>
+
+  ### Enforcing heading structure
+
+  Markdown headings are considered to be nested based on the heading level (i.e. number of `#`). For example, `## 1.1 Lower level heading` is below `# 1. top level heading`.
+
+  The document body is said to be **_valid_** against the template, if and only if,
+
+  1. It contains **_all_** the headings provided in the template.
+  1. No new headings were added at the top level (i.e. `# New heading` is not allowed).
+  1. All original headings are in the same order as in the template.
+  1. All headings must be in the hierarchical order (i.e. `# Heading` then `### Heading` then `## Heading` is invalid).
+  1. If the `--governed-heading` option is provided, then document is valid if no keys has changed in the specified governed section.
+
+  For example, consider this template as our starting point:
+
+  <div class="highlight"><pre><span></span><code><span class="gh"># Template heading 1</span>
+Some text
 <span class="gh"># Template heading 2</span>
 <span class="gu">## Template sub heading</span>
 </code></pre></div>
-<p>The following document is acceptable:</p>
-<div class="highlight"><pre><span></span><code><span class="gh"># Template heading 1</span>
+
+  Now we added new sections and ended up with the following document:
+  (note: this document will be valid against the template above)
+
+  <div class="highlight"><pre><span></span><code><span class="gh"># Template heading 1</span>
 Content for heading one
 <span class="gu">## Non-required sub header</span>
 Content for non-required sub header
@@ -3252,8 +2995,10 @@ Content for template sub heading
 <span class="gu">### non required sub-sub heading</span>
 This sub-sub heading is okay
 </code></pre></div>
-<p>However, violations such as adding or removing a heading at a level that has been templated is not acceptable e.g.:</p>
-<div class="highlight"><pre><span></span><code><span class="gh"># Template heading 1</span>
+
+  However, violations such as adding or removing a heading at the top level are not acceptable:
+
+  <div class="highlight"><pre><span></span><code><span class="gh"># Template heading 1</span>
 Content for heading one
 <span class="gu">## Non-required sub header</span>
 Content for non-required sub header
@@ -3261,182 +3006,456 @@ Content for non-required sub header
 Content for heading two
 <span class="gu">## Template sub heading</span>
 Content for template sub heading
-<span class="gu">## sub heading that violates template</span>
-This sub heading is NOT okay
-<span class="gh"># Top level heading that is not okay</span>
+<span class="gh"># Top level heading that is not okay &lt;&lt;&lt; NOT OKAY</span>
 </code></pre></div>
-<p>For each of the headings - the text of the heading is enforced with one caveat:</p>
-<ul>
-<li>If the template heading text is wrapped in curly brackets <code>{}</code> then the name is not measured e.g. <code># {Insert title here}</code>.</li>
-</ul>
-<h3 id="strict-header-heading-conformance-mechanisms">Strict header / heading conformance mechanisms<a class="headerlink" href="#strict-header-heading-conformance-mechanisms" title="Permanent link">¤</a></h3>
-<p>Two mechanisms are provided to enforce metadata within markdown documents. The first is the yaml header, as used by technologies such as jekyll, the second is a markdown 'governed heading` where templating of the content is enforced.
-Use of the yaml header is strongly encouraged as a first preference.</p>
-<div class="highlight"><pre><span></span><code>---
-yaml:
-    header:
-        <span class="k">-</span> with some 
-        <span class="k">-</span> structure
-<span class="gu">    more: information</span>
-<span class="gu">---</span>
-<span class="gh"># The rest of my document</span>
+
+  For each of the headings - the text of the heading is enforced with one caveat:
+
+  - If the template heading text is wrapped in curly brackets `{}` then the name is not measured e.g. `# {Insert title here}`.
+
+  ## Drawio enforcement mechanisms
+
+  Drawio or [diagrams.net](https://app.diagrams.net/) is a diagramming platform which has significant use for architecture diagrams. In the context of governance of content, trestle is supporting enforcement of metadata.
+
+  Drawio (or `mxgraph`) files have a set of data fields. In a drawio file this is available in the edit menu as *edit data*. The diagram below shows how to access the (meta)data.
+
+  ![Accessing the drawio data editor](assets/drawio_data_menu.png "Accessing the drawio data editor")
+
+  The data presents as a set of key-value pairs which can be edited (see below). The data is bound to each tab in a drawio file. The trestle CLI currently expects that metadata (whether from the template or file to be measured) is in the first tab when editing the draw io file.
+
+  ![Editing drawio data](assets/drawio_editing_data.png "Editing drawio data")
+
+  </details>
+
+- <details>
+  <summary><b>Setting Up Templates and Documents Via CLI</b></summary>
+  Trestle allows the setup of templates and governed documents in a several different ways based on the nature of the needed governance.
+
+  Definitions used in this section:
+
+  - _**document**_ - a markdown or drawio file that needs to be validated against some template.
+  - _**template**_ - an individual markdown or drawio file containing metadata and/or headings against which the documents will be validated.
+  - _**task**_ - a name of the folders containing documents and their respective templates.
+  - _**template folder**_ - an individual folder containing the templates that documents needs to be validated against.
+
+  You can set up multiple different tasks and types of validations in the same workspace.
+
+  Setup Trestle for:
+
+  - <details>
+      <summary><b>docs - Validating documents against one specific template (one template per task)</b></summary>
+
+    ## Validating documents against one specific template
+
+    In this section we describe the functionality of `trestle author docs` command.
+
+    `author docs` is designed to support enforcing and generating templating markdown files within a single folder based on a task name. Currently `author docs` supports markdown files only.
+
+    ### Creating new task/template
+
+    To create a new task with the necessary directory structures for running governed docs validation, run:
+
+    > trestle author docs setup -tn my_task_name
+
+    This will create a template folder and a single template: `TRESTLE_ROOT/.trestle/author/my_task_name/0.0.1/template.md`.
+    As well as an empty document folder: `TRESTLE_ROOT/my_task_name/`
+    The template will be applied to **all** markdown files in the task i.e.: `TRESTLE_ROOT/my_task_name/*.md`.
+
+    #### Extra options
+
+    - You can create different versions of the template by specifying the version via `--template-version` flag. See `Template Versioning` section for more information.
+      By default if no version is provided `0.0.1` will be used.
+
+    ### Creating new document for the task
+
+    To create a new document that confirms to a template run:
+
+    > trestle author docs create-sample -tn my_task_name
+
+    This will create a sample document in: `TRESTLE_ROOT/my_task_name/my_task_name_000.md`.
+    Once created this document will be a complete copy of the template, however you can modify this file with your own content.
+
+    #### Extra options
+
+    - This command has no extra options
+
+    ### Validating the template
+
+    To ensure that the markdown in the template is parseable run:
+
+    > trestle author docs template-validate -tn my_task_name
+
+    #### Extra options
+
+    - If `--governed-heading 'heading name'` (`-gh`) is passed it ensures that the required heading exists.
+    - If `--header-validate` (`-hv`) is passed the header will be validated as well.
+    - If `--header-only-validate` (`-hov`) only the header and NOT the body will be validated
+
+    ### Validating the documents against the template
+
+    To validate the documents against a template run:
+
+    > trestle author docs validate -tn my_task_name
+
+    This will take the `TRESTLE_ROOT/.trestle/author/my_task_name/template.md` template and validate all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`.
+
+    Running the command will validate that markdown body in the document is valid against the template. Please note that by default the header will **not** be validated.
+    See extra options for more validation options. To learn more on what exactly is validated please refer to `Documents Structural Enforcement` section in this document.
+
+    #### Extra options
+
+    - If `--governed-heading` (`-gh`) is passed it will ensure that the governed content was not modified. Governed content comes in the **key:** value format:
+      <div class="highlight"><pre><span></span><code>   # Governed section
+   <span class="gs">**Content Type:**</span>  Foo
+   <span class="gs">**Author(s):**</span>  Bah
+   <span class="gs">**Executive Owner:**</span>  Stuff
+   <span class="gs">**Technical Approver:**</span>   John Doe (approved)
+   <span class="gs">**Version:**</span> 1.0.1
 </code></pre></div>
-<p>The yaml header is structurally enforced my measuring whether the template key structure is reflected in the measured document. It does not measure values for yaml attributes. For the above markdown document the array value for <code>yaml.header</code> could be replaced with a single value or expanded. Enforcing the yaml header is enabled by <code>-hv</code> where available.</p>
-<p>For enforcing a governed heading the structural enforcement mechanism assumes that the <code>key:value</code> structure simply takes the form that following that for each line of content under the chosen heading the template content is a subset of the measured document, in the order provided in the template. This is performed after removing formatting (such as bolding), and any HTML comments.</p>
-<p>Given:</p>
-<div class="highlight"><pre><span></span><code><span class="gh"># heading for strict enforcement</span>
-my_key:
-<span class="gs">**my_key_2:**</span>
-my_other key with strange stuff??
-</code></pre></div>
-<p>The following heading would be acceptable.</p>
-<div class="highlight"><pre><span></span><code><span class="gh"># heading for strict enforcement</span>
-my_key: my value
-my_key_2: my value
-my_other key with strange stuff?? my value
-</code></pre></div>
-<p>This capability, where available, is activated by <code>--governed-heading</code> or <code>-gh</code></p>
-<h3 id="drawio-enforcement-mechanisms">Drawio enforcement mechanisms<a class="headerlink" href="#drawio-enforcement-mechanisms" title="Permanent link">¤</a></h3>
-<p>Drawio or <a href="https://app.diagrams.net/">diagrams.net</a> is a diagramming platform which has significant use for architecture diagrams. In the context of governance of content, trestle is supporting enforcement of metadata.</p>
-<p>Drawio (or <code>mxgraph</code>) files have a set of data fields. In a drawio file this is available in the edit menu as <em>edit data</em>. The diagram below shows how to access the (meta)data.</p>
-<p><img alt="Accessing the drawio data editor" src="../assets/drawio_data_menu.png" title="Accessing the drawio data editor" /></p>
-<p>The data presents as a set of key-value pairs which can be edited (see below). The data is bound to each tab in a drawio file. The trestle CLI currently expects that metadata (whether from the template or file to be measured) is in the first tab when editing the draw io file.</p>
-<p><img alt="Editing drawio data" src="../assets/drawio_editing_data.png" title="Editing drawio data" /></p>
-<h2 id="trestle-author-governed-docs"><code>trestle author governed-docs</code><a class="headerlink" href="#trestle-author-governed-docs" title="Permanent link">¤</a></h2>
-<p><code>author docs</code> is designed to support enforcing and generating templating markdown files within a single folder based on a task name. Currently <code>author docs</code> supports markdown files only.</p>
-<p><code>trestle author docs setup -tn my_task_name</code> Create the necessary directory structures for running governed docs validation.
-A template file will be created in <code>TRESTLE_ROOT/.trestle/author/my_task_name/template.md</code> and be applied to all markdown files here: <code>TRESTLE_ROOT/my_task_name/*.md</code>.</p>
-<p><code>trestle author docs create-sample -tn my_task_name</code> Creates a sample file in <code>TRESTLE_ROOT/my_task_name/</code></p>
-<p><code>trestle author docs template-validate -tn my_task_name</code> Ensures that the markdown is parseable. If <code>--governed-heading 'heading name'</code> is passed it ensures that the required heading exists.</p>
-<p><code>trestle author docs validate -tn my_task_name</code> validates the markdown, optionally with a <code>--governed-heading</code> or <code>-hv</code> yaml header based on this <code>TRESTLE_ROOT/.trestle/author/my_task_name/template.md</code> template to all markdown files here: <code>TRESTLE_ROOT/my_task_name/*.md</code>.</p>
-<p><code>trestle author docs validate -tn my_task_name -ig ^_.*</code> will validate all files except folders and files that start with underscore <code>_</code>. Use option <code>-ig</code> or <code>--ignore</code> when you would like to ignore any folders or files that match given regular expression.</p>
-<h3 id="extra-options">Extra options<a class="headerlink" href="#extra-options" title="Permanent link">¤</a></h3>
-<h4 id="recursive-r-recurse">recursive (<code>-r</code>, <code>--recurse</code>)<a class="headerlink" href="#recursive-r-recurse" title="Permanent link">¤</a></h4>
-<p>By default <code>author docs</code> only indexes a flat directory. The recursive option allows the markdown files to be nested in sub-directories.</p>
-<h4 id="header-only-validation-hov-header-only-validate">Header only validation (<code>-hov</code>, <code>--header-only-validate</code>)<a class="headerlink" href="#header-only-validation-hov-header-only-validate" title="Permanent link">¤</a></h4>
-<p>Turns off the validation of the structure of the document and only validates the yaml header structure.</p>
-<h4 id="ignore-files-or-folders-from-validation-ig-ignore">Ignore files or folders from validation (<code>-ig</code>, <code>--ignore</code>)<a class="headerlink" href="#ignore-files-or-folders-from-validation-ig-ignore" title="Permanent link">¤</a></h4>
-<p>Provide regular expression after this flag to ignore folders and files which names match this regular expression during <strong>validation only</strong>.</p>
-<h4 id="template-version-tracking-tv-template-version">Template version tracking (<code>-tv</code>, <code>--template-version</code>)<a class="headerlink" href="#template-version-tracking-tv-template-version" title="Permanent link">¤</a></h4>
-<p>This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
-to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
-of the template used to create an instance document. With this change, the Version header specifically refers to the
-version <em>of that document</em> (be it an instance or the template itself). This means:</p>
-<ul>
-<li>For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
-  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.</li>
-<li>For an instance, the Version header should not be compared with the Version header of the template. Rather,
-  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.</li>
-</ul>
-<h2 id="trestle-author-folders"><code>trestle author folders</code><a class="headerlink" href="#trestle-author-folders" title="Permanent link">¤</a></h2>
-<p><code>author folders</code> is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.</p>
-<p>For example given the following template setup using <code>trestle author folders setup -tn my_task_2</code></p>
-<div class="highlight"><pre><span></span><code>trestle_root
+      Running `trestle author docs validate -tn docs_task -gh="Governed section"` will ensure this content is present in the document.
+    - If `--ignore ^_.*` (`-ig`) is passed it will validate all files except folders and files that start with underscore `_`. Use this option when you would like to ignore any folders or files that match given regular expression.
+    - If `--header-validate` (`-hv`) is passed the header will be validated as well.
+    - If `--header-only-validate` (`-hov`) is passed only the header and NOT the body will be validated.
+    - If `--readme-validate` (`-rv`) is passed README.md will be validated as well, otherwise it is ignored.
+    - If `--recurse` (`-r`) is passed the documents in the subfolders will also be validated. By default `author docs` only indexes a flat directory.
+    - If `--template-version 1.0.0` (`-tv`) is passed the header field `x-trestle-template-version` will be ignored and document will be forcefully validated against template of version `1.0.0`.
+      Use this for testing purposes _only_ when you need to validate the document against a specific template. By default the template version will be determined based on `x-trestle-template-version` in the document.
+
+    </details>
+
+  - <details>
+      <summary><b>folders - Validating documents against multiple templates and ensuring folder structure (multiple individual templates per task) </b></summary>
+
+    ## Validating against multiple templates
+
+    In this section we describe the functionality of `trestle author folders` command.
+
+    `author folders` is designed to allow the assembly of groups of templates where each folder contains unique content.
+    This command will validate that both: structure (i.e. all template documents are present) and content is preserved in the folder. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.
+
+    ### Creating new task folder
+
+    To create a new task folder run:
+
+    > trestle author folders setup -tn my_task_2
+
+    This will create a template folder with the following structure:
+
+    <div class="highlight"><pre><span></span><code>trestle_root
  ┣ .trestle
  ┃ ┣ author
- ┃ ┃ ┗ my_task_2
- ┃ ┃ ┃ ┣ a_template.md
- ┃ ┃ ┃ ┣ another_template.md
- ┃ ┃ ┃ ┗ template.drawio
+ ┃ ┃ ┣ my_task_2
+ ┃ ┃ ┃ ┣ 0.0.1
+ ┃ ┃ ┃ ┃ ┣ a_template.md
+ ┃ ┃ ┃ ┃ ┣ another_template.md
+ ┃ ┃ ┃ ┃ ┗ arhitecture.drawio
  ┃ ┗ config.ini
 </code></pre></div>
-<p>Each task folder is required to meet template requirements for both <code>a_template.md</code>, <code>another_template.md</code>, and <code>template.drawio</code>.
-The names, numbers, and nesting of folders is user specifiable, however, unlike <code>docs</code> the names must be carried over to each instances.</p>
-<p>Following the similar structure of <code>docs</code>, measurement occurs in the <code>my_task_2</code> where this structure is enforced for every directory.</p>
-<div class="highlight"><pre><span></span><code>trestle_root
+
+    Each task folder is required to meet template requirements for all: `a_template.md`, `another_template.md`, and `template.drawio`. The names, numbers, and nesting of folders is user specifiable, however, unlike `docs` the names must be carried over to each instances.
+
+    #### Extra options
+
+    - You can create different versions of the template by specifying the version via `--template-version` flag. See `Template Versioning` section for more information.
+      By default if no version is provided `0.0.1` will be used.
+
+    ### Creating new documents for the task
+
+    Following the similar structure of `docs`, measurement occurs in the `my_task_2` where this structure is enforced for every directory.
+
+    To create a new folder with documents for the task run:
+
+    > trestle author folders create-sample -tn my_task_2
+
+    This will create a subfolder in the `my_task_2` with the same content as in template folder. Running it twice will result in:
+
+    <div class="highlight"><pre><span></span><code>trestle_root
  ┣ .trestle
  ┣ my_task_2
- ┃ ┣ User_chosen_name
+ ┃ ┣ sample_folder_0
  ┃ ┃ ┣ a_template.md
- ┃ ┃ ┣ template.drawio
+ ┃ ┃ ┣ arhitecture.drawio
  ┃ ┃ ┗ another_template.md
 
- ┃ ┗ Second_user_chosen_name
+ ┃ ┗ sample_folder_1
  ┃ ┃ ┣ a_template.md
- ┃ ┃ ┣ template.drawio
+ ┃ ┃ ┣ arhitecture.drawio
  ┃ ┃ ┗ another_template.md
 </code></pre></div>
-<p><code>trestle author folders validate -tn my_task_name -ig ^_.*</code> will validate all files except folders and files that start with underscore <code>_</code>. Use option <code>-ig</code> or <code>--ignore</code> when you would like to ignore any folders or files that match given regular expression.</p>
-<h3 id="supported-options">Supported options<a class="headerlink" href="#supported-options" title="Permanent link">¤</a></h3>
-<h4 id="header-validate-hv-header-validate">Header validate (<code>-hv</code>/<code>--header-validate</code>)<a class="headerlink" href="#header-validate-hv-header-validate" title="Permanent link">¤</a></h4>
-<p>Validate the headers in markdown and metadata in drawio files.</p>
-<h4 id="header-only-validation-hov-header-only-validate_1">Header only validation (<code>-hov</code>, <code>--header-only-validate</code>)<a class="headerlink" href="#header-only-validation-hov-header-only-validate_1" title="Permanent link">¤</a></h4>
-<p>Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.</p>
-<h4 id="ignore-files-or-folders-from-validation-ig-ignore_1">Ignore files or folders from validation (<code>-ig</code>, <code>--ignore</code>)<a class="headerlink" href="#ignore-files-or-folders-from-validation-ig-ignore_1" title="Permanent link">¤</a></h4>
-<p>Provide regular expression after this flag to ignore folders and files which names match this regular expression during <strong>validation only</strong>.</p>
-<h4 id="template-version-tracking-tv-template-version_1">Template version tracking (<code>-tv</code>, <code>--template-version</code>)<a class="headerlink" href="#template-version-tracking-tv-template-version_1" title="Permanent link">¤</a></h4>
-<p>This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
-to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
-of the template used to create an instance document. With this change, the Version header specifically refers to the
-version <em>of that document</em> (be it an instance or the template itself). This means:</p>
-<ul>
-<li>For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
-  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.</li>
-<li>For an instance, the Version header should not be compared with the Version header of the template. Rather,
-  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.</li>
-</ul>
-<h2 id="trestle-author-headers"><code>trestle author headers</code><a class="headerlink" href="#trestle-author-headers" title="Permanent link">¤</a></h2>
-<p>Trestle author headers supports a different usecase than that of <code>docs</code> and <code>folders</code> above: some content is governed, however, the content is non-standardized.</p>
-<p>The result: metadata but not content needs to be measured. <code>author headers</code> provides this functionality for drawio and markdown files.</p>
-<p><code>trestle author headers setup -tn my_task_name</code> Create the necessary directory structures for running header only validation. Per supported file type (e.g. drawio and md) a template file will be generated with the format of <code>template.{extension name}</code> e.g.</p>
-<p>e.g.:</p>
-<div class="highlight"><pre><span></span><code>trestle_root
+
+    #### Extra options
+
+    - This command has no extra options
+
+    ### Validating the templates
+
+    To validate the documents against the template run:
+
+    > trestle author folders template-validate -tn my_task_2
+
+    This will ensure that the respective template files are parseable.
+
+    #### Extra options
+
+    - This command has no extra options
+
+    ### Validating the documents against templates
+
+    The validation in `trestle author folder` runs similarly as in `docs` but now each document will be validated against the template with the same name as in the template folder.
+
+    To validate the documents against their respective templates, run:
+
+    > trestle author folders validate -tn my_task_name
+
+    This will validate all files. Please note that all files from the template folder must be present in the individual document folders.
+
+    #### Extra options
+
+    - If `--governed-heading` (`-gh`) is passed it will ensure that the governed content was not modified. Governed content comes in the **key:** value format:
+      <div class="highlight"><pre><span></span><code>   # Governed section
+   <span class="gs">**Content Type:**</span>  Foo
+   <span class="gs">**Author(s):**</span>  Bah
+   <span class="gs">**Executive Owner:**</span>  Stuff
+   <span class="gs">**Technical Approver:**</span>   John Doe (approved)
+   <span class="gs">**Version:**</span> 1.0.1
+</code></pre></div>
+      Running `trestle author docs validate -tn docs_task -gh="Governed section"` will ensure this content is present in the document.
+    - If `--ignore ^_.*` (`-ig`) is passed it will validate all files except folders and files that start with underscore `_`. Use this option when you would like to ignore any folders or files that match given regular expression.
+    - If `--header-validate` (`-hv`) is passed the header will be validated as well.
+    - If `--header-only-validate` (`-hov`) is passed only the header and NOT the body will be validated.
+    - If `--readme-validate` (`-rv`) is passed README.md will be validated as well, otherwise it is ignored.
+    - If `--recurse` (`-r`) is passed the documents in the subfolders will also be validated. By default `author docs` only indexes a flat directory.
+    - If `--template-version 1.0.0` (`-tv`) is passed the header field `x-trestle-template-version` will be ignored and document will be forcefully validated against template of version `1.0.0`.
+      Use this for testing purposes _only_ when you need to validate the document against a specific template. By default the template version will be determined based on `x-trestle-template-version` in the document.
+
+    </details>
+
+  - <details>
+      <summary><b>headers - Validate only the headers against a global or a specific template </b></summary>
+
+    ## Validate only the headers against a global or a specific template.
+
+    In this section we describe the functionality of `trestle author headers` command.
+
+    Trestle author headers supports a slightly different usecase than that of `docs` and `folders` above as only the YAML headers will be validated.
+    This command can be useful when one does not care about the markdown structure and might want to use global templates (templates that are shared across multiple tasks).
+
+    With `headers` template folder can contain both .md and .drawio files and each file will be validated against the template that matches the extension.
+    Also `headers` allow user to have `global` templates that can be shared across multiple tasks.
+
+    ### Creating new task/template
+
+    To create a new task run:
+
+    > trestle author headers setup -tn my_task_3
+
+    This will create a template folder with the following format:
+
+    <div class="highlight"><pre><span></span><code>trestle_root
 ┣ .trestle
 ┃ ┣ author
-┃ ┃ ┗ my_task_2
-┃ ┃ ┃ ┣ template.md
-┃ ┃ ┃ ┗ template.drawio
+┃ ┃ ┣ my_task_3
+┃ ┃ ┃ ┣ 0.0.1
+┃ ┃ ┃ ┃ ┣ template.md
+┃ ┃ ┃ ┃ ┗ template.drawio
 ┃ ┗ config.ini
 </code></pre></div>
-<p><code>trestle author headers template-validate -tn my_task_name</code> Ensures that the respective template files are parseable.</p>
-<p><code>trestle author headers validate -tn my_task_name</code> Will validate all files within the directory against the templates by matching the extensions.</p>
-<p><code>trestle author headers validate -tn my_task_name -ig ^_.*</code> will validate all files except folders and files that start with underscore <code>_</code>. Use option <code>-ig</code> or <code>--ignore</code> when you would like to ignore any folders or files that match given regular expression.</p>
-<h3 id="supported-options_1">Supported options<a class="headerlink" href="#supported-options_1" title="Permanent link">¤</a></h3>
-<h4 id="recursive-r-recurse_1">Recursive (<code>-r</code>, <code>--recurse</code>)<a class="headerlink" href="#recursive-r-recurse_1" title="Permanent link">¤</a></h4>
-<p>By default <code>author headers</code> only indexes a flat directory. The recursive option allows the discovery of sub directories.</p>
-<h4 id="global-g-global">Global (<code>-g</code>, <code>--global</code>)<a class="headerlink" href="#global-g-global" title="Permanent link">¤</a></h4>
-<p>Allows a single set of templates defined in <code>.trestle/author/__global__</code> to be applied to mulitple directories in trestle.
-If <code>--task-name</code> is not provided all folders in the repository will be measured.</p>
-<h4 id="exclude-ex-exclude">Exclude (<code>-ex</code>, <code>--exclude</code>)<a class="headerlink" href="#exclude-ex-exclude" title="Permanent link">¤</a></h4>
-<p>Primarily intended for use with global (<code>-g</code>), exclude will remove any <em>directory</em> from the search scope of trestle author headers. Must be a relative path to the root of a trestle directory, however, can be multiple levels deep (e.g. <code>--exclude=architecture/drafts</code>) would allow content in <code>architecture/diagrams</code> to still be indexed to find the header.</p>
-<h4 id="ignore-files-or-folders-from-validation-ig-ignore_2">Ignore files or folders from validation (<code>-ig</code>, <code>--ignore</code>)<a class="headerlink" href="#ignore-files-or-folders-from-validation-ig-ignore_2" title="Permanent link">¤</a></h4>
-<p>Provide regular expression after this flag to ignore folders and files which names match this regular expression during <strong>validation only</strong>.</p>
-<h4 id="template-version-tracking-tv-template-version_2">Template version tracking (<code>-tv</code>, <code>--template-version</code>)<a class="headerlink" href="#template-version-tracking-tv-template-version_2" title="Permanent link">¤</a></h4>
-<p>This, along with the use of x-trestle-template-version in the governed header allows for repos using author templates
-to implement support for multiple versions of templates. The x-trestle-template-version header represents the version
-of the template used to create an instance document. With this change, the Version header specifically refers to the
-version <em>of that document</em> (be it an instance or the template itself). This means:</p>
-<ul>
-<li>For a template, if the x-trestle-template-version header exists, then it and the Version header of that template must
-  always match. Further, the template's path needs to include the value stored in the x-trestle-template-version.</li>
-<li>For an instance, the Version header should not be compared with the Version header of the template. Rather,
-  the x-trestle-template-version header should be compared with the x-trestle-template-version header of the template.</li>
-</ul>
-<h2 id="trestle-author-catalog-generate-and-trestle-author-catalog-assemble"><code>trestle author catalog-generate</code> and <code>trestle author catalog-assemble</code><a class="headerlink" href="#trestle-author-catalog-generate-and-trestle-author-catalog-assemble" title="Permanent link">¤</a></h2>
-<p>The <code>catalog</code> author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
-<h2 id="trestle-author-profile-generate-and-trestle-author-profile-assemble"><code>trestle author profile-generate</code> and <code>trestle author profile-assemble</code><a class="headerlink" href="#trestle-author-profile-generate-and-trestle-author-profile-assemble" title="Permanent link">¤</a></h2>
-<p>The <code>profile</code> author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
-<h2 id="trestle-author-ssp-generate-and-trestle-author-ssp-assemble"><code>trestle author ssp-generate</code> and <code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-generate-and-trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
-<p>The <code>ssp-generate</code> sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  <code>ssp-assemble</code> can then assemble the markdown files into a single json SSP file.</p>
-<p>For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
-<h2 id="trestle-author-ssp-filter"><code>trestle author ssp-filter</code><a class="headerlink" href="#trestle-author-ssp-filter" title="Permanent link">¤</a></h2>
-<p>The <code>ssp-filter</code> sub-command takes a given SSP and filters its contents based on a given profile and/or list of components.</p>
-<p>If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.</p>
-<p>If filtering by components, a colon-delimited list of components should be provided, with <code>This system</code> as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as <code>--components "this system: my component"</code>.  The resulting, filtered ssp will have updated implementated requirements with filtered by_components on each requirement, and filtered by_components on each statement.</p>
-<p>You may filter by a combination of a profile and a list of component names.</p>
-<p>As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.</p>
-<p>For more details on its usage please see <a href="https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring">the ssp authoring tutorial</a>.</p>
 
-              
-            </article>
-          </div>
+    #### Extra options
+
+    - If `--global` (`-g`) is passed then `__global__` then it will create `trestle_root/.trestle/author/__global__` folder. Use this when you would like to use same template for multiple tasks.
+      <div class="highlight"><pre><span></span><code>trestle_root
+┣ .trestle
+┃ ┣ author
+┃ ┃ ┣ __global__
+┃ ┃ ┃ ┣ 0.0.1
+┃ ┃ ┃ ┃ ┣ template.md
+┃ ┃ ┃ ┃ ┗ template.drawio
+┃ ┗ config.ini
+</code></pre></div>
+    - You can create different versions of the template by specifying the version via `--template-version` flag. See `Template Versioning` section for more information.
+      By default if no version is provided `0.0.1` will be used.
+
+    ### Creating new documents
+
+    As of now this command does not support the automatic creation of the sample documents.
+
+    ### Validating the templates
+
+    To validate the documents against the template run:
+
+    > trestle author headers template-validate -tn my_task_3
+
+    This will ensure that the respective template files are parseable.
+
+    #### Extra options
+
+    - This command has no extra options
+
+    ### Validating the documents
+
+    To validate the documents against the template run:
+
+    > trestle author headers validate -tn my_task_3
+
+    This will validate all files within the directory against the templates (of the matching task name) by matching the extensions.
+    Please note that **only** headers will be validated. There is no option to validate the body.
+
+    ### Extra options
+
+    - If `--global` (`-g`) is passed it will create `trestle_root/.trestle/author/__global__` folder. Use this when you would like to use same template for multiple tasks.
+    - If `--ignore ^_.*` (`-ig`) is passed it will validate all files except folders and files that start with underscore `_`. Use this option when you would like to ignore any folders or files that match given regular expression.
+    - If `--readme-validate` (`-rv`) is passed README.md will be validated as well, otherwise it is ignored.
+    - If `--recurse` (`-r`) is passed the documents in the subfolders will also be validated. By default `author docs` only indexes a flat directory.
+    - If `--template-version 1.0.0` (`-tv`) is passed the header field `x-trestle-template-version` will be ignored and document will be forcefully validated against template of version `1.0.0`.
+      Use this for testing purposes _only_ when you need to validate the document against a specific template. By default the template version will be determined based on `x-trestle-template-version` in the document.
+
+    </details>
+
+  </details>
+
+- <details>
+  <summary><b>Template Versioning</b></summary>
+
+  ## Template versioning
+
+  ### Prerequisite:
+
+  This section assumes that you have an existing Trestle workspace initialized, with existing template and governed documents.
+  Please follow steps in the section `Setting up the Trestle Workspace` if you don't have one.
+
+  Trestle provides the capability to version the templates and the documents via `x-trestle-template-version` field in the header.
+
+  Consider an example where we have a governed document called `Decision 1` that we now need to update to contain a new header field `approved-status` and a new required heading `Heading n` at the end, as demonstrated in the Figure below:
+  ![Decision document update](assets/template_versioning.png)
+
+  The intended workflow in this scenario is to:
+
+  1.Create a new version of the `decisions` template:
+
+  <div class="highlight"><pre><span></span><code><span class="nb">cd</span> my_workspace 
+trestle author docs setup -tn decisions -tv <span class="m">0</span>.1.1
+&gt;&gt;&gt; Set template version to <span class="m">0</span>.1.1.
+&gt;&gt;&gt; Template file setup <span class="k">for</span> task decisions at .trestle/author/decisions/0.1.1/template.md
+&gt;&gt;&gt; Task directory is decisions
+</code></pre></div>
+
+  Add the new required content to the newly created template. In our example simply copy-paste all content from the `.trestle/author/decisions/0.1.0/template.md` and add the newly required fields.
+
+  2.Create a new instance of that template.
+
+  <div class="highlight"><pre><span></span><code>trestle author docs create-sample -tn decisions -tv <span class="m">0</span>.1.1
+&gt;&gt;&gt; Set template version to <span class="m">0</span>.1.1.
+</code></pre></div>
+
+  This step will create a copy of the template of version 0.1.1.
+
+  Now you will need to fill the documents with the updated information and new fields.
+
+  3.(Optional) Delete the old document.
+
+  Now that you have a new version of the document, you can delete the old one if you no longer need it. You can also keep it if you would like to maintain a history of updates.
+
+  4.Run validation.
+
+  After filling the contents to the new version of the template, you can run the validation to ensure that everything works as expected.
+
+  <div class="highlight"><pre><span></span><code>trestle author docs validate -tn decisions
+&gt;&gt;&gt; Instances will be validated against template version specified <span class="k">in</span> their headers.
+&gt;&gt;&gt; VALID: decisions/decision_000.md
+</code></pre></div>
+
+  </details>
+
+</details>
+<details>
+  <summary><b>4. Authoring of OSCAL Models</b></summary>
+
+## OSCAL Authoring
+
+### Catalog authoring
+
+CLI evocation:
+
+1. To generate markdowns for editing a catalog
+
+> trestle author catalog-generate
+
+2. To assemble markdowns to a JSON catalog
+
+> trestle author catalog-assemble
+
+The `catalog` author commands allow you to convert a control catalog to markdown and edit its control statement, then assemble markdown back into an OSCAL catalog with the modifications to the statement.  Items in the statement may be edited or added.  For more details on its usage please see [the catalog authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
+### Profile authoring
+
+CLI evocation:
+
+1. To generate markdowns for editing a profile
+
+> trestle author profile-generate
+
+2. To assemble markdowns to a JSON profile
+
+> trestle author profile-assemble
+
+The `profile` author commands allow you to edit additions made by a profile to its imported controls that end up in the final resolved profile catalog.  Only the additions may be edited or added to the generated markdown control files - and those additions can then be assembled into a new version of the original profile, with those additions.  For more details on its usage please see [the profile authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
+### SSP authoring
+
+CLI evocation:
+
+1. To generate markdowns for editing SSP
+
+> trestle author ssp-generate
+
+2. To assemble markdowns to a JSON SSP
+
+> trestle author ssp-assemble
+
+The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` can then assemble the markdown files into a single json SSP file.
+
+For more details on its usage please see [the ssp authoring tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
+### SSP Content Filtering
+
+CLI evocation:
+
+> trestle author ssp-filter
+
+The `ssp-filter` sub-command takes a given SSP and filters its contents based on a given profile and/or list of components.
+
+If filtering by profile, the SSP is assumed to contain a superset of controls needed by the profile, and the filter operation generates a new SSP with just the controls needed by that profile.  If the profile references a control not in the SSP, the routine fails with an error.
+
+If filtering by components, a colon-delimited list of components should be provided, with `This system` as the default name for the overall required component for the entire system.  Case and spaces are ignored in the component names, so the names could be specified as `--components "this system: my component"`.  The resulting, filtered ssp will have updated implementated requirements with filtered by_components on each requirement, and filtered by_components on each statement.
+
+You may filter by a combination of a profile and a list of component names.
+
+As with the other related author commands, if an existing destination file already exists, it is not updated if no changes would be made.
+
+For more details on its usage please see [the ssp-filter tutorial](https://ibm.github.io/compliance-trestle/tutorials/ssp_profile_catalog_authoring/ssp_profile_catalog_authoring).
+
+</details>
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../cli/" class="md-footer__link md-footer__link--prev" aria-label="Previous: CLI for OSCAL documents" rel="prev">
@@ -3491,10 +3510,11 @@ version <em>of that document</em> (be it an instance or the template itself). Th
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "search": "../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.a6c66575.min.js"></script>
+      <script src="../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

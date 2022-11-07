@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.profile/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
     
     
       
@@ -21,16 +21,18 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c382b1dc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.815d1a91.min.css">
         
           
           
           <meta name="theme-color" content="#009485">
         
       
+      
+
     
     
     
@@ -45,7 +47,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -55,10 +57,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -135,7 +140,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -159,7 +164,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +209,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -370,20 +375,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorials/work_with_authoring_versions/" class="md-nav__link">
-        Work with authoring versions
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -439,7 +430,7 @@
   
     <li class="md-nav__item">
       <a href="../../trestle_author/" class="md-nav__link">
-        CLI for authoring governed content
+        Trestle CLI for Governance of Authored Documents
       </a>
     </li>
   
@@ -893,6 +884,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.common.load_validate/" class="md-nav__link">
+        load_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.common.log/" class="md-nav__link">
         log
       </a>
@@ -1180,6 +1185,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.author.consts/" class="md-nav__link">
         consts
       </a>
@@ -1382,6 +1401,46 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve" class="md-nav__link">
+    ProfileResolve
+  </a>
+  
+    <nav class="md-nav" aria-label="ProfileResolve">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve.resolve_profile" class="md-nav__link">
+    resolve_profile()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1444,18 +1503,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_11" type="checkbox" id="__nav_10_2_3_5_3_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_12" type="checkbox" id="__nav_10_2_3_5_3_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__link" for="__nav_10_2_3_5_3_12">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="versioning" data-md-level="6">
-        <label class="md-nav__title" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__title" for="__nav_10_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
         </label>
@@ -1759,8 +1818,64 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.control_io/" class="md-nav__link">
-        control_io
+      <a href="../trestle.core.control_context/" class="md-nav__link">
+        control_context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_interface/" class="md-nav__link">
+        control_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_reader/" class="md-nav__link">
+        control_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_writer/" class="md-nav__link">
+        control_writer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.docs_control_writer/" class="md-nav__link">
+        docs_control_writer
       </a>
     </li>
   
@@ -1815,6 +1930,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.generic_oscal/" class="md-nav__link">
+        generic_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.jinja/" class="md-nav__link">
         jinja
       </a>
@@ -1846,18 +1975,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_12" type="checkbox" id="__nav_10_2_3_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_17" type="checkbox" id="__nav_10_2_3_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_12">
+        <label class="md-nav__link" for="__nav_10_2_3_17">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="markdown" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_12">
+        <label class="md-nav__title" for="__nav_10_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
         </label>
@@ -1963,18 +2092,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_13" type="checkbox" id="__nav_10_2_3_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_18" type="checkbox" id="__nav_10_2_3_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_13">
+        <label class="md-nav__link" for="__nav_10_2_3_18">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_13">
+        <label class="md-nav__title" for="__nav_10_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
         </label>
@@ -2136,18 +2265,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_19" type="checkbox" id="__nav_10_2_3_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_24" type="checkbox" id="__nav_10_2_3_24" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_19">
+        <label class="md-nav__link" for="__nav_10_2_3_24">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_19">
+        <label class="md-nav__title" for="__nav_10_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -2197,18 +2326,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_21" type="checkbox" id="__nav_10_2_3_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_26" type="checkbox" id="__nav_10_2_3_26" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_21">
+        <label class="md-nav__link" for="__nav_10_2_3_26">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="resolver" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_21">
+        <label class="md-nav__title" for="__nav_10_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
         </label>
@@ -2505,6 +2634,34 @@
     <li class="md-nav__item">
       <a href="../trestle.tasks.base_task/" class="md-nav__link">
         base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
+        csv_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_to_oscal_cd/" class="md-nav__link">
+        csv_to_oscal_cd
       </a>
     </li>
   
@@ -2934,6 +3091,46 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve" class="md-nav__link">
+    ProfileResolve
+  </a>
+  
+    <nav class="md-nav" aria-label="ProfileResolve">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve.name" class="md-nav__link">
+    name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.commands.author.profile.ProfileResolve.resolve_profile" class="md-nav__link">
+    resolve_profile()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2972,10 +3169,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>profile</h1>
@@ -2984,12 +3182,12 @@
 
 
 
-<h2 class="doc doc-heading" id="trestle.core.commands.author.profile">
+<h2 id="trestle.core.commands.author.profile" class="doc doc-heading">
         <code>trestle.core.commands.author.profile</code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile" title="Permanent link">¤</a></h2>
+<a href="#trestle.core.commands.author.profile" class="headerlink" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -3008,11 +3206,11 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.author.profile.logger">
+<h4 id="trestle.core.commands.author.profile.logger" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.logger" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.author.profile.logger" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -3021,20 +3219,20 @@
   </div>
 
 
-<h3 id="trestle.core.commands.author.profile-classes">Classes<a class="headerlink" href="#trestle.core.commands.author.profile-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.core.commands.author.profile-classes">Classes<a href="#trestle.core.commands.author.profile-classes" class="headerlink" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.author.profile.ProfileAssemble">
+<h4 id="trestle.core.commands.author.profile.ProfileAssemble" class="doc doc-heading">
         <code>
 ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle.core.commands.author.common.AuthorCommonCommand" href="../trestle.core.commands.author.common/#trestle.core.commands.author.common.AuthorCommonCommand">AuthorCommonCommand</a>)
         </code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileAssemble" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.author.profile.ProfileAssemble" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -3060,6 +3258,7 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-sp&#39;</span><span class="p">,</span> <span class="s1">&#39;--set-parameters&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_SET_PARAMS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--regenerate&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_REGENERATE</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-vn&#39;</span><span class="p">,</span> <span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_VERSION</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--sections&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_SECTIONS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-rs&#39;</span><span class="p">,</span> <span class="s1">&#39;--required-sections&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_REQUIRED_SECTIONS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-as&#39;</span><span class="p">,</span> <span class="s1">&#39;--allowed-sections&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">HELP_ALLOWED_SECTIONS</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
@@ -3072,9 +3271,10 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
                 <span class="n">parent_prof_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                 <span class="n">md_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">markdown</span><span class="p">,</span>
                 <span class="n">assem_prof_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
-                <span class="n">set_parameters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">,</span>
+                <span class="n">set_parameters_flag</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">,</span>
                 <span class="n">regenerate</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">regenerate</span><span class="p">,</span>
                 <span class="n">version</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                <span class="n">sections_dict</span><span class="o">=</span><span class="n">sections_to_dict</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">sections</span><span class="p">),</span>
                 <span class="n">required_sections</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">required_sections</span><span class="p">,</span>
                 <span class="n">allowed_sections</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">allowed_sections</span>
             <span class="p">)</span>
@@ -3102,19 +3302,24 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
             <span class="c1"># now go through new alters and add them to each control in dict by control id</span>
             <span class="k">for</span> <span class="n">new_alter</span> <span class="ow">in</span> <span class="n">alters</span><span class="p">:</span>
                 <span class="n">alter</span> <span class="o">=</span> <span class="n">alter_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">alter</span><span class="p">:</span>
-                    <span class="c1"># even though we removed adds at start, we may have added one already</span>
-                    <span class="k">if</span> <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">:</span>
-                        <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">alter</span><span class="o">.</span><span class="n">adds</span> <span class="o">=</span> <span class="n">new_alter</span><span class="o">.</span><span class="n">adds</span>
-                    <span class="c1"># update the dict with the new alter with its added adds</span>
-                    <span class="n">alter_dict</span><span class="p">[</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">alter</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">alter</span><span class="p">:</span>
+                    <span class="c1"># the control did not have alters, so add</span>
+                    <span class="n">alter</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">(</span><span class="n">control_id</span><span class="o">=</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">)</span>
+
+                <span class="c1"># even though we removed adds at start, we may have added one already</span>
+                <span class="k">if</span> <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">:</span>
+                    <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">alter</span><span class="o">.</span><span class="n">adds</span> <span class="o">=</span> <span class="n">new_alter</span><span class="o">.</span><span class="n">adds</span>
+                <span class="c1"># update the dict with the new alter with its added adds</span>
+                <span class="n">alter_dict</span><span class="p">[</span><span class="n">new_alter</span><span class="o">.</span><span class="n">control_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">alter</span>
             <span class="c1"># get the new list of alters from the dict and update profile</span>
             <span class="n">new_alters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">alter_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="c1"># special case, if all adds were deleted remove such alters completely</span>
+            <span class="n">new_alters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">alt</span><span class="p">:</span> <span class="n">alt</span><span class="o">.</span><span class="n">adds</span> <span class="ow">or</span> <span class="n">alt</span><span class="o">.</span><span class="n">removes</span><span class="p">,</span> <span class="n">new_alters</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span> <span class="o">!=</span> <span class="n">new_alters</span><span class="p">:</span>
                 <span class="n">changed</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span> <span class="o">=</span> <span class="n">new_alters</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">new_alters</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">changed</span>
 
     <span class="nd">@staticmethod</span>
@@ -3137,7 +3342,13 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
                     <span class="n">sub_param_dict</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
                     <span class="n">param</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">dict_to_parameter</span><span class="p">(</span><span class="n">sub_param_dict</span><span class="p">)</span>
                     <span class="n">new_set_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">prof</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span><span class="n">param_id</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+                        <span class="n">prof</span><span class="o">.</span><span class="n">SetParameter</span><span class="p">(</span>
+                            <span class="n">param_id</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                            <span class="n">label</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+                            <span class="n">values</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                            <span class="n">select</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">select</span><span class="p">,</span>
+                            <span class="n">props</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">props</span>
+                        <span class="p">)</span>
                     <span class="p">)</span>
             <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">!=</span> <span class="n">new_set_params</span><span class="p">:</span>
                 <span class="n">changed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -3145,6 +3356,8 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
             <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                 <span class="n">new_set_params</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">param</span><span class="p">:</span> <span class="p">(</span><span class="n">param_map</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">param_id</span><span class="p">],</span> <span class="n">param</span><span class="o">.</span><span class="n">param_id</span><span class="p">)</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="p">:</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">changed</span>
 
     <span class="nd">@staticmethod</span>
@@ -3153,9 +3366,10 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="n">parent_prof_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">md_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">assem_prof_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">set_parameters_flag</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
         <span class="n">required_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">allowed_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -3167,9 +3381,10 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
 <span class="sd">            parent_prof_name: Optional name of profile used to generate the markdown (default is assem_prof_name)</span>
 <span class="sd">            md_name: The name of the directory containing the markdown control files for the profile</span>
 <span class="sd">            assem_prof_name: The name of the assembled profile.  It can be the same as the parent to overwrite</span>
-<span class="sd">            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile</span>
+<span class="sd">            set_parameters_flag: Use the params and props in yaml header to add or alter setparameters in the profile</span>
 <span class="sd">            regenerate: Whether to regenerate the uuid&#39;s in the profile</span>
 <span class="sd">            version: Optional version for the assembled profile</span>
+<span class="sd">            sections_dict: Optional map of short name to long name for sections</span>
 <span class="sd">            required_sections: Optional List of required sections in assembled profile, as comma-separated short names</span>
 <span class="sd">            allowed_sections: Optional list of section short names that are allowed, as comma-separated short names</span>
 
@@ -3191,8 +3406,16 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="k">if</span> <span class="ow">not</span> <span class="n">parent_prof_name</span><span class="p">:</span>
             <span class="n">parent_prof_name</span> <span class="o">=</span> <span class="n">assem_prof_name</span>
 
-        <span class="n">parent_prof</span><span class="p">,</span> <span class="n">parent_prof_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
+        <span class="n">parent_prof_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parent_prof_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile </span><span class="si">{</span><span class="n">parent_prof_name</span><span class="si">}</span><span class="s1"> does not exist.  An existing profile must be provided.&#39;</span><span class="p">)</span>
+
+        <span class="n">parent_prof</span><span class="p">,</span> <span class="n">parent_prof_path</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
         <span class="n">new_content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">path_to_content_type</span><span class="p">(</span><span class="n">parent_prof_path</span><span class="p">)</span>
+
+        <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_path</span><span class="p">)</span>
+        <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+        <span class="n">label_map</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">required_sections_list</span> <span class="o">=</span> <span class="n">required_sections</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">required_sections</span> <span class="k">else</span> <span class="p">[]</span>
 
@@ -3200,19 +3423,27 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <span class="c1"># then overwrite the Adds in the existing profile with the new ones</span>
         <span class="c1"># keep track if any changes were made</span>
         <span class="n">md_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">md_name</span>
-        <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_additional_content</span><span class="p">(</span><span class="n">md_dir</span><span class="p">,</span> <span class="n">required_sections_list</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">allowed_sections</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">found_alters</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">add</span> <span class="ow">in</span> <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">add</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_sections</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile has alter with name </span><span class="si">{</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> not in allowed sections.&#39;</span><span class="p">)</span>
+        <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_additional_content</span><span class="p">(</span>
+            <span class="n">md_dir</span><span class="p">,</span>
+            <span class="n">required_sections_list</span><span class="p">,</span>
+            <span class="n">label_map</span><span class="p">,</span>
+            <span class="n">sections_dict</span><span class="p">,</span>
+            <span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="c1"># technically if allowed sections is [] it means no sections are allowed</span>
+        <span class="k">if</span> <span class="n">allowed_sections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bad_part</span> <span class="ow">in</span> <span class="p">[</span><span class="n">part</span> <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">found_alters</span> <span class="k">for</span> <span class="n">add</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>
+                             <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">as_filtered_list</span><span class="p">(</span><span class="n">add</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_sections</span><span class="p">)]:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile has alter with name </span><span class="si">{</span><span class="n">bad_part</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> not in allowed sections.&#39;</span><span class="p">)</span>
+
         <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_replace_alter_adds</span><span class="p">(</span><span class="n">parent_prof</span><span class="p">,</span> <span class="n">found_alters</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">set_parameters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">set_parameters_flag</span><span class="p">:</span>
             <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_replace_modify_set_params</span><span class="p">(</span><span class="n">parent_prof</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
             <span class="n">parent_prof</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">Version</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+
+        <span class="n">parent_prof</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">oscal_version</span> <span class="o">=</span> <span class="n">OSCAL_VERSION</span>
 
         <span class="n">assem_prof_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">path_for_top_level_model</span><span class="p">(</span>
             <span class="n">trestle_root</span><span class="p">,</span> <span class="n">assem_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">,</span> <span class="n">new_content_type</span>
@@ -3251,11 +3482,11 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.profile.ProfileAssemble.name">
+<h6 id="trestle.core.commands.author.profile.ProfileAssemble.name" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">name</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileAssemble.name" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.profile.ProfileAssemble.name" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3266,20 +3497,20 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
 
 
 
-<h5 id="trestle.core.commands.author.profile.ProfileAssemble-methods">Methods<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileAssemble-methods" title="Permanent link">¤</a></h5>
+<h5 id="trestle.core.commands.author.profile.ProfileAssemble-methods">Methods<a href="#trestle.core.commands.author.profile.ProfileAssemble-methods" class="headerlink" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.profile.ProfileAssemble.assemble_profile">
-<code class="highlight language-python"><span class="n">assemble_profile</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">md_name</span><span class="p">,</span> <span class="n">assem_prof_name</span><span class="p">,</span> <span class="n">set_parameters</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">required_sections</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="p">)</span></code>
+<h6 id="trestle.core.commands.author.profile.ProfileAssemble.assemble_profile" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">assemble_profile</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">md_name</span><span class="p">,</span> <span class="n">assem_prof_name</span><span class="p">,</span> <span class="n">set_parameters_flag</span><span class="p">,</span> <span class="n">regenerate</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="n">required_sections</span><span class="p">,</span> <span class="n">allowed_sections</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileAssemble.assemble_profile" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.profile.ProfileAssemble.assemble_profile" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3321,9 +3552,9 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <td><em>required</em></td>
       </tr>
       <tr>
-        <td><code>set_parameters</code></td>
+        <td><code>set_parameters_flag</code></td>
         <td><code>bool</code></td>
-        <td><p>Use the parameters in the yaml header to specify values for setparameters in the profile</p></td>
+        <td><p>Use the params and props in yaml header to add or alter setparameters in the profile</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -3336,6 +3567,12 @@ ProfileAssemble            (<a class="autorefs autorefs-internal" title="trestle
         <td><code>version</code></td>
         <td><code>Optional[str]</code></td>
         <td><p>Optional version for the assembled profile</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>sections_dict</code></td>
+        <td><code>Optional[Dict[str, str]]</code></td>
+        <td><p>Optional map of short name to long name for sections</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -3384,9 +3621,10 @@ in the assembled profile if the --set-parameters option is specified.</p>
     <span class="n">parent_prof_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">md_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">assem_prof_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">set_parameters</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">set_parameters_flag</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">regenerate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">sections_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
     <span class="n">required_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">allowed_sections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -3398,9 +3636,10 @@ in the assembled profile if the --set-parameters option is specified.</p>
 <span class="sd">        parent_prof_name: Optional name of profile used to generate the markdown (default is assem_prof_name)</span>
 <span class="sd">        md_name: The name of the directory containing the markdown control files for the profile</span>
 <span class="sd">        assem_prof_name: The name of the assembled profile.  It can be the same as the parent to overwrite</span>
-<span class="sd">        set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile</span>
+<span class="sd">        set_parameters_flag: Use the params and props in yaml header to add or alter setparameters in the profile</span>
 <span class="sd">        regenerate: Whether to regenerate the uuid&#39;s in the profile</span>
 <span class="sd">        version: Optional version for the assembled profile</span>
+<span class="sd">        sections_dict: Optional map of short name to long name for sections</span>
 <span class="sd">        required_sections: Optional List of required sections in assembled profile, as comma-separated short names</span>
 <span class="sd">        allowed_sections: Optional list of section short names that are allowed, as comma-separated short names</span>
 
@@ -3422,8 +3661,16 @@ in the assembled profile if the --set-parameters option is specified.</p>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parent_prof_name</span><span class="p">:</span>
         <span class="n">parent_prof_name</span> <span class="o">=</span> <span class="n">assem_prof_name</span>
 
-    <span class="n">parent_prof</span><span class="p">,</span> <span class="n">parent_prof_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
+    <span class="n">parent_prof_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">full_path_for_top_level_model</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parent_prof_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile </span><span class="si">{</span><span class="n">parent_prof_name</span><span class="si">}</span><span class="s1"> does not exist.  An existing profile must be provided.&#39;</span><span class="p">)</span>
+
+    <span class="n">parent_prof</span><span class="p">,</span> <span class="n">parent_prof_path</span> <span class="o">=</span> <span class="n">load_validate_model_name</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">)</span>
     <span class="n">new_content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">path_to_content_type</span><span class="p">(</span><span class="n">parent_prof_path</span><span class="p">)</span>
+
+    <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">parent_prof_path</span><span class="p">)</span>
+    <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
+    <span class="n">label_map</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">required_sections_list</span> <span class="o">=</span> <span class="n">required_sections</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">required_sections</span> <span class="k">else</span> <span class="p">[]</span>
 
@@ -3431,19 +3678,27 @@ in the assembled profile if the --set-parameters option is specified.</p>
     <span class="c1"># then overwrite the Adds in the existing profile with the new ones</span>
     <span class="c1"># keep track if any changes were made</span>
     <span class="n">md_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">md_name</span>
-    <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_additional_content</span><span class="p">(</span><span class="n">md_dir</span><span class="p">,</span> <span class="n">required_sections_list</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">allowed_sections</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">found_alters</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">add</span> <span class="ow">in</span> <span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">add</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_sections</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile has alter with name </span><span class="si">{</span><span class="n">part</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> not in allowed sections.&#39;</span><span class="p">)</span>
+    <span class="n">found_alters</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="o">.</span><span class="n">read_additional_content</span><span class="p">(</span>
+        <span class="n">md_dir</span><span class="p">,</span>
+        <span class="n">required_sections_list</span><span class="p">,</span>
+        <span class="n">label_map</span><span class="p">,</span>
+        <span class="n">sections_dict</span><span class="p">,</span>
+        <span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="c1"># technically if allowed sections is [] it means no sections are allowed</span>
+    <span class="k">if</span> <span class="n">allowed_sections</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">bad_part</span> <span class="ow">in</span> <span class="p">[</span><span class="n">part</span> <span class="k">for</span> <span class="n">alter</span> <span class="ow">in</span> <span class="n">found_alters</span> <span class="k">for</span> <span class="n">add</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">alter</span><span class="o">.</span><span class="n">adds</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">as_filtered_list</span><span class="p">(</span><span class="n">add</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_sections</span><span class="p">)]:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile has alter with name </span><span class="si">{</span><span class="n">bad_part</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> not in allowed sections.&#39;</span><span class="p">)</span>
+
     <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_replace_alter_adds</span><span class="p">(</span><span class="n">parent_prof</span><span class="p">,</span> <span class="n">found_alters</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">set_parameters</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">set_parameters_flag</span><span class="p">:</span>
         <span class="n">ProfileAssemble</span><span class="o">.</span><span class="n">_replace_modify_set_params</span><span class="p">(</span><span class="n">parent_prof</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">,</span> <span class="n">param_map</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
         <span class="n">parent_prof</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">Version</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+
+    <span class="n">parent_prof</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">oscal_version</span> <span class="o">=</span> <span class="n">OSCAL_VERSION</span>
 
     <span class="n">assem_prof_path</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">path_for_top_level_model</span><span class="p">(</span>
         <span class="n">trestle_root</span><span class="p">,</span> <span class="n">assem_prof_name</span><span class="p">,</span> <span class="n">prof</span><span class="o">.</span><span class="n">Profile</span><span class="p">,</span> <span class="n">new_content_type</span>
@@ -3488,14 +3743,14 @@ in the assembled profile if the --set-parameters option is specified.</p>
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.author.profile.ProfileGenerate">
+<h4 id="trestle.core.commands.author.profile.ProfileGenerate" class="doc doc-heading">
         <code>
 ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle.core.commands.author.common.AuthorCommonCommand" href="../trestle.core.commands.author.common/#trestle.core.commands.author.common.AuthorCommonCommand">AuthorCommonCommand</a>)
         </code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileGenerate" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.author.profile.ProfileGenerate" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -3586,26 +3841,29 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
 <span class="sd">            0 on success, 1 on error</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">sections_dict</span> <span class="ow">and</span> <span class="s1">&#39;statement&#39;</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sections_dict</span> <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;statement is not allowed as a section name.&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span><span class="n">profile_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
-            <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+            <span class="n">catalog</span><span class="p">,</span> <span class="n">inherited_props</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
                 <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LEAVE_MOUSTACHE</span>
             <span class="p">)</span>
+            <span class="n">yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">PROFILE_TITLE</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">title</span>
+
             <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
-            <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span>
-                <span class="n">md_path</span><span class="o">=</span><span class="n">markdown_path</span><span class="p">,</span>
-                <span class="n">yaml_header</span><span class="o">=</span><span class="n">yaml_header</span><span class="p">,</span>
-                <span class="n">sections_dict</span><span class="o">=</span><span class="n">sections_dict</span><span class="p">,</span>
-                <span class="n">prompt_responses</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">additional_content</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
-                <span class="n">overwrite_header_values</span><span class="o">=</span><span class="n">overwrite_header_values</span><span class="p">,</span>
-                <span class="n">set_parameters</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">required_sections</span><span class="o">=</span><span class="n">required_sections</span><span class="p">,</span>
-                <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span>
-            <span class="p">)</span>
+            <span class="n">part_id_map</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="o">=</span> <span class="n">yaml_header</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span> <span class="o">=</span> <span class="n">sections_dict</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">additional_content</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span> <span class="o">=</span> <span class="n">overwrite_header_values</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">set_parameters_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">required_sections</span> <span class="o">=</span> <span class="n">required_sections</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">inherited_props</span> <span class="o">=</span> <span class="n">inherited_props</span>
+            <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">)</span>
+
         <span class="k">except</span> <span class="n">TrestleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> not found, error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -3627,11 +3885,11 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.profile.ProfileGenerate.name">
+<h6 id="trestle.core.commands.author.profile.ProfileGenerate.name" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">name</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileGenerate.name" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.profile.ProfileGenerate.name" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3642,17 +3900,17 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
 
 
 
-<h5 id="trestle.core.commands.author.profile.ProfileGenerate-methods">Methods<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileGenerate-methods" title="Permanent link">¤</a></h5>
+<h5 id="trestle.core.commands.author.profile.ProfileGenerate-methods">Methods<a href="#trestle.core.commands.author.profile.ProfileGenerate-methods" class="headerlink" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.author.profile.ProfileGenerate.generate_markdown">
+<h6 id="trestle.core.commands.author.profile.ProfileGenerate.generate_markdown" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">generate_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">,</span> <span class="n">yaml_header</span><span class="p">,</span> <span class="n">overwrite_header_values</span><span class="p">,</span> <span class="n">sections_dict</span><span class="p">,</span> <span class="n">required_sections</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.ProfileGenerate.generate_markdown" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.commands.author.profile.ProfileGenerate.generate_markdown" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -3755,26 +4013,29 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
 <span class="sd">        0 on success, 1 on error</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sections_dict</span> <span class="ow">and</span> <span class="s1">&#39;statement&#39;</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sections_dict</span> <span class="ow">and</span> <span class="n">const</span><span class="o">.</span><span class="n">STATEMENT</span> <span class="ow">in</span> <span class="n">sections_dict</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;statement is not allowed as a section name.&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">COMMAND_ERROR</span><span class="o">.</span><span class="n">value</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">profile</span> <span class="o">=</span> <span class="n">ModelUtils</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span><span class="n">profile_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">)</span>
-        <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+        <span class="n">catalog</span><span class="p">,</span> <span class="n">inherited_props</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
             <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LEAVE_MOUSTACHE</span>
         <span class="p">)</span>
+        <span class="n">yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml_header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">yaml_header</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_GLOBAL_TAG</span><span class="p">][</span><span class="n">const</span><span class="o">.</span><span class="n">PROFILE_TITLE</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">title</span>
+
         <span class="n">catalog_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span>
-        <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span>
-            <span class="n">md_path</span><span class="o">=</span><span class="n">markdown_path</span><span class="p">,</span>
-            <span class="n">yaml_header</span><span class="o">=</span><span class="n">yaml_header</span><span class="p">,</span>
-            <span class="n">sections_dict</span><span class="o">=</span><span class="n">sections_dict</span><span class="p">,</span>
-            <span class="n">prompt_responses</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">additional_content</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
-            <span class="n">overwrite_header_values</span><span class="o">=</span><span class="n">overwrite_header_values</span><span class="p">,</span>
-            <span class="n">set_parameters</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">required_sections</span><span class="o">=</span><span class="n">required_sections</span><span class="p">,</span>
-            <span class="n">allowed_sections</span><span class="o">=</span><span class="kc">None</span>
-        <span class="p">)</span>
+        <span class="n">part_id_map</span> <span class="o">=</span> <span class="n">catalog_interface</span><span class="o">.</span><span class="n">get_statement_part_id_map</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">ControlContext</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">ContextPurpose</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">markdown_path</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">yaml_header</span> <span class="o">=</span> <span class="n">yaml_header</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">sections_dict</span> <span class="o">=</span> <span class="n">sections_dict</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">additional_content</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">overwrite_header_values</span> <span class="o">=</span> <span class="n">overwrite_header_values</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_parameters_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">required_sections</span> <span class="o">=</span> <span class="n">required_sections</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">inherited_props</span> <span class="o">=</span> <span class="n">inherited_props</span>
+        <span class="n">catalog_interface</span><span class="o">.</span><span class="n">write_catalog_as_markdown</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">part_id_map</span><span class="p">)</span>
+
     <span class="k">except</span> <span class="n">TrestleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> not found, error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -3797,17 +4058,263 @@ ProfileGenerate            (<a class="autorefs autorefs-internal" title="trestle
   </div>
 
 
-<h3 id="trestle.core.commands.author.profile-functions">Functions<a class="headerlink" href="#trestle.core.commands.author.profile-functions" title="Permanent link">¤</a></h3>
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h4 id="trestle.core.commands.author.profile.ProfileResolve" class="doc doc-heading">
+        <code>
+ProfileResolve            (<a class="autorefs autorefs-internal" title="trestle.core.commands.author.common.AuthorCommonCommand" href="../trestle.core.commands.author.common/#trestle.core.commands.author.common.AuthorCommonCommand">AuthorCommonCommand</a>)
+        </code>
+
+
+
+<a href="#trestle.core.commands.author.profile.ProfileResolve" class="headerlink" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Resolve profile to resolved profile catalog.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/profile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">ProfileResolve</span><span class="p">(</span><span class="n">AuthorCommonCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resolve profile to resolved profile catalog.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;profile-resolve&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_init_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name_help_str</span> <span class="o">=</span> <span class="s1">&#39;Name of the source profile model in the trestle workspace&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">name_help_str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the output resolved profile catalog&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-sv&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--show-values&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Show values for parameters in prose&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;-bf&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--bracket-format&#39;</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.&#39;</span><span class="p">,</span>
+            <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">trestle_root</span>
+            <span class="n">profile_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;profiles/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">/profile.json&#39;</span>
+            <span class="n">catalog_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
+            <span class="n">show_values</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">show_values</span>
+            <span class="n">param_format</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">bracket_format</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_profile</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">catalog_name</span><span class="p">,</span> <span class="n">show_values</span><span class="p">,</span> <span class="n">param_format</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">return</span> <span class="n">handle_generic_command_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;Generation of the resolved profile catalog failed&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">resolve_profile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">profile_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">catalog_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">show_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">bracket_format</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create resolved profile catalog from given profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trestle_root: Root directory of the trestle workspace</span>
+<span class="sd">            profile_path: Path of the profile json file</span>
+<span class="sd">            catalog_name: Name of the resolved profile catalog</span>
+<span class="sd">            show_values: If true, show values of parameters in prose rather than original {{}} form</span>
+<span class="sd">            bracket_format: String representing brackets around value, e.g. [.] or ((.))</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            0 on success and raises exception on error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">profile_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">TrestleNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot resolve profile catalog: profile </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> does not exist.&#39;</span><span class="p">)</span>
+        <span class="n">param_rep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span> <span class="k">if</span> <span class="n">show_values</span> <span class="k">else</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LEAVE_MOUSTACHE</span>
+
+        <span class="n">bracket_format</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">bracket_format</span><span class="p">)</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">bracket_format</span><span class="p">,</span> <span class="n">param_rep</span>
+        <span class="p">)</span>
+        <span class="n">ModelUtils</span><span class="o">.</span><span class="n">save_top_level_model</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">catalog_name</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h6 id="trestle.core.commands.author.profile.ProfileResolve.name" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">name</span></code>
+
+
+<a href="#trestle.core.commands.author.profile.ProfileResolve.name" class="headerlink" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+
+<h5 id="trestle.core.commands.author.profile.ProfileResolve-methods">Methods<a href="#trestle.core.commands.author.profile.ProfileResolve-methods" class="headerlink" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 id="trestle.core.commands.author.profile.ProfileResolve.resolve_profile" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">resolve_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">catalog_name</span><span class="p">,</span> <span class="n">show_values</span><span class="p">,</span> <span class="n">bracket_format</span><span class="p">)</span></code>
+
+
+<a href="#trestle.core.commands.author.profile.ProfileResolve.resolve_profile" class="headerlink" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Create resolved profile catalog from given profile.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>trestle_root</code></td>
+        <td><code>Path</code></td>
+        <td><p>Root directory of the trestle workspace</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>profile_path</code></td>
+        <td><code>Path</code></td>
+        <td><p>Path of the profile json file</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>catalog_name</code></td>
+        <td><code>str</code></td>
+        <td><p>Name of the resolved profile catalog</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>show_values</code></td>
+        <td><code>bool</code></td>
+        <td><p>If true, show values of parameters in prose rather than original {{}} form</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>bracket_format</code></td>
+        <td><code>str</code></td>
+        <td><p>String representing brackets around value, e.g. [.] or ((.))</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>int</code></td>
+      <td><p>0 on success and raises exception on error</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/commands/author/profile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">resolve_profile</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">profile_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">catalog_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">show_values</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">bracket_format</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create resolved profile catalog from given profile.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        trestle_root: Root directory of the trestle workspace</span>
+<span class="sd">        profile_path: Path of the profile json file</span>
+<span class="sd">        catalog_name: Name of the resolved profile catalog</span>
+<span class="sd">        show_values: If true, show values of parameters in prose rather than original {{}} form</span>
+<span class="sd">        bracket_format: String representing brackets around value, e.g. [.] or ((.))</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 on success and raises exception on error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">profile_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">TrestleNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot resolve profile catalog: profile </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> does not exist.&#39;</span><span class="p">)</span>
+    <span class="n">param_rep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span> <span class="k">if</span> <span class="n">show_values</span> <span class="k">else</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">LEAVE_MOUSTACHE</span>
+
+    <span class="n">bracket_format</span> <span class="o">=</span> <span class="n">none_if_empty</span><span class="p">(</span><span class="n">bracket_format</span><span class="p">)</span>
+    <span class="n">catalog</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="p">()</span><span class="o">.</span><span class="n">get_resolved_profile_catalog</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">bracket_format</span><span class="p">,</span> <span class="n">param_rep</span>
+    <span class="p">)</span>
+    <span class="n">ModelUtils</span><span class="o">.</span><span class="n">save_top_level_model</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">catalog_name</span><span class="p">,</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">CmdReturnCodes</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+<h3 id="trestle.core.commands.author.profile-functions">Functions<a href="#trestle.core.commands.author.profile-functions" class="headerlink" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-function">
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.author.profile.sections_to_dict">
+<h4 id="trestle.core.commands.author.profile.sections_to_dict" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">sections_to_dict</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.core.commands.author.profile.sections_to_dict" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.commands.author.profile.sections_to_dict" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -3898,16 +4405,25 @@ This is needed to map the internal part name for a guidance section to its long 
 
 <p>handler: python</p>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../trestle.core.commands.author.jinja/" class="md-footer__link md-footer__link--prev" aria-label="Previous: jinja" rel="prev">
@@ -3962,10 +4478,11 @@ This is needed to map the internal part name for a guidance section to its long 
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>

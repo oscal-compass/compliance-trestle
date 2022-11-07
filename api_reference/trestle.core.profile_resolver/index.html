@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.profile_resolver/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.8">
     
     
       
@@ -21,16 +21,18 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c382b1dc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.815d1a91.min.css">
         
           
           
           <meta name="theme-color" content="#009485">
         
       
+      
+
     
     
     
@@ -45,7 +47,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -55,10 +57,13 @@
   
 
 
-  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-XT3KGMHSY8",{page_path:e.pathname})})})</script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
+  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-XT3KGMHSY8",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
 
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
 
+    
     
     
   </head>
@@ -135,7 +140,7 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -159,7 +164,7 @@
         <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -204,7 +209,7 @@
       <a href="https://github.com/IBM/compliance-trestle" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     IBM/compliance-trestle
@@ -370,20 +375,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tutorials/work_with_authoring_versions/" class="md-nav__link">
-        Work with authoring versions
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -439,7 +430,7 @@
   
     <li class="md-nav__item">
       <a href="../../trestle_author/" class="md-nav__link">
-        CLI for authoring governed content
+        Trestle CLI for Governance of Authored Documents
       </a>
     </li>
   
@@ -893,6 +884,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.common.load_validate/" class="md-nav__link">
+        load_validate
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.common.log/" class="md-nav__link">
         log
       </a>
@@ -1176,6 +1181,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.author.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.author.consts/" class="md-nav__link">
         consts
       </a>
@@ -1277,18 +1296,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_11" type="checkbox" id="__nav_10_2_3_5_3_11" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_5_3_12" type="checkbox" id="__nav_10_2_3_5_3_12" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__link" for="__nav_10_2_3_5_3_12">
           versioning
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="versioning" data-md-level="6">
-        <label class="md-nav__title" for="__nav_10_2_3_5_3_11">
+        <label class="md-nav__title" for="__nav_10_2_3_5_3_12">
           <span class="md-nav__icon md-icon"></span>
           versioning
         </label>
@@ -1592,8 +1611,64 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.control_io/" class="md-nav__link">
-        control_io
+      <a href="../trestle.core.control_context/" class="md-nav__link">
+        control_context
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_interface/" class="md-nav__link">
+        control_interface
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_reader/" class="md-nav__link">
+        control_reader
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.control_writer/" class="md-nav__link">
+        control_writer
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.docs_control_writer/" class="md-nav__link">
+        docs_control_writer
       </a>
     </li>
   
@@ -1648,6 +1723,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.generic_oscal/" class="md-nav__link">
+        generic_oscal
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.jinja/" class="md-nav__link">
         jinja
       </a>
@@ -1679,18 +1768,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_12" type="checkbox" id="__nav_10_2_3_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_17" type="checkbox" id="__nav_10_2_3_17" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_12">
+        <label class="md-nav__link" for="__nav_10_2_3_17">
           markdown
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="markdown" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_12">
+        <label class="md-nav__title" for="__nav_10_2_3_17">
           <span class="md-nav__icon md-icon"></span>
           markdown
         </label>
@@ -1796,18 +1885,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_13" type="checkbox" id="__nav_10_2_3_13" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_18" type="checkbox" id="__nav_10_2_3_18" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_13">
+        <label class="md-nav__link" for="__nav_10_2_3_18">
           models
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_13">
+        <label class="md-nav__title" for="__nav_10_2_3_18">
           <span class="md-nav__icon md-icon"></span>
           models
         </label>
@@ -2013,6 +2102,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog_and_inherited_props" class="md-nav__link">
+    get_resolved_profile_catalog_and_inherited_props()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2065,18 +2161,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_19" type="checkbox" id="__nav_10_2_3_19" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_24" type="checkbox" id="__nav_10_2_3_24" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_19">
+        <label class="md-nav__link" for="__nav_10_2_3_24">
           remote
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_19">
+        <label class="md-nav__title" for="__nav_10_2_3_24">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -2126,18 +2222,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_21" type="checkbox" id="__nav_10_2_3_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2_3_26" type="checkbox" id="__nav_10_2_3_26" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_10_2_3_21">
+        <label class="md-nav__link" for="__nav_10_2_3_26">
           resolver
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="resolver" data-md-level="4">
-        <label class="md-nav__title" for="__nav_10_2_3_21">
+        <label class="md-nav__title" for="__nav_10_2_3_26">
           <span class="md-nav__icon md-icon"></span>
           resolver
         </label>
@@ -2434,6 +2530,34 @@
     <li class="md-nav__item">
       <a href="../trestle.tasks.base_task/" class="md-nav__link">
         base_task
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_helper/" class="md-nav__link">
+        csv_helper
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.csv_to_oscal_cd/" class="md-nav__link">
+        csv_to_oscal_cd
       </a>
     </li>
   
@@ -2806,6 +2930,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog_and_inherited_props" class="md-nav__link">
+    get_resolved_profile_catalog_and_inherited_props()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2834,10 +2965,11 @@
               </div>
             
           
-          <div class="md-content" data-md-component="content">
-            <article class="md-content__inner md-typeset">
-              
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
                 
+                  
 
 
   <h1>profile_resolver</h1>
@@ -2846,12 +2978,12 @@
 
 
 
-<h2 class="doc doc-heading" id="trestle.core.profile_resolver">
+<h2 id="trestle.core.profile_resolver" class="doc doc-heading">
         <code>trestle.core.profile_resolver</code>
 
 
 
-<a class="headerlink" href="#trestle.core.profile_resolver" title="Permanent link">¤</a></h2>
+<a href="#trestle.core.profile_resolver" class="headerlink" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
@@ -2870,11 +3002,11 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.profile_resolver.logger">
+<h4 id="trestle.core.profile_resolver.logger" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">logger</span></code>
 
 
-<a class="headerlink" href="#trestle.core.profile_resolver.logger" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.profile_resolver.logger" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2883,19 +3015,19 @@
   </div>
 
 
-<h3 id="trestle.core.profile_resolver-classes">Classes<a class="headerlink" href="#trestle.core.profile_resolver-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.core.profile_resolver-classes">Classes<a href="#trestle.core.profile_resolver-classes" class="headerlink" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.profile_resolver.ProfileResolver">
+<h4 id="trestle.core.profile_resolver.ProfileResolver" class="doc doc-heading">
         <code>
 ProfileResolver        </code>
 
 
 
-<a class="headerlink" href="#trestle.core.profile_resolver.ProfileResolver" title="Permanent link">¤</a></h4>
+<a href="#trestle.core.profile_resolver.ProfileResolver" class="headerlink" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2907,35 +3039,109 @@ ProfileResolver        </code>
     <span class="sd">&quot;&quot;&quot;Class to resolve a catalog given a profile.&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_resolved_profile_catalog</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_extract_inherited_props</span><span class="p">(</span><span class="n">res_cat</span><span class="p">:</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the control dict of inherited props.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            The resolved profile catalog with a possible temporary part in each control</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The temporary parts are removed from each control and a Dict of added props per control_id is returned</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">        If an upstream profile adds props to the control they are tracked in a special temporary part in the control</span>
+<span class="sd">        called const.TRESTLE_INHERITED_PROPS_TRACKER.  If that part is present in a control its contents should be added</span>
+<span class="sd">        to the dict entry for that control, and the part removed from the control.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prop_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">cat_interface</span> <span class="o">=</span> <span class="n">CatalogInterface</span><span class="p">(</span><span class="n">res_cat</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">cat_interface</span><span class="o">.</span><span class="n">get_all_controls_from_dict</span><span class="p">():</span>
+            <span class="n">part</span><span class="p">:</span> <span class="n">com</span><span class="o">.</span><span class="n">Part</span> <span class="o">=</span> <span class="n">pop_item_from_list</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">parts</span><span class="p">,</span> <span class="n">TRESTLE_INHERITED_PROPS_TRACKER</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">part</span><span class="p">:</span>
+                <span class="n">props_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
+                    <span class="n">props_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">})</span>
+                <span class="k">for</span> <span class="n">sub_part</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">as_list</span><span class="p">(</span><span class="n">sub_part</span><span class="o">.</span><span class="n">props</span><span class="p">):</span>
+                        <span class="n">props_list</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">prop</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;part_name&#39;</span><span class="p">:</span> <span class="n">sub_part</span><span class="o">.</span><span class="n">title</span><span class="p">})</span>
+                <span class="n">prop_dict</span><span class="p">[</span><span class="n">control</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">props_list</span>
+        <span class="n">cat_interface</span><span class="o">.</span><span class="n">update_catalog_controls</span><span class="p">()</span>
+        <span class="n">clean_res_cat</span> <span class="o">=</span> <span class="n">cat_interface</span><span class="o">.</span><span class="n">get_catalog</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">clean_res_cat</span><span class="p">,</span> <span class="n">prop_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
         <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
-        <span class="n">profile_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">profile_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">block_adds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">block_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">params_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">param_rep</span><span class="p">:</span> <span class="n">ParameterRep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span>
+        <span class="n">param_rep</span><span class="p">:</span> <span class="n">ParameterRep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">,</span>
+        <span class="n">show_value_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the resolved profile catalog given a profile path along with inherited props.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trestle_root: root directory of the trestle project</span>
+<span class="sd">            profile_path: string path or uri of the profile being resolved</span>
+<span class="sd">            block_adds: prevent the application of adds in the final profile</span>
+<span class="sd">            block_params: prevent the application of setparams in the final profile</span>
+<span class="sd">            params_format: optional pattern with dot to wrap the param string, where dot represents the param string</span>
+<span class="sd">            param_rep: desired way to convert params to strings</span>
+<span class="sd">            show_value_warnings: warn if prose references a value that has not been set</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The resolved profile catalog and a control dict of inherited props</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get resolved profile catalog and inherited props for </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> via generated Import.&#39;</span><span class="p">)</span>
+        <span class="n">import_</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Import</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">profile_path</span><span class="p">),</span> <span class="n">include_all</span><span class="o">=</span><span class="p">{})</span>
+        <span class="c1"># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
+        <span class="n">import_filter</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span>
+            <span class="n">trestle_root</span><span class="p">,</span> <span class="n">import_</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">True</span><span class="p">,</span> <span class="n">block_adds</span><span class="p">,</span> <span class="n">block_params</span><span class="p">,</span> <span class="n">params_format</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">,</span> <span class="n">show_value_warnings</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;launch pipeline&#39;</span><span class="p">)</span>
+        <span class="n">resolved_profile_catalog</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">import_filter</span><span class="o">.</span><span class="n">process</span><span class="p">())</span>
+        <span class="n">resolved_profile_catalog</span><span class="p">,</span> <span class="n">inherited_props</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">_extract_inherited_props</span><span class="p">(</span><span class="n">resolved_profile_catalog</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_profile_catalog</span><span class="p">,</span> <span class="n">inherited_props</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_resolved_profile_catalog</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">profile_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">block_adds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">block_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">params_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">param_rep</span><span class="p">:</span> <span class="n">ParameterRep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">,</span>
+        <span class="n">show_value_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the resolved profile catalog given a profile path.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            trestle_root: root directory of the trestle project</span>
-<span class="sd">            profile_path: path of the profile being resolved</span>
+<span class="sd">            profile_path: string path or uri of the profile being resolved</span>
 <span class="sd">            block_adds: prevent the application of adds in the final profile</span>
 <span class="sd">            block_params: prevent the application of setparams in the final profile</span>
 <span class="sd">            params_format: optional pattern with dot to wrap the param string, where dot represents the param string</span>
 <span class="sd">            param_rep: desired way to convert params to strings</span>
+<span class="sd">            show_value_warnings: warn if prose references a value that has not been set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The resolved profile catalog</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get resolved profile catalog for </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> via generated Import.&#39;</span><span class="p">)</span>
-        <span class="n">import_</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Import</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">profile_path</span><span class="p">),</span> <span class="n">include_all</span><span class="o">=</span><span class="p">{})</span>
-        <span class="c1"># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
-        <span class="n">import_filter</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">import_</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">True</span><span class="p">,</span> <span class="n">block_adds</span><span class="p">,</span> <span class="n">block_params</span><span class="p">,</span> <span class="n">params_format</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;launch pipeline&#39;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">import_filter</span><span class="o">.</span><span class="n">process</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="n">resolved_profile_catalog</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
+            <span class="n">trestle_root</span><span class="p">,</span>
+            <span class="n">profile_path</span><span class="p">,</span>
+            <span class="n">block_adds</span><span class="p">,</span>
+            <span class="n">block_params</span><span class="p">,</span>
+            <span class="n">params_format</span><span class="p">,</span>
+            <span class="n">param_rep</span><span class="p">,</span>
+            <span class="n">show_value_warnings</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">resolved_profile_catalog</span>
 </code></pre></div>
         </details>
 
@@ -2949,20 +3155,20 @@ ProfileResolver        </code>
 
 
 
-<h5 id="trestle.core.profile_resolver.ProfileResolver-methods">Methods<a class="headerlink" href="#trestle.core.profile_resolver.ProfileResolver-methods" title="Permanent link">¤</a></h5>
+<h5 id="trestle.core.profile_resolver.ProfileResolver-methods">Methods<a href="#trestle.core.profile_resolver.ProfileResolver-methods" class="headerlink" title="Permanent link">¤</a></h5>
 
   <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog">
-<code class="highlight language-python"><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">block_adds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">block_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param_rep</span><span class="o">=&lt;</span><span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span><span class="p">)</span></code>
+<h6 id="trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_resolved_profile_catalog</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">block_adds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">block_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param_rep</span><span class="o">=&lt;</span><span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">show_value_warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
   </span>
 
-<a class="headerlink" href="#trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog" title="Permanent link">¤</a></h6>
+<a href="#trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog" class="headerlink" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
@@ -2987,8 +3193,8 @@ ProfileResolver        </code>
       </tr>
       <tr>
         <td><code>profile_path</code></td>
-        <td><code>Path</code></td>
-        <td><p>path of the profile being resolved</p></td>
+        <td><code>str</code></td>
+        <td><p>string path or uri of the profile being resolved</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -3015,6 +3221,12 @@ ProfileResolver        </code>
         <td><p>desired way to convert params to strings</p></td>
         <td><code>&lt;ParameterRep.VALUE_OR_LABEL_OR_CHOICES: 3&gt;</code></td>
       </tr>
+      <tr>
+        <td><code>show_value_warnings</code></td>
+        <td><code>bool</code></td>
+        <td><p>warn if prose references a value that has not been set</p></td>
+        <td><code>False</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -3037,33 +3249,171 @@ ProfileResolver        </code>
           <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">get_resolved_profile_catalog</span><span class="p">(</span>
     <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
-    <span class="n">profile_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">profile_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">block_adds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">block_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">params_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">param_rep</span><span class="p">:</span> <span class="n">ParameterRep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span>
+    <span class="n">param_rep</span><span class="p">:</span> <span class="n">ParameterRep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">,</span>
+    <span class="n">show_value_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the resolved profile catalog given a profile path.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        trestle_root: root directory of the trestle project</span>
-<span class="sd">        profile_path: path of the profile being resolved</span>
+<span class="sd">        profile_path: string path or uri of the profile being resolved</span>
 <span class="sd">        block_adds: prevent the application of adds in the final profile</span>
 <span class="sd">        block_params: prevent the application of setparams in the final profile</span>
 <span class="sd">        params_format: optional pattern with dot to wrap the param string, where dot represents the param string</span>
 <span class="sd">        param_rep: desired way to convert params to strings</span>
+<span class="sd">        show_value_warnings: warn if prose references a value that has not been set</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The resolved profile catalog</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get resolved profile catalog for </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> via generated Import.&#39;</span><span class="p">)</span>
+    <span class="n">resolved_profile_catalog</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">,</span>
+        <span class="n">profile_path</span><span class="p">,</span>
+        <span class="n">block_adds</span><span class="p">,</span>
+        <span class="n">block_params</span><span class="p">,</span>
+        <span class="n">params_format</span><span class="p">,</span>
+        <span class="n">param_rep</span><span class="p">,</span>
+        <span class="n">show_value_warnings</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_profile_catalog</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 id="trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog_and_inherited_props" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">profile_path</span><span class="p">,</span> <span class="n">block_adds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">block_params</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">params_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param_rep</span><span class="o">=&lt;</span><span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">:</span> <span class="mi">3</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">show_value_warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#trestle.core.profile_resolver.ProfileResolver.get_resolved_profile_catalog_and_inherited_props" class="headerlink" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Create the resolved profile catalog given a profile path along with inherited props.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>trestle_root</code></td>
+        <td><code>Path</code></td>
+        <td><p>root directory of the trestle project</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>profile_path</code></td>
+        <td><code>str</code></td>
+        <td><p>string path or uri of the profile being resolved</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>block_adds</code></td>
+        <td><code>bool</code></td>
+        <td><p>prevent the application of adds in the final profile</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>block_params</code></td>
+        <td><code>bool</code></td>
+        <td><p>prevent the application of setparams in the final profile</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>params_format</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>optional pattern with dot to wrap the param string, where dot represents the param string</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>param_rep</code></td>
+        <td><code>ParameterRep</code></td>
+        <td><p>desired way to convert params to strings</p></td>
+        <td><code>&lt;ParameterRep.VALUE_OR_LABEL_OR_CHOICES: 3&gt;</code></td>
+      </tr>
+      <tr>
+        <td><code>show_value_warnings</code></td>
+        <td><code>bool</code></td>
+        <td><p>warn if prose references a value that has not been set</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Tuple[trestle.oscal.catalog.Catalog, Optional[Dict[str, Any]]]</code></td>
+      <td><p>The resolved profile catalog and a control dict of inherited props</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/profile_resolver.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">get_resolved_profile_catalog_and_inherited_props</span><span class="p">(</span>
+    <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">profile_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">block_adds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">block_params</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">params_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">param_rep</span><span class="p">:</span> <span class="n">ParameterRep</span> <span class="o">=</span> <span class="n">ParameterRep</span><span class="o">.</span><span class="n">VALUE_OR_LABEL_OR_CHOICES</span><span class="p">,</span>
+    <span class="n">show_value_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">cat</span><span class="o">.</span><span class="n">Catalog</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the resolved profile catalog given a profile path along with inherited props.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        trestle_root: root directory of the trestle project</span>
+<span class="sd">        profile_path: string path or uri of the profile being resolved</span>
+<span class="sd">        block_adds: prevent the application of adds in the final profile</span>
+<span class="sd">        block_params: prevent the application of setparams in the final profile</span>
+<span class="sd">        params_format: optional pattern with dot to wrap the param string, where dot represents the param string</span>
+<span class="sd">        param_rep: desired way to convert params to strings</span>
+<span class="sd">        show_value_warnings: warn if prose references a value that has not been set</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The resolved profile catalog and a control dict of inherited props</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get resolved profile catalog and inherited props for </span><span class="si">{</span><span class="n">profile_path</span><span class="si">}</span><span class="s1"> via generated Import.&#39;</span><span class="p">)</span>
     <span class="n">import_</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">Import</span><span class="p">(</span><span class="n">href</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">profile_path</span><span class="p">),</span> <span class="n">include_all</span><span class="o">=</span><span class="p">{})</span>
     <span class="c1"># The final Import has change_prose=True to force parameter substitution in the prose only at the last stage.</span>
-    <span class="n">import_filter</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">import_</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">True</span><span class="p">,</span> <span class="n">block_adds</span><span class="p">,</span> <span class="n">block_params</span><span class="p">,</span> <span class="n">params_format</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">)</span>
+    <span class="n">import_filter</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span>
+        <span class="n">trestle_root</span><span class="p">,</span> <span class="n">import_</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">True</span><span class="p">,</span> <span class="n">block_adds</span><span class="p">,</span> <span class="n">block_params</span><span class="p">,</span> <span class="n">params_format</span><span class="p">,</span> <span class="n">param_rep</span><span class="p">,</span> <span class="n">show_value_warnings</span>
+    <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;launch pipeline&#39;</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">import_filter</span><span class="o">.</span><span class="n">process</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">result</span>
+    <span class="n">resolved_profile_catalog</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">import_filter</span><span class="o">.</span><span class="n">process</span><span class="p">())</span>
+    <span class="n">resolved_profile_catalog</span><span class="p">,</span> <span class="n">inherited_props</span> <span class="o">=</span> <span class="n">ProfileResolver</span><span class="o">.</span><span class="n">_extract_inherited_props</span><span class="p">(</span><span class="n">resolved_profile_catalog</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resolved_profile_catalog</span><span class="p">,</span> <span class="n">inherited_props</span>
 </code></pre></div>
         </details>
     </div>
@@ -3094,16 +3444,25 @@ ProfileResolver        </code>
 
 <p>handler: python</p>
 
-              
-            </article>
-          </div>
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
         
       </main>
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../trestle.core.pipeline/" class="md-footer__link md-footer__link--prev" aria-label="Previous: pipeline" rel="prev">
@@ -3158,10 +3517,11 @@ ProfileResolver        </code>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a6c66575.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
     
   </body>
