@@ -17,10 +17,11 @@ from typing import Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from tests.test_utils import execute_command_and_assert, insert_text_in_file, setup_for_ssp
+from tests.test_utils import delete_line_in_file, execute_command_and_assert, setup_for_ssp
 from tests.trestle.core.commands.author.ssp_test import insert_prose
 
-from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, INHERITED, PLANNED
+from trestle.common import file_utils
+from trestle.common.const import CONTROL_ORIGINATION, IMPLEMENTATION_STATUS, STATUS_INHERITED, STATUS_PLANNED
 from trestle.core import profile_resolver
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.markdown.markdown_node import MarkdownNode
@@ -42,10 +43,11 @@ def setup_test(tmp_trestle_dir: pathlib.Path, testdata_dir: pathlib.Path,
 
     ssp_json = testdata_dir / 'author/ssp/ssp_example.json'
     fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(ssp_json))
+    ssp_obj: SystemSecurityPlan
     ssp_obj, parent_alias = fetcher.get_oscal(True)
     ssp_obj.control_implementation.implemented_requirements[0].props = [
-        Property(name=IMPLEMENTATION_STATUS, value=PLANNED),
-        Property(name=CONTROL_ORIGINATION, value=INHERITED),
+        Property(name=IMPLEMENTATION_STATUS, value=STATUS_PLANNED),
+        Property(name=CONTROL_ORIGINATION, value=STATUS_INHERITED),
     ]
 
     assert parent_alias == 'system-security-plan'
@@ -88,11 +90,15 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
+    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
 
     # set responses
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', 'This is a response')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.c', 'This is also a response.')
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', 'This is a response.')
+    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
+    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
+    assert delete_line_in_file(ac1_path, 'Add control implementation description here')
 
     command_ssp_assem = 'trestle author ssp-assemble -m my_ssp -o ssp_json'
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
@@ -112,21 +118,20 @@ def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: Mo
     assert md_text
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
-    assert tree.get_node_for_key('## Part a.')
-    assert tree.get_node_for_key('## Part c.')
+    assert tree.get_node_for_key('## Implementation for part a.')
+    assert tree.get_node_for_key('## Implementation for part c.')
     assert len(list(tree.get_all_headers_for_level(2))) == 3
 
-    md_text = ssp_io.get_control_response('ac-1', 2, False)
+    md_text = ssp_io.get_control_response('ac-1', 1, False)
     tree = MarkdownNode.build_tree_from_markdown(md_text.split('\n'))
 
-    assert tree.get_node_for_key('### Part a.')
-    assert tree.get_node_for_key('### Part c.')
-    assert len(list(tree.get_all_headers_for_level(3))) == 3
+    assert tree.get_node_for_key('## Implementation for part a.')
+    assert tree.get_node_for_key('## Implementation for part c.')
+    assert len(list(tree.get_all_headers_for_level(2))) == 3
 
     # insert some responses by component
-    ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'
-    assert insert_text_in_file(ac1_path, 'ac-1_smt.a', '### foo comp\n')
-    assert insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'Implementation for part a.', '### foo comp\n')
+    assert file_utils.insert_text_in_file(ac1_path, 'a response', '### bar comp\nstuff for other response\n')
     execute_command_and_assert(command_ssp_assem, 0, monkeypatch)
     ssp_obj, _ = fetcher.get_oscal(True)
     resolved_catalog = profile_resolver.ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)

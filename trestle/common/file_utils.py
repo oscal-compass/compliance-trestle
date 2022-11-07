@@ -19,7 +19,7 @@ import logging
 import os
 import pathlib
 import platform
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 from ruamel.yaml import YAML
 
@@ -264,3 +264,30 @@ def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path
     except ValueError:
         raise TrestleError(f'Provided dir {candidate} is not relative to {cwd}')
     return new
+
+
+def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) -> bool:
+    r"""Insert text lines after line containing tag.
+
+    Return True on success, False tag not found.
+    Text is a string with appropriate \n line endings.
+    If tag is none just add at end of file.
+    This will only open file once if tag is not found.
+    """
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    if tag:
+        lines: List[str] = []
+        with file_path.open('r', encoding=const.FILE_ENCODING) as f:
+            lines = f.readlines()
+        for ii, line in enumerate(lines):
+            if line.find(tag) >= 0:
+                lines.insert(ii + 1, text)
+                with file_path.open('w', encoding=const.FILE_ENCODING) as f:
+                    f.writelines(lines)
+                return True
+    else:
+        with file_path.open('a', encoding=const.FILE_ENCODING) as f:
+            f.writelines(text)
+        return True
+    return False

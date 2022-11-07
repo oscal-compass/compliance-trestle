@@ -21,10 +21,17 @@ from uuid import uuid4
 
 from _pytest.monkeypatch import MonkeyPatch
 
+import frontmatter
+
 import pytest
 
-import trestle.cli
+from tests.test_utils import execute_command_and_assert
+
+import trestle
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION
+from trestle.core.markdown.markdown_api import MarkdownAPI
+
+import yaml
 
 
 @pytest.mark.parametrize(
@@ -459,16 +466,12 @@ def test_e2e_backward_compatibility(
     assert not template_target_loc.exists()
     assert (tmp_trestle_dir / '.trestle' / 'author' / task_name / START_TEMPLATE_VERSION / 'template.md').exists()
 
-    monkeypatch.setattr(sys, 'argv', command_string_validate_template.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == template_code
+    execute_command_and_assert(command_string_validate_template, template_code, monkeypatch)
     if template_code > 0:
         return
 
     # Create sample - should always work if we are here.
-    monkeypatch.setattr(sys, 'argv', command_string_create_sample.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 0
+    execute_command_and_assert(command_string_create_sample, 0, monkeypatch)
 
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
     if recurse:
@@ -480,9 +483,7 @@ def test_e2e_backward_compatibility(
         sub_content = subdir / f'{uuid4()}.md'
         shutil.copyfile(str(sub_file_path), str(sub_content))
 
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == validate_code
+    execute_command_and_assert(command_string_validate_content, validate_code, monkeypatch)
 
 
 def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -499,27 +500,19 @@ def test_ignore_flag(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, 
     shutil.copytree(test_data_folder, task_instance_folder)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.*'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 0
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -hv -ig ^_.* -r'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 0
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -hv -r'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
 
 
 def test_fail_when_no_task(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test that validation fails when task does not exists."""
     command_validate = 'trestle author docs validate -tn test_task'
-    monkeypatch.setattr(sys, 'argv', command_validate.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_validate, 1, monkeypatch)
 
 
 def test_fail_when_no_template(
@@ -535,9 +528,7 @@ def test_fail_when_no_template(
     shutil.copyfile(source_instance, task_instance)
 
     command_validate = 'trestle author docs validate -tn test_task'
-    monkeypatch.setattr(sys, 'argv', command_validate.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_validate, 1, monkeypatch)
 
 
 def test_instance_no_header(
@@ -558,24 +549,16 @@ def test_instance_no_header(
     shutil.copy(bad_source_instance, task_instance)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -hv'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 0
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -tv 0.0.1'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 0
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -tv 0.0.1 -hv'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
 
     # place bad instance in subfolder
     good_source_instance = test_data_folder / 'correct_instance.md'
@@ -584,9 +567,7 @@ def test_instance_no_header(
     shutil.copy(bad_source_instance, task_instance_folder / 'subfolder/bad_instance.md')
 
     command_string_validate_content = 'trestle author docs validate -tn test_task -hv -r'
-    monkeypatch.setattr(sys, 'argv', command_string_validate_content.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
 
 
 def test_template_validate_no_template(
@@ -596,6 +577,111 @@ def test_template_validate_no_template(
     task_template_folder = tmp_trestle_dir / '.trestle/author/test_task/'
     task_template_folder.mkdir(exist_ok=True, parents=True)
     command_validate = 'trestle author docs template-validate -tn test_task'
-    monkeypatch.setattr(sys, 'argv', command_validate.split())
-    rc = trestle.cli.Trestle().run()
-    assert rc == 1
+    execute_command_and_assert(command_validate, 1, monkeypatch)
+
+
+def test_001_template_folder_is_not_created(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test that folder 0.0.1 is not recreated."""
+    command = 'trestle author docs setup -tn my_task'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    # move template
+    template_folder_old = tmp_trestle_dir.joinpath('.trestle/author/my_task/0.0.1')
+    template_folder_new = tmp_trestle_dir.joinpath('.trestle/author/my_task/0.1.0')
+    template_folder_new.mkdir(parents=True)
+    template_path_old = template_folder_old.joinpath('template.md')
+    template_path_new = template_folder_new.joinpath('template.md')
+
+    shutil.copy(template_path_old, template_folder_new)
+
+    # remove old template folder
+    shutil.rmtree(template_folder_old)
+
+    # modify the header in the template
+    contents = frontmatter.loads(template_path_new.open('r').read())
+    header = contents.metadata
+    header['x-trestle-template-version'] = '0.1.0'
+
+    # write file back
+    with open(template_path_new, 'w') as template:
+        template.write('---\n')
+        yaml.dump(header, template, sort_keys=False)
+        template.write('---\n\n')
+        template.write(contents.content)
+
+    command = 'trestle author docs validate -tn my_task'
+    execute_command_and_assert(command, 0, monkeypatch)
+
+    # ensure that 0.0.1 is not recreated and content is preserved
+    assert not template_folder_old.exists()
+    assert template_folder_new.exists()
+    assert template_folder_new.joinpath('template.md').exists()
+
+    contents = frontmatter.loads(template_path_new.open('r').read())
+    header = contents.metadata
+    assert header['x-trestle-template-version'] == '0.1.0'
+
+
+def test_instance_validate_with_governed_heading(
+    testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test behaviour when validating good instance with governed heading and various changes."""
+    task_template = tmp_trestle_dir / '.trestle/author/test_task/template.md'
+    test_template_folder = testdata_dir / 'author/0.0.1/test_3_md_hand_edited'
+    test_template = testdata_dir / 'author/0.0.1/test_3_md_hand_edited/template.md'
+    task_instance_folder = tmp_trestle_dir / 'test_task'
+
+    (tmp_trestle_dir / '.trestle/author/test_task').mkdir(parents=True)
+    task_template.touch()
+    shutil.copy(test_template, task_template)
+    shutil.copytree(test_template_folder, task_instance_folder)
+
+    command_validate = 'trestle author docs validate -tn test_task'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    command_validate = 'trestle author docs validate -tn test_task -gh Governed_Section'
+    execute_command_and_assert(command_validate, 0, monkeypatch)
+
+    # Change second section named Governed Section, should fail
+    task_markdown = task_instance_folder / 'decisions_000.md'
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(task_markdown)
+
+    # Make sure two nodes of the same name exists
+    gov_nodes = tree.get_all_nodes_for_keys(['## Governed_Section'], True, False)
+
+    assert len(gov_nodes) == 2
+
+    # Change non-governed text
+    tree.content.raw_text = tree.content.raw_text.replace('Not governed text', 'This is fine')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
+
+    # Now change governed stuff
+    tree.content.raw_text = tree.content.raw_text.replace('Financial Approver', 'This is not fine')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
+
+    # Now rename back
+    tree.content.raw_text = tree.content.raw_text.replace('This is not fine', 'Financial Approver')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 0, monkeypatch)
+
+    # Rename other governed section
+    tree.content.raw_text = tree.content.raw_text.replace('Another_Governed_Section', 'Renamed Governed Section')
+    md_api.write_markdown_with_header(task_markdown, header, tree.content.raw_text)
+
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=Another_Governed_Section'
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)
+
+    # Validate non existing governed section
+    command_string_validate_content = 'trestle author docs validate -tn test_task -gh=NonExisting'
+    execute_command_and_assert(command_string_validate_content, 1, monkeypatch)

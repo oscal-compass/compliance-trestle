@@ -99,17 +99,34 @@ class MarkdownValidator:
                 return True
 
         if self.md_header_to_validate is not None:
-            instance_gov_node = instance_tree.get_node_for_key(self.md_header_to_validate, False)
-            template_gov_node = self.template_tree.get_node_for_key(self.md_header_to_validate, False)
-            if instance_gov_node is None:
-                logger.info(f'Governed document not found in instance: {instance}')
-                return False
-            instance_keys = instance_gov_node.content.governed_document
-            template_keys = template_gov_node.content.governed_document
+            instance_gov_nodes = instance_tree.get_all_nodes_for_keys([self.md_header_to_validate], False)
+            template_gov_nodes = self.template_tree.get_all_nodes_for_keys([self.md_header_to_validate], False)
 
-            is_valid = self._validate_headers(instance, template_keys, instance_keys)
-            if not is_valid:
+            if not instance_gov_nodes:
+                logger.info(f'Governed section {self.md_header_to_validate} not found in instance: {instance}')
                 return False
+
+            if not template_gov_nodes:
+                logger.info(
+                    f'Governed section {self.md_header_to_validate} not found in template: {self.template_path}'
+                )
+                return False
+
+            if [node.key for node in instance_gov_nodes] != [node.key for node in template_gov_nodes]:
+                logger.info(
+                    f'Governed sections were changed, '
+                    f'template expects: {[node.key for node in template_gov_nodes]},'
+                    f'but found {[node.key for node in instance_gov_nodes]}.'
+                )
+                return False
+
+            for instance_gov_node, template_gov_node in zip(instance_gov_nodes, template_gov_nodes):
+                instance_keys = instance_gov_node.content.governed_document
+                template_keys = template_gov_node.content.governed_document
+
+                is_valid = self._validate_headings(instance, template_keys, instance_keys)
+                if not is_valid:
+                    return False
 
         if self._validate_md_body:
             instance_keys = instance_tree.content.subnodes_keys
@@ -124,7 +141,7 @@ class MarkdownValidator:
                 logger.info(f'New headers of level 1 were added to the markdown instance: {instance}. ')
                 return False
 
-            is_valid = self._validate_headers(instance, template_keys, instance_keys)
+            is_valid = self._validate_headings(instance, template_keys, instance_keys)
             if not is_valid:
                 return False
 
@@ -178,24 +195,37 @@ class MarkdownValidator:
                 return False
         return True
 
-    def _validate_headers(self, instance: pathlib.Path, template_keys: List[str], instance_keys: List[str]) -> bool:
-        """Validate instance headers against template."""
+    def _validate_headings(self, instance: pathlib.Path, template_keys: List[str], instance_keys: List[str]) -> bool:
+        """Validate instance headings against template."""
         if len(template_keys) > len(instance_keys):
-            logger.info(f'Headings in the instance: {instance} were removed.')
+            logger.info(
+                f'Headings in the instance: {instance} were removed.'
+                f'Expected {len(template_keys)} headings, but found only {len(instance_keys)}.'
+            )
             return False
         template_header_pointer = 0
         for key in instance_keys:
             if template_header_pointer >= len(template_keys):
                 break
             if key in template_keys and key != template_keys[template_header_pointer]:
-                logger.info(f'Headers in the instance: {instance} were shuffled or modified.')
+                logger.warning(
+                    f'Headings in the instance: {instance} were shuffled or modified. '
+                    f'\nInstance does not have required template heading '
+                    f'\"{template_keys[template_header_pointer]}\". '
+                    f'Check if this heading was modified/present in the instance.'
+                    f'\nPlease note that no changes to template headings are allowed, '
+                    f'including extra spaces.'
+                )
                 return False
             elif key in template_keys and key == template_keys[template_header_pointer]:
                 template_header_pointer += 1
             elif re.search(md_const.SUBSTITUTION_REGEX, template_keys[template_header_pointer]) is not None:
                 template_header_pointer += 1  # skip headers with substitutions
         if template_header_pointer != len(template_keys):
-            logger.info(f'Headings in the instance: {instance} were removed.')
+            logger.info(
+                f'Headings in the instance: {instance} were removed. '
+                f'Expected {len(template_keys)} headings, but found only {template_header_pointer}.'
+            )
             return False
 
         return True

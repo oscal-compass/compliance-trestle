@@ -1,0 +1,14 @@
+# Control Page
+
+{{ control_writer.write_control_with_sections(control,
+profile,
+group_title,
+['objective'],
+{
+'objective':'Control Objective Header'
+},
+label_column=True,
+add_group_to_title=True
+)
+| safe
+}}

@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0  # Use the ref you want to point at
+    rev: v4.3.0  # Use the ref you want to point at
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
@@ -71,7 +71,7 @@ repos:
         exclude: "(oscal/)"
         stages: [commit]
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.14
+    rev: 0.7.16
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/maintainers.md|docs/api_reference|tests/data/author|docs/contributing/mkdocs_contributing.md|tests/data/jinja_markdown_include|tests/data/jinja_cmd/number_captions_data.md|tests/data/jinja_cmd/number_captions_expected_output.md"

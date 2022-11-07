@@ -1,0 +1,586 @@
+{
+  "component-definition": {
+    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+    "metadata": {
+      "title": "Component definition for OCP4 profiles",
+      "last-modified": "2021-07-19T14:03:03+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.2",
+      "roles": [
+        {
+          "id": "prepared-by",
+          "title": "Indicates the organization that created this content."
+        },
+        {
+          "id": "prepared-for",
+          "title": "Indicates the organization for which this content was created.."
+        },
+        {
+          "id": "content-approver",
+          "title": "Indicates the organization responsible for all content represented in the \"document\"."
+        }
+      ],
+      "parties": [
+        {
+          "uuid": "ce1f379a-fcdd-485a-a7b7-6f02c0763dd2",
+          "type": "organization",
+          "name": "International Business Machines",
+          "remarks": "IBM"
+        },
+        {
+          "uuid": "481856b6-16e4-4993-a3ed-2fb242ce235b",
+          "type": "organization",
+          "name": "Customer",
+          "remarks": "organization to be customized at account creation only for their Component Definition"
+        },
+        {
+          "uuid": "2dc8b17f-daca-44a1-8a1d-c290120ea5e2",
+          "type": "organization",
+          "name": "ISV",
+          "remarks": "organization to be customized at ISV subscription only for their Component Definition"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "prepared-by",
+          "party-uuids": [
+            "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+          ]
+        },
+        {
+          "role-id": "prepared-for",
+          "party-uuids": [
+            "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+            "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+          ]
+        },
+        {
+          "role-id": "content-approver",
+          "party-uuids": [
+            "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+          ]
+        }
+      ]
+    },
+    "components": [
+      {
+        "uuid": "8220b305-0271-45f9-8a21-40ab6f197f73",
+        "type": "Service",
+        "title": "OSCO",
+        "description": "OSCO",
+        "control-implementations": [
+          {
+            "uuid": "76e89b67-3d6b-463d-90df-ec56a46c6069",
+            "source": "trestle://profiles/nist_prof/profile.json",
+            "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
+            "props": [
+              {
+                "name": "profile_name",
+                "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
+                "value": "OCP4 CIS-benchmark v4",
+                "class": "scc_profile_name"
+              },
+              {
+                "name": "profile_mnemonic",
+                "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
+                "value": "ocp4-cis-node",
+                "class": "scc_profile_mnemonic"
+              },
+              {
+                "name": "profile_version",
+                "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
+                "value": "1.1",
+                "class": "scc_profile_version"
+              },
+              {
+                "name": "profile_check_version",
+                "value": "0.1.58"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://foo_ns",
+                "value": "XCCDF",
+                "class": "Rule_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://foo_ns",
+                "value": "The XCCDF must be compliant",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://foo_ns",
+                "value": "FancyXtraRule",
+                "class": "Rule_Id",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://foo_ns",
+                "value": "This is a fancy extra rule",
+                "class": "Rule_Description",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Parameter_Id",
+                "ns": "http://foo_ns",
+                "value": "foo_length",
+                "class": "Parameter_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Description",
+                "ns": "http://foo_ns",
+                "value": "minimum_foo_length",
+                "class": "Parameter_Description",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Value_Alternatives",
+                "ns": "http://foo_ns",
+                "value": "[\"6\", \"9\"]",
+                "class": "Parameter_Value_Alternatives",
+                "remarks": "rule_1"
+              }
+            ],
+            "set-parameters": [
+              {
+                "param-id": "quantity_available",
+                "values": [
+                  "500"
+                ],
+                "remarks": "Total quantity available."
+              },
+              {
+                "param-id": "foo_length",
+                "values": [
+                  "6"
+                ],
+                "remarks": "Actual foo length"
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "ca5ea4c5-ba51-4b1d-932a-5606891b7486",
+                "control-id": "ac-1",
+                "description": "Ensure that the API server pod specification file permissions are set to 644 or more restrictive",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented",
+                    "remarks": "ac1 remark"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ],
+                "statements": [
+                  {
+                    "statement-id": "ac-1_smt.a",
+                    "uuid": "2652b814-2a6b-4b6d-a0ae-8bc7a007219f",
+                    "description": "Implement as needed for OSCO",
+                    "props": [
+                      {
+                        "name": "implementation-status",
+                        "value": "partial"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "6e1a6aca-78ad-4c49-9a33-0639f7509f3c",
+                "control-id": "ac-2",
+                "description": "Ensure that the API server pod specification file ownership is set to root:root",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "76360569-e7fc-436e-927c-1e3c350c4b59",
+                "control-id": "ac-2.1",
+                "description": "Ensure that the API server pod specification file ownership is set to root:root",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "1798c9f5-0807-40af-ab10-229e7f714c16",
+                "control-id": "ac-2.2",
+                "description": "Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "136d4ced-16a0-44cf-8f24-6aa66884bb10",
+                "control-id": "ac-2.3",
+                "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "62309a71-2abf-4a24-a78f-56c2f9eeed3b",
+                "control-id": "ac-2.4",
+                "description": "Ensure that the controller manager pod specification file ownership is set to root:root",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "ecca956a-4837-404a-b4fa-2685a7b15fc5",
+                "control-id": "ac-3",
+                "description": "Ensure that the Container Network Interface file ownership is set to root:root",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "fb37ef9a-e5ad-4e84-9995-785d4b19ece0",
+                "control-id": "ac-4.4",
+                "description": "Ensure that the Container Network Interface file ownership is set to root:root",
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "098ed59b-2a8c-4b3c-a0fd-1eee194be562",
+            "source": "trestle://profiles/nist_prof/profile.json",
+            "description": "OSCO implemented controls for CIS Red Hat OpenShift Container Platform 4 Benchmark.",
+            "props": [
+              {
+                "name": "profile_name",
+                "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
+                "value": "OCP4 CIS-benchmark v4",
+                "class": "scc_profile_name"
+              },
+              {
+                "name": "profile_mnemonic",
+                "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
+                "value": "ocp4-cis-node",
+                "class": "scc_profile_mnemonic"
+              },
+              {
+                "name": "profile_version",
+                "ns": "https://github.com/ComplianceAsCode/content/tree/master/ocp4",
+                "value": "1.1",
+                "class": "scc_profile_version"
+              },
+              {
+                "name": "profile_check_version",
+                "value": "0.1.58"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://foo_ns",
+                "value": "XCCDF",
+                "class": "Rule_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://foo_ns",
+                "value": "The XCCDF must be compliant",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Rule_Id",
+                "ns": "http://foo_ns",
+                "value": "FancyXtraRule",
+                "class": "Rule_Id",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Rule_Description",
+                "ns": "http://foo_ns",
+                "value": "This is a fancy extra rule",
+                "class": "Rule_Description",
+                "remarks": "rule_2"
+              },
+              {
+                "name": "Parameter_Id",
+                "ns": "http://foo_ns",
+                "value": "foo_length",
+                "class": "Parameter_Id",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Description",
+                "ns": "http://foo_ns",
+                "value": "minimum_foo_length",
+                "class": "Parameter_Description",
+                "remarks": "rule_1"
+              },
+              {
+                "name": "Parameter_Value_Alternatives",
+                "ns": "http://foo_ns",
+                "value": "[\"6\", \"9\"]",
+                "class": "Parameter_Value_Alternatives",
+                "remarks": "rule_1"
+              }
+            ],
+            "implemented-requirements": [
+              {
+                "uuid": "920bb0b5-3efd-459d-8f7f-7755e6a45d11",
+                "control-id": "ac-5",
+                "description": "Ensure that garbage collection is configured as appropriate",
+                "props": [
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://foo_ns",
+                    "class": "Rule_Id",
+                    "value": "XCCDF"
+                  },
+                  {
+                    "name": "Rule_Id",
+                    "ns": "http://foo_ns",
+                    "class": "Rule_Id",
+                    "value": "FancyXtraRule"
+                  },
+                  {
+                    "name": "implementation-status",
+                    "value": "partial",
+                    "remarks": "this is my remark"
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              },
+              {
+                "uuid": "c1541519-ba7e-44ca-afd0-4068d307a9b0",
+                "control-id": "ac-2.13",
+                "description": "Ensure that temperature is ok.",
+                "set-parameters": [
+                  {
+                    "param-id": "temperature_tolerance",
+                    "values": [
+                      "10%"
+                    ],
+                    "remarks": "Keep it cool."
+                  }
+                ],
+                "responsible-roles": [
+                  {
+                    "role-id": "prepared-by",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "prepared-for",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f",
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  },
+                  {
+                    "role-id": "content-approver",
+                    "party-uuids": [
+                      "2652b814-2a6b-4b6d-a0ae-8bc7a007209f"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "uuid": "098ed59b-2a8c-4b3c-a0fd-1eee194be563",
+            "source": "trestle://catalogs/simple_catalog_no_parts/catalog.json",
+            "description": "Simple catalog with no parts.",
+            "implemented-requirements": [
+              {
+                "uuid": "920bb0b5-3efd-459d-8f7f-7755e6a45d12",
+                "control-id": "s2.1.1",
+                "description": "Ensure that garbage collection is configured as appropriate",
+                "props": [
+                  {
+                    "name": "implementation-status",
+                    "value": "implemented",
+                    "remarks": "this is my remark"
+                  }
+                ]
+              },
+              {
+                "uuid": "c1541519-ba7e-44ca-afd0-4068d307a9b1",
+                "control-id": "s2.1.2",
+                "description": "Ensure that pressure is ok."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

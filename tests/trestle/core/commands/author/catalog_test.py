@@ -13,6 +13,7 @@
 # limitations under the License.
 """Tests for the catalog author module."""
 
+import argparse
 import copy
 import pathlib
 import shutil
@@ -27,10 +28,13 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.cli import Trestle
+from trestle.common import file_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOReader, ParameterRep
+from trestle.core.commands.import_ import ImportCmd
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
@@ -42,20 +46,19 @@ markdown_name = 'my_md'
 
 def _change_params(ac1_path: pathlib.Path, new_prose: str, make_change: bool) -> None:
     if make_change:
-        assert test_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
-    assert test_utils.insert_text_in_file(ac1_path, 'Param_1_value', '    values: new value\n')
-    assert test_utils.delete_line_in_file(ac1_path, 'Param_1_value')
-    assert test_utils.insert_text_in_file(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
+        assert file_utils.insert_text_in_file(ac1_path, 'Procedures {{', f'- \\[d\\] {new_prose}\n')
+    assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_1', '    values: new value\n')
+    assert test_utils.replace_line_in_file_after_tag(ac1_path, 'ac-1_prm_3', '    values: added param 3 value\n')
 
 
-@pytest.mark.parametrize('set_parameters', [True, False])
+@pytest.mark.parametrize('set_parameters_flag', [True, False])
 @pytest.mark.parametrize('make_change', [True, False])
 @pytest.mark.parametrize('use_orig_cat', [True, False])
 @pytest.mark.parametrize('add_header', [True, False])
 @pytest.mark.parametrize('use_cli', [True, False])
 @pytest.mark.parametrize('dir_exists', [True, False])
 def test_catalog_generate_assemble(
-    set_parameters: bool,
+    set_parameters_flag: bool,
     make_change: bool,
     use_orig_cat: bool,
     add_header: bool,
@@ -79,6 +82,10 @@ def test_catalog_generate_assemble(
     new_prose = 'My added item'
     assembled_cat_dir = tmp_trestle_dir / f'catalogs/{assembled_cat_name}'
     yaml_header_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
+
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_trestle_dir, markdown_path)
+    context.set_parameters_flag = set_parameters_flag
+
     # convert catalog to markdown then assemble it after adding an item to a control
     if use_cli:
         test_args = f'trestle author catalog-generate -n {cat_name} -o {md_name}'.split()
@@ -89,7 +96,7 @@ def test_catalog_generate_assemble(
         assert ac1_path.exists()
         _change_params(ac1_path, new_prose, make_change)
         test_args = f'trestle author catalog-assemble -m {md_name} -o {assembled_cat_name}'.split()
-        if set_parameters:
+        if set_parameters_flag:
             test_args.append('-sp')
         if use_orig_cat:
             test_args.extend(f'-n {cat_name}'.split())
@@ -112,7 +119,7 @@ def test_catalog_generate_assemble(
             assembled_cat_dir.mkdir()
         orig_cat_name = cat_name if use_orig_cat else None
         assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-            tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters, False, ''
+            tmp_trestle_dir, md_name, assembled_cat_name, orig_cat_name, set_parameters_flag, False, ''
         )
 
     orig_cat: cat.Catalog = cat.Catalog.oscal_read(catalog_path)
@@ -129,7 +136,7 @@ def test_catalog_generate_assemble(
         ac1.parts[0].parts.append(new_part)
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
-    if set_parameters:
+    if set_parameters_flag:
         ac1.params[0].values = [ParameterValue(__root__='new value')]
         ac1.params[2].values = [ParameterValue(__root__='added param 3 value')]
         interface_orig.replace_control(ac1)
@@ -138,6 +145,12 @@ def test_catalog_generate_assemble(
         ac1.params = None
         interface_orig.replace_control(ac1)
         orig_cat = interface_orig.get_catalog()
+    if use_orig_cat:
+        ac1 = assembled_cat.groups[0].controls[0]
+        assert ac1.props[2].name == 'extra_prop'
+        assert ac1.props[2].value == 'extra value'
+        assert ac1.parts[0].props[0].name == 'prop_in_part'
+        assert ac1.parts[0].props[0].value == 'value in part'
     assert test_utils.catalog_interface_equivalent(interface_orig, assembled_cat, False)
 
 
@@ -153,32 +166,39 @@ def test_catalog_assemble_version(sample_catalog_rich_controls: cat.Catalog, tmp
     sample_catalog_rich_controls.oscal_write(catalog_path)
     markdown_path = tmp_trestle_dir / md_name
     catalog_generate = CatalogGenerate()
+
+    # generate the catalog markdown
     assert CmdReturnCodes.SUCCESS.value == catalog_generate.generate_markdown(
         tmp_trestle_dir, catalog_path, markdown_path, {}, False
     )
+
+    # assemble the catalog the first time
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
         tmp_trestle_dir, md_name, assembled_cat_name, cat_name, False, False, new_version
     )
+
+    # load the freshly assembled catalog
     assembled_cat, assembled_cat_path = ModelUtils.load_top_level_model(
         tmp_trestle_dir,
         assembled_cat_name,
         cat.Catalog
     )
+
+    # confirm it is a fresh file with the version set as requested
     assert assembled_cat.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(assembled_cat) < test_utils.NEW_MODEL_AGE_SECONDS
-
     creation_time = assembled_cat_path.stat().st_mtime
 
     # assemble same way again and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
 
-    # assemble same way again but without parent specified and confirm no new write
+    # assemble same way again with parent name specified and confirm no new write
     assert CmdReturnCodes.SUCCESS.value == CatalogAssemble.assemble_catalog(
-        tmp_trestle_dir, md_name, assembled_cat_name, None, False, False, new_version
+        tmp_trestle_dir, md_name, assembled_cat_name, assembled_cat_name, False, False, new_version
     )
 
     assert creation_time == assembled_cat_path.stat().st_mtime
@@ -246,6 +266,21 @@ def test_catalog_interface(sample_catalog_rich_controls: cat.Catalog) -> None:
     interface.replace_control(control)
     interface.update_catalog_controls()
     assert interface._catalog.controls[1].controls[0].title == new_title
+
+
+def test_get_statement_parts(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test the catalog interface with complex controls."""
+    interface = CatalogInterface(simplified_nist_catalog)
+    parts = interface.get_statement_parts('ac-1')
+    assert len(parts) == 10
+    prt = parts[0]
+    assert prt['indent'] == 0
+    assert prt['label'] == ''
+    assert prt['prose'] == 'The organization:'
+    prt = parts[4]
+    assert prt['indent'] == 3
+    assert prt['label'] == '(b)'
+    assert prt['prose'].startswith('Is consistent with')
 
 
 def test_catalog_interface_groups() -> None:
@@ -333,14 +368,14 @@ def test_get_profile_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
 
     full_param_dict = CatalogInterface._get_full_profile_param_dict(profile)
     control_param_dict = CatalogInterface._get_profile_param_dict(control, full_param_dict, False)
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         control_param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'all alert personnel'
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         control_param_dict['ac-1_prm_6'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'monthly'
     # param 7 has no value so its label will be used
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         control_param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
 
@@ -354,7 +389,8 @@ def test_catalog_generate_withdrawn(tmp_path: pathlib.Path, sample_catalog_rich_
         control_b.props = []
     control_b.props.append(Property(name='status', value='Withdrawn'))
     catalog_interface = CatalogInterface(sample_catalog_rich_controls)
-    catalog_interface.write_catalog_as_markdown(tmp_path, {}, None, False)
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
     # confirm that the first control was written out but not the second
     path_a = tmp_path / group_id / (control_a.id + '.md')
     assert path_a.exists()
@@ -443,3 +479,71 @@ def test_pulled_params_in_choice(
     assert param.links[1].text == 'new link text'
     assert param.constraints[1].description == 'new constraint'
     assert param.guidelines[1].prose == 'new guideline'
+
+
+def test_generate_group_id() -> None:
+    """Test the generation of group ids."""
+    cat_int = CatalogInterface()
+    group = cat.Group(title='my test title')
+    assert cat_int._generate_group_id(group) == 'trestle_group_0000'
+    assert cat_int._generate_group_id(group) == 'trestle_group_0001'
+
+
+def test_validate_catalog_missing_group_id(
+    tmp_trestle_dir: pathlib.Path, tmp_path_factory: pytest.TempPathFactory, sample_catalog_rich_controls: cat.Catalog
+) -> None:
+    """Test validation of catalog with groups that dont have ids."""
+    # kill one of the group id's
+    sample_catalog_rich_controls.groups[0].id = None
+    cat_name = 'my_cat'
+    tmp_cat_path = tmp_path_factory.mktemp('temp_dir') / (cat_name + '.json')
+
+    # write catalog with missing group id to tmp location
+    sample_catalog_rich_controls.oscal_write(tmp_cat_path)
+    import_cmd = ImportCmd()
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(tmp_cat_path), output=cat_name, verbose=1, regenerate=False
+    )
+
+    # import the file with missing group id into the trestle workspace
+    # this should validate the file and assign the missing id a new value in memory - then save the file
+    rc = import_cmd._run(args)
+    assert rc == 0
+
+    # load the file without doing validation - to make sure the file itself has the group id assigned
+    new_cat, new_cat_path = ModelUtils.load_top_level_model(tmp_trestle_dir, cat_name, cat.Catalog)
+    assert new_cat.groups[0].id == 'trestle_group_0000'
+
+    md_name = 'md_cat'
+    md_path = tmp_trestle_dir / md_name
+    md_path.mkdir(parents=True, exist_ok=True)
+    cat_generate = CatalogGenerate()
+    assert cat_generate.generate_markdown(
+        tmp_trestle_dir, new_cat_path, md_path, {}, False
+    ) == CmdReturnCodes.SUCCESS.value
+
+    assem_cat_name = 'assem_cat'
+    cat_assemble = CatalogAssemble()
+    cat_assemble.assemble_catalog(tmp_trestle_dir, md_name, assem_cat_name, None, False, False, None)
+
+    # load the file without doing validation - to make sure the file itself has the group id assigned
+    _, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, assem_cat_name, cat.Catalog)
+    assert new_cat.groups[0].id == 'trestle_group_0000'
+
+
+def test_get_control_paths(sample_catalog_rich_controls: cat.Catalog) -> None:
+    """Test get control paths."""
+    cat_interface = CatalogInterface(sample_catalog_rich_controls)
+    path = cat_interface.get_full_control_path('control_s')
+    assert path == ['xy', 'sub']
+    assert cat_interface.get_control_path('control_s') == ['xy', 'sub']
+    path = cat_interface.get_full_control_path('control_d1')
+    assert path == ['', 'control_d']
+    assert cat_interface.get_control_path('control_d1') == ['']
+    control = copy.deepcopy(cat_interface.get_control('control_d1'))
+    control.id = 'cat_level'
+    sample_catalog_rich_controls.controls = [control]
+    cat_interface = CatalogInterface(sample_catalog_rich_controls)
+    path = cat_interface.get_full_control_path('cat_level')
+    assert path == ['']
+    assert cat_interface.get_control_path('cat_level') == ['']

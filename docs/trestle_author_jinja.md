@@ -139,7 +139,9 @@ To achieve that, we can create a simple Jinja template that would be used to gen
 # Control Page
 
 {{ control_writer.write_control_with_sections(
-   control, group_title, 
+   control,
+   profile,
+   group_title, 
    ['statement', 'objective', 'expected_evidence', 'implementation_guidance', 'table_of_parameters'], 
    {
       'statement':'Control Statement',
@@ -149,6 +151,8 @@ To achieve that, we can create a simple Jinja template that would be used to gen
       'table_of_parameters':'Control Parameters'
    }
    ) 
+   
+   | safe
 }}
 ```
 

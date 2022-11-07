@@ -2,7 +2,7 @@
   "profile": {
     "uuid": "A0000000-0000-4000-8000-000000000030",
     "metadata": {
-      "title": "Corrupt Profile with missing reference ID",
+      "title": "Profile with missing reference ID",
       "last-modified": "2021-01-01T00:00:00.000+00:00",
       "version": "2021-01-01",
       "oscal-version": "1.0.0"
@@ -20,14 +20,32 @@
         ]
       }
     ],
+    "merge": {
+      "as-is": true
+    },
     "modify": {
       "set_parameters": [
         {
           "param_id": "ac-1_prm_1",
             "values": [
               "all personnel"
+            ],
+            "props": [
+              {
+                "name": "param_prop1",
+                "value": "param prop1 val",
+                "ns": "http://orig_ns"
+              },
+              {
+                "name": "param_prop2",
+                "value": "param prop2 val"
+              },
+              {
+                "name": "display-name",
+                "value": "AC-1"
+              }
             ]
-        },
+      },
         {  "param_id": "ac-1_prm_2",
             "values": [
               "A thorough"
@@ -46,40 +64,47 @@
             {
               "props": [
                 {
-                  "name": "foo",
-                  "value": "bar",
-                  "remarks": "good stuff"
+                  "name": "ac1_foo",
+                  "value": "ac1 bar",
+                  "remarks": "ac1 good stuff",
+                  "ns": "http://orig_ns"
                 }
               ]
             },
             {
-              "by_id": "ac-1_prm_2",
+              "by_id": "ac-1_smt.a",
               "props": [
                 {
-                  "name": "foo",
-                  "value": "bar",
-                  "remarks": "good stuff"
+                  "name": "ac1_a_foo",
+                  "value": "ac1 a bar",
+                  "remarks": "ac1 a good stuff"
+                },
+                {
+                  "name": "ac1_first",
+                  "value": "ac1_first value",
+                  "ns": "http://first"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "control_id": "ac-1",
-          "adds": [
+            },
             {
               "position": "after",
               "by_id" : "ac-1_smt",
               "parts": [
                 {
                   "id": "ac-1_implgdn",
-                  "name": "ImplGuidance",
+                  "name": "implgdn",
                   "prose": "Maintain compliance"
                 },
                 {
                   "id": "ac-1_expevid",
-                  "name": "ExpectedEvidence",
-                  "prose": "Daily logs."
+                  "name": "expevid",
+                  "prose": "Daily logs.",
+                  "props": [
+                    {
+                      "name": "part_prop",
+                      "value": "part_prop_val"
+                    }
+                  ]
                 }
               ]
             }

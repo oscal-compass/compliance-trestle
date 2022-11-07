@@ -24,16 +24,17 @@ import pytest
 
 from tests import test_utils
 
+from trestle.common.const import RESOLUTION_SOURCE
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators as gens
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ParameterRep
+from trestle.core.control_interface import ControlInterface, ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.repository import Repository
 from trestle.core.resolver.merge import Merge
-from trestle.core.resolver.modify import Modify
+from trestle.oscal import OSCAL_VERSION
 from trestle.oscal import catalog as cat
 from trestle.oscal import common as com
 from trestle.oscal import profile as prof
@@ -51,10 +52,9 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
 
-    prof_a_path = ModelUtils.path_for_top_level_model(
-        tmp_trestle_dir, 'test_profile_a', prof.Profile, FileContentType.JSON
-    )
-    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    test_prof_name = 'test_profile_a'
+    test_prof, test_prof_path = ModelUtils.load_top_level_model(tmp_trestle_dir, test_prof_name, prof.Profile)
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, test_prof_path)
     interface = CatalogInterface(cat)
     # added part ac-1_expevid from prof a
     list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')
@@ -72,9 +72,23 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     assert interface.get_dependent_control_ids('ac-3') == ['ac-3.3']
 
+    # confirm that upstream props are captured
+    ac_33 = interface.get_control('ac-3.3')
+    assert ac_33.params[0].props[0].name == 'set_param_prof_b_prop'
+    assert ac_33.params[0].props[0].value == 'set param prof b prop value'
+    assert ac_33.props[0].name == 'add_prof_b_prop'
+    assert ac_33.props[0].value == 'add prof b prop value'
+
     control = interface.get_control('a-1')
     assert control.parts[0].parts[0].id == 'a-1_deep'
     assert control.parts[0].parts[0].prose == 'Extra added part in subpart'
+
+    assert cat.metadata.title == test_prof.metadata.title
+    assert cat.metadata.oscal_version.__root__ == OSCAL_VERSION
+    assert cat.metadata.links[0].href == 'trestle://catalogs/nist_cat/catalog.json'
+    assert cat.metadata.links[0].rel == RESOLUTION_SOURCE
+    assert cat.metadata.links[1].href == 'trestle://profiles/test_profile_b/profile.json'
+    assert cat.metadata.links[0].rel == RESOLUTION_SOURCE
 
 
 def test_deep_catalog() -> None:
@@ -107,7 +121,11 @@ def test_ok_when_props_added(tmp_trestle_dir: pathlib.Path) -> None:
     repo.load_and_import_model(prof_path, 'profile_with_alter_props')
 
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
-    assert catalog
+    ac_1 = catalog.groups[0].controls[0]
+    assert ac_1.props[3].name == 'ac1_foo'
+    assert ac_1.props[3].value == 'ac1 bar'
+    assert ac_1.parts[2].props[0].name == 'part_prop'
+    assert ac_1.parts[2].props[0].value == 'part_prop_val'
 
 
 def test_profile_missing_position(tmp_trestle_dir: pathlib.Path) -> None:
@@ -211,7 +229,18 @@ def test_replace_params(param_id, param_text, prose, result) -> None:
     param = com.Parameter(id=param_id, values=[com.ParameterValue(__root__=param_text)])
     param_10 = com.Parameter(id='ac-2_smt.10', values=[com.ParameterValue(__root__='my 10 str')])
     param_dict = {param_id: param, 'ac-1_smt.10': param_10}
-    assert Modify._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
+    assert ControlInterface._replace_ids_with_text(prose, ParameterRep.VALUE_OR_STRING_NONE, param_dict) == result
+
+
+def test_replace_params_assignment_mode(simplified_nist_catalog: cat.Catalog) -> None:
+    """Test replacement of params in assignment mode."""
+    cat_interface = CatalogInterface(simplified_nist_catalog)
+    param_dict = cat_interface._get_full_param_dict()
+    ac_44 = cat_interface.get_control('ac-4.4')
+    ControlInterface.replace_control_prose(ac_44, param_dict, None, ParameterRep.ASSIGNMENT_FORM)
+    assert ac_44.parts[
+        0
+    ].prose == 'Prevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: organization-defined procedure or method]].'  # noqa:E501
 
 
 def test_profile_resolver_param_sub() -> None:
@@ -223,7 +252,7 @@ def test_profile_resolver_param_sub() -> None:
 
     param_text = 'Make sure that {{insert: param, ac-2_smt.1}} is very {{ac-2_smt.10}} today.  Very {{ac-2_smt.10}}!'
     param_dict = {id_1: param_1, id_10: param_10}
-    new_text = Modify._replace_params(param_text, param_dict)
+    new_text = ControlInterface._replace_params(param_text, param_dict)
     assert new_text == 'Make sure that the cat is very well fed today.  Very well fed!'
 
 

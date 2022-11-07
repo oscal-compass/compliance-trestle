@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle List Utils."""
-from typing import Any, Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
-from trestle.common.common_types import TG
+from trestle.common.common_types import TG, TG2
 
 
 def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
@@ -24,9 +24,26 @@ def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
     return list_or_none if list_or_none else []
 
 
+def as_filtered_list(list_or_none: Optional[List[TG]], filter_condition: Callable[[TG], bool]) -> List[TG]:
+    """Convert to list and filter based on the condition."""
+    result_list = as_list(list_or_none)
+    result_list = list(filter(filter_condition, result_list))
+    return result_list
+
+
+def as_dict(dict_or_none: Optional[Dict[TG, TG2]]) -> Dict[TG, TG2]:
+    """Convert dict or None object to itself or an empty dict if none."""
+    return dict_or_none if dict_or_none else {}
+
+
 def none_if_empty(list_: List[TG]) -> Optional[List[TG]]:
     """Convert to None if empty list."""
     return list_ if list_ else None
+
+
+def get_default(item: TG, default: TG) -> TG:
+    """Return the default value for the item if it is not set."""
+    return item if item else default
 
 
 def is_ordered_sublist(needle: List[str], haystack: List[str]) -> bool:
@@ -53,10 +70,43 @@ def join_key_to_list_dicts(dict1: Dict, dict2: Dict) -> Dict:
     return dict3
 
 
-def delete_item_from_list(item_list: List[Any], value: Any, key: Callable[[Any], Any]) -> List[Any]:
-    """Remove an item if it is present in a list based on the key."""
+def delete_item_from_list(item_list: List[TG], value: TG2, key: Callable[[TG], TG2]) -> List[TG]:
+    """Remove the first matching item if it is present in a list based on the callable key matching the query value."""
     keys = [key(item) for item in item_list]
     if value in keys:
         index = keys.index(value)
         del item_list[index]
     return item_list
+
+
+def get_item_from_list(item_list: Optional[List[TG]],
+                       value: TG2,
+                       key: Callable[[TG], TG2],
+                       remove: bool = False) -> Optional[TG]:
+    """Get first item from list if present based on key matching value with option to remove it from the list."""
+    if not item_list:
+        return None
+    keys = [key(item) for item in item_list]
+    item = None
+    if value in keys:
+        index = keys.index(value)
+        item = item_list[index]
+        if remove:
+            del item_list[index]
+    return item
+
+
+def pop_item_from_list(item_list: Optional[List[TG]], value: TG2, key: Callable[[TG], TG2]) -> Optional[TG]:
+    """Pop first matching item from a list if it is present based on the key matching the value."""
+    return get_item_from_list(item_list, value, key, True)
+
+
+def delete_list_from_list(item_list: List[TG], indices: List[int]) -> None:
+    """Delete a list of items from a list based on indices."""
+    for index in sorted(indices, reverse=True):
+        del item_list[index]
+
+
+def merge_dicts(dest: Optional[Dict[str, str]], src: Optional[Dict[str, str]]) -> Dict[str, str]:
+    """Merge the two dicts with priority to src."""
+    return {**as_dict(dest), **as_dict(src)}

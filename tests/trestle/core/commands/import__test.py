@@ -37,7 +37,6 @@ from trestle.common import file_utils as fs
 from trestle.common.model_utils import ModelUtils
 from trestle.core import generators
 from trestle.core.commands import create
-from trestle.core.commands.validate import ValidateCmd
 from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog, Group
 from trestle.oscal.profile import Modify, Profile, SetParameter
@@ -111,12 +110,7 @@ def test_import_run(tmp_trestle_dir: pathlib.Path, regen: bool) -> None:
 
 def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test successful _run() on invalid input with good or failed rollback."""
-
-    def validate_import_mock(*args, **kwargs):
-        raise err.TrestleError('validate run error')
-
-    def rollback_mock(*args, **kwargs):
-        return [None, err.TrestleError('rollback error')]
+    # rollback tests are deprecated because import validates the file in memory prior to writing out
 
     dup_cat = {
         'catalog': {
@@ -148,24 +142,6 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
         trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=1, regenerate=False
     )
     # 1. Validation rejects above import, which results in non-zero exit code for import.
-    rc = j._run(args)
-    assert rc > 0
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    # 2. ValidateCmd raises run (mocked), so import returns non-zero exit code.
-    j = importcmd.ImportCmd()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=1, regenerate=False
-    )
-    monkeypatch.setattr(ValidateCmd, '_run', validate_import_mock)
-    rc = j._run(args)
-    assert rc > 0
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    # 3. Rollback raises exception, so import returns non-zero exit code:
-    j = importcmd.ImportCmd()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=dup_file_name, output=f'dup-{rand_str}', verbose=1, regenerate=False
-    )
-    monkeypatch.setattr(Plan, 'rollback', rollback_mock)
     rc = j._run(args)
     assert rc > 0
 

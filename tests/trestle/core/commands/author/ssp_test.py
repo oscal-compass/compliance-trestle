@@ -19,19 +19,17 @@ from typing import List
 
 import pytest
 
-from ruamel.yaml import YAML
-
 from tests import test_utils
-from tests.test_utils import setup_for_ssp
+from tests.test_utils import delete_line_in_file, setup_for_ssp
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
-from trestle.common import const
+from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
-from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
-from trestle.core.control_io import ControlIOReader
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_reader import ControlReader
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -46,18 +44,18 @@ def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> bo
     control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
     md_file = control_dir / (statement_id.split('_')[0] + '.md')
 
-    return test_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
+    return file_utils.insert_text_in_file(md_file, f'for item {statement_id}', prose)
 
 
 def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
     """Confirm the text is present in the control markdown in the correct part."""
     control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
-
-    comp_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(md_file)
+    context = ControlContext.generate(ContextPurpose.SSP, False, trestle_dir, trestle_dir)
+    comp_dict, _ = ControlReader.read_all_implementation_prose_and_header(None, md_file, context)
     for label_dict in comp_dict.values():
         if part_label in label_dict:
-            prose = '\n'.join(label_dict[part_label])
+            prose = label_dict[part_label].prose
             if seek_str in prose:
                 return True
     return False
@@ -67,9 +65,9 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 @pytest.mark.parametrize('specify_sections', [False, True])
 def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
+    args, _, _ = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name, import_cat)
     if specify_sections:
-        args.allowed_sections = 'ImplGuidance,ExpectedEvidence'
+        args.allowed_sections = 'implgdn,expevid'
 
     ssp_cmd = SSPGenerate()
     # run the command for happy path
@@ -82,21 +80,15 @@ def test_ssp_generate(import_cat, specify_sections, tmp_trestle_dir: pathlib.Pat
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
 
-    with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML()
-        expected_header = yaml.load(f)
-    sections_dict = sections_to_dict(sections)
-    expected_header[const.SECTIONS_TAG] = sections_dict
     assert test_utils.confirm_text_in_file(ac_1, '## Control', '## Control Guidance') != specify_sections
     md_api = MarkdownAPI()
-    header, tree = md_api.processor.process_markdown(ac_1)
-    expected_header[const.SORT_ID] = 'ac-01'
-    assert tree is not None
-    assert expected_header == header
-    header, tree = md_api.processor.process_markdown(ac_2)
-    expected_header[const.SORT_ID] = 'ac-02'
-    assert tree is not None
-    assert expected_header == header
+    _, tree = md_api.processor.process_markdown(ac_1)
+    # if sections specified then Control Guidance does not appear
+    rc = 11 if specify_sections else 12
+    assert tree.get_count_of_subnodes() == rc
+    _, tree = md_api.processor.process_markdown(ac_2)
+    rc = 29 if specify_sections else 30
+    assert tree.get_count_of_subnodes() == rc
 
 
 def test_ssp_failures(tmp_trestle_dir: pathlib.Path) -> None:
@@ -147,27 +139,27 @@ def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
-    assert header == {const.SORT_ID: 'ac-01'}
+    assert header[const.SORT_ID] == 'ac-01'
     header, tree = md_api.processor.process_markdown(ac_2)
     assert tree is not None
-    assert header == {const.SORT_ID: 'ac-02'}
+    assert header[const.SORT_ID] == 'ac-02'
 
 
 def test_ssp_generate_fail_statement_section(tmp_trestle_dir: pathlib.Path) -> None:
     """
-    Test the ssp generator fails if 'statement' is provided.
+    Test the ssp generator fails if const.STATEMENT is provided.
 
     Also checking code where not label is provided.
     """
     args, _, _ = setup_for_ssp(False, False, tmp_trestle_dir, prof_name, ssp_name)
-    args.sections = 'statement'
+    args.sections = const.STATEMENT
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) > 0
 
 
-@pytest.mark.parametrize('yaml_header', [False, True])
-def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('load_yaml_header', [False, True])
+def test_ssp_generate_header_edit(load_yaml_header: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp generate does not overwrite header edits."""
     # always start by creating the markdown with the yaml header
     args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, prof_name, ssp_name)
@@ -177,20 +169,14 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
     ac_1 = ac_dir / 'ac-1.md'
 
-    with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
-        yaml = YAML()
-        yaml_header = yaml.load(f)
-
     md_api = MarkdownAPI()
     header, tree = md_api.processor.process_markdown(ac_1)
-    yaml_header[const.SORT_ID] = 'ac-01'
     assert tree is not None
-    # remove the sections that were added to original header so we can check other changes in header
-    header.pop(const.SECTIONS_TAG)
-    assert yaml_header == header
+    # confirm info from the yaml header was loaded
+    assert len(header['control-origination']) == 2
 
     # edit the header by adding a list item and removing a value
-    assert test_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
+    assert file_utils.insert_text_in_file(ac_1, 'System Specific', '  - My new edits\n')
     assert test_utils.delete_line_in_file(ac_1, 'Corporate')
 
     # if the yaml header is not written out, the new header should be the one currently in the control
@@ -199,18 +185,21 @@ def test_ssp_generate_header_edit(yaml_header: bool, tmp_trestle_dir: pathlib.Pa
     # if written out, it should just have the one added item because the deleted one will be put back in
 
     # tell it not to add the yaml header
-    if not yaml_header:
+    if not load_yaml_header:
         args.yaml_header = None
 
     assert ssp_cmd._run(args) == 0
     header, tree = md_api.processor.process_markdown(ac_1)
     assert tree is not None
 
-    assert len(header['control-origination']) == 2
-    if not yaml_header:
-        assert 'new' in header['control-origination'][0]
+    co = header['control-origination']
+    assert co[0] == 'Service Provider System Specific'
+    assert co[1] == 'My new edits'
+    if not load_yaml_header:
+        assert len(co) == 2
     else:
-        assert 'new' not in header['control-origination'][0]
+        assert co[2] == 'Service Provider Corporate'
+        assert len(co) == 3
 
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
@@ -227,8 +216,17 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     prose_b = 'This is fun\nline with *bold* text\n\n### ACME Component\n\n' + acme_string
 
     # edit it a bit
+    ac_1_path = tmp_trestle_dir / ssp_name / 'ac/ac-1.md'
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
     assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
+    assert delete_line_in_file(ac_1_path, 'Add control implementation description')
+    assert delete_line_in_file(ac_1_path, 'Add control implementation description')
+
+    # special handling for ac-2.1 because it has no statement sub-parts
+    add_prompt = 'Add control implementation description here for control ac-2.1'
+    add_response = 'My statement level prose'
+    ac_21_path = tmp_trestle_dir / ssp_name / 'ac/ac-2.1.md'
+    assert test_utils.substitute_text_in_file(ac_21_path, add_prompt, add_response)
 
     # generate markdown again on top of previous markdown to make sure it is not removed
     ssp_gen = SSPGenerate()
@@ -252,6 +250,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(orig_ssp.system_implementation.components) == 2
     assert orig_ssp.metadata.version.__root__ == new_version
     assert ModelUtils.model_age(orig_ssp) < test_utils.NEW_MODEL_AGE_SECONDS
+    imp_reqs = orig_ssp.control_implementation.implemented_requirements
+    imp_req = next((i_req for i_req in imp_reqs if i_req.control_id == 'ac-2.1'), None)
+    assert imp_req.statements[0].by_components[0].description == add_response
 
     orig_file_creation = orig_ssp_path.stat().st_mtime
 
@@ -260,6 +261,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
+    assert test_utils.confirm_text_in_file(ac_21_path, const.SSP_MD_IMPLEMENTATION_QUESTION, add_response)
 
     # now assemble it again but don't regen uuid's and don't change version
     args = argparse.Namespace(
@@ -286,7 +288,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     for imp_req in repeat_ssp.control_implementation.implemented_requirements:
         if imp_req.control_id == 'ac-1':
             statements = imp_req.statements
-            assert len(statements) == 3
+            assert len(statements) == 4
             for statement in statements:
                 for by_component in statement.by_components:
                     if by_component.description == acme_string:
@@ -374,7 +376,7 @@ implement the foo requirements
 also do the bar stuff
 
 """
-    test_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', imp_text)
+    file_utils.insert_text_in_file(ac1_path, 'ac-1_smt.a', imp_text)
 
     # create ssp from the markdown
     ssp_assemble = SSPAssemble()
@@ -393,7 +395,7 @@ also do the bar stuff
     ssp: ossp.SystemSecurityPlan
     ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     # confirm all by_comps are there for this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[1].statements[1].by_components) == 3
 
     # get the original uuid
     orig_uuid = ssp.uuid
@@ -432,7 +434,7 @@ also do the bar stuff
     assert len(ssp.control_implementation.implemented_requirements) == 2
 
     # confirm there are three by_comps for: this system, foo, bar
-    assert len(ssp.control_implementation.implemented_requirements[0].statements[0].by_components) == 3
+    assert len(ssp.control_implementation.implemented_requirements[0].statements[1].by_components) == 3
 
     # confirm uuid was not regenerated
     assert ssp.uuid == orig_uuid
@@ -463,7 +465,7 @@ also do the bar stuff
     assert new_uuid != orig_uuid
 
     # confirm the bar by_comp has been filtered out
-    assert len(ssp.control_implementation.implemented_requirements[1].statements[0].by_components) == 2
+    assert len(ssp.control_implementation.implemented_requirements[1].statements[1].by_components) == 2
 
     # filter the filtered ssp again to confirm uuid does not change even with regen because contents are the same
     args = argparse.Namespace(
@@ -587,10 +589,10 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
 
     # insert implementation text into the high level statement of a control that has no sub-parts
     control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
-    test_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
+    file_utils.insert_text_in_file(control_path, 'control test-1', '\nHello there')
 
     control_a1_path = tmp_trestle_dir / ssp_name / 'a-1.md'
-    test_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
+    file_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
     test_utils.delete_line_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX)
 
     assert ssp_cmd._run(args) == 0
@@ -639,7 +641,7 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
     json_ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, 'ssp_json', ossp.SystemSecurityPlan)
     comp_def = json_ssp.system_implementation.components[0]
     assert comp_def.title == 'This System'
-    assert comp_def.status.state == ossp.State1.under_development
+    assert comp_def.status.state == ossp.State1.other
     imp_reqs: List[ossp.ImplementedRequirement] = json_ssp.control_implementation.implemented_requirements
     assert len(imp_reqs) == 2
     assert imp_reqs[0].control_id == 's1.1.1'

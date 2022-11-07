@@ -27,11 +27,14 @@ import trestle.common.log as log
 import trestle.oscal.common as com
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_name, load_validate_model_path
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
+from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import OSCAL_VERSION
 from trestle.oscal.catalog import Catalog
 
 logger = logging.getLogger(__name__)
@@ -92,19 +95,19 @@ class CatalogGenerate(AuthorCommonCommand):
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         try:
-            _, _, catalog = ModelUtils.load_distributed(catalog_path, trestle_root)
+            catalog = load_validate_model_path(trestle_root, catalog_path)
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(
-                md_path=markdown_path,
+            context = ControlContext.generate(
+                ContextPurpose.CATALOG,
+                True,
+                trestle_root,
+                markdown_path,
                 yaml_header=yaml_header,
-                sections_dict=None,
-                prompt_responses=False,
-                additional_content=False,
-                profile=None,
                 overwrite_header_values=overwrite_header_values,
-                set_parameters=True,
-                required_sections=None
+                set_parameters_flag=True
             )
+            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+
         except TrestleNotFoundError as e:
             raise TrestleError(f'Catalog {catalog_path} not found for load: {e}')
         except Exception as e:
@@ -128,7 +131,7 @@ class CatalogAssemble(AuthorCommonCommand):
         self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
         output_help_str = 'Name of the output generated json Catalog'
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
-        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
+        self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
 
@@ -141,7 +144,7 @@ class CatalogAssemble(AuthorCommonCommand):
                 md_name=args.markdown,
                 assem_cat_name=args.output,
                 parent_cat_name=args.name,
-                set_parameters=args.set_parameters,
+                set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version
             )
@@ -154,7 +157,7 @@ class CatalogAssemble(AuthorCommonCommand):
         md_name: str,
         assem_cat_name: str,
         parent_cat_name: Optional[str],
-        set_parameters: bool,
+        set_parameters_flag: bool,
         regenerate: bool,
         version: Optional[str]
     ) -> int:
@@ -166,7 +169,7 @@ class CatalogAssemble(AuthorCommonCommand):
             md_name: The name of the directory containing the markdown control files for the ssp
             assem_cat_name: The output name of the catalog model to be created from the assembly
             parent_cat_name: Optional name of the parent catalog that the markdown controls will replace
-            set_parameters: set the parameters in the control to the values in the markdown yaml header
+            set_parameters_flag: set the parameters and props in the control to the values in the markdown yaml header
             regenerate: whether to regenerate the uuid's in the catalog
             version: version for the assembled catalog
 
@@ -185,7 +188,7 @@ class CatalogAssemble(AuthorCommonCommand):
         # assemble the markdown controls into fresh md_catalog
         md_catalog_interface = CatalogInterface()
         try:
-            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters)
+            md_catalog = md_catalog_interface.read_catalog_from_markdown(md_dir, set_parameters_flag)
         except Exception as e:
             raise TrestleError(f'Error reading catalog from markdown {md_dir}: {e}')
         if md_catalog_interface.get_count_of_controls_in_catalog(True) == 0:
@@ -193,6 +196,7 @@ class CatalogAssemble(AuthorCommonCommand):
 
         # this is None if it doesn't exist yet
         assem_cat_path = ModelUtils.full_path_for_top_level_model(trestle_root, assem_cat_name, Catalog)
+        logger.debug(f'assem_cat_path is {assem_cat_path}')
 
         # if original cat is not specified, use the assembled cat but only if it already exists
         if not parent_cat_name and assem_cat_path:
@@ -204,11 +208,12 @@ class CatalogAssemble(AuthorCommonCommand):
         # if we have parent catalog then merge the markdown controls into it
         # the parent can be a separate catalog or the destination assembled catalog if it exists
         # but this is the catalog that the markdown is merged into in memory
+        logger.debug(f'parent_cat_name is {parent_cat_name}')
         if parent_cat_name:
-            parent_cat, parent_cat_path = ModelUtils.load_top_level_model(trestle_root, parent_cat_name, Catalog)
+            parent_cat, parent_cat_path = load_validate_model_name(trestle_root, parent_cat_name, Catalog)
             parent_cat_interface = CatalogInterface(parent_cat)
             # merge the just-read md catalog into the original json
-            parent_cat_interface.merge_catalog(md_catalog, set_parameters)
+            parent_cat_interface.merge_catalog(md_catalog, set_parameters_flag)
             md_catalog = parent_cat_interface.get_catalog()
             new_content_type = FileContentType.path_to_content_type(parent_cat_path)
 
@@ -218,14 +223,19 @@ class CatalogAssemble(AuthorCommonCommand):
         # now check the destination catalog to see if the in-memory catalog matches it
         if assem_cat_path:
             new_content_type = FileContentType.path_to_content_type(assem_cat_path)
-            _, _, existing_cat = ModelUtils.load_distributed(assem_cat_path, trestle_root)
+            existing_cat = load_validate_model_path(trestle_root, assem_cat_path)
             if ModelUtils.models_are_equivalent(existing_cat, md_catalog):
                 logger.info('Assembled catalog is not different from existing version, so no update.')
                 return CmdReturnCodes.SUCCESS.value
+            else:
+                logger.debug('new assembled catalog is different from existing one')
 
         if regenerate:
             md_catalog, _, _ = ModelUtils.regenerate_uuids(md_catalog)
+            logger.debug('regenerating uuids in catalog')
         ModelUtils.update_last_modified(md_catalog)
+
+        md_catalog.metadata.oscal_version = OSCAL_VERSION
 
         # we still may not know the assem_cat_path but can now create it with file content type
         assem_cat_path = ModelUtils.path_for_top_level_model(trestle_root, assem_cat_name, Catalog, new_content_type)

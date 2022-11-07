@@ -27,6 +27,8 @@ TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 TRESTLE_KEEP_FILE = '.keep'
+DRAWIO_FILE_EXT = '.drawio'
+MARKDOWN_FILE_EXT = '.md'
 
 ALLOWED_EXTENSIONS_IN_DIRS = {'.json', '.xml', '.yaml', '.yml', '.md'}
 
@@ -178,6 +180,18 @@ IOF_SHORT = '-iof'
 IOF_LONG = '--include-optional-fields'
 IOF_HELP = 'Include fields that are optional in the OSCAL model when generating the new object.'
 
+INIT_FULL_SHORT = '-fl'
+INIT_FULL_LONG = '--full'
+INIT_FULL_HELP = 'Initializes Trestle workspace for local, API and governed documents usage.'
+
+INIT_GOVDOCS_SHORT = '-gd'
+INIT_GOVDOCS_LONG = '--govdocs'
+INIT_GOVDOCS_HELP = 'Initializes Trestle workspace for governed documents usage only.'
+
+INIT_LOCAL_SHORT = '-loc'
+INIT_LOCAL_LONG = '--local'
+INIT_LOCAL_HELP = 'Initializes Trestle workspace for local management of OSCAL models.'
+
 FILE_ENCODING = 'utf8'
 
 # Trestle documentation
@@ -210,6 +224,16 @@ WINDOWS_DRIVE_URI_REGEX = r'([A-Za-z]:[\\/]?)[^\\/]'
 
 WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 
+# extract two groups corresponding to prop name and value
+# need to strip white space from end of value
+PROPERTY_REGEX = r'(?:###\s+Property\s+)([^\s]*)\s*:\s+(.*)'
+
+PART_REGEX = r'(?:##\s+Part\s+)(.*)'
+
+CONTROL_REGEX = r'(?:##\s+Control\s+)(.*)'
+
+AFTER_HASHES_REGEX = r'(?:##*\s+)(.*)'
+
 CACHE_ABS_DIR = '__abs__'
 
 UNIX_CACHE_ROOT = '__root__'
@@ -218,11 +242,16 @@ TRESTLE_HREF_HEADING = 'trestle://'
 
 TRESTLE_HREF_REGEX = '^trestle://[^/]'
 
+MATCH_ALL_EXCEPT_LETTERS_UNDERSCORE_SPACE_REGEX = '[^a-zA-Z0-9-_ \n]'
+
 # extracts foo and bar from ...[foo](bar)...
 MARKDOWN_URL_REGEX = r'\[([^\]]+)\]\(([^)]+)\)'
 
 # Governed header template version
 TEMPLATE_VERSION_REGEX = r'[0-9]+.[0-9]+.[0-9]+'
+
+OBJECTIVE_PART = 'objective'
+TABLE_OF_PARAMS_PART = 'table_of_parameters'
 
 # extracts standalone uuid's from anywhere in string
 UUID_REGEX = r'(?:^|[0-9A-Za-f])([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12})(?:$|[^0-9A-Za-z])'  # noqa FS003 E501
@@ -235,7 +264,9 @@ SSP_MD_LEAVE_BLANK_TEXT = '<!-- Please leave this section blank and enter implem
 
 SSP_ADD_IMPLEMENTATION_PREFIX = 'Add control implementation description here for '
 
-SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'statement'
+STATEMENT = 'statement'
+
+SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + STATEMENT
 
 SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT = SSP_ADD_IMPLEMENTATION_PREFIX + 'item'
 
@@ -288,38 +319,155 @@ SSP_MAIN_COMP_NAME = 'This System'
 
 TRESTLE_TAG = 'x-trestle-'
 
-SSP_FEDRAMP_TAG = 'x-trestle-fedramp-props'
+TRESTLE_PROPS_TAG = TRESTLE_TAG + 'props'
+
+NAMESPACE_NIST = 'https://csrc.nist.gov/ns/oscal'
+
+SSP_FEDRAMP_TAG = TRESTLE_TAG + 'fedramp-props'
+
+TRESTLE_GLOBAL_TAG = TRESTLE_TAG + 'global'
+
+PROFILE_TITLE = 'profile-title'
 
 NAMESPACE_FEDRAMP = 'https://fedramp.gov/ns/oscal'
+
+LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+
+STATUS_INHERITED = 'inherited'
+
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
+
+STATUS_PLANNED_COMPLETION_DATE = 'planned-completion-date'
+
+STATUS_COMPLETION_DATE = 'completion-date'
 
 CONTROL_ORIGINATION = 'control-origination'
 
 IMPLEMENTATION_STATUS = 'implementation-status'
 
+IMPLEMENTATION_STATUS_HEADER = 'Implementation Status'
+
+IMPLEMENTATION_STATUS_REMARKS_HEADER = 'Implementation Status Remarks'
+
+REMARKS = 'Remarks'
+
+STATUS_REMARKS = 'status-remarks'
+
+# Following 5 are allowed state tokens for
+# SSP -> ControlImplementation -> ImplementedRequirements -> ByComponents -> common.ImplementationStatus -> State
+# Also                         -> ImplementedRequirements -> Statements -> ByComponents ...
+# But NIST says they may also be locally defined
+STATUS_IMPLEMENTED = 'implemented'
+
+STATUS_PARTIAL = 'partial'
+
+STATUS_PARTIALLY_IMPLEMENTED = 'partially-implemented'
+
+STATUS_PLANNED = 'planned'
+
+STATUS_ALTERNATIVE = 'alternative'
+
+STATUS_NOT_APPLICABLE = 'not-applicable'
+
+# Following 4 needed by SSP -> SystemImplementation -> SystemComponent -> Status -> State1
+# and by SSP -> SystemCharacteristics -> Status1 -> State
+STATUS_OPERATIONAL = 'operational'
+
+STATUS_UNDER_DEVELOPMENT = 'under-development'
+
+STATUS_DISPOSITION = 'disposition'
+
+STATUS_OTHER = 'other'
+
+# Needed only by SystemCharacteristics
+STATUS_UNDER_MAJOR_MODIFICATION = 'under-major-modification'
+
+STATUS_ALL = [
+    STATUS_IMPLEMENTED,
+    STATUS_PARTIAL,
+    STATUS_PARTIALLY_IMPLEMENTED,
+    STATUS_PLANNED,
+    STATUS_ALTERNATIVE,
+    STATUS_NOT_APPLICABLE,
+    STATUS_OPERATIONAL,
+    STATUS_UNDER_DEVELOPMENT,
+    STATUS_DISPOSITION,
+    STATUS_OTHER,
+    STATUS_UNDER_MAJOR_MODIFICATION
+]
+
+STATUS_PROMPT = f'<!-- For implementation status enter one of: {STATUS_IMPLEMENTED}, {STATUS_PARTIAL}, {STATUS_PLANNED}, {STATUS_ALTERNATIVE}, {STATUS_NOT_APPLICABLE} -->'  # noqa E501
+
+RULES_WARNING = '<!-- Note that the list of rules under ### Rules: is read-only and changes will not be captured after assembly to JSON -->'  # noqa E501
+
 RESPONSIBLE_ROLE = 'responsible-role'
 
 RESPONSIBLE_ROLES = 'responsible-roles'
 
-INHERITED = 'inherited'
+HELP_SET_PARAMS = 'set parameters and properties based on the yaml header in control markdown'
 
-LEV_AUTH_UUID = 'leveraged-authorization-uuid'
+SET_PARAMS_TAG = TRESTLE_TAG + 'set-params'
 
-PLANNED = 'planned'
+RULES_PARAMS_TAG = TRESTLE_TAG + 'rules-params'
 
-PLANNED_COMPLETION_DATE = 'planned-completion-date'
+COMP_DEF_RULES_PARAM_VALS_TAG = TRESTLE_TAG + 'comp-def-rules-param-vals'
 
-COMPLETION_DATE = 'completion-date'
+PARAM_VALUES_TAG = TRESTLE_TAG + 'param-values'
 
-HELP_SET_PARAMS = 'set profile parameters and values based on the yaml header in control markdown'
-
-SET_PARAMS_TAG = 'x-trestle-set-params'
+COMP_DEF_RULES_TAG = TRESTLE_TAG + 'comp-def-rules'
 
 PROFILE_VALUES = 'profile-values'
 
+COMP_DEF_VALUES = 'comp-def-values'
+
 VALUES = 'values'
 
-SECTIONS_TAG = 'x-trestle-sections'
+SECTIONS_TAG = TRESTLE_TAG + 'sections'
 
 EDITABLE_CONTENT = 'Editable Content'
 
 SORT_ID = 'sort-id'
+
+TRESTLE_IMP_STATUS_TAG = 'trestle-imp-status'
+
+TRESTLE_ADD_PROPS_TAG = TRESTLE_TAG + 'add-props'
+
+TRESTLE_INHERITED_PROPS_TAG = TRESTLE_TAG + 'inherited-props'
+
+CONTROL_OBJECTIVE_HEADER = '## Control Objective'
+
+CONTROL_HEADER = '## Control'
+
+REPLACE_ME = 'REPLACE_ME'
+
+YAML_PROPS_COMMENT = """  # Add or modify control properties here
+  # Properties may be at the control or part level
+  # Add control level properties like this:
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #
+  # Add properties to a statement part like this, where "b." is the label of the target statement part
+  #   - name: ac1_new_prop
+  #     value: new property value
+  #     smt-part: b.
+  #
+"""
+
+DISPLAY_NAME = 'display-name'
+
+TRESTLE_GENERIC_NS = 'https://ibm.github.io/compliance-trestle/schemas/oscal'
+
+RESOLUTION_SOURCE = 'resolution-source'
+
+# call it tracker to distinguish from the externally visible TRESTLE_INHERITED_PROPS_TAG
+TRESTLE_INHERITED_PROPS_TRACKER = 'trestle_inherited_props_tracker'
+
+RULE_ID = 'Rule_Id'
+
+RULE_DESCRIPTION = 'Rule_Description'
+
+PARAMETER_ID = 'Parameter_Id'
+
+PARAMETER_DESCRIPTION = 'Parameter_Description'
+
+PARAMETER_VALUE_ALTERNATIVES = 'Parameter_Value_Alternatives'

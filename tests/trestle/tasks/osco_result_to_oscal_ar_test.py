@@ -179,7 +179,7 @@ def test_osco_execute(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
@@ -202,7 +202,7 @@ def test_osco_execute_checking(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_1_3_5(tmp_path, monkeypatch: MonkeyPatch):
@@ -224,7 +224,7 @@ def test_osco_execute_1_3_5(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_1_3_5_checking(tmp_path, monkeypatch: MonkeyPatch):
@@ -247,7 +247,7 @@ def test_osco_execute_1_3_5_checking(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_compressed(tmp_path, monkeypatch: MonkeyPatch):
@@ -269,7 +269,7 @@ def test_osco_execute_compressed(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_no_config(tmp_path):
@@ -305,7 +305,7 @@ def execute_no_overwrite_part1(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def execute_no_overwrite_part2(tmp_path, monkeypatch: MonkeyPatch):
@@ -375,7 +375,7 @@ def test_osco_execute_input_fetcher(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_input_xml_rhel7(tmp_path, monkeypatch: MonkeyPatch):
@@ -397,7 +397,7 @@ def test_osco_execute_input_xml_rhel7(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_input_xml_ocp4(tmp_path, monkeypatch: MonkeyPatch):
@@ -419,7 +419,7 @@ def test_osco_execute_input_xml_ocp4(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result
 
 
 def test_osco_execute_input_configmaps(tmp_path, monkeypatch: MonkeyPatch):
@@ -441,4 +441,4 @@ def test_osco_execute_input_configmaps(tmp_path, monkeypatch: MonkeyPatch):
         f_expected = d_expected / fn
         f_produced = d_produced / fn
         result = text_files_equal(f_expected, f_produced)
-        assert (result)
+        assert result

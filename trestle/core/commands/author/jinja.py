@@ -28,11 +28,13 @@ from ruamel.yaml import YAML
 
 from trestle.common import const, log
 from trestle.common.err import TrestleIncorrectArgsError, handle_generic_command_exception
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ControlIOWriter
+from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.jinja import MDCleanInclude, MDDatestamp, MDSectionInclude
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.core.ssp_io import SSPMarkdownWriter
@@ -170,12 +172,12 @@ class JinjaCmd(CommandPlusDocs):
 
         if ssp:
             # name lookup
-            ssp_data, _ = ModelUtils.load_top_level_model(trestle_root, ssp, SystemSecurityPlan)
+            ssp_data, _ = load_validate_model_name(trestle_root, ssp, SystemSecurityPlan)
             lut['ssp'] = ssp_data
-            _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
+            profile_path = ModelUtils.full_path_for_top_level_model(trestle_root, profile, Profile)
             profile_resolver = ProfileResolver()
             resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-                trestle_root, profile_path, False, False, parameters_formatting
+                trestle_root, profile_path, False, False, parameters_formatting, ParameterRep.ASSIGNMENT_FORM
             )
 
             ssp_writer = SSPMarkdownWriter(trestle_root)
@@ -183,7 +185,8 @@ class JinjaCmd(CommandPlusDocs):
             ssp_writer.set_catalog(resolved_catalog)
             lut['catalog'] = resolved_catalog
             lut['catalog_interface'] = CatalogInterface(resolved_catalog)
-            lut['control_io_writer'] = ControlIOWriter()
+            lut['control_interface'] = ControlInterface()
+            lut['control_writer'] = DocsControlWriter()
             lut['ssp_md_writer'] = ssp_writer
 
             output = JinjaCmd.render_template(template, lut, template_folder)
@@ -201,7 +204,7 @@ class JinjaCmd(CommandPlusDocs):
         trestle_root: pathlib.Path,
         r_input_file: pathlib.Path,
         r_output_file: pathlib.Path,
-        profile: Optional[str],
+        profile_name: Optional[str],
         lut: Dict[str, Any],
         parameters_formatting: Optional[str] = None
     ) -> int:
@@ -209,10 +212,10 @@ class JinjaCmd(CommandPlusDocs):
         template_folder = pathlib.Path.cwd()
 
         # Output to multiple markdown files
-        _, profile_path = ModelUtils.load_top_level_model(trestle_root, profile, Profile)
+        profile, profile_path = ModelUtils.load_top_level_model(trestle_root, profile_name, Profile)
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-            trestle_root, profile_path, False, False, parameters_formatting
+            trestle_root, profile_path, False, False, parameters_formatting, ParameterRep.ASSIGNMENT_FORM
         )
         catalog_interface = CatalogInterface(resolved_catalog)
 
@@ -227,7 +230,7 @@ class JinjaCmd(CommandPlusDocs):
                     if not group_dir.exists():
                         group_dir.mkdir(parents=True, exist_ok=True)
 
-                control_writer = ControlIOWriter()
+                control_writer = DocsControlWriter()
 
                 jinja_env = Environment(
                     loader=FileSystemLoader(template_folder),
@@ -237,13 +240,14 @@ class JinjaCmd(CommandPlusDocs):
                 )
                 template = jinja_env.get_template(str(r_input_file))
                 lut['catalog_interface'] = catalog_interface
+                lut['control_interface'] = ControlInterface()
                 lut['control_writer'] = control_writer
                 lut['control'] = control
                 lut['profile'] = profile
                 lut['group_title'] = group_title
                 output = JinjaCmd.render_template(template, lut, template_folder)
 
-                output_file = trestle_root / group_dir / pathlib.Path(control.id + '.md')
+                output_file = trestle_root / group_dir / pathlib.Path(control.id + const.MARKDOWN_FILE_EXT)
                 output_file.open('w', encoding=const.FILE_ENCODING).write(output)
 
         return CmdReturnCodes.SUCCESS.value

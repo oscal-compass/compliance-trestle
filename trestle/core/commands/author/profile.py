@@ -28,13 +28,17 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
+from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
+from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
-from trestle.core.control_io import ParameterRep
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import ParameterRep
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -149,26 +153,29 @@ class ProfileGenerate(AuthorCommonCommand):
             0 on success, 1 on error
         """
         try:
-            if sections_dict and 'statement' in sections_dict:
+            if sections_dict and const.STATEMENT in sections_dict:
                 logger.warning('statement is not allowed as a section name.')
                 return CmdReturnCodes.COMMAND_ERROR.value
             _, _, profile = ModelUtils.load_distributed(profile_path, trestle_root)
-            catalog = ProfileResolver().get_resolved_profile_catalog(
+            catalog, inherited_props = ProfileResolver().get_resolved_profile_catalog_and_inherited_props(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
+            yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
+            yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
+
             catalog_interface = CatalogInterface(catalog)
-            catalog_interface.write_catalog_as_markdown(
-                md_path=markdown_path,
-                yaml_header=yaml_header,
-                sections_dict=sections_dict,
-                prompt_responses=False,
-                additional_content=True,
-                profile=profile,
-                overwrite_header_values=overwrite_header_values,
-                set_parameters=True,
-                required_sections=required_sections,
-                allowed_sections=None
-            )
+            part_id_map = catalog_interface.get_statement_part_id_map(False)
+            context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
+            context.yaml_header = yaml_header
+            context.sections_dict = sections_dict
+            context.additional_content = True
+            context.profile = profile
+            context.overwrite_header_values = overwrite_header_values
+            context.set_parameters_flag = True
+            context.required_sections = required_sections
+            context.inherited_props = inherited_props
+            catalog_interface.write_catalog_as_markdown(context, part_id_map)
+
         except TrestleNotFoundError as e:
             raise TrestleError(f'Profile {profile_path} not found, error {e}')
         except TrestleError as e:
@@ -194,6 +201,7 @@ class ProfileAssemble(AuthorCommonCommand):
         self.add_argument('-sp', '--set-parameters', action='store_true', help=const.HELP_SET_PARAMS, required=False)
         self.add_argument('-r', '--regenerate', action='store_true', help=const.HELP_REGENERATE)
         self.add_argument('-vn', '--version', help=const.HELP_VERSION, required=False, type=str)
+        self.add_argument('-s', '--sections', help=const.HELP_SECTIONS, required=False, type=str)
         self.add_argument('-rs', '--required-sections', help=const.HELP_REQUIRED_SECTIONS, required=False, type=str)
         self.add_argument('-as', '--allowed-sections', help=const.HELP_ALLOWED_SECTIONS, required=False, type=str)
 
@@ -206,9 +214,10 @@ class ProfileAssemble(AuthorCommonCommand):
                 parent_prof_name=args.name,
                 md_name=args.markdown,
                 assem_prof_name=args.output,
-                set_parameters=args.set_parameters,
+                set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
+                sections_dict=sections_to_dict(args.sections),
                 required_sections=args.required_sections,
                 allowed_sections=args.allowed_sections
             )
@@ -236,19 +245,24 @@ class ProfileAssemble(AuthorCommonCommand):
             # now go through new alters and add them to each control in dict by control id
             for new_alter in alters:
                 alter = alter_dict.get(new_alter.control_id, None)
-                if alter:
-                    # even though we removed adds at start, we may have added one already
-                    if alter.adds:
-                        alter.adds.extend(new_alter.adds)
-                    else:
-                        alter.adds = new_alter.adds
-                    # update the dict with the new alter with its added adds
-                    alter_dict[new_alter.control_id] = alter
+                if not alter:
+                    # the control did not have alters, so add
+                    alter = prof.Alter(control_id=new_alter.control_id)
+
+                # even though we removed adds at start, we may have added one already
+                if alter.adds:
+                    alter.adds.extend(new_alter.adds)
+                else:
+                    alter.adds = new_alter.adds
+                # update the dict with the new alter with its added adds
+                alter_dict[new_alter.control_id] = alter
             # get the new list of alters from the dict and update profile
             new_alters = list(alter_dict.values())
+            # special case, if all adds were deleted remove such alters completely
+            new_alters = list(filter(lambda alt: alt.adds or alt.removes, new_alters))
             if profile.modify.alters != new_alters:
                 changed = True
-            profile.modify.alters = new_alters
+            profile.modify.alters = none_if_empty(new_alters)
         return changed
 
     @staticmethod
@@ -271,7 +285,13 @@ class ProfileAssemble(AuthorCommonCommand):
                     sub_param_dict['id'] = key
                     param = ModelUtils.dict_to_parameter(sub_param_dict)
                     new_set_params.append(
-                        prof.SetParameter(param_id=key, label=param.label, values=param.values, select=param.select)
+                        prof.SetParameter(
+                            param_id=key,
+                            label=param.label,
+                            values=param.values,
+                            select=param.select,
+                            props=param.props
+                        )
                     )
             if profile.modify.set_parameters != new_set_params:
                 changed = True
@@ -279,6 +299,8 @@ class ProfileAssemble(AuthorCommonCommand):
             profile.modify.set_parameters = sorted(
                 new_set_params, key=lambda param: (param_map[param.param_id], param.param_id)
             )
+        if profile.modify:
+            profile.modify.set_parameters = none_if_empty(profile.modify.set_parameters)
         return changed
 
     @staticmethod
@@ -287,9 +309,10 @@ class ProfileAssemble(AuthorCommonCommand):
         parent_prof_name: str,
         md_name: str,
         assem_prof_name: str,
-        set_parameters: bool,
+        set_parameters_flag: bool,
         regenerate: bool,
         version: Optional[str],
+        sections_dict: Optional[Dict[str, str]],
         required_sections: Optional[str],
         allowed_sections: Optional[List[str]]
     ) -> int:
@@ -301,9 +324,10 @@ class ProfileAssemble(AuthorCommonCommand):
             parent_prof_name: Optional name of profile used to generate the markdown (default is assem_prof_name)
             md_name: The name of the directory containing the markdown control files for the profile
             assem_prof_name: The name of the assembled profile.  It can be the same as the parent to overwrite
-            set_parameters: Use the parameters in the yaml header to specify values for setparameters in the profile
+            set_parameters_flag: Use the params and props in yaml header to add or alter setparameters in the profile
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
+            sections_dict: Optional map of short name to long name for sections
             required_sections: Optional List of required sections in assembled profile, as comma-separated short names
             allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
 
@@ -325,8 +349,16 @@ class ProfileAssemble(AuthorCommonCommand):
         if not parent_prof_name:
             parent_prof_name = assem_prof_name
 
-        parent_prof, parent_prof_path = ModelUtils.load_top_level_model(trestle_root, parent_prof_name, prof.Profile)
+        parent_prof_path = ModelUtils.full_path_for_top_level_model(trestle_root, parent_prof_name, prof.Profile)
+        if parent_prof_path is None:
+            raise TrestleError(f'Profile {parent_prof_name} does not exist.  An existing profile must be provided.')
+
+        parent_prof, parent_prof_path = load_validate_model_name(trestle_root, parent_prof_name, prof.Profile)
         new_content_type = FileContentType.path_to_content_type(parent_prof_path)
+
+        catalog = ProfileResolver.get_resolved_profile_catalog(trestle_root, parent_prof_path)
+        catalog_interface = CatalogInterface(catalog)
+        label_map = catalog_interface.get_statement_part_id_map(True)
 
         required_sections_list = required_sections.split(',') if required_sections else []
 
@@ -334,19 +366,27 @@ class ProfileAssemble(AuthorCommonCommand):
         # then overwrite the Adds in the existing profile with the new ones
         # keep track if any changes were made
         md_dir = trestle_root / md_name
-        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(md_dir, required_sections_list)
-        if allowed_sections:
-            for alter in found_alters:
-                for add in alter.adds:
-                    for part in add.parts:
-                        if part.name not in allowed_sections:
-                            raise TrestleError(f'Profile has alter with name {part.name} not in allowed sections.')
+        found_alters, param_dict, param_map = CatalogInterface.read_additional_content(
+            md_dir,
+            required_sections_list,
+            label_map,
+            sections_dict,
+            False
+        )
+        # technically if allowed sections is [] it means no sections are allowed
+        if allowed_sections is not None:
+            for bad_part in [part for alter in found_alters for add in as_list(alter.adds)
+                             for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)]:
+                raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
+
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)
-        if set_parameters:
+        if set_parameters_flag:
             ProfileAssemble._replace_modify_set_params(parent_prof, param_dict, param_map)
 
         if version:
             parent_prof.metadata.version = com.Version(__root__=version)
+
+        parent_prof.metadata.oscal_version = OSCAL_VERSION
 
         assem_prof_path = ModelUtils.path_for_top_level_model(
             trestle_root, assem_prof_name, prof.Profile, new_content_type
@@ -368,4 +408,77 @@ class ProfileAssemble(AuthorCommonCommand):
 
         assem_prof_path.parent.mkdir(parents=True, exist_ok=True)
         parent_prof.oscal_write(assem_prof_path)
+        return CmdReturnCodes.SUCCESS.value
+
+
+class ProfileResolve(AuthorCommonCommand):
+    """Resolve profile to resolved profile catalog."""
+
+    name = 'profile-resolve'
+
+    def _init_arguments(self) -> None:
+        name_help_str = 'Name of the source profile model in the trestle workspace'
+        self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
+        self.add_argument('-o', '--output', help='Name of the output resolved profile catalog', required=True, type=str)
+        self.add_argument(
+            '-sv',
+            '--show-values',
+            help='Show values for parameters in prose',
+            required=False,
+            action='store_true',
+            default=False
+        )
+        self.add_argument(
+            '-bf',
+            '--bracket-format',
+            help='With -sv, allows brackets around value, e.g. [.] or ((.)), with the dot representing the value.',
+            required=False,
+            type=str,
+            default=''
+        )
+
+    def _run(self, args: argparse.Namespace) -> int:
+        try:
+            log.set_log_level_from_args(args)
+            trestle_root: pathlib.Path = args.trestle_root
+            profile_path = trestle_root / f'profiles/{args.name}/profile.json'
+            catalog_name = args.output
+            show_values = args.show_values
+            param_format = args.bracket_format
+
+            return self.resolve_profile(trestle_root, profile_path, catalog_name, show_values, param_format)
+
+        except Exception as e:  # pragma: no cover
+            return handle_generic_command_exception(e, logger, 'Generation of the resolved profile catalog failed')
+
+    def resolve_profile(
+        self,
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
+        catalog_name: str,
+        show_values: bool,
+        bracket_format: str
+    ) -> int:
+        """Create resolved profile catalog from given profile.
+
+        Args:
+            trestle_root: Root directory of the trestle workspace
+            profile_path: Path of the profile json file
+            catalog_name: Name of the resolved profile catalog
+            show_values: If true, show values of parameters in prose rather than original {{}} form
+            bracket_format: String representing brackets around value, e.g. [.] or ((.))
+
+        Returns:
+            0 on success and raises exception on error
+        """
+        if not profile_path.exists():
+            raise TrestleNotFoundError(f'Cannot resolve profile catalog: profile {profile_path} does not exist.')
+        param_rep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES if show_values else ParameterRep.LEAVE_MOUSTACHE
+
+        bracket_format = none_if_empty(bracket_format)
+        catalog = ProfileResolver().get_resolved_profile_catalog(
+            trestle_root, profile_path, False, False, bracket_format, param_rep
+        )
+        ModelUtils.save_top_level_model(catalog, trestle_root, catalog_name, FileContentType.JSON)
+
         return CmdReturnCodes.SUCCESS.value

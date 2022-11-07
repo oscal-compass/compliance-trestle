@@ -23,7 +23,7 @@ from typing import List, Optional, Tuple
 from pkg_resources import resource_filename
 
 from trestle.common import file_utils
-from trestle.common.const import TEMPLATE_VERSION_REGEX
+from trestle.common.const import DRAWIO_FILE_EXT, MARKDOWN_FILE_EXT, TEMPLATE_VERSION_REGEX
 from trestle.common.err import TrestleError
 from trestle.core.commands.author.consts import START_TEMPLATE_VERSION, TEMPLATE_VERSION_HEADER, TRESTLE_RESOURCES
 from trestle.core.draw_io import DrawIO
@@ -86,6 +86,9 @@ class TemplateVersioning:
 
             if len(all_files_wo_version) == 0:
                 logger.debug('No templates outside of the version folders.')
+                # if the base template folder is empty, delete it
+                if len(list(new_dir.iterdir())) == 0:
+                    new_dir.rmdir()
 
             for f in all_files_wo_version + all_non_template_directories:
                 if f.is_file():
@@ -183,13 +186,13 @@ class TemplateVersioning:
                 _, version = TemplateVersioning.get_latest_version_for_task(task_path)
 
             # modify header/metadata in the template
-            if generic_template.suffix == '.md':
+            if generic_template.suffix == MARKDOWN_FILE_EXT:
                 md_api = MarkdownAPI()
                 header, md_body = md_api.processor.read_markdown_wo_processing(generic_template)
                 header[TEMPLATE_VERSION_HEADER] = version
                 md_api.write_markdown_with_header(target_file, header, md_body)
                 logger.debug(f'Successfully written template markdown to {target_file}')
-            elif generic_template.suffix == '.drawio':
+            elif generic_template.suffix == DRAWIO_FILE_EXT:
                 drawio = DrawIO(generic_template)
                 metadata = drawio.get_metadata()[0]
                 metadata[TEMPLATE_VERSION_HEADER] = version

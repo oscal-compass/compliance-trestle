@@ -31,16 +31,30 @@
       "set_parameters": [
         {
           "param_id": "ac-1_prm_1",
+          "props": [
+            {
+              "name": "display-name",
+              "ns": "https://ibm.github.io/compliance-trestle/schemas/oscal",
+              "value": "Pretty ac-1 prm 1"
+            }
+          ],
           "label": "label from profile",
           "values": [
             "all personnel"
           ]
         },
-        {  "param_id": "ac-1_prm_2",
-            "values": [
-              "Organization-level",
-              "System-level"
-            ]
+        {
+          "param_id": "ac-1_prm_2",
+          "props": [
+            {
+              "name": "display-name",
+              "value": "Pretty ac-1 prm 2"
+            }
+          ],
+          "values": [
+                "Organization-level",
+                "System-level"
+          ]
         },
         {  "param_id": "ac-1_prm_3",
             "values": [
@@ -118,13 +132,27 @@
               "parts": [
                 {
                   "id": "ac-1_implgdn",
-                  "name": "ImplGuidance",
+                  "name": "implgdn",
                   "prose": "Do it carefully."
                 },
                 {
                   "id": "ac-1_expevid",
-                  "name": "ExpectedEvidence",
+                  "name": "expevid",
                   "prose": "Detailed logs."
+                }
+              ]
+            },
+            {
+              "position": "ending",
+              "props": [
+                {
+                  "name": "prop_with_ns",
+                  "value": "prop with ns",
+                  "ns": "https://my_namespace"
+                },
+                {
+                  "name": "prop_with_no_ns",
+                  "value": "prop with no ns"
                 }
               ]
             }
@@ -139,12 +167,12 @@
               "parts": [
                 {
                   "id": "ac-2_implgdn",
-                  "name": "ImplGuidance",
+                  "name": "implgdn",
                   "prose": "Maintain compliance"
                 },
                 {
                   "id": "ac-2_expevid",
-                  "name": "ExpectedEvidence",
+                  "name": "expevid",
                   "prose": "Daily logs."
                 }
               ]

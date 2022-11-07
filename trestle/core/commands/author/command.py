@@ -21,11 +21,12 @@ Umbrella command for all markdown related transformations
 import logging
 
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate
+from trestle.core.commands.author.component import ComponentAssemble, ComponentGenerate
 from trestle.core.commands.author.docs import Docs
 from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
 from trestle.core.commands.author.jinja import JinjaCmd
-from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate
+from trestle.core.commands.author.profile import ProfileAssemble, ProfileGenerate, ProfileResolve
 from trestle.core.commands.author.ssp import SSPAssemble, SSPFilter, SSPGenerate
 from trestle.core.commands.command_docs import CommandPlusDocs
 
@@ -40,12 +41,15 @@ class AuthorCmd(CommandPlusDocs):
     subcommands = [
         CatalogAssemble,
         CatalogGenerate,
+        ComponentAssemble,
+        ComponentGenerate,
         Docs,
         Folders,
         Headers,
         JinjaCmd,
         ProfileAssemble,
         ProfileGenerate,
+        ProfileResolve,
         SSPAssemble,
         SSPFilter,
         SSPGenerate

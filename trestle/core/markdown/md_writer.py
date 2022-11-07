@@ -20,7 +20,9 @@ from typing import Any, List
 from ruamel.yaml import YAML
 
 import trestle.common.const as const
+from trestle.common import file_utils
 from trestle.common.err import TrestleError
+from trestle.core.markdown.markdown_api import MarkdownAPI
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +49,10 @@ class MDWriter():
 
     def _add_indent_level(self, delta: int) -> None:
         self._indent_level += delta
+
+    def exists(self) -> bool:
+        """Check if the file already exists."""
+        return self._file_path.exists()
 
     def add_yaml_header(self, header: dict) -> None:
         """Add the yaml header."""
@@ -83,12 +89,13 @@ class MDWriter():
         """Start a new paragraph."""
         self.new_line('')
 
-    def new_header(self, level: int, title: str) -> None:
+    def new_header(self, level: int, title: str, add_new_line_after_header: bool = True) -> None:
         """Add new header."""
-        # headers must be separated by blank lines
+        # headers might be separated by blank lines
         self.new_paragraph()
         self.new_line('#' * level + ' ' + title)
-        self.new_paragraph()
+        if add_new_line_after_header:
+            self.new_paragraph()
 
     def new_hr(self) -> None:
         """Add horizontal rule."""
@@ -144,6 +151,12 @@ class MDWriter():
                     f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))
+                # if last line has text it will need an extra \n at end
+                if self._lines and self._lines[-1]:
+                    f.write('\n')
+            # inserting a comment into the header happens after header is written out
+            # the comment is only added if the add_props tag is found
+            file_utils.insert_text_in_file(self._file_path, const.TRESTLE_ADD_PROPS_TAG, const.YAML_PROPS_COMMENT)
         except IOError as e:
             logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
             raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')
@@ -155,3 +168,21 @@ class MDWriter():
     def get_text(self) -> str:
         """Get the text as currently written."""
         return '\n'.join(self._lines)
+
+    def cull_headings(self, md_in: pathlib.Path, cull_list: List[str], strict_match: bool = False) -> None:
+        """
+        Cull headers from the lines of input markdown file with optional strict string match.
+
+        Args:
+            md_in: the path of the markdown file being edited
+            cull_list: the list of strings in headers that are to be culled
+            strict_match: whether to require an exact string match on header key or just a substring
+
+        Returns None and creates new markdown at the path specified during MDWriter construction
+        It is allowed to overwrite the original file
+        """
+        markdown_api = MarkdownAPI()
+        header, content = markdown_api.processor.process_markdown(md_in)
+        self._yaml_header = header
+        self._lines = content.delete_nodes_text(cull_list, strict_match)
+        self.write_out()

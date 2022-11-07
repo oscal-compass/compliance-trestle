@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for control_io module."""
+"""Tests for control input output methods."""
 
 import pathlib
 import shutil
@@ -24,13 +24,18 @@ import tests.test_utils as test_utils
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.component as comp
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const
 from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOReader, ControlIOWriter, ParameterRep
+from trestle.core.control_context import ContextPurpose, ControlContext
+from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.control_reader import ControlReader
+from trestle.core.control_writer import ControlWriter
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownProcessor
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
@@ -111,7 +116,7 @@ def test_read_write_controls(
     """Test read and write of controls via markdown."""
     dummy_title = 'dummy title'
     control = cat.Control(id='ac-1', title=dummy_title, props=[common.Property(name=const.SORT_ID, value='ac-01')])
-    statement_part = common.Part(id='ac-1_smt', name='statement')
+    statement_part = common.Part(id='ac-1_smt', name=const.STATEMENT)
     prop = common.Property(name='label', value='a')
     part_a = common.Part(id='ac-1_smt.a', name='item', prose='a prose', props=[prop])
     prop.value = 'b'
@@ -167,13 +172,12 @@ end of text
     if sections:
         control.parts.extend([sec_1, sec_2])
 
-    writer = ControlIOWriter()
-    writer.write_control_for_editing(
-        tmp_path, control, 'My Group Title', None, None, additional_content, False, None, False, None, None
-    )
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    writer = ControlWriter()
+    writer.write_control_for_editing(context, control, tmp_path, 'My Group Title', {}, [])
 
     md_path = tmp_path / f'{control.id}.md'
-    reader = ControlIOReader()
+    reader = ControlReader()
     new_control, group_title = reader.read_control(md_path, False)
     new_control.title = dummy_title
     assert group_title == 'My Group Title'
@@ -190,15 +194,14 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
     with open(md_path, 'w') as f:
         f.write(control_text)
     # read it in as markdown to an OSCAL control in memory
-    control, group_title = ControlIOReader.read_control(md_path, True)
+    control, group_title = ControlReader.read_control(md_path, True)
     assert group_title == 'My Group Title'
     sub_dir = tmp_path / 'sub_dir'
     sub_dir.mkdir(exist_ok=True)
     # write it out as markdown in a separate directory to avoid name clash
-    control_writer = ControlIOWriter()
-    control_writer.write_control_for_editing(
-        sub_dir, control, 'My Group Title', None, None, False, False, None, False, None, None
-    )
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, sub_dir)
+    control_writer = ControlWriter()
+    control_writer.write_control_for_editing(context, control, sub_dir, group_title, {}, [])
     # confirm the newly written markdown text is identical to what was read originally
     assert test_utils.text_files_equal(md_path, sub_dir / 'xy-9.md')
 
@@ -206,12 +209,12 @@ def test_control_objective(tmp_path: pathlib.Path) -> None:
 def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
     """Test reading a control that doesn't have a part label in statement."""
     md_file = testdata_dir / 'author/controls/control_no_labels.md'
-    control, group_title = ControlIOReader.read_control(md_file, True)
+    control, group_title = ControlReader.read_control(md_file, True)
     assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'c'
     assert control.parts[0].parts[2].parts[0].props[0].value == '1'
     md_file = testdata_dir / 'author/controls/control_some_labels.md'
-    control, group_title = ControlIOReader.read_control(md_file, True)
+    control, group_title = ControlReader.read_control(md_file, True)
     assert group_title == 'My Group Title'
     assert control.parts[0].parts[2].props[0].value == 'aa'
     assert control.parts[0].parts[2].parts[1].props[0].value == 'abc13'
@@ -224,7 +227,7 @@ def test_read_control_no_label(testdata_dir: pathlib.Path) -> None:
 )
 def test_bump_label(prev_label, bumped_label) -> None:
     """Test bumping of label strings."""
-    assert ControlIOReader._bump_label(prev_label) == bumped_label
+    assert ControlReader._bump_label(prev_label) == bumped_label
 
 
 @pytest.mark.parametrize(
@@ -238,23 +241,23 @@ def test_bump_label(prev_label, bumped_label) -> None:
 )
 def test_create_next_label(prev_label, next_label, indent) -> None:
     """Test bumping of label strings."""
-    assert ControlIOReader._create_next_label(prev_label, indent) == next_label
+    assert ControlReader._create_next_label(prev_label, indent) == next_label
 
 
 def test_control_failures(tmp_path: pathlib.Path) -> None:
     """Test various failure modes."""
     part = common.Part(name='foo')
-    assert ControlIOWriter.get_label(part) == ''
+    assert ControlInterface.get_label(part) == ''
 
-    assert ControlIOReader._strip_to_make_ncname('1a@foo') == 'afoo'
+    assert ControlInterface.strip_to_make_ncname('1a@foo') == 'afoo'
     with pytest.raises(TrestleError):
-        ControlIOReader._strip_to_make_ncname('1@')
-
-    with pytest.raises(TrestleError):
-        ControlIOReader._indent('')
+        ControlInterface.strip_to_make_ncname('1@')
 
     with pytest.raises(TrestleError):
-        ControlIOReader._indent('  foo')
+        ControlReader._indent('')
+
+    with pytest.raises(TrestleError):
+        ControlReader._indent('  foo')
 
 
 def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
@@ -262,15 +265,17 @@ def test_bad_unicode_in_file(tmp_path: pathlib.Path) -> None:
     bad_file = tmp_path / 'bad_unicode.md'
     with open(bad_file, 'wb') as f:
         f.write(b'\x81')
+    md_api = MarkdownAPI()
     with pytest.raises(TrestleError):
-        ControlIOReader._load_control_lines_and_header(bad_file)
+        _, _ = md_api.processor.process_markdown(bad_file)
 
 
 def test_broken_yaml_header(testdata_dir: pathlib.Path) -> None:
     """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
+    md_api = MarkdownAPI()
     with pytest.raises(TrestleError):
-        ControlIOReader._load_control_lines_and_header(bad_file)
+        _, _ = md_api.processor.process_markdown(bad_file)
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
@@ -278,7 +283,7 @@ def test_merge_dicts_deep(overwrite_header_values) -> None:
     """Test deep merge of dicts."""
     dest = {'trestle': {'foo': {'hello': 1}}, 'fedramp': {'roles': [5, 6], 'values': 8}, 'orig': 11}
     src = {'trestle': {'foo': {'hello': 3}, 'bar': 4}, 'fedramp': {'roles': 7, 'values': 10}, 'extra': 12}
-    ControlIOWriter.merge_dicts_deep(dest, src, overwrite_header_values)
+    ControlInterface.merge_dicts_deep(dest, src, overwrite_header_values)
     if not overwrite_header_values:
         assert dest['trestle'] == {'foo': {'hello': 1}, 'bar': 4}
         assert dest['fedramp'] == {'roles': [5, 6], 'values': 8}
@@ -295,24 +300,26 @@ def test_merge_dicts_deep_empty() -> None:
     """Test that empty items are left alone."""
     dest = {'foo': ''}
     src = {'foo': 'fancy value'}
-    ControlIOWriter.merge_dicts_deep(dest, src, False)
+    ControlInterface.merge_dicts_deep(dest, src, False)
     assert dest['foo'] == ''
     dest['foo'] = None
-    ControlIOWriter.merge_dicts_deep(dest, src, False)
+    ControlInterface.merge_dicts_deep(dest, src, False)
     assert dest['foo'] is None
-    ControlIOWriter.merge_dicts_deep(dest, src, True)
+    ControlInterface.merge_dicts_deep(dest, src, True)
     assert dest['foo'] == 'fancy value'
 
 
-def test_control_with_components() -> None:
+def test_control_with_components(tmp_path: pathlib.Path) -> None:
     """Test loading and parsing of implementated reqs with components."""
     control_path = pathlib.Path('tests/data/author/controls/control_with_components.md').resolve()
-    comp_prose_dict, _ = ControlIOReader.read_all_implementation_prose_and_header(control_path)
+    control, _ = ControlReader.read_control(control_path, False)
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    comp_prose_dict, _ = ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
     assert len(comp_prose_dict.keys()) == 3
-    assert len(comp_prose_dict['This System'].keys()) == 3
+    assert len(comp_prose_dict['This System'].keys()) == 4
     assert len(comp_prose_dict['Trestle Component'].keys()) == 1
     assert len(comp_prose_dict['Fancy Thing'].keys()) == 2
-    assert comp_prose_dict['Fancy Thing']['a.'] == ['Text for fancy thing component']
+    assert comp_prose_dict['Fancy Thing']['a.'].prose == 'Text for fancy thing component'
 
     # need to build the needed components so they can be referenced by the imp_req
     comp_dict = {}
@@ -322,18 +329,22 @@ def test_control_with_components() -> None:
         comp_dict[comp_name] = comp
 
     # confirm that the header content was inserted into the props of the imp_req
-    sort_id, imp_req = ControlIOReader.read_implemented_requirement(control_path, comp_dict)
+    sort_id, imp_req = ControlReader.read_implemented_requirement(control_path, comp_dict, context)
     assert len(imp_req.props) == 12
-    assert len(imp_req.statements) == 3
-    assert len(imp_req.statements[0].by_components) == 3
+    assert len(imp_req.statements) == 4
+    assert len(imp_req.statements[1].by_components) == 3
 
 
-@pytest.mark.parametrize('md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md'])
-def test_control_bad_components(md_file: str) -> None:
+@pytest.mark.parametrize(
+    'md_file', ['control_with_bad_system_comp.md', 'control_with_double_comp.md', 'control_with_bad_component.md']
+)
+def test_control_bad_components(md_file: str, tmp_path: pathlib.Path) -> None:
     """Test loading of imp reqs for control with bad components."""
     control_path = pathlib.Path('tests/data/author/controls/') / md_file
+    control, _ = ControlReader.read_control(control_path, False)
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
     with pytest.raises(TrestleError):
-        ControlIOReader.read_all_implementation_prose_and_header(control_path)
+        ControlReader.read_all_implementation_prose_and_header(control, control_path, context)
 
 
 def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
@@ -345,26 +356,26 @@ def test_get_control_param_dict(tmp_trestle_dir: pathlib.Path) -> None:
     catalog = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     catalog_interface = CatalogInterface(catalog)
     control = catalog_interface.get_control('ac-1')
-    param_dict = ControlIOReader.get_control_param_dict(control, False)
+    param_dict = ControlInterface.get_control_param_dict(control, False)
     # confirm profile value is used
-    assert ControlIOReader.param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
+    assert ControlInterface._param_values_as_str(param_dict['ac-1_prm_1']) == 'all alert personnel'
     # confirm original param label is used since no value was assigned
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_7'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'organization-defined events'
     param = control.params[0]
     param.values = None
     param.select = common.ParameterSelection(how_many=common.HowMany.one_or_more, choice=['choice 1', 'choice 2'])
-    param_dict = ControlIOReader.get_control_param_dict(control, False)
-    assert ControlIOReader.param_to_str(
+    param_dict = ControlInterface.get_control_param_dict(control, False)
+    assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES
     ) == 'choice 1; choice 2'
-    assert ControlIOReader.param_to_str(
+    assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True
-    ) == 'Choose one or more: choice 1; choice 2'
-    assert ControlIOReader.param_to_str(
+    ) == 'Selection (one or more): choice 1; choice 2'
+    assert ControlInterface.param_to_str(
         param_dict['ac-1_prm_1'], ParameterRep.VALUE_OR_LABEL_OR_CHOICES, True, True
-    ) == 'Choose one or more: [choice 1; choice 2]'
+    ) == 'Selection (one or more): [choice 1; choice 2]'
 
 
 @pytest.mark.parametrize('overwrite_header_values', [True, False])
@@ -393,13 +404,13 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
     # header_1 should have one param: 3
     header_1, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_1.keys()) == 8
-    orig_control_read, group_title = ControlIOReader.read_control(control_path, True)
+    orig_control_read, group_title = ControlReader.read_control(control_path, True)
     assert group_title == 'Access Control'
-    control_writer = ControlIOWriter()
-    # write the control back out with the test header
-    control_writer.write_control_for_editing(
-        tmp_path, orig_control_read, group_title, header, None, False, False, None, overwrite_header_values, None, None
-    )
+    context = ControlContext.generate(ContextPurpose.CATALOG, True, tmp_path, tmp_path)
+    context.yaml_header = header
+    context.overwrite_header_values = overwrite_header_values
+    control_writer = ControlWriter()
+    control_writer.write_control_for_editing(context, orig_control_read, tmp_path, group_title, {}, [])
     # header_2 should have 2 params: 3 and 4
     header_2, _ = markdown_processor.read_markdown_wo_processing(control_path)
     assert len(header_2.keys()) == 9
@@ -417,7 +428,7 @@ def test_write_control_header_params(overwrite_header_values, tmp_path: pathlib.
         assert header_2['special'] == 'new value to ignore'
         assert header_2['none-thing'] == 'none value to ignore'
         assert 'orig' in orig_control_read.params[0].values[0].__root__
-    new_control_read, _ = ControlIOReader.read_control(control_path, True)
+    new_control_read, _ = ControlReader.read_control(control_path, True)
     # insert the new param in the orig control so we can compare the two controls
     orig_control_read.params.append(new_control_read.params[1])
     if overwrite_header_values:
@@ -453,16 +464,16 @@ statement_text = """
 
 def test_read_control_statement():
     """Test read control statement."""
-    _, part = ControlIOReader._read_control_statement(0, statement_text.split('\n'), 'xy-9')
+    _, part = ControlReader._read_control_statement(0, statement_text.split('\n'), 'xy-9')
     assert part.prose == 'The org:'
 
 
 def test_read_control_objective():
     """Test read control objective."""
-    _, part = ControlIOReader._read_control_objective(13, statement_text.split('\n'), 'xy-9')
+    _, part = ControlReader._read_control_objective(13, statement_text.split('\n'), 'xy-9')
     assert part.prose == 'Confirm the org:'
 
-    _, part = ControlIOReader._read_control_objective(16, statement_text.split('\n'), 'xy-9')
+    _, part = ControlReader._read_control_objective(16, statement_text.split('\n'), 'xy-9')
     assert part is None
 
 
@@ -475,7 +486,7 @@ foo
 
 def test_read_sections():
     """Test read control sections."""
-    _, parts = ControlIOReader._read_sections(0, section_text.split('\n'), 'xy-9', [])
+    _, parts = ControlReader._read_sections(0, section_text.split('\n'), 'xy-9', [])
     assert parts is None
 
 
@@ -487,23 +498,52 @@ indent_text = """
 
 def test_indent_label():
     """Test indent and label routines."""
-    _, b, _ = ControlIOReader._get_next_indent(0, indent_text.split('\n'))
+    _, b, _ = ControlReader._get_next_indent(0, indent_text.split('\n'))
     assert b == 4
 
     with pytest.raises(TrestleError):
-        ControlIOReader._get_next_indent(0, ['    -'])
+        ControlReader._get_next_indent(0, ['    -'])
 
-    assert ControlIOReader._create_next_label('foo-', 0) == 'foo-a'
-    assert ControlIOReader._create_next_label('foo-a', 0) == 'foo-b'
+    assert ControlReader._create_next_label('foo-', 0) == 'foo-a'
+    assert ControlReader._create_next_label('foo-a', 0) == 'foo-b'
 
 
 def test_parse_control_title_failures():
     """Test parse control title failures."""
     with pytest.raises(TrestleError):
-        ControlIOReader._parse_control_title_line('')
+        ControlReader._parse_control_title_line('')
 
     with pytest.raises(TrestleError):
-        ControlIOReader._parse_control_title_line('foo - bar')
+        ControlReader._parse_control_title_line('foo - bar')
 
     with pytest.raises(TrestleError):
-        ControlIOReader._parse_control_title_line('foo-1 and - bar')
+        ControlReader._parse_control_title_line('foo-1 and - bar')
+
+
+def test_bad_header():
+    """Test bad header checks."""
+    assert ControlInterface.bad_header('')
+    assert ControlInterface.bad_header('#')
+    assert ControlInterface.bad_header('##')
+    assert ControlInterface.bad_header('#x')
+    assert ControlInterface.bad_header('x# ')
+    assert not ControlInterface.bad_header('# ')
+    assert not ControlInterface.bad_header('#### ')
+    assert not ControlInterface.bad_header('#### foo')
+
+
+def test_get_component_by_name(sample_nist_component_def: comp.ComponentDefinition) -> None:
+    """Test get component by name."""
+    assert ControlInterface.get_component_by_name(sample_nist_component_def, 'test component 1')
+    assert ControlInterface.get_component_by_name(sample_nist_component_def, 'foobar') is None
+
+
+def test_delete_prop(sample_component_definition: comp.ComponentDefinition) -> None:
+    """Teste delete prop."""
+    component = sample_component_definition.components[1]
+    assert len(component.props) == 2
+    ControlInterface._delete_prop(component, 'prop_2')
+    assert len(component.props) == 1
+    assert component.props[0].name == 'prop_1'
+    ControlInterface._delete_prop(component, 'prop_1')
+    assert component.props is None

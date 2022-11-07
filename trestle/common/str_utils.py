@@ -16,6 +16,7 @@
 """Trestle String Utils."""
 import enum
 import string
+from typing import Any, Optional
 
 
 class AliasMode(enum.Enum):
@@ -62,8 +63,14 @@ def _snake_to_upper_camel(snake: str) -> str:
 
 def spaces_and_caps_to_snake(spaced_str: str) -> str:
     """Convert caps and spaces to snake."""
-    underscored = spaced_str.strip().replace(' ', '_')
+    underscored = '_'.join(spaced_str.strip().split())
     return underscored.lower()
+
+
+def spaces_and_caps_to_lower_single_spaces(spaced_str: str) -> str:
+    """Convert caps and duplicate spaces to lower with single spaces."""
+    single_space = ' '.join(spaced_str.strip().split())
+    return single_space.lower()
 
 
 def classname_to_alias(classname: str, mode: AliasMode) -> str:
@@ -109,3 +116,24 @@ def underscore_to_dash(name: str) -> str:
     """Convert underscore to dash and drop final dash if present."""
     converted = name.replace('_', '-')
     return converted if converted[-1] != '-' else converted[:-1]
+
+
+def as_string(string_or_none: Optional[str]) -> str:
+    """Convert string or None to itself or empty string."""
+    return string_or_none if string_or_none else ''
+
+
+def string_from_root(item_with_root: Optional[Any]) -> str:
+    """Convert root to string if present."""
+    return as_string(item_with_root.__root__) if item_with_root else ''
+
+
+def strip_lower_equals(str_a: Optional[str], str_b: Optional[str]) -> bool:
+    """
+    Safe test of lower string equality allowing Nones.
+
+    If either argument is None the result is False because the intent is to report if they are equal as actual strings.
+    """
+    if str_a is None or str_b is None:
+        return False
+    return str_a.strip().lower() == str_b.strip().lower()

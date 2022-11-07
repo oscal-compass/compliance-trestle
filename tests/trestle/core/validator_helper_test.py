@@ -39,7 +39,7 @@ def test_regenerate_uuids_ssp() -> None:
 def test_regenerate_uuids_catalog() -> None:
     """Test regeneration of uuids with updated refs in catalog."""
     orig_cat = catalog.Catalog.oscal_read(catalog_path)
-    new_cat, uuid_lut, n_refs_updated = ModelUtils.regenerate_uuids(orig_cat)
+    _, uuid_lut, n_refs_updated = ModelUtils.regenerate_uuids(orig_cat)
     assert len(uuid_lut.items()) == 2
     assert n_refs_updated == 2
 

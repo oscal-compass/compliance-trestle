@@ -27,10 +27,9 @@ nav:
   - Task - ocp4-cis-profile-to-oscal-catalog: tutorials/task.ocp4-cis-profile-to-oscal-catalog/transformation.md
   - Task - ocp4-cis-profile-to-oscal-cd: tutorials/task.ocp4-cis-profile-to-oscal-cd/transformation.md
   - Task - tanium-result-to-oscal-ar: tutorials/task.tanium-result-to-oscal-ar/transformation.md
-  - Work with authoring versions: tutorials/work_with_authoring_versions.md
 - Trestle command-line interface (CLI):
   - CLI for OSCAL documents: cli.md
-  - CLI for authoring governed content: trestle_author.md
+  - Trestle CLI for Governance of Authored Documents: trestle_author.md
   - CLI for jinja template processing: trestle_author_jinja.md
 - Contributing:
   - Code of Conduct: mkdocs_code_of_conduct.md
@@ -56,6 +55,7 @@ nav:
       - err: api_reference/trestle.common.err.md
       - file_utils: api_reference/trestle.common.file_utils.md
       - list_utils: api_reference/trestle.common.list_utils.md
+      - load_validate: api_reference/trestle.common.load_validate.md
       - log: api_reference/trestle.common.log.md
       - model_utils: api_reference/trestle.common.model_utils.md
       - str_utils: api_reference/trestle.common.str_utils.md
@@ -73,6 +73,7 @@ nav:
           - catalog: api_reference/trestle.core.commands.author.catalog.md
           - command: api_reference/trestle.core.commands.author.command.md
           - common: api_reference/trestle.core.commands.author.common.md
+          - component: api_reference/trestle.core.commands.author.component.md
           - consts: api_reference/trestle.core.commands.author.consts.md
           - docs: api_reference/trestle.core.commands.author.docs.md
           - folders: api_reference/trestle.core.commands.author.folders.md
@@ -99,10 +100,15 @@ nav:
         - task: api_reference/trestle.core.commands.task.md
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
-      - control_io: api_reference/trestle.core.control_io.md
+      - control_context: api_reference/trestle.core.control_context.md
+      - control_interface: api_reference/trestle.core.control_interface.md
+      - control_reader: api_reference/trestle.core.control_reader.md
+      - control_writer: api_reference/trestle.core.control_writer.md
+      - docs_control_writer: api_reference/trestle.core.docs_control_writer.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
+      - generic_oscal: api_reference/trestle.core.generic_oscal.md
       - jinja: api_reference/trestle.core.jinja.md
       - links_validator: api_reference/trestle.core.links_validator.md
       - markdown:
@@ -145,6 +151,8 @@ nav:
       - ssp: api_reference/trestle.oscal.ssp.md
     - tasks:
       - base_task: api_reference/trestle.tasks.base_task.md
+      - csv_helper: api_reference/trestle.tasks.csv_helper.md
+      - csv_to_oscal_cd: api_reference/trestle.tasks.csv_to_oscal_cd.md
       - ocp4_cis_profile_to_oscal_catalog: api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_catalog.md
       - ocp4_cis_profile_to_oscal_cd: api_reference/trestle.tasks.ocp4_cis_profile_to_oscal_cd.md
       - oscal_profile_to_osco_profile: api_reference/trestle.tasks.oscal_profile_to_osco_profile.md
@@ -167,12 +175,11 @@ plugins:
 - mkdocstrings:
     handlers:
       python:
-        rendering:
+        options:
           group_by_category: true
           show_category_heading: true
           show_if_no_docstring: true
           show_root_heading: true
-        selection:
           filters:
           - '!^_[^_]'
           - '!^__json'

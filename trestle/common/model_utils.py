@@ -27,10 +27,11 @@ from pydantic import BaseModel, create_model
 
 import trestle.common
 import trestle.common.common_types
-from trestle.common import const, err, str_utils, type_utils as utils
-from trestle.common.common_types import TopLevelOscalModel
+from trestle.common import const, err, list_utils, str_utils, type_utils as utils
+from trestle.common.common_types import TG, TopLevelOscalModel
 from trestle.common.err import TrestleError, TrestleNotFoundError
 from trestle.common.file_utils import extract_trestle_project_root, iterdir_without_hidden_files
+from trestle.common.list_utils import as_filtered_list, none_if_empty
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
@@ -65,6 +66,10 @@ class ModelUtils:
             Model Alias (e.g. 'catalog.metadata') and Instance of the Model.
             If the model is decomposed/split/distributed, the instance of the model contains
             the decomposed models loaded recursively.
+
+        Note:
+            This does not validate the model.  You must either validate the model separately or use the load_validate
+            utilities.
         """
         # if trying to load file that does not exist, load path instead
         if not abs_path.exists():
@@ -155,13 +160,15 @@ class ModelUtils:
     def load_top_level_model(
         trestle_root: pathlib.Path,
         model_name: str,
-        model_class: Type[TopLevelOscalModel],
+        model_class: TG,
         file_content_type: Optional[FileContentType] = None
-    ) -> Tuple[Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]], pathlib.Path]:
+    ) -> Tuple[TG, pathlib.Path]:
         """Load a model by name and model class and infer file content type if not specified.
 
         If you need to load an existing model but its content type may not be known, use this method.
         But the file content type should be specified if it is somehow known.
+
+        Note:  This does not validate the model.  If you want to validate the model use the load_validate utilities.
         """
         root_model_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
         if file_content_type is None:
@@ -323,21 +330,6 @@ class ModelUtils:
         return full_list
 
     @staticmethod
-    def path_for_top_level_model(
-        trestle_root: pathlib.Path,
-        model_name: str,
-        model_class: Type[TopLevelOscalModel],
-        file_content_type: FileContentType
-    ) -> pathlib.Path:
-        """
-        Find the full path of a model given its name, model type and file content type.
-
-        This does not inspect the file system or confirm the needed path and file exists.
-        """
-        root_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
-        return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
-
-    @staticmethod
     def full_path_for_top_level_model(
         trestle_root: pathlib.Path,
         model_name: str,
@@ -355,6 +347,23 @@ class ModelUtils:
         if not FileContentType.is_readable_file(file_content_type):
             return None
         return root_model_path.with_suffix(FileContentType.to_file_extension(file_content_type))
+
+    @staticmethod
+    def path_for_top_level_model(
+        trestle_root: pathlib.Path,
+        model_name: str,
+        model_class: Type[TopLevelOscalModel],
+        file_content_type: Optional[FileContentType]
+    ) -> pathlib.Path:
+        """
+        Find the full path of a model given its name, model type and file content type.
+
+        If file_content_type is given it will not inspect the file system or confirm the needed path and file exists.
+        """
+        if file_content_type is None:
+            return ModelUtils.full_path_for_top_level_model(trestle_root, model_name, model_class)
+        root_path = ModelUtils._root_path_for_top_level_model(trestle_root, model_name, model_class)
+        return root_path.with_suffix(FileContentType.to_file_extension(file_content_type))
 
     @staticmethod
     def get_singular_alias(alias_path: str, relative_path: Optional[pathlib.Path] = None) -> str:
@@ -511,9 +520,9 @@ class ModelUtils:
         return collection_model_type, collection_model_alias, instances_to_be_merged
 
     @staticmethod
-    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+    def _parameter_to_dict_recurse(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
         """
-        Convert obj to dict containing only string values, storing only the fields that have values set.
+        Convert obj to dict containing only string values with recursion.
 
         Args:
             obj: The parameter or its consituent parts in recursive calls
@@ -528,7 +537,7 @@ class ModelUtils:
         if isinstance(obj, common.Remarks) or isinstance(obj, common.ParameterValue):
             return obj.__root__
         # it is either a string already or we cast it to string
-        if not hasattr(obj, '__fields_set__'):
+        if not hasattr(obj, const.FIELDS_SET):
             return str(obj)
         # it is an oscal object and we need to recurse within its attributes
         res = {}
@@ -545,12 +554,29 @@ class ModelUtils:
                     continue
                 new_list = []
                 for item in attr:
-                    new_list.append(ModelUtils.parameter_to_dict(item, partial))
+                    new_list.append(ModelUtils._parameter_to_dict_recurse(item, partial))
                 res[field] = new_list
             elif isinstance(attr, str):
                 res[field] = attr
             else:
-                res[field] = ModelUtils.parameter_to_dict(attr, partial)
+                res[field] = ModelUtils._parameter_to_dict_recurse(attr, partial)
+        return res
+
+    @staticmethod
+    def parameter_to_dict(obj: Union[OscalBaseModel, str], partial: bool) -> Union[str, Dict[str, Any]]:
+        """
+        Convert obj to dict containing only string values, storing only the fields that have values set.
+
+        Args:
+            obj: The parameter or its consituent parts in recursive calls
+            partial: Whether to convert the entire param or just the parts needed for markdown header
+
+        Returns:
+            The converted parameter as dictionary, with values as None if not present
+        """
+        res = ModelUtils._parameter_to_dict_recurse(obj, partial)
+        if 'values' not in res:
+            res['values'] = None
         return res
 
     @staticmethod
@@ -597,7 +623,16 @@ class ModelUtils:
                 for value in values:
                     if value not in choices:
                         logger.warning(f"Parameter {param_dict['id']} has value \"{value}\" not in choices: {choices}.")
-        return common.Parameter(**param_dict)
+        props = param_dict.get('props', [])
+        if const.DISPLAY_NAME in param_dict:
+            display_name = param_dict.pop(const.DISPLAY_NAME)
+            props.append(common.Property(name=const.DISPLAY_NAME, value=display_name, ns=const.TRESTLE_GENERIC_NS))
+
+        if 'ns' in param_dict:
+            param_dict.pop('ns')
+        param = common.Parameter(**param_dict)
+        param.props = none_if_empty(props)
+        return param
 
     @staticmethod
     def update_last_modified(model: TopLevelOscalModel, timestamp: Optional[datetime] = None) -> None:
@@ -623,7 +658,7 @@ class ModelUtils:
             value = getattr(object_of_interest, name_of_interest, None)
             if value is not None:
                 loe.append(value)
-            fields = getattr(object_of_interest, '__fields_set__', None)
+            fields = getattr(object_of_interest, const.FIELDS_SET, None)
             if fields is not None:
                 for field in fields:
                     loe.extend(
@@ -658,24 +693,23 @@ class ModelUtils:
     @staticmethod
     def find_uuid_refs(object_of_interest: BaseModel) -> Set[str]:
         """Find uuid references made in prose and links."""
-        # links have href of form #foo or #uuid
-        links_list: List[List[trestle.common.Link]] = ModelUtils.find_values_by_name(object_of_interest, 'links')
-        uuid_strs = [link.href for links in links_list for link in links]
+        # hrefs have form #foo or #uuid
+        uuid_strs = ModelUtils.find_values_by_name(object_of_interest, 'href')
 
         # prose has uuid refs in markdown form: [foo](#bar) or [foo](#uuid)
         prose_list = ModelUtils.find_values_by_name(object_of_interest, 'prose')
-        uuid_strs.extend(
-            [
-                match[1] for prose in prose_list for matches in re.findall(const.MARKDOWN_URL_REGEX, prose)
-                for match in matches
-            ]
-        )
+        for prose in prose_list:
+            matches = re.findall(const.MARKDOWN_URL_REGEX, prose)
+            # the [1] is to extract the inner of 3 capture patterns
+            new_uuids = [match[1] for match in matches]
+            uuid_strs.extend(new_uuids)
 
         # collect the strings that start with # and are potential uuids
         uuid_strs = [uuid_str for uuid_str in uuid_strs if uuid_str and uuid_str[0] == '#']
 
         # go through all matches and build set of those that are uuids
-        return {uuid_match[0] for uuid_str in uuid_strs for uuid_match in re.findall(const.UUID_REGEX, uuid_str[1:])}
+        uuid_set = {uuid_match for uuid_str in uuid_strs for uuid_match in re.findall(const.UUID_REGEX, uuid_str[1:])}
+        return uuid_set
 
     @staticmethod
     def _regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]) -> Tuple[Any, Dict[str, str]]:
@@ -704,13 +738,15 @@ class ModelUtils:
         if isinstance(object_of_interest, common.Resource):
             pass
         elif isinstance(object_of_interest, BaseModel):
-            # fields_set has names of fields set when model was initialized
-            fields = getattr(object_of_interest, '__fields_set__', None)
+            # fields has names of all fields in model
+            fields = getattr(object_of_interest, const.FIELDS_SET, None)
             for field in fields:
                 new_object = None
                 if field == uuid_str:
-                    new_object = str(uuid.uuid4())
-                    uuid_lut[object_of_interest.__dict__[field]] = new_object
+                    orig_uuid = getattr(object_of_interest, field)
+                    if orig_uuid:
+                        new_object = str(uuid.uuid4())
+                        uuid_lut[orig_uuid] = new_object
                 else:
                     new_object, uuid_lut = ModelUtils._regenerate_uuids_in_place(
                         object_of_interest.__dict__[field],
@@ -741,7 +777,7 @@ class ModelUtils:
         """Update all refs to uuids that were changed."""
         n_refs_updated = 0
         if isinstance(object_of_interest, BaseModel):
-            fields = getattr(object_of_interest, '__fields_set__', None)
+            fields = getattr(object_of_interest, const.FIELDS_SET, None)
             for field in fields:
                 new_object, n_new_updates = ModelUtils._update_new_uuid_refs(
                     object_of_interest.__dict__[field],
@@ -798,16 +834,82 @@ class ModelUtils:
         return new_object, uuid_lut, n_refs_updated
 
     @staticmethod
-    def models_are_equivalent(model_a: Optional[TopLevelOscalModel], model_b: Optional[TopLevelOscalModel]) -> bool:
-        """Test if models are equivalent except for last modified and uuid."""
-        # set b's extra properties to those of a then later undo so the models are not changed by this routine
-        if (model_b and not model_a) or (model_a and not model_b):
+    def fields_set_non_none(obj: BaseModel) -> Set[str]:
+        """Find the fields set with Nones and empty items removed."""
+        return set(as_filtered_list(list(obj.__fields_set__), lambda f: getattr(obj, f)))
+
+    @staticmethod
+    def _objects_differ(
+        obj_a: Any, obj_b: Any, ignore_type_list: List[Any], ignore_name_list: List[str], ignore_all_uuid: bool
+    ) -> bool:
+        """
+        Compare two objects with option to ignore given types.
+
+        This does not check for tuples or other structures that won't be found in JSON.
+        """
+        obj_a_type = type(obj_a)
+        obj_b_type = type(obj_b)
+        if bool(obj_a) != bool(obj_b) or obj_a_type != obj_b_type:
+            return True
+        if not bool(obj_a):
             return False
-        b_last_modified = model_b.metadata.last_modified
-        model_b.metadata.last_modified = model_a.metadata.last_modified
-        b_uuid = model_b.uuid
-        model_b.uuid = model_a.uuid
-        equivalent = model_a == model_b
-        model_b.metadata.last_modified = b_last_modified
-        model_b.uuid = b_uuid
-        return equivalent
+        if obj_a_type in ignore_type_list:
+            return False
+        if obj_a_type is str:
+            return obj_a != obj_b
+        elif isinstance(obj_a, BaseModel):
+            fields_a = ModelUtils.fields_set_non_none(obj_a)
+            fields_b = ModelUtils.fields_set_non_none(obj_b)
+            if fields_a != fields_b:
+                return True
+            for field in list_utils.as_filtered_list(fields_a, lambda f: f not in ignore_name_list):
+                if ignore_all_uuid and 'uuid' in field:
+                    continue
+                if ModelUtils._objects_differ(getattr(obj_a, field),
+                                              getattr(obj_b, field),
+                                              ignore_type_list,
+                                              ignore_name_list,
+                                              ignore_all_uuid):
+                    return True
+        elif obj_a_type is list:
+            if len(obj_a) != len(obj_b):
+                return True
+            for item_a, item_b in zip(obj_a, obj_b):
+                if ModelUtils._objects_differ(item_a, item_b, ignore_type_list, ignore_name_list, ignore_all_uuid):
+                    return True
+        elif obj_a_type is dict:
+            if obj_a.keys() != obj_b.keys():
+                return True
+            for key, val in obj_a.items():
+                if ignore_all_uuid and 'uuid' in key:
+                    continue
+                if key not in ignore_name_list and ModelUtils._objects_differ(
+                        val, obj_b[key], ignore_type_list, ignore_name_list, ignore_all_uuid):
+                    return True
+        elif obj_a != obj_b:
+            return True
+        return False
+
+    @staticmethod
+    def models_are_equivalent(
+        model_a: Optional[TopLevelOscalModel],
+        model_b: Optional[TopLevelOscalModel],
+        ignore_all_uuid: bool = False
+    ) -> bool:
+        """
+        Test if models are equivalent except for last modified and possibly uuid.
+
+        If a model has had uuids regenerated, then all uuids *and references to them* are updated.  This means that
+        special handling is required if a model has had uuids regenerated - when checking equivalence.
+        """
+        uuid_type_list = [
+            common.LastModified,
+            common.LocationUuid,
+            common.MemberOfOrganization,
+            common.PartyUuid,
+            common.RelatedRisk,
+            common.RelatedObservation1,
+            common.Source
+        ]
+        type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
+        return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last-modified'], ignore_all_uuid)

@@ -21,7 +21,7 @@ import trestle.common.const as const
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
 from trestle.common.err import TrestleError
-from trestle.core.control_io import ParameterRep
+from trestle.core.control_interface import ParameterRep
 from trestle.core.pipeline import Pipeline
 from trestle.core.remote import cache
 from trestle.core.resolver.merge import Merge
@@ -45,7 +45,8 @@ class Import(Pipeline.Filter):
         block_params: bool = False,
         params_format: str = None,
         param_rep: ParameterRep = ParameterRep.VALUE_OR_LABEL_OR_CHOICES,
-        resources: Optional[List[Resource]] = None
+        resources: Optional[List[Resource]] = None,
+        show_value_warnings: bool = False
     ) -> None:
         """Initialize and store trestle root for cache access."""
         self._trestle_root = trestle_root
@@ -57,6 +58,7 @@ class Import(Pipeline.Filter):
         self._params_format = params_format
         self._param_rep = param_rep
         self._resources = resources
+        self.show_value_warnings = show_value_warnings
 
         if self._import.href[0] == '#':
             # Specification section on internal reference resolution:
@@ -109,7 +111,13 @@ class Import(Pipeline.Filter):
                 logger.debug(f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}')
             merge_filter = Merge(profile)
             modify_filter = Modify(
-                profile, self._change_prose, self._block_adds, self._block_params, self._params_format, self._param_rep
+                profile,
+                self._change_prose,
+                self._block_adds,
+                self._block_params,
+                self._params_format,
+                self._param_rep,
+                self.show_value_warnings
             )
             final_pipeline = Pipeline([merge_filter, modify_filter])
             yield next(final_pipeline.process(pipelines))

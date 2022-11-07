@@ -17,6 +17,20 @@
       "as-is": true
     },
     "modify": {
+      "set-parameters": [
+        {
+          "param-id": "ac-3.3_prm_1",
+          "props": [
+            {
+              "name": "set_param_prof_f_prop",
+              "value": "set param prof f prop value"
+            }
+          ],
+          "values": [
+            "from prof f set-param"
+          ]
+        }
+      ],
       "alters": [
         {
           "control-id": "ac-3",
@@ -90,7 +104,8 @@
                 },
                 {
                   "name": "test_two",
-                  "value": "two"
+                  "value": "two",
+                  "ns": "https://prof_f_ns"
                 }
               ]
             },
@@ -113,11 +128,11 @@
               "by-id": "ac-5_gdn",
               "props": [
                 {
-                  "name": "test_epty",
+                  "name": "test_five",
                   "value": "one"
                 },
                 {
-                  "name": "test_epty_2",
+                  "name": "test_five_2",
                   "value": "two"
                 }
               ]              

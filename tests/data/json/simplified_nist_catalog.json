@@ -164,6 +164,10 @@
               {
                 "name": "sort-id",
                 "value": "ac-01"
+              },
+              {
+                "name": "extra_prop",
+                "value": "extra value"
               }
             ],
             "links": [
@@ -216,6 +220,7 @@
               {
                 "id": "ac-1_smt",
                 "name": "statement",
+                "prose": "The organization:",
                 "parts": [
                   {
                     "id": "ac-1_smt.a",
@@ -321,6 +326,12 @@
                         "prose": "Procedures {{ insert: param, ac-1_prm_6 }} and following {{ insert: param, ac-1_prm_7 }}."
                       }
                     ]
+                  }
+                ],
+                "props": [
+                  {
+                    "name": "prop_in_part",
+                    "value": "value in part"
                   }
                 ]
               },

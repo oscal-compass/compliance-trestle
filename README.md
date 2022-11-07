@@ -27,12 +27,12 @@ Trestle provides tooling to help orchestrate the compliance process across a num
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
 - Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model that supports developers interacting with OSCAL artefacts.
+- An underlying object model that supports developers interacting with OSCAL artifacts.
 
 ## Important Note:
 
 The current version of trestle supports NIST OSCAL 1.0.2.  There was a breaking change in OSCAL moving from
-version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development path of trestle requires OSCAL 1.0.2, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.2 and trestle 1.0.x.
+version 1.0.0 to 1.0.2 mainly due to `prop` becoming `props` in AssessmentResults.  As a result, the current development path of trestle requires OSCAL 1.0.2, but for those who require OSCAL 1.0.0 please use trestle version 0.37.x.  That version is stable but will not have any features added, and we encourage users to move to OSCAL 1.0.2 and Trestle ≥ 1.0.1.
 
 OSCAL version 1.0.0 files are still handled on import but any AssessmentResults must conform to the OSCAL 1.0.2 schema, with
 props instead of prop.  And all files created by trestle will be output as OSCAL version 1.0.2.

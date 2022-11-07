@@ -16,12 +16,13 @@
 """Test utils module."""
 
 import argparse
+import difflib
 import logging
 import os
 import pathlib
 import shutil
 import sys
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -55,8 +56,12 @@ ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
 JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+JSON_NIST_REV_4_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/').resolve()
+JSON_NIST_REV_4_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
+JSON_NIST_REV_4_PROFILE_NAME = 'NIST_SP-800-53_rev4_MODERATE-baseline_profile.json'
 SIMPLIFIED_NIST_CATALOG_NAME = 'simplified_nist_catalog.json'
 SIMPLIFIED_NIST_PROFILE_NAME = 'simplified_nist_profile.json'
+TASK_XLSX_OUTPUT_PATH = pathlib.Path('tests/data/tasks/xlsx/output').resolve()
 
 CATALOGS_DIR = 'catalogs'
 PROFILES_DIR = 'profiles'
@@ -180,40 +185,18 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) -> bool:
-    r"""Insert text lines after line containing tag.
-
-    Return True on success, False tag not found.
-    Text is a string with appropriate \n line endings.
-    If tag is none just add at end of file.
-    """
-    if tag:
-        lines: List[str] = []
-        with file_path.open('r') as f:
-            lines = f.readlines()
-        for ii, line in enumerate(lines):
-            if line.find(tag) >= 0:
-                lines.insert(ii + 1, text)
-                with file_path.open('w') as f:
-                    f.writelines(lines)
-                return True
-    else:
-        with file_path.open('a') as f:
-            f.writelines(text)
-        return True
-    return False
-
-
 def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
-    """Confirm the expected text is in the file after the tag."""
+    """Confirm the expected text is in the file on same line or after the tag."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
     lines: List[str] = []
-    with file_path.open('r') as f:
+    with file_path.open('r', encoding=const.FILE_ENCODING) as f:
         lines = f.readlines()
-    found_tag = False
+    # '' for tag will seek text anywhere
+    found_tag = False if tag else True
     for line in lines:
         if not found_tag and tag in line:
             found_tag = True
-            continue
         if found_tag and text in line:
             return True
     return False
@@ -221,12 +204,50 @@ def confirm_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> bool:
 
 def delete_line_in_file(file_path: pathlib.Path, tag: str, extra_lines=0) -> bool:
     """Delete a run of lines in a file containing tag."""
-    f = file_path.open('r')
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
     lines = f.readlines()
     f.close()
     for ii, line in enumerate(lines):
         if tag in line:
             del lines[ii:(ii + extra_lines + 1)]
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
+            return True
+    return False
+
+
+def replace_line_in_file_after_tag(file_path: pathlib.Path, tag: str, new_line: str) -> bool:
+    """Replace the line after tag with new string."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
+    lines = f.readlines()
+    f.close()
+    for ii, line in enumerate(lines):
+        if tag in line:
+            lines[ii + 1] = new_line
+            f = file_path.open('w')
+            f.writelines(lines)
+            f.flush()
+            f.close()
+            return True
+    return False
+
+
+def substitute_text_in_file(file_path: pathlib.Path, tag: str, new_str: str) -> bool:
+    """Substitute first match of string with new string in file."""
+    if not file_path.exists():
+        raise TrestleError(f'Test file {file_path} not found.')
+    f = file_path.open('r', encoding=const.FILE_ENCODING)
+    lines = f.readlines()
+    f.close()
+    for ii, line in enumerate(lines):
+        if tag in line:
+            lines[ii] = lines[ii].replace(tag, new_str)
             f = file_path.open('w')
             f.writelines(lines)
             f.flush()
@@ -251,7 +272,7 @@ def generate_control_list(label: str, count: int) -> List[cat.Control]:
         control.parts = [
             common.Part(
                 id=f'{control.id}_smt',
-                name='statement',
+                name=const.STATEMENT,
                 prose=f'Prose for the statement part of control {control.id}',
                 parts=[sub_part]
             ),
@@ -306,7 +327,7 @@ def generate_complex_catalog(stem: str = '') -> cat.Catalog:
     test_control.parts = [
         common.Part(
             id=f'{test_control.id}_smt',
-            name='statement',
+            name=const.STATEMENT,
             prose='Statement with no parts.  Prose with param value {{ insert: param, test-1_prm_1 }}'
         )
     ]
@@ -332,9 +353,18 @@ def setup_for_multi_profile(trestle_root: pathlib.Path, big_profile: bool, impor
         prof_path = JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     repo.load_and_import_model(prof_path, main_profile_name)
 
-    # a loads ac-1, ac-2 and prof_b
-    # b loads ac-3, ac-3.3, ac-4, ac-5 and prof_c
-    # c loads a-2-1, b-2-1 and cat-1
+    # a loads ac-1, ac-2 and pulls a-1, b-2-1, cat-1, ac-3, ac-3.3 from prof_b and adds props to b-2-1
+    # b loads ac-3, ac-3.3, ac-4, ac-5 - excludes ac-4 - and prof_c and adds props to ac-3.3
+    # c loads a-2-1, b-2-1 and cat-1 from complex_cat
+
+    # d loads ac-1 and ac-2 and sets values
+    # e loads a and sets some parameters
+    # f loads b and adds props
+    # g loads b and tests adding props by position after
+
+    # a adds props to b-2-1
+    # b adds props to ac-3.3 and by id
+    # f adds props to ac-3 and ac-5 by id
 
     for letter in 'abcdefg':
         prof_name = f'test_profile_{letter}'
@@ -523,3 +553,39 @@ def catalog_interface_equivalent(cat_int_a: CatalogInterface, cat_b: cat.Catalog
             logger.error(f'controls differ: {a.id}')
             return False
     return True
+
+
+class FileChecker:
+    """Check for changes in files after test operations."""
+
+    def __init__(self, root_dir: pathlib.Path) -> None:
+        """Initialize the class with the root directory."""
+        self._root_dir = root_dir
+        self._file_dict: Dict[pathlib.Path, str] = {}
+        for file in self._root_dir.rglob('*'):
+            if not file.is_dir():
+                self._file_dict[file] = file.read_text()
+
+    def files_unchanged(self) -> bool:
+        """Check if any files have changed."""
+        checked_files = []
+        for file in self._root_dir.rglob('*'):
+            if not file.is_dir():
+                if file not in self._file_dict:
+                    logger.error(f'Test file {file} is a new file that was not there originally.')
+                    return False
+                old_text = self._file_dict[file]
+                new_text = file.read_text()
+                if old_text != new_text:
+                    logger.error(f'Test file {file} has changed contents:')
+                    differ = difflib.Differ()
+                    diff = differ.compare(old_text.split('\n'), new_text.split('\n'))
+                    for line in diff:
+                        logger.error(line)
+                    return False
+                checked_files.append(file)
+        if len(checked_files) != len(self._file_dict):
+            missing = set(self._file_dict.keys()).difference(checked_files)
+            logger.error(f'Some files are missing: {missing}')
+            return False
+        return True

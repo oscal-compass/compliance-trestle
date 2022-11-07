@@ -1,6 +1,8 @@
 # Control Page
 
-{{ control_writer.write_control_with_sections(control, group_title,
+{{ control_writer.write_control_with_sections(control,
+profile,
+group_title,
 ['statement', 'objective', 'ExpectedEvidence', 'ImplGuidance', 'table_of_parameters'],
 {
 'statement':'Control Statement Header',
@@ -9,5 +11,8 @@
 'ImplGuidance':'Implementation Guidance',
 'table_of_parameters':'Table of Control Parameters'
 },
-True, True)
+label_column=True,
+add_group_to_title=True
+)
+| safe
 }}

@@ -21,7 +21,7 @@ from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_list
 from trestle.core import catalog_interface
 from trestle.core.catalog_interface import CatalogInterface
-from trestle.core.control_io import ControlIOWriter
+from trestle.core.docs_control_writer import DocsControlWriter
 from trestle.core.markdown.markdown_node import MarkdownNode
 from trestle.core.markdown.md_writer import MDWriter
 from trestle.oscal import ssp
@@ -63,12 +63,12 @@ class SSPMarkdownWriter():
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control statement, set resolved catalog first.')
 
-        writer = ControlIOWriter()
+        writer = DocsControlWriter()
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
 
-        control_lines = writer.get_control_statement(control)
+        control_lines = writer.get_control_statement_ssp(control)
 
         return self._build_tree_and_adjust(control_lines, level)
 
@@ -151,11 +151,11 @@ class SSPMarkdownWriter():
         if not self._ssp:
             raise TrestleError('Cannot get parameter table, set SSP first.')
 
-        writer = ControlIOWriter()
+        writer = DocsControlWriter()
         control = self._catalog_interface.get_control(control_id)
         if not control:
             return ''
-        params_lines = writer.get_params(control, label_column)
+        params_lines = writer.get_param_table(control, label_column)
         # need to make sure no params still have moustaches.  convert to brackets to avoid jinja complaints
         clean_lines = []
         for line in params_lines:
@@ -217,7 +217,7 @@ class SSPMarkdownWriter():
 
         Notes:
             For components the following structure is assumed:
-            'The System' is the default response, and other components are treated as sub-headings per response item.
+            'This System' is the default response, and other components are treated as sub-headings per response item.
         """
         if not self._resolved_catalog:
             raise TrestleError('Cannot get control response, set resolved catalog first.')
@@ -247,7 +247,7 @@ class SSPMarkdownWriter():
                 if response_per_component or (not response_per_component and write_empty_responses):
                     if part_name and part_name == 'item':
                         # print part header only if subitem
-                        header = f'Part {label}'
+                        header = f'Implementation for part {label}'
                         md_writer.new_header(level=1, title=header)
                     for idx, component_key in enumerate(response_per_component):
                         if component_key == SSP_MAIN_COMP_NAME and idx == 0:
