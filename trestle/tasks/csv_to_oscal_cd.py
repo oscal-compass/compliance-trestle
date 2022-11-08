@@ -229,6 +229,7 @@ class CsvToOscalComponentDefinition(TaskBase):
         ns: str,
         remarks: str
     ) -> None:
+        """Add parameter."""
         # Parameter, if any
         value = self.csv_helper.get_value(row, 'Parameter_Id')
         if value:
