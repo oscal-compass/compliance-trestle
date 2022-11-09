@@ -50,10 +50,8 @@ class CatalogGenerate(AuthorCommonCommand):
         name_help_str = 'Name of the catalog model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
-        self.add_argument(
-            '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
-        )
         self.add_argument(
             '-ohv',
             '--overwrite-header-values',
@@ -72,10 +70,10 @@ class CatalogGenerate(AuthorCommonCommand):
 
             if args.force_overwrite:
                 try:
-                    logger.debug(f'Overwriting the content of {args.output}.')
+                    logger.debug(f'Overwriting the content in {args.output} folder.')
                     clear_folder(pathlib.Path(args.output))
                 except TrestleError as e:  # pragma: no cover
-                    raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
+                    raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
             yaml_header: dict = {}
             if args.yaml_header:

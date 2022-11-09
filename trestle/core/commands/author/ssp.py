@@ -85,7 +85,7 @@ class SSPGenerate(AuthorCommonCommand):
                 try:
                     logger.debug(f'Overwriting the content of {args.output}.')
                     clear_folder(pathlib.Path(args.output))
-                except TrestleError as e:
+                except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
 
             profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
@@ -96,7 +96,7 @@ class SSPGenerate(AuthorCommonCommand):
                     logging.debug(f'Loading yaml header file {args.yaml_header}')
                     yaml = YAML()
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
-                except YAMLError as e:  # pragma: no cover
+                except YAMLError as e:
                     raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
 
             markdown_path = trestle_root / args.output
