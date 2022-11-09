@@ -33,6 +33,7 @@ from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ParameterRep
@@ -81,6 +82,9 @@ class ProfileGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
+            '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
+        )
+        self.add_argument(
             '-ohv',
             '--overwrite-header-values',
             help=const.HELP_OVERWRITE_HEADER_VALUES,
@@ -106,6 +110,13 @@ class ProfileGenerate(AuthorCommonCommand):
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
                     raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
+
+            if args.force_overwrite:
+                try:
+                    logger.debug(f'Overwriting the content of {args.output}.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:
+                    raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
 
             # combine command line sections with any in the yaml header, with priority to command line
             sections_dict: Optional[Dict[str, str]] = None

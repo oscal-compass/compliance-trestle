@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle command related utilities."""
 import pathlib
+import shutil
 from typing import Any, List, Optional, Type, Union
 
 from trestle.common import const, str_utils, type_utils
@@ -35,6 +36,16 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
         return True
     return False
+
+
+def clear_folder(folder_path: pathlib.Path) -> None:
+    """Clear all contents of the specified folder."""
+    if not folder_path.exists() or not folder_path.is_dir():
+        raise TrestleError(f'Unable to delete contents of {folder_path}, it must exist and be a directory.')
+    try:
+        shutil.rmtree(folder_path)
+    except OSError as e:
+        raise TrestleError(f'Error deleting contents of {folder_path}: {e}')
 
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
