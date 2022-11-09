@@ -394,7 +394,7 @@ class FetcherFactory:
         TRESTLE = 4
 
     @staticmethod
-    def _get_uri_type(uri: str) -> UriType:
+    def get_uri_type(uri: str) -> UriType:
         """Determine the type of uri."""
         if uri.startswith(const.SFTP_URI):
             return FetcherFactory.UriType.SFTP
@@ -415,7 +415,7 @@ class FetcherFactory:
     @staticmethod
     def in_trestle_directory(trestle_root: pathlib.Path, uri: str) -> bool:
         """Check if in trestle directory when uri may not be a file path."""
-        uri_type = FetcherFactory._get_uri_type(uri)
+        uri_type = FetcherFactory.get_uri_type(uri)
         if uri_type == FetcherFactory.UriType.TRESTLE:
             return True
         if uri_type != FetcherFactory.UriType.LOCAL_FILE:
@@ -443,5 +443,5 @@ class FetcherFactory:
             FetcherFactory.UriType.HTTPS: HTTPSFetcher,
             FetcherFactory.UriType.TRESTLE: LocalFetcher,
         }
-        uri_type = cls._get_uri_type(uri)
+        uri_type = cls.get_uri_type(uri)
         return fetcher_dict[uri_type](trestle_root, uri)

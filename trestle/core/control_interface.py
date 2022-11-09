@@ -15,17 +15,18 @@
 from __future__ import annotations
 
 import logging
+import pathlib
 import re
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
-from uuid import uuid4
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithParts, TypeWithProps
 from trestle.common.err import TrestleError
 from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
+from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import string_from_root, strip_lower_equals
 from trestle.oscal import common
 from trestle.oscal import component as comp
@@ -861,10 +862,26 @@ class ControlInterface:
 
     @staticmethod
     def insert_imp_req_into_component(
-        component: comp.DefinedComponent, new_imp_req: comp.ImplementedRequirement
+        component: comp.DefinedComponent,
+        new_imp_req: comp.ImplementedRequirement,
+        profile_title: str,
+        trestle_root: pathlib.Path
     ) -> None:
-        """Insert imp req into component by matching control id to existing imp req."""
+        """
+        Insert imp req into component by matching source title and control id to existing imp req.
+
+        Args:
+            component: The defined component receiving the imp_req
+            new_imp_req: The new imp_req being added
+            profile_title: The title of the source profile for the control implementation containing the imp_req
+
+        Notes:
+            Inserts the imp_req on the first match found.  Note it is possible two control implementations could
+            have the same source and specify the same control
+        """
         for control_imp in as_list(component.control_implementations):
+            if profile_title != ModelUtils.get_title_from_model_uri(trestle_root, control_imp.source):
+                continue
             for imp_req in as_list(control_imp.implemented_requirements):
                 if imp_req.control_id == new_imp_req.control_id:
                     status = ControlInterface.get_status_from_props(new_imp_req)
@@ -881,11 +898,4 @@ class ControlInterface:
                         new_statements.append(stat)
                     imp_req.statements = none_if_empty(new_statements)
                     return
-        # need to insert new imp_req into an available control_imp, so choose first one and make it if needed
-        if not component.control_implementations:
-            component.control_implementations = [
-                comp.ControlImplementation(uuid=str(uuid4()), source=const.REPLACE_ME, description=const.REPLACE_ME)
-            ]
-        imp_reqs = as_list(component.control_implementations[0].implemented_requirements)
-        imp_reqs.append(new_imp_req)
-        component.control_implementations[0].implemented_requirements = imp_reqs
+        logger.warning(f'Unable to add imp req for control {new_imp_req.control_id} and source: {profile_title}')

@@ -35,8 +35,10 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
+from trestle.core.remote.cache import FetcherFactory
 from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
@@ -81,6 +83,14 @@ class ComponentGenerate(AuthorCommonCommand):
                 break
         return rc
 
+    @staticmethod
+    def _get_name_from_uri(source_uri: str) -> str:
+        """Get the name from a source profile or catalog source uri."""
+        uri_type = FetcherFactory.get_uri_type(source_uri)
+        if uri_type == FetcherFactory.UriType.TRESTLE:
+            return source_uri.split('/')[-2]
+        return ''
+
     def component_generate_by_name(
         self,
         context: ControlContext,
@@ -90,12 +100,18 @@ class ComponentGenerate(AuthorCommonCommand):
     ) -> int:
         """Create markdown for the component using its source profiles."""
         logger.debug(f'Creating markdown for component {component.title}.')
-        context.md_root = markdown_dir_path
         context.comp_name = component.title
+        context.uri_name_map = {}
+        name_index = 1
         for control_imp in as_list(component.control_implementations):
             context.control_implementation = control_imp
             source_profile_uri = control_imp.source
             if source_profile_uri not in cat_interface_dict:
+                name = ComponentGenerate._get_name_from_uri(source_profile_uri)
+                if not name:
+                    name = f'source_{name_index:03d}'
+                    name_index += 1
+                context.uri_name_map[source_profile_uri] = name
                 resolved_catalog = ProfileResolver.get_resolved_profile_catalog(
                     context.trestle_root, source_profile_uri
                 )
@@ -107,8 +123,10 @@ class ComponentGenerate(AuthorCommonCommand):
             # different controls in the final catalog may have different profile titles if from different control_imps
             context.yaml_header = {}
             context.yaml_header[const.TRESTLE_GLOBAL_TAG] = {}
-            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE
-                                                          ] = local_catalog_interface.get_catalog_title()
+            profile_title = local_catalog_interface.get_catalog_title()
+            context.yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile_title
+            sub_dir_name = context.uri_name_map[source_profile_uri]
+            context.md_root = markdown_dir_path / sub_dir_name
             part_id_map = local_catalog_interface.get_statement_part_id_map(False) if local_catalog_interface else {}
             # write controls corresponding to this source catalog
             # if two controlimps load the same control, the second one will merge into the first
@@ -258,16 +276,34 @@ class ComponentAssemble(AuthorCommonCommand):
             ComponentAssemble._update_component_with_markdown(md_dir, component, context)
 
     @staticmethod
+    def _get_profile_title_from_dir(md_dir: pathlib.Path) -> str:
+        """Get profile title from yaml header of first md file found in dir."""
+        md_files = md_dir.rglob('*.md')
+        markdown_api = MarkdownAPI()
+        for md_file in md_files:
+            header, _ = markdown_api.processor.read_markdown_wo_processing(md_file)
+            if const.TRESTLE_GLOBAL_TAG in header and const.PROFILE_TITLE in header[const.TRESTLE_GLOBAL_TAG]:
+                return header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE]
+        logger.warning(f'Cannot find profile title in markdown headers of directory {md_dir}')
+        return ''
+
+    @staticmethod
     def _update_component_with_markdown(
         md_dir: pathlib.Path, component: comp.DefinedComponent, context: ControlContext
     ) -> None:
         #
         md_path = md_dir / component.title
+        sub_dirs = file_utils.iterdir_without_hidden_files(md_path)
+        source_dirs = [sub_dir.name for sub_dir in sub_dirs if sub_dir.is_dir()]
         generic_comp = generic.GenericComponent.from_defined_component(component)
         avail_comps = {component.title: generic_comp}
         cat_interface = CatalogInterface()
-        imp_reqs = cat_interface.read_catalog_imp_reqs(md_path, avail_comps, context)
-        # the imp_reqs need to be inserted into the correct control_implementation
-        for imp_req in imp_reqs:
-            comp_imp_req = imp_req.as_comp_def()
-            ControlInterface.insert_imp_req_into_component(component, comp_imp_req)
+        for source_dir in source_dirs:
+            profile_title = ComponentAssemble._get_profile_title_from_dir(md_path / source_dir)
+            imp_reqs = cat_interface.read_catalog_imp_reqs(md_path / source_dir, avail_comps, context)
+            # the imp_reqs need to be inserted into the correct control_implementation
+            for imp_req in imp_reqs:
+                comp_imp_req = imp_req.as_comp_def()
+                ControlInterface.insert_imp_req_into_component(
+                    component, comp_imp_req, profile_title, context.trestle_root
+                )

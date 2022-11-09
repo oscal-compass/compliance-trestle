@@ -115,8 +115,10 @@ def check_ac5_contents(ac5_path: pathlib.Path) -> None:
 def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test component generate."""
     comp_name, _, _ = setup_component_generate(tmp_trestle_dir)
-    ac1_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-1.md'
-    ac5_path = tmp_trestle_dir / f'{md_path}/OSCO/ac/ac-5.md'
+    prof_title = 'nist_prof'
+    md_root = tmp_trestle_dir / f'{md_path}/OSCO/{prof_title}'
+    ac1_path = md_root / 'ac/ac-1.md'
+    ac5_path = md_root / 'ac/ac-5.md'
 
     generate_cmd = f'trestle author component-generate -n {comp_name} -o {md_path}'
 

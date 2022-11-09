@@ -17,9 +17,13 @@
 import copy
 import pathlib
 
+from _pytest.monkeypatch import MonkeyPatch
+
 from pydantic import ValidationError
 
 import pytest
+
+from tests import test_utils
 
 import trestle.common.const as const
 import trestle.common.err as err
@@ -33,6 +37,7 @@ import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 from trestle.common import str_utils
+from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 
@@ -327,3 +332,11 @@ def test_models_are_equivalent(simplified_nist_catalog: catalog.Catalog) -> None
     assert not ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b)
     # ignoring uuids passes comparison
     assert ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b, True)
+
+
+def test_get_title_from_source(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test get source title."""
+    prof_uri = str(test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json')
+    assert ModelUtils.get_title_from_model_uri(tmp_trestle_dir, prof_uri) == 'Trestle test profile'
+    with pytest.raises(TrestleError):
+        ModelUtils.get_title_from_model_uri(tmp_trestle_dir, 'foo_bar')

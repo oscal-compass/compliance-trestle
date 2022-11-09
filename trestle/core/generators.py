@@ -96,10 +96,7 @@ def generate_sample_value_by_type(
     if type_ is pydantic.networks.AnyUrl:
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
         return pydantic.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
-    if type_ is Any or type_ is Dict[str, Any]:
-        # Return empty dict - aka users can put whatever they want here.
-        return {}
-    raise err.TrestleError(f'Fatal: Bad type in model {type_}')
+    return {}
 
 
 def generate_sample_model(
