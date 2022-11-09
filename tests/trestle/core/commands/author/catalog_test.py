@@ -555,6 +555,9 @@ def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
     catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
     ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
 
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
     catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
     test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
 

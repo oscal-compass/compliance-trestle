@@ -617,6 +617,9 @@ def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_profile.json')
     ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', FileContentType.JSON)
 
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp --force-overwrite'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+
     ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp'
     test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
 

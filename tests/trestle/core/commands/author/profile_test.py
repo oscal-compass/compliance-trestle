@@ -920,6 +920,10 @@ def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeyp
 def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test profile generate with force-overwrite."""
     test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
     prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name}'
     test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
 

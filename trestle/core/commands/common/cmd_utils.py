@@ -41,10 +41,10 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
 def clear_folder(folder_path: pathlib.Path) -> None:
     """Clear all contents of the specified folder."""
     if not folder_path.exists() or not folder_path.is_dir():
-        raise TrestleError(f'Unable to delete contents of {folder_path}, it must exist and be a directory.')
+        return
     try:
         shutil.rmtree(folder_path)
-    except OSError as e:
+    except OSError as e:  # pragma: no cover
         raise TrestleError(f'Error deleting contents of {folder_path}: {e}')
 
 

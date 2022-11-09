@@ -115,7 +115,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 try:
                     logger.debug(f'Overwriting the content of {args.output}.')
                     clear_folder(pathlib.Path(args.output))
-                except TrestleError as e:
+                except TrestleError as e:  # pragma: no cover
                     raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
 
             # combine command line sections with any in the yaml header, with priority to command line
