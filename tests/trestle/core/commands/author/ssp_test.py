@@ -646,3 +646,8 @@ def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyP
 
     header, tree = md_api.processor.process_markdown(md_path)
     assert old_value in tree.content.raw_text
+
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'md_ssp/')
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp --force-overwrite'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+    assert fc.files_unchanged()

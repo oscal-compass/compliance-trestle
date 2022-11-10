@@ -582,3 +582,8 @@ def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
 
     header, _ = md_api.processor.process_markdown(md_path)
     assert header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] == old_value
+
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'md_catalog/')
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    assert fc.files_unchanged()

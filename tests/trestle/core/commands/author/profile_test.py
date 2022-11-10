@@ -949,3 +949,9 @@ def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: Mon
 
     header, _ = md_api.processor.process_markdown(md_path)
     assert header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] == old_value
+
+    # test that file is unchanged
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'my_md/')
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+    assert fc.files_unchanged()
