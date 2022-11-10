@@ -24,6 +24,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
+from trestle.common.file_utils import prune_empty_dirs
 from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, get_item_from_list, none_if_empty  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -886,6 +887,9 @@ class CatalogInterface():
             self.write_catalog_as_ssp_markdown(context, part_id_map)
         else:
             self.write_catalog_as_catalog(context, part_id_map)
+
+        # prune any directories that have no markdown files
+        prune_empty_dirs(context.md_root, '*.md')
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:

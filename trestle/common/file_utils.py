@@ -14,18 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle file system utils."""
+import glob
 import json
 import logging
 import os
 import pathlib
 import platform
-from typing import Any, Dict, Iterable, List, Optional
+import shutil
+from typing import Any, Dict, Iterable, List, Optional, Set
 
 from ruamel.yaml import YAML
 
 from trestle.common import const, err
 from trestle.common.const import MODEL_DIR_LIST
 from trestle.common.err import TrestleError
+from trestle.common.list_utils import as_filtered_list
 from trestle.core.models.file_content_type import FileContentType
 
 if platform.system() == const.WINDOWS_PLATFORM_STR:  # pragma: no cover
@@ -291,3 +294,14 @@ def insert_text_in_file(file_path: pathlib.Path, tag: Optional[str], text: str) 
             f.writelines(text)
         return True
     return False
+
+
+def prune_empty_dirs(file_path: pathlib.Path, pattern: str) -> None:
+    """Remove directories with no subdirs and with no files matching pattern."""
+    deleted: Set[str] = set()
+    # this traverses from leaf nodes upward so only needs one traversal
+    for current_dir, subdirs, _ in os.walk(str(file_path), topdown=False):
+        has_subdirs = any(as_filtered_list(subdirs, lambda s: os.path.join(current_dir, s) not in deleted))
+        if not has_subdirs and not any(glob.glob(f'{current_dir}/{pattern}')):
+            shutil.rmtree(current_dir)
+            deleted.add(current_dir)

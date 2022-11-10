@@ -96,6 +96,9 @@ def generate_sample_value_by_type(
     if type_ is pydantic.networks.AnyUrl:
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
         return pydantic.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
+    if type_ is list:
+        raise err.TrestleError(f'Unable to generate sample for type {type_}')
+    # default to empty dict for anything else
     return {}
 
 

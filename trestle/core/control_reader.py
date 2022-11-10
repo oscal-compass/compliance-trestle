@@ -621,7 +621,9 @@ class ControlReader():
                     )
             if context.rules_dict:
                 rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
-                yaml_header[const.COMP_DEF_RULES_TAG] = [context.rules_dict[id_] for id_ in rule_ids]
+                control_rules = [context.rules_dict[id_] for id_ in rule_ids]
+                if control_rules:
+                    yaml_header[const.COMP_DEF_RULES_TAG] = control_rules
                 all_params.extend(
                     [context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict]
                 )
