@@ -31,6 +31,7 @@ from trestle.common.load_validate import load_validate_model_name, load_validate
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.models.file_content_type import FileContentType
@@ -49,6 +50,7 @@ class CatalogGenerate(AuthorCommonCommand):
         name_help_str = 'Name of the catalog model in the trestle workspace'
         self.add_argument('-n', '--name', help=name_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true')
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-ohv',
@@ -65,6 +67,13 @@ class CatalogGenerate(AuthorCommonCommand):
             trestle_root = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
+
+            if args.force_overwrite:
+                try:
+                    logger.debug(f'Overwriting the content in {args.output} folder.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:  # pragma: no cover
+                    raise TrestleError(f'Unable to overwrite contents in {args.output} folder: {e}')
 
             yaml_header: dict = {}
             if args.yaml_header:

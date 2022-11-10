@@ -17,6 +17,8 @@ import argparse
 import pathlib
 from typing import List
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import pytest
 
 from tests import test_utils
@@ -523,7 +525,7 @@ def test_ssp_bad_control_id(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test parsing of metadata from yaml header."""
     catalog = test_utils.generate_complex_catalog()
     ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'complex_cat', FileContentType.JSON)
@@ -532,39 +534,19 @@ def test_ssp_assemble_header_metadata(tmp_trestle_dir: pathlib.Path) -> None:
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / f'{prof_name}.json')
     ModelUtils.save_top_level_model(profile, tmp_trestle_dir, prof_name, FileContentType.JSON)
     header_path = test_utils.YAML_TEST_DATA_PATH / 'header_with_metadata.yaml'
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        profile=prof_name,
-        output=ssp_name,
-        verbose=0,
-        sections=None,
-        yaml_header=header_path,
-        overwrite_header_values=False,
-        allowed_sections=None
-    )
-    # generate the markdown with header content
-    ssp_cmd = SSPGenerate()
-    assert ssp_cmd._run(args) == 0
+    ssp_generate = f'trestle author ssp-generate -p {prof_name} -o {ssp_name} --yaml-header {header_path}'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
 
     # create ssp from the markdown
-    ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        markdown=ssp_name,
-        output=ssp_name,
-        verbose=0,
-        name=None,
-        version=None,
-        regenerate=False
-    )
-    assert ssp_assemble._run(args) == 0
+    ssp_assemble = f'trestle author ssp-assemble -m {ssp_name} -o {ssp_name}'
+    test_utils.execute_command_and_assert(ssp_assemble, 0, monkeypatch)
 
     # read the assembled ssp and confirm roles are in metadata
     ssp, _ = ModelUtils.load_top_level_model(tmp_trestle_dir, ssp_name, ossp.SystemSecurityPlan, FileContentType.JSON)
     assert len(ssp.metadata.roles) == 2
 
 
-def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test repeat generate with various controls including statement with no parts."""
     cat_name = 'complex_cat'
     prof_name = 'my_prof'
@@ -573,19 +555,8 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
     ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, cat_name, FileContentType.JSON)
     test_utils.create_profile_in_trestle_dir(tmp_trestle_dir, cat_name, prof_name)
 
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        profile=prof_name,
-        output=ssp_name,
-        verbose=0,
-        sections=None,
-        yaml_header=None,
-        overwrite_header_values=False,
-        allowed_sections=None
-    )
-    # generate the markdown with no implementation response text
-    ssp_cmd = SSPGenerate()
-    assert ssp_cmd._run(args) == 0
+    ssp_generate = f'trestle author ssp-generate -p {prof_name} -o {ssp_name}'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
 
     # insert implementation text into the high level statement of a control that has no sub-parts
     control_path = tmp_trestle_dir / ssp_name / 'test-1.md'
@@ -595,7 +566,8 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
     file_utils.insert_text_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX, 'Text with prompt removed')
     test_utils.delete_line_in_file(control_a1_path, const.SSP_ADD_IMPLEMENTATION_PREFIX)
 
-    assert ssp_cmd._run(args) == 0
+    ssp_generate = f'trestle author ssp-generate -p {prof_name} -o {ssp_name}'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
 
     # confirm the added text is still there
     assert test_utils.confirm_text_in_file(control_path, 'control test-1', 'Hello there')
@@ -607,24 +579,14 @@ def test_ssp_generate_generate(tmp_trestle_dir: pathlib.Path) -> None:
     )
 
 
-def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test the ssp generator with the nist tutorial catalog and profile."""
     catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
     ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'nist_tutorial_catalog', FileContentType.JSON)
     profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_profile.json')
     ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', FileContentType.JSON)
-    ssp_gen = SSPGenerate()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir,
-        profile='nist_tutorial_profile',
-        output='ssp_md',
-        sections=None,
-        overwrite_header_values=False,
-        verbose=0,
-        yaml_header=None,
-        allowed_sections=None
-    )
-    assert ssp_gen._run(args) == 0
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o ssp_md'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
 
     ssp_assem = SSPAssemble()
     args = argparse.Namespace(
@@ -646,3 +608,46 @@ def test_ssp_generate_tutorial(tmp_trestle_dir: pathlib.Path) -> None:
     assert len(imp_reqs) == 2
     assert imp_reqs[0].control_id == 's1.1.1'
     assert imp_reqs[1].control_id == 's2.1.2'
+
+
+def test_ssp_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test ssp generate with force-overwrite."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_catalog.json')
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'nist_tutorial_catalog', FileContentType.JSON)
+    profile = prof.Profile.oscal_read(test_utils.JSON_TEST_DATA_PATH / 'nist_tutorial_profile.json')
+    ModelUtils.save_top_level_model(profile, tmp_trestle_dir, 'nist_tutorial_profile', FileContentType.JSON)
+
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp --force-overwrite'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'md_ssp/s1.1/s1.1.1.md'
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert tree
+    old_value = 'Add control implementation description here for control s1.1.1'
+    assert old_value in tree.content.raw_text
+    tree.content.raw_text = tree.content.raw_text.replace(old_value, 'Custom control implementation')
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp'
+
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+
+    header, tree = md_api.processor.process_markdown(md_path)
+    assert 'Custom control implementation' in tree.content.raw_text
+
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp --force-overwrite'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+
+    header, tree = md_api.processor.process_markdown(md_path)
+    assert old_value in tree.content.raw_text
+
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'md_ssp/')
+    ssp_generate = 'trestle author ssp-generate -p nist_tutorial_profile -o md_ssp --force-overwrite'
+    test_utils.execute_command_and_assert(ssp_generate, 0, monkeypatch)
+    assert fc.files_unchanged()

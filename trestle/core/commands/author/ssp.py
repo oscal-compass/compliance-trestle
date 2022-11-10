@@ -34,6 +34,7 @@ from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.commands.author.profile import sections_to_dict
+from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_reader import ControlReader
@@ -53,6 +54,9 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
+        self.add_argument(
+            '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
+        )
         self.add_argument(
             '-ohv',
             '--overwrite-header-values',
@@ -76,6 +80,13 @@ class SSPGenerate(AuthorCommonCommand):
             trestle_root = args.trestle_root
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
+
+            if args.force_overwrite:
+                try:
+                    logger.debug(f'Overwriting the content of {args.output}.')
+                    clear_folder(pathlib.Path(args.output))
+                except TrestleError as e:  # pragma: no cover
+                    raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
 
             profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 

@@ -446,7 +446,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         yaml_header=bad_yaml_path,
         verbose=0,
         set_parameters=False,
-        sections=None
+        sections=None,
+        force_overwrite=False
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 1
@@ -474,7 +475,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         overwrite_header_values=False,
         yaml_header=None,
         sections='NeededExtra:Needed Extra,implgdn:Implementation Guidance,expevid:Expected Evidence',
-        required_sections='NeededExtra'
+        required_sections='NeededExtra',
+        force_overwrite=False
     )
     profile_generate = ProfileGenerate()
     assert profile_generate._run(test_args) == 0
@@ -492,7 +494,8 @@ def test_profile_failures(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatc
         regenerate=False,
         version=None,
         allowed_sections=None,
-        sections=None
+        sections=None,
+        force_overwrite=False
     )
     # fail since required section not filled in
     profile_assemble = ProfileAssemble()
@@ -912,3 +915,43 @@ def test_profile_generate_inherited_props(tmp_trestle_dir: pathlib.Path, monkeyp
     assert test_utils.confirm_text_in_file(ac5_path, 'value: one', 'smt-part: a.')
     assert test_utils.confirm_text_in_file(ac5_path, 'test_five', 'smt-part: ac-5_gdn')
     assert test_utils.confirm_text_in_file(ac5_path, 'value: two', 'ns: https://prof_f_ns')
+
+
+def test_profile_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test profile generate with force-overwrite."""
+    test_utils.setup_for_multi_profile(tmp_trestle_dir, False, True)
+
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name}'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'my_md/ac/ac-5.md'
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    old_value = header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES]
+    header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] = 'New value'
+
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name}'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
+    header, _ = md_api.processor.process_markdown(md_path)
+    assert header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] == 'New value'
+
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+
+    header, _ = md_api.processor.process_markdown(md_path)
+    assert header[const.SET_PARAMS_TAG]['ac-5_prm_1'][const.VALUES] == old_value
+
+    # test that file is unchanged
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'my_md/')
+    prof_generate = f'trestle author profile-generate -n test_profile_f -o {md_name} --force-overwrite'
+    test_utils.execute_command_and_assert(prof_generate, 0, monkeypatch)
+    assert fc.files_unchanged()
