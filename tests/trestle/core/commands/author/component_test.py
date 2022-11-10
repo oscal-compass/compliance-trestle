@@ -59,13 +59,18 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     comp_name = 'test_comp'
     cat_name = 'nist_cat'
     prof_name = 'nist_prof'
-    simple_cat_name = 'simple_catalog_no_parts'
     load_file(trestle_root, 'comp_def.json', comp_name, 'component-definition')
     load_file(trestle_root, test_utils.SIMPLIFIED_NIST_CATALOG_NAME, cat_name, 'catalog')
-    load_file(trestle_root, simple_cat_name + '.json', simple_cat_name, 'catalog')
     load_file(trestle_root, test_utils.SIMPLIFIED_NIST_PROFILE_NAME, prof_name, 'profile')
     new_href = 'trestle://catalogs/nist_cat/catalog.json'
     assert HrefCmd.change_import_href(trestle_root, prof_name, new_href, 0) == 0
+    simp_cat_dir = trestle_root / 'simp_cat_dir'
+    simp_cat_dir.mkdir()
+    simp_cat_path = simp_cat_dir / 'catalog.json'
+    shutil.copyfile(test_utils.JSON_TEST_DATA_PATH / 'simple_catalog_no_parts.json', simp_cat_path)
+    comp_path = trestle_root / 'component-definitions/test_comp/component-definition.json'
+    new_source = f'            "source": "{simp_cat_path.as_uri()}",\n'
+    test_utils.replace_line_in_file_after_tag(comp_path, '99999', new_source)
     return comp_name, prof_name, cat_name
 
 
@@ -90,8 +95,9 @@ def check_ac1_contents(ac1_path: pathlib.Path) -> None:
     header, _ = markdown_processor.read_markdown_wo_processing(ac1_path)
     assert header[const.PARAM_VALUES_TAG]['ac-1_prm_1'] == 'Param_1_value_in_catalog'
     rules = header[const.COMP_DEF_RULES_TAG]
-    assert len(rules) == 1
-    assert rules[0] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
+    assert len(rules) == 2
+    assert rules[0] == {'name': 'TopRule', 'description': 'Top level rule'}
+    assert rules[1] == {'name': 'XCCDF', 'description': 'The XCCDF must be compliant'}
     vals = header[const.COMP_DEF_RULES_PARAM_VALS_TAG]
     assert len(vals) == 2
     assert vals['quantity_available'] == '500'
@@ -126,6 +132,7 @@ def test_component_generate(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPa
     test_utils.execute_command_and_assert(generate_cmd, CmdReturnCodes.SUCCESS.value, monkeypatch)
     check_ac1_contents(ac1_path)
     check_ac5_contents(ac5_path)
+    assert (tmp_trestle_dir / 'md_comp/OSCO/source_001/s2/s2.1/s2.1.1.md').exists()
 
     file_checker = test_utils.FileChecker(tmp_trestle_dir / md_path)
 

@@ -665,6 +665,8 @@ class CatalogInterface():
         context.rules_dict = {}
         context.rules_params_dict = {}
         context.rules_param_vals = {}
+        current_component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+        context.rules_dict.update(ControlInterface.get_rules_dict_from_item(current_component))
         context.rules_dict.update(ControlInterface.get_rules_dict_from_item(context.control_implementation))
         context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(context.control_implementation))
         context.rules_param_vals.update(
