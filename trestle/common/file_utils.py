@@ -28,7 +28,6 @@ from ruamel.yaml import YAML
 from trestle.common import const, err
 from trestle.common.const import MODEL_DIR_LIST
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_filtered_list
 from trestle.core.models.file_content_type import FileContentType
 
 if platform.system() == const.WINDOWS_PLATFORM_STR:  # pragma: no cover
@@ -301,9 +300,7 @@ def prune_empty_dirs(file_path: pathlib.Path, pattern: str) -> None:
     deleted: Set[str] = set()
     # this traverses from leaf nodes upward so only needs one traversal
     for current_dir, subdirs, _ in os.walk(str(file_path), topdown=False):
-        has_subdirs = any(
-            as_filtered_list(subdirs, lambda cd=current_dir: lambda s: os.path.join(cd, s) not in deleted)
-        )
-        if not has_subdirs and not any(glob.glob(f'{current_dir}/{pattern}')):
+        true_dirs = [subdir for subdir in subdirs if os.path.join(current_dir, subdir) not in deleted]
+        if not true_dirs and not any(glob.glob(f'{current_dir}/{pattern}')):
             shutil.rmtree(current_dir)
             deleted.add(current_dir)
