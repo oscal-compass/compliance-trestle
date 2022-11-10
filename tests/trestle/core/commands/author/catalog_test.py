@@ -28,13 +28,14 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 from trestle.cli import Trestle
-from trestle.common import file_utils
+from trestle.common import const, file_utils
 from trestle.common.model_utils import ModelUtils
 from trestle.core.commands.author.catalog import CatalogAssemble, CatalogGenerate, CatalogInterface
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import ControlInterface, ParameterRep
+from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import catalog as cat
@@ -547,3 +548,42 @@ def test_get_control_paths(sample_catalog_rich_controls: cat.Catalog) -> None:
     path = cat_interface.get_full_control_path('cat_level')
     assert path == ['']
     assert cat_interface.get_control_path('cat_level') == ['']
+
+
+def test_catalog_force_overwrite(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test catalog generate with force-overwrite."""
+    catalog = cat.Catalog.oscal_read(test_utils.JSON_TEST_DATA_PATH / test_utils.SIMPLIFIED_NIST_CATALOG_NAME)
+    ModelUtils.save_top_level_model(catalog, tmp_trestle_dir, 'my_catalog', FileContentType.JSON)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    md_path = tmp_trestle_dir / 'md_catalog/ac/ac-2.md'
+    assert md_path.exists()
+    md_api = MarkdownAPI()
+    header, tree = md_api.processor.process_markdown(md_path)
+
+    assert header
+    old_value = header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES]
+    header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] = 'New value'
+    md_api.write_markdown_with_header(md_path, header, tree.content.raw_text)
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    header, _ = md_api.processor.process_markdown(md_path)
+    assert header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] == 'New value'
+
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+
+    header, _ = md_api.processor.process_markdown(md_path)
+    assert header[const.SET_PARAMS_TAG]['ac-2_prm_1'][const.VALUES] == old_value
+
+    fc = test_utils.FileChecker(tmp_trestle_dir / 'md_catalog/')
+    catalog_generate = 'trestle author catalog-generate -n my_catalog -o md_catalog --force-overwrite'
+    test_utils.execute_command_and_assert(catalog_generate, 0, monkeypatch)
+    assert fc.files_unchanged()

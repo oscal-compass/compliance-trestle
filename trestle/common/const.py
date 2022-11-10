@@ -285,6 +285,7 @@ NCNAME_UTF8_OTHER_CHAR_OPTIONS = string.ascii_letters + string.digits + '_.-'
 DISPLAY_VERBOSE_OUTPUT = 'Display verbose output'
 
 HELP_YAML_PATH = 'Path to the optional yaml header file'
+HELP_FO_OUTPUT = 'Overwrites the content of all markdowns in the output folder.'
 
 HELP_OVERWRITE_HEADER_VALUES = (
     'Flag to overwrite values in a markdown control header.'
