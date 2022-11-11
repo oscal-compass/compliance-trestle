@@ -658,7 +658,7 @@ class CatalogInterface():
 
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
-        """Get rules, params, vals from the control implementation."""
+        """Get rules, params, vals from the control implementation and defined component."""
         # rules are defined in the control_imp itself
         # but they are linked to controls via the imp_reqs
         # param values may be set both by the control_imp and the imp_req
@@ -666,9 +666,10 @@ class CatalogInterface():
         context.rules_params_dict = {}
         context.rules_param_vals = {}
         current_component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
-        context.rules_dict.update(ControlInterface.get_rules_dict_from_item(current_component))
-        context.rules_dict.update(ControlInterface.get_rules_dict_from_item(context.control_implementation))
-        context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(context.control_implementation))
+        for item in [current_component, context.control_implementation]:
+            context.rules_dict.update(ControlInterface.get_rules_dict_from_item(item))
+            context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(item))
+        # only the control_imp has set_params
         context.rules_param_vals.update(
             ControlInterface.get_param_vals_from_control_imp(context.control_implementation)
         )

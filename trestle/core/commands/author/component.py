@@ -300,6 +300,7 @@ class ComponentAssemble(AuthorCommonCommand):
         cat_interface = CatalogInterface()
         for source_dir in source_dirs:
             profile_title = ComponentAssemble._get_profile_title_from_dir(md_path / source_dir)
+            # context has defined component and comp_name
             imp_reqs = cat_interface.read_catalog_imp_reqs(md_path / source_dir, avail_comps, context)
             # the imp_reqs need to be inserted into the correct control_implementation
             for imp_req in imp_reqs:

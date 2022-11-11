@@ -67,6 +67,8 @@ def setup_component_generate(trestle_root: pathlib.Path) -> Tuple[pathlib.Path, 
     simp_cat_dir = trestle_root / 'simp_cat_dir'
     simp_cat_dir.mkdir()
     simp_cat_path = simp_cat_dir / 'catalog.json'
+    # need to place the catalog in an arbitrary file path so it forces creation of a source_001 md subdirectory
+    # this means changing the source line in the component json file to point to it
     shutil.copyfile(test_utils.JSON_TEST_DATA_PATH / 'simple_catalog_no_parts.json', simp_cat_path)
     comp_path = trestle_root / 'component-definitions/test_comp/component-definition.json'
     new_source = f'            "source": "{simp_cat_path.as_uri()}",\n'

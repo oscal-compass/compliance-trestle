@@ -17,7 +17,7 @@ import pathlib
 import re
 import string
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
@@ -33,7 +33,6 @@ from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlIn
 from trestle.core.markdown.markdown_api import MarkdownAPI
 from trestle.core.markdown.markdown_processor import MarkdownNode
 from trestle.oscal import common
-from trestle.oscal import component as comp
 from trestle.oscal import profile as prof
 
 logger = logging.getLogger(__name__)
@@ -413,6 +412,7 @@ class ControlReader():
         subnode_kill: List[int] = []
         status_str = None
         remarks_str = None
+        rules_list: List[str] = []
         for ii, subnode in enumerate(node.subnodes):
             if subnode.key.find(const.IMPLEMENTATION_STATUS_REMARKS_HEADER) >= 0:
                 remarks_str = subnode.key.split(maxsplit=4)[-1]
@@ -420,8 +420,8 @@ class ControlReader():
             elif subnode.key.find(const.IMPLEMENTATION_STATUS_HEADER) >= 0:
                 status_str = subnode.key.split(maxsplit=3)[-1]
                 subnode_kill.append(ii)
-            # this effectively ignores the Rules: and regards them as read-only
             elif subnode.key.find('Rules:') >= 0:
+                rules_list = [text[2:] for text in subnode.content.text if text.startswith('- ')]
                 subnode_kill.append(ii)
         if status_str:
             new_status = common.ImplementationStatus(state=status_str, remarks=remarks_str)
@@ -430,6 +430,8 @@ class ControlReader():
             if label not in comp_dict[comp_name]:
                 comp_dict[comp_name][label] = ComponentImpInfo(prose='', rules=[])
             comp_dict[comp_name][label].status = new_status
+        if rules_list:
+            comp_dict[comp_name][label].rules = rules_list
         delete_list_from_list(node.subnodes, subnode_kill)
         for subnode in as_list(node.subnodes):
             ControlReader._add_node_to_dict(comp_name, label, comp_dict, subnode, control_id, comp_list, context)
@@ -445,32 +447,33 @@ class ControlReader():
         return ''
 
     @staticmethod
-    def _add_component_to_dict(
-        control_imp: comp.ControlImplementation, comp_title: str, control: Optional[cat.Control], comp_dict: CompDict
-    ) -> Tuple[Dict[str, Dict[str, str]], List[str]]:
+    def _add_component_to_dict(context: ControlContext, control: Optional[cat.Control],
+                               comp_dict: CompDict) -> Tuple[Dict[str, Dict[str, str]], List[str]]:
         """Add imp_reqs for this control and this component to the component dictionary."""
-        control_id = control.id if control else 'temp'
-        params_dict = {}
-        all_rules = set()
-        sub_comp_dict = {}
-        for imp_req in ControlInterface.get_control_imp_reqs(control_imp, control_id):
-            # if description is same as control id regard it as not having prose
-            # add top level control guidance with no statement id
-            prose = ControlReader._handle_empty_prose(imp_req.description, control_id)
-            params_dict.update(ControlInterface.get_params_dict_from_item(imp_req))
-            rules_list = ControlInterface.get_rule_list_for_item(imp_req)
-            all_rules.update(rules_list)
-            status = ControlInterface.get_status_from_props(imp_req)
-            sub_comp_dict[''] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
-            for statement in as_list(imp_req.statements):
-                rules_list = ControlInterface.get_rule_list_for_item(statement)
-                all_rules.update(rules_list)
-                status = ControlInterface.get_status_from_props(statement)
-                label = ControlReader._get_statement_label(control, statement.statement_id)
-                prose = ControlReader._handle_empty_prose(statement.description, statement.statement_id)
-                sub_comp_dict[label] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
-        if sub_comp_dict:
-            comp_dict[comp_title] = sub_comp_dict
+        params_dict: Dict[str, Dict[str, str]] = {}
+        all_rules: Set[str] = set()
+        sub_comp_dict: Dict[str, ComponentImpInfo] = {}
+        if control:
+            component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+            for control_imp in as_list(component.control_implementations):
+                for imp_req in ControlInterface.get_control_imp_reqs(control_imp, control.id):
+                    # if description is same as control id regard it as not having prose
+                    # add top level control guidance with no statement id
+                    prose = ControlReader._handle_empty_prose(imp_req.description, control.id)
+                    params_dict.update(ControlInterface.get_params_dict_from_item(imp_req))
+                    rules_list = ControlInterface.get_rule_list_for_item(imp_req)
+                    all_rules.update(rules_list)
+                    status = ControlInterface.get_status_from_props(imp_req)
+                    sub_comp_dict[''] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
+                    for statement in as_list(imp_req.statements):
+                        rules_list = ControlInterface.get_rule_list_for_item(statement)
+                        all_rules.update(rules_list)
+                        status = ControlInterface.get_status_from_props(statement)
+                        label = ControlReader._get_statement_label(control, statement.statement_id)
+                        prose = ControlReader._handle_empty_prose(statement.description, statement.statement_id)
+                        sub_comp_dict[label] = ComponentImpInfo(prose=prose, status=status, rules=rules_list)
+            if sub_comp_dict:
+                comp_dict[context.comp_name] = sub_comp_dict
         return params_dict, sorted(all_rules)
 
     @staticmethod
@@ -575,12 +578,13 @@ class ControlReader():
 
     @staticmethod
     def read_all_implementation_prose_and_header(
-        control: cat.Control, control_file: pathlib.Path, context: ControlContext
+        control: Optional[cat.Control], control_file: pathlib.Path, context: ControlContext
     ) -> Tuple[CompDict, Dict[str, List[str]]]:
         """
         Find all labels and associated implementation prose in the markdown for this control.
 
         Args:
+            control: optional control used for finding statement labels
             control_file: path to the control markdown file
             context: context of the control usage
 
@@ -603,9 +607,7 @@ class ControlReader():
         # use context.rules_dict and params_dict to map rules
         if context.purpose == ContextPurpose.COMPONENT:
             # find rule info needed by this control
-            params_dict, rules_list = ControlReader._add_component_to_dict(
-                context.control_implementation, context.comp_name, control, comp_dict
-            )
+            params_dict, rules_list = ControlReader._add_component_to_dict(context, control, comp_dict)
             all_params = []
             if params_dict:
                 if not set(params_dict.keys()).issuperset(rules_list):
@@ -712,6 +714,8 @@ class ControlReader():
             raw_comp_name = ControlReader.simplify_name(comp_name)
             if raw_comp_name == ControlReader.simplify_name(const.SSP_MD_IMPLEMENTATION_QUESTION):
                 comp_info: ComponentImpInfo = list(raw_comp_dict[raw_comp_name].items())[0][1]
+                if context.purpose == ContextPurpose.COMPONENT and not comp_info.rules:
+                    continue
                 imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
                 if comp_info.status:
                     ControlInterface.insert_status_in_props(imp_req, comp_info.status)
@@ -726,12 +730,16 @@ class ControlReader():
                 raw_avail_comps[raw_comp_name] = component
             # now create statements to hold the by-components and assign the statement id
             for label, comp_info in raw_comp_dict[raw_comp_name].items():
-                # if there is a statement label create by_comp - otherwise assign status and prose to imp_req
-                # create a new by-component to add to this statement
-                if context.purpose == ContextPurpose.COMPONENT and not label:
-                    imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
-                    ControlInterface.insert_status_in_props(imp_req, comp_info.status)
-                    continue
+                if context.purpose == ContextPurpose.COMPONENT:
+                    # only assemble responses with associated rules
+                    if not comp_info.rules:
+                        continue
+                    # if there is a statement label create by_comp - otherwise assign status and prose to imp_req
+                    # create a new by-component to add to this statement
+                    if not label:
+                        imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
+                        ControlInterface.insert_status_in_props(imp_req, comp_info.status)
+                        continue
                 by_comp: generic.GenericByComponent = generic.GenericByComponent.generate()
                 # link it to the component uuid
                 by_comp.component_uuid = component.uuid
