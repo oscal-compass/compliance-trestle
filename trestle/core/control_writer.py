@@ -193,7 +193,7 @@ class ControlWriter():
                         part_label = prt.id.split('.')[-1] if not part_label else part_label
                         # for comp def only write out part if rules apply to it
                         if comp_def_format:
-                            # for comp_def there is only one component in dic
+                            # for comp_def there is only one component in the comp_dict
                             dic = list(comp_dict.values())[0]
                             if (part_label not in dic) or (not dic[part_label].rules):
                                 continue

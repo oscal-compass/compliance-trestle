@@ -715,6 +715,7 @@ class ControlReader():
             if raw_comp_name == ControlReader.simplify_name(const.SSP_MD_IMPLEMENTATION_QUESTION):
                 comp_info: ComponentImpInfo = list(raw_comp_dict[raw_comp_name].items())[0][1]
                 if context.purpose == ContextPurpose.COMPONENT and not comp_info.rules:
+                    logger.debug(f'Control {control_id} not written to md because it has no rules associated.')
                     continue
                 imp_req.description = ControlReader._handle_empty_prose(comp_info.prose, control_id)
                 if comp_info.status:
