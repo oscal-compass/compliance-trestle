@@ -24,6 +24,7 @@ import trestle.core.generators as gens
 import trestle.core.generic_oscal as generic
 import trestle.oscal.catalog as cat
 from trestle.common.err import TrestleError
+from trestle.common.file_utils import prune_empty_dirs
 from trestle.common.list_utils import as_filtered_list, as_list, delete_item_from_list, get_item_from_list, none_if_empty  # noqa E501
 from trestle.common.model_utils import ModelUtils
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -657,15 +658,18 @@ class CatalogInterface():
 
     @staticmethod
     def _get_all_rules_params_and_vals(context: ControlContext) -> None:
-        """Get rules, params, vals from the control implementation."""
+        """Get rules, params, vals from the control implementation and defined component."""
         # rules are defined in the control_imp itself
         # but they are linked to controls via the imp_reqs
         # param values may be set both by the control_imp and the imp_req
         context.rules_dict = {}
         context.rules_params_dict = {}
         context.rules_param_vals = {}
-        context.rules_dict.update(ControlInterface.get_rules_dict_from_item(context.control_implementation))
-        context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(context.control_implementation))
+        current_component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+        for item in [current_component, context.control_implementation]:
+            context.rules_dict.update(ControlInterface.get_rules_dict_from_item(item))
+            context.rules_params_dict.update(ControlInterface.get_params_dict_from_item(item))
+        # only the control_imp has set_params
         context.rules_param_vals.update(
             ControlInterface.get_param_vals_from_control_imp(context.control_implementation)
         )
@@ -886,6 +890,9 @@ class CatalogInterface():
             self.write_catalog_as_ssp_markdown(context, part_id_map)
         else:
             self.write_catalog_as_catalog(context, part_id_map)
+
+        # prune any directories that have no markdown files
+        prune_empty_dirs(context.md_root, '*.md')
 
     @staticmethod
     def _get_group_ids_and_dirs(md_path: pathlib.Path) -> Dict[str, pathlib.Path]:

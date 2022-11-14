@@ -35,6 +35,7 @@ from trestle.common.list_utils import as_filtered_list, none_if_empty
 from trestle.common.str_utils import AliasMode, alias_to_classname
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.remote import cache
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -913,3 +914,14 @@ class ModelUtils:
         ]
         type_list = uuid_type_list if ignore_all_uuid else [common.LastModified]
         return not ModelUtils._objects_differ(model_a, model_b, type_list, ['last-modified'], ignore_all_uuid)
+
+    @staticmethod
+    def get_title_from_model_uri(trestle_root: pathlib.Path, uri: str) -> str:
+        """Get title from model at uri."""
+        try:
+            fetcher = cache.FetcherFactory.get_fetcher(trestle_root, uri)
+            model, _ = fetcher.get_oscal()
+            return model.metadata.title
+        except TrestleError as e:
+            logger.warning(f'Error finding title for model at uri {uri}: {e}')
+            raise

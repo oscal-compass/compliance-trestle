@@ -588,7 +588,7 @@ The `trestle author component-generate` command takes a JSON ComponentDefinition
 
 The command has few options compared to other author commands and only requires specifying `--name` and `--output` for the ComponentDefinition and output markdown directory, respectively.
 
-Here is an example of the generated markdown for the component `OSCO` in the ComponentDefinition file.  Note that this file will be under the subdirectory `OSCO` of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the `OSCO` one.
+Here is an example of the generated markdown for the component `OSCO` in the ComponentDefinition file.  Note that this file will be under the subdirectory `OSCO/source_name` of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the `OSCO` one.  Here `source_name` refers to the name of the profile or catalog in the ComponentDefinition that is the source for this control.  The control markdown files are written into directories split by both component name and source name.  If the source refers to a general uri and not a named profile or catalog in the trestle directory, then names such as `source_001` and `source_002` are assigned.  The actual source title can be found in the yaml header of any of the control markdown files.
 
 <details>
 <summary>Example of control markdown after `component-generate`</summary>
@@ -669,29 +669,15 @@ Ensure that the API server pod specification file permissions are set to 567 or 
 
 ______________________________________________________________________
 
-## Implementation a.
+## Implementation b.
 
 Implement as needed for OSCO
 
+### Rules:
+
+  - XCCDF
+
 ### Implementation Status: partial
-
-______________________________________________________________________
-
-## Implementation b.
-
-Add control implementation description here for item ac-1_smt.b
-
-### Implementation Status: planned
-
-______________________________________________________________________
-
-## Implementation c.
-
-Add control implementation description here for item ac-1_smt.c
-
-### Implementation Status: planned
-
-______________________________________________________________________
 
 ```
 
@@ -772,6 +758,11 @@ The markdown header lists all the rules that apply to this control, along with t
 </details>
 
 The values for rule parameters are specified using the normal `SetParameter` mechanism in the ControlImplementation, but it's important to note that there are two different types of `SetParameter`: Those that apply to the normal parameters of the control, and those that apply strictly to the rules.
+
+Note that markdown for a control is only created if there are rules associated with the control, and within the markdown the only parts written out that
+prompt for responses are parts that have rules assigned.  Thus the output markdown directory may be highly pruned of both controls and groups of controls if only some controls have rules associated.
+
+In addition, the rules should be regarded as read-only from the editing perspective, and you cannot change the rules associated with a control or its parts.
 
 `trestle author component-assemble`
 

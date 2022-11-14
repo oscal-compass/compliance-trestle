@@ -135,6 +135,8 @@ class ControlWriter():
         level = 3 if comp_def_format else 4
         if part_label in comp_info:
             info = comp_info[part_label]
+            if comp_def_format and not info.rules:
+                return
             self._md_file.new_paragraph()
             self._md_file.new_line(info.prose)
             self._insert_rules(info.rules, level)
@@ -186,14 +188,20 @@ class ControlWriter():
                     for prt in part.parts:
                         if prt.name != 'item':
                             continue
+                        # if no label guess the label from the sub-part id
+                        part_label = ControlInterface.get_label(prt)
+                        part_label = prt.id.split('.')[-1] if not part_label else part_label
+                        # for comp def only write out part if rules apply to it
+                        if comp_def_format:
+                            # for comp_def there is only one component in the comp_dict
+                            dic = list(comp_dict.values())[0]
+                            if (part_label not in dic) or (not dic[part_label].rules):
+                                continue
                         if not did_write_part:
                             self._md_file.new_line(const.SSP_MD_LEAVE_BLANK_TEXT)
                             # insert extra line to make mdformat happy
                             self._md_file._add_line_raw('')
                         self._md_file.new_hr()
-                        # if no label guess the label from the sub-part id
-                        part_label = ControlInterface.get_label(prt)
-                        part_label = prt.id.split('.')[-1] if not part_label else part_label
                         self._md_file.new_header(level=2, title=f'Implementation for part {part_label}')
                         if not self._has_prose(part_label, comp_dict):
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_ITEM_TEXT} {prt.id}')
@@ -439,6 +447,10 @@ class ControlWriter():
         control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
         # first read the existing markdown header and content if it exists
         comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control, control_file, context)
+        # only write control for component markdown if rules apply to it
+        if (context.purpose == ContextPurpose.COMPONENT and context.to_markdown
+                and const.COMP_DEF_RULES_TAG not in header):
+            return
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 

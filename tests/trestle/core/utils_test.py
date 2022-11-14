@@ -17,12 +17,17 @@
 import copy
 import pathlib
 
+from _pytest.monkeypatch import MonkeyPatch
+
 from pydantic import ValidationError
 
 import pytest
 
+from tests import test_utils
+
 import trestle.common.const as const
 import trestle.common.err as err
+import trestle.common.file_utils as futils
 import trestle.common.type_utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
@@ -33,6 +38,7 @@ import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 from trestle.common import str_utils
+from trestle.common.err import TrestleError
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import AliasMode
 
@@ -327,3 +333,29 @@ def test_models_are_equivalent(simplified_nist_catalog: catalog.Catalog) -> None
     assert not ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b)
     # ignoring uuids passes comparison
     assert ModelUtils.models_are_equivalent(simplified_nist_catalog, cat_b, True)
+
+
+def test_get_title_from_source(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test get source title."""
+    prof_uri = str(test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json')
+    assert ModelUtils.get_title_from_model_uri(tmp_trestle_dir, prof_uri) == 'Trestle test profile'
+    with pytest.raises(TrestleError):
+        ModelUtils.get_title_from_model_uri(tmp_trestle_dir, 'foo_bar')
+
+
+def test_prune_empty_dirs(tmp_path: pathlib.Path) -> None:
+    """Test prune empty dirs."""
+    (tmp_path / 'sub1/sub11/sub111').mkdir(parents=True)
+    (tmp_path / 'sub2/sub21/sub211').mkdir(parents=True)
+    (tmp_path / 'sub3/sub31/sub311/sub3111').mkdir(parents=True)
+    foo_path = tmp_path / 'sub1/sub11/foo.md'
+    foo_path.touch()
+    txt_path = tmp_path / 'sub1/sub11/sub111/readme.txt'
+    txt_path.touch()
+    bar_path = tmp_path / 'sub2/bar.md'
+    bar_path.touch()
+    futils.prune_empty_dirs(tmp_path, '*.md')
+    assert not (tmp_path / 'sub3').exists()
+    assert not (tmp_path / 'sub1/sub11/sub111').exists()
+    assert foo_path.exists()
+    assert bar_path.exists()
