@@ -921,7 +921,7 @@ class ModelUtils:
         try:
             fetcher = cache.FetcherFactory.get_fetcher(trestle_root, uri)
             model, _ = fetcher.get_oscal()
+            return model.metadata.title
         except TrestleError as e:
             logger.warning(f'Error finding title for model at uri {uri}: {e}')
             raise
-        return model.metadata.title
