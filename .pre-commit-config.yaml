@@ -15,8 +15,8 @@ repos:
         files: "^(trestle|tests|scripts)"
         stages: [commit]
         additional_dependencies: [toml]
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+  - repo: https://github.com/PyCQA/flake8
+    rev: 5.0.4
     hooks:
       - id: flake8
         args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605", "--illegal-import-packages=filecmp"]

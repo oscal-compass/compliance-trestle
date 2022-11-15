@@ -138,7 +138,7 @@ class ElementPath:
     def get_obm_wrapped_type(self,
                              root_model: Optional[Type[Any]] = None,
                              use_parent: bool = False) -> Type[OscalBaseModel]:
-        """Get the type of the element. If the type is a collection wrap the type in an OscalBaseModel as a __root__ element.
+        """Get the type of the element. Wraps the collection type in an OscalBaseModel as a __root__ element.
 
         This should principally be used for validating content.
 
