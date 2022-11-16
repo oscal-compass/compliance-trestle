@@ -14,7 +14,8 @@ The second is a one-command transformation from `Tanium.results` to `OSCAL.json`
 
 Linux, Mac
 
-<details>
+<details markdown>
+
 <summary>Windows</summary>
 
 Make these changes:
@@ -90,7 +91,8 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input-doc/Tanium.comply-nist-results' > tanium/tests/data/tasks/tanium/input/Tanium.doc-json
 ```
 
-<details>
+<details markdown>
+
 <summary>sample: Tanium.doc-json</summary>
 
 ```json
@@ -161,7 +163,8 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-result-to-oscal-ar.config' > tanium/demo-tanium-result-to-oscal-ar.config
 ```
 
-<details>
+<details markdown>
+
 <summary>sample: demo-tanium-result-to-oscal-ar.config</summary>
 
 ```conf
@@ -192,7 +195,8 @@ Task: tanium-result-to-oscal-ar executed successfully.
 (venv.trestle)$ cat tests/data/tasks/tanium/runtime/Tanium.oscal.json
 ```
 
-<details>
+<details markdown>
+
 <summary>sample:  Tanium.oscal.json</summary>
 
 ```json

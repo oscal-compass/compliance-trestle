@@ -8,14 +8,17 @@ The key modes of authoring are *-generate* and *-assemble*.  During *-generate* 
 
 A third mode of authoring is *-filter*, where parts of a document are removed.  This allows one large master document to be represented in simpler ways with, e.g. proprietary prose culled in form intended for consumption outside a company.
 
-<details><summary>Integration with git and CI/CD</summary>
+<details markdown>
+
+<summary>Integration with git and CI/CD</summary>
 The command line interface in Trestle makes a powerful combination with git and CI/CD environments (Continuous Integration, Continuous Delivery or Deployment) when the trestle commands are performed via github actions or equivalent.  This allows different classes of users based on 1) their access to the repository 2) the changes to documents they are allowed to commit, and 3) the changes they can make to actions that are triggered by a commit.  As an example, a command line option may limit the type of content added to a profile, and if disallowed changes are detected during commit - the commit will be rejected.  This, in combination with having all controls as individual markdown files organized by groups in directories, makes management and tracking of author edits robust and automatically controlled by the built-in features of the respository.
 
 For an example of actions triggered by a commit, a change to a control in a catalog could generate a pull request that is approved by someone with appropriate authority, and when it is later merged it triggers notification downstream to authors of profiles that import that catalog.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>The author commands</summary>
 
 The author commands are:
@@ -33,7 +36,8 @@ Note that version 1.x of trestle creates SSP's by adding prose directly to the S
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Some details of the author commands</summary>
 
 The markdown files for controls usually have a YAML header at the top containing metadata about the control.  Sometimes that information is read-only and intended as additional information useful during markdown editing, but in other cases the content may be edited and incorporated as new values for the control after `-assemble`.  In addition, most `-generate` commands allow specifying a separate YAML header file containing information either needed by the command, or intended to be incorporated into the header of each control markdown file.  When generating markdown a YAML header may be optionally provided, and if so, the option `--overwrite-header-values` will cause the values in the provided YAML header to overwrite the value in the markdown file's header for any items that are common.  Otherwise the provided YAML header will simply insert any values not already in the markdown header. By default, Trestle will preserve the history of the changes in generated markdowns, however `--force-overwrite` option can be used to overwrite markdowns with content from JSON. Note that this option will completely delete all existing markdowns (in the given `output` folder) without saving any changes. To save the changes, run assemble first.
@@ -45,7 +49,8 @@ For a complete standalone demonstration of the SSP generation process with trest
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Background on underlying concepts</summary>
 
 In order to understand the specific operations handled by these commands, it is helpful to clarify some of the underlying OSCAL structures and how they can be edited in markdown form.  This tutorial should be viewed in the context of the extensive documentation provided by [OSCAL](https://pages.nist.gov/OSCAL).
@@ -78,7 +83,8 @@ NOTE: We use `json` format for specifying OSCAL files in this tutorial, but it i
 
 ## The author commands for markdown generation and assembly (to JSON)
 
-<details>
+<details markdown>
+
 <summary>`trestle author catalog-generate` and `trestle author catalog-assemble`</summary>
 
 `catalog-generate` takes an existing json catalog and writes it out as markdown files for each control in a user-specified directory.  That directory will contain subdirectories for each group in the catalog, and those directories may contain subdirectories for groups within groups.  But controls containing controls are always split out into a series of controls in the same directory - and each control markdown file corresponds to a single control.
@@ -87,7 +93,8 @@ We now look at the contents of a typical control markdown file.
 
 A Control may contain many parts, but only one of them is a Statement, which describes the function of the control.  The statement itself is broken down into separate items, each of which may contain parameter id's in "moustache" (`{{}}`) brackets.  Below is an example of a control as generated in markdown form by the `catalog-generate` command.
 
-<details>
+<details markdown>
+
 <summary>Control example</summary>
 
 ```markdown
@@ -182,12 +189,14 @@ Note that `catalog-assemble` can instantiate a catalog anew from a manually crea
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>`trestle author profile-generate` and `trestle author profile-assemble`</summary>
 
 The background text above conveys how a profile pulls controls from catalogs and makes modifications to them, and the `trestle profile` tools let you change the way those modifications are made.  In addition to selecting controls and setting parameters, a profile may add new parts to a control that provide additional guidance specific to a certain use case.  `profile-generate` is run with the command, `trestle author profile-generate --name profile_name --output markdown_dir`.  It will load the specified profile name from the trestle workspace (it must have been imported into the trestle workspace prior) and create its corresponding resolved profile catalog - but *without* applying any of its `Adds` of additonal guidance content or `SetParameters`.  It will make all other modifications, but the `Adds` and `SetParameters` are kept separate, as shown below:
 
-<details>
+<details markdown>
+
 <summary>Example of control markdown after `profile-generate`</summary>
 
 ```markdown
@@ -356,7 +365,8 @@ Keep in mind that the header in the `profile-` tools corresponds to the `SetPara
 
 As with `catalog-assemble` described above, a new file is written out only if there are changes to the model relative to an existing output file.
 
-<details>
+<details markdown>
+
 <summary>Use of Sections in `profile-generate` and `profile-assemble`</summary>
 
 The addition of guidance sections in the `profile` tools requires special handling because the corresponding parts have both a name and a title, where the name is a short form used as an id in the json schema, while the title is the readable form intended for final presentation.  An example is `ImplGuidance` vs. `Implementation Guidance`.  The trestle authoring tools strive to make the markdown as readable as possible, therefore the headings for sections use the title - which means somehow there is a need for a mapping from the short name to the long title for each section.  This mapping is provided in several ways:  During `profile-generate` you may provide a `--sections "ImplGuidance:Implementation Guidance,ExpEvidence:Expected Evidence"` option that would provide title values for `ImplGuidance` and `ExpEvidence`.  This dictionary mapping is then inserted into the yaml header of each control's markdown.  You may also add this mapping directly to a yaml file that is passed in during `profile-generate`, which is preferable if the list of sections is long.  The sections should be entered in the yaml header in a section titled, `x-trestle-sections`.
@@ -371,7 +381,8 @@ Note that these section options are all optional and there isn't a need to provi
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Markdown Specifications for Editable Content.</summary>
 
 For the ease of editing markdown in Github, Trestle's markdown parser follows [Github Flavoured Markdown (GFM) specifications](https://github.github.com/gfm/) and therefore only certain Control headers will be parsed and added to the control.
@@ -415,7 +426,8 @@ In all cases above Trestle markdown parser will skip such headers and it will be
 </details>
 </details>
 
-<details>
+<details markdown>
+
 <summary>`trestle author ssp-generate` and `trestle author ssp-assemble`</summary>
 
 The `ssp-generate` sub-command creates a partial SSP (System Security Plan) from a profile and optional yaml header file.  `ssp-assemble` (described below) can later assemble the markdown files into a single json SSP file.  The profile contains a list of imports that are either a direct reference to a catalog, or an indirect reference via a profile.
@@ -441,7 +453,8 @@ Similar to `catalog-generate`, the `--yaml` and `--overwrite-header-values` flag
 
 The resulting files look like this:
 
-<details>
+<details markdown>
+
 <summary>Example of control markdown after `ssp-generate`</summary>
 
 ```markdown
@@ -570,7 +583,8 @@ As with all the `assemble` tools, you may optionally specify a `--name` for a co
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>`trestle author ssp-filter`</summary>
 
 Once you have an SSP in the trestle directory you can filter its contents with a profile by using the command `trestle author ssp-filter`.  The SSP is assumed to contain a superset of the controls needed by the profile, and the filter operation will generate a new SSP with only those controls needed by the profile.  The filter command is invoked as:
@@ -581,7 +595,8 @@ Both the SSP and profile must be present in the trestle directory.  This command
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>`trestle author component-generate`</summary>
 
 The `trestle author component-generate` command takes a JSON ComponentDefinition file and creates markdown for its controls in separate directories for each of the DefinedComponents in the file.  This allows specifying the implementation response and status for each component separately in separate markdown files for a control.  In addition, the markdown captures Rules in the control that specify descriptions and parameter values that apply to the expected responses.
@@ -590,7 +605,8 @@ The command has few options compared to other author commands and only requires 
 
 Here is an example of the generated markdown for the component `OSCO` in the ComponentDefinition file.  Note that this file will be under the subdirectory `OSCO/source_name` of the specified output directory - and any other DefinedComponents will have corresponding subdirectories level with the `OSCO` one.  Here `source_name` refers to the name of the profile or catalog in the ComponentDefinition that is the source for this control.  The control markdown files are written into directories split by both component name and source name.  If the source refers to a general uri and not a named profile or catalog in the trestle directory, then names such as `source_001` and `source_002` are assigned.  The actual source title can be found in the yaml header of any of the control markdown files.
 
-<details>
+<details markdown>
+
 <summary>Example of control markdown after `component-generate`</summary>
 
 ```markdown
@@ -685,7 +701,8 @@ Implement as needed for OSCO
 
 There is no direct way to specify rules in the ComponentDefinition, so they are specified via properties as shown here:
 
-<details>
+<details markdown>
+
 <summary>Representation of rules in the `props` of a `ComponentDefinition`</summary>
 ```json
 [
@@ -731,7 +748,8 @@ In this scheme the rules have a `Rule_Id` (`XCCDF` in this example) and an assoc
 
 The markdown header lists all the rules that apply to this control, along with their descriptions, and for each implementation response, the rules that apply to it are shown.  The association of an ImplementedRequirement with a rule is again done with properties as shown here:
 
-<details>
+<details markdown>
+
 <summary>Linking of `ImplementedRequirement` to a rule</summary>
 ```json
 {
@@ -772,7 +790,8 @@ As mentioned above, trestle version 1.x allows generation and assembly of markdo
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>Summary of options used by the `catalog`, `profile`, `component` and `ssp` authoring tools.</summary>
 
 The provided options for the generation and assembly of documents in the ssp workflow is rich and powerful, but can also be confusing.  To help see how they all relate please consult the following diagram showing the required and optional command line arguments for each command.  The checkboxes indicate required and the open circles represent optional.
