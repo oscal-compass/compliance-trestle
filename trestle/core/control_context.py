@@ -43,16 +43,17 @@ class ControlContext:
     trestle_root: pathlib.Path
     md_root: pathlib.Path
     prompt_responses: bool
-    additional_content: bool
     overwrite_header_values: bool
     set_parameters_flag: bool
     yaml_header: Optional[Dict[Any, Any]] = None
     sections_dict: Optional[Dict[str, str]] = None
     profile: Optional[prof.Profile] = None
-    required_sections: Optional[str] = None
-    allowed_sections: Optional[str] = None
+    required_sections: Optional[List[str]] = None
+    allowed_sections: Optional[List[str]] = None
     comp_def: Optional[comp.ComponentDefinition] = None
     comp_name: Optional[str] = None
+    component: Optional[comp.DefinedComponent] = None
+    comp_def_name_list: Optional[List[str]] = None
     inherited_props: Optional[Dict[str, Any]] = None
     rules_dict: Optional[Dict[str, Dict[str, str]]] = None
     rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None
@@ -68,16 +69,17 @@ class ControlContext:
         trestle_root: pathlib.Path,
         md_root: pathlib.Path,
         prompt_responses=False,
-        additional_content=False,
         overwrite_header_values=False,
         set_parameters_flag=False,
         yaml_header: Optional[Dict[Any, Any]] = None,
         sections_dict: Optional[Dict[str, str]] = None,
         profile: Optional[prof.Profile] = None,
-        required_sections: Optional[str] = None,
-        allowed_sections: Optional[str] = None,
+        required_sections: Optional[List[str]] = None,
+        allowed_sections: Optional[List[str]] = None,
         comp_def: Optional[comp.ComponentDefinition] = None,
         comp_name: Optional[str] = None,
+        component: Optional[comp.DefinedComponent] = None,
+        comp_def_name_list: Optional[List[str]] = None,
         inherited_props: Optional[Dict[str, Any]] = None,
         rules_dict: Optional[Dict[str, Dict[str, str]]] = None,
         rules_params_dict: Optional[Dict[str, Dict[str, Any]]] = None,
@@ -92,7 +94,6 @@ class ControlContext:
             trestle_root,
             md_root,
             prompt_responses,
-            additional_content,
             overwrite_header_values,
             set_parameters_flag,
             yaml_header=yaml_header,
@@ -102,6 +103,8 @@ class ControlContext:
             allowed_sections=allowed_sections,
             comp_def=comp_def,
             comp_name=comp_name,
+            component=component,
+            comp_def_name_list=comp_def_name_list,
             inherited_props=inherited_props,
             rules_dict=rules_dict,
             rules_params_dict=rules_params_dict,
@@ -125,7 +128,6 @@ class ControlContext:
             context.trestle_root,
             context.md_root,
             context.prompt_responses,
-            context.additional_content,
             context.overwrite_header_values,
             context.set_parameters_flag,
             yaml_header=copy.deepcopy(context.yaml_header),
@@ -135,6 +137,8 @@ class ControlContext:
             allowed_sections=context.allowed_sections,
             comp_def=context.comp_def,
             comp_name=context.comp_name,
+            component=context.component,
+            comp_def_name_list=context.comp_def_name_list,
             inherited_props=copy.deepcopy(context.inherited_props),
             rules_dict=copy.deepcopy(context.rules_dict),
             rules_params_dict=copy.deepcopy(context.rules_params_dict),

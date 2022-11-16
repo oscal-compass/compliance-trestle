@@ -87,7 +87,8 @@ def test_ssp_writer(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, m
 
 def test_ssp_get_control_response(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test generating SSP from the sample profile and generate markdown representation of it."""
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name)
+    compdef_name = 'my_compdef'
+    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir, prof_name, ssp_name, compdef_name)
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 0
     ac1_path = tmp_trestle_dir / 'my_ssp/ac/ac-1.md'

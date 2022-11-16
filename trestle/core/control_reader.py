@@ -24,7 +24,7 @@ import trestle.oscal.catalog as cat
 from trestle.common import const
 from trestle.common.common_types import TypeWithProps
 from trestle.common.err import TrestleError
-from trestle.common.list_utils import as_list, delete_list_from_list, merge_dicts, none_if_empty
+from trestle.common.list_utils import as_list, delete_list_from_list, merge_dicts, none_if_empty, set_or_pop
 from trestle.common.model_utils import ModelUtils
 from trestle.common.str_utils import spaces_and_caps_to_snake
 from trestle.core import generators as gens
@@ -454,7 +454,7 @@ class ControlReader():
         all_rules: Set[str] = set()
         sub_comp_dict: Dict[str, ComponentImpInfo] = {}
         if control:
-            component = ControlInterface.get_component_by_name(context.comp_def, context.comp_name)
+            component = context.component
             for control_imp in as_list(component.control_implementations):
                 for imp_req in ControlInterface.get_control_imp_reqs(control_imp, control.id):
                     # if description is same as control id regard it as not having prose
@@ -577,14 +577,50 @@ class ControlReader():
         return split_header[4].strip()
 
     @staticmethod
-    def read_all_implementation_prose_and_header(
-        control: Optional[cat.Control], control_file: pathlib.Path, context: ControlContext
-    ) -> Tuple[CompDict, Dict[str, List[str]]]:
+    def read_control_info_from_memory(control: cat.Control,
+                                      context: ControlContext) -> Tuple[CompDict, Dict[str, List[str]]]:
+        """Read information from memory needed in the markdown."""
+        comp_dict: CompDict = {}
+        yaml_header = {}
+        # use context.rules_dict and params_dict to map rules
+        if context.purpose in [ContextPurpose.COMPONENT, ContextPurpose.SSP]:
+            # find rule info needed by this control
+            params_dict, rules_list = ControlReader._add_component_to_dict(context, control, comp_dict)
+            all_params = []
+            if params_dict:
+                if not set(params_dict.keys()).issuperset(rules_list):
+                    raise TrestleError(f'Control {control.id} has a parameter assigned to a rule that is not defined.')
+                if context.rules_dict:
+                    all_params.extend(
+                        [
+                            {
+                                context.rules_dict[id_]['name']: context.rules_params_dict[id_]
+                                for id_ in context.rules_params_dict.keys()
+                            }
+                        ]
+                    )
+            if context.rules_dict:
+                rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
+                control_rules = [context.rules_dict[id_] for id_ in rule_ids]
+                set_or_pop(yaml_header, const.COMP_DEF_RULES_TAG, control_rules)
+                all_params.extend(
+                    [context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict]
+                )
+            if all_params:
+                yaml_header[const.RULES_PARAMS_TAG] = all_params
+            if context.rules_param_vals:
+                yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.rules_param_vals
+        return comp_dict, yaml_header
+
+    @staticmethod
+    def read_control_info_from_md(control_file: pathlib.Path, comp_dict: CompDict,
+                                  context: ControlContext) -> Tuple[CompDict, Dict[str, List[str]]]:
         """
         Find all labels and associated implementation prose in the markdown for this control.
 
         Args:
             control: optional control used for finding statement labels
+            comp_dict: component dictionary
             control_file: path to the control markdown file
             context: context of the control usage
 
@@ -598,49 +634,16 @@ class ControlReader():
             In addition, the implemented requirement will be queried for a
             property corresponding to implementation status and included if available.
         """
-        # this level only adds for known component but add_node_to_dict can add for other components
-        comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
-        control_id = control_file.stem
-
-        comp_dict: CompDict = {}
         yaml_header = {}
-        # use context.rules_dict and params_dict to map rules
-        if context.purpose == ContextPurpose.COMPONENT:
-            # find rule info needed by this control
-            params_dict, rules_list = ControlReader._add_component_to_dict(context, control, comp_dict)
-            all_params = []
-            if params_dict:
-                if not set(params_dict.keys()).issuperset(rules_list):
-                    raise TrestleError(f'Control {control_id} has a parameter assigned to a rule that is not defined.')
-                if context.rules_dict:
-                    all_params.extend(
-                        [
-                            {
-                                context.rules_dict[id_]['name']: context.rules_params_dict[id_]
-                                for id_ in context.rules_params_dict.keys()
-                            }
-                        ]
-                    )
-            if context.rules_dict:
-                rule_ids = [id_ for id_ in context.rules_dict.keys() if context.rules_dict[id_]['name'] in rules_list]
-                control_rules = [context.rules_dict[id_] for id_ in rule_ids]
-                if control_rules:
-                    yaml_header[const.COMP_DEF_RULES_TAG] = control_rules
-                all_params.extend(
-                    [context.rules_params_dict[id_] for id_ in rule_ids if id_ in context.rules_params_dict]
-                )
-            if all_params:
-                yaml_header[const.RULES_PARAMS_TAG] = all_params
-            if context.rules_param_vals:
-                yaml_header[const.COMP_DEF_RULES_PARAM_VALS_TAG] = context.rules_param_vals
 
         if not control_file.exists():
-            return comp_dict, yaml_header
+            return yaml_header
         # if the file exists, load the contents and do not use prose from comp_dict
         try:
+            control_id = control_file.stem
+            comp_name = context.comp_name if context.comp_name else const.SSP_MAIN_COMP_NAME
             md_api = MarkdownAPI()
-            new_yaml_header, control_md = md_api.processor.process_markdown(control_file)
-            yaml_header = new_yaml_header
+            yaml_header, control_md = md_api.processor.process_markdown(control_file)
 
             # first get the header strings, including statement labels, for statement imp reqs
             imp_string = '## Implementation '
@@ -668,7 +671,7 @@ class ControlReader():
 
         except TrestleError as e:
             raise TrestleError(f'Error occurred reading {control_file}: {e}')
-        return comp_dict, yaml_header
+        return yaml_header
 
     @staticmethod
     def _handle_empty_prose(prose: str, id_: str) -> str:
@@ -697,7 +700,8 @@ class ControlReader():
             statement_map keeps track of statements that may have several by_component responses.
         """
         control_id = control_file.stem
-        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(None, control_file, context)
+        comp_dict = {}
+        header = ControlReader.read_control_info_from_md(control_file, comp_dict, context)
 
         statement_map: Dict[str, generic.GenericStatement] = {}
         # create a new implemented requirement linked to the control id to hold the statements

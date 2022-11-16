@@ -306,6 +306,8 @@ HELP_ALLOWED_SECTIONS = 'Short names of sections that are allowed to be in the a
 
 HELP_MARKDOWN_NAME = 'Name of the output generated profile markdown folder'
 
+HELP_COMPDEFS = 'Comma-separated list of component-definitions for the ssp.'
+
 FILTER_BY_PROFILE = 'filter-by-profile'
 
 FILTER_BY_COMPONENTS = 'filter-by-components'

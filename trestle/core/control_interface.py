@@ -360,7 +360,7 @@ class ControlInterface:
     def get_rules_dict_from_item(item: TypeWithProps) -> Dict[str, Dict[str, str]]:
         """Get all rules found in this items props."""
         # rules is dict containing rule_id and description
-        rules = {}
+        rules_dict = {}
         name = ''
         desc = ''
         id_ = ''
@@ -373,9 +373,9 @@ class ControlInterface:
             # grab each pair in case there are multiple pairs
             # then clear and look for new pair
             if name and desc:
-                rules[id_] = {'name': name, 'description': desc}
+                rules_dict[id_] = {'name': name, 'description': desc}
                 name = desc = id_ = ''
-        return rules
+        return rules_dict
 
     @staticmethod
     def get_rule_list_for_item(item: TypeWithProps) -> List[str]:
@@ -417,6 +417,15 @@ class ControlInterface:
                 param['options'] = param.get('options', '')
                 new_params[rule_id] = param
         return new_params
+
+    @staticmethod
+    def get_rules_and_params_dict_from_item(
+        item: TypeWithProps
+    ) -> Tuple[Dict[str, Dict[str, str]], Dict[str, Dict[str, str]]]:
+        """Get the rule dict and params dict from item with props."""
+        rules_dict = ControlInterface.get_rules_dict_from_item(item)
+        params_dict = ControlInterface.get_params_dict_from_item(item)
+        return rules_dict, params_dict
 
     @staticmethod
     def get_param_vals_from_control_imp(control_imp: comp.ControlImplementation) -> Dict[str, str]:

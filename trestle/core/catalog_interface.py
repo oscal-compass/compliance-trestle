@@ -17,7 +17,7 @@ import copy
 import logging
 import pathlib
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Tuple
 
 import trestle.common.const as const
 import trestle.core.generators as gens
@@ -683,20 +683,22 @@ class CatalogInterface():
             }
         context.rules_params_dict = new_dict
 
+    @staticmethod
+    def _prune_controls(md_path: pathlib.Path, written_controls: Set[str]):
+        """Search directory and remove any controls that were not written out."""
+        pass
+
     def write_catalog_as_profile_markdown(
         self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]
     ) -> None:
         """Write out the catalog as profile markdown."""
-        required_section_list = context.required_sections.split(',') if context.required_sections else []
-        allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
-
         # Get the list of params for this profile from its set_params
         # this is just from the set_params
         full_param_dict = CatalogInterface._get_full_profile_param_dict(context.profile)
 
         label_map = self.get_statement_part_id_map(True)
         found_alters, _, _ = CatalogInterface.read_additional_content(
-            context.md_root, required_section_list, label_map, context.sections_dict, context.to_markdown
+            context.md_root, context.required_sections, label_map, context.sections_dict, context.to_markdown
         )
 
         # write out the controls
@@ -764,25 +766,55 @@ class CatalogInterface():
                 for pop in pop_list:
                     new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
 
-            new_context.required_sections = required_section_list
-            new_context.allowed_sections = allowed_section_list
             found_control_alters = [alter for alter in found_alters if alter.control_id == control.id]
 
             self._write_control_into_dir(new_context, control, part_id_map, found_control_alters)
 
     def write_catalog_as_ssp_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
-        """Write out the catalog as component markdown."""
-        # in component mode get rules, params, and param values from the current control_implementation
-        # the catalog is written out in pieces per control_imp
-        allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
+        """
+        Write out the catalog as component markdown.
 
-        # write out the controls
-        for control in self.get_all_controls_from_catalog(True):
-            # here we do special handling of how set-parameters merge with the yaml header
-            new_context = ControlContext.clone(context)
-            new_context.allowed_sections = allowed_section_list
+        For each compdef:
+            For each comp:
+                Load top level rules
+                for each control_imp:
+                    Load rules params values
+                    For each imp_req (bound to 1 control):
+                        Load control level rules and status
+                        Load part level rules
+                        If rules apply then write out control and add to list written out
+                        If control exists, read it and insert content
 
-            self._write_control_into_dir(new_context, control, part_id_map, [])
+
+        """
+        written_controls = set()
+        for comp_def_name in context.comp_def_name_list:
+            context.comp_def, _ = ModelUtils.load_top_level_model(
+                context.trestle_root,
+                comp_def_name,
+                comp.ComponentDefinition
+            )
+            for component in as_list(context.comp_def.components):
+                context.component = component
+                context.comp_name = component.title
+                # get top level rule info applying to all controls
+                comp_rules_dict, comp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(component)  # noqa E501
+                for control_imp in as_list(component.control_implementations):
+                    control_imp_rules_dict, control_imp_rules_params_dict = ControlInterface.get_rules_and_params_dict_from_item(control_imp)  # noqa E501
+                    rules_dict = comp_rules_dict
+                    rules_dict.update(control_imp_rules_dict)
+                    rules_params_dict = comp_rules_params_dict
+                    rules_params_dict.update(control_imp_rules_params_dict)
+                    for imp_req in as_list(control_imp.implemented_requirements):
+                        control_rules = ControlInterface.get_rule_list_for_item(imp_req)
+                        if control_rules:
+                            new_context = ControlContext.clone(context)
+                            new_context.rules_dict = rules_dict
+                            new_context.rules_params_dict = rules_params_dict
+                            control = self.get_control(imp_req.control_id)
+                            self._write_control_into_dir(new_context, control, part_id_map, [])
+                            written_controls.add(control.id)
+        CatalogInterface._prune_controls(context.md_root, written_controls)
 
     def write_catalog_as_component_markdown(
         self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]
@@ -825,9 +857,6 @@ class CatalogInterface():
 
     def write_catalog_as_catalog(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:
         """Write the catalog as a simple catalog."""
-        required_section_list = context.required_sections.split(',') if context.required_sections else []
-        allowed_section_list = context.allowed_sections.split(',') if context.allowed_sections else []
-
         # write out the controls
         for control in self.get_all_controls_from_catalog(True):
             # here we do special handling of how set-parameters merge with the yaml header
@@ -864,8 +893,6 @@ class CatalogInterface():
                 for pop in pop_list:
                     new_context.yaml_header[const.SET_PARAMS_TAG].pop(pop)
 
-            new_context.required_sections = required_section_list
-            new_context.allowed_sections = allowed_section_list
             self._write_control_into_dir(new_context, control, part_id_map, [])
 
     def write_catalog_as_markdown(self, context: ControlContext, part_id_map: Dict[str, Dict[str, str]]) -> None:

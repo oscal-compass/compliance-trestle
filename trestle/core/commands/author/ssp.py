@@ -16,7 +16,7 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -28,12 +28,11 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 from trestle.common import const, file_utils, log
 from trestle.common.err import TrestleError, handle_generic_command_exception
-from trestle.common.list_utils import as_list, none_if_empty
+from trestle.common.list_utils import as_list, comma_colon_sep_to_dict, comma_sep_to_list, none_if_empty
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.profile import sections_to_dict
 from trestle.core.commands.common.cmd_utils import clear_folder
 from trestle.core.commands.common.return_codes import CmdReturnCodes
 from trestle.core.control_context import ContextPurpose, ControlContext
@@ -53,6 +52,7 @@ class SSPGenerate(AuthorCommonCommand):
         file_help_str = 'Name of the profile model in the trestle workspace'
         self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
         self.add_argument('-o', '--output', help=const.HELP_MARKDOWN_NAME, required=True, type=str)
+        self.add_argument('-cd', '--compdefs', help=const.HELP_COMPDEFS, required=True, type=str)
         self.add_argument('-y', '--yaml-header', help=const.HELP_YAML_PATH, required=False, type=str)
         self.add_argument(
             '-fo', '--force-overwrite', help=const.HELP_FO_OUTPUT, required=False, action='store_true', default=False
@@ -81,13 +81,6 @@ class SSPGenerate(AuthorCommonCommand):
             if not file_utils.is_directory_name_allowed(args.output):
                 raise TrestleError(f'{args.output} is not an allowed directory name')
 
-            if args.force_overwrite:
-                try:
-                    logger.debug(f'Overwriting the content of {args.output}.')
-                    clear_folder(pathlib.Path(args.output))
-                except TrestleError as e:  # pragma: no cover
-                    raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
-
             profile_path = trestle_root / f'profiles/{args.profile}/profile.json'
 
             yaml_header: dict = {}
@@ -97,43 +90,91 @@ class SSPGenerate(AuthorCommonCommand):
                     yaml = YAML()
                     yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
                 except YAMLError as e:
-                    raise TrestleError(f'YAML error loading yaml header for ssp generation: {e}')
+                    raise TrestleError(f'YAML error loading yaml header {args.yaml_header} for ssp generation: {e}')
 
-            markdown_path = trestle_root / args.output
+            sections_dict = comma_colon_sep_to_dict(args.sections)
+            if const.STATEMENT in sections_dict:
+                raise TrestleError('Statement is not allowed as a section name.')
+            allowed_sections = comma_sep_to_list(args.allowed_sections)
 
-            profile_resolver = ProfileResolver()
+            compdef_name_list = comma_sep_to_list(args.compdefs)
 
-            # in ssp context we want to see missing value warnings
-            resolved_catalog = profile_resolver.get_resolved_profile_catalog(
-                trestle_root, profile_path, show_value_warnings=True
+            md_path = trestle_root / args.output
+
+            return self._generate_ssp_markdown(
+                trestle_root,
+                profile_path,
+                compdef_name_list,
+                md_path,
+                yaml_header,
+                sections_dict,
+                allowed_sections,
+                args.overwrite_header_values,
+                args.force_overwrite
             )
-            catalog_interface = CatalogInterface(resolved_catalog)
-
-            sections_dict: Dict[str, str] = {}
-            if args.sections:
-                sections_dict = sections_to_dict(args.sections)
-                if const.STATEMENT in sections_dict:
-                    raise TrestleError('Statement is not allowed as a section name.')
-                # add any existing sections from the controls but only have short names
-                control_section_short_names = catalog_interface.get_sections()
-                for short_name in control_section_short_names:
-                    if short_name not in sections_dict:
-                        sections_dict[short_name] = short_name
-                logger.debug(f'ssp sections dict: {sections_dict}')
-
-            context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, markdown_path)
-            context.yaml_header = yaml_header
-            context.sections_dict = sections_dict
-            context.prompt_responses = True
-            context.overwrite_header_values = args.overwrite_header_values
-            context.allowed_sections = args.allowed_sections
-
-            catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
-
-            return CmdReturnCodes.SUCCESS.value
 
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Error while writing markdown from catalog')
+
+    def _generate_ssp_markdown(
+        self,
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
+        compdef_name_list: List[str],
+        md_path: pathlib.Path,
+        yaml_header: Dict[str, Any],
+        sections_dict: Dict[str, str],
+        allowed_sections: List[str],
+        overwrite_header_values: bool,
+        force_overwrite: bool
+    ) -> int:
+        """
+        Generate the ssp markdown from the profile and compdefs.
+
+        Notes:
+        Get RPC from profile.
+        For each compdef:
+            For each comp:
+                Load top level rules
+                for each control_imp:
+                    Load rules params values
+                    For each imp_req (bound to 1 control):
+                        Load control level rules and status
+                        Load part level rules
+                        If rules apply then write out control and add to list written out
+                        If control exists, read it and insert content
+        """
+        if force_overwrite:
+            try:
+                logger.debug(f'Overwriting the content of {md_path}.')
+                clear_folder(pathlib.Path(md_path))
+            except TrestleError as e:  # pragma: no cover
+                raise TrestleError(f'Unable to overwrite contents of {md_path}: {e}')
+
+        context = ControlContext.generate(ContextPurpose.SSP, True, trestle_root, md_path)
+        context.yaml_header = yaml_header
+        context.sections_dict = sections_dict
+        context.prompt_responses = True
+        context.overwrite_header_values = overwrite_header_values
+        context.allowed_sections = allowed_sections
+        context.comp_def_name_list = compdef_name_list
+
+        profile_resolver = ProfileResolver()
+        # in ssp context we want to see missing value warnings
+        resolved_catalog = profile_resolver.get_resolved_profile_catalog(
+            trestle_root, profile_path, show_value_warnings=True
+        )
+        catalog_interface = CatalogInterface(resolved_catalog)
+        # add any existing sections from the controls but only have short names
+        control_section_short_names = catalog_interface.get_sections()
+        for short_name in control_section_short_names:
+            if short_name not in sections_dict:
+                sections_dict[short_name] = short_name
+        logger.debug(f'ssp sections dict: {sections_dict}')
+
+        catalog_interface.write_catalog_as_markdown(context, catalog_interface.get_statement_part_id_map(False))
+
+        return CmdReturnCodes.SUCCESS.value
 
 
 class SSPAssemble(AuthorCommonCommand):

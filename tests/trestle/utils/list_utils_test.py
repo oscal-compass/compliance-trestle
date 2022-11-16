@@ -13,7 +13,10 @@
 # limitations under the License.
 """Tests for list_utils module."""
 
+import pytest
+
 from trestle.common import list_utils
+from trestle.common.err import TrestleError
 
 
 def test_is_ordered_sublist() -> None:
@@ -81,3 +84,39 @@ def test_get_item_from_list() -> None:
     item = list_utils.get_item_from_list(items, 4, lambda x: list(x.values())[0])
     assert item == {'b': 4}
     assert items == [{'a': 2}, {'b': 4}, {'c': 6}]
+
+
+def test_comma_sep_to_list() -> None:
+    """Test comma sep to list."""
+    assert list_utils.comma_sep_to_list(None) == []
+    assert list_utils.comma_sep_to_list('a') == ['a']
+    assert list_utils.comma_sep_to_list('') == ['']
+    assert list_utils.comma_sep_to_list(' ab , c d,  ef  ') == ['ab', 'c d', 'ef']
+
+
+def test_comma_colon_sep_to_dict() -> None:
+    """Test comma colon sep to dict."""
+    assert list_utils.comma_colon_sep_to_dict(None) == {}
+    assert list_utils.comma_colon_sep_to_dict('a') == {'a': 'a'}
+    assert list_utils.comma_colon_sep_to_dict('') == {'': ''}
+    assert list_utils.comma_colon_sep_to_dict('  ') == {'': ''}
+    assert list_utils.comma_colon_sep_to_dict(' ab: cd ,de:fg, h , i : j k, m: n : op ') == {
+        'ab': 'cd', 'de': 'fg', 'h': 'h', 'i': 'j k', 'm': 'n : op'
+    }
+
+
+def test_deep_set_get() -> None:
+    """Test deep set."""
+    d = {}
+    path = ['foo', 'bar']
+    list_utils.deep_set(d, path, 'hello')
+    assert d['foo']['bar'] == 'hello'
+    assert list_utils.deep_get(d, path) == 'hello'
+    list_utils.deep_set(d, path, 'hi')
+    assert d['foo']['bar'] == 'hi'
+    assert list_utils.deep_get(d, ['foo', 'car'], 'there') == 'there'
+    path = []
+    with pytest.raises(TrestleError):
+        list_utils.deep_set(d, path, 'nope')
+    with pytest.raises(TrestleError):
+        list_utils.deep_get(d, path, 'nope')

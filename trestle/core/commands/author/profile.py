@@ -28,7 +28,7 @@ import trestle.oscal.common as com
 import trestle.oscal.profile as prof
 from trestle.common import file_utils
 from trestle.common.err import TrestleError, TrestleNotFoundError, handle_generic_command_exception
-from trestle.common.list_utils import as_filtered_list, as_list, none_if_empty
+from trestle.common.list_utils import as_filtered_list, as_list, comma_sep_to_list, comma_colon_sep_to_dict, deep_set, none_if_empty  # noqa E501
 from trestle.common.load_validate import load_validate_model_name
 from trestle.common.model_utils import ModelUtils
 from trestle.core.catalog_interface import CatalogInterface
@@ -42,33 +42,6 @@ from trestle.core.profile_resolver import ProfileResolver
 from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
-
-
-def sections_to_dict(sections: Optional[str]) -> Dict[str, str]:
-    """
-    Convert sections string to dict mapping short to long names.
-
-    Args:
-        sections: String containing comma-sep pars of short_name:long_name for sections
-
-    Returns:
-        Dict mapping short names to long names
-
-    Notes:
-        If the long name is not provided (single string and no :) the long name is same as short name.
-        This is needed to map the internal part name for a guidance section to its long name in the formatted markdown.
-    """
-    sections_dict: Dict[str, str] = {}
-    if sections:
-        section_pairs = sections.strip("'").split(',')
-        # section pair is a single string possibly containing : and is either short_name:long_name or just short_name
-        for section_pair in section_pairs:
-            if ':' in section_pair:
-                section_tuple = section_pair.split(':')
-                sections_dict[section_tuple[0].strip()] = section_tuple[1].strip()
-            else:
-                sections_dict[section_pair] = section_pair
-    return sections_dict
 
 
 class ProfileGenerate(AuthorCommonCommand):
@@ -119,9 +92,7 @@ class ProfileGenerate(AuthorCommonCommand):
                     raise TrestleError(f'Unable to overwrite contents of {args.output}: {e}')
 
             # combine command line sections with any in the yaml header, with priority to command line
-            sections_dict: Optional[Dict[str, str]] = None
-            if args.sections:
-                sections_dict = sections_to_dict(args.sections)
+            sections_dict = comma_colon_sep_to_dict(args.sections)
 
             profile_path = trestle_root / f'profiles/{args.name}/profile.json'
 
@@ -134,7 +105,7 @@ class ProfileGenerate(AuthorCommonCommand):
                 yaml_header,
                 args.overwrite_header_values,
                 sections_dict,
-                args.required_sections
+                comma_sep_to_list(args.required_sections)
             )
         except Exception as e:  # pragma: no cover
             return handle_generic_command_exception(e, logger, 'Generation of the profile markdown failed')
@@ -147,7 +118,7 @@ class ProfileGenerate(AuthorCommonCommand):
         yaml_header: dict,
         overwrite_header_values: bool,
         sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[str]
+        required_sections: List[str]
     ) -> int:
         """Generate markdown for the controls in the profile.
 
@@ -158,7 +129,7 @@ class ProfileGenerate(AuthorCommonCommand):
             yaml_header: Dict to merge into the yaml header of the control markdown
             overwrite_header_values: Overwrite values in the markdown header but allow new items to be added
             sections_dict: Optional dict mapping section short names to long
-            required_sections: Optional comma-sep list of sections that get prompted for prose if not in the profile
+            required_sections: Optional list of sections that get prompted for prose if not in the profile
 
         Returns:
             0 on success, 1 on error
@@ -171,15 +142,13 @@ class ProfileGenerate(AuthorCommonCommand):
             catalog, inherited_props = ProfileResolver().get_resolved_profile_catalog_and_inherited_props(
                 trestle_root, profile_path, True, True, None, ParameterRep.LEAVE_MOUSTACHE
             )
-            yaml_header[const.TRESTLE_GLOBAL_TAG] = yaml_header.get(const.TRESTLE_GLOBAL_TAG, {})
-            yaml_header[const.TRESTLE_GLOBAL_TAG][const.PROFILE_TITLE] = profile.metadata.title
+            deep_set(yaml_header, [const.TRESTLE_GLOBAL_TAG, const.PROFILE_TITLE], profile.metadata.title)
 
             catalog_interface = CatalogInterface(catalog)
             part_id_map = catalog_interface.get_statement_part_id_map(False)
             context = ControlContext.generate(ContextPurpose.PROFILE, True, trestle_root, markdown_path)
             context.yaml_header = yaml_header
             context.sections_dict = sections_dict
-            context.additional_content = True
             context.profile = profile
             context.overwrite_header_values = overwrite_header_values
             context.set_parameters_flag = True
@@ -228,8 +197,8 @@ class ProfileAssemble(AuthorCommonCommand):
                 set_parameters_flag=args.set_parameters,
                 regenerate=args.regenerate,
                 version=args.version,
-                sections_dict=sections_to_dict(args.sections),
-                required_sections=args.required_sections,
+                sections_dict=comma_colon_sep_to_dict(args.sections),
+                required_sections=comma_sep_to_list(args.required_sections),
                 allowed_sections=args.allowed_sections
             )
         except Exception as e:  # pragma: no cover
@@ -323,8 +292,8 @@ class ProfileAssemble(AuthorCommonCommand):
         set_parameters_flag: bool,
         regenerate: bool,
         version: Optional[str],
-        sections_dict: Optional[Dict[str, str]],
-        required_sections: Optional[str],
+        sections_dict: Dict[str, str],
+        required_sections: List[str],
         allowed_sections: Optional[List[str]]
     ) -> int:
         """
@@ -339,7 +308,7 @@ class ProfileAssemble(AuthorCommonCommand):
             regenerate: Whether to regenerate the uuid's in the profile
             version: Optional version for the assembled profile
             sections_dict: Optional map of short name to long name for sections
-            required_sections: Optional List of required sections in assembled profile, as comma-separated short names
+            required_sections: List of required sections in assembled profile, as comma-separated short names
             allowed_sections: Optional list of section short names that are allowed, as comma-separated short names
 
         Returns:
@@ -371,23 +340,24 @@ class ProfileAssemble(AuthorCommonCommand):
         catalog_interface = CatalogInterface(catalog)
         label_map = catalog_interface.get_statement_part_id_map(True)
 
-        required_sections_list = required_sections.split(',') if required_sections else []
-
         # load the editable sections of the markdown and create Adds for them
         # then overwrite the Adds in the existing profile with the new ones
         # keep track if any changes were made
         md_dir = trestle_root / md_name
         found_alters, param_dict, param_map = CatalogInterface.read_additional_content(
             md_dir,
-            required_sections_list,
+            required_sections,
             label_map,
             sections_dict,
             False
         )
         # technically if allowed sections is [] it means no sections are allowed
         if allowed_sections is not None:
-            for bad_part in [part for alter in found_alters for add in as_list(alter.adds)
-                             for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)]:
+            for bad_part in [
+                    part for alter in found_alters for add in as_list(alter.adds)
+                    # FIXME make sure a.name is correct version.  it is implementation_guidance instead of implgdn here
+                    for part in as_filtered_list(add.parts, lambda a: a.name not in allowed_sections)
+            ]:
                 raise TrestleError(f'Profile has alter with name {bad_part.name} not in allowed sections.')
 
         ProfileAssemble._replace_alter_adds(parent_prof, found_alters)

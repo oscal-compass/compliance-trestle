@@ -14,14 +14,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle List Utils."""
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from trestle.common.common_types import TG, TG2
+from trestle.common.err import TrestleError
 
 
 def as_list(list_or_none: Optional[List[TG]]) -> List[TG]:
     """Convert list or None object to itself or an empty list if none."""
     return list_or_none if list_or_none else []
+
+
+def comma_sep_to_list(string_or_none: Optional[str]) -> List[str]:
+    """Convert optional comma-sep string to list of stings and strip."""
+    return list(map(str.strip, string_or_none.split(','))) if string_or_none is not None else []
+
+
+def comma_colon_sep_to_dict(string_or_none: Optional[str]) -> Dict[str, str]:
+    """Convert optional comma and colong sep list to dict."""
+    entries = comma_sep_to_list(string_or_none)
+    # this is awkward to do with dict comprehension so using loop
+    dic = {}
+    for entry in entries:
+        # if more than one colon include any colons in the value after the first one
+        token = entry.split(':', 1)
+        if len(token) == 1:
+            dic[token[0].strip()] = token[0].strip()
+        else:
+            dic[token[0].strip()] = token[1].strip()
+    return dic
 
 
 def as_filtered_list(list_or_none: Optional[List[TG]], filter_condition: Callable[[TG], bool]) -> List[TG]:
@@ -110,3 +131,39 @@ def delete_list_from_list(item_list: List[TG], indices: List[int]) -> None:
 def merge_dicts(dest: Optional[Dict[str, str]], src: Optional[Dict[str, str]]) -> Dict[str, str]:
     """Merge the two dicts with priority to src."""
     return {**as_dict(dest), **as_dict(src)}
+
+
+def deep_set(dic: Dict[str, Any], path: List[str], value: Any, pop_if_none: bool = True) -> None:
+    """
+    Set value deep in dictionary.
+
+    pop_if_none will cause the key to be removed if value is None
+    """
+    if not path:
+        raise TrestleError('Error setting value in deep set with empty path.')
+    for node in path[:-1]:
+        dic[node] = dic.get(node, {})
+        dic = dic[node]
+    if value or not pop_if_none:
+        dic[path[-1]] = value
+    else:
+        dic.pop(path[-1], None)
+
+
+def deep_get(dic: Dict[str, Any], path: List[str], default: Any = None) -> Any:
+    """Get value from deep in dictionary."""
+    if not path:
+        raise TrestleError('Error getting value in deep set with empty path.')
+    for node in path[:-1]:
+        if node not in dic:
+            return default
+        dic = dic[node]
+    return dic.get(path[-1], default)
+
+
+def set_or_pop(dic: Dict[str, Any], key: str, value: Any) -> None:
+    """Set if value is non-empty list or not None otherwise remove."""
+    if value:
+        dic[key] = value
+    else:
+        dic.pop(key, None)

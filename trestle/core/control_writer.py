@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional
 
 import trestle.oscal.catalog as cat
 from trestle.common import const
-from trestle.common.list_utils import as_list, merge_dicts
+from trestle.common.list_utils import as_list, merge_dicts, set_or_pop
 from trestle.core.control_context import ContextPurpose, ControlContext
 from trestle.core.control_interface import CompDict, ComponentImpInfo, ControlInterface, PartInfo
 from trestle.core.control_reader import ControlReader
@@ -444,17 +444,22 @@ class ControlWriter():
         if ControlInterface.is_withdrawn(control):
             logger.debug(f'Not writing out control {control.id} since it is marked Withdrawn.')
             return
+
+        # get control content from memory (json)
+        comp_dict, memory_header = ControlReader.read_control_info_from_memory(control, context)
+
         control_file = dest_path / (control.id + const.MARKDOWN_FILE_EXT)
-        # first read the existing markdown header and content if it exists
-        comp_dict, header = ControlReader.read_all_implementation_prose_and_header(control, control_file, context)
-        # only write control for component markdown if rules apply to it
-        if (context.purpose == ContextPurpose.COMPONENT and context.to_markdown
-                and const.COMP_DEF_RULES_TAG not in header):
-            return
+        # read the existing markdown header and content if it exists
+        # add to the comp_dict coming from memory
+        # FIXME confirm we discard the header here
+        _ = ControlReader.read_control_info_from_md(control_file, comp_dict, context)
+
+        # begin adding info to the md file
         self._md_file = MDWriter(control_file)
         self._sections_dict = context.sections_dict
 
-        merged_header = copy.deepcopy(header)
+        # first update the header
+        merged_header = copy.deepcopy(memory_header)
         # if the control has an explicitly defined sort-id and there is none in the yaml_header, then insert it
         # in the yaml header and allow overwrite_header_values to control whether it overwrites an existing one
         # in the markdown header
@@ -464,19 +469,16 @@ class ControlWriter():
             context.yaml_header[const.SORT_ID] = sort_id
         ControlInterface.merge_dicts_deep(merged_header, context.yaml_header, context.overwrite_header_values)
         # the global contents are special and get overwritten on generate
-        global_contents = context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None)
-        if global_contents:
-            merged_header[const.TRESTLE_GLOBAL_TAG] = global_contents
+        set_or_pop(merged_header, const.TRESTLE_GLOBAL_TAG, context.yaml_header.get(const.TRESTLE_GLOBAL_TAG, None))
 
         # merge any provided sections with sections in the header, with priority to the one from context (e.g. CLI)
         header_sections_dict = merged_header.get(const.SECTIONS_TAG, {})
         merged_sections_dict = merge_dicts(header_sections_dict, context.sections_dict)
-        if merged_sections_dict:
-            merged_header[const.SECTIONS_TAG] = merged_sections_dict
+        set_or_pop(merged_sections_dict, const.SECTIONS_TAG, merged_sections_dict)
+        if context.purpose == ContextPurpose.COMPONENT:
+            merged_header.pop(const.SORT_ID, None)
 
-        if context.purpose == ContextPurpose.COMPONENT and const.SORT_ID in merged_header:
-            del merged_header[const.SORT_ID]
-
+        # now begin filling in content from the control in memory
         self._add_control_statement(control, group_title)
 
         self._add_control_objective(control)
@@ -488,10 +490,10 @@ class ControlWriter():
         if context.prompt_responses:
             self._add_implementation_response_prompts(control, comp_dict, context.comp_def is not None)
 
-        # only used for profile-generate
+        # for profile generate
         # add sections corresponding to added parts in the profile
         added_sections: List[str] = []
-        if context.additional_content:
+        if context.purpose == ContextPurpose.PROFILE:
             added_sections = self._add_additional_content(
                 control, context.profile, merged_header, part_id_map, found_alters
             )
