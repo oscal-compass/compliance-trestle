@@ -41,14 +41,20 @@ class MarkdownAPI:
         md_template_path: pathlib.Path,
         validate_yaml_header: bool,
         validate_md_body: bool,
-        md_header_to_validate: Optional[str] = None
+        governed_section: Optional[str] = None,
+        validate_template: bool = False
     ) -> None:
         """Load and initialize markdown validator."""
         try:
-            self.processor.governed_header = md_header_to_validate
-            template_header, template_tree = self.processor.process_markdown(md_template_path)
+            self.processor.governed_header = governed_section
+            if validate_template:
+                template_header, template_tree = self.processor.process_markdown(md_template_path, validate_yaml_header,
+                                                                                 validate_md_body or governed_section is
+                                                                                 not None)
+            else:
+                template_header, template_tree = self.processor.process_markdown(md_template_path)
 
-            if len(template_header) == 0 and validate_yaml_header:
+            if not template_header and validate_yaml_header:
                 raise TrestleError(f'Expected yaml header for markdown template where none exists {md_template_path}')
 
             self.validator = MarkdownValidator(
@@ -57,7 +63,7 @@ class MarkdownAPI:
                 template_tree,
                 validate_yaml_header,
                 validate_md_body,
-                md_header_to_validate
+                governed_section
             )
         except TrestleError as e:
             raise TrestleError(f'Error while loading markdown template {md_template_path}: {e}.')
