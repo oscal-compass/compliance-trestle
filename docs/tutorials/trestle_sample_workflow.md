@@ -24,7 +24,8 @@ Be sure to include the quotes (' ') as shown in the examples, e.g. `merge -e 'ca
 In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.
 
 <br>
-<details>
+<details markdown>
+
 <summary>Like this</summary>
 
 ```text
@@ -68,7 +69,8 @@ please be sure it conforms with the current OSCAL schema (OSCAL version 1.0.2) a
 If there are any errors the Import will fail and the file must be corrected.
 
 <br>
-<details>
+<details markdown>
+
 <summary>Your initial workspace will look like this</summary>
 
 ```text
@@ -136,7 +138,8 @@ trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back
 Here the `-f` refers to the filename of the json catalog file, and `-e` refers to the comma-separated list of `elements` you would like to split from the file.  This list does not represent the full file contents of the source `catalog.json` file, so some contents will be left behind in a much smaller `catalog.json` file after the split.  The elements that were split off will be placed in separate json files next to the new and smaller `catalog.json` file.
 
 <br>
-<details>
+<details markdown>
+
 <summary>Your new catalogs directory with json files split out</summary>
 
 ```text
@@ -176,7 +179,8 @@ trestle split -f ./metadata.json -e 'metadata.roles,metadata.parties,metadata.re
 ```
 
 <br>
-<details>
+<details markdown>
+
 <summary>The directory will now look like this, with metadata split into files</summary>
 
 ```text
@@ -221,7 +225,8 @@ trestle split -f ./responsible-parties.json -e 'responsible-parties.*'
 ```
 
 <br>
-<details>
+<details markdown>
+
 <summary>The directory now looks like this, with new subdirectories containing multiple roles and responsible-parties</summary>
 
 ```text
@@ -265,7 +270,8 @@ trestle split -f ./groups.json -e 'groups.*.controls.*'
 ```
 
 <br>
-<details>
+<details markdown>
+
 <summary>Your directory is now very large with that one command!</summary>
 
 ```text
@@ -691,7 +697,8 @@ trestle merge -e 'catalog.*'
 ```
 
 <br>
-<details>
+<details markdown>
+
 <summary>After all that splitting and merging you are back to this directory structure</summary>
 
 ```text

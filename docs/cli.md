@@ -571,7 +571,8 @@ Example input OSCO scan result file contents (snippet):
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.yaml*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```yaml
@@ -643,7 +644,8 @@ Example input OSCAL metadata file contents:
 
 *oscal-metadata.yaml*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```yaml
@@ -741,7 +743,8 @@ Example output OSCAL Observations file contents (snippet):
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.json*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```json
@@ -882,7 +885,8 @@ Example input directory contents listing:
 
 *Tanium.comply-nist-results*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```json
@@ -982,7 +986,8 @@ Example output directory contents listing:
 
 *Tanium.oscal.json*
 
-<details>
+<details markdown>
+
 <summary>display sample</summary>
 
 ```json
@@ -1315,7 +1320,8 @@ Example component-definition.json:
 
 ### spreadsheet to component definition mapping
 
-<details>
+<details markdown>
+
 <summary>display mapping table</summary>
 
 <style>
