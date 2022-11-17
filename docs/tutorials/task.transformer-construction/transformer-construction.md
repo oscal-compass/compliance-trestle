@@ -74,7 +74,8 @@ For example, if each instance of source data includes not much more than:
 
 then the best mapping would be to an Observations only.
 
-<details>
+<details markdown>
+
 <summary>example snippet: instance suitable for mapping to Observation</summary>
 
 ```yaml
@@ -87,7 +88,8 @@ metadata:
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>example snippet: instance OSCAL Observation</summary>
 
 ```json
@@ -179,7 +181,8 @@ If each instance of source data includes:
 
 then the best mapping wound be to Findings with Observations.
 
-<details>
+<details markdown>
+
 <summary>example snippet: xml instance suitable for mapping to Finding with Observation</summary>
 
 ```json
@@ -204,7 +207,8 @@ then the best mapping wound be to Findings with Observations.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>example snippet: instance OSCAL Finding</summary>
 
 ```json
@@ -253,7 +257,8 @@ then the best mapping wound be to Findings with Observations.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>example snippet: instance OSCAL Observation</summary>
 
 ```json
@@ -304,7 +309,8 @@ then the best mapping wound be to Findings with Observations.
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>example snippet: local definitions</summary>
 
 ```json
