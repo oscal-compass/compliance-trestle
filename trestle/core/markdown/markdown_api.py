@@ -44,7 +44,7 @@ class MarkdownAPI:
         governed_section: Optional[str] = None,
         validate_template: bool = False
     ) -> None:
-        """Load and initialize markdown validator. By default the template won't be validated."""
+        """Load and initialize markdown validator."""
         try:
             self.processor.governed_header = governed_section
             if validate_template:
@@ -54,7 +54,7 @@ class MarkdownAPI:
             else:
                 template_header, template_tree = self.processor.process_markdown(md_template_path)
 
-            if len(template_header) == 0 and validate_yaml_header:
+            if not template_header and validate_yaml_header:
                 raise TrestleError(f'Expected yaml header for markdown template where none exists {md_template_path}')
 
             self.validator = MarkdownValidator(
