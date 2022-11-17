@@ -18,7 +18,8 @@ Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_t
 
 Linux, Mac
 
-<details>
+<details markdown>
+
 <summary>Windows</summary>
 
 Make these changes:
@@ -98,7 +99,8 @@ Notes:
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-cd/enabled_rules.json' > adjunct-data/task-files/enabled_rules.json
 ```
 
-<details>
+<details markdown>
+
 <summary>demo-ocp4-cis-profile-to-oscal-cd.config</summary>
 
 ```shell
@@ -136,7 +138,8 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>selected_rules.json</summary>
 
 ```json
@@ -149,7 +152,8 @@ enabled-rules  = adjunct-data/task-files/enabled_rules.json
 
 </details>
 
-<details>
+<details markdown>
+
 <summary>enabled_rules.json</summary>
 
 ```json
@@ -207,7 +211,8 @@ VALID: Model /home/<user>/trestle.workspace/component-definitions/ocp4-cis/compo
 (venv.trestle)$ cat component-definitions/ocp4-cis/component-definition.json
 ```
 
-<details>
+<details markdown>
+
 <summary>component-definition.json</summary>
 
 ```json

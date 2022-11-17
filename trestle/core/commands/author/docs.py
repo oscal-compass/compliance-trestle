@@ -162,16 +162,19 @@ class Docs(AuthorCommonCommand):
                 break
         return CmdReturnCodes.SUCCESS.value
 
-    def template_validate(self, heading: str, validate_header: bool, validate_only_header: bool) -> int:
+    def template_validate(self, heading: Optional[str], validate_header: bool, validate_only_header: bool) -> int:
         """Validate that the template is acceptable markdown."""
         template_file = self.template_dir / self.template_name
         if not self._validate_template_dir():
-            raise TrestleError('Aborting setup')
+            raise TrestleError(f'Aborting setup, template directory {self.template_dir} is invalid.')
         if not template_file.is_file():
             raise TrestleError(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
         try:
             md_api = MarkdownAPI()
-            md_api.load_validator_with_template(template_file, validate_header, validate_only_header, heading)
+            validate_body = False if validate_only_header else True
+            md_api.load_validator_with_template(
+                template_file, validate_header or validate_only_header, validate_body, heading, True
+            )
         except Exception as ex:
             raise TrestleError(f'Template for task {self.task_name} failed to validate due to {ex}')
 

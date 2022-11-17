@@ -18,7 +18,8 @@ Follow the instructions [here](https://ibm.github.io/compliance-trestle/python_t
 
 Linux, Mac
 
-<details>
+<details markdown>
+
 <summary>Windows</summary>
 
 Make these changes:
@@ -73,7 +74,8 @@ Configuration flags sit under [task.ocp4-cis-profile-to-oscal-catalog]:
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/main/docs/tutorials/task.ocp4-cis-profile-to-oscal-catalog/demo-ocp4-cis-profile-to-oscal-catalog.config' > adjunct-data/task-files/demo-ocp4-cis-profile-to-oscal-catalog.config
 ```
 
-<details>
+<details markdown>
+
 <summary>demo-ocp4-cis-profile-to-oscal-catalog.config</summary>
 
 ```
@@ -103,7 +105,8 @@ VALID: Model /home/<user>/trestle.workspace/catalogs/ocp4-cis/catalog.json passe
 (venv.trestle)$ cat catlogs/ocp4-cis/catalog.json
 ```
 
-<details>
+<details markdown>
+
 <summary>catalog.json</summary>
 
 ```
