@@ -199,7 +199,8 @@ class CsvToOscalComponentDefinition(TaskBase):
         remarks: str
     ) -> None:
         """Create rule property."""
-        value = self.csv_helper.get_value(row, col)
+        # property value cannot have leading/trailing white space
+        value = self.csv_helper.get_value(row, col).strip()
         logger.debug(f'row_num: {row_num} col: {col} value: {value}')
         if value is None or value == '':
             return
